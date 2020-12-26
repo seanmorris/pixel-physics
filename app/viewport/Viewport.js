@@ -68,7 +68,7 @@ export class Viewport extends View
 
 		if(Keyboard.get().getKey(' ') > 0)
 		{
-			// this.args.actors[0].jump();
+			this.args.actors[0].jump();
 		}
 
 		if(Keyboard.get().getKey('Control') > 0)
@@ -80,22 +80,26 @@ export class Viewport extends View
 			this.args.actors[0].running = false;
 		}
 
-		if(Keyboard.get().getKey('ArrowUp') > 0)
-		{
-			this.args.actors[0].goUp();
-		}
-		else if(Keyboard.get().getKey('ArrowDown') > 0)
-		{
-			this.args.actors[0].goDown();
-		}
+		// if(Keyboard.get().getKey('ArrowUp') > 0)
+		// {
+		// 	this.args.actors[0].goUp();
+		// }
+		// else if(Keyboard.get().getKey('ArrowDown') > 0)
+		// {
+		// 	this.args.actors[0].goDown();
+		// }
 
 		if(Keyboard.get().getKey('ArrowLeft') > 0)
 		{
-			this.args.actors[0].goLeft();
+			this.args.actors[0].xAxis = -1;
 		}
 		else if(Keyboard.get().getKey('ArrowRight') > 0)
 		{
-			this.args.actors[0].goRight();
+			this.args.actors[0].xAxis = 1;
+		}
+		else
+		{
+			this.args.actors[0].xAxis = 0;
 		}
 
 		for(const i in this.args.actors)
@@ -194,8 +198,8 @@ export class Viewport extends View
 		this.tags.viewport.style({
 			'--x': Math.round(this.args.x)
 			, '--y': Math.round(this.args.y)
-			, '--xMod': (this.args.x % this.args.blockSize)
-			, '--yMod': (this.args.y % this.args.blockSize)
+			, '--xMod': Math.round(this.args.x % this.args.blockSize)
+			, '--yMod': Math.round(this.args.y % this.args.blockSize)
 			, '--width': this.args.width
 			, '--height': this.args.height
 		});

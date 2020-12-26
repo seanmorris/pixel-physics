@@ -43,7 +43,7 @@ body {
 }
 
 .viewport-background > div {
-	/*border-bottom: 1px solid #CCC;*/
-	/*border-right: 1px solid #CCC;*/
-	box-sizing: border-box;
+	/*border-bottom: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	box-sizing: border-box;*/
 }
