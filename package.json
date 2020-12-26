@@ -1,0 +1,27 @@
+{
+  "name": "moving-boxes",
+  "description": "HTML5 Based 2d platforming engine",
+  "author": "Sean Morris",
+  "version": "0.0.0",
+  "repository": "",
+  "scripts": {
+    "start": "brunch watch --server",
+    "build": "brunch build --production"
+  },
+  "dependencies": {
+    "curvature": "^0.0.66-k",
+    "pokemon-parser": "0.0.5-c"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.10",
+    "auto-reload-brunch": "^2",
+    "babel-brunch": "^7.0.1",
+    "babel-minify": "^0.5.1",
+    "brunch": "^3",
+    "clean-css-brunch": "^3",
+    "raw-brunch": "^1.0.2",
+    "uglify-es-brunch": "^1"
+  }
+}

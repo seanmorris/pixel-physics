@@ -1,0 +1,51 @@
+.point-dump {
+	display: none;
+	display: inline-block;
+	position: absolute;
+	top:  calc(-0px + calc(1px * var(--y)));
+	left: calc(-0px + calc(1px * var(--x)));
+}
+
+.point-dump .point {
+	mix-blend-mode: difference;
+	z-index: 9001;
+	position: absolute;
+	top:  0px;
+	left: 0px;
+	background-color: var(--color, blue);
+	width:  2px;
+	height: 2px;
+	border-radius: 50%;
+}
+
+.point-dump .label {
+	z-index: 9000;
+	position: absolute;
+	bottom: 100%;
+	left:  100%;
+	font-weight: bold;
+	background-color: rgba(0,0,0,0.75);
+	color: white;
+	margin-left: 3px;
+	margin-bottom: -3px;
+	white-space: nowrap;
+	opacity: 0.5;
+}
+
+.point-dump .label:hover {
+	opacity: 1;
+}
+
+.line-dump {
+	z-index: 2000;
+	position: absolute;
+	top:  calc(-0px + calc(1px * var(--y)));
+	left: calc(-0px + calc(1px * var(--x)));
+}
+
+.line-dump .line {
+	transform: rotate( calc(1rad * var(--angle)) );
+	transform-origin: top left;
+	border-left: 2px solid red;
+	height: calc(1px * var(--length));
+}
