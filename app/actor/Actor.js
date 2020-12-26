@@ -71,7 +71,7 @@ export class Actor extends View
 
 		let g = this.gSpeed;
 
-		this.args.animspeed = Math.floor(60 + ( 25 * ((96 - Math.abs(g)) / 32) ));
+		this.args.animspeed = (129 - Math.abs(g));
 
 		if(g)
 		{

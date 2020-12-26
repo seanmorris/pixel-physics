@@ -40,7 +40,7 @@ body {
 }
 
 .viewport-background > div {
-	/*border-bottom: 1px solid black;*/
-	/*border-right: 1px solid black;*/
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
 	box-sizing: border-box;
 }

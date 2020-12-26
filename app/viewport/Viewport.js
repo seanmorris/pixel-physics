@@ -63,7 +63,7 @@ export class Viewport extends View
 
 	update()
 	{
-		const maxSpeed = 96;
+		const maxSpeed = 64;
 
 		if(Keyboard.get().getKey('ArrowLeft') > 0)
 		{

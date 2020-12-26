@@ -22,7 +22,8 @@
 }
 
 .actor.knuckles.walking .sprite{
-	-webkit-animation: knucklesWalking steps(8) calc(var(--frameMs) * 8) infinite;
+	animation: knucklesWalking steps(8) infinite;
+	animation-duration: calc(var(--frameMs) * 8);
 }
 
 @-webkit-keyframes knucklesWalking{
@@ -35,7 +36,8 @@
 }
 
 .actor.knuckles.running .sprite{
-	-webkit-animation: knucklesRunning steps(4) calc(var(--frameMs) * 4) infinite;
+	animation: knucklesRunning steps(4) infinite;
+	animation-duration: calc(var(--frameMs) * 4);
 }
 
 @-webkit-keyframes knucklesRunning{
@@ -48,7 +50,8 @@
 }
 
 .actor.knuckles.jumping .sprite{
-	-webkit-animation: knucklesJumping steps(5) calc(var(--frameMs) * 5) infinite;
+	animation: knucklesJumping steps(5) infinite;
+	animation-duration: calc(var(--frameMs) * 5);
 }
 
 @-webkit-keyframes knucklesJumping{
