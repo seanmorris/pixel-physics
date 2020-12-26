@@ -6688,7 +6688,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     _defineProperty(_assertThisInitialized(_this), "template", "<div class = \"point-actor\" style = \"--x:[[x]];--y:[[y]];\"></div>");
 
     _this.args.x = _this.args.x || 256 + 1022;
-    _this.args.y = _this.args.y || 1500;
+    _this.args.y = _this.args.y || 256;
     _this.args.xSpeed = 1;
     _this.args.ySpeed = 10;
     _this.args.xSpeedRun = 10;
@@ -6698,28 +6698,73 @@ var PointActor = /*#__PURE__*/function (_View) {
   _createClass(PointActor, [{
     key: "update",
     value: function update() {
-      var map = this.viewport.tileMap;
-      var hit = false;
+      var _this2 = this;
 
-      for (var i = 0; i <= this.args.ySpeed; i++) {
-        var bottom = [this.x, 1 + this.y + i];
-        var tile = map.coordsToTile.apply(map, bottom);
+      var map = this.viewport.tileMap;
+      var downDistance = this.downRay(this.args.ySpeed, function (i, point) {
+        var tile = map.coordsToTile.apply(map, _toConsumableArray(point));
         var tileNo = map.getTileNumber.apply(map, _toConsumableArray(tile));
 
         if (!tileNo) {
-          continue;
+          return;
         }
 
-        if (map.getSolid.apply(map, [tileNo].concat(bottom))) {
-          hit = true;
-          this.args.y += i;
-          break;
+        if (map.getSolid.apply(map, [tileNo].concat(_toConsumableArray(point)))) {
+          _this2.args.y += i;
+          return i;
         }
-      }
+      });
 
-      if (!hit) {
+      if (downDistance === false) {
         this.args.y += this.args.ySpeed;
       }
+    }
+  }, {
+    key: "downRay",
+    value: function downRay() {
+      var length = 1;
+
+      var callback = function callback() {};
+
+      var angle = Math.PI / 2;
+      var offset = [0, 1];
+
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      switch (args.length) {
+        case 2:
+          length = args[0];
+          callback = args[1];
+          break;
+
+        case 3:
+          length = args[0];
+          angle = args[1];
+          callback = args[2];
+          break;
+
+        case 4:
+          length = args[0];
+          angle = args[1];
+          offset = args[2];
+          callback = args[3];
+          break;
+      }
+
+      var hit = false;
+
+      for (var i = 0; i <= length; i++) {
+        var bottom = [this.x + offset[0] + i * Math.sin(angle), this.y + offset[1] + i * Math.sin(angle)];
+        var retVal = callback(i, bottom);
+
+        if (retVal !== undefined) {
+          return retVal;
+        }
+      }
+
+      return false;
     }
   }, {
     key: "goLeft",

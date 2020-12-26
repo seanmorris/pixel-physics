@@ -9,7 +9,7 @@ export class PointActor extends View
 		super(...args);
 
 		this.args.x = this.args.x || 256 + 1022;
-		this.args.y = this.args.y || 1500;
+		this.args.y = this.args.y || 256;
 
 		this.args.xSpeed = 1;
 		this.args.ySpeed = 10;
@@ -21,35 +21,68 @@ export class PointActor extends View
 	{
 		const map = this.viewport.tileMap;
 
-		let hit = false;
+		const downDistance = this.downRay(this.args.ySpeed, (i, point) => {
 
-
-		for(let i = 0	; i <= this.args.ySpeed; i++)
-		{
-			const bottom  = [ this.x, 1 + this.y + i];
-
-			const tile    = map.coordsToTile(...bottom);
+			const tile    = map.coordsToTile(...point);
 			const tileNo  = map.getTileNumber(...tile);
 
 			if(!tileNo)
 			{
-				continue;
+				return;
 			}
 
-			if(map.getSolid(tileNo, ...bottom))
+			if(map.getSolid(tileNo, ...point))
 			{
-				hit = true;
-
 				this.args.y += i;
 
-				break;
+				return i;
 			}
-		}
+		});
 
-		if(!hit)
+		if(downDistance === false)
 		{
 			this.args.y += this.args.ySpeed;
 		}
+	}
+
+	downRay(...args)
+	{
+		let length   = 1;
+		let callback = () => {};
+		let angle    = Math.PI / 2;
+		let offset   = [0,1];
+
+		switch(args.length)
+		{
+			case 2:
+				[length, callback] = args;
+				break;
+			case 3:
+				[length, angle, callback] = args;
+				break;
+			case 4:
+				[length, angle, offset, callback] = args;
+				break;
+		}
+
+		let hit = false;
+
+		for(let i = 0; i <= length; i++)
+		{
+			const bottom  = [
+				this.x + offset[0] + (i * Math.sin(angle))
+				, this.y + offset[1] + (i * Math.sin(angle))
+			];
+
+			const retVal = callback(i, bottom);
+
+			if(retVal !== undefined)
+			{
+				return retVal;
+			}
+		}
+
+		return false;
 	}
 
 	goLeft()
