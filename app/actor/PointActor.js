@@ -5,6 +5,10 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
+const RUNNING_SPEED  = 50;
+const WALKING_SPEED  = 15;
+const CRAWLING_SPEED = 1;
+
 export class PointActor extends View
 {
 	template = `<div
@@ -22,19 +26,21 @@ export class PointActor extends View
 		this.args.x = this.args.x || 256 + 1022;
 		this.args.y = this.args.y || 256;
 
-		this.args.maxGSpeed = 10;
+		this.args.maxGSpeed = WALKING_SPEED;
 
 		this.args.gSpeed = 0;
 		this.args.xSpeed = 0;
-		this.args.ySpeed = 5;
+		this.args.ySpeed = 0;
 
-		this.args.maxFall = 500;
+		this.args.maxFall = 50;
 
 		this.maxStep   = 4;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
-		this.args.falling = false;
+		this.args.falling  = false;
+		this.args.running  = false;
+		this.args.crawling = false;
 
 		this.args.mode = MODE_FLOOR;
 
@@ -44,29 +50,79 @@ export class PointActor extends View
 
 	update()
 	{
-		const maxGSpeed = this.args.maxGSpeed;
-
-		if(this.xAxis > 0)
+		if(this.running)
 		{
-			if(this.args.gSpeed < maxGSpeed)
+			this.args.maxGSpeed = RUNNING_SPEED;
+		}
+		else if(this.crawling)
+		{
+			this.args.maxGSpeed = CRAWLING_SPEED;
+		}
+		else
+		{
+			this.args.maxGSpeed = WALKING_SPEED;
+		}
+
+		if(!this.args.falling)
+		{
+			if(this.xAxis)
+			{
+				if(this.args.gSpeed < this.args.maxGSpeed && this.args.gSpeed > -this.args.maxGSpeed)
+				{
+					this.args.gSpeed += this.xAxis;
+				}
+			}
+			else if(this.args.gSpeed > 0)
+			{
+				this.args.gSpeed--;
+			}
+			else if(this.args.gSpeed < 0)
 			{
 				this.args.gSpeed++;
 			}
 		}
-		else if(this.xAxis < 0)
+
+		let sensorSpread;
+
+		if(this.args.gSpeed > 0)
 		{
-			if(this.args.gSpeed > -maxGSpeed)
-			{
-				this.args.gSpeed--;
-			}
-		}
-		else if(this.args.gSpeed > 0)
-		{
-			this.args.gSpeed--;
+			sensorSpread = 1 + this.args.gSpeed;
 		}
 		else if(this.args.gSpeed < 0)
 		{
-			this.args.gSpeed++;
+			sensorSpread = -1 + this.args.gSpeed;
+		}
+		else
+		{
+			sensorSpread = 1;
+		}
+
+		switch(this.args.mode)
+		{
+			case MODE_FLOOR:
+			case MODE_LEFT:
+				this.backStep  = this.findStepHeight(-sensorSpread);
+				this.frontStep = this.findStepHeight(sensorSpread);
+				break;
+			case MODE_RIGHT:
+			case MODE_CEILING:
+				this.backStep  = this.findStepHeight(sensorSpread);
+				this.frontStep = this.findStepHeight(-sensorSpread);
+				break;
+		}
+
+		this.args.angle = Math.atan(
+			((this.frontStep||0) - (this.backStep||0))
+			/ (sensorSpread * 2)
+		);
+
+		if(this.args.gSpeed < -this.args.maxGSpeed)
+		{
+			this.args.gSpeed = -this.args.maxGSpeed;
+		}
+		else if(this.args.gSpeed > this.args.maxGSpeed)
+		{
+			this.args.gSpeed = this.args.maxGSpeed;
 		}
 
 		this.goHorizontal(this.args.gSpeed, -this.frontStep);
@@ -76,13 +132,9 @@ export class PointActor extends View
 			this.args.ySpeed++;
 		}
 
-		if(this.running)
+		if(this.args.ySpeed > this.args.maxFall)
 		{
-		 	this.args.maxGSpeed = 50;
-		}
-		else
-		{
-			this.args.maxGSpeed = 10;
+			this.args.ySpeed = this.args.maxFall;
 		}
 
 		const tileMap = this.viewport.tileMap;
@@ -120,22 +172,6 @@ export class PointActor extends View
 
 				if(tileMap.getSolid(tileNo, ...point))
 				{
-					switch(this.args.mode)
-					{
-						case MODE_FLOOR:
-							this.args.y += i;
-							break;
-						case MODE_RIGHT:
-							this.args.x += i;
-							break;
-						case MODE_CEILING:
-							this.args.y -= i;
-							break;
-						case MODE_LEFT:
-							this.args.x -= i;
-							break;
-					}
-
 					this.args.x = Math.floor(this.args.x);
 					this.args.y = Math.floor(this.args.y);
 
@@ -146,25 +182,28 @@ export class PointActor extends View
 
 		if(downDistance === false)
 		{
+			this.args.y += this.args.ySpeed;
+			this.args.x += this.args.xSpeed;
+
 			this.args.falling = true;
+		}
+		else if(downDistance)
+		{
+			this.args.falling = false;
 
 			switch(this.args.mode)
 			{
 				case MODE_FLOOR:
-					this.args.y += this.args.ySpeed;
-					this.args.x += this.args.xSpeed;
+					this.args.y += downDistance;
 					break;
 				case MODE_RIGHT:
-					this.args.x += this.args.ySpeed;
-					this.args.y -= this.args.xSpeed;
+					this.args.x += downDistance;
 					break;
 				case MODE_CEILING:
-					this.args.y -= this.args.ySpeed;
-					this.args.x -= this.args.xSpeed;
+					this.args.y -= downDistance;
 					break;
 				case MODE_LEFT:
-					this.args.x -= this.args.ySpeed;
-					this.args.y += this.args.xSpeed;
+					this.args.x -= downDistance;
 					break;
 			}
 		}
@@ -173,74 +212,45 @@ export class PointActor extends View
 			this.args.falling = false;
 		}
 
-		let sensorSpread;
-
-		if(this.args.gSpeed > 0)
+		if(!this.args.falling)
 		{
-			sensorSpread = 1 + this.args.gSpeed;
-		}
-		else if(this.args.gSpeed < 0)
-		{
-			sensorSpread = -1 + this.args.gSpeed;
-		}
-		else
-		{
-			sensorSpread = 2;
-		}
-
-		switch(this.args.mode)
-		{
-			case MODE_FLOOR:
-			case MODE_LEFT:
-				this.backStep  = this.findStepHeight(-sensorSpread);
-				this.frontStep = this.findStepHeight(sensorSpread);
-				break;
-			case MODE_RIGHT:
-			case MODE_CEILING:
-				this.backStep  = this.findStepHeight(sensorSpread);
-				this.frontStep = this.findStepHeight(-sensorSpread);
-				break;
-		}
-
-		this.args.angle = Math.atan(((this.frontStep||0) - (this.backStep||0)) / (sensorSpread * 2));
-
-		if(this.backStep > 0 || this.frontStep > 0)
-		{
-			if(this.args.angle > Math.PI / 4)
+			if(this.backStep > 0 || this.frontStep > 0)
 			{
-				switch(this.args.mode)
+				if(this.args.angle > Math.PI / 4)
 				{
-					case MODE_FLOOR:
-						this.args.mode = MODE_RIGHT;
-						break;
-					case MODE_RIGHT:
-						this.args.mode = MODE_CEILING;
-						break;
-					case MODE_CEILING:
-						this.args.mode = MODE_LEFT;
-						break;
-					case MODE_LEFT:
-						this.args.mode = MODE_FLOOR;
-						break;
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+							this.args.mode = MODE_RIGHT;
+							break;
+						case MODE_RIGHT:
+							this.args.mode = MODE_CEILING;
+							break;
+						case MODE_CEILING:
+							this.args.mode = MODE_LEFT;
+							break;
+						case MODE_LEFT:
+							this.args.mode = MODE_FLOOR;
+							break;
+					}
 				}
-			}
-
-			if(this.args.angle < -Math.PI / 4)
-			{
-				switch(this.args.mode)
+				else if(this.args.angle < -Math.PI / 4)
 				{
-					case MODE_FLOOR:
-						this.args.mode = MODE_LEFT;
-						break;
-					case MODE_RIGHT:
-						this.args.mode = MODE_FLOOR;
-						break;
-					case MODE_CEILING:
-						this.args.mode = MODE_RIGHT;
-						break;
-					case MODE_LEFT:
-						this.args.mode = MODE_CEILING;
-						break;
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+							this.args.mode = MODE_LEFT;
+							break;
+						case MODE_RIGHT:
+							this.args.mode = MODE_FLOOR;
+							break;
+						case MODE_CEILING:
+							this.args.mode = MODE_RIGHT;
+							break;
+						case MODE_LEFT:
+							this.args.mode = MODE_CEILING;
+							break;
+					}
 				}
 			}
 		}
@@ -334,13 +344,40 @@ export class PointActor extends View
 
 	jump()
 	{
-		if(!this.args.falling)
+		if(this.args.falling)
 		{
-			this.args.xSpeed =  15 * Math.cos(this.args.angle + Math.PI/2);
-			this.args.ySpeed = -15 * Math.sin(this.args.angle + Math.PI/2);
+			return;
+		}
+
+		const originalMode = this.args.mode;
+
+		this.args.mode = MODE_FLOOR;
+
+		switch(originalMode)
+		{
+			case MODE_FLOOR:
+				this.args.xSpeed =  15 * Math.cos(this.args.angle + Math.PI/2);
+				this.args.ySpeed = -15 * Math.sin(this.args.angle + Math.PI/2);
+				break;
+
+			case MODE_LEFT:
+				this.args.xSpeed = -15 * Math.sin(this.args.angle - Math.PI/2);
+				this.args.ySpeed = -15 * Math.cos(this.args.angle - Math.PI/2);
+				break;
+
+			case MODE_CEILING:
+				this.args.xSpeed =  -15 * Math.cos(this.args.angle + Math.PI/2);
+				this.args.ySpeed =   15 * Math.sin(this.args.angle + Math.PI/2);
+				break;
+
+			case MODE_RIGHT:
+				this.args.xSpeed =  15 * Math.sin(this.args.angle - Math.PI/2);
+				this.args.ySpeed =  15 * Math.cos(this.args.angle - Math.PI/2);
+				break;
 		}
 
 		this.args.falling = true;
+		this.args.gSpeed  = 0;
 	}
 
 	goRight()

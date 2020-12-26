@@ -73,11 +73,18 @@ export class Viewport extends View
 
 		if(Keyboard.get().getKey('Control') > 0)
 		{
-			this.args.actors[0].running = true;
+			this.args.actors[0].running  = true;
+			this.args.actors[0].crawling = false;
+		}
+		else if(Keyboard.get().getKey('Shift') > 0)
+		{
+			this.args.actors[0].running  = false;
+			this.args.actors[0].crawling = true;
 		}
 		else
 		{
-			this.args.actors[0].running = false;
+			this.args.actors[0].running  = false;
+			this.args.actors[0].crawling = false;
 		}
 
 		// if(Keyboard.get().getKey('ArrowUp') > 0)

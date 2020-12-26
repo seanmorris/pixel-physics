@@ -7,10 +7,11 @@
 	top: calc(1px * var(--y));
 	box-shadow: 0 0 4px 4px rgba(0,255,0,0.5);
 }
-/*
-.point-actor:after {
+
+/*.point-actor:after {
 	position: absolute;
 	content: attr(data-angle);
 	font-size: 0.5rem;
 	z-index: 1000;
-}*/
+}
+*/
