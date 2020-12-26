@@ -27,8 +27,8 @@ export class Viewport extends View
 
 		this.args.blockSize = 32;
 
-		this.args.width  = 32*20;
-		this.args.height = 32*15;
+		this.args.width  = 32*9;
+		this.args.height = 32*6;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -105,8 +105,8 @@ export class Viewport extends View
 
 		const angle = this.args.actors[0].angle;
 
-		this.args.x = -this.args.actors[0].x + 256;
-		this.args.y = -this.args.actors[0].y + 256;
+		this.args.x = -this.args.actors[0].x + 160;
+		this.args.y = -this.args.actors[0].y + 128;
 
 		if(this.args.x > 0)
 		{

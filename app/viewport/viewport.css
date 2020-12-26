@@ -19,6 +19,7 @@ body {
 	overflow: hidden;
 	color: red;
 	font-size: 0.7rem;
+	transform: scale(3);
 }
 
 .viewport-background,
@@ -42,7 +43,7 @@ body {
 }
 
 .viewport-background > div {
-	/*border-bottom: 1px solid black;
-	border-right: 1px solid black;*/
+	/*border-bottom: 1px solid #CCC;*/
+	/*border-right: 1px solid #CCC;*/
 	box-sizing: border-box;
 }

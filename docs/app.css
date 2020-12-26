@@ -105,6 +105,13 @@
 	box-shadow: 0 0 4px 4px rgba(0,255,0,0.5);
 }
 
+.point-actor:after {
+	position: absolute;
+	content: attr(data-angle);
+	font-size: 0.5rem;
+	z-index: 1000;
+}
+
 .actor.ring {
 	width:64px;
 	height:64px;
@@ -194,6 +201,7 @@ body {
 	overflow: hidden;
 	color: red;
 	font-size: 0.7rem;
+	transform: scale(3);
 }
 
 .viewport-background,
@@ -217,8 +225,8 @@ body {
 }
 
 .viewport-background > div {
-	/*border-bottom: 1px solid black;
-	border-right: 1px solid black;*/
+	/*border-bottom: 1px solid #CCC;*/
+	/*border-right: 1px solid #CCC;*/
 	box-sizing: border-box;
 }
 

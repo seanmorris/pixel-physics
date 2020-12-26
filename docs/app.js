@@ -6669,6 +6669,11 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var MODE_FLOOR = 0;
+var MODE_LEFT = 1;
+var MODE_CEILING = 2;
+var MODE_RIGHT = 3;
+
 var PointActor = /*#__PURE__*/function (_View) {
   _inherits(PointActor, _View);
 
@@ -6685,13 +6690,17 @@ var PointActor = /*#__PURE__*/function (_View) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "template", "<div class = \"point-actor\" style = \"--x:[[x]];--y:[[y]];\"></div>");
+    _defineProperty(_assertThisInitialized(_this), "template", "<div\n\t\tclass = \"point-actor\"\n\t\tstyle = \"--x:[[x]];--y:[[y]];--angle:[[angle]]\"\n\n\t\tdata-angle = \"[[angle|rad2deg]]\"\n\t\tdata-mode  = \"[[mode]]\"\n\t></div>");
 
     _this.args.x = _this.args.x || 256 + 1022;
     _this.args.y = _this.args.y || 256;
     _this.args.xSpeed = 1;
-    _this.args.ySpeed = 10;
     _this.args.xSpeedRun = 10;
+    _this.args.ySpeed = 20;
+    _this.maxStep = 4;
+    _this.leftStep = 0;
+    _this.rightStep = 0;
+    _this.args.mode = MODE_FLOOR;
     return _this;
   }
 
@@ -6700,34 +6709,189 @@ var PointActor = /*#__PURE__*/function (_View) {
     value: function update() {
       var _this2 = this;
 
-      var map = this.viewport.tileMap;
-      var downDistance = this.downRay(this.args.ySpeed, function (i, point) {
-        var tile = map.coordsToTile.apply(map, _toConsumableArray(point));
-        var tileNo = map.getTileNumber.apply(map, _toConsumableArray(tile));
+      this.args.xSpeed = 1;
+
+      if (this.running) {
+        this.args.xSpeed = 10;
+      }
+
+      var tileMap = this.viewport.tileMap;
+      var offset;
+
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+          offset = [0, 1];
+          break;
+
+        case MODE_RIGHT:
+          offset = [1, 0];
+          break;
+
+        case MODE_CEILING:
+          offset = [0, -1];
+          break;
+
+        case MODE_LEFT:
+          offset = [-1, 0];
+          break;
+      }
+
+      var downDistance = this.castRay(this.args.ySpeed, this.downAngle, offset, function (i, point) {
+        var tile = tileMap.coordsToTile.apply(tileMap, _toConsumableArray(point));
+        var tileNo = tileMap.getTileNumber.apply(tileMap, _toConsumableArray(tile));
 
         if (!tileNo) {
           return;
         }
 
-        if (map.getSolid.apply(map, [tileNo].concat(_toConsumableArray(point)))) {
-          _this2.args.y += i;
+        if (tileMap.getSolid.apply(tileMap, [tileNo].concat(_toConsumableArray(point)))) {
+          switch (_this2.args.mode) {
+            case MODE_FLOOR:
+              _this2.args.y += i;
+              break;
+
+            case MODE_RIGHT:
+              _this2.args.x += i;
+              break;
+
+            case MODE_CEILING:
+              _this2.args.y -= i;
+              break;
+
+            case MODE_LEFT:
+              _this2.args.x -= i;
+              break;
+          }
+
           return i;
         }
       });
 
       if (downDistance === false) {
-        this.args.y += this.args.ySpeed;
+        switch (this.args.mode) {
+          case MODE_FLOOR:
+            this.args.y += this.args.ySpeed;
+            break;
+
+          case MODE_RIGHT:
+            this.args.x += this.args.ySpeed;
+            break;
+
+          case MODE_CEILING:
+            this.args.y -= this.args.ySpeed;
+            break;
+
+          case MODE_LEFT:
+            this.args.x -= this.args.ySpeed;
+            break;
+        }
+      }
+
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+        case MODE_LEFT:
+          this.leftStep = this.findStepHeight(-this.args.xSpeed);
+          this.rightStep = this.findStepHeight(this.args.xSpeed);
+          break;
+
+        case MODE_RIGHT:
+        case MODE_CEILING:
+          this.leftStep = this.findStepHeight(this.args.xSpeed);
+          this.rightStep = this.findStepHeight(-this.args.xSpeed);
+          break;
+      }
+
+      console.log(this.leftStep, this.rightStep);
+      this.args.angle = Math.atan((this.rightStep - this.leftStep) / (this.args.xSpeed * 2));
+
+      if (this.args.angle > Math.PI / 4) {
+        switch (this.args.mode) {
+          case MODE_FLOOR:
+            this.args.mode = MODE_RIGHT;
+            break;
+
+          case MODE_RIGHT:
+            this.args.mode = MODE_CEILING;
+            break;
+
+          case MODE_CEILING:
+            this.args.mode = MODE_LEFT;
+            break;
+
+          case MODE_LEFT:
+            this.args.mode = MODE_FLOOR;
+            break;
+        }
+      }
+
+      if (this.args.angle < -Math.PI / 4) {
+        switch (this.args.mode) {
+          case MODE_FLOOR:
+            this.args.mode = MODE_LEFT;
+            break;
+
+          case MODE_RIGHT:
+            this.args.mode = MODE_FLOOR;
+            break;
+
+          case MODE_CEILING:
+            this.args.mode = MODE_RIGHT;
+            break;
+
+          case MODE_LEFT:
+            this.args.mode = MODE_CEILING;
+            break;
+        }
       }
     }
   }, {
-    key: "downRay",
-    value: function downRay() {
+    key: "findStepHeight",
+    value: function findStepHeight() {
+      var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var tileMap = this.viewport.tileMap;
+      var maxStepSpeed = this.maxStep * Math.abs(offset);
+      var offsetPoint;
+
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+          offsetPoint = [offset, -maxStepSpeed];
+          break;
+
+        case MODE_RIGHT:
+          offsetPoint = [-maxStepSpeed, offset];
+          break;
+
+        case MODE_CEILING:
+          offsetPoint = [offset, maxStepSpeed];
+          break;
+
+        case MODE_LEFT:
+          offsetPoint = [maxStepSpeed, offset];
+          break;
+      }
+
+      return this.castRay(maxStepSpeed * 2, this.downAngle, offsetPoint, function (i, point) {
+        var tile = tileMap.coordsToTile.apply(tileMap, _toConsumableArray(point));
+        var tileNo = tileMap.getTileNumber.apply(tileMap, _toConsumableArray(tile)); // console.log(point);
+
+        if (!tileNo) {
+          return;
+        }
+
+        if (tileMap.getSolid.apply(tileMap, [tileNo].concat(_toConsumableArray(point)))) {
+          return 1 + maxStepSpeed - i;
+        }
+      });
+    }
+  }, {
+    key: "castRay",
+    value: function castRay() {
       var length = 1;
 
       var callback = function callback() {};
 
       var angle = Math.PI / 2;
-      var offset = [0, 1];
+      var offset = [0, 0];
 
       for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
         args[_key2] = arguments[_key2];
@@ -6756,7 +6920,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       var hit = false;
 
       for (var i = 0; i <= length; i++) {
-        var bottom = [this.x + offset[0] + i * Math.sin(angle), this.y + offset[1] + i * Math.sin(angle)];
+        var bottom = [this.x + offset[0] + i * Math.cos(angle), this.y + offset[1] + i * Math.sin(angle)];
         var retVal = callback(i, bottom);
 
         if (retVal !== undefined) {
@@ -6769,22 +6933,116 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "goLeft",
     value: function goLeft() {
-      this.args.x -= !this.running ? this.args.xSpeed : this.args.xSpeedRun;
+      var stepOver = 0,
+          stepUp = 0;
+
+      if (this.leftStep) {
+        if (this.leftStep > this.maxStep * this.args.xSpeed) {
+          return;
+        }
+
+        stepUp = -this.leftStep;
+      }
+
+      stepOver = this.args.xSpeed;
+
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+          this.args.x -= stepOver;
+          this.args.y += stepUp;
+          break;
+
+        case MODE_RIGHT:
+          this.args.x += stepUp;
+          this.args.y += stepOver;
+          break;
+
+        case MODE_CEILING:
+          this.args.x += stepOver;
+          this.args.y -= stepUp;
+          break;
+
+        case MODE_LEFT:
+          this.args.x -= stepUp;
+          this.args.y -= stepOver;
+          break;
+      }
     }
   }, {
     key: "goRight",
     value: function goRight() {
-      this.args.x += !this.running ? this.args.xSpeed : this.args.xSpeedRun;
+      var stepOver = 0,
+          stepUp = 0;
+
+      if (this.rightStep) {
+        if (this.rightStep > this.maxStep * this.args.xSpeed) {
+          return;
+        }
+
+        stepUp = -this.rightStep;
+      }
+
+      stepOver = this.args.xSpeed;
+      console.log(stepOver, stepUp);
+
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+          this.args.x += stepOver;
+          this.args.y += stepUp;
+          break;
+
+        case MODE_RIGHT:
+          this.args.x += stepUp;
+          this.args.y -= stepOver;
+          break;
+
+        case MODE_CEILING:
+          this.args.x -= stepOver;
+          this.args.y -= stepUp;
+          break;
+
+        case MODE_LEFT:
+          this.args.x -= stepUp;
+          this.args.y += stepOver;
+          break;
+      }
     }
   }, {
     key: "goUp",
     value: function goUp() {
-      this.args.y -= this.args.ySpeed + 1; // this.args.y--;
+      this.args.y -= this.args.ySpeed + 1;
     }
   }, {
     key: "goDown",
     value: function goDown() {
       this.args.y++;
+    }
+  }, {
+    key: "rad2deg",
+    value: function rad2deg(x) {
+      return Math.round(180 / Math.PI * x * 10) / 10;
+    }
+  }, {
+    key: "downAngle",
+    get: function get() {
+      // return Math.PI/2;
+      switch (this.args.mode) {
+        case MODE_FLOOR:
+          return Math.PI / 2;
+          break;
+
+        case MODE_RIGHT:
+          return 0;
+          break;
+
+        case MODE_CEILING:
+          return -Math.PI / 2;
+          break;
+
+        case MODE_LEFT:
+          return Math.PI;
+          break;
+      }
     }
   }, {
     key: "x",
@@ -6795,6 +7053,11 @@ var PointActor = /*#__PURE__*/function (_View) {
     key: "y",
     get: function get() {
       return this.args.y;
+    }
+  }, {
+    key: "point",
+    get: function get() {
+      return [this.args.x, this.args.y];
     }
   }]);
 
@@ -7299,8 +7562,8 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.tileMap = new _TileMap.TileMap();
     _this.world = null;
     _this.args.blockSize = 32;
-    _this.args.width = 32 * 20;
-    _this.args.height = 32 * 15;
+    _this.args.width = 32 * 9;
+    _this.args.height = 32 * 6;
     _this.args.x = 0;
     _this.args.y = 0;
     _this.args.offsetX = 0;
@@ -7357,8 +7620,8 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       var angle = this.args.actors[0].angle;
-      this.args.x = -this.args.actors[0].x + 256;
-      this.args.y = -this.args.actors[0].y + 256;
+      this.args.x = -this.args.actors[0].x + 160;
+      this.args.y = -this.args.actors[0].y + 128;
 
       if (this.args.x > 0) {
         this.args.x = 0;
