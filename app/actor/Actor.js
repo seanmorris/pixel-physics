@@ -2,6 +2,8 @@ import { View } from 'curvature/base/View';
 
 import { TileMap } from '../tileMap/TileMap';
 
+import { PointDump } from '../debug/PointDump';
+
 export class Actor extends View
 {
 	speed    = 15;
@@ -13,8 +15,8 @@ export class Actor extends View
 
 		this.world = null;
 
-		this.x = 256;
-		this.y = 768;
+		this.x = 92;
+		this.y = 1024;
 
 		this.width  = 64;
 		this.height = 64;
@@ -26,10 +28,12 @@ export class Actor extends View
 
 		this.state = 'standing';
 
-		this.gSpeed = 0;
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.angle  = 0;
+		this.gSpeed    = 0;
+		// this.maxGSpeed = 48;
+		this.maxGSpeed = 40;
+		this.xSpeed    = 0;
+		this.ySpeed    = 0;
+		this.angle     = 0;
 
 		this.maxGravity = 48;
 		this.gravity    = 0;
@@ -45,7 +49,7 @@ export class Actor extends View
 			, right: false
 		};
 
-		this.mode = 0;
+		this.mode = this.args.mode = 0;
 
 		this.modes = {
 			floor: 0
@@ -56,6 +60,11 @@ export class Actor extends View
 
 		this.animationClasses = {};
 		this.currentClasses   = null;
+
+		this.pdL = new PointDump({color: 'red'});
+		this.pdR = new PointDump({color: 'green'});
+
+		this.args.debugs = [this.pdL, this.pdR];
 	}
 
 	destroy()
@@ -71,26 +80,71 @@ export class Actor extends View
 
 		let g = this.gSpeed;
 
-		this.args.animspeed = (129 - Math.abs(g));
+		this.args.animspeed = Math.floor((this.maxGSpeed - Math.abs(g) ) / 12);
 
-		if(g)
+		if(this.args.animspeed < 1)
 		{
-			const max = 24;
-			const abG = Math.abs(g);
-			const div = abG > max ? max : abG;
+			this.args.animspeed = 1;
+		}
 
-			for(let i = 0; i < div; i++)
+		const angle = Math.round(this.angle * 1000) / 1000;
+
+		if(!this.falling)
+		{
+			if(angle > Math.PI / 4 && angle < 2 * Math.PI / 4)
 			{
-				this.iteratePosition(Math.floor(g / div));
+				if(this.mode === this.modes.floor)
+				{
+					this.args.mode = this.mode = this.modes.leftWall;
+				}
+				else if(this.mode === this.modes.leftWall)
+				{
+					this.args.mode = this.mode = this.modes.ceiling;
+				}
+				else if(this.mode === this.modes.ceiling)
+				{
+					this.args.mode = this.mode = this.modes.rightWall;
+				}
+				else if(this.mode === this.modes.rightWall)
+				{
+					this.args.mode = this.mode = this.modes.floor;
+				}
 			}
 
-			if(Math.abs(g) > 48)
+			if(angle < -Math.PI / 4 && angle > -2 * Math.PI / 4)
+			{
+				if(this.mode === this.modes.floor)
+				{
+					this.args.mode = this.mode = this.modes.rightWall;
+				}
+				else if(this.mode === this.modes.rightWall)
+				{
+					this.args.mode = this.mode = this.modes.ceiling;
+				}
+				else if(this.mode === this.modes.ceiling)
+				{
+					this.args.mode = this.mode = this.modes.leftWall;
+				}
+				else if(this.mode === this.modes.leftWall)
+				{
+					this.args.mode = this.mode = this.modes.floor;
+				}
+			}
+		}
+
+		if(!this.falling)
+		{
+			if(Math.abs(g) > this.maxGSpeed / 2)
 			{
 				this.args.state = 'running';
 			}
-			else
+			else if(Math.abs(g) > 0)
 			{
 				this.args.state = 'walking';
+			}
+			else
+			{
+				this.args.state = 'standing';
 			}
 
 			if(g > 0)
@@ -102,43 +156,74 @@ export class Actor extends View
 				this.args.facing = 'facing-left';
 			}
 		}
-		else
+		else if(this.falling || this.jumped)
 		{
-			this.iteratePosition(0);
-			this.args.state = 'standing';
+			this.args.state = 'jumping';
 		}
 
 		if(this.falling)
 		{
 			if(this.mode == this.modes.floor)
 			{
-				this.xSpeed = 0;
 				this.ySpeed++;
 			}
 			else if(this.mode == this.modes.ceiling)
 			{
-				this.xSpeed = 0;
 				this.ySpeed--;
 			}
 			else if(this.mode == this.modes.leftWall)
 			{
 				this.xSpeed--;
-				this.ySpeed = 0;
 			}
 			else if(this.mode == this.modes.rightWall)
 			{
 				this.xSpeed++;
-				this.ySpeed = 0;
+			}
+		}
+		else if(!this.jumped)
+		{
+			this.xSpeed = 0;
+			this.ySpeed = 0;
+		}
+
+		this.x += this.xSpeed;
+		this.ySpeed && (this.y += this.ySpeed > 0 ? 1 : -1);
+
+		if(g)
+		{
+			const max = 8;
+			const abG = Math.abs(g);
+			const div = abG > max ? max : abG;
+
+			for(let i = 0; i < div; i++)
+			{
+				this.iteratePosition(Math.floor(g / div));
 			}
 		}
 		else
 		{
-			this.ySpeed = 0;
-			this.xSpeed = 0;
+			this.iteratePosition(0);
 		}
 
-		this.x += this.xSpeed;
-		this.y += this.ySpeed;
+		if(this.ySpeed > 32)
+		{
+			this.ySpeed = 32;
+		}
+
+		if(this.ySpeed < -32)
+		{
+			this.ySpeed = -32;
+		}
+
+		if(this.xSpeed > 32)
+		{
+			this.xSpeed = 32;
+		}
+
+		if(this.xSpeed < -32)
+		{
+			this.xSpeed = -32;
+		}
 
 		this.tags.actor.style({
 			'--x': Math.floor(this.x)
@@ -162,74 +247,16 @@ export class Actor extends View
 			this.tags.actor.style({'--angle': this.angle + 3 * (Math.PI / 2)});
 		}
 
-		const angle = Math.round(this.angle * 1000) / 1000;
-
-		if(angle > Math.PI / 4 && angle < 2 * Math.PI / 4)
+		if(this.jumped)
 		{
-			if(this.mode === this.modes.floor)
-			{
-				this.args.mode = this.mode = this.modes.leftWall;
-			}
-			else if(this.mode === this.modes.leftWall)
-			{
-				this.args.mode = this.mode = this.modes.ceiling;
-			}
-			else if(this.mode === this.modes.ceiling)
-			{
-				this.args.mode = this.mode = this.modes.rightWall;
-			}
-			else if(this.mode === this.modes.rightWall)
-			{
-				this.args.mode = this.mode = this.modes.floor;
-			}
-		}
-
-		if(angle < -Math.PI / 4 && angle > -2 * Math.PI / 4)
-		{
-			if(this.mode === this.modes.floor)
-			{
-				this.args.mode = this.mode = this.modes.rightWall;
-			}
-			else if(this.mode === this.modes.rightWall)
-			{
-				this.args.mode = this.mode = this.modes.ceiling;
-			}
-			else if(this.mode === this.modes.ceiling)
-			{
-				this.args.mode = this.mode = this.modes.leftWall;
-			}
-			else if(this.mode === this.modes.leftWall)
-			{
-				this.args.mode = this.mode = this.modes.floor;
-			}
+			this.jumped = false;
 		}
 	}
 
 	iteratePosition(speed)
 	{
-		const sin = Math.sin(this.angle);
-		const cos = Math.cos(this.angle);
-
-		if(this.mode === this.modes.floor)
-		{
-			this.x += speed * cos;
-			this.y += speed * sin
-		}
-		else if(this.mode === this.modes.rightWall)
-		{
-			this.x += speed * sin
-			this.y -= speed * cos;
-		}
-		else if(this.mode === this.modes.ceiling)
-		{
-			this.x -= speed * cos;
-			this.y -= speed * sin;
-		}
-		else if(this.mode === this.modes.leftWall)
-		{
-			this.x -= speed * sin;
-			this.y += speed * cos;
-		}
+		let sin = Math.sin(this.angle);
+		let cos = Math.cos(this.angle);
 
 		const center = this.center;
 
@@ -251,8 +278,8 @@ export class Actor extends View
 			leg = bottom - center[0];
 		}
 
-		sensorLeft  = this.left  - arm * sin + (arm / 2);
-		sensorRight = this.right - arm * sin - (arm / 2);
+		sensorLeft  = this.left  - arm * sin + (arm * 0.5);
+		sensorRight = this.right - arm * sin - (arm * 0.5);
 
 		sensorSpread = Math.abs(sensorRight - sensorLeft);
 
@@ -265,7 +292,9 @@ export class Actor extends View
 
 		let leftSolid = false, rightSolid = false;
 
-		const scans = [[0, this.height], [-this.height, this.height]];
+		const height = this.falling ? this.height : this.height ;
+
+		const scans = [[-height, 0], [-height, height]];
 
 		regress: for(let i in scans)
 		{
@@ -364,38 +393,71 @@ export class Actor extends View
 			}
 		}
 
+		this.pdL.args.x = scanLX;
+		this.pdL.args.y = scanLY;
 
-		this.falling = false;
-
-		if((!leftSolid && !rightSolid) || (leftScan >=0 && rightScan > 0))
-		{
-			this.falling = true;
-		}
+		this.pdR.args.x = scanRX;
+		this.pdR.args.y = scanRY;
 
 		this.angle = Math.atan((rightScan - leftScan) / sensorSpread );
 
-		if((leftSolid && rightSolid) && (leftScan < 0 && rightScan < 0))
+		if(!this.falling)
 		{
-			const offset = ((leftScan + rightScan) / 2);
-			// const offset = ((leftScan + rightScan) / 2) * Math.cos(this.angle);
+			let offset = ((leftScan + rightScan) / 2);
 
-			if(this.mode == this.modes.floor)
+			if(this.mode === this.modes.floor)
 			{
-				this.y += Math.ceil(offset);
+				this.x += speed * cos;
+				this.y += speed * sin
 			}
-			else if(this.mode == this.modes.ceiling)
+			else if(this.mode === this.modes.rightWall)
 			{
-				this.y -= Math.ceil(offset);
+				this.x += speed * sin
+				this.y -= speed * cos;
 			}
-			else if(this.mode == this.modes.leftWall)
+			else if(this.mode === this.modes.ceiling)
 			{
-				this.x -= offset;
+				this.x -= speed * cos;
+				this.y -= speed * sin;
 			}
-			else if(this.mode == this.modes.rightWall)
+			else if(this.mode === this.modes.leftWall)
 			{
-				this.x += offset;
+				this.x -= speed * sin;
+				this.y += speed * cos;
+			}
+
+			if(leftSolid && rightSolid && (leftScan <= 0 && rightScan <= 0))
+			{
+				if(this.mode == this.modes.floor)
+				{
+					this.y += Math.ceil(offset);
+				}
+				else if(this.mode == this.modes.ceiling)
+				{
+					this.y -= Math.ceil(offset);
+				}
+				else if(this.mode == this.modes.leftWall)
+				{
+					this.x -= offset;
+				}
+				else if(this.mode == this.modes.rightWall)
+				{
+					this.x += offset;
+				}
 			}
 		}
+
+		if(leftScan > 0 && rightScan > 0)
+		{
+			console.log(leftScan, rightScan);
+			this.falling = true;
+		}
+		else
+		{
+			console.log(leftScan, rightScan);
+			this.falling = false;
+		}
+
 	}
 
 	isColliding(actor)
@@ -442,12 +504,87 @@ export class Actor extends View
 
 	goLeft()
 	{
-		this.gSpeed = -this.speed;
+		if(this.gSpeed > 0)
+		{
+			this.gSpeed = 0;
+		}
+
+		if(this.gSpeed > -this.maxGSpeed)
+		{
+			this.gSpeed--;
+		}
 	}
 
 	goRight()
 	{
-		this.gSpeed = this.speed;
+		if(this.gSpeed < 0)
+		{
+			this.gSpeed = 0;
+		}
+
+		if(this.gSpeed < this.maxGSpeed)
+		{
+			this.gSpeed++;
+		}
+	}
+
+	slowDown()
+	{
+		if(Math.abs(this.gSpeed) > 32)
+		{
+			this.gSpeed = this.gSpeed * 0.95;
+		}
+		else
+		{
+			this.gSpeed = this.gSpeed * 0.75;
+		}
+
+		if(Math.abs(this.gSpeed) <= 0.1)
+		{
+			this.gSpeed = 0;
+		}
+	}
+
+	jump()
+	{
+		if(this.falling)
+		{
+			return;
+		}
+
+		this.falling = true;
+		this.jumped = true;
+		this.mode = this.args.mode = this.modes.floor;
+
+		let angle;
+
+		if(this.mode === this.modes.floor)
+		{
+			angle = this.angle;
+		}
+		else if(this.mode === this.modes.leftWall)
+		{
+			angle = this.angle + 1 * (Math.PI / 2);
+		}
+		else if(this.mode === this.modes.ceiling)
+		{
+			angle = this.angle + 2 * (Math.PI / 2);
+		}
+		else if(this.mode === this.modes.rightWall)
+		{
+			angle = this.angle + 3 * (Math.PI / 2);
+		}
+
+		this.angle = 0;
+
+		this.ySpeed = -Math.cos(angle) * 20;
+		this.xSpeed = Math.sin(angle) * 20;
+
+		if(this.mode === this.modes.leftWall || this.mode === this.modes.rightWall)
+		{
+			this.gSpeed = 0;
+		}
+
 	}
 
 	get center()

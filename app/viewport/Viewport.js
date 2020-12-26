@@ -7,6 +7,7 @@ import { Keyboard } from 'curvature/input/Keyboard';
 import { Camera } from './Camera';
 
 import { Actor   } from '../actor/Actor';
+import { PointActor } from '../actor/PointActor';
 import { TileMap } from '../tileMap/TileMap';
 
 import { PointDump } from '../debug/PointDump';
@@ -26,8 +27,8 @@ export class Viewport extends View
 
 		this.args.blockSize = 32;
 
-		this.args.width  = 800;
-		this.args.height = 600;
+		this.args.width  = 32*20;
+		this.args.height = 32*15;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -37,7 +38,7 @@ export class Viewport extends View
 
 		this.blocksXY = {};
 
-		const actor = new Actor;
+		const actor = new PointActor;
 
 		actor.viewport = this;
 
@@ -65,46 +66,36 @@ export class Viewport extends View
 	{
 		const maxSpeed = 64;
 
+		if(Keyboard.get().getKey(' ') > 0)
+		{
+			// this.args.actors[0].jump();
+		}
+
+		if(Keyboard.get().getKey('Control') > 0)
+		{
+			this.args.actors[0].running = true;
+		}
+		else
+		{
+			this.args.actors[0].running = false;
+		}
+
+		if(Keyboard.get().getKey('ArrowUp') > 0)
+		{
+			this.args.actors[0].goUp();
+		}
+		else if(Keyboard.get().getKey('ArrowDown') > 0)
+		{
+			this.args.actors[0].goDown();
+		}
+
 		if(Keyboard.get().getKey('ArrowLeft') > 0)
 		{
-			if(this.args.actors[0].gSpeed > 0)
-			{
-				this.args.actors[0].gSpeed = 0;
-			}
-
-			if(this.args.actors[0].gSpeed > -maxSpeed)
-			{
-				this.args.actors[0].gSpeed--;
-			}
+			this.args.actors[0].goLeft();
 		}
 		else if(Keyboard.get().getKey('ArrowRight') > 0)
 		{
-			if(this.args.actors[0].gSpeed < 0)
-			{
-				this.args.actors[0].gSpeed = 0;
-			}
-
-			if(this.args.actors[0].gSpeed < maxSpeed)
-			{
-				this.args.actors[0].gSpeed++;
-			}
-		}
-		else if(this.args.actors[0].gSpeed)
-		{
-			if(Math.abs(this.args.actors[0].gSpeed) > 32)
-			{
-				this.args.actors[0].gSpeed = this.args.actors[0].gSpeed * 0.95;
-			}
-			else
-			{
-				this.args.actors[0].gSpeed = this.args.actors[0].gSpeed * 0.75;
-			}
-
-
-			if(Math.abs(this.args.actors[0].gSpeed) <= 0.1)
-			{
-				this.args.actors[0].gSpeed = 0;
-			}
+			this.args.actors[0].goRight();
 		}
 
 		for(const i in this.args.actors)
@@ -116,6 +107,16 @@ export class Viewport extends View
 
 		this.args.x = -this.args.actors[0].x + 256;
 		this.args.y = -this.args.actors[0].y + 256;
+
+		if(this.args.x > 0)
+		{
+			this.args.x = 0;
+		}
+
+		if(this.args.y > 0)
+		{
+			this.args.y = 0;
+		}
 
 		const blocksWide = Math.ceil((this.args.width  / this.args.blockSize));
 		const blocksHigh = Math.ceil((this.args.height / this.args.blockSize));
@@ -136,18 +137,20 @@ export class Viewport extends View
 
 				let block = this.blocksXY[i][j];
 
-				const tileXY  = this.tileMap.getTile(blockId);
-
 				const blockId = this.tileMap.getTileNumber(
 					this.args.offsetX
 						+ i
 						- Math.ceil(this.args.x / this.args.blockSize)
-						+ 1
+						+ 0
 					, this.args.offsetY
 						+ j
 						- Math.ceil(this.args.y / this.args.blockSize)
-						+ 1
+						+ 0
 				);
+
+				// block.innerText = blockId || '';
+
+				const tileXY = this.tileMap.getTile(blockId);
 
 				if(!this.blocks.has(block))
 				{
@@ -158,12 +161,10 @@ export class Viewport extends View
 
 					const transX = this.args.blockSize * i
 						+ (this.args.offsetX * this.args.blockSize)
-						+ (this.args.x + this.args.offsetX)
 						% this.args.blockSize;
 
 					const transY = this.args.blockSize * j
 						+ (this.args.offsetY * this.args.blockSize)
-						+ (this.args.y + this.args.offsetY)
 						% this.args.blockSize;
 
 					block.style({
@@ -193,10 +194,8 @@ export class Viewport extends View
 		this.tags.viewport.style({
 			'--x': Math.round(this.args.x)
 			, '--y': Math.round(this.args.y)
-			, '--xMod': Math.round(this.args.x % this.args.blockSize) + (this.args.x <= 0 ? this.args.blockSize : 0)
-			, '--yMod': Math.round(this.args.y % this.args.blockSize) + (this.args.y > 0 ? -this.args.blockSize : 0)
-			, '--xCamera': Math.round(this.camera.x)
-			, '--yCamera': Math.round(this.camera.y)
+			, '--xMod': (this.args.x % this.args.blockSize)
+			, '--yMod': (this.args.y % this.args.blockSize)
 			, '--width': this.args.width
 			, '--height': this.args.height
 		});

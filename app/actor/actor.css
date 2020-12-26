@@ -3,7 +3,6 @@
 	left: calc(1px * calc(var(--x)));
 	top: calc(1px * calc(var(--y)));
 	transform: rotate( calc( 1rad * var(--angle) ) );
-	image-rendering: pixelated;
 	/*background-color: rgba(255, 255, 0, 0.75);*/
 }
 
@@ -12,7 +11,7 @@
 }
 
 .actor.facing-left .sprite {
-	transform: scaleX(-1);
+	transform: scaleX(-1) translateZ(100px);
 }
 
 /*.actor[data-mode="1"] {

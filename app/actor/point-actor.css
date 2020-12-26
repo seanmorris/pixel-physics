@@ -1,0 +1,9 @@
+.point-actor {
+	background: red;
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	left: calc(1px * var(--x));
+	top: calc(1px * var(--y));
+	box-shadow: 0 0 4px 4px rgba(0,255,0,0.5);
+}

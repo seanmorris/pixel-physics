@@ -1,1 +1,226 @@
-.actor{position:absolute;left:calc(1px * calc(var(--x)));top:calc(1px * calc(var(--y)));transform:rotate(calc(1rad * var(--angle)));image-rendering:pixelated}.actor .sprite{position:absolute}.actor.facing-left .sprite{transform:scaleX(-1)}.actor.knuckles{z-index:1000;width:64px;height:64px;--frameMs:calc(var(--animspeed) * 1ms)}.actor.knuckles .sprite{top:14px;width:64px;height:64px;background-image:url(/Sonic/knux.png)}.actor[data-mode="2"] .sprite,.actor[data-mode="3"] .sprite{top:15px}.actor.knuckles.walking .sprite{animation:knucklesWalking steps(8) infinite;animation-duration:calc(var(--frameMs) * 8)}@-webkit-keyframes knucklesWalking{from{background-position:-64px 0}to{background-position:-576px 0}}.actor.knuckles.running .sprite{animation:knucklesRunning steps(4) infinite;animation-duration:calc(var(--frameMs) * 4)}@-webkit-keyframes knucklesRunning{from{background-position:0 -64px}to{background-position:-256px -64px}}.actor.knuckles.jumping .sprite{animation:knucklesJumping steps(5) infinite;animation-duration:calc(var(--frameMs) * 5)}@-webkit-keyframes knucklesJumping{from{background-position:0 -128px}to{background-position:-320px -128px}}.actor.ring{width:64px;height:64px;background:url(/Sonic/rings.png);-webkit-animation:ringSpin steps(7) .4s infinite}@-webkit-keyframes ringSpin{from{background-position:0 0}to{background-position:-448px 0}}.point-dump{display:none;display:inline-block;position:absolute;top:calc(0px + calc(1px * var(--y)));left:calc(0px + calc(1px * var(--x)))}.point-dump .point{mix-blend-mode:difference;z-index:9001;position:absolute;top:0;left:0;background-color:var(--color,#00f);width:2px;height:2px;border-radius:50%}.point-dump .label{z-index:9000;position:absolute;bottom:100%;left:100%;font-weight:700;background-color:rgba(0,0,0,.75);color:#fff;margin-left:3px;margin-bottom:-3px;white-space:nowrap;opacity:.5}.point-dump .label:hover{opacity:1}.line-dump{z-index:2000;position:absolute;top:calc(0px + calc(1px * var(--y)));left:calc(0px + calc(1px * var(--x)))}.line-dump .line{transform:rotate(calc(1rad * var(--angle)));transform-origin:top left;border-left:2px solid red;height:calc(1px * var(--length))}body,html{height:100%;width:100%;display:flex;margin:0}body{justify-content:center;align-items:center}.viewport{width:calc(1px * var(--width));height:calc(1px * var(--height));border:1px solid #000;position:relative;overflow:hidden;color:red}.viewport-background,.viewport-content{position:absolute;top:0;left:0;min-width:100%;min-height:100%}.viewport-content{transform:translate(calc(1px * var(--x)),calc(1px * var(--y)))}.viewport-background{transform:translate(calc(1px * var(--xMod)),calc(1px * var(--yMod)));display:flex;justify-content:center;align-items:center}.viewport-background>div{border-bottom:1px solid #000;border-right:1px solid #000;box-sizing:border-box}
+.actor {
+	position:absolute;
+	left: calc(1px * calc(var(--x)));
+	top: calc(1px * calc(var(--y)));
+	transform: rotate( calc( 1rad * var(--angle) ) );
+	/*background-color: rgba(255, 255, 0, 0.75);*/
+}
+
+.actor .sprite {
+	position: absolute;
+}
+
+.actor.facing-left .sprite {
+	transform: scaleX(-1) translateZ(100px);
+}
+
+/*.actor[data-mode="1"] {
+	transform: rotate( calc(90deg  + calc( 1rad * var(--angle) ) ) );
+}
+
+
+.actor[data-mode="2"] {
+	transform: rotate( calc(180deg  + calc( 1rad * var(--angle) ) ) );
+}
+
+
+.actor[data-mode="3"] {
+	transform: rotate( calc(270deg  + calc( 1rad * var(--angle) ) ) );
+}
+*/
+
+.actor.knuckles {
+	z-index: 1000;
+	width:64px;
+	height:64px;
+	--frameMs: calc(var(--animspeed) * 32ms);
+}
+
+.actor.knuckles .sprite {
+	top: 14px;
+	width:64px;
+	height:64px;
+	background-image: url(/Sonic/knux.png);
+	image-rendering: pixelated;
+}
+
+.actor[data-mode="2"] .sprite,
+.actor[data-mode="3"] .sprite {
+	top: 15px;
+}
+
+.actor.knuckles.standing .sprite {
+
+}
+
+.actor.knuckles.walking .sprite {
+	animation: knucklesWalking steps(8) infinite;
+	animation-duration: calc(var(--frameMs) * 16);
+}
+
+@-webkit-keyframes knucklesWalking{
+	from{
+		background-position:-64px 0px;
+	}
+	to{
+		background-position:-576px 0px;
+	}
+}
+
+.actor.knuckles.running .sprite {
+	animation: knucklesRunning steps(4) infinite;
+	animation-duration: calc(var(--frameMs) * 8);
+}
+
+@-webkit-keyframes knucklesRunning{
+	from{
+		background-position:0px -64px;
+	}
+	to{
+		background-position:-256px -64px;
+	}
+}
+
+.actor.knuckles.jumping .sprite {
+	animation: knucklesJumping steps(5) infinite;
+	animation-duration: calc(42ms * 5);
+}
+
+@-webkit-keyframes knucklesJumping{
+	from{
+		background-position:0px -128px;
+	}
+	to{
+		background-position:-320px -128px;
+	}
+}
+
+.point-actor {
+	background: red;
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	left: calc(1px * var(--x));
+	top: calc(1px * var(--y));
+	box-shadow: 0 0 4px 4px rgba(0,255,0,0.5);
+}
+
+.actor.ring {
+	width:64px;
+	height:64px;
+	background: url(/Sonic/rings.png);
+	-webkit-animation: ringSpin steps(7) 0.4s infinite;
+}
+
+@-webkit-keyframes ringSpin{
+	from{
+		background-position:0px 0px;
+	}
+	to{
+		background-position:-448px 0px;
+	}
+}
+
+.point-dump {
+	display: none;
+	display: inline-block;
+	position: absolute;
+	top:  calc(-0px + calc(1px * var(--y)));
+	left: calc(-0px + calc(1px * var(--x)));
+}
+
+.point-dump .point {
+	mix-blend-mode: difference;
+	z-index: 9001;
+	position: absolute;
+	top:  0px;
+	left: 0px;
+	background-color: var(--color, blue);
+	width:  2px;
+	height: 2px;
+	border-radius: 50%;
+}
+
+.point-dump .label {
+	z-index: 9000;
+	position: absolute;
+	bottom: 100%;
+	left:  100%;
+	font-weight: bold;
+	background-color: rgba(0,0,0,0.75);
+	color: white;
+	margin-left: 3px;
+	margin-bottom: -3px;
+	white-space: nowrap;
+	opacity: 0.5;
+}
+
+.point-dump .label:hover {
+	opacity: 1;
+}
+
+.line-dump {
+	z-index: 2000;
+	position: absolute;
+	top:  calc(-0px + calc(1px * var(--y)));
+	left: calc(-0px + calc(1px * var(--x)));
+}
+
+.line-dump .line {
+	transform: rotate( calc(1rad * var(--angle)) );
+	transform-origin: top left;
+	border-left: 2px solid red;
+	height: calc(1px * var(--length));
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	margin: 0;
+	image-rendering: pixelated;
+}
+
+body {
+	justify-content: center;
+	align-items: center;
+}
+
+.viewport {
+	width: calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	border: 1px solid black;
+	position: relative;
+	overflow: hidden;
+	color: red;
+	font-size: 0.7rem;
+}
+
+.viewport-background,
+.viewport-content {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+.viewport-content {
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+}
+
+.viewport-background {
+	transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.viewport-background > div {
+	/*border-bottom: 1px solid black;
+	border-right: 1px solid black;*/
+	box-sizing: border-box;
+}
+
+
+/*# sourceMappingURL=app.css.map*/

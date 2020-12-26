@@ -81,7 +81,7 @@ export class TileMap extends View
 
 	coordsToTile(x, y)
 	{
-		return [Math.floor(x / this.blockSize) , Math.floor(y / this.blockSize)];
+		return [Math.floor(x / this.blockSize) , Math.floor((y) / this.blockSize)];
 	}
 
 	getTileNumber(x, y)
@@ -129,6 +129,8 @@ export class TileMap extends View
 
 	getSolid(tileNumber, xInput, yInput)
 	{
+		// console.log(xInput, yInput);
+
 		if(tileNumber === 0)
 		{
 			return false;
@@ -181,7 +183,7 @@ export class TileMap extends View
 				xPixel, yPixel, 1, 1
 			).data;
 
-			if(pixel[0] == 0)
+			if(pixel[0] === 0)
 			{
 				this.heightMaskCache[tileNumber][x][y] = true;
 			}

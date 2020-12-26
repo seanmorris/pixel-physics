@@ -1,15 +1,16 @@
-.actor.knuckles{
+.actor.knuckles {
 	z-index: 1000;
 	width:64px;
 	height:64px;
-	--frameMs: calc(var(--animspeed) * 1ms);
+	--frameMs: calc(var(--animspeed) * 32ms);
 }
 
-.actor.knuckles .sprite{
+.actor.knuckles .sprite {
 	top: 14px;
 	width:64px;
 	height:64px;
 	background-image: url(/Sonic/knux.png);
+	image-rendering: pixelated;
 }
 
 .actor[data-mode="2"] .sprite,
@@ -17,13 +18,13 @@
 	top: 15px;
 }
 
-.actor.knuckles.standing .sprite{
+.actor.knuckles.standing .sprite {
 
 }
 
-.actor.knuckles.walking .sprite{
+.actor.knuckles.walking .sprite {
 	animation: knucklesWalking steps(8) infinite;
-	animation-duration: calc(var(--frameMs) * 8);
+	animation-duration: calc(var(--frameMs) * 16);
 }
 
 @-webkit-keyframes knucklesWalking{
@@ -35,9 +36,9 @@
 	}
 }
 
-.actor.knuckles.running .sprite{
+.actor.knuckles.running .sprite {
 	animation: knucklesRunning steps(4) infinite;
-	animation-duration: calc(var(--frameMs) * 4);
+	animation-duration: calc(var(--frameMs) * 8);
 }
 
 @-webkit-keyframes knucklesRunning{
@@ -49,9 +50,9 @@
 	}
 }
 
-.actor.knuckles.jumping .sprite{
+.actor.knuckles.jumping .sprite {
 	animation: knucklesJumping steps(5) infinite;
-	animation-duration: calc(var(--frameMs) * 5);
+	animation-duration: calc(42ms * 5);
 }
 
 @-webkit-keyframes knucklesJumping{
