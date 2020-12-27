@@ -1,4 +1,36 @@
-<div class = "viewport" cv-ref = "viewport" cv-on = "mousemove(event)">
-	<div class = "viewport-background" cv-each = "blocks:block:b" cv-ref = "background">[[block]]</div>
-	<div class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
+<div class = "frame">
+
+	<div class = "viewport" cv-ref = "viewport" cv-on = "mousemove(event)">
+		<div class = "viewport-zoom">
+			<div class = "viewport-background" cv-each = "blocks:block:b" cv-ref = "background">[[block]]</div>
+			<div class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
+		</div>
+	</div>
+
+	<div class = "viewport-caption">
+		<span class = "arrow-west"></span> / <span class = "arrow-east"></span> move
+		<br />
+
+		<span class = "button ps-x"></span> / <span class = "button xb-a"></span> / spacebar - jump
+		<br />
+
+		<span class = "button ps-l1"></span> / <span class = "button xb-b"></span>
+		/ <b>ctrl</b> - run
+		<br />
+
+		<span class = "button ps-r1"></span>
+		/ <b>shift</b> - creep
+		<br />
+		<br />
+
+	</div>
+
+	<div class = "viewport-caption">
+		<label>
+			<input type = "checkbox" cv-bind = "sticky" value = "1" />
+			stick to walls
+		</label>
+	</div>
+
 </div>
+

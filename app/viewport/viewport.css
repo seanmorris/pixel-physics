@@ -1,7 +1,9 @@
 html, body {
+	font-family: verdana;
 	height: 100%;
 	width: 100%;
 	display: flex;
+	flex-direction: column;
 	margin: 0;
 	image-rendering: pixelated;
 }
@@ -11,17 +13,29 @@ body {
 	align-items: center;
 }
 
+body > div {
+}
+
 .viewport {
-	width: calc(1px * var(--width));
-	height: calc(1px * var(--height));
+	width: calc(2px * var(--width));
+	height: calc(2px * var(--height));
 	border: 1px solid black;
 	position: relative;
 	overflow: hidden;
 	color: red;
 	font-size: 0.7rem;
-	transform: scale(2);
 }
 
+.viewport-caption {
+	width: calc(2px * var(--width));
+}
+
+.viewport-zoom {
+	transform: scale(2);
+	transform-origin: top left;
+}
+
+.viewport-zoom,
 .viewport-background,
 .viewport-content {
 	position: absolute;
@@ -47,4 +61,54 @@ body {
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/
+}
+
+span.arrow-east,
+span.arrow-west {
+	background-image: url(/debug/arrow-east.svg);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 1.5em;
+	height: 0.5em;
+	display: inline-block;
+}
+
+span.arrow-west {
+	transform: scaleX(-1);
+}
+
+span.button {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 1em;
+	height: 1em;
+	display: inline-block;
+	margin-left: 0.25em;
+	margin-right: 0.25em;
+}
+
+span.button.ps-x {
+	background-image: url(/ui/playstation-button-x.svg);
+}
+
+span.button.ps-l1 {
+	background-image: url(/ui/playstation-button-l1.svg);
+}
+
+span.button.ps-r1 {
+	background-image: url(/ui/playstation-button-r1.svg);
+}
+
+span.button.xb-a {
+	background-image: url(/ui/xbox-button-a.svg);
+}
+
+span.button.xb-b {
+	background-image: url(/ui/xbox-button-b.svg);
+}
+
+span.arrow-west {
+	transform: scaleX(-1);
 }

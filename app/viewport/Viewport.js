@@ -53,6 +53,8 @@ export class Viewport extends View
 		this.blocks = new Bag;
 
 		this.args.blocks = this.blocks.list;
+
+		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 	}
 
 	onAttached(event)
@@ -70,6 +72,8 @@ export class Viewport extends View
 
 	update()
 	{
+		this.args.actors[0].sticky = !!this.args.sticky;
+
 		if(Keyboard.get().getKey(' ') > 0)
 		{
 			this.args.actors[0].jump();
@@ -91,15 +95,6 @@ export class Viewport extends View
 			this.args.actors[0].crawling = false;
 		}
 
-		// if(Keyboard.get().getKey('ArrowUp') > 0)
-		// {
-		// 	this.args.actors[0].goUp();
-		// }
-		// else if(Keyboard.get().getKey('ArrowDown') > 0)
-		// {
-		// 	this.args.actors[0].goDown();
-		// }
-
 		if(Keyboard.get().getKey('ArrowLeft') > 0)
 		{
 			this.args.actors[0].xAxis = -1;
@@ -111,6 +106,60 @@ export class Viewport extends View
 		else
 		{
 			this.args.actors[0].xAxis = 0;
+		}
+
+		if(this.gamepad)
+		{
+			const gamepads = navigator.getGamepads();
+
+			for(let i = 0; i < gamepads.length; i++)
+			{
+				const gamepad = gamepads.item(i);
+
+				if(!gamepad)
+				{
+					continue;
+				}
+
+				if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.3)
+				{
+					this.args.actors[0].xAxis = gamepad.axes[0] > 0 ? 1 : -1;
+				}
+				else
+				{
+					this.args.actors[0].xAxis = 0;
+				}
+
+				if(gamepad.buttons[14].pressed)
+				{
+					this.args.actors[0].xAxis = -1;
+				}
+				else if(gamepad.buttons[15].pressed)
+				{
+					this.args.actors[0].xAxis = 1;
+				}
+
+				if(gamepad.buttons[5].pressed)
+				{
+					this.args.actors[0].running  = false;
+					this.args.actors[0].crawling = true;
+				}
+				else if(gamepad.buttons[1].pressed || gamepad.buttons[4].pressed)
+				{
+					this.args.actors[0].running  = true;
+					this.args.actors[0].crawling = false;
+				}
+				else
+				{
+					this.args.actors[0].running  = false;
+					this.args.actors[0].crawling = false;
+				}
+
+				if(gamepad.buttons[0].pressed)
+				{
+					this.args.actors[0].jump();
+				}
+			}
 		}
 
 		for(const i in this.args.actors)
@@ -237,5 +286,10 @@ export class Viewport extends View
 			, this.camera.x + Math.ceil(this.width/2)
 			, this.camera.y + Math.ceil(this.height/2)
 		];
+	}
+
+	padConnected(event)
+	{
+		this.gamepad = event.gamepad;
 	}
 }
