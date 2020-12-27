@@ -5,13 +5,44 @@
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
-	box-shadow: 0 0 4px 4px rgba(0,255,0,0.5);
+	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
 }
 
 /*.point-actor:after {
+	filter: invert(50%) sepia(100) saturate(200) hue-rotate(180deg);
+	display: block;
 	position: absolute;
-	content: attr(data-angle);
-	font-size: 0.5rem;
+	content: ' ';
+	background-image: url(/debug/arrow-east.svg);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	width: 40px;
+	height: 40px;
+	font-size: 2.5rem;
 	z-index: 1000;
+	color: lime;
+	top: 0;
+	left: 0;
+	transform-origin: -10px 50%;
+	transform: translate(10px, calc(-50%)) rotate(calc(0deg - calc(1rad * var(--angle))));
 }
+
+.point-actor[data-facing="left"]:after {
+	transform: translate(10px, calc(-50%)) rotate(calc(180deg - calc(1rad * var(--angle))));
+}
+
+.point-actor[data-mode="1"]:after {
+	transform: translate(10px, calc(-50%)) rotate(calc(90deg - calc(1rad * var(--angle))));
+}
+
+.point-actor[data-mode="2"]:after {
+	transform: translate(10px, calc(-50%)) rotate(calc(180deg - calc(1rad * var(--angle))));
+}
+
+.point-actor[data-mode="3"]:after {
+	transform: translate(10px, calc(-50%)) rotate(calc(270deg - calc(1rad * var(--angle))));
+}
+
+
 */

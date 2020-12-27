@@ -27,8 +27,14 @@ export class Viewport extends View
 
 		this.args.blockSize = 32;
 
-		this.args.width  = 32*9;
-		this.args.height = 32*6;
+		this.args.height = 600;
+		this.args.width  = 800;
+
+		this.args.width  = 32*16.5;
+		this.args.height = 32*12.5;
+
+		this.args.width  = 32*9.5;
+		this.args.height = 32*6.5;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -64,22 +70,20 @@ export class Viewport extends View
 
 	update()
 	{
-		const maxSpeed = 64;
-
 		if(Keyboard.get().getKey(' ') > 0)
 		{
 			this.args.actors[0].jump();
 		}
 
-		if(Keyboard.get().getKey('Control') > 0)
-		{
-			this.args.actors[0].running  = true;
-			this.args.actors[0].crawling = false;
-		}
-		else if(Keyboard.get().getKey('Shift') > 0)
+		if(Keyboard.get().getKey('Shift') > 0)
 		{
 			this.args.actors[0].running  = false;
 			this.args.actors[0].crawling = true;
+		}
+		else if(Keyboard.get().getKey('Control') > 0)
+		{
+			this.args.actors[0].running  = true;
+			this.args.actors[0].crawling = false;
 		}
 		else
 		{
@@ -116,8 +120,8 @@ export class Viewport extends View
 
 		const angle = this.args.actors[0].angle;
 
-		this.args.x = -this.args.actors[0].x + 160;
-		this.args.y = -this.args.actors[0].y + 128;
+		this.args.x = -this.args.actors[0].x + this.args.width  / 2;
+		this.args.y = -this.args.actors[0].y + this.args.height / 2;
 
 		if(this.args.x > 0)
 		{
@@ -127,6 +131,19 @@ export class Viewport extends View
 		if(this.args.y > 0)
 		{
 			this.args.y = 0;
+		}
+
+		const maxPanX = -this.args.width  + (this.tileMap.mapData.width  * 32);
+		const maxPanY = -this.args.height + (this.tileMap.mapData.height * 32);
+
+		if(this.args.x < -maxPanX)
+		{
+			this.args.x = -maxPanX;
+		}
+
+		if(this.args.y < -maxPanY)
+		{
+			this.args.y = -maxPanY;
 		}
 
 		const blocksWide = Math.ceil((this.args.width  / this.args.blockSize));
