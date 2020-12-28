@@ -5,7 +5,14 @@ html, body {
 	display: flex;
 	flex-direction: column;
 	margin: 0;
-	image-rendering: pixelated;
+
+}
+
+html {
+	background-image: url(/ui/pokemon-ruby.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: top right;
 }
 
 body {
@@ -13,10 +20,17 @@ body {
 	align-items: center;
 }
 
+h1 {
+	font-family: early_gameboy_regular;
+	font-size: 2.5rem;
+	text-shadow:  2px 2px 20px rgba(255,255,255,0.5);
+}
+
 body > div {
 }
 
 .viewport {
+	image-rendering: pixelated;
 	width: calc(2px * var(--width));
 	height: calc(2px * var(--height));
 	border: 1px solid black;
@@ -26,8 +40,51 @@ body > div {
 	font-size: 0.7rem;
 }
 
+.viewport-header {
+	flex-direction: row;
+	align-items: center;
+}
+
+.viewport,
+.viewport-header,
+.viewport-caption {
+	margin-bottom: 1em;
+}
+
+.viewport,
+.viewport-caption {
+	box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.viewport-header,
 .viewport-caption {
 	width: calc(2px * var(--width));
+	line-height: 1.25em;
+	display: flex;
+}
+
+.viewport-caption {
+	background-color: rgba(255,255,255,0.75);
+	padding: 0.5em;
+	flex-direction: column;
+}
+
+.viewport-caption > div {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
+.viewport-caption > div,
+.viewport-caption > label {
+	padding: 0.5em;
+}
+
+.viewport-caption > div > div {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 .viewport-zoom {
@@ -92,6 +149,9 @@ span.button {
 span.button.ps-x {
 	background-image: url(/ui/playstation-button-x.svg);
 }
+span.button.ps-o {
+	background-image: url(/ui/playstation-button-circle.svg);
+}
 
 span.button.ps-l1 {
 	background-image: url(/ui/playstation-button-l1.svg);
@@ -111,4 +171,18 @@ span.button.xb-b {
 
 span.arrow-west {
 	transform: scaleX(-1);
+}
+
+.sean-icon {
+	background-image: url(/ui/masksean.png);
+	background-repeat: no-repeat;
+	background-position: 2px 3px;
+	background-size: cover;
+	border-radius: 50%;
+	margin-right: 1em;
+	width: 4.5em;
+	height: 4.5em;
+	display: inline-block;
+	box-shadow: 0 0.5em 1em rgba(0,0,0,0.5);
+	background-color: white;
 }

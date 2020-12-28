@@ -27,14 +27,14 @@ export class Viewport extends View
 
 		this.args.blockSize = 32;
 
-		this.args.height = 600;
-		this.args.width  = 800;
+		// this.args.height = 600;
+		// this.args.width  = 800;
 
-		this.args.width  = 32*16.5;
-		this.args.height = 32*12.5;
+		// this.args.width  = 32*16.5;
+		// this.args.height = 32*12.5;
 
-		this.args.width  = 32*9.5;
-		this.args.height = 32*6.5;
+		this.args.width  = 32 * 9.5;
+		this.args.height = 32 * 6.5;
 
 		this.args.x = 0;
 		this.args.y = 0;

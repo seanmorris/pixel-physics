@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'early_gameboy_regular';
+    src: url('/fonts/early-gameboy/early_gameboy-webfont.woff2') format('woff2'),
+         url('fonts/early-gameboy/early_gameboy-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

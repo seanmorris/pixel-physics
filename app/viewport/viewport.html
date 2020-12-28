@@ -1,5 +1,7 @@
 <div class = "frame">
-
+	<div class = "viewport-header">
+		<span class = "sean-icon"></span><h1>Pixel Physics</h1>
+	</div>
 	<div class = "viewport" cv-ref = "viewport" cv-on = "mousemove(event)">
 		<div class = "viewport-zoom">
 			<div class = "viewport-background" cv-each = "blocks:block:b" cv-ref = "background">[[block]]</div>
@@ -8,28 +10,35 @@
 	</div>
 
 	<div class = "viewport-caption">
-		<span class = "arrow-west"></span> / <span class = "arrow-east"></span> move
-		<br />
+		<div>
+			<i>(enlarged to show texture)</i>
+		</div>
+		<div>
+			<div>
+				<span>
+					<span class = "arrow-west"></span> / <span class = "arrow-east"></span> move
+				</span>
 
-		<span class = "button ps-x"></span> / <span class = "button xb-a"></span> / spacebar - jump
-		<br />
+				<span>
+					<span class = "button ps-x"></span> / <span class = "button xb-a"></span> / spacebar - jump
+				</span>
 
-		<span class = "button ps-l1"></span> / <span class = "button xb-b"></span>
-		/ <b>ctrl</b> - run
-		<br />
+				<span>
+					<span class = "button ps-l1"></span> / <span class = "button xb-b"></span> / <span class = "button ps-o"></span>
+					/ <b>ctrl</b> - run
+				</span>
 
-		<span class = "button ps-r1"></span>
-		/ <b>shift</b> - creep
-		<br />
-		<br />
+				<span>
+					<span class = "button ps-r1"></span>
+					/ <b>shift</b> - creep
+				</span>
+			</div>
 
-	</div>
-
-	<div class = "viewport-caption">
-		<label>
-			<input type = "checkbox" cv-bind = "sticky" value = "1" />
-			stick to walls
-		</label>
+			<label>
+				<input type = "checkbox" cv-bind = "sticky" value = "1" />
+				stick to walls
+			</label>
+		</div>
 	</div>
 
 </div>
