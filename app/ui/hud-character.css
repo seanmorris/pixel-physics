@@ -1,0 +1,29 @@
+.hud-character-string {
+	--scale: 1;
+	--xyz: calc(-14px * var(--scale));
+	display: inline-flex;
+	flex-direction: row;
+}
+
+.hud-character {
+	image-rendering: pixelated;
+	background-size: auto calc(30px * var(--scale));
+	background-image: url(/Sonic/font.png);
+	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;
+	height: calc(12px * var(--scale));
+	width: calc(8px * var(--scale));
+	font-size: calc(13px * var(--scale));
+	color: rgba(0,0,0,0);
+}
+
+.hud-character[data-type="letter"] {
+	background-position: calc(calc(-10px * var(--scale)) * var(--value)) calc(-16px * var(--scale));
+}
+
+.hud-character[data-type="letter"][data-value="8"] {
+	width: calc(6px * var(--scale));
+}
+
+.hud-character[data-type="letter"][data-value="11"] {
+	width: calc(6px * var(--scale));
+}

@@ -130,10 +130,7 @@ export class Actor extends View
 					this.args.mode = this.mode = this.modes.floor;
 				}
 			}
-		}
 
-		if(!this.falling)
-		{
 			if(Math.abs(g) > this.maxGSpeed / 2)
 			{
 				this.args.state = 'running';

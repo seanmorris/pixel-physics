@@ -4,11 +4,11 @@ import { View } from 'curvature/base/View';
 
 import { Keyboard } from 'curvature/input/Keyboard';
 
-import { Camera } from './Camera';
-
 import { Actor   } from '../actor/Actor';
 import { PointActor } from '../actor/PointActor';
 import { TileMap } from '../tileMap/TileMap';
+
+import { CharacterString } from '../ui/CharacterString';
 
 import { PointDump } from '../debug/PointDump';
 
@@ -20,10 +20,28 @@ export class Viewport extends View
 	{
 		super(args,parent)
 		// this.hud = new Hud
-		this.camera  = new Camera
 		this.sprites = new Bag;
 		this.tileMap = new TileMap;
 		this.world   = null;
+
+		this.args.labelX = new CharacterString({value:'x pos: '});
+		this.args.labelY = new CharacterString({value:'y pos: '});
+
+		this.args.labelGround = new CharacterString({value:'Ground: '});
+		this.args.labelGSpeed = new CharacterString({value:'G speed: '});
+		this.args.labelXSpeed = new CharacterString({value:'X speed: '});
+		this.args.labelYSpeed = new CharacterString({value:'Y speed: '});
+		this.args.labelMode   = new CharacterString({value:'Mode: '});
+		this.args.labelAngle  = new CharacterString({value:'Angle: '});
+
+		this.args.xPos   = new CharacterString({value:0});
+		this.args.yPos   = new CharacterString({value:0});
+		this.args.gSpeed = new CharacterString({value:0});
+		this.args.ground = new CharacterString({value:''});
+		this.args.xSpeed = new CharacterString({value:0});
+		this.args.ySpeed = new CharacterString({value:0});
+		this.args.mode   = new CharacterString({value:0});
+		this.args.angle  = new CharacterString({value:0});
 
 		this.args.blockSize = 32;
 
@@ -276,6 +294,18 @@ export class Viewport extends View
 			, '--width': this.args.width
 			, '--height': this.args.height
 		});
+
+		this.args.xPos.args.value   = Math.floor(this.args.actors[0].x);
+		this.args.yPos.args.value   = Math.floor(this.args.actors[0].y);
+		this.args.ground.args.value = this.args.actors[0].args.landed;
+		this.args.gSpeed.args.value = this.args.actors[0].args.gSpeed;
+		this.args.xSpeed.args.value = Math.floor(this.args.actors[0].args.xSpeed);
+		this.args.ySpeed.args.value = Math.floor(this.args.actors[0].args.ySpeed);
+		this.args.angle.args.value  = Math.floor((this.args.actors[0].args.angle) * 1000) / 1000;
+
+		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+
+		this.args.mode.args.value = modes[Math.floor(this.args.actors[0].args.mode)] || Math.floor(this.args.actors[0].args.mode);
 	}
 
 	screenBox()

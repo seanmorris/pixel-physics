@@ -220,6 +220,36 @@
     font-style: normal;
 }
 
+.hud-character-string {
+	--scale: 1;
+	--xyz: calc(-14px * var(--scale));
+	display: inline-flex;
+	flex-direction: row;
+}
+
+.hud-character {
+	image-rendering: pixelated;
+	background-size: auto calc(30px * var(--scale));
+	background-image: url(/Sonic/font.png);
+	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;
+	height: calc(12px * var(--scale));
+	width: calc(8px * var(--scale));
+	font-size: calc(13px * var(--scale));
+	color: rgba(0,0,0,0);
+}
+
+.hud-character[data-type="letter"] {
+	background-position: calc(calc(-10px * var(--scale)) * var(--value)) calc(-16px * var(--scale));
+}
+
+.hud-character[data-type="letter"][data-value="8"] {
+	width: calc(6px * var(--scale));
+}
+
+.hud-character[data-type="letter"][data-value="11"] {
+	width: calc(6px * var(--scale));
+}
+
 html, body {
 	font-family: verdana;
 	height: 100%;
@@ -232,9 +262,9 @@ html, body {
 
 html {
 	background-image: url(/ui/pokemon-ruby.png);
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: top right;
+	background-repeat: repeat-x;
+	background-position: -10% 0px;
+	background-size: auto 100%;
 }
 
 body {
@@ -340,6 +370,34 @@ body > div {
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/
+}
+
+.viewport .hud {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 1em;
+	background-color: rgba(0,0,0,0.5);
+}
+
+.viewport .hud > div {
+	display: flex;
+}
+
+.viewport .hud table {
+	border-spacing: 0;
+	border-collapse: collapse;
+	font-family: 'early_gameboy_regular'
+}
+
+.viewport .hud tr > td {
+	padding: 0;
+}
+
+.viewport .hud tr > td:nth-child(2) {
+	margin: 0;
+	padding: 0;
+	text-align: right;
 }
 
 span.arrow-east,

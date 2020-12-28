@@ -10,9 +10,9 @@ html, body {
 
 html {
 	background-image: url(/ui/pokemon-ruby.png);
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: top right;
+	background-repeat: repeat-x;
+	background-position: -10% 0px;
+	background-size: auto 100%;
 }
 
 body {
@@ -118,6 +118,34 @@ body > div {
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/
+}
+
+.viewport .hud {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 1em;
+	background-color: rgba(0,0,0,0.5);
+}
+
+.viewport .hud > div {
+	display: flex;
+}
+
+.viewport .hud table {
+	border-spacing: 0;
+	border-collapse: collapse;
+	font-family: 'early_gameboy_regular'
+}
+
+.viewport .hud tr > td {
+	padding: 0;
+}
+
+.viewport .hud tr > td:nth-child(2) {
+	margin: 0;
+	padding: 0;
+	text-align: right;
 }
 
 span.arrow-east,
