@@ -6677,7 +6677,7 @@ var MODE_FLOOR = 0;
 var MODE_LEFT = 1;
 var MODE_CEILING = 2;
 var MODE_RIGHT = 3;
-var JUMP_FORCE = 25;
+var JUMP_FORCE = 24;
 var RUNNING_SPEED = 30;
 var WALKING_SPEED = 10;
 var CRAWLING_SPEED = 2;
@@ -6720,6 +6720,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.yAxis = 0;
     _this.sticky = false;
     _this.args.ignore = 0;
+    _this.args["float"] = 0;
     return _this;
   }
 
@@ -6821,8 +6822,10 @@ var PointActor = /*#__PURE__*/function (_View) {
       });
 
       if (upDistance !== false && this.args.ySpeed < 0) {
+        this.args["float"] = 2;
         this.args.ySpeed = 0;
-        this.args.y += upDistance;
+        this.args.xSpeed = 0;
+        this.args.y -= Math.floor(upDistance - 1);
       }
 
       if (airDistance !== false) {
@@ -6893,6 +6896,10 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.args.ignore--;
       }
 
+      if (this.args["float"] > 0) {
+        this.args["float"]--;
+      }
+
       if (this.xAxis < 0) {
         this.args.facing = 'left';
       }
@@ -6957,7 +6964,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         }
       }
 
-      if (this.args.ySpeed < this.args.maxFall) {
+      if (!this.args["float"] && this.args.ySpeed < this.args.maxFall) {
         this.args.ySpeed++;
       }
 

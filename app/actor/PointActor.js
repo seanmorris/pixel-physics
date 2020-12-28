@@ -5,7 +5,7 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const JUMP_FORCE     = 25;
+const JUMP_FORCE     = 24;
 const RUNNING_SPEED  = 30;
 const WALKING_SPEED  = 10;
 const CRAWLING_SPEED = 2;
@@ -54,6 +54,7 @@ export class PointActor extends View
 		this.sticky = false;
 
 		this.args.ignore = 0;
+		this.args.float  = 0;
 	}
 
 	update()
@@ -194,8 +195,10 @@ export class PointActor extends View
 
 		if(upDistance !== false && this.args.ySpeed < 0)
 		{
+			this.args.float  = 2;
 			this.args.ySpeed = 0;
-			this.args.y += upDistance;
+			this.args.xSpeed = 0;
+			this.args.y -= Math.floor(upDistance-1);
 		}
 
 		if(airDistance !== false)
@@ -297,6 +300,11 @@ export class PointActor extends View
 			this.args.ignore--;
 		}
 
+		if(this.args.float > 0)
+		{
+			this.args.float--;
+		}
+
 
 		if(this.xAxis < 0)
 		{
@@ -378,7 +386,7 @@ export class PointActor extends View
 			}
 		}
 
-		if(this.args.ySpeed < this.args.maxFall)
+		if(!this.args.float && this.args.ySpeed < this.args.maxFall)
 		{
 			this.args.ySpeed++;
 		}
