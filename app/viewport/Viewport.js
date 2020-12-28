@@ -44,6 +44,7 @@ export class Viewport extends View
 		this.args.angle  = new CharacterString({value:0});
 
 		this.args.blockSize = 32;
+		this.args.sticky    = true;
 
 		// this.args.height = 600;
 		// this.args.width  = 800;
@@ -51,11 +52,12 @@ export class Viewport extends View
 		// this.args.width  = 32*16.5;
 		// this.args.height = 32*12.5;
 
-		this.args.width  = 32 * 9.5;
-		this.args.height = 32 * 6.5;
+		this.args.width  = 32 * 11.5;
+		this.args.height = 32 * 8.5;
 
 		this.args.x = 0;
 		this.args.y = 0;
+
 
 		this.args.offsetX = 0;
 		this.args.offsetY = 0;
@@ -77,15 +79,32 @@ export class Viewport extends View
 
 	onAttached(event)
 	{
+		if(!this.args.scale)
+		{
+			this.onTimeout(250, () => {
+				this.args.scale = 2;
+				this.tags.viewport.focus();
+			});
+		}
+
+		this.listen(document.body, 'click', event => {
+
+			if(event.target !== document.body)
+			{
+				return;
+			}
+
+			this.tags.viewport.focus()
+		});
+
+		this.args.scale = this.args.scale || 1;
+
 		const keyboard = Keyboard.get();
 
-		keyboard.listening = true;
-	}
+		keyboard.listening = true
 
-	mousemove(event)
-	{
-		// this.args.x = event.clientX;
-		// this.args.y = event.clientY;
+		keyboard.focusElement = this.tags.viewport.node;
+
 	}
 
 	update()
@@ -293,6 +312,11 @@ export class Viewport extends View
 			, '--yMod': Math.round(this.args.y % this.args.blockSize)
 			, '--width': this.args.width
 			, '--height': this.args.height
+		});
+
+		this.tags.frame.style({
+			'--scale': this.args.scale
+			, '--width': this.args.width
 		});
 
 		this.args.xPos.args.value   = Math.floor(this.args.actors[0].x);

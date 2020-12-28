@@ -5,9 +5,9 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const JUMP_FORCE     = 24;
-const RUNNING_SPEED  = 30;
-const WALKING_SPEED  = 10;
+const JUMP_FORCE     = 18;
+const WALKING_SPEED  = 14;
+const RUNNING_SPEED  = 28;
 const CRAWLING_SPEED = 2;
 
 export class PointActor extends View
@@ -198,7 +198,7 @@ export class PointActor extends View
 			this.args.float  = 2;
 			this.args.ySpeed = 0;
 			this.args.xSpeed = 0;
-			this.args.y -= Math.floor(upDistance-1);
+			this.args.y -= Math.floor(upDistance) - 1;
 		}
 
 		if(airDistance !== false)
@@ -292,7 +292,7 @@ export class PointActor extends View
 			}
 			else if(this.xAxis)
 			{
-				this.args.xSpeed += this.xAxis * 0.4;
+				this.args.xSpeed += this.xAxis * 0.8;
 			}
 		}
 		else if(this.args.ignore > 0)
@@ -304,7 +304,6 @@ export class PointActor extends View
 		{
 			this.args.float--;
 		}
-
 
 		if(this.xAxis < 0)
 		{
@@ -350,15 +349,6 @@ export class PointActor extends View
 			((this.frontStep||0) - (this.backStep||0))
 			/ (sensorSpread * 2)
 		);
-
-		if(this.args.gSpeed < -this.args.maxGSpeed)
-		{
-			this.args.gSpeed = -this.args.maxGSpeed;
-		}
-		else if(this.args.gSpeed > this.args.maxGSpeed)
-		{
-			this.args.gSpeed = this.args.maxGSpeed;
-		}
 
 		if(Math.abs(this.frontStep) < Math.abs(this.maxStep * this.args.gSpeed))
 		{
@@ -471,6 +461,15 @@ export class PointActor extends View
 				this.args.mode = MODE_FLOOR;
 			}
 		}
+
+		if(this.args.gSpeed < -this.args.maxGSpeed)
+		{
+			this.args.gSpeed = -this.args.maxGSpeed;
+		}
+		else if(this.args.gSpeed > this.args.maxGSpeed)
+		{
+			this.args.gSpeed = this.args.maxGSpeed;
+		}
 	}
 
 	findStepHeight(offset = 0)
@@ -564,6 +563,17 @@ export class PointActor extends View
 			return;
 		}
 
+		let force = JUMP_FORCE;
+
+		if(this.running)
+		{
+			force = JUMP_FORCE * 1.5;
+		}
+		else if(this.crawling)
+		{
+			force = JUMP_FORCE * 0.75;
+		}
+
 		const originalMode = this.args.mode;
 
 		this.args.ignore  = 2;
@@ -578,8 +588,8 @@ export class PointActor extends View
 				this.args.xSpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
 				this.args.ySpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
 
-				this.args.xSpeed += JUMP_FORCE * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed -= JUMP_FORCE * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed += force * Math.cos(this.args.angle + Math.PI/2);
+				this.args.ySpeed -= force * Math.sin(this.args.angle + Math.PI/2);
 
 				break;
 
@@ -588,8 +598,8 @@ export class PointActor extends View
 				this.args.xSpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
 				this.args.ySpeed =  this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
 
-				this.args.xSpeed -= JUMP_FORCE * Math.sin(this.args.angle - Math.PI/2);
-				this.args.ySpeed -= JUMP_FORCE * Math.cos(this.args.angle - Math.PI/2);
+				this.args.xSpeed -= force * Math.sin(this.args.angle - Math.PI/2);
+				this.args.ySpeed -= force * Math.cos(this.args.angle - Math.PI/2);
 
 				break;
 
@@ -598,8 +608,8 @@ export class PointActor extends View
 				this.args.xSpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
 				this.args.ySpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
 
-				this.args.xSpeed -= JUMP_FORCE * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed += JUMP_FORCE * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed -= force * Math.cos(this.args.angle + Math.PI/2);
+				this.args.ySpeed += force * Math.sin(this.args.angle + Math.PI/2);
 
 				break;
 
@@ -608,8 +618,8 @@ export class PointActor extends View
 				this.args.xSpeed =  this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
 				this.args.ySpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
 
-				this.args.xSpeed += JUMP_FORCE * Math.sin(this.args.angle - Math.PI/2);
-				this.args.ySpeed += JUMP_FORCE * Math.cos(this.args.angle - Math.PI/2);
+				this.args.xSpeed += force * Math.sin(this.args.angle - Math.PI/2);
+				this.args.ySpeed += force * Math.cos(this.args.angle - Math.PI/2);
 
 				break;
 		}

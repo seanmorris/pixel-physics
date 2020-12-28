@@ -6677,9 +6677,9 @@ var MODE_FLOOR = 0;
 var MODE_LEFT = 1;
 var MODE_CEILING = 2;
 var MODE_RIGHT = 3;
-var JUMP_FORCE = 24;
-var RUNNING_SPEED = 30;
-var WALKING_SPEED = 10;
+var JUMP_FORCE = 18;
+var WALKING_SPEED = 14;
+var RUNNING_SPEED = 28;
 var CRAWLING_SPEED = 2;
 
 var PointActor = /*#__PURE__*/function (_View) {
@@ -6825,7 +6825,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.args["float"] = 2;
         this.args.ySpeed = 0;
         this.args.xSpeed = 0;
-        this.args.y -= Math.floor(upDistance - 1);
+        this.args.y -= Math.floor(upDistance) - 1;
       }
 
       if (airDistance !== false) {
@@ -6890,7 +6890,7 @@ var PointActor = /*#__PURE__*/function (_View) {
             this.args.gSpeed++;
           }
         } else if (this.xAxis) {
-          this.args.xSpeed += this.xAxis * 0.4;
+          this.args.xSpeed += this.xAxis * 0.8;
         }
       } else if (this.args.ignore > 0) {
         this.args.ignore--;
@@ -6933,12 +6933,6 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       this.args.angle = Math.atan(((this.frontStep || 0) - (this.backStep || 0)) / (sensorSpread * 2));
-
-      if (this.args.gSpeed < -this.args.maxGSpeed) {
-        this.args.gSpeed = -this.args.maxGSpeed;
-      } else if (this.args.gSpeed > this.args.maxGSpeed) {
-        this.args.gSpeed = this.args.maxGSpeed;
-      }
 
       if (Math.abs(this.frontStep) < Math.abs(this.maxStep * this.args.gSpeed)) {
         switch (this.args.mode) {
@@ -7035,6 +7029,12 @@ var PointActor = /*#__PURE__*/function (_View) {
           this.args.mode = MODE_FLOOR;
         }
       }
+
+      if (this.args.gSpeed < -this.args.maxGSpeed) {
+        this.args.gSpeed = -this.args.maxGSpeed;
+      } else if (this.args.gSpeed > this.args.maxGSpeed) {
+        this.args.gSpeed = this.args.maxGSpeed;
+      }
     }
   }, {
     key: "findStepHeight",
@@ -7129,6 +7129,14 @@ var PointActor = /*#__PURE__*/function (_View) {
         return;
       }
 
+      var force = JUMP_FORCE;
+
+      if (this.running) {
+        force = JUMP_FORCE * 1.5;
+      } else if (this.crawling) {
+        force = JUMP_FORCE * 0.75;
+      }
+
       var originalMode = this.args.mode;
       this.args.ignore = 2;
       this.args.landed = false;
@@ -7139,29 +7147,29 @@ var PointActor = /*#__PURE__*/function (_View) {
         case MODE_FLOOR:
           this.args.xSpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
           this.args.ySpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.xSpeed += JUMP_FORCE * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed -= JUMP_FORCE * Math.sin(this.args.angle + Math.PI / 2);
+          this.args.xSpeed += force * Math.cos(this.args.angle + Math.PI / 2);
+          this.args.ySpeed -= force * Math.sin(this.args.angle + Math.PI / 2);
           break;
 
         case MODE_LEFT:
           this.args.xSpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
           this.args.ySpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.xSpeed -= JUMP_FORCE * Math.sin(this.args.angle - Math.PI / 2);
-          this.args.ySpeed -= JUMP_FORCE * Math.cos(this.args.angle - Math.PI / 2);
+          this.args.xSpeed -= force * Math.sin(this.args.angle - Math.PI / 2);
+          this.args.ySpeed -= force * Math.cos(this.args.angle - Math.PI / 2);
           break;
 
         case MODE_CEILING:
           this.args.xSpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
           this.args.ySpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.xSpeed -= JUMP_FORCE * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed += JUMP_FORCE * Math.sin(this.args.angle + Math.PI / 2);
+          this.args.xSpeed -= force * Math.cos(this.args.angle + Math.PI / 2);
+          this.args.ySpeed += force * Math.sin(this.args.angle + Math.PI / 2);
           break;
 
         case MODE_RIGHT:
           this.args.xSpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
           this.args.ySpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.xSpeed += JUMP_FORCE * Math.sin(this.args.angle - Math.PI / 2);
-          this.args.ySpeed += JUMP_FORCE * Math.cos(this.args.angle - Math.PI / 2);
+          this.args.xSpeed += force * Math.sin(this.args.angle - Math.PI / 2);
+          this.args.ySpeed += force * Math.cos(this.args.angle - Math.PI / 2);
           break;
       }
 
@@ -7921,13 +7929,14 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.angle = new _CharacterString.CharacterString({
       value: 0
     });
-    _this.args.blockSize = 32; // this.args.height = 600;
+    _this.args.blockSize = 32;
+    _this.args.sticky = true; // this.args.height = 600;
     // this.args.width  = 800;
     // this.args.width  = 32*16.5;
     // this.args.height = 32*12.5;
 
-    _this.args.width = 32 * 9.5;
-    _this.args.height = 32 * 6.5;
+    _this.args.width = 32 * 11.5;
+    _this.args.height = 32 * 8.5;
     _this.args.x = 0;
     _this.args.y = 0;
     _this.args.offsetX = 0;
@@ -7949,14 +7958,29 @@ var Viewport = /*#__PURE__*/function (_View) {
   _createClass(Viewport, [{
     key: "onAttached",
     value: function onAttached(event) {
+      var _this2 = this;
+
+      if (!this.args.scale) {
+        this.onTimeout(250, function () {
+          _this2.args.scale = 2;
+
+          _this2.tags.viewport.focus();
+        });
+      }
+
+      this.listen(document.body, 'click', function (event) {
+        if (event.target !== document.body) {
+          return;
+        }
+
+        _this2.tags.viewport.focus();
+      });
+      this.args.scale = this.args.scale || 1;
+
       var keyboard = _Keyboard.Keyboard.get();
 
       keyboard.listening = true;
-    }
-  }, {
-    key: "mousemove",
-    value: function mousemove(event) {// this.args.x = event.clientX;
-      // this.args.y = event.clientY;
+      keyboard.focusElement = this.tags.viewport.node;
     }
   }, {
     key: "update",
@@ -8102,6 +8126,10 @@ var Viewport = /*#__PURE__*/function (_View) {
         '--width': this.args.width,
         '--height': this.args.height
       });
+      this.tags.frame.style({
+        '--scale': this.args.scale,
+        '--width': this.args.width
+      });
       this.args.xPos.args.value = Math.floor(this.args.actors[0].x);
       this.args.yPos.args.value = Math.floor(this.args.actors[0].y);
       this.args.ground.args.value = this.args.actors[0].args.landed;
@@ -8131,7 +8159,7 @@ exports.Viewport = Viewport;
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<div class = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span><h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport\" cv-ref = \"viewport\" cv-on = \"mousemove(event)\">\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div class = \"viewport-background\" cv-each = \"blocks:block:b\" cv-ref = \"background\">[[block]]</div>\n\t\t\t<div class = \"viewport-content\" cv-each = \"actors:actor:a\">[[actor]]</div>\n\t\t</div>\n\t\t<div class = \"hud\">\n\t\t\t<table>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t</tr>\n\n\n\t\t\t</table>\n\t\t</div>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<i>(enlarged to show texture)</i>\n\t\t</div>\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"arrow-west\"></span> / <span class = \"arrow-east\"></span> move\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-x\"></span> / <span class = \"button xb-a\"></span> / spacebar - jump\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-l1\"></span> / <span class = \"button xb-b\"></span> / <span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <b>ctrl</b> - run\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <b>shift</b> - creep\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<label>\n\t\t\t\t<input type = \"checkbox\" cv-bind = \"sticky\" value = \"1\" />\n\t\t\t\tstick to walls\n\t\t\t</label>\n\t\t</div>\n\t</div>\n\n</div>\n\n"
+module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span><h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport\" cv-ref = \"viewport\" tabindex=\"0\">\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div class = \"viewport-background\" cv-each = \"blocks:block:b\" cv-ref = \"background\">[[block]]</div>\n\t\t\t<div class = \"viewport-content\" cv-each = \"actors:actor:a\">[[actor]]</div>\n\t\t</div>\n\t\t<div class = \"hud\">\n\t\t\t<table>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t</tr>\n\n\t\t\t\t<tr>\n\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t</tr>\n\n\n\t\t\t</table>\n\t\t</div>\n\n\t\t<div class = \"focus-me\">Focus this element to enable keyboard control</div>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<i>(pixels enlarged to show texture)</i>\n\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>spacebar</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- run\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- creep\n\t\t\t\t</span>\n\n\t\t\t\t<span>\n\t\t\t\t\t<span class = \"arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow-east\"></span>\n\t\t\t\t\tmove\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n\t\t\t\t<label>\n\t\t\t\t\tscale\n\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\"/>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\tstick to walls\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"sticky\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n"
 });
 
 ;require.register("___globals___", function(exports, require, module) {
