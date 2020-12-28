@@ -44,7 +44,8 @@ export class Viewport extends View
 		this.args.angle  = new CharacterString({value:0});
 
 		this.args.blockSize = 32;
-		this.args.sticky    = true;
+		this.args.willStick = true;
+		this.args.stayStuck = true;
 
 		// this.args.height = 600;
 		// this.args.width  = 800;
@@ -52,8 +53,8 @@ export class Viewport extends View
 		// this.args.width  = 32*16.5;
 		// this.args.height = 32*12.5;
 
-		this.args.width  = 32 * 11.5;
-		this.args.height = 32 * 8.5;
+		this.args.width  = 32 * 9.5;
+		this.args.height = 32 * 7.5;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -109,7 +110,8 @@ export class Viewport extends View
 
 	update()
 	{
-		this.args.actors[0].sticky = !!this.args.sticky;
+		this.args.actors[0].willStick = !!this.args.willStick;
+		this.args.actors[0].stayStuck = !!this.args.stayStuck;
 
 		if(Keyboard.get().getKey(' ') > 0)
 		{
@@ -132,11 +134,11 @@ export class Viewport extends View
 			this.args.actors[0].crawling = false;
 		}
 
-		if(Keyboard.get().getKey('ArrowLeft') > 0)
+		if(Keyboard.get().getKey('ArrowLeft') > 0 || Keyboard.get().getKey('a') > 0)
 		{
 			this.args.actors[0].xAxis = -1;
 		}
-		else if(Keyboard.get().getKey('ArrowRight') > 0)
+		else if(Keyboard.get().getKey('ArrowRight') > 0 || Keyboard.get().getKey('d') > 0)
 		{
 			this.args.actors[0].xAxis = 1;
 		}

@@ -5,7 +5,7 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const JUMP_FORCE     = 18;
+const JUMP_FORCE     = 21;
 const WALKING_SPEED  = 14;
 const RUNNING_SPEED  = 28;
 const CRAWLING_SPEED = 2;
@@ -51,7 +51,8 @@ export class PointActor extends View
 		this.xAxis = 0;
 		this.yAxis = 0;
 
-		this.sticky = false;
+		this.willStick = false;
+		this.stayStuck = false;
 
 		this.args.ignore = 0;
 		this.args.float  = 0;
@@ -199,6 +200,12 @@ export class PointActor extends View
 			this.args.ySpeed = 0;
 			this.args.xSpeed = 0;
 			this.args.y -= Math.floor(upDistance) - 1;
+
+			if(this.willStick)
+			{
+				this.ignore += 16;
+				this.args.mode = MODE_CEILING;
+			}
 		}
 
 		if(airDistance !== false)
@@ -213,6 +220,17 @@ export class PointActor extends View
 			}
 		}
 
+		if(airDistance !== false)
+		{
+			if(this.args.xSpeed > 0)
+			{
+				this.args.xSpeed = airDistance;
+			}
+			else if(this.args.xSpeed < 0)
+			{
+				this.args.xSpeed = -airDistance;
+			}
+		}
 
 		if(downDistance === false)
 		{
@@ -440,7 +458,7 @@ export class PointActor extends View
 
 			if(this.args.gSpeed === 0)
 			{
-				if(!this.sticky)
+				if(!this.stayStuck)
 				{
 					const currentTile   = tileMap.coordsToTile(this.x, this.y+1);
 					const currentTileNo = tileMap.getTileNumber(...currentTile);
@@ -456,9 +474,20 @@ export class PointActor extends View
 		}
 		else
 		{
-			if(!this.sticky)
+			if(!this.willStick)
 			{
 				this.args.mode = MODE_FLOOR;
+			}
+			else
+			{
+				if(this.args.angle < -Math.PI / 8 * 3)
+				{
+					this.args.mode = MODE_LEFT;
+				}
+				else if(this.args.angle > Math.PI / 8 * 3)
+				{
+					this.args.mode = MODE_RIGHT;
+				}
 			}
 		}
 
