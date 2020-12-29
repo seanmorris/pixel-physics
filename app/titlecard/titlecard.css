@@ -129,6 +129,10 @@
 	opacity: 1;
 }
 
+.titlecard.closed, .titlecard.closing {
+	pointer-events: none;
+}
+
 .titlecard.closed .titlecard-field,
 .titlecard.closing .titlecard-field {
 	opacity: 0;

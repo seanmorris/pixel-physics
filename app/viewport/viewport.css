@@ -10,7 +10,8 @@ html, body {
 	align-items: center;
 }
 
-html {
+::selection {
+	background-color: #fcc203;
 }
 
 body {
@@ -23,8 +24,14 @@ body {
 
 h1 {
 	font-family: early_gameboy_regular;
-	font-size: 2rem;
-	text-shadow:  2px 2px 20px rgba(255,255,255,0.5);
+	font-size: 2.25rem;
+	color: white;
+	text-shadow:
+		3px 3px 0px rgba(0,0,0,1)
+		, 3px -3px 0px rgba(0,0,0,1)
+		, -3px 3px 0px rgba(0,0,0,1)
+		, -3px -3px 0px rgba(0,0,0,1)
+	;
 }
 
 .viewport-frame {

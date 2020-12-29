@@ -46,6 +46,10 @@ export class Viewport extends View
 		this.args.angle  = new CharacterString({value:0});
 
 		this.args.blockSize = 32;
+
+		this.args.willStick = false;
+		this.args.stayStuck = false;
+
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
@@ -55,8 +59,8 @@ export class Viewport extends View
 		// this.args.width  = 32*16.5;
 		// this.args.height = 32*12.5;
 
-		this.args.width  = 32 * 9.5;
-		this.args.height = 32 * 7.5;
+		this.args.width  = 32 * 9;
+		this.args.height = 32 * 7;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -118,13 +122,12 @@ export class Viewport extends View
 					this.args.animation = 'closing';
 					this.tags.viewport.focus();
 
-					this.args.status.args.value = ' Click to enable keyboard controls. ';
+					this.args.status.args.value = ' Click here for keyboard control. ';
 					this.args.status.args.hide = '';
 
 					this.onTimeout(220, () => {
 						this.args.animation = 'closed';
 						this.tags.viewport.focus();
-
 					});
 
 					this.onTimeout(250, () => {
@@ -168,39 +171,10 @@ export class Viewport extends View
 		this.args.actors[0].willStick = !!this.args.willStick;
 		this.args.actors[0].stayStuck = !!this.args.stayStuck;
 
-		if(Keyboard.get().getKey(' ') > 0)
-		{
-			this.args.actors[0].jump();
-		}
+		this.args.actors[0].xAxis = 0;
 
-		if(Keyboard.get().getKey('Shift') > 0)
-		{
-			this.args.actors[0].running  = false;
-			this.args.actors[0].crawling = true;
-		}
-		else if(Keyboard.get().getKey('Control') > 0)
-		{
-			this.args.actors[0].running  = true;
-			this.args.actors[0].crawling = false;
-		}
-		else
-		{
-			this.args.actors[0].running  = false;
-			this.args.actors[0].crawling = false;
-		}
-
-		if(Keyboard.get().getKey('ArrowLeft') > 0 || Keyboard.get().getKey('a') > 0)
-		{
-			this.args.actors[0].xAxis = -1;
-		}
-		else if(Keyboard.get().getKey('ArrowRight') > 0 || Keyboard.get().getKey('d') > 0)
-		{
-			this.args.actors[0].xAxis = 1;
-		}
-		else
-		{
-			this.args.actors[0].xAxis = 0;
-		}
+		this.args.actors[0].running  = false;
+		this.args.actors[0].crawling = false;
 
 		if(this.gamepad)
 		{
@@ -243,11 +217,6 @@ export class Viewport extends View
 					this.args.actors[0].running  = true;
 					this.args.actors[0].crawling = false;
 				}
-				else
-				{
-					this.args.actors[0].running  = false;
-					this.args.actors[0].crawling = false;
-				}
 
 				if(gamepad.buttons[0].pressed)
 				{
@@ -256,38 +225,40 @@ export class Viewport extends View
 			}
 		}
 
+		if(Keyboard.get().getKey('Shift') > 0)
+		{
+			this.args.actors[0].running  = false;
+			this.args.actors[0].crawling = true;
+		}
+		else if(Keyboard.get().getKey('Control') > 0)
+		{
+			this.args.actors[0].running  = true;
+			this.args.actors[0].crawling = false;
+		}
+
+		if(Keyboard.get().getKey('ArrowLeft') > 0 || Keyboard.get().getKey('a') > 0)
+		{
+			this.args.actors[0].xAxis = -1;
+		}
+		else if(Keyboard.get().getKey('ArrowRight') > 0 || Keyboard.get().getKey('d') > 0)
+		{
+			this.args.actors[0].xAxis = 1;
+		}
+
 		for(const i in this.args.actors)
 		{
 			this.args.actors[i].update();
+		}
+
+		if(Keyboard.get().getKey(' ') > 0)
+		{
+			this.args.actors[0].jump();
 		}
 
 		const angle = this.args.actors[0].angle;
 
 		this.args.x = -this.args.actors[0].x + this.args.width  / 2;
 		this.args.y = -this.args.actors[0].y + this.args.height / 2;
-
-		if(this.args.x > 0)
-		{
-			this.args.x = 0;
-		}
-
-		if(this.args.y > 0)
-		{
-			this.args.y = 0;
-		}
-
-		const maxPanX = -this.args.width  + (this.tileMap.mapData.width  * 32);
-		const maxPanY = -this.args.height + (this.tileMap.mapData.height * 32);
-
-		if(this.args.x < -maxPanX)
-		{
-			this.args.x = -maxPanX;
-		}
-
-		if(this.args.y < -maxPanY)
-		{
-			this.args.y = -maxPanY;
-		}
 
 		const blocksWide = Math.ceil((this.args.width  / this.args.blockSize));
 		const blocksHigh = Math.ceil((this.args.height / this.args.blockSize));
@@ -365,8 +336,12 @@ export class Viewport extends View
 		this.tags.viewport.style({
 			'--x': Math.round(this.args.x)
 			, '--y': Math.round(this.args.y)
-			, '--xMod': Math.round(this.args.x % this.args.blockSize)
-			, '--yMod': Math.round(this.args.y % this.args.blockSize)
+			, '--xMod': this.args.x < 0
+				? Math.round(this.args.x % (this.args.blockSize))
+				: (-this.args.blockSize + Math.round(this.args.x % this.args.blockSize)) % this.args.blockSize
+			, '--yMod':  this.args.y < 0
+				? Math.round(this.args.y % (this.args.blockSize))
+				: (-this.args.blockSize + Math.round(this.args.y % this.args.blockSize)) % this.args.blockSize
 			, '--width': this.args.width
 			, '--height': this.args.height
 		});

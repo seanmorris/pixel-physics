@@ -5,10 +5,10 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const JUMP_FORCE     = 21;
+const JUMP_FORCE     = 16;
 const WALKING_SPEED  = 14;
 const RUNNING_SPEED  = 28;
-const CRAWLING_SPEED = 2;
+const CRAWLING_SPEED = 1;
 
 const DEFAULT_GRAVITY = MODE_FLOOR;
 
@@ -72,6 +72,9 @@ export class PointActor extends View
 		this.args.x = Math.floor(this.args.x);
 		this.args.y = Math.floor(this.args.y);
 
+		const xSpeedOriginal = this.args.xSpeed;
+		const ySpeedOriginal = this.args.ySpeed;
+
 		while(true)
 		{
 			const currentTile   = tileMap.coordsToTile(this.x, this.y);
@@ -82,31 +85,27 @@ export class PointActor extends View
 				break;
 			}
 
-			switch(this.args.mode)
+			this.args.ignore = 1;
+
+			if(ySpeedOriginal > 0)
 			{
-				case MODE_FLOOR:
-					this.args.ySpeed > 0
-						? this.args.y--
-						: this.args.y++;
-					break;
-
-				case MODE_RIGHT:
-					this.args.ySpeed > 0
-						? this.args.x++
-						: this.args.x--;
-					break;
-
-				case MODE_CEILING:
-					this.args.ySpeed > 0
-						? this.args.y++
-						: this.args.y--;
-					break;
-
-				case MODE_LEFT:
-					this.args.ySpeed > 0
-						? this.args.x--
-						: this.args.x++;
-					break;
+				this.args.ySpeed = 0;
+				this.args.y--;
+			}
+			else if(ySpeedOriginal < 0)
+			{
+				this.args.ySpeed = 0;
+				this.args.y++;
+			}
+			else if(xSpeedOriginal > 0)
+			{
+				this.args.xSpeed = 0;
+				this.args.x--;
+			}
+			else if(xSpeedOriginal < 0)
+			{
+				this.args.xSpeed = 0;
+				this.args.x++;
 			}
 		}
 
@@ -198,9 +197,9 @@ export class PointActor extends View
 
 		if(upDistance !== false && this.args.ySpeed < 0)
 		{
-			this.args.float  = 2;
-			this.args.ySpeed = 0;
-			this.args.xSpeed = 0;
+			this.args.float = 2;
+
+			this.args.x += this.args.xSpeed;
 			this.args.y -= Math.floor(upDistance) - 1;
 
 			if(this.willStick)
@@ -253,6 +252,11 @@ export class PointActor extends View
 		{
 			this.args.falling = false;
 
+			if(this.args.falling)
+			{
+				this.args.ignore  = 1;
+			}
+
 			switch(this.args.mode)
 			{
 				case MODE_FLOOR:
@@ -275,6 +279,11 @@ export class PointActor extends View
 		else
 		{
 			this.args.falling = false;
+
+			if(this.args.falling)
+			{
+				this.args.ignore = 1;
+			}
 		}
 
 		if(this.running)
@@ -288,6 +297,11 @@ export class PointActor extends View
 		else
 		{
 			this.args.maxGSpeed = WALKING_SPEED;
+		}
+
+		if(this.args.ignore < 1)
+		{
+			this.args.ignore = 0;
 		}
 
 		if(this.args.ignore === 0)
@@ -315,7 +329,8 @@ export class PointActor extends View
 				this.args.xSpeed += this.xAxis * 0.8;
 			}
 		}
-		else if(this.args.ignore > 0)
+
+		if(this.args.ignore > 0)
 		{
 			this.args.ignore--;
 		}
@@ -394,6 +409,11 @@ export class PointActor extends View
 					this.args.y += this.args.gSpeed;
 					break;
 			}
+		}
+
+		if(this.args.ignore < 1)
+		{
+			this.args.ignore = 0;
 		}
 
 		if(!this.args.float && this.args.ySpeed < this.args.maxFall)
@@ -482,6 +502,8 @@ export class PointActor extends View
 			}
 			else
 			{
+				this.args.float  = 1;
+
 				if(this.args.angle < -Math.PI / 8 * 3)
 				{
 					this.args.mode = MODE_LEFT;
@@ -611,7 +633,7 @@ export class PointActor extends View
 
 	jump()
 	{
-		if(this.args.ignore || this.args.falling || !this.args.landed)
+		if(this.args.ignore || this.args.falling || !this.args.landed || this.args.float)
 		{
 			return;
 		}
@@ -629,7 +651,7 @@ export class PointActor extends View
 
 		const originalMode = this.args.mode;
 
-		this.args.ignore  = 2;
+		this.args.ignore  = 5;
 		this.args.landed  = false;
 		this.args.falling = true;
 		this.args.gSpeed  = 0;
@@ -677,7 +699,8 @@ export class PointActor extends View
 				break;
 		}
 
-		this.args.mode = DEFAULT_GRAVITY;
+		this.args.mode  = DEFAULT_GRAVITY;
+		this.args.angle = 0;
 	}
 
 	rad2deg(rad)
