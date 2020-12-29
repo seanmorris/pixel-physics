@@ -1,12 +1,15 @@
 <div class = "viewport-frame" cv-ref = "frame">
 	<div class = "viewport-header">
-		<span class = "sean-icon"></span><h1>Pixel Physics</h1>
+		<span class = "sean-icon"></span>
+		<h1>Pixel Physics</h1>
 	</div>
 	<div class = "viewport" cv-ref = "viewport" tabindex="0">
+
 		<div class = "viewport-zoom">
 			<div class = "viewport-background" cv-each = "blocks:block:b" cv-ref = "background">[[block]]</div>
 			<div class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
 		</div>
+
 		<div class = "hud">
 			<table>
 
@@ -54,13 +57,48 @@
 			</table>
 		</div>
 
-		<div class = "focus-me">Focus this element to enable keyboard control</div>
+		<div class = "titlecard [[animation]]">
+
+			<div class = "titlecard-field"></div>
+
+			<div class = "titlecard-bottom-border">
+				<div class = "titlecard-border-text">SEAN MORRIS</div>
+			</div>
+
+			<div class = "titlecard-left-border">
+				<div class = "titlecard-border-shadow"></div>
+				<div class = "titlecard-border-color"></div>
+			</div>
+
+			<div class = "titlecard-title">
+				<div class = "titlecard-title-box">
+
+					<div class = "titlecard-title-line-1">
+						PIXEL HILL
+					</div>
+
+					<div class = "titlecard-title-line-2">
+						ZONE<div class = "titlecard-title-number">
+							1
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+
+		</div>
+
+		<div class = "focus-me">
+			<div class = "status-message">[[status]]</div>
+		</div>
+
 	</div>
 
 	<div class = "viewport-caption">
 		<div>
 			<div>
-				<i>(pixels enlarged to show texture)</i>
+				<span class = "label"><i>(pixels enlarged to show texture)</i></span>
 
 				<span>
 					<span class = "arrow-west"></span>
@@ -91,23 +129,32 @@
 				</span>
 
 
+				<p>
+					<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
+						<span class = "github-icon"></span>
+						view the project on github
+					</a>
+				</p>
 			</div>
 
 			<div class = "right">
 
 				<label>
-					scale
-					<input type = "number" cv-bind = "scale" min = "1"/>
-				</label>
-
-				<label>
-					stick to walls
-					<input type = "checkbox" cv-bind = "willStick" value = "1" />
-				</label>
-
-				<label>
-					stay on walls
+					player can stop on walls
 					<input type = "checkbox" cv-bind = "stayStuck" value = "1" />
+				</label>
+
+				<label>
+					jumps can stick to walls
+					<input type = "checkbox" cv-bind = "willStick" value = "1" />
+					<br />
+				</label>
+
+				<small>(requires "stop on walls")</small>
+
+				<label>
+					scale&nbsp;
+					<input type = "number" cv-bind = "scale" min = "1"/>
 				</label>
 
 			</div>

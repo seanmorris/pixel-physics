@@ -3,12 +3,12 @@ import { View } from 'curvature/base/View';
 export class CharacterString extends View
 {
 	template =
-		`<div class = "hud-character-string" cv-each = "chars:char:c" style = "--scale:[[scale]]"><span
+		`<div class = "hud-character-string [[hide]]" cv-each = "chars:char:c" style = "--scale:[[scale]];"><span
 				class = "hud-character"
-				data-type   = "[[char.type]]"
-				data-value  = "[[char.pos]]"
-				data-cardin = "[[c]]"
-				style       = "--value:[[char.pos]];"
+				data-type  = "[[char.type]]"
+				data-value = "[[char.pos]]"
+				data-index = "[[c]]"
+				style      = "--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];"
 			>[[char.original]]</span></div>`;
 
 	constructor(...args)

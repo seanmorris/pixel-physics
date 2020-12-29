@@ -213,11 +213,181 @@
 }
 
 @font-face {
-    font-family: 'early_gameboy_regular';
-    src: url('/fonts/early-gameboy/early_gameboy-webfont.woff2') format('woff2'),
-         url('fonts/early-gameboy/early_gameboy-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'early_gameboy_regular';
+	src: url('/fonts/early-gameboy/early_gameboy-webfont.woff2') format('woff2'),
+		 url('fonts/early-gameboy/early_gameboy-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '04b11';
+	src: url('/fonts/04b11/04b_11__-webfont.woff2') format('woff2'),
+		 url('/fonts/04b11/04b_11__-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '04b21';
+	src: url('/fonts/04b21/04b_21__-webfont.woff2') format('woff2'),
+		 url('/fonts/04b21/04b_21__-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '8-bit-pusab';
+	src: url('/fonts/8-bit-pusab/8-bit-pusab-webfont.woff2') format('woff2'),
+		 url('/fonts/8-bit-pusab/8-bit-pusab-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.titlecard,
+.titlecard-field,
+.titlecard-border-color,
+.titlecard-border-shadow,
+.titlecard-left-border {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.titlecard {
+	--timer: 100;
+	--timer2: 100;
+
+	--zMax: 240;
+
+	--zHeight: var(--zMax);
+	--zHeight: calc(var(--timer) * 2.4);
+
+	--tFunc: 0.25s ease-out;
+}
+
+.titlecard.opening {
+	--timer: 0;
+}
+
+.titlecard.opening2 {
+	--timer: 0;
+	--timer2: 0;
+}
+
+.titlecard.closing {
+	--tFunc: 0.125s ease-in;
+	--timer: 0;
+	--timer2: 0;
+}
+
+.titlecard.closed {
+	--tFunc: 0.125s ease-out;
+	--timer: 100;
+	--timer2: 100;
+}
+
+.titlecard-title-box {
+	position: absolute;
+	top: 29%;
+	left: auto;
+	right: 0;
+	color: white;
+	font-family: '04b11';
+	font-size: 36pt;
+	text-shadow: 4px 4px 0px black;
+	text-align: right;
+}
+
+.titlecard-title-line-1,
+.titlecard-title-line-2 {
+	transform: translateX(100%);
+	transition: transform var(--tFunc);
+	padding-right: 8pt;
+}
+
+.titlecard-title-line-1 {
+	transform: translateX(calc(1% * var(--timer)));
+}
+
+.titlecard-title-line-2 {
+	transform: translateX(calc(1% * var(--timer2)));
+}
+
+.titlecard-title-number {
+	font-family: '8-bit-pusab';
+	font-weight: 600;
+	font-style: italic;
+	display: inline-block;
+	vertical-align: top;
+	font-size: 1em;
+	margin-right: 0.3em;
+	color: #fffd00;
+}
+
+.titlecard-left-border {
+	left: calc(-1px * var(--zHeight));
+	transition: left var(--tFunc);
+}
+
+.titlecard-border-shadow {
+	transition:
+		opacity var(--tFunc)
+		, transform var(--tFunc)
+		, background-position var(--tFunc);
+	background-position: 0 calc(-1px * var(--zHeight));
+	opacity: calc( 1 - calc( var(--zHeight) / var(--zMax) ) );
+}
+
+.titlecard-border-color {
+	transition: transform var(--tFunc), background-position var(--tFunc);
+	background-position: 0 calc(-1px * var(--zHeight));
+	transform: translateX(calc(-0.25px * var(--zHeight)));
+}
+
+.titlecard-bottom-border {
+	transition: right var(--tFunc);
+	position: absolute;
+	right: calc(-1% * var(--timer));
+	top: 71%;
+	height: 29%;
+	width: 100%;
+	background-color: #fffd00;
+}
+
+.titlecard-border-text {
+	transition: transform var(--tFunc);
+	transform: translateX(calc(1% * var(--timer2)));
+	position: absolute;
+	top: 10px;
+	right: 0px;
+	padding-right: 10px;
+	color: black;
+	font-family: '04b21';
+	font-size: 18pt;
+}
+
+.titlecard-field {
+	transition: opacity var(--tFunc);
+	background-color: #2548dd;
+	opacity: 1;
+}
+
+.titlecard.closed .titlecard-field,
+.titlecard.closing .titlecard-field {
+	opacity: 0;
+}
+
+.titlecard-border-color {
+	background-image: url(/titlecard/red-border.png);
+	background-repeat: repeat-y;
+}
+
+.titlecard-border-shadow {
+	background-image: url(/titlecard/shadow-border.png);
+	background-repeat: repeat-y;
 }
 
 .hud-character-string {
@@ -263,13 +433,13 @@ html, body {
 }
 
 html {
-	background-image: url(/ui/pokemon-ruby.png);
-	background-repeat: repeat-x;
-	background-position: -10% 0px;
-	background-size: auto 100%;
 }
 
 body {
+	background-image: url(/ui/pokemon-ruby-sky.png), url(/ui/pokemon-ruby-ground.png);
+	background-repeat: repeat-x, repeat-x;
+	background-position: -10% top, -10% bottom;
+	background-size: auto 78%, auto 22%;
 	overflow: hidden;
 }
 
@@ -353,11 +523,14 @@ h1 {
 	padding: 0.5em;
 }
 
+.viewport-caption .label,
 .viewport-caption label {
 	padding: 0.25em;
+	display: flex;
 }
 
-.viewport-caption > div > div {
+.viewport-caption > div > div,
+.viewport-caption > div > .label {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -515,13 +688,10 @@ span.arrow-west {
 }
 
 .focus-me {
-	position: absolute;
-	bottom: 0px;
 	font-size: 2em;
 	z-index: 1000;
 	background-color: white;
 	color: red;
-	opacity: 0.7;
 	pointer-events: none;
 	transition: opacity 0.25s ease-in;
 }
@@ -529,6 +699,62 @@ span.arrow-west {
 .viewport:focus .focus-me {
 	transition: opacity 0.2s ease-out;
 	opacity: 0;
+}
+
+.status-message {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 1em;
+	width: 100%;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	--distance: 4px;
+	--time: 30ms;
+}
+
+.status-message .hud-character {
+	background-color: rgb(0,0,0,0.5);
+	animation: sine 1.5s ease-in-out infinite;
+	animation-delay: calc(var(--time) * calc( var(--index) - var(--length) ));
+}
+.status-message .hud-character-string {
+	transition: opacity 0.333s 0.5s ease-in;
+	opacity: 1;
+}
+
+.status-message .hud-character-string.hide {
+	opacity: 0;
+}
+
+@keyframes sine {
+	0%,100% {transform: translateY( var(--distance) );}
+	25% {transform: translateY( calc(-1 * var(--distance)) );}
+	50% {transform: translateY( var(--distance) );}
+	75% {transform: translateY( calc(-1 * var(--distance)) );}
+}
+
+a.github {
+	background-color: black;
+	color: white;
+	display: flex;
+	padding: 0.5em;
+	border-radius: 5px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: smaller;
+}
+
+.github-icon {
+	background-image: url(/ui/github.svg);
+	display: inline-block;
+	width: 1.5em;
+	height: 1.5em
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	margin-right: 0.5em;
 }
 
 

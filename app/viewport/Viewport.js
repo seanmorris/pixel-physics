@@ -24,6 +24,8 @@ export class Viewport extends View
 		this.tileMap = new TileMap;
 		this.world   = null;
 
+		this.args.status = new CharacterString({value:'', scale: 2});
+
 		this.args.labelX = new CharacterString({value:'x pos: '});
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
@@ -65,6 +67,9 @@ export class Viewport extends View
 
 		this.blocksXY = {};
 
+		this.args.scale = 2;
+		this.args.animation = '';
+
 		const actor = new PointActor;
 
 		actor.viewport = this;
@@ -75,18 +80,59 @@ export class Viewport extends View
 
 		this.args.blocks = this.blocks.list;
 
+		this.args.bindTo('willStick', v => {
+			if(v)
+			{
+				this.args.stayStuck = true;
+			}
+
+		});
+
+		this.args.bindTo('stayStuck', v => {
+			if(!v)
+			{
+				this.args.willStick = false;
+			}
+		});
+
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 	}
 
 	onAttached(event)
 	{
-		if(!this.args.scale)
-		{
-			this.onTimeout(250, () => {
-				this.args.scale = 2;
+		this.update();
+
+		this.args.paused = true;
+
+		this.args.status.args.hide = 'hide';
+
+		this.onTimeout(600, () => {
+			this.args.animation = 'opening';
+			this.tags.viewport.focus();
+
+			this.onTimeout(200, () => {
+				this.args.animation = 'opening2';
 				this.tags.viewport.focus();
+
+				this.onTimeout(1800, () => {
+					this.args.animation = 'closing';
+					this.tags.viewport.focus();
+
+					this.args.status.args.value = ' Click to enable keyboard controls. ';
+					this.args.status.args.hide = '';
+
+					this.onTimeout(220, () => {
+						this.args.animation = 'closed';
+						this.tags.viewport.focus();
+
+					});
+
+					this.onTimeout(250, () => {
+						this.args.paused = false;
+					});
+				});
 			});
-		}
+		});
 
 		this.listen(document.body, 'click', event => {
 
@@ -105,11 +151,20 @@ export class Viewport extends View
 		keyboard.listening = true
 
 		keyboard.focusElement = this.tags.viewport.node;
-
 	}
 
 	update()
 	{
+		if(this.args.paused)
+		{
+			this.tags.frame.style({
+				'--scale': this.args.scale
+				, '--width': this.args.width
+			});
+
+			return;
+		}
+
 		this.args.actors[0].willStick = !!this.args.willStick;
 		this.args.actors[0].stayStuck = !!this.args.stayStuck;
 

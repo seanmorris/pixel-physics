@@ -1,3 +1,5 @@
+import { Tag } from 'curvature/base/Tag';
+
 import { TileMap } from './tileMap/TileMap';
 import { Viewport } from './viewport/Viewport';
 
@@ -13,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	let lastTime = Date.now();
 
 	Promise.all([viewportA.tileMap.ready]).then(()=>{
+
+		const body = new Tag(document.body);
+
+		let skyShift = 100;
+
+		setInterval( ()=> body.style({
+			'background-position': `${(skyShift++ / 5)}px top, -10% bottom`
+		}) , 45);
 
 		viewportA.update();
 

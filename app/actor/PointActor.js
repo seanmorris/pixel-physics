@@ -10,6 +10,8 @@ const WALKING_SPEED  = 14;
 const RUNNING_SPEED  = 28;
 const CRAWLING_SPEED = 2;
 
+const DEFAULT_GRAVITY = MODE_FLOOR;
+
 export class PointActor extends View
 {
 	template = `<div
@@ -46,7 +48,7 @@ export class PointActor extends View
 		this.args.running  = false;
 		this.args.crawling = false;
 
-		this.args.mode = MODE_FLOOR;
+		this.args.mode = DEFAULT_GRAVITY;
 
 		this.xAxis = 0;
 		this.yAxis = 0;
@@ -465,7 +467,7 @@ export class PointActor extends View
 
 					if(!tileMap.getSolid(currentTileNo, this.x, this.y+1))
 					{
-						this.args.mode = MODE_FLOOR;
+						this.args.mode = DEFAULT_GRAVITY;
 					}
 				}
 			}
@@ -476,7 +478,7 @@ export class PointActor extends View
 		{
 			if(!this.willStick)
 			{
-				this.args.mode = MODE_FLOOR;
+				this.args.mode = DEFAULT_GRAVITY;
 			}
 			else
 			{
@@ -499,6 +501,28 @@ export class PointActor extends View
 		{
 			this.args.gSpeed = this.args.maxGSpeed;
 		}
+	}
+
+	scanUpward()
+	{
+		return this.castRay(
+			Math.abs(this.args.ySpeed) + 1
+			, this.upAngle
+			, (i, point) => {
+				const tile    = tileMap.coordsToTile(...point);
+				const tileNo  = tileMap.getTileNumber(...tile);
+
+				if(!tileNo)
+				{
+					return;
+				}
+
+				if(tileMap.getSolid(tileNo, ...point))
+				{
+					return i;
+				}
+			}
+		);
 	}
 
 	findStepHeight(offset = 0)
@@ -653,7 +677,7 @@ export class PointActor extends View
 				break;
 		}
 
-		this.args.mode = MODE_FLOOR;
+		this.args.mode = DEFAULT_GRAVITY;
 	}
 
 	rad2deg(rad)

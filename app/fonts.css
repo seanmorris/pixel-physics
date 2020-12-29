@@ -1,7 +1,31 @@
 @font-face {
-    font-family: 'early_gameboy_regular';
-    src: url('/fonts/early-gameboy/early_gameboy-webfont.woff2') format('woff2'),
-         url('fonts/early-gameboy/early_gameboy-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'early_gameboy_regular';
+	src: url('/fonts/early-gameboy/early_gameboy-webfont.woff2') format('woff2'),
+		 url('fonts/early-gameboy/early_gameboy-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '04b11';
+	src: url('/fonts/04b11/04b_11__-webfont.woff2') format('woff2'),
+		 url('/fonts/04b11/04b_11__-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '04b21';
+	src: url('/fonts/04b21/04b_21__-webfont.woff2') format('woff2'),
+		 url('/fonts/04b21/04b_21__-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: '8-bit-pusab';
+	src: url('/fonts/8-bit-pusab/8-bit-pusab-webfont.woff2') format('woff2'),
+		 url('/fonts/8-bit-pusab/8-bit-pusab-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
 }

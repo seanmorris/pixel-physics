@@ -11,13 +11,13 @@ html, body {
 }
 
 html {
-	background-image: url(/ui/pokemon-ruby.png);
-	background-repeat: repeat-x;
-	background-position: -10% 0px;
-	background-size: auto 100%;
 }
 
 body {
+	background-image: url(/ui/pokemon-ruby-sky.png), url(/ui/pokemon-ruby-ground.png);
+	background-repeat: repeat-x, repeat-x;
+	background-position: -10% top, -10% bottom;
+	background-size: auto 78%, auto 22%;
 	overflow: hidden;
 }
 
@@ -101,11 +101,14 @@ h1 {
 	padding: 0.5em;
 }
 
+.viewport-caption .label,
 .viewport-caption label {
 	padding: 0.25em;
+	display: flex;
 }
 
-.viewport-caption > div > div {
+.viewport-caption > div > div,
+.viewport-caption > div > .label {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -263,13 +266,10 @@ span.arrow-west {
 }
 
 .focus-me {
-	position: absolute;
-	bottom: 0px;
 	font-size: 2em;
 	z-index: 1000;
 	background-color: white;
 	color: red;
-	opacity: 0.7;
 	pointer-events: none;
 	transition: opacity 0.25s ease-in;
 }
@@ -277,4 +277,60 @@ span.arrow-west {
 .viewport:focus .focus-me {
 	transition: opacity 0.2s ease-out;
 	opacity: 0;
+}
+
+.status-message {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 1em;
+	width: 100%;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	--distance: 4px;
+	--time: 30ms;
+}
+
+.status-message .hud-character {
+	background-color: rgb(0,0,0,0.5);
+	animation: sine 1.5s ease-in-out infinite;
+	animation-delay: calc(var(--time) * calc( var(--index) - var(--length) ));
+}
+.status-message .hud-character-string {
+	transition: opacity 0.333s 0.5s ease-in;
+	opacity: 1;
+}
+
+.status-message .hud-character-string.hide {
+	opacity: 0;
+}
+
+@keyframes sine {
+	0%,100% {transform: translateY( var(--distance) );}
+	25% {transform: translateY( calc(-1 * var(--distance)) );}
+	50% {transform: translateY( var(--distance) );}
+	75% {transform: translateY( calc(-1 * var(--distance)) );}
+}
+
+a.github {
+	background-color: black;
+	color: white;
+	display: flex;
+	padding: 0.5em;
+	border-radius: 5px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: smaller;
+}
+
+.github-icon {
+	background-image: url(/ui/github.svg);
+	display: inline-block;
+	width: 1.5em;
+	height: 1.5em
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	margin-right: 0.5em;
 }
