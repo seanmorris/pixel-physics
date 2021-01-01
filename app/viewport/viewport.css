@@ -15,16 +15,16 @@ html, body {
 }
 
 body {
-	background-image: url(/ui/pokemon-ruby-sky.png), url(/ui/pokemon-ruby-ground.png);
+	background-image: url(/ui/pokemon-ruby-sun.png), url(/ui/pokemon-ruby-clouds.png), url(/ui/pokemon-ruby-ground.png);
 	background-repeat: repeat-x, repeat-x;
-	background-position: -10% top, -10% bottom;
-	background-size: auto 78%, auto 22%;
+	background-position: -10% top, -10% 63%, -10% bottom;
+	background-size: auto 38%, auto 42%, auto 22%;
 	overflow: hidden;
 }
 
 h1 {
 	font-family: early_gameboy_regular;
-	font-size: 2.25rem;
+	font-size: 2rem;
 	color: white;
 	text-shadow:
 		3px 3px 0px rgba(0,0,0,1)
@@ -39,7 +39,7 @@ h1 {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	--scale-transition: 0.3s ease-in;
+	--scale-transition: 0.3s linear;
 	--scale: 1;
 }
 
@@ -128,6 +128,17 @@ h1 {
 	transform-origin: top left;
 }
 
+.viewport-double-zoom {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: calc( 200% / var(--scale) );
+	width: calc( 200% / var(--scale) );
+	transition: transform var(--scale-transition), width var(--scale-transition), height var(--scale-transition);
+	transform: scale( calc(  var(--scale) * 0.5) );
+	transform-origin: top left;
+}
+
 .viewport-zoom,
 .viewport-background,
 .viewport-content {
@@ -136,6 +147,9 @@ h1 {
 	left: 0px;
 	min-width: 100%;
 	min-height: 100%;
+}
+
+.viewport-double-zoom {
 }
 
 .viewport-content {
@@ -151,6 +165,7 @@ h1 {
 
 .viewport-background > div {
 	box-shadow: inset 0 0 4px rgba(255,0,0,0.4);
+	filter: brightness(50%);
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/

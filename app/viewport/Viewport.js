@@ -4,13 +4,17 @@ import { View } from 'curvature/base/View';
 
 import { Keyboard } from 'curvature/input/Keyboard';
 
-import { Actor   } from '../actor/Actor';
-import { PointActor } from '../actor/PointActor';
+// import { Actor   } from '../actor/Actor';
 import { TileMap } from '../tileMap/TileMap';
+
+import { PointActor } from '../actor/PointActor';
+import { Monitor } from '../actor/Monitor';
 
 import { CharacterString } from '../ui/CharacterString';
 
 import { PointDump } from '../debug/PointDump';
+
+const ColCell = Symbol('collision-cell');
 
 export class Viewport extends View
 {
@@ -34,7 +38,9 @@ export class Viewport extends View
 		this.args.labelXSpeed = new CharacterString({value:'X speed: '});
 		this.args.labelYSpeed = new CharacterString({value:'Y speed: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
-		this.args.labelAngle  = new CharacterString({value:'Angle: '});
+		this.args.labelAngle  = new CharacterString({value:'G Angle: '});
+
+		this.args.labelAirAngle  = new CharacterString({value:'Air Angle: '});
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
@@ -44,6 +50,8 @@ export class Viewport extends View
 		this.args.ySpeed = new CharacterString({value:0});
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
+
+		this.args.airAngle  = new CharacterString({value:0});
 
 		this.args.blockSize = 32;
 
@@ -59,12 +67,11 @@ export class Viewport extends View
 		// this.args.width  = 32*16.5;
 		// this.args.height = 32*12.5;
 
-		this.args.width  = 32 * 9;
-		this.args.height = 32 * 7;
+		this.args.width  = 32 * 8.5;
+		this.args.height = 32 * 6.5;
 
 		this.args.x = 0;
 		this.args.y = 0;
-
 
 		this.args.offsetX = 0;
 		this.args.offsetY = 0;
@@ -75,10 +82,12 @@ export class Viewport extends View
 		this.args.animation = '';
 
 		const actor = new PointActor;
+		const monitor = new Monitor({x: 1440, y: 512 });
 
-		actor.viewport = this;
+		actor.viewport   = this;
+		monitor.viewport = this;
 
-		this.args.actors = [ actor ];
+		this.args.actors = [ actor, monitor ];
 
 		this.blocks = new Bag;
 
@@ -100,6 +109,9 @@ export class Viewport extends View
 		});
 
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
+
+		this.colCellDiv = 10;
+		this.colCells   = {};
 	}
 
 	onAttached(event)
@@ -160,10 +172,7 @@ export class Viewport extends View
 	{
 		if(this.args.paused)
 		{
-			this.tags.frame.style({
-				'--scale': this.args.scale
-				, '--width': this.args.width
-			});
+			this.tags.frame.style({'--scale': this.args.scale, '--width': this.args.width});
 
 			return;
 		}
@@ -218,9 +227,10 @@ export class Viewport extends View
 					this.args.actors[0].crawling = false;
 				}
 
+
 				if(gamepad.buttons[0].pressed)
 				{
-					this.args.actors[0].jump();
+					this.args.actors[0].jump(Date.now());
 				}
 			}
 		}
@@ -245,11 +255,6 @@ export class Viewport extends View
 			this.args.actors[0].xAxis = 1;
 		}
 
-		for(const i in this.args.actors)
-		{
-			this.args.actors[i].update();
-		}
-
 		if(Keyboard.get().getKey(' ') > 0)
 		{
 			this.args.actors[0].jump();
@@ -257,11 +262,75 @@ export class Viewport extends View
 
 		const angle = this.args.actors[0].angle;
 
-		this.args.x = -this.args.actors[0].x + this.args.width  / 2;
-		this.args.y = -this.args.actors[0].y + this.args.height / 2;
-
 		const blocksWide = Math.ceil((this.args.width  / this.args.blockSize));
 		const blocksHigh = Math.ceil((this.args.height / this.args.blockSize));
+
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			actor.updateStart();
+		}
+
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			actor.update();
+
+			const colCellX = Math.floor(actor.x / this.colCellDiv);
+			const colCellY = Math.floor(actor.y / this.colCellDiv);
+
+			this.colCellsX  = this.colCells[ colCellX ]  = this.colCells[ colCellX ]  || [];
+			this.colCellsXY = this.colCellsX[ colCellY ] = this.colCellsX[ colCellY ] || new Set;
+
+			this.colCellsXY.add(actor);
+
+			actor[ColCell] = this.colCellsXY;
+		}
+
+		// for(const i in this.args.actors)
+		// {
+		// 	const firstActor = this.args.actors[i];
+
+		// 	const firstOffsetX = Math.floor(firstActor.args.width / 2);
+
+		// 	const firstLeft   = -firstOffsetX + firstActor.args.x;
+		// 	const firstRight  = -firstOffsetX + firstActor.args.x + firstActor.args.width;
+
+		// 	const firstTop    = firstActor.args.y - firstActor.args.height;
+		// 	const firstBottom = firstActor.args.y;
+
+		// 	for(const j in this.args.actors)
+		// 	{
+		// 		const secondActor = this.args.actors[j];
+
+		// 		if(secondActor === firstActor)
+		// 		{
+		// 			continue;
+		// 		}
+
+		// 		const secondOffset = Math.floor(secondActor.args.width / 2);
+
+		// 		const secondLeft   = -secondOffset + secondActor.args.x;
+		// 		const secondRight  = -secondOffset + secondActor.args.x + secondActor.args.width;
+
+		// 		const secondTop    = secondActor.args.y - firstActor.args.height;
+		// 		const secondBottom = secondActor.args.y + 1;
+
+		// 		if(firstLeft >= secondLeft && firstRight <= secondRight)
+		// 		{
+		// 			if(firstTop >= secondTop && firstBottom <= secondBottom)
+		// 			{
+		// 				firstActor.collideWith(secondActor);
+		// 				secondActor.collideWith(firstActor);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		this.args.x = -this.args.actors[0].x + this.args.width  / 2;
+		this.args.y = -this.args.actors[0].y + this.args.height / 2;
 
 		for(var i = -1; i <= blocksWide + 1; i++)
 		{
@@ -289,8 +358,6 @@ export class Viewport extends View
 						- Math.ceil(this.args.y / this.args.blockSize)
 						+ 0
 				);
-
-				// block.innerText = blockId || '';
 
 				const tileXY = this.tileMap.getTile(blockId);
 
@@ -346,22 +413,48 @@ export class Viewport extends View
 			, '--height': this.args.height
 		});
 
-		this.tags.frame.style({
-			'--scale': this.args.scale
-			, '--width': this.args.width
-		});
+		this.tags.frame.style({'--scale': this.args.scale, '--width': this.args.width});
 
-		this.args.xPos.args.value   = Math.floor(this.args.actors[0].x);
-		this.args.yPos.args.value   = Math.floor(this.args.actors[0].y);
+		this.args.xPos.args.value   = Math.round(this.args.actors[0].x);
+		this.args.yPos.args.value   = Math.round(this.args.actors[0].y);
 		this.args.ground.args.value = this.args.actors[0].args.landed;
 		this.args.gSpeed.args.value = this.args.actors[0].args.gSpeed;
-		this.args.xSpeed.args.value = Math.floor(this.args.actors[0].args.xSpeed);
-		this.args.ySpeed.args.value = Math.floor(this.args.actors[0].args.ySpeed);
-		this.args.angle.args.value  = Math.floor((this.args.actors[0].args.angle) * 1000) / 1000;
+		this.args.xSpeed.args.value = Math.round(this.args.actors[0].args.xSpeed);
+		this.args.ySpeed.args.value = Math.round(this.args.actors[0].args.ySpeed);
+		this.args.angle.args.value  = Math.round((this.args.actors[0].args.angle) * 1000) / 1000;
+		this.args.airAngle.args.value = Math.round((this.args.actors[0].args.airAngle) * 1000) / 1000;
 
 		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
 		this.args.mode.args.value = modes[Math.floor(this.args.actors[0].args.mode)] || Math.floor(this.args.actors[0].args.mode);
+	}
+
+	actorsAtPoint(x, y)
+	{
+		const actors = [];
+
+		for(let i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			const offset = Math.floor(actor.args.width / 2);
+
+			const left   = -offset + actor.args.x;
+			const right  = -offset + actor.args.x + actor.args.width;
+
+			const top    = actor.args.y - actor.args.height;
+			const bottom = actor.args.y;
+
+			if(x >= left && right > x)
+			{
+				if(bottom >= y && y > top)
+				{
+					actors.push( actor );
+				}
+			}
+		}
+
+		return actors;
 	}
 
 	screenBox()

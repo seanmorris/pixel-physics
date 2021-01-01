@@ -62,6 +62,11 @@
 	padding-right: 8pt;
 }
 
+.titlecard.closed .titlecard-title-line-1,
+.titlecard.closed .titlecard-title-line-2 {
+	opacity: 0;
+}
+
 .titlecard-title-line-1 {
 	transform: translateX(calc(1% * var(--timer)));
 }
