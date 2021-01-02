@@ -90,7 +90,6 @@ export class Viewport extends View
 
 				if(i[ColCell])
 				{
-					console.log(i[ColCell]);
 					i[ColCell].delete(i);
 				}
 

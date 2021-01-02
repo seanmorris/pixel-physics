@@ -129,7 +129,7 @@
 }
 
 .titlecard.start .titlecard-field {
-	background-color: #000;
+	background-color: rgba(0,0,0,1);
 }
 
 .titlecard .titlecard-field {

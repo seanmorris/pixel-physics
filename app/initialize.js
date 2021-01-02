@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		let skyShift = 100;
 
-		// setInterval( ()=> body.style({
-		// 	'background-position': `${(skyShift++ / 25)}px top, -${(skyShift++ / 10)}px 63%, -10% bottom`
-		// }) , 45);
+		setInterval( ()=> body.style({
+			'background-position': `${(skyShift++ / 25)}px top, -${(skyShift++ / 10)}px 63%, -10% bottom`
+		}) , 45);
 
 		viewportA.update();
 
