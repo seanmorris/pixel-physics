@@ -10,36 +10,12 @@ html, body {
 	align-items: center;
 }
 
-::selection {
-	background-color: #fcc203;
-}
-
-body {
-	background-image: url(/ui/pokemon-ruby-sun.png), url(/ui/pokemon-ruby-clouds.png), url(/ui/pokemon-ruby-ground.png);
-	background-repeat: repeat-x, repeat-x;
-	background-position: -10% top, -10% 63%, -10% bottom;
-	background-size: auto 38%, auto 42%, auto 22%;
-	overflow: hidden;
-}
-
-h1 {
-	font-family: early_gameboy_regular;
-	font-size: 2rem;
-	color: white;
-	text-shadow:
-		3px 3px 0px rgba(0,0,0,1)
-		, 3px -3px 0px rgba(0,0,0,1)
-		, -3px 3px 0px rgba(0,0,0,1)
-		, -3px -3px 0px rgba(0,0,0,1)
-	;
-}
-
 .viewport-frame {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	--scale-transition: 0.3s linear;
+	--scale-transition: 0.2s ease-in;
 	--scale: 1;
 }
 
@@ -134,9 +110,11 @@ h1 {
 	left: 0px;
 	height: calc( 200% / var(--scale) );
 	width: calc( 200% / var(--scale) );
-	transition: transform var(--scale-transition), width var(--scale-transition), height var(--scale-transition);
+	transition: transform var(--scale-transition) 0.25s, width var(--scale-transition) 0.25s, height var(--scale-transition) 0.25s;
+	transition-duration: 0.0s;
 	transform: scale( calc(  var(--scale) * 0.5) );
 	transform-origin: top left;
+	pointer-events: none;
 }
 
 .viewport-zoom,
@@ -165,7 +143,7 @@ h1 {
 
 .viewport-background > div {
 	box-shadow: inset 0 0 4px rgba(255,0,0,0.4);
-	filter: brightness(50%);
+	filter: brightness(75%);
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/
@@ -221,8 +199,8 @@ span.button {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-	width: 1.5em;
-	height: 1em;
+	width: 2em;
+	height: 1.5em;
 	display: inline-block;
 	margin-left: 0.25em;
 	margin-right: 0.25em;
@@ -251,6 +229,10 @@ span.button.xb-b {
 	background-image: url(/ui/xbox-button-b.svg);
 }
 
+span.button.xb-lb {
+	background-image: url(/ui/xbox-button-lb.svg);
+}
+
 span.button.xb-rb {
 	background-image: url(/ui/xbox-button-rb.svg);
 }
@@ -259,20 +241,6 @@ span.arrow-west {
 	transform: scaleX(-1);
 }
 
-.sean-icon {
-	background-image: url(/ui/masksean.png);
-	background-repeat: no-repeat;
-	background-position: 2px 3px;
-	background-size: cover;
-	border: 3px solid black;
-	border-radius: 50%;
-	margin-right: 1em;
-	width: 4.5em;
-	height: 4.5em;
-	display: inline-block;
-	box-shadow: 0 0.5em 1em rgba(0,0,0,0.5);
-	background-color: white;
-}
 
 .right {
 	align-items: flex-end !important;;
@@ -350,9 +318,29 @@ a.github {
 	background-image: url(/ui/github.svg);
 	display: inline-block;
 	width: 1.5em;
-	height: 1.5em
+	height: 1.25em
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
+	margin-right: 0.5em;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   -webkit-appearance: "Always Show Up/Down Arrows";
+}
+
+span.button-index {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 0.125em;
+	margin-bottom: 0.125em;
+}
+
+span.button-index .arrow,
+span.button-index .button,
+span.button-index b{
+	margin-left: 0.5em;
 	margin-right: 0.5em;
 }

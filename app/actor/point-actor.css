@@ -75,9 +75,7 @@
 	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--debugVector))));
 }
 
-.actor-monitor:after {
-	--sprite-offset-x: -18px;
-	--sprite-offset-y: -13px;
+.actor-item:after {
 	content: ' ';
 	font-size: 0.25rem;
 	color: black;
@@ -87,17 +85,83 @@
 	left: 0;
 	height: calc(1px * var(--height));
 	width: calc(1px * var(--width));
-	transform: translate(-50%, calc(-100% + 1px));
+	transform-origin: center bottom;
 	box-shadow: none;
-	background-image: url(/Sonic/ringMonitor.png);
 	background-repeat: no-repeat;
-	background-position: -18px -13px;
+}
+
+.actor-item.actor-explosion:after {
+	background-image: url(/Sonic/explosion.png);
+	--sprite-offset-x: -8px;
+	--sprite-offset-y: -8px;
+	width: 48px;
+	height: 48px;
+
+	animation: explosion steps(5) infinite;
+	animation-duration: calc(1ms * 240);
+}
+
+.actor-item.actor-ring:after {
+	background-image: url(/Sonic/rings.png);
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -24px;
+	animation: ringSpin steps(7) infinite;
+	animation-duration: calc(1ms * 480);
+	transition: opacity 0.125s ease-out;
+}
+
+.actor-item.actor-ring.gone:after,
+.actor-item.actor-ring.collected:after {
+	--sprite-offset-y: -88px;
+	animation: ringTwinkle steps(4) infinite;
+	animation-duration: calc(1ms * 360);
+}
+
+.actor-item.actor-ring.gone:after {
+	opacity: 0;
+}
+
+.actor-item.actor-monitor:after {
+	background-image: url(/Sonic/ringMonitor.png);
+	--sprite-offset-x: -18px;
+	--sprite-offset-y: -13px;
 	animation: monitor-flicker steps(4) infinite;
 	animation-duration: calc(1ms * 480);
 }
 
-.actor-monitor:before {
-	--collColor: rgba(0,255,255,0.25);
+.actor-item.actor-monitor.actor-monitor-broken:after {
+	background-image: url(/Sonic/brokenMonitor.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+ 	--sprite-offset-x: -18px;
+	--sprite-offset-y: -28px;
+	animation: none;
+}
+
+.actor-item.actor-question-block:after {
+	background-image: url(/Sonic/question-block.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -13px;
+	animation: monitor-flicker steps(4) infinite;
+	animation-duration: calc(1ms * 480);
+}
+
+.actor-item[data-mode="0"]:after {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--angle)));
+}
+
+.actor-item[data-mode="1"]:after {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 90deg)));
+}
+
+.actor-item[data-mode="2"]:after {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 180deg)));
+}
+
+.actor-item[data-mode="3"]:after {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 270deg)));
+}
+
+.actor-item:before {
 	box-sizing: border-box;
 	content: ' ';
 	transform: translate(-50%, calc(-100% + 1px));
@@ -106,28 +170,55 @@
 	left: 0px;
 	height: calc(1px + calc(1px * var(--height)));
 	width: calc(2px + calc(1px * var(--width)));
-	z-index: 10000;
 }
 
-.actor-monitor[data-colliding="true"]:before {
-	--collColor: rgba(255,0,0,0.25);
+.actor-item[data-colliding="true"]:before {
+	--collColor: rgba(255,0,0,0.333);
 }
 
-.actor-monitor.collision-top:before {
+.actor-item.collision-top:before {
 	border-top: 4px solid var(--collColor);
-	top: 0px;
+	top: 0px
 }
-.actor-monitor.collision-left:before {
+.actor-item.collision-left:before {
 	border-left: 4px solid var(--collColor);
 }
-.actor-monitor.collision-bottom:before {
+.actor-item.collision-bottom:before {
 	border-bottom: 4px solid var(--collColor);
 }
-.actor-monitor.collision-right:before {
+.actor-item.collision-right:before {
 	border-right: 4px solid var(--collColor);
 }
 
 @-webkit-keyframes monitor-flicker{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes explosion{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes ringSpin{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-448px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+
+@-webkit-keyframes ringTwinkle{
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}

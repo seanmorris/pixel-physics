@@ -7,8 +7,11 @@ import { Keyboard } from 'curvature/input/Keyboard';
 // import { Actor   } from '../actor/Actor';
 import { TileMap } from '../tileMap/TileMap';
 
+import { QuestionBlock } from '../actor/QuestionBlock';
 import { PointActor } from '../actor/PointActor';
+import { Explosion } from '../actor/Explosion';
 import { Monitor } from '../actor/Monitor';
+import { Ring } from '../actor/Ring';
 
 import { CharacterString } from '../ui/CharacterString';
 
@@ -61,14 +64,9 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		// this.args.height = 600;
-		// this.args.width  = 800;
-
-		// this.args.width  = 32*16.5;
-		// this.args.height = 32*12.5;
-
-		this.args.width  = 32 * 8.5;
-		this.args.height = 32 * 6.5;
+		this.args.width  = 32 * 12.5;
+		this.args.height = 32 * 8.5;
+		this.args.scale  = 2;
 
 		this.args.x = 0;
 		this.args.y = 0;
@@ -78,16 +76,40 @@ export class Viewport extends View
 
 		this.blocksXY = {};
 
-		this.args.scale = 2;
 		this.args.animation = '';
 
-		const actor = new PointActor;
-		const monitor = new Monitor({x: 1440, y: 512 });
+		this.actors = new Bag((i,s,a) => {
+			if(a == Bag.ITEM_ADDED)
+			{
+				i.viewport = this;
+			}
+			else if(a == Bag.ITEM_REMOVED)
+			{
+				i.viewport = null;
+			}
+		});
 
-		actor.viewport   = this;
-		monitor.viewport = this;
+		const actor = new PointActor({x: 1280, y: 96});
 
-		this.args.actors = [ actor, monitor ];
+		const monitor = new Monitor({x: 1328, y: 96 });
+		const monitor2 = new Monitor({x: 1386, y: 208, float: -1 });
+		const explosion = new Explosion({x: 1440, y: 224, float: -1 });
+
+		const questionBlock = new QuestionBlock({x: 1328, y: 208 });
+
+		const ring = new Ring({x: 1252, y: 192 });
+		const ring2 = new Ring({x: 1220, y: 192  });
+		const ring3 = new Ring({x: 1188, y: 192  });
+
+		this.actors.add( actor );
+		this.actors.add( questionBlock );
+		this.actors.add( monitor );
+		this.actors.add( monitor2 );
+		this.actors.add( ring );
+		this.actors.add( ring2 );
+		this.actors.add( ring3 );
+
+		this.args.actors = this.actors.list;
 
 		this.blocks = new Bag;
 
@@ -122,28 +144,35 @@ export class Viewport extends View
 
 		this.args.status.args.hide = 'hide';
 
-		this.onTimeout(600, () => {
-			this.args.animation = 'opening';
-			this.tags.viewport.focus();
+		this.args.animation = 'start';
 
-			this.onTimeout(200, () => {
-				this.args.animation = 'opening2';
+		this.onTimeout(250, () => {
+
+			this.args.animation = '';
+
+			this.onTimeout(500, () => {
+				this.args.animation = 'opening';
 				this.tags.viewport.focus();
 
-				this.onTimeout(1800, () => {
-					this.args.animation = 'closing';
+				this.onTimeout(250, () => {
+					this.args.animation = 'opening2';
 					this.tags.viewport.focus();
 
-					this.args.status.args.value = ' Click here for keyboard control. ';
-					this.args.status.args.hide = '';
-
-					this.onTimeout(220, () => {
-						this.args.animation = 'closed';
+					this.onTimeout(1500, () => {
+						this.args.animation = 'closing';
 						this.tags.viewport.focus();
-					});
 
-					this.onTimeout(250, () => {
-						this.args.paused = false;
+						this.args.status.args.value = ' Click here for keyboard control. ';
+						this.args.status.args.hide = '';
+
+						this.onTimeout(500, () => {
+							this.args.animation = 'closed';
+							this.tags.viewport.focus();
+						});
+
+						this.onTimeout(250, () => {
+							this.args.paused = false;
+						});
 					});
 				});
 			});
@@ -289,48 +318,8 @@ export class Viewport extends View
 			actor[ColCell] = this.colCellsXY;
 		}
 
-		// for(const i in this.args.actors)
-		// {
-		// 	const firstActor = this.args.actors[i];
-
-		// 	const firstOffsetX = Math.floor(firstActor.args.width / 2);
-
-		// 	const firstLeft   = -firstOffsetX + firstActor.args.x;
-		// 	const firstRight  = -firstOffsetX + firstActor.args.x + firstActor.args.width;
-
-		// 	const firstTop    = firstActor.args.y - firstActor.args.height;
-		// 	const firstBottom = firstActor.args.y;
-
-		// 	for(const j in this.args.actors)
-		// 	{
-		// 		const secondActor = this.args.actors[j];
-
-		// 		if(secondActor === firstActor)
-		// 		{
-		// 			continue;
-		// 		}
-
-		// 		const secondOffset = Math.floor(secondActor.args.width / 2);
-
-		// 		const secondLeft   = -secondOffset + secondActor.args.x;
-		// 		const secondRight  = -secondOffset + secondActor.args.x + secondActor.args.width;
-
-		// 		const secondTop    = secondActor.args.y - firstActor.args.height;
-		// 		const secondBottom = secondActor.args.y + 1;
-
-		// 		if(firstLeft >= secondLeft && firstRight <= secondRight)
-		// 		{
-		// 			if(firstTop >= secondTop && firstBottom <= secondBottom)
-		// 			{
-		// 				firstActor.collideWith(secondActor);
-		// 				secondActor.collideWith(firstActor);
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		this.args.x = -this.args.actors[0].x + this.args.width  / 2;
-		this.args.y = -this.args.actors[0].y + this.args.height / 2;
+		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
+		this.args.y = -this.args.actors[0].y + this.args.height * 0.66;
 
 		for(var i = -1; i <= blocksWide + 1; i++)
 		{
@@ -391,16 +380,21 @@ export class Viewport extends View
 					this.blocks.add(block);
 				}
 
-				block.style({
-					'background-position': -1*(tileXY[0]*this.args.blockSize)
-						+ 'px '
-						+ -1*(tileXY[1]*this.args.blockSize)
-						+ 'px'
-				});
+				const blockOffset = -1*(tileXY[0]*this.args.blockSize)
+					+ 'px '
+					+ -1*(tileXY[1]*this.args.blockSize)
+					+ 'px';
+
+				if(block.blockOffset !== blockOffset)
+				{
+					block.style({'background-position': blockOffset});
+				}
+
+				block.blockOffset = blockOffset;
 			}
 		}
 
-		this.tags.viewport.style({
+		this.tags.frame.style({
 			'--x': Math.round(this.args.x)
 			, '--y': Math.round(this.args.y)
 			, '--xMod': this.args.x < 0
@@ -411,22 +405,28 @@ export class Viewport extends View
 				: (-this.args.blockSize + Math.round(this.args.y % this.args.blockSize)) % this.args.blockSize
 			, '--width': this.args.width
 			, '--height': this.args.height
+			, '--scale': this.args.scale
 		});
 
-		this.tags.frame.style({'--scale': this.args.scale, '--width': this.args.width});
-
-		this.args.xPos.args.value   = Math.round(this.args.actors[0].x);
-		this.args.yPos.args.value   = Math.round(this.args.actors[0].y);
-		this.args.ground.args.value = this.args.actors[0].args.landed;
-		this.args.gSpeed.args.value = this.args.actors[0].args.gSpeed;
-		this.args.xSpeed.args.value = Math.round(this.args.actors[0].args.xSpeed);
-		this.args.ySpeed.args.value = Math.round(this.args.actors[0].args.ySpeed);
-		this.args.angle.args.value  = Math.round((this.args.actors[0].args.angle) * 1000) / 1000;
-		this.args.airAngle.args.value = Math.round((this.args.actors[0].args.airAngle) * 1000) / 1000;
+		this.args.xPos.args.value     = Math.round(this.args.actors[0].x);
+		this.args.yPos.args.value     = Math.round(this.args.actors[0].y);
+		this.args.ground.args.value   = this.args.actors[0].args.landed;
+		this.args.gSpeed.args.value   = this.args.actors[0].args.gSpeed;
+		this.args.xSpeed.args.value   = Math.round(this.args.actors[0].args.xSpeed);
+		this.args.ySpeed.args.value   = Math.round(this.args.actors[0].args.ySpeed);
+		this.args.angle.args.value    = (Math.round((this.args.actors[0].args.angle) * 1000) / 1000).toFixed(3);
+		this.args.airAngle.args.value = (Math.round((this.args.actors[0].args.airAngle) * 1000) / 1000).toFixed(3);
 
 		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
 		this.args.mode.args.value = modes[Math.floor(this.args.actors[0].args.mode)] || Math.floor(this.args.actors[0].args.mode);
+
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			actor.updateEnd();
+		}
 	}
 
 	actorsAtPoint(x, y)

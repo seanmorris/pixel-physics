@@ -5,7 +5,7 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const WALKING_SPEED  = 15;
+const WALKING_SPEED  = 14;
 const RUNNING_SPEED  = 2 * WALKING_SPEED;
 const CRAWLING_SPEED = 1;
 
@@ -40,7 +40,7 @@ export class PointActor extends View
 		this.args.type = 'actor-generic'
 
 		this.args.x = this.args.x || 1024 + 256;
-		this.args.y = this.args.y || 120;
+		this.args.y = this.args.y || 32;
 
 		this.args.width  = 1;
 		this.args.height = 1;
@@ -50,17 +50,16 @@ export class PointActor extends View
 		this.args.gSpeed = 0;
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
+		this.args.angle  = 0;
 
-		this.args.maxFall   = 32;
-
-		this.args.xSpeedMax = 30;
-		this.args.ySpeedMax = 30;
+		this.args.xSpeedMax = 32;
+		this.args.ySpeedMax = 32;
 
 		this.maxStep   = 3;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
-		this.args.falling  = false;
+		this.args.falling  = true;
 		this.args.running  = false;
 		this.args.crawling = false;
 
@@ -72,18 +71,18 @@ export class PointActor extends View
 		this.willStick = false;
 		this.stayStuck = false;
 
-		this.args.ignore = 0;
-		this.args.float  = 0;
+		this.args.ignore = this.args.ignore || 0;
+		this.args.float  = this.args.float  || 0;
 
 		this.colliding = false;
 
 		this.args.bindTo(['xSpeed'], v => {
 			this.args.airAngle = Math.atan2(this.args.ySpeed, v);
-		})
+		});
 
 		this.args.bindTo(['ySpeed'], v => {
 			this.args.airAngle = Math.atan2(v, this.args.xSpeed);
-		})
+		});
 	}
 
 	updateStart()
@@ -91,8 +90,23 @@ export class PointActor extends View
 		this.colliding = false;
 	}
 
+	updateEnd()
+	{
+		this.restingOn = null;
+	}
+
 	update()
 	{
+		if(this.args.ignore > 0)
+		{
+			this.args.ignore--;
+		}
+
+		if(this.args.float > 0)
+		{
+			this.args.float--;
+		}
+
 		if(this.running)
 		{
 			this.args.maxGSpeed = RUNNING_SPEED;
@@ -139,275 +153,217 @@ export class PointActor extends View
 				break;
 		}
 
-		const downDistance = this.castRay(
-			this.args.ySpeed + 1
-			, this.downAngle
-			, offset
-			, (i, point) => {
-
-				const actors = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
-
-				if(actors.length > 0)
-				{
-					actors.map(a => { this.collideWith(a); a.collideWith(this); });
-
-					return i;
-				}
-
-				const tile   = tileMap.coordsToTile(...point);
-				const tileNo = tileMap.getTileNumber(...tile);
-
-				if(!tileNo)
-				{
-					return;
-				}
-
-				if(tileMap.getSolid(tileNo, ...point))
-				{
-					return i;
-				}
-			}
-		);
-
-		const airDistance = this.castRay(
-			Math.abs(this.args.xSpeed) + 1
-			, this.args.xSpeed < 0
-				? this.leftAngle
-				: this.rightAngle
-			, (i, point) => {
-
-				const actors = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
-
-				if(actors.length > 0)
-				{
-					actors.map(a => { this.collideWith(a); a.collideWith(this); });
-
-					return i;
-				}
-
-				const tile   = tileMap.coordsToTile(...point);
-				const tileNo = tileMap.getTileNumber(...tile);
-
-				if(!tileNo)
-				{
-					return;
-				}
-
-				if(tileMap.getSolid(tileNo, ...point))
-				{
-					return i;
-				}
-			}
-		);
-
-		const upDistance = this.castRay(
-			Math.abs(this.args.ySpeed) + 1
-			, this.upAngle
-			, (i, point) => {
-				const actors = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
-
-				if(actors.length > 0 && i === 0)
-				{
-					actors.map(a => { this.collideWith(a); a.collideWith(this); });
-
-					return i;
-				}
-
-				const tile   = tileMap.coordsToTile(...point);
-				const tileNo = tileMap.getTileNumber(...tile);
-
-				if(!tileNo)
-				{
-					return;
-				}
-
-				if(tileMap.getSolid(tileNo, ...point))
-				{
-					return i;
-				}
-			}
-		);
-
-		if(this.args.falling)
+		if(!this.isEffect && this.args.falling)
 		{
+			let lastPoint = [this.x, this.y];
+
+			const airSpeed = Math.sqrt(this.args.xSpeed**2 + this.args.ySpeed**2);
+
+			const airPoint = this.castRay(
+				airSpeed
+				, this.args.airAngle
+				, (i, point) => {
+					const actors = this.viewport.actorsAtPoint(...point)
+						.filter(x=>x!==this)
+						.filter(x=>x.collideA(this))
+						.filter(x=>x!==x.isSolid && x.canStick);
+
+					if(actors.length > 0)
+					{
+						console.log(i,lastPoint);
+
+						return lastPoint;
+					}
+
+					const tile   = tileMap.coordsToTile(...point);
+					const tileNo = tileMap.getTileNumber(...tile);
+
+					if(!tileNo)
+					{
+						lastPoint = point.map(Math.floor);
+
+						return;
+					}
+
+					if(tileMap.getSolid(tileNo, ...point))
+					{
+						return lastPoint;
+					}
+
+					lastPoint = point.map(Math.floor);
+				}
+			);
+
 			this.willJump = false;
 
 			let blockers = false;
 
-			if(this.args.ySpeed < 0 && (blockers = this.getMapSolidAt(this.x, this.y-upDistance)))
+			const upDistance = this.castRay(
+				Math.abs(this.args.ySpeed) + 1
+				, this.upAngle
+				, (i, point) => {
+
+					const actors = this.viewport.actorsAtPoint(...point)
+						.filter(x=>x!==this)
+						.filter(x=>x.collideA(this))
+						.filter(a=>a.solid && a.canStick);
+
+					if(actors.length > 0)
+					{
+						return i;
+					}
+
+					const tile   = tileMap.coordsToTile(...point);
+					const tileNo = tileMap.getTileNumber(...tile);
+
+					if(!tileNo)
+					{
+						return;
+					}
+
+					if(tileMap.getSolid(tileNo, ...point))
+					{
+						return i;
+					}
+				}
+			);
+
+			if(this.args.ySpeed < 0 && upDistance !== false)
 			{
-				this.args.float = 2;
-				this.ignore = 7;
+				this.args.ignore = 1;
 
 				this.args.y -= Math.floor(upDistance - 1);
 
-				this.args.xSpeed = 0;
-				this.args.ySpeed = 0;
+				blockers = this.getMapSolidAt(this.x, this.y);
 
-				if(this.willStick)
+				if(Array.isArray(blockers))
+				{
+					blockers = blockers
+						.filter(a => a.collideA(this))
+						.filter(a=>a.solid && a.canStick);
+
+					if(this.willStick && blockers.length)
+					{
+						this.args.mode = MODE_CEILING;
+						this.args.falling = false;
+					}
+				}
+				else if(this.willStick)
 				{
 					this.args.mode = MODE_CEILING;
-
-					console.log(this.args.mode);
-				}
-
-			}
-			else if(this.args.ySpeed > 0
-				&& (blockers = this.getMapSolidAt(this.x, this.y+1))
-			){
-				this.args.x += downDistance;
-				this.ignore = 7;
-
-				this.args.mode = DEFAULT_GRAVITY;
-			}
-			else if(this.args.xSpeed > 0
-				&& (blockers = this.getMapSolidAt(this.x+this.args.xSpeed, this.y+this.args.ySpeed))
-			){
-				this.args.x += airDistance;
-				this.ignore = 7;
-
-				if(this.willStick && airDistance)
-				{
-					this.args.mode = MODE_RIGHT;
 					this.args.falling = false;
 				}
-
 			}
-			else if(this.args.xSpeed < 0
-				&& (blockers = this.getMapSolidAt(this.x+this.args.xSpeed, this.y+this.args.ySpeed)))
-			{
-				this.args.x -= airDistance;
-				this.ignore = 7;
-
-				if(this.willStick && airDistance)
-				{
-					this.args.mode = MODE_LEFT;
-					this.args.falling = false;
-
-					console.log(this.args.mode);
-				}
-			}
-
-			if(Array.isArray(blockers))
-			{
-				blockers.map(a => { this.collideWith(a); a.collideWith(this); });
-			}
-		}
-
-		if(this.args.xSpeed < -this.args.xSpeedMax)
-		{
-			this.args.xSpeed = -this.args.xSpeedMax;
-		}
-		else if(this.args.xSpeed > this.args.xSpeedMax)
-		{
-			this.args.xSpeed = this.args.xSpeedMax;
-		}
-
-		if(this.args.ySpeed < -this.args.ySpeedMax)
-		{
-			this.args.ySpeed = -this.args.ySpeedMax;
-		}
-		else if(this.args.ySpeed > this.args.ySpeedMax)
-		{
-			this.args.ySpeed = this.args.ySpeedMax;
-		}
-
-		if(downDistance === false)
-		{
-			this.args.x += this.args.xSpeed;
-			this.args.y += this.args.ySpeed;
-
-			this.args.falling = true;
-		}
-		else if(downDistance > 0)
-		{
-			this.args.falling = false;
-			this.willJump     = false;
-			this.args.xSpeed  = 0;
-			this.args.ySpeed  = 0;
-
-			if(this.args.falling)
-			{
-				this.args.ignore  = 1;
-			}
-
-			switch(this.args.mode)
-			{
-				case MODE_FLOOR:
-					this.args.y += downDistance;
-					break;
-
-				case MODE_RIGHT:
-					this.args.x += downDistance;
-					break;
-
-				case MODE_CEILING:
-					this.args.y -= downDistance;
-					break;
-
-				case MODE_LEFT:
-					this.args.x -= downDistance;
-					break;
-			}
-		}
-		else
-		{
-			if(this.willJump)
-			{
-				this.doJump();
-			}
-
-			if(this.args.falling)
+			else if(airPoint !== false)
 			{
 				this.args.ignore = 1;
+
+				const direction = Math.sign(this.args.xSpeed);
+
+				this.args.xSpeed  = 0;
+				this.args.ySpeed  = 0;
+
+				this.args.x = Math.floor(airPoint[0]);
+				this.args.y = Math.floor(airPoint[1]);
+
+				blockers = this.getMapSolidAt(this.x, this.y);
+
+				if(!this.getMapSolidAt(this.x + direction, this.y))
+				{
+					this.args.mode = MODE_FLOOR;
+				}
+				else if(Array.isArray(blockers))
+				{
+					blockers = blockers
+						.filter(a => a.collideA(this))
+						.filter(a => a.solid && a.canStick);
+
+					if(blockers.length && this.willStick && this.xAxis)
+					{
+						this.args.falling = false;
+
+						this.args.mode = direction < 0
+							? MODE_LEFT
+							: MODE_RIGHT;
+					}
+				}
+				else if(this.willStick && this.xAxis)
+				{
+					this.args.falling = false;
+
+					this.args.mode = direction < 0
+						? MODE_LEFT
+						: MODE_RIGHT;
+				}
+			}
+			else if(this.args.ySpeed > 0)
+			{
+				this.args.mode = DEFAULT_GRAVITY;
 			}
 
-			this.args.falling = false;
+			if(airPoint === false)
+			{
+				this.args.x += this.args.xSpeed;
+				this.args.y += this.args.ySpeed;
+
+				this.args.falling = true;
+			}
+		}
+
+		if(Math.abs(this.args.xSpeed) > this.args.xSpeedMax)
+		{
+			this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
+		}
+
+		if(Math.abs(this.args.ySpeed) > this.args.ySpeedMax)
+		{
+			this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
 		}
 
 		let nextPosition = [0, 0];
 
-		if(!this.args.falling)
+		if(!this.isEffect && !this.args.falling)
 		{
-
-			nextPosition = this.findNextStep(this.args.gSpeed || 2);
-
-			if(nextPosition[1] !== false)
-			{
-				this.args.angle = nextPosition[0]
-					? Math.atan(nextPosition[1] / nextPosition[0])
-					: nextPosition[1] > 0 ? Math.PI / 2 : -Math.PI / 2;
-			}
-			else if(this.args.gSpeed && nextPosition[2] === true)
-			{
-				nextPosition[0] = this.args.gSpeed;
-				nextPosition[1] = 0;
-
-				this.args.falling = true;
-				this.args.ySpeed  = 0;
-
-				switch(this.args.mode)
-				{
-					case MODE_FLOOR:
-						this.args.xSpeed = this.args.gSpeed;
-						break;
-
-					case MODE_RIGHT:
-						this.args.ySpeed = this.args.gSpeed;
-						break;
-
-					case MODE_CEILING:
-						this.args.xSpeed = -this.args.gSpeed;
-						break;
-
-					case MODE_LEFT:
-						this.args.ySpeed = -this.args.gSpeed;
-						break;
-				}
-			}
-
 			if(this.args.gSpeed)
 			{
+				nextPosition = this.findNextStep(this.args.gSpeed);
+
+				if(nextPosition[1] !== false)
+				{
+					this.args.angle = nextPosition[0]
+						? (Math.atan(nextPosition[1] / nextPosition[0]))
+						: (nextPosition[1] > 0 ? Math.PI / 2 : -Math.PI / 2);
+				}
+				else if(this.args.gSpeed && nextPosition[2] === true)
+				{
+					nextPosition[0] = this.args.gSpeed;
+					nextPosition[1] = 0;
+
+					this.args.falling = true;
+					this.args.ySpeed  = 0;
+
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+							this.args.xSpeed = this.args.gSpeed;
+							break;
+
+						case MODE_RIGHT:
+							this.args.ySpeed = this.args.gSpeed;
+							break;
+
+						case MODE_CEILING:
+							this.args.xSpeed = -this.args.gSpeed;
+							break;
+
+						case MODE_LEFT:
+							this.args.ySpeed = -this.args.gSpeed;
+							break;
+					}
+
+					this.args.gSpeed = 0;
+				}
+
 				switch(this.args.mode)
 				{
 					case MODE_FLOOR:
@@ -431,14 +387,22 @@ export class PointActor extends View
 						break;
 				}
 			}
+			else
+			{
+				const backPosition = this.findNextStep(-2);
+				const forePosition = this.findNextStep(2);
 
-			this.args.x = Math.floor(this.args.x);
-			this.args.y = Math.floor(this.args.y);
-		}
+				if(nextPosition[0] === false && nextPosition[1] === false)
+				{
+					this.args.falling = true;
+				}
 
+				if(nextPosition[1] !== false)
+				{
+					this.args.angle = Math.atan2(forePosition[1] - backPosition[1], 4);
+				}
+			}
 
-		if(!this.args.falling)
-		{
 			if(this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2)
 			{
 				switch(this.args.mode)
@@ -488,11 +452,14 @@ export class PointActor extends View
 				this.args.angle += Math.PI / 8*3;
 			}
 
+			if(this.willJump)
+			{
+				this.willJump = false;
+				this.doJump();
+			}
+
 			if(this.args.gSpeed === 0)
 			{
-				// this.args.xSpeed = 0;
-				// this.args.ySpeed = 0;
-
 				if(!this.stayStuck)
 				{
 					const currentTile   = tileMap.coordsToTile(this.x, this.y+1);
@@ -508,30 +475,19 @@ export class PointActor extends View
 			this.args.landed = true;
 		}
 
+		this.args.x = Math.floor(this.args.x);
+		this.args.y = Math.floor(this.args.y);
+
 		if(this.args.ignore < 1)
 		{
 			this.args.ignore = 0;
 		}
 
-		if(!this.args.float && this.args.ySpeed < this.args.maxFall)
-		{
-			this.args.ySpeed++;
-		}
-
-		if(this.args.ySpeed > this.args.maxFall)
-		{
-			this.args.ySpeed = this.args.maxFall;
-		}
-
 		if(nextPosition[0] !== false || nextPosition[1] !== false)
 		{
-			if(this.args.gSpeed < -this.args.maxGSpeed)
+			if(Math.abs(this.args.gSpeed) > this.args.maxGSpeed)
 			{
-				this.args.gSpeed = -this.args.maxGSpeed;
-			}
-			else if(this.args.gSpeed > this.args.maxGSpeed)
-			{
-				this.args.gSpeed = this.args.maxGSpeed;
+				this.args.gSpeed = this.args.maxGSpeed * Math.sign(this.args.gSpeed);
 			}
 		}
 		else
@@ -567,62 +523,111 @@ export class PointActor extends View
 			}
 		}
 
-		if(this.args.ignore > 0)
+		if(!this.isEffect)
 		{
-			this.args.ignore--;
-		}
+			let backAngle = this.args.airAngle;
 
-		if(this.args.float > 0)
-		{
-			this.args.float--;
-		}
-
-		let backAngle = this.args.airAngle;
-
-		if(this.args.airAngle > 0)
-		{
-			backAngle -= Math.PI;
-		}
-		else
-		{
-			backAngle += Math.PI;
-		}
-
-		let testX = this.x;
-		let testY = this.y;
-
-		if(this.getMapSolidAt(testX, testY))
-		{
-			this.args.ignore = 5;
-
-			let b, blockers
-
-			while(b = this.getMapSolidAt(testX, testY))
+			if(this.args.airAngle > 0)
 			{
-				blockers = b;
-				testX += Math.cos(backAngle);
-				testY += Math.sin(backAngle);
+				backAngle -= Math.PI;
+			}
+			else
+			{
+				backAngle += Math.PI;
 			}
 
-			if(Array.isArray(blockers))
+			let testX = this.x;
+			let testY = this.y;
+
+			if(this.getMapSolidAt(testX, testY))
 			{
-				blockers.map(a => { this.collideWith(a); a.collideWith(this); });
+				this.args.ignore = 1;
+
+				let blockers;
+
+				while(true)
+				{
+					blockers = this.getMapSolidAt(testX, testY);
+
+					if(!blockers)
+					{
+						break;
+					}
+
+					if(Array.isArray(blockers))
+					{
+						blockers = blockers
+							.filter(x=>x!==this)
+							.filter(x=>x.collideA(this));
+
+						if(!blockers.length)
+						{
+							console.log(blockers.length);
+							break;
+						}
+					}
+
+					if(!this.args.xSpeed && !this.args.ySpeed)
+					{
+						testY--;
+					}
+					else
+					{
+						testX += Math.cos(backAngle);
+						testY += Math.sin(backAngle);
+					}
+				}
+
+				this.args.falling = false;
+
+				this.args.x = testX;
+				this.args.y = testY;
+
+				this.willJump = false;
 			}
+		}
 
-			this.args.x = testX;
-			this.args.y = testY;
+		const scanDown = this.castRay(
+			10
+			, this.downAngle
+			, (i, point) => {
+				const actors = this.viewport.actorsAtPoint(...point)
+					.filter(x=>x.solid && x!==this)
+					.filter(a => a.collideA(this));
 
-			this.args.xSpeed = 0;
+				if(actors.length > 0)
+				{
+					return i;
+				}
+
+				const tile    = tileMap.coordsToTile(...point);
+				const tileNo  = tileMap.getTileNumber(...tile);
+
+				if(!tileNo)
+				{
+					return;
+				}
+
+				if(tileMap.getSolid(tileNo, ...point))
+				{
+					return i;
+				}
+			}
+		);
+
+		if(!this.args.falling && (scanDown === false || scanDown > 1))
+		{
+			this.args.falling = true;
+			this.args.xSpeed = 0; //-1 * Math.sign(this.args.xSpeed);
 			this.args.ySpeed = 0;
-
-			this.args.falling = false;
-			this.willJump = false;
+			this.args.ignore = 6;
 		}
 
 		this.args.debugVector = this.args.angle;
 
-		if(this.args.falling)
+		if(this.args.falling && !this.args.float && this.args.ySpeed < this.args.ySpeedMax)
 		{
+			this.args.ySpeed++;
 			this.args.debugVector = this.args.airAngle;
 			this.args.landed = false;
 		}
@@ -640,27 +645,54 @@ export class PointActor extends View
 		this.args.colliding = this.colliding;
 	}
 
-	collideWith(other)
+	collideA(other)
 	{
-		if(other.y < this.y && other.x >= this.x - (this.args.width/2))
+		if(other.y <= this.y - this.args.height)
 		{
 			this.args.collType = 'collision-top';
 		}
-		else if(other.y > this.y + this.args.height)
-		{
-			this.args.collType = 'collision-bottom';
-		}
-		else if(other.x < this.x)
+		else if(other.x < this.x - Math.floor(this.args.width/2))
 		{
 			this.args.collType = 'collision-left';
 		}
-		else if(other.x >= this.x + (this.args.width/2))
+		else if(other.x >= this.x + Math.floor(this.args.width/2))
 		{
 			this.args.collType = 'collision-right';
 		}
-
+		else if(other.y >= this.y)
+		{
+			this.args.collType = 'collision-bottom';
+		}
 
 		this.colliding = true;
+
+		other.collideB(this);
+
+		// return true;
+	}
+
+	collideB(other)
+	{
+		if(other.y <= this.y - this.args.height)
+		{
+			this.args.collType = 'collision-top';
+		}
+		else if(other.x < this.x - Math.floor(this.args.width/2))
+		{
+			this.args.collType = 'collision-left';
+		}
+		else if(other.x >= this.x + Math.floor(this.args.width/2))
+		{
+			this.args.collType = 'collision-right';
+		}
+		else if(other.y >= this.y)
+		{
+			this.args.collType = 'collision-bottom';
+		}
+
+		this.colliding = true;
+
+		// return true;
 	}
 
 	findNextStep(offset)
@@ -710,9 +742,9 @@ export class PointActor extends View
 				, this.downAngle
 				, offsetPoint
 				, (i, point) => {
-					const actors = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
-
-					actors.map(a => { this.collideWith(a); a.collideWith(this); });
+					const actors = this.viewport.actorsAtPoint(...point)
+						.filter(x=>x.solid && x!==this)
+						.filter(a => a.collideA(this));
 
 					if(actors.length > 0)
 					{
@@ -740,7 +772,7 @@ export class PointActor extends View
 			}
 			else
 			{
-				currentLevel += downFirstSolid;
+				// currentLevel += downFirstSolid;
 			}
 
 			if(downFirstSolid === 0)
@@ -773,9 +805,9 @@ export class PointActor extends View
 					, this.upAngle
 					, offsetPoint
 					, (i, point) => {
-						const actors = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
-
-						actors.map(a => { this.collideWith(a); a.collideWith(this); });
+						const actors = this.viewport.actorsAtPoint(...point)
+							.filter(x=>x.solid && x!==this)
+							.filter(a => a.collideA(this));
 
 						if(actors.length === 0)
 						{
@@ -885,7 +917,7 @@ export class PointActor extends View
 
 		if(this.running)
 		{
-			force = JUMP_FORCE * 1.5;
+			force = JUMP_FORCE * 2;
 		}
 		else if(this.crawling)
 		{
@@ -894,7 +926,7 @@ export class PointActor extends View
 
 		const originalMode = this.args.mode;
 
-		this.args.ignore  = 500;
+		this.args.ignore  = 1;
 		this.args.landed  = false;
 		this.args.falling = true;
 		this.args.gSpeed  = 0;
@@ -1066,17 +1098,23 @@ export class PointActor extends View
 		}
 	}
 
-	getMapSolidAt(...point)
+	getMapSolidAt(x, y, actors = true)
 	{
 		const tileMap = this.viewport.tileMap;
-		const actors  = this.viewport.actorsAtPoint(...point).filter(x=>x!==this);
 
-		if(actors.length > 0)
+		if(actors)
 		{
-			return actors;
+			const actors = this.viewport.actorsAtPoint(x,y)
+				.filter(x=>x!==this)
+				.filter(x=>x.solid);
+
+			if(actors.length > 0)
+			{
+				return actors;
+			}
 		}
 
-		const tile   = tileMap.coordsToTile(...point);
+		const tile   = tileMap.coordsToTile(x,y);
 		const tileNo = tileMap.getTileNumber(...tile);
 
 		if(!tileNo)
@@ -1084,8 +1122,12 @@ export class PointActor extends View
 			return false;
 		}
 
-		return tileMap.getSolid(tileNo, ...point);
+		return tileMap.getSolid(tileNo, x,y);
 	}
+
+	get canStick() { return false; }
+	get isEffect() { return false; }
+	get solid() { return false; }
 
 	get x() { return this.args.x }
 	get y() { return this.args.y }

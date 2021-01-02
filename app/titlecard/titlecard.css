@@ -128,8 +128,12 @@
 	font-size: 18pt;
 }
 
-.titlecard-field {
-	transition: opacity var(--tFunc);
+.titlecard.start .titlecard-field {
+	background-color: #000;
+}
+
+.titlecard .titlecard-field {
+	transition: opacity var(--tFunc), background-color var(--tFunc);
 	background-color: #2548dd;
 	opacity: 1;
 }
