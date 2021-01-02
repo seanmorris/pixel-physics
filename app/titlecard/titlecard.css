@@ -32,13 +32,13 @@
 }
 
 .titlecard.closing {
-	--tFunc: 0.125s ease-in;
+	--tFunc: 0.25s ease-out;
 	--timer: 0;
 	--timer2: 0;
 }
 
 .titlecard.closed {
-	--tFunc: 0.125s ease-out;
+	--tFunc: 0.2s ease-in;
 	--timer: 100;
 	--timer2: 100;
 }
@@ -50,7 +50,7 @@
 	right: 0;
 	color: white;
 	font-family: '04b11';
-	font-size: 36pt;
+	font-size: 42pt;
 	text-shadow: 4px 4px 0px black;
 	text-align: right;
 }

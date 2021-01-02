@@ -248,10 +248,22 @@ export class Viewport extends View
 				{
 					this.args.actors[0].xAxis = gamepad.axes[0] > 0 ? 1 : -1;
 				}
+				else if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
+				{
+					if(this.args.actors[0].args.mode === 1)
+					{
+						this.args.actors[0].xAxis = gamepad.axes[1] > 0 ? 1 : -1;
+					}
+					else if(this.args.actors[0].args.mode === 3)
+					{
+						this.args.actors[0].xAxis = gamepad.axes[1] > 0 ? -1 : 1;
+					}
+				}
 				else
 				{
 					this.args.actors[0].xAxis = 0;
 				}
+
 
 				if(gamepad.buttons[14].pressed)
 				{
@@ -260,6 +272,28 @@ export class Viewport extends View
 				else if(gamepad.buttons[15].pressed)
 				{
 					this.args.actors[0].xAxis = 1;
+				}
+				else if(gamepad.buttons[12].pressed)
+				{
+					if(this.args.actors[0].args.mode === 1)
+					{
+						this.args.actors[0].xAxis = -1;
+					}
+					else if(this.args.actors[0].args.mode === 3)
+					{
+						this.args.actors[0].xAxis = 1;
+					}
+				}
+				else if(gamepad.buttons[13].pressed)
+				{
+					if(this.args.actors[0].args.mode === 1)
+					{
+						this.args.actors[0].xAxis = 1;
+					}
+					else if(this.args.actors[0].args.mode === 3)
+					{
+						this.args.actors[0].xAxis = -1;
+					}
 				}
 
 				if(gamepad.buttons[5].pressed)
@@ -300,6 +334,29 @@ export class Viewport extends View
 		{
 			this.args.actors[0].xAxis = 1;
 		}
+		else if(Keyboard.get().getKey('ArrowUp') > 0 || Keyboard.get().getKey('w') > 0)
+		{
+			if(this.args.actors[0].args.mode === 1)
+			{
+				this.args.actors[0].xAxis = -1;
+			}
+			else if(this.args.actors[0].args.mode === 3)
+			{
+				this.args.actors[0].xAxis = 1;
+			}
+		}
+		else if(Keyboard.get().getKey('ArrowDown') > 0 || Keyboard.get().getKey('s') > 0)
+		{
+			if(this.args.actors[0].args.mode === 1)
+			{
+				this.args.actors[0].xAxis = 1;
+			}
+			else if(this.args.actors[0].args.mode === 3)
+			{
+				this.args.actors[0].xAxis = -1;
+			}
+		}
+
 
 		if(Keyboard.get().getKey(' ') > 0)
 		{
@@ -325,20 +382,33 @@ export class Viewport extends View
 			const actor = this.args.actors[i];
 
 			actor.update();
-
-			// const colCellX = Math.floor(actor.x / this.colCellDiv);
-			// const colCellY = Math.floor(actor.y / this.colCellDiv);
-
-			// this.colCellsX  = this.colCells[ colCellX ]  = this.colCells[ colCellX ]  || [];
-			// this.colCellsXY = this.colCellsX[ colCellY ] = this.colCellsX[ colCellY ] || new Set;
-
-			// this.colCellsXY.add(actor);
-
-			// actor[ColCell] = this.colCellsXY;
 		}
 
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
 		this.args.y = -this.args.actors[0].y + this.args.height * 0.66;
+
+		if(this.args.x > 0)
+		{
+			this.args.x = 0;
+		}
+
+		if(this.args.y > 0)
+		{
+			this.args.y = 0;
+		}
+
+		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width;
+		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height;
+
+		if(this.args.x < xMax)
+		{
+			this.args.x = xMax;
+		}
+
+		if(this.args.y < yMax)
+		{
+			this.args.y = yMax;
+		}
 
 		for(var i = -1; i <= blocksWide + 1; i++)
 		{

@@ -53,8 +53,8 @@ export class PointActor extends View
 		this.args.ySpeed = 0;
 		this.args.angle  = 0;
 
-		this.args.xSpeedMax = 32;
-		this.args.ySpeedMax = 32;
+		this.args.xSpeedMax = 256;
+		this.args.ySpeedMax = 256;
 
 		this.maxStep   = 4;
 		this.backStep  = 0;
@@ -207,7 +207,7 @@ export class PointActor extends View
 					const actors = this.viewport.actorsAtPoint(...point)
 						.filter(x=>x!==this)
 						.filter(x=>x.collideA(this))
-						.filter(a=>a.solid && a.canStick);
+						.filter(a=>a.solid);
 
 					if(actors.length > 0)
 					{
@@ -239,9 +239,7 @@ export class PointActor extends View
 
 				if(Array.isArray(blockers))
 				{
-					blockers = blockers
-						.filter(a => a.collideA(this))
-						.filter(a=>a.solid && a.canStick);
+					blockers = blockers.filter(a.canStick);
 
 					if(this.willStick && blockers.length)
 					{
@@ -449,8 +447,10 @@ export class PointActor extends View
 			}
 			else
 			{
-				const backPosition = this.findNextStep(-2);
-				const forePosition = this.findNextStep(2);
+				const sensorSpread = 3;
+
+				const backPosition = this.findNextStep(-sensorSpread);
+				const forePosition = this.findNextStep(sensorSpread);
 
 				if(nextPosition[0] === false && nextPosition[1] === false)
 				{
@@ -459,7 +459,7 @@ export class PointActor extends View
 
 				if(nextPosition[1] !== false)
 				{
-					this.args.angle = Math.atan2(forePosition[1] - backPosition[1], 4);
+					this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread*2+1);
 				}
 			}
 
@@ -600,7 +600,7 @@ export class PointActor extends View
 		}
 
 		const scanDown = this.castRay(
-			10
+			4
 			, this.downAngle
 			, (i, point) => {
 				const actors = this.viewport.actorsAtPoint(...point)
