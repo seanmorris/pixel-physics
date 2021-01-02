@@ -103,8 +103,8 @@
 
 .actor-item.actor-ring:after {
 	background-image: url(/Sonic/rings.png);
-	--sprite-offset-x: -24px;
-	--sprite-offset-y: -24px;
+	--sprite-offset-x: -20px;
+	--sprite-offset-y: -20px;
 	animation: ringSpin steps(7) infinite;
 	animation-duration: calc(1ms * 480);
 	transition: opacity 0.125s ease-out;
@@ -133,7 +133,7 @@
 	background-image: url(/Sonic/brokenMonitor.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
  	--sprite-offset-x: -18px;
-	--sprite-offset-y: -28px;
+	--sprite-offset-y: -12px;
 	animation: none;
 }
 

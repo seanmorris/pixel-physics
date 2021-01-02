@@ -33,7 +33,7 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other);
 
-		if(this.args.float === -1&& this.args.collType === 'collision-bottom')
+		if(this.args.float === -1 && this.args.collType === 'collision-bottom')
 		{
 			this.args.float = 1;
 
@@ -58,15 +58,18 @@ export class Monitor extends PointActor
 			(!this.args.falling || this.args.float === -1)
 			&& other.args.ySpeed > 1
 			&& other.y < this.y
+			&& this.viewport
 		){
 			// other.args.xSpeed *= -1;
-			other.args.ySpeed *= -0.8;
+			other.args.ySpeed *= -1;
 
-			this.viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+			const viewport = this.viewport;
+
+			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
 			this.onTimeout(60, () => {
-				this.viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y}));
-				this.viewport.actors.remove( this );
+				viewport.actors.remove( this );
+				viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
 			});
 
 			return true;
@@ -86,8 +89,11 @@ export class Monitor extends PointActor
 
 		if(other.solid && this.args.collType === 'collision-bottom' && other.y > this.y)
 		{
-			this.debindX && this.debindX();
-			this.debindY && this.debindY();
+			this.debindYs && this.debindYs();
+			this.debindXs && this.debindXs();
+			this.debindGs && this.debindGs();
+			this.debindX  && this.debindX();
+			this.debindY  && this.debindY();
 
 			this.restingOn = other;
 
@@ -96,6 +102,14 @@ export class Monitor extends PointActor
 			this.debindGs = other.args.bindTo('gSpeed', v => this.args.gSpeed = v);
 			this.debindX  = other.args.bindTo('x', v => this.args.x = v);
 			this.debindY  = other.args.bindTo('y', v => this.args.y = v - this.args.height);
+
+			this.onRemove(()=>{
+				this.debindYs && this.debindYs();
+				this.debindXs && this.debindXs();
+				this.debindGs && this.debindGs();
+				this.debindX  && this.debindX();
+				this.debindY  && this.debindY();
+			});
 		}
 
 		return true;

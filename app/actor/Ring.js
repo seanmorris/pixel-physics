@@ -40,4 +40,5 @@ export class Ring extends PointActor
 	}
 
 	get solid() { return false; }
+	get isEffect() { return true; }
 }

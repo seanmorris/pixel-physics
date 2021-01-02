@@ -8,6 +8,7 @@ import { Keyboard } from 'curvature/input/Keyboard';
 import { TileMap } from '../tileMap/TileMap';
 
 import { QuestionBlock } from '../actor/QuestionBlock';
+import { BrokenMonitor } from '../actor/BrokenMonitor';
 import { PointActor } from '../actor/PointActor';
 import { Explosion } from '../actor/Explosion';
 import { Monitor } from '../actor/Monitor';
@@ -86,28 +87,42 @@ export class Viewport extends View
 			else if(a == Bag.ITEM_REMOVED)
 			{
 				i.viewport = null;
+
+				if(i[ColCell])
+				{
+					console.log(i[ColCell]);
+					i[ColCell].delete(i);
+				}
+
 			}
 		});
 
 		const actor = new PointActor({x: 1280, y: 96});
 
 		const monitor = new Monitor({x: 1328, y: 96 });
-		const monitor2 = new Monitor({x: 1386, y: 208, float: -1 });
+		const monitor2 = new Monitor({x: 1392, y: 208, float: -1 });
 		const explosion = new Explosion({x: 1440, y: 224, float: -1 });
 
-		const questionBlock = new QuestionBlock({x: 1328, y: 208 });
+		const questionBlock = new QuestionBlock({x: 1328, y: 224 });
 
-		const ring = new Ring({x: 1252, y: 192 });
-		const ring2 = new Ring({x: 1220, y: 192  });
-		const ring3 = new Ring({x: 1188, y: 192  });
+		const ring6 = new Ring({x: 1456, y: 287 });
+		const ring5 = new Ring({x: 1424, y: 287 });
+		const ring4 = new Ring({x: 1392, y: 287 });
+
+		const ring3 = new Ring({x: 1184, y: 191 });
+		const ring2 = new Ring({x: 1216, y: 191 });
+		const ring1 = new Ring({x: 1248, y: 191 });
 
 		this.actors.add( actor );
 		this.actors.add( questionBlock );
 		this.actors.add( monitor );
 		this.actors.add( monitor2 );
-		this.actors.add( ring );
+		this.actors.add( ring1 );
 		this.actors.add( ring2 );
 		this.actors.add( ring3 );
+		this.actors.add( ring4 );
+		this.actors.add( ring5 );
+		this.actors.add( ring6 );
 
 		this.args.actors = this.actors.list;
 
@@ -132,7 +147,7 @@ export class Viewport extends View
 
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 
-		this.colCellDiv = 10;
+		this.colCellDiv = 64;
 		this.colCells   = {};
 	}
 
@@ -150,13 +165,15 @@ export class Viewport extends View
 
 			this.args.animation = '';
 
-			this.onTimeout(500, () => {
+			this.onTimeout(750, () => {
 				this.args.animation = 'opening';
 				this.tags.viewport.focus();
 
-				this.onTimeout(250, () => {
+				this.onTimeout(500, () => {
 					this.args.animation = 'opening2';
 					this.tags.viewport.focus();
+
+					this.update();
 
 					this.onTimeout(1500, () => {
 						this.args.animation = 'closing';
@@ -298,6 +315,8 @@ export class Viewport extends View
 		{
 			const actor = this.args.actors[i];
 
+			this.setColCell(actor);
+
 			actor.updateStart();
 		}
 
@@ -307,15 +326,15 @@ export class Viewport extends View
 
 			actor.update();
 
-			const colCellX = Math.floor(actor.x / this.colCellDiv);
-			const colCellY = Math.floor(actor.y / this.colCellDiv);
+			// const colCellX = Math.floor(actor.x / this.colCellDiv);
+			// const colCellY = Math.floor(actor.y / this.colCellDiv);
 
-			this.colCellsX  = this.colCells[ colCellX ]  = this.colCells[ colCellX ]  || [];
-			this.colCellsXY = this.colCellsX[ colCellY ] = this.colCellsX[ colCellY ] || new Set;
+			// this.colCellsX  = this.colCells[ colCellX ]  = this.colCells[ colCellX ]  || [];
+			// this.colCellsXY = this.colCellsX[ colCellY ] = this.colCellsX[ colCellY ] || new Set;
 
-			this.colCellsXY.add(actor);
+			// this.colCellsXY.add(actor);
 
-			actor[ColCell] = this.colCellsXY;
+			// actor[ColCell] = this.colCellsXY;
 		}
 
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
@@ -433,26 +452,52 @@ export class Viewport extends View
 	{
 		const actors = [];
 
-		for(let i in this.args.actors)
+		const cells = this.getNearbyColCells({x,y});
+
+		for(const i in cells)
 		{
-			const actor = this.args.actors[i];
+			const cell = cells[i];
 
-			const offset = Math.floor(actor.args.width / 2);
-
-			const left   = -offset + actor.args.x;
-			const right  = -offset + actor.args.x + actor.args.width;
-
-			const top    = actor.args.y - actor.args.height;
-			const bottom = actor.args.y;
-
-			if(x >= left && right > x)
+			for(const actor of cell.values())
 			{
-				if(bottom >= y && y > top)
+				const offset = Math.floor(actor.args.width / 2);
+
+				const left   = -offset + actor.args.x;
+				const right  = -offset + actor.args.x + actor.args.width;
+
+				const top    = actor.args.y - actor.args.height;
+				const bottom = actor.args.y;
+
+				if(x >= left && right > x)
 				{
-					actors.push( actor );
+					if(bottom >= y && y > top)
+					{
+						actors.push( actor );
+					}
 				}
 			}
 		}
+
+		// for(let i in this.args.actors)
+		// {
+		// 	const actor = this.args.actors[i];
+
+		// 	const offset = Math.floor(actor.args.width / 2);
+
+		// 	const left   = -offset + actor.args.x;
+		// 	const right  = -offset + actor.args.x + actor.args.width;
+
+		// 	const top    = actor.args.y - actor.args.height;
+		// 	const bottom = actor.args.y;
+
+		// 	if(x >= left && right > x)
+		// 	{
+		// 		if(bottom >= y && y > top)
+		// 		{
+		// 			actors.push( actor );
+		// 		}
+		// 	}
+		// }
 
 		return actors;
 	}
@@ -470,5 +515,54 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+	}
+
+	colCellAddress({x,y})
+	{
+		return {x: Math.floor( x / this.colCellDiv ), y: Math.floor( y / this.colCellDiv )};
+	}
+
+	getColCell(actor)
+	{
+		const address = this.colCellAddress(actor);
+
+		this.colCells[address.x] = this.colCells[address.x] || {};
+
+		this.colCells[address.x][address.y] = this.colCells[address.x][address.y] || new Set;
+
+		return this.colCells[address.x][address.y];
+	}
+
+	setColCell(actor)
+	{
+		const cell = this.getColCell(actor);
+
+		if(actor[ColCell] && actor[ColCell] !== cell)
+		{
+			actor[ColCell].delete(actor);
+		}
+
+		actor[ColCell] = cell;
+
+		actor[ColCell].add(actor);
+
+		return cell;
+	}
+
+	getNearbyColCells(actor)
+	{
+		return [
+			this.getColCell({x:actor.x-this.colCellDiv, y:actor.y-this.colCellDiv})
+			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+0})
+			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+this.colCellDiv})
+
+			, this.getColCell({x:actor.x, y:actor.y-this.colCellDiv})
+			, this.getColCell({x:actor.x, y:actor.y+0})
+			, this.getColCell({x:actor.x, y:actor.y+this.colCellDiv})
+
+			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y-this.colCellDiv})
+			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y+0})
+			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y+this.colCellDiv})
+		];
 	}
 }

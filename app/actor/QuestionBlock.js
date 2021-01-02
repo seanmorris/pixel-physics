@@ -40,7 +40,7 @@ export class QuestionBlock extends PointActor
 
 			this.args.ySpeed = speed;
 
-			const ySpeedMax = 11;
+			const ySpeedMax = 10;
 
 			if(Math.abs(speed) > ySpeedMax)
 			{
