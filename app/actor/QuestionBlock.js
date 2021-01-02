@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class QuestionBlock extends PointActor
 {
+	maxBounce = 4;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -26,38 +28,46 @@ export class QuestionBlock extends PointActor
 
 		if(this.args.collType === 'collision-bottom')
 		{
-			if(other.args.ySpeed >= 0)
-			{
-				if(this.args.ySpeed >= 0)
-				{
-					other.args.ySpeed += this.args.ySpeed;
-				}
-				else
-				{
-					other.args.ySpeed *= 2;
-				}
+			const impulse = Math.abs(other.args.ySpeed);
 
-				return true;
+			other.args.falling = true;
+
+			if(other.args.ySpeed > 0)
+			{
+				other.args.ySpeed += this.args.ySpeed;
+			}
+			else
+			{	this.args.y  -= impulse;
+				other.args.y += impulse;
+			}
+
+			if(this.args.ySpeed > 0 && this.args.ySpeed > other.args.ySpeed)
+			{
+				other.args.ySpeed = Math.abs(other.args.ySpeed);
+				other.args.y += this.args.ySpeed;
+			}
+
+			if(this.args.ySpeed < 0)
+			{
+				this.args.ySpeed = -Math.abs(this.args.ySpeed);
 			}
 
 			if(this.args.ySpeed)
 			{
-				other.args.y = ( this.y + this.args.height ) - this.args.ySpeed;
-				other.args.ySpeed = -other.args.ySpeed;
-				return true;
+				return;
 			}
 
-			const speed = -Math.abs(other.args.ySpeed);
+			const ySpeedMax = this.maxBounce;
 
-			this.args.ySpeed = speed;
-
-			const ySpeedMax = 12;
+			let speed = -Math.abs(other.args.ySpeed);
 
 			if(Math.abs(speed) > ySpeedMax)
 			{
-				this.args.ySpeed = ySpeedMax * Math.sign(speed);
+				speed = ySpeedMax * Math.sign(speed);
 			}
 
+
+			this.args.ySpeed = speed;
 			other.args.ySpeed = -speed;
 		}
 
@@ -77,7 +87,7 @@ export class QuestionBlock extends PointActor
 				this.args.ySpeed -= 1;
 			}
 
-			if(Math.abs(this.args.y - this.initY) < 1 && Math.abs(this.args.ySpeed) < 0.75)
+			if(Math.abs(this.args.y - this.initY) < 1 && Math.abs(this.args.ySpeed) < 1)
 			{
 				this.args.ySpeed = 0;
 				this.args.y = this.initY;
@@ -85,9 +95,20 @@ export class QuestionBlock extends PointActor
 
 		}
 
-		super.update();
-
 		this.args.ySpeed *= 0.9;
+
+		this.args.ySpeed = Math.floor(this.args.ySpeed * 100) / 100;
+
+		this.args.y = Math.round(this.args.y);
+
+		const ySpeedMax = this.maxBounce;
+
+		if(Math.abs(this.args.ySpeed) > ySpeedMax)
+		{
+			this.args.ySpeed = ySpeedMax * Math.sign(this.args.ySpeed);
+		}
+
+		super.update();
 	}
 
 	get canStick() { return false; }

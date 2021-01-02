@@ -130,3 +130,4 @@ export class Monitor extends PointActor
 	get canStick() { return false; }
 	get solid() { return true; }
 }
+

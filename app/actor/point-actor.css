@@ -98,7 +98,9 @@
 	height: 48px;
 
 	animation: explosion steps(5) infinite;
-	animation-duration: calc(1ms * 240);
+	animation-duration: calc(1ms * 720);
+
+	z-index: 20000;
 }
 
 .actor-item.actor-ring:after {

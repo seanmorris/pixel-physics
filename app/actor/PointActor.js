@@ -9,7 +9,7 @@ const WALKING_SPEED  = 128;
 const RUNNING_SPEED  = 2 * WALKING_SPEED;
 const CRAWLING_SPEED = 1;
 
-const JUMP_FORCE     = 16;
+const JUMP_FORCE     = 14;
 
 const DEFAULT_GRAVITY = MODE_FLOOR;
 
@@ -171,8 +171,6 @@ export class PointActor extends View
 
 					if(actors.length > 0)
 					{
-						console.log(i,lastPoint);
-
 						return lastPoint;
 					}
 
@@ -244,34 +242,35 @@ export class PointActor extends View
 				{
 					const stickers = blockers.filter(a=>a.canStick);
 
-					console.log(blockers);
-
 					if(this.willStick && stickers.length)
 					{
+						console.log('STICK 1');
 						this.args.gSpeed = Math.floor(-xSpeedOriginal);
 						this.args.mode = MODE_CEILING;
 						this.args.falling = false;
 					}
-					else
-					{
-						console.log('Item ceiling bounce');
-						this.args.ySpeed = -Math.abs(this.args.ySpeed);
-					}
+					// else
+					// {
+					// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
+					// }
 				}
 				else if(this.willStick)
 				{
-					this.args.gSpeed = Math.floor(-xSpeedOriginal);
-					this.args.mode = MODE_CEILING;
-					this.args.falling = false;
-				}
-				else
-				{
-					console.log('Ceiling bounce');
+					const blockers = this.getMapSolidAt(this.x, this.y-1);
+					const stickers = Array.isArray(blockers) && blockers.filter(a=>a.canStick);
 
-					this.args.ySpeed = -Math.abs(this.args.ySpeed);
+					if(!blockers.length || (blockers.length && stickers.length))
+					{
+						console.log('STICK 2');
+						this.args.gSpeed = Math.floor(-xSpeedOriginal);
+						this.args.mode = MODE_CEILING;
+						this.args.falling = false;
+					}
 				}
-
-				console.log( this.args.ySpeed, blockers );
+				// else
+				// {
+				// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
+				// }
 			}
 			else if(airPoint !== false)
 			{
@@ -597,11 +596,12 @@ export class PointActor extends View
 				backAngle += Math.PI;
 			}
 
-			let testX = this.x;
-			let testY = this.y;
 
-			if(this.getMapSolidAt(testX, testY))
+			if(this.getMapSolidAt(this.x, this.y))
 			{
+				let testX = this.x;
+				let testY = this.y;
+
 				this.args.ignore = 1;
 
 				let blockers;
@@ -617,9 +617,7 @@ export class PointActor extends View
 
 					if(Array.isArray(blockers))
 					{
-						blockers = blockers
-							.filter(x=>x!==this)
-							.filter(x=>x.collideA(this));
+						blockers = blockers.filter(x=>x!==this).filter(x=>x.collideA(this));
 
 						if(!blockers.length)
 						{

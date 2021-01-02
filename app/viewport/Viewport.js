@@ -368,15 +368,6 @@ export class Viewport extends View
 		{
 			const actor = this.args.actors[i];
 
-			this.setColCell(actor);
-
-			actor.updateStart();
-		}
-
-		for(const i in this.args.actors)
-		{
-			const actor = this.args.actors[i];
-
 			if(actor.args.float)
 			{
 				actor.update();
@@ -388,15 +379,23 @@ export class Viewport extends View
 		{
 			const actor = this.args.actors[i];
 
+			this.setColCell(actor);
+
+			actor.updateStart();
+		}
+
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
 			if(!actor.args.float)
 			{
 				actor.update();
 			}
-
 		}
 
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
-		this.args.y = -this.args.actors[0].y + this.args.height * 0.66;
+		this.args.y = -this.args.actors[0].y + this.args.height * 0.75;
 
 		if(this.args.x > 0)
 		{
