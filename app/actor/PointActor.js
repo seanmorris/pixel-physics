@@ -259,8 +259,6 @@ export class PointActor extends View
 			}
 			else if(airPoint !== false)
 			{
-				console.log('LANDED');
-
 				this.args.ignore = 1;
 
 				const direction = Math.sign(this.args.xSpeed);
