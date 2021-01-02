@@ -9,7 +9,7 @@ const WALKING_SPEED  = 128;
 const RUNNING_SPEED  = 2 * WALKING_SPEED;
 const CRAWLING_SPEED = 1;
 
-const JUMP_FORCE     = 20;
+const JUMP_FORCE     = 16;
 
 const DEFAULT_GRAVITY = MODE_FLOOR;
 
@@ -242,20 +242,36 @@ export class PointActor extends View
 
 				if(Array.isArray(blockers))
 				{
-					blockers = blockers.filter(a=>a.canStick);
+					const stickers = blockers.filter(a=>a.canStick);
 
-					if(this.willStick && blockers.length)
+					console.log(blockers);
+
+					if(this.willStick && stickers.length)
 					{
 						this.args.gSpeed = Math.floor(-xSpeedOriginal);
 						this.args.mode = MODE_CEILING;
 						this.args.falling = false;
 					}
+					else
+					{
+						console.log('Item ceiling bounce');
+						this.args.ySpeed = -Math.abs(this.args.ySpeed);
+					}
 				}
 				else if(this.willStick)
 				{
+					this.args.gSpeed = Math.floor(-xSpeedOriginal);
 					this.args.mode = MODE_CEILING;
 					this.args.falling = false;
 				}
+				else
+				{
+					console.log('Ceiling bounce');
+
+					this.args.ySpeed = -Math.abs(this.args.ySpeed);
+				}
+
+				console.log( this.args.ySpeed, blockers );
 			}
 			else if(airPoint !== false)
 			{
@@ -607,7 +623,6 @@ export class PointActor extends View
 
 						if(!blockers.length)
 						{
-							console.log(blockers.length);
 							break;
 						}
 					}

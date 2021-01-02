@@ -98,11 +98,10 @@ export class Viewport extends View
 
 		const actor = new PointActor({x: 1280, y: 96});
 
-		const monitor = new Monitor({x: 1328, y: 96 });
-		const monitor2 = new Monitor({x: 1392, y: 208, float: -1 });
-		const explosion = new Explosion({x: 1440, y: 224, float: -1 });
+		const monitor = new Monitor({x: 1312, y: 96 });
+		const monitor2 = new Monitor({x: 1376, y: 192, float: -1 });
 
-		const questionBlock = new QuestionBlock({x: 1328, y: 224 });
+		const questionBlock = new QuestionBlock({x: 1312, y: 224 });
 
 		const ring6 = new Ring({x: 1456, y: 287 });
 		const ring5 = new Ring({x: 1424, y: 287 });
@@ -263,7 +262,6 @@ export class Viewport extends View
 					this.args.actors[0].xAxis = 0;
 				}
 
-
 				if(gamepad.buttons[14].pressed)
 				{
 					this.args.actors[0].xAxis = -1;
@@ -356,7 +354,6 @@ export class Viewport extends View
 			}
 		}
 
-
 		if(Keyboard.get().getKey(' ') > 0)
 		{
 			this.args.actors[0].jump();
@@ -380,7 +377,22 @@ export class Viewport extends View
 		{
 			const actor = this.args.actors[i];
 
-			actor.update();
+			if(actor.args.float)
+			{
+				actor.update();
+			}
+
+		}
+
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			if(!actor.args.float)
+			{
+				actor.update();
+			}
+
 		}
 
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;

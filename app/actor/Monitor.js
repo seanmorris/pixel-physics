@@ -56,9 +56,12 @@ export class Monitor extends PointActor
 		}
 		else if(
 			(!this.args.falling || this.args.float === -1)
-			&& other.args.ySpeed > 1
-			&& other.y < this.y
+			&& (Math.abs(other.args.xSpeed) > 64
+				|| Math.abs(other.args.gSpeed) > 64
+				|| (other.args.ySpeed > 1 && other.y < this.y)
+			)
 			&& this.viewport
+			&& !this.gone
 		){
 			// other.args.xSpeed *= -1;
 			other.args.ySpeed *= -1;
@@ -67,12 +70,21 @@ export class Monitor extends PointActor
 
 			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
-			this.onTimeout(60, () => {
+			if(Math.abs(other.args.xSpeed) > 64 || Math.abs(other.args.gSpeed) > 64)
+			{
 				viewport.actors.remove( this );
 				viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
-			});
+			}
+			else
+			{
+				this.onTimeout(60, () => {
+					viewport.actors.remove( this );
+					viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
+				});
+			}
 
-			return true;
+
+			return false;
 		}
 
 		return true;

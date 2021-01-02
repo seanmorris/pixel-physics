@@ -26,17 +26,28 @@ export class QuestionBlock extends PointActor
 
 		if(this.args.collType === 'collision-bottom')
 		{
-			if(other.args.ySpeed > 0)
+			if(other.args.ySpeed >= 0)
 			{
+				if(this.args.ySpeed >= 0)
+				{
+					other.args.ySpeed += this.args.ySpeed;
+				}
+				else
+				{
+					other.args.ySpeed *= 2;
+				}
+
 				return true;
 			}
 
 			if(this.args.ySpeed)
 			{
+				other.args.y = ( this.y + this.args.height ) - this.args.ySpeed;
+				other.args.ySpeed = -other.args.ySpeed;
 				return true;
 			}
 
-			const speed = other.args.ySpeed * 2;
+			const speed = -Math.abs(other.args.ySpeed);
 
 			this.args.ySpeed = speed;
 
@@ -47,7 +58,7 @@ export class QuestionBlock extends PointActor
 				this.args.ySpeed = ySpeedMax * Math.sign(speed);
 			}
 
-			other.args.ySpeed *= -1;
+			other.args.ySpeed = -speed;
 		}
 
 		return true;
@@ -65,7 +76,6 @@ export class QuestionBlock extends PointActor
 			{
 				this.args.ySpeed -= 1;
 			}
-
 
 			if(Math.abs(this.args.y - this.initY) < 1 && Math.abs(this.args.ySpeed) < 0.75)
 			{
