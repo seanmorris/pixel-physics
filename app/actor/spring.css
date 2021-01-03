@@ -1,0 +1,45 @@
+.actor-item.actor-spring {
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-spring:after {
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	background-image: url(/Sonic/springs.png);
+	width: 32px;
+	height: 32px;
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -13px;
+}
+
+.actor-item.actor-spring .spring-pad {
+	position: absolute;
+	top: -14px;
+	left: -16px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	background-image: url(/Sonic/springs.png);
+	width: 32px;
+	height: 8px;
+	--sprite-offset-x: -80px;
+	--sprite-offset-y: -92px;
+	transition: top 0.1s ease-out;
+}
+
+.actor-item.actor-spring .spring-pad:not([data-color=""]) {
+	filter: hue-rotate(var(--color));
+}
+
+.actor-item.actor-spring .spring-pad[data-type=yellow] {
+	--sprite-offset-x: -15px;
+}
+
+.actor-item.actor-spring.collision-top[data-colliding=true]:after {
+	--sprite-offset-x: -80px;
+}
+
+.actor-item.actor-spring.collision-top[data-colliding=true] .spring-pad {
+	transition: top 0.1s ease-in;
+	transition: top 0s;
+	z-index: 1;
+	top: -52px;
+}

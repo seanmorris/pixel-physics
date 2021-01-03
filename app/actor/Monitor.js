@@ -55,10 +55,11 @@ export class Monitor extends PointActor
 			return true;
 		}
 		else if(
-			(!this.args.falling || this.args.float === -1)
+			this.args.collType !== 'collision-bottom'
+			&& (!this.args.falling || this.args.float === -1)
 			&& (Math.abs(other.args.xSpeed) > 64
 				|| Math.abs(other.args.gSpeed) > 64
-				|| (other.args.ySpeed > 1 && other.y < this.y)
+				|| (other.args.falling && other.args.ySpeed > 1 && other.y < this.y)
 			)
 			&& this.viewport
 			&& !this.gone
@@ -82,7 +83,6 @@ export class Monitor extends PointActor
 					viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
 				});
 			}
-
 
 			return false;
 		}

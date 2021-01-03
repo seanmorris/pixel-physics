@@ -90,15 +90,21 @@
 	background-repeat: no-repeat;
 }
 
+.actor-item.actor-block-marble:after {
+	background-image: url(/Sonic/marble-zone-block.png);
+	width: 32px;
+	height: 32px;
+}
+
 .actor-item.actor-explosion:after {
 	background-image: url(/Sonic/explosion.png);
 	--sprite-offset-x: -8px;
-	--sprite-offset-y: -8px;
+	--sprite-offset-y: -136px;
 	width: 48px;
 	height: 48px;
 
 	animation: explosion steps(5) infinite;
-	animation-duration: calc(1ms * 720);
+	animation-duration: calc(1ms * 360);
 
 	z-index: 20000;
 }
@@ -106,9 +112,9 @@
 .actor-item.actor-ring:after {
 	background-image: url(/Sonic/rings.png);
 	--sprite-offset-x: -20px;
-	--sprite-offset-y: -20px;
-	animation: ringSpin steps(7) infinite;
-	animation-duration: calc(1ms * 480);
+	--sprite-offset-y: -148px;
+	animation: ringSpin steps(4) infinite;
+	animation-duration: calc(1ms * 360);
 	transition: opacity 0.125s ease-out;
 }
 
@@ -215,7 +221,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-448px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

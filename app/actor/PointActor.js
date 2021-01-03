@@ -9,7 +9,7 @@ const WALKING_SPEED  = 128;
 const RUNNING_SPEED  = 2 * WALKING_SPEED;
 const CRAWLING_SPEED = 1;
 
-const JUMP_FORCE     = 14;
+const JUMP_FORCE     = 15;
 
 const DEFAULT_GRAVITY = MODE_FLOOR;
 
@@ -354,7 +354,7 @@ export class PointActor extends View
 			if(this.args.gSpeed)
 			{
 				const max  = Math.abs(this.args.gSpeed);
-				const step = Math.ceil(max / 16);
+				const step = Math.ceil(max / 64);
 
 				const direction = Math.sign(this.args.gSpeed);
 

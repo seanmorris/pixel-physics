@@ -150,28 +150,54 @@
 			</div>
 
 			<div class = "right">
+				<label>
+					<button cv-on = "click:fullscreen(event)">fullscreen</button>
+				</label>
+				<small>(esc to revert)</small>
+			</div>
 
-				<span class = "label"><i>(pixels enlarged to show texture)</i></span>
+			<div class = "right">
 
 				<label>
-					player can stop on walls
+					<small>player character:</small>
+					<select>
+						<option value = "nuke-ball">nuclear superball</option>
+						<option value = "sonic">sonic</option>
+						<option value = "tails">tails</option>
+						<option value = "knuckles">knuckles</option>
+						<option value = "amy-rose">amy rose</option>
+						<option value = "charmy bee">charmy bee</option>
+						<option value = "mario">mario</option>
+						<option value = "luigi">luigi</option>
+						<option value = "luigi">samus</option>
+						<option value = "luigi">metal sonic</option>
+					</select>
+				</label>
+
+
+				<label>
+					<small>player can stop on walls</small>
 					<input type = "checkbox" cv-bind = "stayStuck" value = "1" />
 				</label>
 
 				<label>
-					jumps can stick to walls
+					<small>jumps can stick to walls</small>
 					<input type = "checkbox" cv-bind = "willStick" value = "1" />
 					<br />
 				</label>
 
-				<small>(requires "stop on walls")</small>
+				<small><small>(requires "stop on walls")</small></small>
+
+				<hr />
 
 				<label>
-					scale&nbsp;
+					<small>scale:</small>
 					<form>
 						<input type = "number" cv-bind = "scale" min = "1" max = "5" />
 					</form>
 				</label>
+
+				<span class = "label"><i>(pixels enlarged to show texture)</i></span>
 
 			</div>
 		</div>

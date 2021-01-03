@@ -9,9 +9,11 @@ import { TileMap } from '../tileMap/TileMap';
 
 import { QuestionBlock } from '../actor/QuestionBlock';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
+import { MarbleBlock } from '../actor/MarbleBlock';
 import { PointActor } from '../actor/PointActor';
 import { Explosion } from '../actor/Explosion';
 import { Monitor } from '../actor/Monitor';
+import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
 
 import { CharacterString } from '../ui/CharacterString';
@@ -31,6 +33,9 @@ export class Viewport extends View
 		this.sprites = new Bag;
 		this.tileMap = new TileMap;
 		this.world   = null;
+
+		this.args.yOffsetTarget = 0.75;
+		this.args.yOffset = 0.5;
 
 		this.args.status = new CharacterString({value:'', scale: 2});
 
@@ -65,8 +70,8 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 12.5;
-		this.args.height = 32 * 8.5;
+		this.args.width  = 32 * 12;
+		this.args.height = 32 * 6.75;
 		this.args.scale  = 2;
 
 		this.args.x = 0;
@@ -111,6 +116,12 @@ export class Viewport extends View
 		const ring2 = new Ring({x: 1216, y: 191 });
 		const ring1 = new Ring({x: 1248, y: 191 });
 
+		const marbleBlock = new MarbleBlock({x: 1472 + 16, y: 96});
+
+		const spring1 = new Spring({x: 1504 + 32 + 0, y: 280, base: 'red',    power: 10, color: 90});
+		const spring2 = new Spring({x: 1504 + 64 + 1, y: 280, base: 'yellow', power: 20});
+		const spring3 = new Spring({x: 1504 + 96 + 2, y: 280, base: 'red',    power: 30});
+
 		this.actors.add( actor );
 		this.actors.add( questionBlock );
 		this.actors.add( monitor );
@@ -121,6 +132,10 @@ export class Viewport extends View
 		this.actors.add( ring4 );
 		this.actors.add( ring5 );
 		this.actors.add( ring6 );
+		this.actors.add( marbleBlock );
+		this.actors.add( spring1 );
+		this.actors.add( spring2 );
+		this.actors.add( spring3 );
 
 		this.args.actors = this.actors.list;
 
@@ -149,8 +164,29 @@ export class Viewport extends View
 		this.colCells   = {};
 	}
 
+	fullscreen()
+	{
+		this.initScale = this.args.scale;
+
+		this.tags.viewport.requestFullscreen().then(res=>{
+			requestAnimationFrame(()=>{
+				const hScale = window.innerHeight / this.args.height;
+				const vScale = window.innerWidth / this.args.width;
+
+				this.args.scale = hScale > vScale ? hScale : vScale;
+			});
+		});
+	}
+
 	onAttached(event)
 	{
+		this.listen(document, 'fullscreenchange', (event) => {
+			if (!document.fullscreenElement)
+			{
+				this.args.scale = this.initScale;
+			}
+		});
+
 		this.update();
 
 		this.args.paused = true;
@@ -394,8 +430,39 @@ export class Viewport extends View
 			}
 		}
 
+		let cameraSpeed = 25;
+
+		if(this.args.actors[0].args.falling)
+		{
+			this.args.yOffsetTarget = 0.5;
+
+			let cameraSpeed = 15;
+		}
+		else if(this.args.actors[0].args.mode === 2)
+		{
+			this.args.yOffsetTarget = 0.25;
+		}
+		else if(this.args.actors[0].args.mode)
+		{
+			this.args.yOffsetTarget = 0.5;
+		}
+		else
+		{
+			this.args.yOffsetTarget = 0.75;
+		}
+
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
-		this.args.y = -this.args.actors[0].y + this.args.height * 0.75;
+		this.args.y = -this.args.actors[0].y + this.args.height * this.args.yOffset;
+
+		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
+		{
+			this.args.yOffset = this.args.yOffsetTarget
+		}
+		else
+		{
+			this.args.yOffset += ((this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed);
+		}
+
 
 		if(this.args.x > 0)
 		{
