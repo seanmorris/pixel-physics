@@ -55,7 +55,7 @@ export class Viewport extends View
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
-		this.args.gSpeed = new CharacterString({value:0, high: 100});
+		this.args.gSpeed = new CharacterString({value:0, high: 200, med: 100, low: 25});
 		this.args.ground = new CharacterString({value:''});
 		this.args.xSpeed = new CharacterString({value:0});
 		this.args.ySpeed = new CharacterString({value:0});

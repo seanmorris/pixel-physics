@@ -22,6 +22,16 @@
 	background-image: url(/Sonic/font-red.png);
 }
 
+
+.hud-character-string.yellow .hud-character {
+	background-image: url(/Sonic/font-yellow.png);
+}
+
+
+.hud-character-string.orange .hud-character {
+	background-image: url(/Sonic/font-orange.png);
+}
+
 .hud-character[data-type="letter"] {
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) calc(-16px * var(--scale));
 }

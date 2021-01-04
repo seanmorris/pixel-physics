@@ -25,6 +25,14 @@ export class CharacterString extends View
 			{
 				this.args.alert = 'red';
 			}
+			else if(Math.abs(v) > this.args.med)
+			{
+				this.args.alert = 'orange';
+			}
+			else if(Math.abs(v) > this.args.low)
+			{
+				this.args.alert = 'yellow';
+			}
 			else
 			{
 				this.args.alert = '';
