@@ -3,7 +3,7 @@ import { View } from 'curvature/base/View';
 export class CharacterString extends View
 {
 	template =
-		`<div class = "hud-character-string [[hide]]" cv-each = "chars:char:c" style = "--scale:[[scale]];"><span
+		`<div class = "hud-character-string [[hide]] [[alert]]" cv-each = "chars:char:c" style = "--scale:[[scale]];"><span
 				class = "hud-character"
 				data-type  = "[[char.type]]"
 				data-value = "[[char.pos]]"
@@ -20,6 +20,15 @@ export class CharacterString extends View
 		this.args.scale = this.args.scale || 1;
 
 		this.args.bindTo('value', v => {
+
+			if(Math.abs(v) > this.args.high)
+			{
+				this.args.alert = 'red';
+			}
+			else
+			{
+				this.args.alert = '';
+			}
 
 			const chars = String(v).split('').map((pos,i) => {
 

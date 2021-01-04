@@ -42,6 +42,14 @@
 	opacity: 0.75;
 }
 
+.actor-generic {
+	transition: transform 0.1s ease-out 0.1s;
+}
+
+.actor-generic[data-camera-mode="aerial"] {
+	transform: scale(1.25);
+}
+
 .actor-generic[data-falling="false"][data-mode="0"]:after {
 	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--debugVector))));
 }

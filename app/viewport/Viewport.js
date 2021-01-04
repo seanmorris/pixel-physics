@@ -46,8 +46,8 @@ export class Viewport extends View
 		this.args.labelGround = new CharacterString({value:'Grounded: '});
 		this.args.labelAngle  = new CharacterString({value:'G theta: '});
 		this.args.labelGSpeed = new CharacterString({value:'G speed: '});
-		this.args.labelXSpeed = new CharacterString({value:'X speed: '});
-		this.args.labelYSpeed = new CharacterString({value:'Y speed: '});
+		this.args.labelXSpeed = new CharacterString({value:'X air spd: '});
+		this.args.labelYSpeed = new CharacterString({value:'Y air spd: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
 		this.args.labelFps    = new CharacterString({value:'FPS: '});
 
@@ -55,7 +55,7 @@ export class Viewport extends View
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
-		this.args.gSpeed = new CharacterString({value:0});
+		this.args.gSpeed = new CharacterString({value:0, high: 100});
 		this.args.ground = new CharacterString({value:''});
 		this.args.xSpeed = new CharacterString({value:0});
 		this.args.ySpeed = new CharacterString({value:0});
@@ -76,8 +76,8 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 10;
-		this.args.height = 32 * 5.5;
+		this.args.width  = 32 * 12;
+		this.args.height = 32 * 7;
 		this.args.scale  = 2;
 
 		this.args.x = 0;
@@ -131,18 +131,18 @@ export class Viewport extends View
 
 		this.actors.add( actor );
 
-		this.actors.add( questionBlock );
+		// this.actors.add( questionBlock );
 
-		this.actors.add( monitor );
-		this.actors.add( monitor2 );
+		// this.actors.add( monitor );
+		// this.actors.add( monitor2 );
 
-		this.actors.add( ring1 );
-		this.actors.add( ring2 );
-		this.actors.add( ring3 );
+		// this.actors.add( ring1 );
+		// this.actors.add( ring2 );
+		// this.actors.add( ring3 );
 
-		this.actors.add( ring4 );
-		this.actors.add( ring5 );
-		this.actors.add( ring6 );
+		// this.actors.add( ring4 );
+		// this.actors.add( ring5 );
+		// this.actors.add( ring6 );
 
 		// this.actors.add( marbleBlock );
 		// this.actors.add( marbleBlock2 );
@@ -444,24 +444,25 @@ export class Viewport extends View
 			}
 		}
 
-		let cameraSpeed = 10;
+		let cameraSpeed = 5;
 
 		if(this.args.actors[0].args.falling)
 		{
 			this.args.yOffsetTarget = 0.5;
+			cameraSpeed = 25;
 
-			cameraSpeed = 15;
 		}
 		else if(this.args.actors[0].args.mode === 2)
 		{
 			if(this.args.actors[0].args.cameraMode = 'normal')
 			{
 				this.args.yOffsetTarget = 0.25;
-				cameraSpeed = 50;
+				cameraSpeed = 1;
 			}
 			else
 			{
 				this.args.yOffsetTarget = 0.5;
+				cameraSpeed = 4;
 
 			}
 		}
@@ -476,6 +477,8 @@ export class Viewport extends View
 
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
 		this.args.y = -this.args.actors[0].y + this.args.height * this.args.yOffset;
+
+		console.log(this.args.yOffsetTarget - this.args.yOffset);
 
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
 		{
@@ -497,7 +500,7 @@ export class Viewport extends View
 		}
 
 		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width;
-		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height;
+		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height; + 92
 
 		if(this.args.x < xMax)
 		{

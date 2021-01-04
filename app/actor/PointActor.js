@@ -6,7 +6,7 @@ const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
 const WALKING_SPEED  = 72;
-const RUNNING_SPEED  = 2 * WALKING_SPEED;
+const RUNNING_SPEED  = 1024;
 const CRAWLING_SPEED = 1;
 
 const JUMP_FORCE     = 15;
@@ -26,6 +26,7 @@ export class PointActor extends View
 			--x:[[x]];
 			--y:[[y]];
 		"
+		data-camera-mode = "[[cameraMode]]"
 		data-colliding = "[[colliding]]"
 		data-falling   = "[[falling]]"
 		data-facing    = "[[facing]]"
@@ -93,6 +94,9 @@ export class PointActor extends View
 
 		this.impulseMag = null;
 		this.impulseDir = null;
+
+		this.accel = 1;
+		this.fastAccel = 5;
 	}
 
 	updateStart()
@@ -750,15 +754,27 @@ export class PointActor extends View
 						this.args.gSpeed = Math.floor(this.args.gSpeed * 1000) / 1000;
 					}
 				}
-				else if(Math.abs(this.args.gSpeed) > 0.01)
+				else if(this.args.gSpeed > 0)
 				{
-					this.args.gSpeed *= 0.75;
-
-					this.args.gSpeed = Math.floor(this.args.gSpeed * 1000) / 1000;
+					if(this.args.running)
+					{
+						this.args.gSpeed -= this.fastAccel;
+					}
+					else
+					{
+						this.args.gSpeed -= this.accel;
+					}
 				}
-				else if(Math.abs(this.args.gSpeed) < 1)
+				else if(this.args.gSpeed < 0)
 				{
-					this.args.gSpeed = 0;
+					if(this.args.running)
+					{
+						this.args.gSpeed += this.fastAccel;
+					}
+					else
+					{
+						this.args.gSpeed += this.accel;
+					}
 				}
 			}
 			else if(this.xAxis)
@@ -779,7 +795,7 @@ export class PointActor extends View
 			this.args.direction = 1;
 		}
 
-		if(this.getMapSolidAt(this.x, this.y +64))
+		if(this.getMapSolidAt(this.x, this.y + 240))
 		{
 			this.args.cameraMode = 'normal';
 		}

@@ -16,6 +16,12 @@
 	color: rgba(0,0,0,0);
 }
 
+
+.hud-character-string.red .hud-character {
+	animation: redalert 0.25s steps(2) infinite;
+	background-image: url(/Sonic/font-red.png);
+}
+
 .hud-character[data-type="letter"] {
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) calc(-16px * var(--scale));
 }
@@ -26,4 +32,15 @@
 
 .hud-character[data-type="letter"][data-value="11"] {
 	width: calc(6px * var(--scale));
+}
+
+
+@-webkit-keyframes redalert{
+	from{
+		background-image: url(/Sonic/font-red.png);
+		transform: scale(1.25);
+	}
+	to{
+		background-image: url(/Sonic/font.png);
+	}
 }
