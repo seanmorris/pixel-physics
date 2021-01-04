@@ -20,6 +20,7 @@ import { CharacterString } from '../ui/CharacterString';
 
 import { PointDump } from '../debug/PointDump';
 
+const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
 export class Viewport extends View
@@ -42,14 +43,15 @@ export class Viewport extends View
 		this.args.labelX = new CharacterString({value:'x pos: '});
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
-		this.args.labelGround = new CharacterString({value:'Ground: '});
+		this.args.labelGround = new CharacterString({value:'Grounded: '});
+		this.args.labelAngle  = new CharacterString({value:'G theta: '});
 		this.args.labelGSpeed = new CharacterString({value:'G speed: '});
 		this.args.labelXSpeed = new CharacterString({value:'X speed: '});
 		this.args.labelYSpeed = new CharacterString({value:'Y speed: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
-		this.args.labelAngle  = new CharacterString({value:'G Angle: '});
+		this.args.labelFps    = new CharacterString({value:'FPS: '});
 
-		this.args.labelAirAngle  = new CharacterString({value:'Air Angle: '});
+		this.args.labelAirAngle  = new CharacterString({value:'Air theta: '});
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
@@ -62,6 +64,10 @@ export class Viewport extends View
 
 		this.args.airAngle  = new CharacterString({value:0});
 
+		this.args.fpsSprite = new CharacterString({value:0});
+
+		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
+
 		this.args.blockSize = 32;
 
 		this.args.willStick = false;
@@ -70,8 +76,8 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 12;
-		this.args.height = 32 * 6.75;
+		this.args.width  = 32 * 10;
+		this.args.height = 32 * 5.5;
 		this.args.scale  = 2;
 
 		this.args.x = 0;
@@ -101,7 +107,7 @@ export class Viewport extends View
 			}
 		});
 
-		const actor = new PointActor({x: 1280, y: 96});
+		const actor = new PointActor({x: 1440, y: 96});
 
 		const monitor = new Monitor({x: 1312, y: 96 });
 		const monitor2 = new Monitor({x: 1376, y: 192, float: -1 });
@@ -116,26 +122,34 @@ export class Viewport extends View
 		const ring2 = new Ring({x: 1216, y: 191 });
 		const ring1 = new Ring({x: 1248, y: 191 });
 
-		const marbleBlock = new MarbleBlock({x: 1472 + 16, y: 96});
+		const marbleBlock = new MarbleBlock({x: 1536, y: 96});
+		const marbleBlock2 = new MarbleBlock({x: 1842, y: 96});
 
-		const spring1 = new Spring({x: 1504 + 32 + 0, y: 280, base: 'red',    power: 10, color: 90});
-		const spring2 = new Spring({x: 1504 + 64 + 1, y: 280, base: 'yellow', power: 20});
-		const spring3 = new Spring({x: 1504 + 96 + 2, y: 280, base: 'red',    power: 30});
+		const spring1 = new Spring({x: 1600 + 32 - 1, y: 280, base: 'red',    power: 10, color: 90});
+		const spring2 = new Spring({x: 1600 + 64 + 0, y: 280, base: 'yellow', power: 20});
+		const spring3 = new Spring({x: 1600 + 96 + 2, y: 280, base: 'red',    power: 25});
 
 		this.actors.add( actor );
+
 		this.actors.add( questionBlock );
+
 		this.actors.add( monitor );
 		this.actors.add( monitor2 );
+
 		this.actors.add( ring1 );
 		this.actors.add( ring2 );
 		this.actors.add( ring3 );
+
 		this.actors.add( ring4 );
 		this.actors.add( ring5 );
 		this.actors.add( ring6 );
-		this.actors.add( marbleBlock );
-		this.actors.add( spring1 );
-		this.actors.add( spring2 );
-		this.actors.add( spring3 );
+
+		// this.actors.add( marbleBlock );
+		// this.actors.add( marbleBlock2 );
+
+		// this.actors.add( spring1 );
+		// this.actors.add( spring2 );
+		// this.actors.add( spring3 );
 
 		this.args.actors = this.actors.list;
 
@@ -148,7 +162,6 @@ export class Viewport extends View
 			{
 				this.args.stayStuck = true;
 			}
-
 		});
 
 		this.args.bindTo('stayStuck', v => {
@@ -160,6 +173,7 @@ export class Viewport extends View
 
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 
+		this.colCellCache = {};
 		this.colCellDiv = 64;
 		this.colCells   = {};
 	}
@@ -280,17 +294,17 @@ export class Viewport extends View
 
 				if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.3)
 				{
-					this.args.actors[0].xAxis = gamepad.axes[0] > 0 ? 1 : -1;
+					this.args.actors[0].xAxis = gamepad.axes[0];
 				}
 				else if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
 				{
 					if(this.args.actors[0].args.mode === 1)
 					{
-						this.args.actors[0].xAxis = gamepad.axes[1] > 0 ? 1 : -1;
+						this.args.actors[0].xAxis = gamepad.axes[1];
 					}
 					else if(this.args.actors[0].args.mode === 3)
 					{
-						this.args.actors[0].xAxis = gamepad.axes[1] > 0 ? -1 : 1;
+						this.args.actors[0].xAxis = gamepad.axes[1];
 					}
 				}
 				else
@@ -430,17 +444,26 @@ export class Viewport extends View
 			}
 		}
 
-		let cameraSpeed = 25;
+		let cameraSpeed = 10;
 
 		if(this.args.actors[0].args.falling)
 		{
 			this.args.yOffsetTarget = 0.5;
 
-			let cameraSpeed = 15;
+			cameraSpeed = 15;
 		}
 		else if(this.args.actors[0].args.mode === 2)
 		{
-			this.args.yOffsetTarget = 0.25;
+			if(this.args.actors[0].args.cameraMode = 'normal')
+			{
+				this.args.yOffsetTarget = 0.25;
+				cameraSpeed = 50;
+			}
+			else
+			{
+				this.args.yOffsetTarget = 0.5;
+
+			}
 		}
 		else if(this.args.actors[0].args.mode)
 		{
@@ -462,7 +485,6 @@ export class Viewport extends View
 		{
 			this.args.yOffset += ((this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed);
 		}
-
 
 		if(this.args.x > 0)
 		{
@@ -625,27 +647,6 @@ export class Viewport extends View
 			}
 		}
 
-		// for(let i in this.args.actors)
-		// {
-		// 	const actor = this.args.actors[i];
-
-		// 	const offset = Math.floor(actor.args.width / 2);
-
-		// 	const left   = -offset + actor.args.x;
-		// 	const right  = -offset + actor.args.x + actor.args.width;
-
-		// 	const top    = actor.args.y - actor.args.height;
-		// 	const bottom = actor.args.y;
-
-		// 	if(x >= left && right > x)
-		// 	{
-		// 		if(bottom >= y && y > top)
-		// 		{
-		// 			actors.push( actor );
-		// 		}
-		// 	}
-		// }
-
 		return actors;
 	}
 
@@ -693,12 +694,22 @@ export class Viewport extends View
 
 		actor[ColCell].add(actor);
 
+		actor[ColCellsNear] = this.getNearbyColCells(actor);
+
 		return cell;
 	}
 
 	getNearbyColCells(actor)
 	{
-		return [
+		const address = this.colCellAddress(actor);
+		const name = `${address.x}::${address.y}`;
+
+		if(this.colCellCache[name])
+		{
+			return this.colCellCache[name];
+		}
+
+		return this.colCellCache[name] = [
 			this.getColCell({x:actor.x-this.colCellDiv, y:actor.y-this.colCellDiv})
 			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+0})
 			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+this.colCellDiv})

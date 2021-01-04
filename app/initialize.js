@@ -31,12 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		viewportA.update();
 
 		const update = ()=>{
+
 			if(Date.now() - lastTime >= minFrameTime)
 			{
 				viewportA.update();
+
+				viewportA.args.fps = 1000/(Date.now() - lastTime);
+
 				lastTime = Date.now();
 			}
-			// viewportB.update();
+
 			requestAnimationFrame(update);
 		};
 

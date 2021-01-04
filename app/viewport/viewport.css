@@ -156,6 +156,7 @@ html, body {
 	right: 0.5em;
 	padding: 1em;
 	background-color: rgba(0,0,0,0.5);
+	pointer-events: initial;
 }
 
 .viewport .hud > div {

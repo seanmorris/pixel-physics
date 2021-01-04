@@ -50,7 +50,7 @@
 	right: 0;
 	color: white;
 	font-family: '04b11';
-	font-size: 42pt;
+	font-size: 36pt;
 	text-shadow: 4px 4px 0px black;
 	text-align: right;
 }
@@ -111,9 +111,16 @@
 	position: absolute;
 	right: calc(-1% * var(--timer));
 	top: 71%;
+	font-size: 14pt;
 	height: 29%;
 	width: 100%;
 	background-color: #fffd00;
+	text-shadow:
+		1px 1px 0px rgba(0,0,0,1)
+		, 1px -1px 0px rgba(0,0,0,1)
+		, -1px 1px 0px rgba(0,0,0,1)
+		, -1px -1px 0px rgba(0,0,0,1)
+	;
 }
 
 .titlecard-border-text {

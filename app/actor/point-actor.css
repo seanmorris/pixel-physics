@@ -15,7 +15,7 @@
 }
 
 .point-actor.actor-generic[data-colliding=true] {
-	box-shadow: 0 0 4px 4px rgba(0,0,255,0.45);
+	box-shadow: 0 0 4px 4px rgba(0,255,255,0.45);
 }
 
 .actor-generic {
@@ -169,19 +169,24 @@
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 270deg)));
 }
 
+.actor-item {
+	position: relative;
+}
+
 .actor-item:before {
 	box-sizing: border-box;
 	content: ' ';
 	transform: translate(-50%, calc(-100% + 1px));
 	position: absolute;
-	top: 1px;
+	top: 0px;
 	left: 0px;
 	height: calc(1px + calc(1px * var(--height)));
 	width: calc(2px + calc(1px * var(--width)));
 }
 
 .actor-item[data-colliding="true"]:before {
-	--collColor: rgba(255,0,0,0.333);
+	--collColor: rgba(0,255,255,0.15);
+	z-index: 10;
 }
 
 .actor-item.collision-top:before {

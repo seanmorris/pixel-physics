@@ -2,7 +2,7 @@ import { PointActor } from './PointActor';
 
 export class QuestionBlock extends PointActor
 {
-	maxBounce = 4;
+	maxBounce = 8;
 
 	constructor(...args)
 	{

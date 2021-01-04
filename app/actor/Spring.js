@@ -50,8 +50,8 @@ export class Spring extends PointActor
 
 		if(this.args.collType === 'collision-top')
 		{
-			other.args.ySpeed  = -20;
-			other.args.ySpeed  = -this.args.power;
+			other.impulse(this.args.power, -Math.PI / 2, true);
+			// other.args.ySpeed  = -this.args.power || -15;
 			other.args.falling = true;
 			return true;
 		}

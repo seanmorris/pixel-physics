@@ -10,56 +10,85 @@ export class MarbleBlock extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
+
+		this.hanging = 0;
 	}
 
 	update()
 	{
 		super.update();
 
-		if(!this.restingOn)
+		if(this.args.falling)
 		{
-			this.debindYs && this.debindYs();
-			this.debindXs && this.debindXs();
-			this.debindGs && this.debindGs();
-			this.debindX  && this.debindX();
-			this.debindY  && this.debindY();
+			this.hanging = false;
 		}
 	}
 
-	collideA(other)
+	collideA(other, type)
 	{
 		super.collideA(other);
 
-		if(this.args.collType == 'collision-left' || this.args.collType == 'collision-right')
+		if(type === 1 && other.args.gSpeed < 0)
 		{
-			// this.args.gSpeed = other.args.gSpeed;
+			return true;
 		}
 
-		if(this.args.collType == 'collision-left')
+		if(type === 3 && other.args.gSpeed > 0)
 		{
-			this.args.x = other.x + 17 + other.args.gSpeed;
-
-			other.args.gSpeed = 1;
+			return true;
 		}
 
-		if(this.args.collType == 'collision-right')
+		if(type === 3 || type === 1)
 		{
-			this.args.x = other.x + -17 + other.args.gSpeed;
+			if(other.args.falling)
+			{
+				return true;
+			}
 
-			other.args.gSpeed = 1;
+			if(!other.args.gSpeed || this.args.falling)
+			{
+				return true;
+			}
+
+			const speed = Math.abs(other.args.gSpeed);
+
+			if(Math.abs(this.hanging) + speed > this.args.width)
+			{
+				other.args.gSpeed = other.args.direction;
+			}
+			else if(speed > 1)
+			{
+				other.args.gSpeed = 1 * other.args.direction;
+			}
+
+			this.args.direction = other.args.direction;
+
+			const nextPos = this.findNextStep(other.args.gSpeed);
+
+			if(nextPos[3])
+			{
+				return true;
+			}
+			else if(nextPos[2] === true)
+			{
+				this.hanging += other.args.direction;
+				this.args.x += other.args.direction;
+				return false;
+			}
+			else if(nextPos[0] || nextPos[1])
+			{
+				this.args.x += nextPos[0];
+				this.args.y += nextPos[1];
+
+				return false;
+			}
 		}
-
-		return true;
-	}
-
-	collideB(other)
-	{
-		super.collideB(other);
 
 		return true;
 	}
 
 	get canStick() { return false; }
 	get solid() { return true; }
+	get rotateLock() { return true; }
 }
 

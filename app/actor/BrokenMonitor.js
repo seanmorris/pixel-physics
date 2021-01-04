@@ -21,10 +21,10 @@ export class BrokenMonitor extends PointActor
 
 		if(!this.restingOn)
 		{
-			this.debindYs && this.debindYs();
-			this.debindXs && this.debindXs();
-			this.debindGs && this.debindGs();
-			this.debindX  && this.debindX();
+			// this.debindYs && this.debindYs();
+			// this.debindXs && this.debindXs();
+			// this.debindGs && this.debindGs();
+			// this.debindX  && this.debindX();
 			this.debindY  && this.debindY();
 		}
 	}
@@ -69,25 +69,25 @@ export class BrokenMonitor extends PointActor
 
 		if(other.solid && this.args.collType === 'collision-bottom' && other.y > this.y)
 		{
-			this.debindYs && this.debindYs();
-			this.debindXs && this.debindXs();
-			this.debindGs && this.debindGs();
-			this.debindX  && this.debindX();
+			// this.debindYs && this.debindYs();
+			// this.debindXs && this.debindXs();
+			// this.debindGs && this.debindGs();
+			// this.debindX  && this.debindX();
 			this.debindY  && this.debindY();
 
 			this.restingOn = other;
 
-			this.debindYs = other.args.bindTo('ySpeed', v => this.args.gSpeed = v);
-			this.debindXs = other.args.bindTo('xSpeed', v => this.args.gSpeed = v);
-			this.debindGs = other.args.bindTo('gSpeed', v => this.args.gSpeed = v);
-			this.debindX  = other.args.bindTo('x', v => this.args.x = v);
+			// this.debindYs = other.args.bindTo('ySpeed', v => this.args.gSpeed = v);
+			// this.debindXs = other.args.bindTo('xSpeed', v => this.args.gSpeed = v);
+			// this.debindGs = other.args.bindTo('gSpeed', v => this.args.gSpeed = v);
+			// this.debindX  = other.args.bindTo('x', v => this.args.x = v);
 			this.debindY  = other.args.bindTo('y', v => this.args.y = v - this.args.height);
 
 			this.onRemove(()=>{
-				this.debindYs && this.debindYs();
-				this.debindXs && this.debindXs();
-				this.debindGs && this.debindGs();
-				this.debindX  && this.debindX();
+				// this.debindYs && this.debindYs();
+				// this.debindXs && this.debindXs();
+				// this.debindGs && this.debindGs();
+				// this.debindX  && this.debindX();
 				this.debindY  && this.debindY();
 			});
 		}
