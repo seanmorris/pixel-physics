@@ -44,8 +44,8 @@ export class Viewport extends View
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
 		this.args.labelGround = new CharacterString({value:'Grounded: '});
-		this.args.labelAngle  = new CharacterString({value:'G theta: '});
-		this.args.labelGSpeed = new CharacterString({value:'G speed: '});
+		this.args.labelAngle  = new CharacterString({value:'Gnd theta: '});
+		this.args.labelGSpeed = new CharacterString({value:'speed: '});
 		this.args.labelXSpeed = new CharacterString({value:'X air spd: '});
 		this.args.labelYSpeed = new CharacterString({value:'Y air spd: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
