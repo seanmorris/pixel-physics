@@ -1,0 +1,29 @@
+[
+    {
+        "color": "#ff00ff00",
+        "name": "player",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#00ff0000",
+        "name": "spring",
+        "properties": [
+            {
+                "name": "angle",
+                "type": "number",
+                "value": "0"
+            },
+            {
+                "name": "color",
+                "type": "number",
+                "value": "0"
+            },
+            {
+                "name": "power",
+                "type": "number",
+                "value": "10"
+            }
+        ]
+    }
+]
