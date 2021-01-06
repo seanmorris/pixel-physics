@@ -161,6 +161,14 @@
 	animation-duration: calc(1ms * 480);
 }
 
+.actor-item.actor-question-block[data-empty="true"]:after {
+	background-image: url(/Sonic/question-block.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -76px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: none;
+}
+
 .actor-item[data-mode="0"]:after {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--angle)));
 }

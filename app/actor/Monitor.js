@@ -13,6 +13,8 @@ export class Monitor extends PointActor
 
 		this.args.width  = 28;
 		this.args.height = 32;
+
+		this.gone = false;
 	}
 
 	update()
@@ -33,38 +35,19 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other);
 
-		if(this.args.float === -1 && this.args.collType === 'collision-bottom')
-		{
-			this.args.float = 1;
-
-			const maxBounce = 6;
-
-			const speed = other.args.ySpeed;
-
-			if(Math.abs(speed) < maxBounce)
-			{
-				this.args.ySpeed = speed;
-			}
-			else
-			{
-				this.args.ySpeed = -maxBounce;
-			}
-
-			other.args.ySpeed = 0;
-
-			return true;
-		}
-		else if(
+		if(
 			this.args.collType !== 'collision-bottom'
 			&& (!this.args.falling || this.args.float === -1)
-			&& (Math.abs(other.args.xSpeed) > 64
+			&& (Math.abs(other.args.xSpeed) > 3
 				|| Math.abs(other.args.gSpeed) > 64
 				|| (other.args.falling && other.args.ySpeed > 1 && other.y < this.y)
 			)
 			&& this.viewport
 			&& !this.gone
 		){
-			// other.args.xSpeed *= -1;
+			this.gone = true;
+
+			other.args.xSpeed *= -1;
 			other.args.ySpeed *= -1;
 
 			const viewport = this.viewport;
@@ -84,6 +67,7 @@ export class Monitor extends PointActor
 				});
 			}
 
+			other.args.rings += 10;
 
 			return false;
 		}

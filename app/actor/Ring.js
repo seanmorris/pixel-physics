@@ -8,8 +8,8 @@ export class Ring extends PointActor
 
 		this.args.type = 'actor-item actor-ring';
 
-		this.args.width  = 24;
-		this.args.height = 24;
+		this.args.width  = 32;
+		this.args.height = 32;
 		this.args.float  = -1;
 		this.args.gone   = false;
 	}
@@ -34,6 +34,8 @@ export class Ring extends PointActor
 			this.onTimeout(480, () => {
 				this.viewport.actors.remove( this );
 			});
+
+			other.args.rings++;
 		}
 
 		this.args.gone = true;

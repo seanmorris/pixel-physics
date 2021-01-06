@@ -45,6 +45,12 @@ html, body {
 .viewport-header,
 .viewport-caption {
 	margin-bottom: 1em;
+	white-space: nowrap;
+}
+
+.alert {
+	color: #A00;
+	font-weight: bold;
 }
 
 .viewport,
@@ -140,6 +146,14 @@ html, body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.viewport-content {
+	z-index: 999;
+}
+
+.viewport-background[data-layer="2"] {
+	z-index: 1000;
 }
 
 .viewport-background[data-layer="2"] > div {

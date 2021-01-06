@@ -18,12 +18,11 @@ export class LayerSwitch extends PointActor
 	{
 		const back = !!Number(this.args.back);
 
-		if(other.args.gSpeed > 0)
+		if(other.args.gSpeed >= 0)
 		{
 			other.args.layer = back ? 1 : 2;
 		}
-
-		if(other.args.gSpeed < 0)
+		else if(other.args.gSpeed < 0)
 		{
 			other.args.layer = back ? 2 : 1;
 		}

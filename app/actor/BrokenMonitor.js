@@ -33,28 +33,6 @@ export class BrokenMonitor extends PointActor
 	{
 		super.collideA(other);
 
-		if(this.args.float === -1 && this.args.collType === 'collision-bottom')
-		{
-			this.args.float = 1;
-
-			const maxBounce = 6;
-
-			const speed = other.args.ySpeed;
-
-			if(Math.abs(speed) < maxBounce)
-			{
-				this.args.ySpeed = speed;
-			}
-			else
-			{
-				this.args.ySpeed = -maxBounce;
-			}
-
-			other.args.ySpeed = 0;
-
-			return true;
-		}
-
 		return true;
 	}
 

@@ -18,6 +18,7 @@ import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
 
 import { CharacterString } from '../ui/CharacterString';
+import { HudFrame } from '../ui/HudFrame';
 
 import { Layer } from './Layer';
 
@@ -25,6 +26,8 @@ const objectPalette = {
 	player: PointActor
 	, spring: Spring
 	, 'layer-switch': LayerSwitch
+	, 'q-block': QuestionBlock
+	, 'ring':    Ring
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -75,6 +78,10 @@ export class Viewport extends View
 
 		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
 
+		this.rings = new CharacterString({value:0});
+
+		this.args.rings = new HudFrame({value:this.rings});
+
 		this.args.blockSize = 32;
 
 		this.args.willStick = false;
@@ -83,8 +90,8 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 12;
-		this.args.height = 32 * 7;
+		this.args.width  = 32 * 11;
+		this.args.height = 32 * 6;
 		this.args.scale  = 2;
 
 		this.args.x = 0;
@@ -98,6 +105,8 @@ export class Viewport extends View
 			if(a == Bag.ITEM_ADDED)
 			{
 				i.viewport = this;
+
+				this.setColCell(i);
 			}
 			else if(a == Bag.ITEM_REMOVED)
 			{
@@ -134,7 +143,7 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 
 		this.colCellCache = {};
-		this.colCellDiv = 256;
+		this.colCellDiv = 512;
 		this.colCells   = {};
 
 		this.actorPointCache = new Map;
@@ -149,7 +158,7 @@ export class Viewport extends View
 				const hScale = window.innerHeight / this.args.height;
 				const vScale = window.innerWidth / this.args.width;
 
-				// this.args.scale = hScale > vScale ? hScale : vScale;
+				this.args.scale = hScale < vScale ? hScale : vScale;
 			});
 		});
 	}
@@ -432,33 +441,35 @@ export class Viewport extends View
 
 		const angle = this.args.actors[0].angle;
 
-		for(const i in this.args.actors)
+		this.args.actors[0].updateStart();
+
+		const nearbyCells = this.getNearbyColCells(this.args.actors[0]);
+
+		this.args.actors[0].updateStart();
+
+		for(const i in nearbyCells)
 		{
-			const actor = this.args.actors[i];
+			const cell   = nearbyCells[i];
+			const actors = cell.values();
 
-			this.setColCell(actor);
-
-			actor.updateStart();
-		}
-
-		for(const i in this.args.actors)
-		{
-			const actor = this.args.actors[i];
-
-			if(actor.args.float)
+			for(const actor of actors)
 			{
-				actor.update();
+				actor.updateStart();
 			}
-
 		}
 
-		for(const i in this.args.actors)
-		{
-			const actor = this.args.actors[i];
+		this.args.actors[0].update();
 
-			if(!actor.args.float)
+		for(const i in nearbyCells)
+		{
+			const cell   = nearbyCells[i];
+			const actors = cell.values();
+
+			for(const actor of actors)
 			{
 				actor.update();
+
+				this.setColCell(actor);
 			}
 		}
 
@@ -569,10 +580,12 @@ export class Viewport extends View
 			, '--scale': this.args.scale
 		});
 
+		this.rings.args.value = this.args.actors[0].args.rings;
+
 		this.args.xPos.args.value     = Math.round(this.args.actors[0].x);
 		this.args.yPos.args.value     = Math.round(this.args.actors[0].y);
 		this.args.ground.args.value   = this.args.actors[0].args.landed;
-		this.args.gSpeed.args.value   = this.args.actors[0].args.gSpeed;
+		this.args.gSpeed.args.value   = this.args.actors[0].args.gSpeed.toFixed(2);
 		this.args.xSpeed.args.value   = Math.round(this.args.actors[0].args.xSpeed);
 		this.args.ySpeed.args.value   = Math.round(this.args.actors[0].args.ySpeed);
 		this.args.angle.args.value    = (Math.round((this.args.actors[0].args.angle) * 1000) / 1000).toFixed(3);
@@ -582,11 +595,17 @@ export class Viewport extends View
 
 		this.args.mode.args.value = modes[Math.floor(this.args.actors[0].args.mode)] || Math.floor(this.args.actors[0].args.mode);
 
-		for(const i in this.args.actors)
-		{
-			const actor = this.args.actors[i];
+		this.args.actors[0].updateEnd();
 
-			actor.updateEnd();
+		for(const i in nearbyCells)
+		{
+			const cell   = nearbyCells[i];
+			const actors = cell.values();
+
+			for(const actor of actors)
+			{
+				actor.updateEnd();
+			}
 		}
 	}
 

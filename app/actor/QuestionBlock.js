@@ -1,8 +1,28 @@
 import { PointActor } from './PointActor';
+import { Monitor } from './Monitor';
 
 export class QuestionBlock extends PointActor
 {
-	maxBounce = 8;
+	maxBounce = 4;
+
+	template = `<div
+		class = "point-actor [[type]] [[collType]]"
+		style = "
+			--angle:[[angle]];
+			--airAngle:[[airAngle]];
+			--debugVector:[[debugVector]];
+			--height:[[height]];
+			--width:[[width]];
+			--x:[[x]];
+			--y:[[y]];
+		"
+		data-colliding = "[[colliding]]"
+		data-falling   = "[[falling]]"
+		data-facing    = "[[facing]]"
+		data-angle     = "[[angle|rad2deg]]"
+		data-mode      = "[[mode]]"
+		data-empty     = "[[empty]]"
+	></div>`;
 
 	constructor(...args)
 	{
@@ -15,6 +35,8 @@ export class QuestionBlock extends PointActor
 		this.args.float  = -1;
 
 		this.initY = null;
+
+		this.empty = false;
 	}
 
 	collideA(other)
@@ -26,7 +48,7 @@ export class QuestionBlock extends PointActor
 			this.initY = this.y;
 		}
 
-		if(this.args.collType === 'collision-bottom')
+		if(this.args.collType === 'collision-bottom' && !this.args.empty)
 		{
 			const impulse = Math.abs(other.args.ySpeed);
 
@@ -59,17 +81,31 @@ export class QuestionBlock extends PointActor
 
 			const ySpeedMax = this.maxBounce;
 
-			let speed = -Math.abs(other.args.ySpeed);
+			let speed = this.args.collType === 'collision-bottom'
+				? -Math.abs(other.args.ySpeed)
+				: other.args.ySpeed;
 
 			if(Math.abs(speed) > ySpeedMax)
 			{
 				speed = ySpeedMax * Math.sign(speed);
 			}
 
+			if(!this.args.empty)
+			{
+				this.onTimeout(1250, ()=>{
+					const monitor = new Monitor({x: this.x, y: this.y - 128});
+
+					this.viewport.actors.add(monitor);
+				});
+
+				this.args.empty = true;
+			}
 
 			this.args.ySpeed = speed;
-			other.args.ySpeed = -speed;
+
+			other.args.ySpeed = -other.args.ySpeed;
 		}
+
 
 		return true;
 	}
