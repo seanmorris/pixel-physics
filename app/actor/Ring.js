@@ -12,10 +12,17 @@ export class Ring extends PointActor
 		this.args.height = 32;
 		this.args.float  = -1;
 		this.args.gone   = false;
+	}
 
-		this.sample = new Audio('/Sonic/ring-collect.wav');
+	update()
+	{
+		super.update();
 
-		this.sample.volume = 0.01 + (Math.random() * 0.025);
+		if(this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/ring-collect.wav');
+			this.sample.volume = 0.01 + (Math.random() * 0.025);
+		}
 	}
 
 	collideA(other)
@@ -31,7 +38,10 @@ export class Ring extends PointActor
 
 		if(!this.args.gone)
 		{
-			this.sample.play();
+			if(this.viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
 
 			this.onTimeout(240, () => {
 				this.args.type = 'actor-item actor-ring collected gone'

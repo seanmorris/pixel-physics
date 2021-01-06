@@ -12,10 +12,17 @@ export class Coin extends PointActor
 		this.args.height = 32;
 		this.args.float  = -1;
 		this.args.gone   = false;
+	}
 
-		this.sample = new Audio('/mario/smw_coin.wav');
+	update()
+	{
+		super.update();
 
-		this.sample.volume = 0.25 + (Math.random() * 0.15);
+		if(this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/mario/smw_coin.wav');
+			this.sample.volume = 0.25 + (Math.random() * 0.5);
+		}
 	}
 
 	collideA(other)
@@ -31,7 +38,10 @@ export class Coin extends PointActor
 
 		if(!this.args.gone)
 		{
-			this.sample.play();
+			if(this.viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
 
 			this.onTimeout(240, () => {
 				this.args.type = 'actor-item actor-coin collected gone'
