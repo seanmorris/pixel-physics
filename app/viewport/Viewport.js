@@ -18,7 +18,12 @@ import { Ring } from '../actor/Ring';
 
 import { CharacterString } from '../ui/CharacterString';
 
-import { PointDump } from '../debug/PointDump';
+import { Layer } from './Layer';
+
+const objectPalette = {
+	player: PointActor
+	, spring: Spring
+};
 
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
@@ -83,10 +88,7 @@ export class Viewport extends View
 		this.args.x = 0;
 		this.args.y = 0;
 
-		this.args.offsetX = 0;
-		this.args.offsetY = 0;
-
-		this.blocksXY = {};
+		this.args.layers = [];
 
 		this.args.animation = '';
 
@@ -106,50 +108,6 @@ export class Viewport extends View
 
 			}
 		});
-
-		const actor = new PointActor({x: 1440, y: 96});
-
-		const monitor = new Monitor({x: 1312, y: 96 });
-		const monitor2 = new Monitor({x: 1376, y: 192, float: -1 });
-
-		const questionBlock = new QuestionBlock({x: 1312, y: 224 });
-
-		const ring6 = new Ring({x: 1456, y: 287 });
-		const ring5 = new Ring({x: 1424, y: 287 });
-		const ring4 = new Ring({x: 1392, y: 287 });
-
-		const ring3 = new Ring({x: 1184, y: 191 });
-		const ring2 = new Ring({x: 1216, y: 191 });
-		const ring1 = new Ring({x: 1248, y: 191 });
-
-		const marbleBlock = new MarbleBlock({x: 1536, y: 96});
-		const marbleBlock2 = new MarbleBlock({x: 1842, y: 96});
-
-		const spring1 = new Spring({x: 1600 + 32 - 1, y: 280, base: 'red',    power: 10, color: 90});
-		const spring2 = new Spring({x: 1600 + 64 + 0, y: 280, base: 'yellow', power: 20});
-		const spring3 = new Spring({x: 1600 + 96 + 2, y: 280, base: 'red',    power: 25});
-
-		this.actors.add( actor );
-
-		// this.actors.add( questionBlock );
-
-		// this.actors.add( monitor );
-		// this.actors.add( monitor2 );
-
-		// this.actors.add( ring1 );
-		// this.actors.add( ring2 );
-		// this.actors.add( ring3 );
-
-		// this.actors.add( ring4 );
-		// this.actors.add( ring5 );
-		// this.actors.add( ring6 );
-
-		// this.actors.add( marbleBlock );
-		// this.actors.add( marbleBlock2 );
-
-		// this.actors.add( spring1 );
-		// this.actors.add( spring2 );
-		// this.actors.add( spring3 );
 
 		this.args.actors = this.actors.list;
 
@@ -174,8 +132,10 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 
 		this.colCellCache = {};
-		this.colCellDiv = 64;
+		this.colCellDiv = 256;
 		this.colCells   = {};
+
+		this.actorPointCache = new Map;
 	}
 
 	fullscreen()
@@ -187,7 +147,7 @@ export class Viewport extends View
 				const hScale = window.innerHeight / this.args.height;
 				const vScale = window.innerWidth / this.args.width;
 
-				this.args.scale = hScale > vScale ? hScale : vScale;
+				// this.args.scale = hScale > vScale ? hScale : vScale;
 			});
 		});
 	}
@@ -264,9 +224,53 @@ export class Viewport extends View
 
 	update()
 	{
+		this.actorPointCache.clear();
+
 		if(this.args.paused)
 		{
 			this.tags.frame.style({'--scale': this.args.scale, '--width': this.args.width});
+
+			return;
+		}
+
+		if(!this.args.actors.length)
+		{
+			const objDefs = this.tileMap.getObjectDefs();
+
+			for(let i in objDefs)
+			{
+				if(this.args.actors.length)
+				{
+					continue;
+				}
+
+				const objDef  = objDefs[i];
+				const objType = objDef.type;
+
+				if(!objectPalette[objType])
+				{
+					continue;
+				}
+
+				const objClass = objectPalette[objType];
+
+				const objArgs = {
+					x: objDef.x + 16
+					, y: objDef.y + 16
+					, visible: objDef.visible
+				};
+
+				for(const i in objDef.properties)
+				{
+					const property = objDef.properties[i];
+
+					objArgs[ property.name ] = property.value;
+				}
+
+				const obj = new objClass(Object.assign({}, objArgs));
+
+				this.actors.add( obj );
+			}
 
 			return;
 		}
@@ -404,6 +408,15 @@ export class Viewport extends View
 			}
 		}
 
+		if(Keyboard.get().getKey('PageUp'))
+		{
+			this.args.actors[0].args.layer = 1;
+		}
+		else if(Keyboard.get().getKey('PageDown'))
+		{
+			this.args.actors[0].args.layer = 2;
+		}
+
 		if(Keyboard.get().getKey(' ') > 0)
 		{
 			this.args.actors[0].jump();
@@ -411,8 +424,14 @@ export class Viewport extends View
 
 		const angle = this.args.actors[0].angle;
 
-		const blocksWide = Math.ceil((this.args.width  / this.args.blockSize));
-		const blocksHigh = Math.ceil((this.args.height / this.args.blockSize));
+		for(const i in this.args.actors)
+		{
+			const actor = this.args.actors[i];
+
+			this.setColCell(actor);
+
+			actor.updateStart();
+		}
 
 		for(const i in this.args.actors)
 		{
@@ -423,15 +442,6 @@ export class Viewport extends View
 				actor.update();
 			}
 
-		}
-
-		for(const i in this.args.actors)
-		{
-			const actor = this.args.actors[i];
-
-			this.setColCell(actor);
-
-			actor.updateStart();
 		}
 
 		for(const i in this.args.actors)
@@ -478,8 +488,6 @@ export class Viewport extends View
 		this.args.x = -this.args.actors[0].x + this.args.width  * 0.5;
 		this.args.y = -this.args.actors[0].y + this.args.height * this.args.yOffset;
 
-		console.log(this.args.yOffsetTarget - this.args.yOffset);
-
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
 		{
 			this.args.yOffset = this.args.yOffsetTarget
@@ -512,89 +520,43 @@ export class Viewport extends View
 			this.args.y = yMax;
 		}
 
-		for(var i = -1; i <= blocksWide + 1; i++)
+		const layers = this.tileMap.tileLayers;
+		const layerCount = layers.length;
+
+		for(let i = 0; i < layerCount; i++)
 		{
-			for(var j = -1; j <= blocksHigh + 1; j++)
+			if(!this.args.layers[i])
 			{
-				if(!this.blocksXY[i])
-				{
-					this.blocksXY[i] = {};
-				}
-
-				if(!this.blocksXY[i][j])
-				{
-					this.blocksXY[i][j] = new Tag('<div>');
-				}
-
-				let block = this.blocksXY[i][j];
-
-				const blockId = this.tileMap.getTileNumber(
-					this.args.offsetX
-						+ i
-						- Math.ceil(this.args.x / this.args.blockSize)
-						+ 0
-					, this.args.offsetY
-						+ j
-						- Math.ceil(this.args.y / this.args.blockSize)
-						+ 0
-				);
-
-				const tileXY = this.tileMap.getTile(blockId);
-
-				if(!this.blocks.has(block))
-				{
-					block.style({
-						width: this.args.blockSize + 'px'
-						, height: this.args.blockSize + 'px'
-					});
-
-					const transX = this.args.blockSize * i
-						+ (this.args.offsetX * this.args.blockSize)
-						% this.args.blockSize;
-
-					const transY = this.args.blockSize * j
-						+ (this.args.offsetY * this.args.blockSize)
-						% this.args.blockSize;
-
-					block.style({
-						transform: `translate(${transX}px, ${transY}px)`
-						, 'background-image': 'url(/Sonic/testTiles2.png)'
-						, 'background-position': -1*(tileXY[0]*this.args.blockSize)
-							+ 'px '
-							+ -1*(tileXY[1]*this.args.blockSize)
-							+ 'px'
-						, position: 'absolute'
-						, left: 0
-						, top: 0
-					});
-
-					this.blocks.add(block);
-				}
-
-				const blockOffset = -1*(tileXY[0]*this.args.blockSize)
-					+ 'px '
-					+ -1*(tileXY[1]*this.args.blockSize)
-					+ 'px';
-
-				if(block.blockOffset !== blockOffset)
-				{
-					block.style({'background-position': blockOffset});
-				}
-
-				block.blockOffset = blockOffset;
+				this.args.layers[i] = new Layer({layerId: i});
+				this.args.layers[i].args.height = this.args.height;
+				this.args.layers[i].args.width  = this.args.width;
 			}
+
+			this.args.layers[i].x = this.args.x;
+			this.args.layers[i].y = this.args.y;
+
+			this.args.layers[i].update(this.tileMap);
 		}
 
-		this.tags.frame.style({
+		this.tags.content.style({
 			'--x': Math.round(this.args.x)
 			, '--y': Math.round(this.args.y)
-			, '--xMod': this.args.x < 0
-				? Math.round(this.args.x % (this.args.blockSize))
-				: (-this.args.blockSize + Math.round(this.args.x % this.args.blockSize)) % this.args.blockSize
-			, '--yMod':  this.args.y < 0
-				? Math.round(this.args.y % (this.args.blockSize))
-				: (-this.args.blockSize + Math.round(this.args.y % this.args.blockSize)) % this.args.blockSize
-			, '--width': this.args.width
+		});
+
+		const xMod = this.args.x < 0
+			? Math.round(this.args.x % (this.args.blockSize))
+			: (-this.args.blockSize + Math.round(this.args.x % this.args.blockSize)) % this.args.blockSize;
+
+		const yMod = this.args.y < 0
+			? Math.round(this.args.y % (this.args.blockSize))
+			: (-this.args.blockSize + Math.round(this.args.y % this.args.blockSize)) % this.args.blockSize;
+
+		this.tags.background.style({
+			transform: `translate(calc(1px * ${xMod}), calc(1px * ${yMod}))`
+		});
+
+		this.tags.frame.style({
+			'--width': this.args.width
 			, '--height': this.args.height
 			, '--scale': this.args.scale
 		});
@@ -622,13 +584,17 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y)
 	{
+		const cacheKey = [x,y].join('::');
+		const actorPointCache = this.actorPointCache;
+
+		if(actorPointCache.has(cacheKey))
+		{
+			return actorPointCache.get(cacheKey);
+		}
+
 		const actors = [];
 
-		const cells = this.getNearbyColCells({x,y});
-
-		for(const i in cells)
-		{
-			const cell = cells[i];
+		this.getNearbyColCells({x,y}).map(cell => {
 
 			for(const actor of cell.values())
 			{
@@ -648,7 +614,10 @@ export class Viewport extends View
 					}
 				}
 			}
-		}
+
+		});
+
+		actorPointCache.set(cacheKey, actors);
 
 		return actors;
 	}
@@ -668,20 +637,19 @@ export class Viewport extends View
 		this.gamepad = event.gamepad;
 	}
 
-	colCellAddress({x,y})
-	{
-		return {x: Math.floor( x / this.colCellDiv ), y: Math.floor( y / this.colCellDiv )};
-	}
-
 	getColCell(actor)
 	{
-		const address = this.colCellAddress(actor);
+		const colCellDiv = this.colCellDiv;
+		const colCells   = this.colCells;
 
-		this.colCells[address.x] = this.colCells[address.x] || {};
+		const cellX = Math.floor( actor.x / colCellDiv );
+		const cellY = Math.floor( actor.y / colCellDiv );
 
-		this.colCells[address.x][address.y] = this.colCells[address.x][address.y] || new Set;
+		colCells[cellX] = colCells[cellX] || {};
 
-		return this.colCells[address.x][address.y];
+		colCells[cellX][cellY] = colCells[cellX][cellY] || new Set;
+
+		return colCells[cellX][cellY];
 	}
 
 	setColCell(actor)
@@ -697,15 +665,16 @@ export class Viewport extends View
 
 		actor[ColCell].add(actor);
 
-		actor[ColCellsNear] = this.getNearbyColCells(actor);
-
 		return cell;
 	}
 
 	getNearbyColCells(actor)
 	{
-		const address = this.colCellAddress(actor);
-		const name = `${address.x}::${address.y}`;
+		const colCellDiv = this.colCellDiv
+		const cellX = Math.floor( actor.x / colCellDiv );
+		const cellY = Math.floor( actor.y / colCellDiv );
+
+		const name = `${cellX}::${cellY}`;
 
 		if(this.colCellCache[name])
 		{
@@ -713,17 +682,21 @@ export class Viewport extends View
 		}
 
 		return this.colCellCache[name] = [
-			this.getColCell({x:actor.x-this.colCellDiv, y:actor.y-this.colCellDiv})
-			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+0})
-			, this.getColCell({x:actor.x-this.colCellDiv, y:actor.y+this.colCellDiv})
+			this.getColCell({x:actor.x-colCellDiv, y:actor.y-colCellDiv})
+			, this.getColCell({x:actor.x-colCellDiv, y:actor.y+0})
+			, this.getColCell({x:actor.x-colCellDiv, y:actor.y+colCellDiv})
 
-			, this.getColCell({x:actor.x, y:actor.y-this.colCellDiv})
+			, this.getColCell({x:actor.x, y:actor.y-colCellDiv})
 			, this.getColCell({x:actor.x, y:actor.y+0})
-			, this.getColCell({x:actor.x, y:actor.y+this.colCellDiv})
+			, this.getColCell({x:actor.x, y:actor.y+colCellDiv})
 
-			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y-this.colCellDiv})
-			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y+0})
-			, this.getColCell({x:actor.x+this.colCellDiv, y:actor.y+this.colCellDiv})
-		];
+			, this.getColCell({x:actor.x+colCellDiv, y:actor.y-colCellDiv})
+			, this.getColCell({x:actor.x+colCellDiv, y:actor.y+0})
+			, this.getColCell({x:actor.x+colCellDiv, y:actor.y+colCellDiv})
+		].filter(set=>{
+
+			return set.size;
+
+		});
 	}
 }

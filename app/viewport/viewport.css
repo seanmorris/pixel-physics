@@ -135,15 +135,20 @@ html, body {
 }
 
 .viewport-background {
-	transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));
+	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
+	transform: translate(0, 0);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-.viewport-background > div {
+.viewport-background[data-layer="0"] > div {
 	box-shadow: inset 0 0 4px rgba(255,0,0,0.4);
+}
+
+.viewport-background > div {
 	filter: brightness(75%);
+	background-repeat: no-repeat;
 	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/

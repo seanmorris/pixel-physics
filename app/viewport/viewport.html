@@ -6,8 +6,8 @@
 	<div class = "viewport" cv-ref = "viewport" tabindex="0">
 
 		<div class = "viewport-zoom">
-			<div class = "viewport-background" cv-each = "blocks:block:b" cv-ref = "background">[[block]]</div>
-			<div class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
+			<div cv-ref = "background" class = "viewport-bg-layers" cv-each = "layers:layer">[[layer]]</div>
+			<div cv-ref = "content" class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
 		</div>
 
 		<div class = "viewport-double-zoom">

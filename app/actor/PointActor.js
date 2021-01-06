@@ -5,8 +5,8 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const WALKING_SPEED  = 72;
-const RUNNING_SPEED  = 1024;
+const WALKING_SPEED  = 50;
+const RUNNING_SPEED  = Infinity;
 const CRAWLING_SPEED = 1;
 
 const JUMP_FORCE     = 15;
@@ -41,6 +41,8 @@ export class PointActor extends View
 		this.args.type = 'actor-generic'
 
 		this.args.cameraMode = 'normal';
+
+		this.args.layer = 1;
 
 		this.args.x = this.args.x || 1024 + 256;
 		this.args.y = this.args.y || 32;
@@ -179,17 +181,7 @@ export class PointActor extends View
 						return lastPoint;
 					}
 
-					const tile   = tileMap.coordsToTile(...point);
-					const tileNo = tileMap.getTileNumber(...tile);
-
-					if(!tileNo)
-					{
-						lastPoint = point.map(Math.floor);
-
-						return;
-					}
-
-					if(tileMap.getSolid(tileNo, ...point))
+					if(tileMap.getSolid(...point, this.args.layer))
 					{
 						return lastPoint;
 					}
@@ -217,15 +209,7 @@ export class PointActor extends View
 						return i;
 					}
 
-					const tile   = tileMap.coordsToTile(...point);
-					const tileNo = tileMap.getTileNumber(...tile);
-
-					if(!tileNo)
-					{
-						return;
-					}
-
-					if(tileMap.getSolid(tileNo, ...point))
+					if(tileMap.getSolid(...point, this.args.layer))
 					{
 						return i;
 					}
@@ -556,10 +540,7 @@ export class PointActor extends View
 		{
 			if(!this.stayStuck)
 			{
-				const currentTile   = tileMap.coordsToTile(this.x, this.y+1);
-				const currentTileNo = tileMap.getTileNumber(...currentTile);
-
-				if(!tileMap.getSolid(currentTileNo, this.x, this.y+1))
+				if(!tileMap.getSolid(this.x, this.y+1, this.args.layer))
 				{
 					this.args.mode = DEFAULT_GRAVITY;
 				}
@@ -670,15 +651,7 @@ export class PointActor extends View
 						return i;
 					}
 
-					const tile    = tileMap.coordsToTile(...point);
-					const tileNo  = tileMap.getTileNumber(...tile);
-
-					if(!tileNo)
-					{
-						return;
-					}
-
-					if(tileMap.getSolid(tileNo, ...point))
+					if(tileMap.getSolid(...point, this.args.layer))
 					{
 						return i;
 					}
@@ -700,15 +673,7 @@ export class PointActor extends View
 						return i;
 					}
 
-					const tile    = tileMap.coordsToTile(...point);
-					const tileNo  = tileMap.getTileNumber(...tile);
-
-					if(!tileNo)
-					{
-						return;
-					}
-
-					if(tileMap.getSolid(tileNo, ...point))
+					if(tileMap.getSolid(...point, this.args.layer))
 					{
 						return i;
 					}
@@ -879,7 +844,9 @@ export class PointActor extends View
 
 	findNextStep(offset)
 	{
-		const tileMap = this.viewport.tileMap;
+		const viewport = this.viewport
+		const tileMap  = viewport.tileMap;
+		const maxStep  = this.maxStep;
 
 		const sign = Math.sign(offset);
 
@@ -921,11 +888,11 @@ export class PointActor extends View
 			}
 
 			downFirstSolid = this.castRay(
-				this.maxStep * (1+col)
+				maxStep * (1+col)
 				, this.downAngle
 				, offsetPoint
 				, (i, point) => {
-					const actors = this.viewport.actorsAtPoint(...point)
+					const actors = viewport.actorsAtPoint(...point)
 						.filter(x => x!==this)
 						.filter(a => (i <= 1 || this.args.gSpeed) && a.callCollideHandler(this))
 						.filter(x => x.solid);
@@ -935,15 +902,7 @@ export class PointActor extends View
 						return i;
 					}
 
-					const tile    = tileMap.coordsToTile(...point);
-					const tileNo  = tileMap.getTileNumber(...tile);
-
-					if(!tileNo)
-					{
-						return;
-					}
-
-					if(tileMap.getSolid(tileNo, ...point))
+					if(tileMap.getSolid(...point, this.args.layer))
 					{
 						return i;
 					}
@@ -957,7 +916,7 @@ export class PointActor extends View
 
 			const downDiff = Math.abs(prevDown - downFirstSolid);
 
-			if(Math.abs(downDiff) > this.maxStep)
+			if(Math.abs(downDiff) > maxStep)
 			{
 				console.log( downDiff, downFirstSolid, prev, col );
 
@@ -988,29 +947,21 @@ export class PointActor extends View
 						break;
 				}
 
-				const upLength = +1 + this.maxStep * (1 + col);
+				const upLength = +1 + maxStep * (1 + col);
 
 				upFirstSpace = this.castRay(
 					upLength
 					, this.upAngle
 					, offsetPoint
 					, (i, point) => {
-						const actors = this.viewport.actorsAtPoint(...point)
+						const actors = viewport.actorsAtPoint(...point)
 							.filter(x => x!==this)
 							.filter(a => (i <= 1 || this.args.gSpeed) && a.callCollideHandler(this))
 							.filter(x => x.solid);
 
 						if(actors.length === 0)
 						{
-							const tile    = tileMap.coordsToTile(...point);
-							const tileNo  = tileMap.getTileNumber(...tile);
-
-							if(!tileNo)
-							{
-								return i;
-							}
-
-							if(!tileMap.getSolid(tileNo, ...point))
+							if(!tileMap.getSolid(...point, this.args.layer))
 							{
 								return i;
 							}
@@ -1027,7 +978,7 @@ export class PointActor extends View
 					return [(1+col) * sign, false, false, true];
 				}
 
-				if(upDiff > this.maxStep)
+				if(upDiff > maxStep)
 				{
 					console.log( upDiff, upFirstSpace, prev, col );
 					return [false, false, false, true];
@@ -1307,8 +1258,6 @@ export class PointActor extends View
 
 	getMapSolidAt(x, y, actors = true)
 	{
-		const tileMap = this.viewport.tileMap;
-
 		if(actors)
 		{
 			const actors = this.viewport.actorsAtPoint(x,y)
@@ -1321,15 +1270,9 @@ export class PointActor extends View
 			}
 		}
 
-		const tile   = tileMap.coordsToTile(x,y);
-		const tileNo = tileMap.getTileNumber(...tile);
+		const tileMap = this.viewport.tileMap;
 
-		if(!tileNo)
-		{
-			return false;
-		}
-
-		return tileMap.getSolid(tileNo, x,y);
+		return tileMap.getSolid(x,y, this.args.layer);
 	}
 
 	get canStick() { return false; }

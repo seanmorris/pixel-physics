@@ -9,12 +9,12 @@ const viewportA = new Viewport;
 const minFrameTime = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
-	viewportA.render(document.body);
-	// viewportB.render(document.body);
-
 	let lastTime = Date.now();
 
 	Promise.all([viewportA.tileMap.ready]).then(()=>{
+
+		viewportA.render(document.body);
+		// viewportB.render(document.body);
 
 		const body = new Tag(document.body);
 
@@ -45,6 +45,5 @@ document.addEventListener('DOMContentLoaded', function() {
 		};
 
 		update();
-
 	});
 });

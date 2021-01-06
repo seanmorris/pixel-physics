@@ -320,15 +320,7 @@ export class Actor extends View
 					scanLY = sensorLeft;
 				}
 
-				const leftTile   = map.coordsToTile(scanLX, scanLY);
-				const leftTileNo = map.getTileNumber(...leftTile);
-
-				if(leftTileNo === false)
-				{
-					break;
-				}
-
-				leftSolid = map.getSolid(leftTileNo, scanLX, scanLY);
+				leftSolid = map.getSolid(scanLX, scanLY);
 
 				if(leftSolid)
 				{
@@ -371,15 +363,7 @@ export class Actor extends View
 					scanRY = sensorRight;
 				}
 
-				const rightTile   = map.coordsToTile(scanRX, scanRY);
-				const rightTileNo = map.getTileNumber(...rightTile);
-
-				if(rightTileNo === false)
-				{
-					break;
-				}
-
-				rightSolid = map.getSolid(rightTileNo, scanRX, scanRY);
+				rightSolid = map.getSolid(scanRX, scanRY);
 
 				if(rightSolid)
 				{
