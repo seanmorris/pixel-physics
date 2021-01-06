@@ -10,7 +10,7 @@ body {
 		, url(/ui/pokemon-ruby-sky-overlay.png)
 		, url(/ui/pokemon-ruby-ground.png);
 	background-repeat: repeat-x, repeat-x, repeat-x, repeat-x, repeat-x;
-	background-position: 0% top, -10% 62%, -10% 62%, -10% 62%, -10% bottom;
+	background-position: 0% top, 0% 62%, 0% 62%, 0% 62%, 0% bottom;
 	background-size: auto 37%, auto 42%, auto 42%, auto 42%, auto 21.5%;
 	background-color: #357aab;
 	overflow: hidden;

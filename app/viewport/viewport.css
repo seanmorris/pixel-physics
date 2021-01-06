@@ -142,7 +142,7 @@ html, body {
 	align-items: center;
 }
 
-.viewport-background[data-layer="0"] > div {
+.viewport-background[data-layer="2"] > div {
 	box-shadow: inset 0 0 4px rgba(255,0,0,0.4);
 }
 

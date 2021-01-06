@@ -10,6 +10,7 @@ import { TileMap } from '../tileMap/TileMap';
 import { QuestionBlock } from '../actor/QuestionBlock';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 import { MarbleBlock } from '../actor/MarbleBlock';
+import { LayerSwitch } from '../actor/LayerSwitch';
 import { PointActor } from '../actor/PointActor';
 import { Explosion } from '../actor/Explosion';
 import { Monitor } from '../actor/Monitor';
@@ -23,6 +24,7 @@ import { Layer } from './Layer';
 const objectPalette = {
 	player: PointActor
 	, spring: Spring
+	, 'layer-switch': LayerSwitch
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -161,6 +163,12 @@ export class Viewport extends View
 			}
 		});
 
+		this.tags.frame.style({
+			'--width': this.args.width
+			, '--height': this.args.height
+			, '--scale': this.args.scale
+		});
+
 		this.update();
 
 		this.args.paused = true;
@@ -241,7 +249,7 @@ export class Viewport extends View
 			{
 				if(this.args.actors.length)
 				{
-					continue;
+					// continue;
 				}
 
 				const objDef  = objDefs[i];
@@ -256,7 +264,7 @@ export class Viewport extends View
 
 				const objArgs = {
 					x: objDef.x + 16
-					, y: objDef.y + 16
+					, y: objDef.y - 1
 					, visible: objDef.visible
 				};
 

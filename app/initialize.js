@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				+` -${(skyShift  / 10)}px 63%,`
 				+` ${(skyShift++ / 20)}px 63%,`
 				+` -10% bottom`
-		}) , 45);
+		}) , 9);
 
 		viewportA.update();
 

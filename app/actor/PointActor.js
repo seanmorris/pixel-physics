@@ -5,7 +5,7 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const WALKING_SPEED  = 50;
+const WALKING_SPEED  = 150;
 const RUNNING_SPEED  = Infinity;
 const CRAWLING_SPEED = 1;
 

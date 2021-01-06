@@ -1,11 +1,11 @@
 .hud-character-string {
 	--scale: 1;
 	--xyz: calc(-14px * var(--scale));
-	display: inline-flex;
-	flex-direction: row;
+
 }
 
 .hud-character {
+	display: inline-block;
 	image-rendering: pixelated;
 	background-size: auto calc(30px * var(--scale));
 	background-image: url(/Sonic/font.png);
