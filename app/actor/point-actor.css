@@ -133,6 +133,28 @@
 	animation-duration: calc(1ms * 360);
 }
 
+
+
+
+.actor-item.actor-coin:after {
+	background-image: url(/mario/coins.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -16px;
+	animation: ringSpin steps(4) infinite;
+	animation-duration: calc(1ms * 1000);
+	transition: opacity 0.125s ease-out;
+}
+
+.actor-item.actor-coin.gone:after,
+.actor-item.actor-coin.collected:after {
+	animation: coinTwinkle steps(6) infinite;
+	animation-duration: calc(1ms * 250);
+	--sprite-offset-y: -82px;
+}
+
+
+
+
 .actor-item.actor-ring.gone:after {
 	opacity: 0;
 }
@@ -246,12 +268,20 @@
 	}
 }
 
-
 @-webkit-keyframes ringTwinkle{
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes coinTwinkle{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-386px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

@@ -66,8 +66,15 @@
 
 				</table>
 			</div>
-
-			[[rings]]
+			<span class = "hud-top-left">
+				<div cv-if = "hasRings">
+					[[rings]]
+				</div>
+				<div cv-if = "hasCoins">
+					[[coins]]
+				</div>
+				<div class = "timer">[[timer]]</div>
+			</span>
 
 			<div class = "titlecard [[animation]]">
 
@@ -125,24 +132,24 @@
 				</span>
 
 				<span class = "button-index">
+					<span class = "button ps-r1"></span>
+					/ <span class = "button xb-rb"></span>
+					/ <b>shift</b>
+					- brakes (hold)
+				</span>
+
+				<span class = "button-index">
 					<span class = "button ps-o"></span>
 					/ <span class = "button xb-b"></span>
 					/ <b>ctrl</b>
-					- <span class= "alert">remove speed limit (hold)</span>
+					- <span class= "alert">ignore speed limit (hold)</span>
 				</span>
 
 				<span class = "button-index">
 					<span class = "button ps-l1"></span>
 					/ <span class = "button xb-lb"></span>
 					/ <b>ctrl</b>
-					- <span class= "alert">remove speed limit (hold)</span>
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-r1"></span>
-					/ <span class = "button xb-rb"></span>
-					/ <b>shift</b>
-					- brakes (hold)
+					- <span class= "alert">ignore speed limit (hold)</span>
 				</span>
 
 
@@ -194,6 +201,13 @@
 				<small><small>(requires "stop on walls")</small></small>
 
 				<hr />
+
+				<label>
+					<small>speed limit:</small>
+					<form>
+						<input type = "number" cv-bind = "maxSpeed" min = "1" />
+					</form>
+				</label>
 
 				<label>
 					<small>scale:</small>

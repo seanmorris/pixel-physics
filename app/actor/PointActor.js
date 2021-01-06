@@ -5,7 +5,7 @@ const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
 const MODE_RIGHT   = 3;
 
-const WALKING_SPEED  = 50;
+const WALKING_SPEED  = 25;
 const RUNNING_SPEED  = Infinity;
 const CRAWLING_SPEED = 1;
 
@@ -18,6 +18,7 @@ export class PointActor extends View
 	template = `<div
 		class = "point-actor [[type]] [[collType]]"
 		style = "
+			display:[[display]];
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
 			--debugVector:[[debugVector]];
@@ -41,7 +42,10 @@ export class PointActor extends View
 
 		this.args.type = 'actor-generic'
 
+		this.args.display = 'initial';
+
 		this.args.rings = 0;
+		this.args.coins = 0;
 
 		this.args.cameraMode = 'normal';
 
@@ -106,7 +110,7 @@ export class PointActor extends View
 		this.impulseDir = null;
 
 		this.decel     = 1.125;
-		this.accel     = 0.4;
+		this.accel     = 1.25;
 		this.fastAccel = 2;
 	}
 
@@ -145,6 +149,15 @@ export class PointActor extends View
 			this.args.float--;
 		}
 
+		// else if(this.crawling)
+		// {
+		// 	this.args.maxGSpeed = CRAWLING_SPEED;
+		// }
+		// else
+		// {
+		// 	this.args.maxGSpeed = WALKING_SPEED;
+		// }
+
 		if(this.running)
 		{
 			this.args.maxGSpeed = RUNNING_SPEED;
@@ -152,10 +165,6 @@ export class PointActor extends View
 		else if(this.crawling)
 		{
 			this.args.maxGSpeed = CRAWLING_SPEED;
-		}
-		else
-		{
-			this.args.maxGSpeed = WALKING_SPEED;
 		}
 
 		if(this.args.ignore < 1)
@@ -768,7 +777,7 @@ export class PointActor extends View
 							}
 							else
 							{
-								this.args.gSpeed += (this.xAxis * this.fastAccel) * 5;
+								this.args.gSpeed += (this.xAxis * this.fastAccel) * 2;
 							}
 						}
 						else
@@ -779,7 +788,7 @@ export class PointActor extends View
 							}
 							else
 							{
-								this.args.gSpeed += (this.xAxis * this.accel) * 5;
+								this.args.gSpeed += (this.xAxis * this.accel) * 2;
 							}
 						}
 
@@ -1220,6 +1229,18 @@ export class PointActor extends View
 		}
 
 		this.args.mode  = DEFAULT_GRAVITY;
+	}
+
+	sleep()
+	{
+		// this.actorTag = this.tags.actor;
+
+		// this.tags.actor.node.remove();
+	}
+
+	wakeUp()
+	{
+
 	}
 
 	impulse(magnitude, direction, willFall = false)

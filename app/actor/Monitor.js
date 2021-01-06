@@ -38,13 +38,13 @@ export class Monitor extends PointActor
 		if(
 			this.args.collType !== 'collision-bottom'
 			&& (!this.args.falling || this.args.float === -1)
-			&& (Math.abs(other.args.xSpeed) > 3
-				|| Math.abs(other.args.gSpeed) > 64
-				|| (other.args.falling && other.args.ySpeed > 1 && other.y < this.y)
-			)
+			&& (Math.abs(other.args.xSpeed) > 3 || other.args.ySpeed > 1)
+			&& other.y < this.y
 			&& this.viewport
 			&& !this.gone
 		){
+			console.log(other);
+
 			this.gone = true;
 
 			other.args.xSpeed *= -1;
@@ -54,18 +54,25 @@ export class Monitor extends PointActor
 
 			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
+			const corpse = new BrokenMonitor({x:this.x, y:this.y+1});
+
 			if(Math.abs(other.args.xSpeed) > 64 || Math.abs(other.args.gSpeed) > 64)
 			{
 				viewport.actors.remove( this );
-				viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
+				viewport.actors.add(corpse);
 			}
 			else
 			{
 				this.onTimeout(60, () => {
 					viewport.actors.remove( this );
-					viewport.actors.add(new BrokenMonitor({x:this.x, y:this.y+1}));
+					viewport.actors.add(corpse);
 				});
 			}
+
+			this.onRemove(()=>setTimeout(()=>{
+				viewport.actors.remove(corpse);
+				corpse.remove();
+			}, 500));
 
 			other.args.rings += 10;
 

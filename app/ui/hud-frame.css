@@ -1,23 +1,60 @@
-.hud-frame {
+.hud-top-left {
 	position: absolute;
 	top: 5px;
-	left: 5px;
-	background-image: url(/Sonic/ring-hud.png);
-	background-repeat: no-repeat;
-	width: 79px;
-	height: 25px;
+	left: 1px;
+	display: flex;
+	flex-direction: column;
 	transform: scale(2);
 	transform-origin: top left;
+	justify-content: flex-start;
+}
+
+.hud-top-left > :empty {
+	display: none;
+}
+
+.hud-frame {
+	width: 79px;
+	height: 25px;
+	position: relative;
+}
+
+.hud-frame:before {
+	background-image: url(/Sonic/hud-frame.png);
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	content: ' ';
+	z-index: 1;
+}
+
+.ring-frame:before {
+	background-image: url(/Sonic/ring-hud.png);
+}
+
+.coin-frame:before {
+	background-image: url(/custom/coin-hud.png);
 }
 
 .hud-value {
-	position: absolute;;
+	position: absolute;
 	top: 5px;
-	left: 24px;
-	width: 50px;
-	padding-left: 2px;
+	left: 5px;
+	z-index: 0;
+	width: 69px;
+	padding-left: 1px;
+	padding-right: 1px;
 	padding-top: 1px;
 	box-sizing: border-box;
-	background-color: rgba(0,0,0,0.25);
+	background-color: rgba(0,0,0,0.5);
 	text-align: right;
+}
+
+.ring-frame .hud-value {
+	width: 50px;
+	left: 24px;
+}
+
+.timer {
 }

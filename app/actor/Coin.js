@@ -1,21 +1,21 @@
 import { PointActor } from './PointActor';
 
-export class Ring extends PointActor
+export class Coin extends PointActor
 {
 	constructor(...args)
 	{
 		super(...args);
 
-		this.args.type = 'actor-item actor-ring';
+		this.args.type = 'actor-item actor-coin';
 
 		this.args.width  = 32;
 		this.args.height = 32;
 		this.args.float  = -1;
 		this.args.gone   = false;
 
-		this.sample = new Audio('/Sonic/ring-collect.wav');
+		this.sample = new Audio('/mario/smw_coin.wav');
 
-		this.sample.volume = 0.01 + (Math.random() * 0.025);
+		this.sample.volume = 0.25 + (Math.random() * 0.15);
 	}
 
 	collideA(other)
@@ -27,14 +27,14 @@ export class Ring extends PointActor
 			return;
 		}
 
-		this.args.type = 'actor-item actor-ring collected';
+		this.args.type = 'actor-item actor-coin collected';
 
 		if(!this.args.gone)
 		{
 			this.sample.play();
 
 			this.onTimeout(240, () => {
-				this.args.type = 'actor-item actor-ring collected gone'
+				this.args.type = 'actor-item actor-coin collected gone'
 			});
 
 			this.onTimeout(480, () => {
@@ -47,16 +47,12 @@ export class Ring extends PointActor
 
 			const viewport = this.viewport;
 
-			setTimeout(() => {
+			viewport.spawn.add({
+				time: Date.now() + 3500
+				, object: new Coin({x,y})
+			});
 
-				viewport.spawn.add({
-					time: Date.now() + 3500
-					, object: new Ring({x,y})
-				});
-
-			}, 3500);
-
-			other.args.rings++;
+			other.args.coins++;
 		}
 
 		this.args.gone = true;
