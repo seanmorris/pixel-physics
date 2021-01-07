@@ -13,6 +13,7 @@ import { MarbleBlock } from '../actor/MarbleBlock';
 import { LayerSwitch } from '../actor/LayerSwitch';
 import { PointActor } from '../actor/PointActor';
 import { Explosion } from '../actor/Explosion';
+import { Emerald } from '../actor/Emerald';
 import { Monitor } from '../actor/Monitor';
 import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
@@ -28,6 +29,7 @@ const objectPalette = {
 	, spring: Spring
 	, 'layer-switch': LayerSwitch
 	, 'q-block': QuestionBlock
+	, 'emerald': Emerald
 	, 'ring':    Ring
 	, 'coin':    Coin
 };
@@ -84,7 +86,9 @@ export class Viewport extends View
 
 		this.rings = new CharacterString({value:0});
 		this.coins = new CharacterString({value:0});
+		this.emeralds = new CharacterString({value:'0/7'});
 
+		this.args.emeralds = new HudFrame({value:this.emeralds, type: 'emerald-frame'});
 		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
@@ -159,6 +163,8 @@ export class Viewport extends View
 		this.actorPointCache = new Map;
 
 		this.startTime = null;
+
+		this.args.audio = true;
 	}
 
 	fullscreen()
@@ -192,6 +198,11 @@ export class Viewport extends View
 
 		this.update();
 
+		if(!this.startTime)
+		{
+			this.startTime = Date.now() + 4.75 * 1000;
+		}
+
 		this.args.paused = true;
 
 		this.args.status.args.hide = 'hide';
@@ -206,7 +217,7 @@ export class Viewport extends View
 				this.args.animation = 'opening';
 				this.tags.viewport.focus();
 
-				this.onTimeout(500, () => {
+				this.onTimeout(750, () => {
 					this.args.animation = 'opening2';
 					this.tags.viewport.focus();
 
@@ -219,12 +230,12 @@ export class Viewport extends View
 						this.args.status.args.value = ' Click here for keyboard control. ';
 						this.args.status.args.hide = '';
 
-						this.onTimeout(500, () => {
+						this.onTimeout(750, () => {
 							this.args.animation = 'closed';
 							this.tags.viewport.focus();
 						});
 
-						this.onTimeout(250, () => {
+						this.onTimeout(500, () => {
 							this.args.paused = false;
 						});
 					});
@@ -253,16 +264,18 @@ export class Viewport extends View
 
 	update()
 	{
-		if(!this.startTime)
+		const time    = (Date.now() - this.startTime) / 1000;
+		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
+		let seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5,'0');
+
+		const neg = time < 0 ? '-' : '';
+
+		if(neg)
 		{
-			this.startTime = Date.now();
+			minutes = Number(minutes);
 		}
 
-		const time    = (Date.now() - this.startTime) / 1000;
-		const minutes = String(Math.floor(time / 60)).padStart(2,'0')
-		const seconds = String((time % 60).toFixed(2)).padStart(5,'0');
-
-		this.args.timer.args.value.args.value = `${minutes}:${seconds}`;
+		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		this.actorPointCache.clear();
 
@@ -605,11 +618,13 @@ export class Viewport extends View
 			, '--scale': this.args.scale
 		});
 
+		this.emeralds.args.value = `${actors[0].args.emeralds}/7`;
 		this.rings.args.value = actors[0].args.rings;
 		this.coins.args.value = actors[0].args.coins;
 
-		this.args.hasRings = !!actors[0].args.rings;
-		this.args.hasCoins = !!actors[0].args.coins;
+		this.args.hasRings    = !!actors[0].args.rings;
+		this.args.hasCoins    = !!actors[0].args.coins;
+		this.args.hasEmeralds = !!actors[0].args.emeralds;
 
 		this.args.xPos.args.value     = Math.round(actors[0].x);
 		this.args.yPos.args.value     = Math.round(actors[0].y);

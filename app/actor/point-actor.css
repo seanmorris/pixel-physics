@@ -119,11 +119,15 @@
 
 .actor-item.actor-ring:after {
 	background-image: url(/Sonic/rings.png);
-	--sprite-offset-x: -20px;
+	--sprite-offset-x: -16px;
 	--sprite-offset-y: -148px;
 	animation: ringSpin steps(4) infinite;
 	animation-duration: calc(1ms * 360);
 	transition: opacity 0.125s ease-out;
+}
+
+.actor-item.actor-emerald:after {
+	background-image: url(/Sonic/emerald-white.png);
 }
 
 .actor-item.actor-ring.gone:after,
@@ -134,29 +138,30 @@
 }
 
 
-
-
 .actor-item.actor-coin:after {
 	background-image: url(/mario/coins.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -16px;
 	animation: ringSpin steps(4) infinite;
-	animation-duration: calc(1ms * 1000);
-	transition: opacity 0.125s ease-out;
+	animation-duration: calc(1ms * 350);
+	transition: opacity 0.5s ease-out, top 0.25s ease-in, filter 0.5s ease-in;
 }
 
 .actor-item.actor-coin.gone:after,
 .actor-item.actor-coin.collected:after {
-	animation: coinTwinkle steps(6) infinite;
-	animation-duration: calc(1ms * 250);
+	animation-duration: calc(1ms * 15);
 	--sprite-offset-y: -82px;
+	top: -40px;
 }
 
-
-
+.actor-item.actor-coin.gone:after {
+	animation: coinTwinkle steps(6) infinite;
+	animation-duration: calc(1ms * 15);
+}
 
 .actor-item.actor-ring.gone:after {
 	opacity: 0;
+	filter: brightness(5);
 }
 
 .actor-item.actor-monitor:after {

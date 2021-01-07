@@ -63,8 +63,13 @@ export class CharacterString extends View
 							type = 'number';
 							break;
 
-						case ' ':
+						case '/':
 							pos  = 13;
+							type = 'number';
+							break;
+
+						case ' ':
+							pos  = 14;
 							type = 'number';
 							break;
 

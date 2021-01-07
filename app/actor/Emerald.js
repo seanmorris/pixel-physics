@@ -1,0 +1,64 @@
+import { PointActor } from './PointActor';
+
+export class Emerald extends PointActor
+{
+	constructor(...args)
+	{
+		super(...args);
+
+		this.args.type = 'actor-item actor-emerald emerald-' + (this.args.color || 'white');
+
+		this.args.width  = 12;
+		this.args.height = 12;
+	}
+
+	update()
+	{
+		super.update();
+
+		if(this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/S3K_9C.wav');
+			this.sample.volume = 0.25 + (Math.random() * 0.5);
+		}
+	}
+
+	collideA(other)
+	{
+		super.collideA(other);
+
+		if(this.args.gone)
+		{
+			return;
+		}
+
+		this.args.type = 'actor-item actor-emerald collected emerald-'  + (this.args.color || 'white');
+
+		if(!this.args.gone)
+		{
+			if(this.viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
+
+			this.args.type = 'actor-item actor-emerald collected gone emerald-' + (this.args.color || 'white');
+
+			this.onTimeout(180, () => {
+				this.viewport.actors.remove( this );
+				this.remove();
+			});
+
+			const x = this.x;
+			const y = this.y;
+
+			const viewport = this.viewport;
+
+			other.args.emeralds++;
+		}
+
+		this.args.gone = true;
+	}
+
+	get solid() { return true; }
+	get effect() { return true; }
+}

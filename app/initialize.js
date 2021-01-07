@@ -6,7 +6,7 @@ import { Viewport } from './viewport/Viewport';
 const viewportA = new Viewport;
 // const viewportB = new Viewport;
 
-const minFrameTime = 0;
+const minFrameTime = 16;
 
 document.addEventListener('DOMContentLoaded', function() {
 	let lastTime = Date.now();
@@ -32,14 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		const update = ()=>{
 
-			if(Date.now() - lastTime >= minFrameTime)
-			{
-				viewportA.update();
+			viewportA.update();
 
-				viewportA.args.fps = 1000/(Date.now() - lastTime);
+			viewportA.args.fps = 1000/(Date.now() - lastTime);
 
-				lastTime = Date.now();
-			}
+			lastTime = Date.now();
 
 			requestAnimationFrame(update);
 		};

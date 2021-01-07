@@ -37,6 +37,10 @@
 	background-image: url(/custom/coin-hud.png);
 }
 
+.emerald-frame:before {
+	background-image: url(/custom/emerald-hud.png);
+}
+
 .hud-value {
 	position: absolute;
 	top: 5px;

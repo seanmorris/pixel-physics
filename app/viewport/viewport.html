@@ -66,16 +66,6 @@
 
 				</table>
 			</div>
-			<span class = "hud-top-left">
-				<div cv-if = "hasRings">
-					[[rings]]
-				</div>
-				<div cv-if = "hasCoins">
-					[[coins]]
-				</div>
-				<div class = "timer">[[timer]]</div>
-			</span>
-
 			<div class = "titlecard [[animation]]">
 
 				<div class = "titlecard-field"></div>
@@ -112,6 +102,19 @@
 			</div>
 
 		</div>
+
+		<span class = "hud-top-left">
+			<div class = "timer">[[timer]]</div>
+			<div cv-if = "hasRings">
+				[[rings]]
+			</div>
+			<div cv-if = "hasCoins">
+				[[coins]]
+			</div>
+			<div cv-if = "hasEmeralds">
+				[[emeralds]]
+			</div>
+		</span>
 	</div>
 
 	<div class = "viewport-caption">

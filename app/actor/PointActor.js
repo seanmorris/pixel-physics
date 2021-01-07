@@ -16,8 +16,8 @@ const DEFAULT_GRAVITY = MODE_FLOOR;
 export class PointActor extends View
 {
 	template = `<div
-		class = "point-actor [[type]] [[collType]]"
-		style = "
+		class  = "point-actor [[type]] [[collType]]"
+		style  = "
 			display:[[display]];
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
@@ -44,6 +44,7 @@ export class PointActor extends View
 
 		this.args.display = 'initial';
 
+		this.args.emeralds = 0;
 		this.args.rings = 0;
 		this.args.coins = 0;
 
