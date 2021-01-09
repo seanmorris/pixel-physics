@@ -197,6 +197,8 @@ export class Viewport extends View
 
 		this.nextControl = false;
 
+		this.args.controllable = {'characters':null};
+
 		this.updateStarted = new Set;
 		this.updateEnded = new Set;
 		this.updated = new Set;
@@ -607,6 +609,11 @@ export class Viewport extends View
 			const obj = new objClass(Object.assign({}, objArgs));
 
 			this.actors.add( obj );
+
+			if(obj.controllable || obj.args.controllable)
+			{
+				this.args.controllable[ objDef.name ] = obj;
+			}
 		}
 
 		this.actors.add( new TextActor({x: 1250, y:1800}) );
@@ -968,5 +975,24 @@ export class Viewport extends View
 		]
 
 		return this.colCellCache[name].filter(set=>set.size);
+	}
+
+	change(event)
+	{
+		if(!event.target.value)
+		{
+			return;
+		}
+
+		if(!this.args.controllable[ event.target.value ])
+		{
+			return;
+		}
+
+		const actor = this.args.controllable[ event.target.value ];
+
+		this.nextControl = actor;
+
+		this.tags.viewport.focus();
 	}
 }

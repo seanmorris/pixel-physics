@@ -18,7 +18,13 @@
                  "gid":2,
                  "height":32,
                  "id":3,
-                 "name":"player",
+                 "name":"atomic superball",
+                 "properties":[
+                        {
+                         "name":"controllable",
+                         "type":"string",
+                         "value":"1"
+                        }],
                  "rotation":0,
                  "type":"player",
                  "visible":true,
@@ -1160,8 +1166,8 @@
                 {
                  "gid":2,
                  "height":64,
-                 "id":720,
-                 "name":"sonic",
+                 "id":723,
+                 "name":"knuckles",
                  "properties":[
                         {
                          "name":"facing",
@@ -1169,10 +1175,10 @@
                          "value":"left"
                         }],
                  "rotation":0,
-                 "type":"sonic",
+                 "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1352,
+                 "x":1416,
                  "y":1560
                 }, 
                 {
@@ -1190,14 +1196,14 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1376,
+                 "x":1392,
                  "y":1560
                 }, 
                 {
                  "gid":2,
                  "height":64,
-                 "id":723,
-                 "name":"knuckles",
+                 "id":720,
+                 "name":"sonic",
                  "properties":[
                         {
                          "name":"facing",
@@ -1205,10 +1211,10 @@
                          "value":"left"
                         }],
                  "rotation":0,
-                 "type":"knuckles",
+                 "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":1400,
+                 "x":1368,
                  "y":1560
                 }, 
                 {
@@ -1220,7 +1226,7 @@
                  "type":"eggrobo",
                  "visible":true,
                  "width":32,
-                 "x":1264,
+                 "x":1248,
                  "y":1888
                 }, 
                 {
@@ -1232,7 +1238,7 @@
                  "type":"mecha-sonic",
                  "visible":true,
                  "width":32,
-                 "x":1224,
+                 "x":1216,
                  "y":1888
                 }, 
                 {

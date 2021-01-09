@@ -192,19 +192,26 @@
 					</select>
 				</label> -->
 
+				<label>
+					<span>select a character:</span>
+					<select cv-each = "controllable:obj:name" cv-on = "change(event)">
+						<option value = "[[name]]">[[name]]</option>
+					</select>
+				</label>
+
 
 				<label>
-					<small>enable audio</small>
+					<span>enable audio</span>
 					<input type = "checkbox" cv-bind = "audio" value = "1" />
 				</label>
 
 				<label>
-					<small>player can stop on walls</small>
+					<span>player can stop on walls</span>
 					<input type = "checkbox" cv-bind = "stayStuck" value = "1" />
 				</label>
 
 				<label>
-					<small>jumps can stick to walls</small>
+					<span>jumps can stick to walls</span>
 					<input type = "checkbox" cv-bind = "willStick" value = "1" />
 					<br />
 				</label>
@@ -214,14 +221,14 @@
 				<hr />
 
 				<label>
-					<small>speed limit:</small>
+					<span>speed limit:</span>
 					<form>
 						<input type = "number" cv-bind = "maxSpeed" min = "1" />
 					</form>
 				</label>
 
 				<label>
-					<small>scale:</small>
+					<span>scale:</span>
 					<form>
 						<input type = "number" cv-bind = "scale" min = "1" max = "5" />
 					</form>

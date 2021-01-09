@@ -118,6 +118,12 @@ html, body {
 	align-items: flex-start;
 }
 
+.viewport-caption input,
+.viewport-caption select {
+	margin-left: 0.25em;
+	text-align: right;
+}
+
 .viewport-zoom {
 	transition: transform var(--scale-transition);
 	transform: scale(var(--scale));

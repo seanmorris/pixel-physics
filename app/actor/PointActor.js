@@ -109,9 +109,9 @@ export class PointActor extends View
 
 		this.args.gSpeedMax = WALKING_SPEED;
 
-		this.args.jumpForce = 12;
+		this.args.jumpForce = 14;
 		this.args.stopped   = 0;
-		this.args.gravity   = 0.5;
+		this.args.gravity   = 0.65;
 
 		this.args.decel     = 0.85;
 		this.args.accel     = 0.3;
