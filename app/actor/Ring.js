@@ -21,7 +21,7 @@ export class Ring extends PointActor
 		if(this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/ring-collect.wav');
-			this.sample.volume = 0.01 + (Math.random() * 0.025);
+			this.sample.volume = 0.2 + (Math.random() * -0.1);
 		}
 	}
 

@@ -1,0 +1,125 @@
+.actor-item.actor-eggrobo .sprite {
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-eggrobo .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/Sonic/eggrobo.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-eggrobo[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-eggrobo[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: eggrobo-walk steps(3) infinite 386ms;
+}
+
+.actor-item.actor-eggrobo[data-animation="running"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: eggrobo-walk steps(3) infinite 128ms;
+}
+
+.actor-item.actor-eggrobo[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+
+.actor-item.actor-eggrobo[data-animation="flying"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+@-webkit-keyframes eggrobo-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes eggrobo-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+.actor-item.actor-eggrobo .eggrobo-flame {
+	display: none;
+	background-image: url(/Sonic/eggrobo-flame.png);
+	width: 17px;
+	height: 23px;
+	position: absolute;
+	top: 50px;
+	left: -3px;
+	animation: eggrobo-flame-flicker steps(4) infinite 40ms forwards;
+}
+
+.actor-item.actor-eggrobo .eggrobo-muzzle-flash {
+	display: none;
+	background-image: url(/Sonic/eggrobo-muzzle-flash.png);
+	background-repeat: no-repeat;
+	width: 16px;
+	height: 8px;
+	position: absolute;
+	top: 21px;
+	left: 64px;
+}
+
+.actor-item.actor-eggrobo[data-animation="flying"] .eggrobo-muzzle-flash,
+.actor-item.actor-eggrobo[data-animation="jumping"] .eggrobo-muzzle-flash {
+	top: 32px;
+}
+
+.actor-item.actor-eggrobo[data-shooting=true] .eggrobo-muzzle-flash {
+	display: initial;
+	animation: eggrobo-muzzle-flash steps(4) 1 120ms forwards;
+}
+
+.actor-item.actor-eggrobo[data-animation="flying"] .eggrobo-flame {
+	display: initial;
+}
+
+@-webkit-keyframes eggrobo-flame-flicker {
+	from{
+		opacity: 0.5;
+	}
+	to{
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes eggrobo-muzzle-flash {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+		opacity: 0.33;
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		opacity: 0;
+	}
+}

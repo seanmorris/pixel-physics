@@ -66,6 +66,7 @@ export class PointActor extends View
 		this.args._angle = 0;
 
 		this.lastAngles = [0,0];
+		this.angleAvg   = 32;
 
 		this.args.xSpeedMax = 512;
 		this.args.ySpeedMax = 512;
@@ -145,26 +146,9 @@ export class PointActor extends View
 
 	update()
 	{
-		if(this.impulseMag !== null)
+		if(!this.viewport || this.removed)
 		{
-			this.args.xSpeed = Math.cos(this.impulseDir) * this.impulseMag;
-			this.args.ySpeed = Math.sin(this.impulseDir) * this.impulseMag;
-
-			this.args.falling = true;
-
-			this.impulseMag = null;
-			this.impulseDir = null;
-			this.impulseFal = null;
-		}
-
-		if(this.args.ignore > 0)
-		{
-			this.args.ignore--;
-		}
-
-		if(this.args.float > 0)
-		{
-			this.args.float--;
+			return;
 		}
 
 		let gSpeedMax = this.args.gSpeedMax;
@@ -178,425 +162,55 @@ export class PointActor extends View
 			gSpeedMax = CRAWLING_SPEED;
 		}
 
+		if(this.impulseMag !== null)
+		{
+			this.args.xSpeed  = Math.cos(this.impulseDir) * this.impulseMag;
+			this.args.ySpeed  = Math.sin(this.impulseDir) * this.impulseMag;
+
+			this.args.falling = true;
+
+			this.impulseMag   = null;
+			this.impulseDir   = null;
+			this.impulseFal   = null;
+		}
+
 		if(this.args.ignore < 1)
 		{
 			this.args.ignore = 0;
 		}
 
-		const tileMap = this.viewport.tileMap;
+		if(this.args.ignore > 0)
+		{
+			this.args.ignore--;
+		}
+
+		if(this.args.float > 0)
+		{
+			this.args.float--;
+		}
 
 		if(this.args.falling)
 		{
 			this.args.landed = false;
+			this.lastAngles  = [];
 		}
 
-		if(!this.isEffect && this.args.falling)
+		if(!this.isEffect && this.args.falling && this.viewport)
 		{
-			let lastPoint = [this.x, this.y];
-
-			const airSpeed = Math.sqrt(this.args.xSpeed**2 + this.args.ySpeed**2);
-
-			const airPoint = this.castRay(
-				airSpeed
-				, this.args.airAngle
-				, (i, point) => {
-					const actors = this.viewport.actorsAtPoint(...point)
-						.filter(x => x.args !== this.args)
-						.filter(x => x.callCollideHandler(this))
-						.filter(x => x !== x.isSolid && x.canStick);
-
-					if(actors.length > 0)
-					{
-						return lastPoint;
-					}
-
-					if(tileMap.getSolid(...point, this.args.layer))
-					{
-						return lastPoint;
-					}
-
-					lastPoint = point.map(Math.floor);
-				}
-			);
-
-			this.willJump = false;
-
-			let blockers = false;
-
-			const upDistance = this.castRay(
-				Math.abs(this.args.ySpeed) + 1
-				, this.upAngle
-				, (i, point) => {
-
-					const actors = this.viewport.actorsAtPoint(...point)
-						.filter(x => x.args !== this.args)
-						.filter(x => x.callCollideHandler(this))
-						.filter(a => a.solid);
-
-					if(actors.length > 0)
-					{
-						return i;
-					}
-
-					if(tileMap.getSolid(...point, this.args.layer))
-					{
-						return i;
-					}
-				}
-			);
-
-			const xSpeedOriginal = this.args.xSpeed;
-			const ySpeedOriginal = this.args.ySpeed;
-
-			if(this.args.ySpeed < 0 && upDistance !== false)
-			{
-				this.args.ignore = 1;
-
-				this.args.y -= Math.floor(upDistance - 1);
-
-				blockers = this.getMapSolidAt(this.x, this.y);
-
-				if(Array.isArray(blockers))
-				{
-					const stickers = blockers.filter(a=>a.canStick);
-
-					if(this.willStick && stickers.length)
-					{
-						this.args.gSpeed = Math.floor(-xSpeedOriginal);
-						this.args.mode = MODE_CEILING;
-						this.args.falling = false;
-					}
-					// else
-					// {
-					// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
-					// }
-				}
-				else if(this.willStick)
-				{
-					const blockers = this.getMapSolidAt(this.x, this.y-1);
-					const stickers = Array.isArray(blockers) && blockers.filter(a=>a.canStick);
-
-					if(!blockers.length || (blockers.length && stickers.length))
-					{
-						this.args.gSpeed = Math.floor(-xSpeedOriginal);
-						this.args.mode = MODE_CEILING;
-						this.args.falling = false;
-					}
-				}
-				// else
-				// {
-				// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
-				// }
-			}
-			else if(airPoint !== false)
-			{
-				this.args.ignore = 1;
-
-				const direction = Math.sign(this.args.xSpeed);
-
-				this.args.xSpeed  = 0;
-				this.args.ySpeed  = 0;
-
-				this.args.x = Math.floor(airPoint[0]);
-				this.args.y = Math.floor(airPoint[1]);
-
-				blockers = this.getMapSolidAt(this.x + direction, this.y);
-
-				if(!blockers)
-				{
-					this.args.gSpeed = Math.floor(xSpeedOriginal);
-					this.args.mode   = MODE_FLOOR;
-
-					this.args.falling = false;
-				}
-				else if(Array.isArray(blockers))
-				{
-
-
-					if(this.willJump)
-					{
-						this.args.xSpeed *= -1.1;
-						this.args.ySpeed *= -1.1;
-
-						this.willJump = false;
-					}
-					else
-					{
-						blockers = blockers.filter(a => a.callCollideHandler(this));
-
-						if(blockers.length && this.willStick)
-						{
-							if(blockers.filter(a => a.canStick))
-							{
-								this.args.falling = false;
-
-								this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
-
-								this.args.mode = direction < 0
-									? MODE_LEFT
-									: MODE_RIGHT;
-							}
-						}
-					}
-				}
-				else if(this.willJump)
-				{
-					this.args.xSpeed *= -1;
-					this.args.ySpeed *= -1;
-
-					this.willJump = false;
-				}
-				else if(this.willStick)
-				{
-					this.args.falling = false;
-
-					this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
-
-					this.args.mode = direction < 0
-						? MODE_LEFT
-						: MODE_RIGHT;
-				}
-			}
-			else if(this.args.ySpeed > 0)
-			{
-				this.args.mode = DEFAULT_GRAVITY;
-				this.args.gSpeed = Math.floor(xSpeedOriginal);
-			}
-
-			if(airPoint === false)
-			{
-				this.args.x += this.args.xSpeed;
-				this.args.y += this.args.ySpeed;
-
-				this.args.falling = true;
-			}
+			this.updateAirPosition();
 		}
-
-		if(Math.abs(this.args.xSpeed) > this.args.xSpeedMax)
-		{
-			this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
-		}
-
-		if(Math.abs(this.args.ySpeed) > this.args.ySpeedMax)
-		{
-			this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
-		}
-
-		let nextPosition = [0, 0];
 
 		if(!this.isEffect && !this.args.falling)
 		{
-			if(this.args.gSpeed)
-			{
-				const max  = Math.abs(this.args.gSpeed);
-				const step = Math.ceil(max / 64);
-
-				const direction = Math.sign(this.args.gSpeed);
-
-				for(let s = 0; s < max; s += step)
-				{
-					nextPosition = this.findNextStep(step * direction);
-
-					if(nextPosition[3])
-					{
-						this.args.gSpeed = 0;
-
-						if(this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT)
-						{
-							this.args.mode = MODE_FLOOR;
-						}
-
-						break;
-					}
-					else if(nextPosition[2] === true)
-					{
-						nextPosition[0] = step;
-						nextPosition[1] = 0;
-
-						this.args.ySpeed  = 0;
-
-						switch(this.args.mode)
-						{
-							case MODE_FLOOR:
-								this.args.xSpeed = this.args.gSpeed;
-								this.args.falling = true;
-								break;
-
-							case MODE_CEILING:
-								this.args.xSpeed = -this.args.gSpeed;
-								this.args.falling = true;
-								break;
-
-							case MODE_LEFT:
-								if(Math.abs(this.args.gSpeed) < 50)
-								{
-									this.args.mode = MODE_FLOOR;
-									this.args.y--;
-									this.args.x += this.args.direction;
-								}
-								else
-								{
-									this.args.ySpeed = this.args.gSpeed;
-									this.args.xSpeed = 0;
-									this.args.ignore = 8;
-									this.args.falling = true;
-								}
-								break;
-
-							case MODE_RIGHT:
-								if(Math.abs(this.args.gSpeed) < 50)
-								{
-									this.args.mode = MODE_FLOOR;
-									this.args.y--;
-									this.args.x += this.args.direction;
-								}
-								else
-								{
-									this.args.ySpeed = -this.args.gSpeed;
-									this.args.xSpeed = 0;
-									this.args.ignore = 8;
-									this.args.falling = true;
-								}
-								break;
-						}
-
-						this.args.gSpeed = 0;
-
-						break;
-					}
-					else if(!nextPosition[0] && !nextPosition[1])
-					{
-						switch(this.args.mode)
-						{
-							case MODE_FLOOR:
-							case MODE_CEILING:
-								this.args.gSpeed = 0;
-								break;
-
-							case MODE_LEFT:
-							case MODE_RIGHT:
-
-								break;
-						}
-					}
-					else if(nextPosition[1] !== false && !this.rotateLock)
-					{
-						this.args.angle = nextPosition[0]
-							? (Math.atan(nextPosition[1] / nextPosition[0]))
-							: (nextPosition[1] > 0 ? Math.PI / 2 : -Math.PI / 2);
-
-						this.lastAngles.unshift(this.args.angle);
-
-						this.lastAngles.splice(2);
-
-						this.args._angle = this.lastAngles.reduce(((a,b)=>a+b)) / this.lastAngles.length;
-					}
-
-					if(!this.rotateLock)
-					{
-						switch(this.args.mode)
-						{
-							case MODE_FLOOR:
-								this.args.x += nextPosition[0];
-								this.args.y -= nextPosition[1];
-								break;
-
-							case MODE_CEILING:
-								this.args.x -= nextPosition[0];
-								this.args.y += nextPosition[1];
-								break;
-
-							case MODE_LEFT:
-								this.args.x += nextPosition[1];
-								this.args.y += nextPosition[0];
-								break;
-
-							case MODE_RIGHT:
-								this.args.x -= nextPosition[1];
-								this.args.y -= nextPosition[0];
-								break;
-						}
-
-						if(this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2)
-						{
-							switch(this.args.mode)
-							{
-								case MODE_FLOOR:
-									this.args.mode = MODE_RIGHT;
-									break;
-
-								case MODE_RIGHT:
-									this.args.mode = MODE_CEILING;
-									break;
-
-								case MODE_CEILING:
-									this.args.mode = MODE_LEFT;
-									break;
-
-								case MODE_LEFT:
-									this.args.mode = MODE_FLOOR;
-									break;
-							}
-
-							this.args.angle -= Math.PI / 8*3;
-						}
-						else if(this.args.angle < -Math.PI / 4 && this.args.angle > -Math.PI / 2)
-						{
-							const orig = this.args.mode;
-
-							switch(this.args.mode)
-							{
-								case MODE_FLOOR:
-									this.args.mode = MODE_LEFT;
-									break;
-
-								case MODE_RIGHT:
-									this.args.mode = MODE_FLOOR;
-									break;
-
-								case MODE_CEILING:
-									this.args.mode = MODE_RIGHT;
-									break;
-
-								case MODE_LEFT:
-									this.args.mode = MODE_CEILING;
-									break;
-							}
-
-							this.args.angle += Math.PI / 8*3;
-						}
-					}
-				}
-			}
-			else if(this.args.stopped === 1)
-			{
-				const sensorSpread = this.args.width / 2;
-
-				const backPosition = this.findNextStep(-sensorSpread);
-				const forePosition = this.findNextStep(sensorSpread);
-
-				if(nextPosition[0] === false && nextPosition[1] === false)
-				{
-					this.args.falling = true;
-				}
-
-				if(nextPosition[1] !== false && !this.rotateLock)
-				{
-					this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread*2+1);
-
-					this.lastAngles.unshift(this.args.angle);
-					this.lastAngles.splice(2);
-
-					this.args._angle = this.lastAngles.reduce(((a,b)=>a+b)) / this.lastAngles.length;
-				}
-			}
+			this.updateGroundPosition();
 		}
 
-		if(this.willJump)
+		if(!this.viewport || this.removed)
 		{
-			this.willJump = false;
-			this.doJump();
+			return;
 		}
+
+		const tileMap = this.viewport.tileMap;
 
 		if(this.args.gSpeed === 0)
 		{
@@ -613,25 +227,6 @@ export class PointActor extends View
 
 		this.args.x = Math.floor(this.args.x);
 		this.args.y = Math.floor(this.args.y);
-
-		if(this.args.ignore < 1)
-		{
-			this.args.ignore = 0;
-		}
-
-		if(nextPosition[0] !== false || nextPosition[1] !== false)
-		{
-			if(Math.abs(this.args.gSpeed) > gSpeedMax && gSpeedMax !== Infinity && gSpeedMax !== -Infinity)
-			{
-				this.args.gSpeed = gSpeedMax * Math.sign(this.args.gSpeed);
-			}
-		}
-		else
-		{
-			this.args.ignore = this.args.ignore || 1;
-
-			this.args.gSpeed = 0;
-		}
 
 		if(!this.isEffect)
 		{
@@ -657,6 +252,11 @@ export class PointActor extends View
 
 				while(true)
 				{
+					if(!this.viewport)
+					{
+						return;
+					}
+
 					blockers = this.getMapSolidAt(testX, testY);
 
 					if(!blockers)
@@ -761,7 +361,7 @@ export class PointActor extends View
 		if(this.args.falling && !this.args.float && this.args.ySpeed < this.args.ySpeedMax)
 		{
 			this.args.ySpeed += this.args.gravity;
-			// this.args._angle = this.args.airAngle;
+			this.args._angle = this.args.airAngle;
 			this.args.landed = false;
 		}
 
@@ -771,7 +371,7 @@ export class PointActor extends View
 			{
 				if(this.xAxis)
 				{
-					if(this.args.gSpeed < gSpeedMax && this.args.gSpeed > -this.args.gSpeedMax)
+					if(this.args.gSpeed < gSpeedMax && this.args.gSpeed > -gSpeedMax)
 					{
 						if(Math.sign(this.xAxis) === Math.sign(this.args.gSpeed))
 						{
@@ -851,6 +451,462 @@ export class PointActor extends View
 		this.args.colliding = this.colliding;
 	}
 
+	updateGroundPosition()
+	{
+		let gSpeedMax = this.args.gSpeedMax;
+
+		if(this.running)
+		{
+			gSpeedMax = RUNNING_SPEED;
+		}
+		else if(this.crawling)
+		{
+			gSpeedMax = CRAWLING_SPEED;
+		}
+
+		let nextPosition = [0, 0];
+
+		if(this.args.gSpeed)
+		{
+			const max  = Math.abs(this.args.gSpeed);
+			const step = Math.ceil(max / 64);
+
+			const direction = Math.sign(this.args.gSpeed);
+
+			for(let s = 0; s < max; s += step)
+			{
+				nextPosition = this.findNextStep(step * direction);
+
+				if(!nextPosition)
+				{
+					break;
+				}
+
+				if(nextPosition[3])
+				{
+					this.args.gSpeed = 0;
+
+					if(this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT)
+					{
+						this.args.mode = MODE_FLOOR;
+					}
+
+					break;
+				}
+				else if(nextPosition[2] === true)
+				{
+					nextPosition[0] = step;
+					nextPosition[1] = 0;
+
+					this.args.ySpeed  = 0;
+
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+							this.args.xSpeed = this.args.gSpeed;
+							this.args.falling = true;
+							break;
+
+						case MODE_CEILING:
+							this.args.xSpeed = -this.args.gSpeed;
+							this.args.falling = true;
+							break;
+
+						case MODE_LEFT:
+							if(Math.abs(this.args.gSpeed) < 50)
+							{
+								this.args.mode = MODE_FLOOR;
+								this.args.y--;
+								this.args.x += this.args.direction;
+							}
+							else
+							{
+								this.args.ySpeed = this.args.gSpeed;
+								this.args.xSpeed = 0;
+								this.args.ignore = 8;
+								this.args.falling = true;
+							}
+							break;
+
+						case MODE_RIGHT:
+							if(Math.abs(this.args.gSpeed) < 50)
+							{
+								this.args.mode = MODE_FLOOR;
+								this.args.y--;
+								this.args.x += this.args.direction;
+							}
+							else
+							{
+								this.args.ySpeed = -this.args.gSpeed;
+								this.args.xSpeed = 0;
+								this.args.ignore = 8;
+								this.args.falling = true;
+							}
+							break;
+					}
+
+					this.args.gSpeed = 0;
+
+					break;
+				}
+				else if(!nextPosition[0] && !nextPosition[1])
+				{
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+						case MODE_CEILING:
+							this.args.gSpeed = 0;
+							break;
+
+						case MODE_LEFT:
+						case MODE_RIGHT:
+
+							break;
+					}
+				}
+				else if(nextPosition[1] !== false && !this.rotateLock)
+				{
+					this.args.angle = nextPosition[0]
+						? (Math.atan(nextPosition[1] / nextPosition[0]))
+						: (nextPosition[1] > 0 ? Math.PI / 2 : -Math.PI / 2);
+
+					this.lastAngles.unshift(this.args.angle);
+
+					this.lastAngles.splice(this.angleAvg);
+
+					this.args._angle = this.lastAngles.reduce(((a,b)=>a+b)) / this.lastAngles.length;
+				}
+
+				if(!this.rotateLock)
+				{
+					switch(this.args.mode)
+					{
+						case MODE_FLOOR:
+							this.args.x += nextPosition[0];
+							this.args.y -= nextPosition[1];
+							break;
+
+						case MODE_CEILING:
+							this.args.x -= nextPosition[0];
+							this.args.y += nextPosition[1];
+							break;
+
+						case MODE_LEFT:
+							this.args.x += nextPosition[1];
+							this.args.y += nextPosition[0];
+							break;
+
+						case MODE_RIGHT:
+							this.args.x -= nextPosition[1];
+							this.args.y -= nextPosition[0];
+							break;
+					}
+
+					if(this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2)
+					{
+
+						this.lastAngles = [];
+
+						switch(this.args.mode)
+						{
+							case MODE_FLOOR:
+								this.args.mode = MODE_RIGHT;
+								break;
+
+							case MODE_RIGHT:
+								this.args.mode = MODE_CEILING;
+								break;
+
+							case MODE_CEILING:
+								this.args.mode = MODE_LEFT;
+								break;
+
+							case MODE_LEFT:
+								this.args.mode = MODE_FLOOR;
+								break;
+						}
+
+						this.args.angle -= Math.PI / 8*3;
+					}
+					else if(this.args.angle < -Math.PI / 4 && this.args.angle > -Math.PI / 2)
+					{
+						const orig = this.args.mode;
+
+						this.lastAngles = [];
+
+						switch(this.args.mode)
+						{
+							case MODE_FLOOR:
+								this.args.mode = MODE_LEFT;
+								break;
+
+							case MODE_RIGHT:
+								this.args.mode = MODE_FLOOR;
+								break;
+
+							case MODE_CEILING:
+								this.args.mode = MODE_RIGHT;
+								break;
+
+							case MODE_LEFT:
+								this.args.mode = MODE_CEILING;
+								break;
+						}
+
+						this.args.angle += Math.PI / 8*3;
+					}
+				}
+			}
+		}
+		else if(this.args.stopped === 1)
+		{
+			const sensorSpread = this.args.width / 2;
+
+			const backPosition = this.findNextStep(-sensorSpread);
+			const forePosition = this.findNextStep(sensorSpread);
+
+			if(nextPosition[0] === false && nextPosition[1] === false)
+			{
+				this.args.falling = true;
+			}
+
+			if(nextPosition[1] !== false && !this.rotateLock)
+			{
+				this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread*2+1);
+
+				this.lastAngles.unshift(this.args.angle);
+				this.lastAngles.splice(this.angleAvg);
+
+				this.args._angle = this.lastAngles.reduce(((a,b)=>a+b)) / this.lastAngles.length;
+			}
+		}
+
+		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
+		{
+			if(Math.abs(this.args.gSpeed) > gSpeedMax && gSpeedMax !== Infinity && gSpeedMax !== -Infinity)
+			{
+				this.args.gSpeed = gSpeedMax * Math.sign(this.args.gSpeed);
+			}
+		}
+		else
+		{
+			this.args.ignore = this.args.ignore || 1;
+
+			this.args.gSpeed = 0;
+		}
+
+		if(this.willJump)
+		{
+			this.willJump = false;
+			this.doJump();
+		}
+	}
+
+	updateAirPosition()
+	{
+		let lastPoint = [this.x, this.y];
+
+		const tileMap = this.viewport.tileMap;
+
+		const airSpeed = Math.sqrt(this.args.xSpeed**2 + this.args.ySpeed**2);
+
+		const airPoint = this.castRay(
+			airSpeed
+			, this.args.airAngle
+			, (i, point) => {
+
+				if(!this.viewport)
+				{
+					return false;
+				}
+
+				const actors = this.viewport.actorsAtPoint(...point)
+					.filter(x => x.args !== this.args)
+					.filter(x => x.callCollideHandler(this))
+					.filter(x => x !== x.isSolid && x.canStick);
+
+				if(actors.length > 0)
+				{
+					return lastPoint;
+				}
+
+				if(tileMap.getSolid(...point, this.args.layer))
+				{
+					return lastPoint;
+				}
+
+				lastPoint = point.map(Math.floor);
+			}
+		);
+
+		this.willJump = false;
+
+		let blockers = false;
+
+		const upDistance = this.castRay(
+			Math.abs(this.args.ySpeed) + 1
+			, this.upAngle
+			, (i, point) => {
+
+				if(!this.viewport)
+				{
+					return false;
+				}
+
+				const actors = this.viewport.actorsAtPoint(...point)
+					.filter(x => x.args !== this.args)
+					.filter(x => x.callCollideHandler(this))
+					.filter(a => a.solid);
+
+				if(actors.length > 0)
+				{
+					return i;
+				}
+
+				if(tileMap.getSolid(...point, this.args.layer))
+				{
+					return i;
+				}
+			}
+		);
+
+		const xSpeedOriginal = this.args.xSpeed;
+		const ySpeedOriginal = this.args.ySpeed;
+
+		if(this.args.ySpeed < 0 && upDistance !== false)
+		{
+			this.args.ignore = 1;
+
+			this.args.y -= Math.floor(upDistance - 1);
+
+			blockers = this.getMapSolidAt(this.x, this.y);
+
+			if(Array.isArray(blockers))
+			{
+				const stickers = blockers.filter(a=>a.canStick);
+
+				if(this.willStick && stickers.length)
+				{
+					this.args.gSpeed = Math.floor(-xSpeedOriginal);
+					this.args.mode = MODE_CEILING;
+					this.args.falling = false;
+				}
+				// else
+				// {
+				// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
+				// }
+			}
+			else if(this.willStick)
+			{
+				const blockers = this.getMapSolidAt(this.x, this.y-1);
+				const stickers = Array.isArray(blockers) && blockers.filter(a=>a.canStick);
+
+				if(!blockers.length || (blockers.length && stickers.length))
+				{
+					this.args.gSpeed = Math.floor(-xSpeedOriginal);
+					this.args.mode = MODE_CEILING;
+					this.args.falling = false;
+				}
+			}
+			// else
+			// {
+			// 	this.args.ySpeed = -Math.abs(this.args.ySpeed);
+			// }
+		}
+		else if(airPoint !== false)
+		{
+			this.args.ignore = 1;
+
+			const direction = Math.sign(this.args.xSpeed);
+
+			this.args.xSpeed  = 0;
+			this.args.ySpeed  = 0;
+
+			this.args.x = Math.floor(airPoint[0]);
+			this.args.y = Math.floor(airPoint[1]);
+
+			blockers = this.getMapSolidAt(this.x + direction, this.y);
+
+			if(!blockers)
+			{
+				this.args.gSpeed = Math.floor(xSpeedOriginal);
+				this.args.mode   = MODE_FLOOR;
+
+				this.args.falling = false;
+			}
+			else if(Array.isArray(blockers))
+			{
+
+
+				if(this.willJump)
+				{
+					this.args.xSpeed *= -1.1;
+					this.args.ySpeed *= -1.1;
+
+					this.willJump = false;
+				}
+				else
+				{
+					blockers = blockers.filter(a => a.callCollideHandler(this));
+
+					if(blockers.length && this.willStick)
+					{
+						if(blockers.filter(a => a.canStick))
+						{
+							this.args.falling = false;
+
+							this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
+
+							this.args.mode = direction < 0
+								? MODE_LEFT
+								: MODE_RIGHT;
+						}
+					}
+				}
+			}
+			else if(this.willJump)
+			{
+				this.args.xSpeed *= -1;
+				this.args.ySpeed *= -1;
+
+				this.willJump = false;
+			}
+			else if(this.willStick)
+			{
+				this.args.falling = false;
+
+				this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
+
+				this.args.mode = direction < 0
+					? MODE_LEFT
+					: MODE_RIGHT;
+			}
+		}
+		else if(this.args.ySpeed > 0)
+		{
+			this.args.mode = DEFAULT_GRAVITY;
+			this.args.gSpeed = Math.floor(xSpeedOriginal);
+		}
+
+		if(airPoint === false)
+		{
+			this.args.x += this.args.xSpeed;
+			this.args.y += this.args.ySpeed;
+
+			this.args.falling = true;
+		}
+
+		if(Math.abs(this.args.xSpeed) > this.args.xSpeedMax)
+		{
+			this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
+		}
+
+		if(Math.abs(this.args.ySpeed) > this.args.ySpeedMax)
+		{
+			this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
+		}
+	}
+
 	callCollideHandler(other)
 	{
 		// if(this.collisions.has(other))
@@ -923,7 +979,12 @@ export class PointActor extends View
 
 	findNextStep(offset)
 	{
-		const viewport = this.viewport
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
 		const tileMap  = viewport.tileMap;
 		const maxStep  = this.maxStep;
 
@@ -1115,19 +1176,6 @@ export class PointActor extends View
 		}
 
 		return false;
-	}
-
-	jump()
-	{
-		if(this.args.falling || this.willJump)
-		{
-			return;
-		}
-
-		if(!this.willJump)
-		{
-			this.willJump = true;
-		}
 	}
 
 	doJump()
@@ -1345,6 +1393,11 @@ export class PointActor extends View
 
 	getMapSolidAt(x, y, actors = true)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(actors)
 		{
 			const actors = this.viewport.actorsAtPoint(x,y)
@@ -1370,4 +1423,17 @@ export class PointActor extends View
 	get y() { return this.args.y }
 	get point() { return [this.args.x, this.args.y] }
 	get rotateLock() { return false; }
+
+	command_0() // jump
+	{
+		if(this.args.falling || this.willJump)
+		{
+			return;
+		}
+
+		if(!this.willJump)
+		{
+			this.willJump = true;
+		}
+	}
 }

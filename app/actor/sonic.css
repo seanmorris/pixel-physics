@@ -43,6 +43,24 @@
 	animation: sonic-jump steps(4) infinite 96ms;
 }
 
+.actor-item.actor-sonic[data-animation="skidding"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -256px;
+	--animation-steps: -2;
+	--animation-width: 64px;
+
+	animation: sonic-animate steps(var(--animation-steps)) infinite 96ms;
+}
+
+@-webkit-keyframes sonic-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(var(--animation-steps) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
 @-webkit-keyframes sonic-walk {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);

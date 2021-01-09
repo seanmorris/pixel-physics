@@ -25,6 +25,7 @@ export class Spring extends PointActor
 			class      = "spring-pad"
 			style = "--color:[[color]]deg"
 		></div>
+		<div class = "sprite"></div>
 	</div>`;
 
 	constructor(...args)

@@ -1,0 +1,20 @@
+.actor-item.actor-projectile .sprite {
+	background-image: url(/Sonic/projectile.png);
+	height: 8px;
+	width: 8px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-size:  16px;
+	--animation-steps: 2;
+	z-index: 1;
+	animation: projectile-animate steps(2) infinite 20ms;
+}
+
+@keyframes projectile-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-16px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

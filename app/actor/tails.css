@@ -1,4 +1,4 @@
-.actor-item.actor-knuckles .sprite {
+.actor-item.actor-tails .sprite {
 	height: 64px;
 	width: 64px;
 	--sprite-offset-x: 0px;
@@ -6,12 +6,12 @@
 	z-index: 1;
 }
 
-.actor-item.actor-knuckles .sprite:after {
+.actor-item.actor-tails .sprite:after {
 	content: '';
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url(/Sonic/knuckles.png);
+	background-image: url(/Sonic/tails.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
 	width: 64px;
@@ -20,39 +20,39 @@
 	z-index: 1;
 }
 
-.actor-item.actor-knuckles[data-animation="standing"] .sprite:after {
+.actor-item.actor-tails[data-animation="standing"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 }
 
-.actor-item.actor-knuckles[data-animation="walking"] .sprite:after {
+.actor-item.actor-tails[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
-	animation: knuckles-walk steps(8) infinite 512ms;
+	animation: tails-walk steps(8) infinite 512ms;
 }
 
-.actor-item.actor-knuckles[data-animation="running"] .sprite:after {
+.actor-item.actor-tails[data-animation="running"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
-	animation: knuckles-run steps(4) infinite 128ms;
+	animation: tails-run steps(4) infinite 128ms;
 }
 
-.actor-item.actor-knuckles[data-animation="jumping"] .sprite:after {
+.actor-item.actor-tails[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
-	animation: knuckles-jump steps(3) infinite 96ms;
+	animation: tails-jump steps(3) infinite 96ms;
 }
 
-.actor-item.actor-knuckles[data-animation="skidding"] .sprite:after {
+.actor-item.actor-tails[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -256px;
 	--animation-steps: -2;
 	--animation-width: 64px;
 
-	animation: knuckles-animate steps(var(--animation-steps)) infinite 96ms;
+	animation: tails-animate steps(var(--animation-steps)) infinite 96ms;
 }
 
-@-webkit-keyframes knuckles-animate {
+@keyframes tails-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -61,7 +61,7 @@
 	}
 }
 
-@-webkit-keyframes knuckles-walk {
+@keyframes tails-walk {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -70,7 +70,7 @@
 	}
 }
 
-@-webkit-keyframes knuckles-run {
+@keyframes tails-run {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -79,7 +79,7 @@
 	}
 }
 
-@-webkit-keyframes knuckles-jump {
+@keyframes tails-jump {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -88,7 +88,7 @@
 	}
 }
 
-.actor-item.actor-knuckles .knuckles-knuckles {
+.actor-item.actor-tails .tails-tails {
 	position: absolute;
 	top: 32px;
 	left: -6px;
@@ -101,21 +101,21 @@
 	width: 32px;
 	height: 32px;
 
-	background-image: url(/Sonic/knuckles-knuckles.png);
+	background-image: url(/Sonic/tails-tails.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 
 	z-index: -1;
 
-	animation: knuckles-animate steps(var(--animation-steps)) infinite 350ms;
+	animation: tails-animate steps(var(--animation-steps)) infinite 350ms;
 }
 
-.actor-item.actor-knuckles[data-animation="walking"] .knuckles-knuckles,
-.actor-item.actor-knuckles[data-animation="running"] .knuckles-knuckles {
+.actor-item.actor-tails[data-animation="walking"] .tails-tails,
+.actor-item.actor-tails[data-animation="running"] .tails-tails {
 	display: none;
 }
 
-.actor-item.actor-knuckles[data-animation="jumping"] .knuckles-knuckles,
-.actor-item.actor-knuckles[data-animation="rolling"] .knuckles-knuckles {
+.actor-item.actor-tails[data-animation="jumping"] .tails-tails,
+.actor-item.actor-tails[data-animation="rolling"] .tails-tails {
 	--sprite-offset-y: -32px;
 	--animation-steps: 5;
 	top: 32px;

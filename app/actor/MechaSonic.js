@@ -14,7 +14,7 @@ export class MechaSonic extends PointActor
 		this.args.accel = 0.4;
 		this.args.decel = 0.3;
 
-		this.args.gSpeedMax = 100;
+		this.args.gSpeedMax = 50;
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.65;
 
@@ -61,7 +61,7 @@ export class MechaSonic extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'standing');
 			}
-			else if(Math.sign(this.args.gSpeed) !== direction)
+			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.box.setAttribute('data-animation', 'skidding');
 			}

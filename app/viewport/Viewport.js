@@ -11,9 +11,7 @@ import { QuestionBlock } from '../actor/QuestionBlock';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 import { MarbleBlock } from '../actor/MarbleBlock';
 import { LayerSwitch } from '../actor/LayerSwitch';
-import { MechaSonic } from '../actor/MechaSonic';
-import { Sonic } from '../actor/Sonic';
-import { PointActor } from '../actor/PointActor';
+
 import { Explosion } from '../actor/Explosion';
 import { StarPost } from '../actor/StarPost';
 import { Emerald } from '../actor/Emerald';
@@ -22,6 +20,19 @@ import { Monitor } from '../actor/Monitor';
 import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
 import { Coin } from '../actor/Coin';
+
+import { PointActor } from '../actor/PointActor';
+
+import { Projectile } from '../actor/Projectile';
+import { TextActor } from '../actor/TextActor';
+
+import { Eggman     } from '../actor/Eggman';
+import { Eggrobo     } from '../actor/Eggrobo';
+import { MechaSonic } from '../actor/MechaSonic';
+
+import { Sonic }      from '../actor/Sonic';
+import { Tails }      from '../actor/Tails';
+import { Knuckles }   from '../actor/Knuckles';
 
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
@@ -34,8 +45,13 @@ const objectPalette = {
 	, 'layer-switch': LayerSwitch
 	, 'star-post': StarPost
 	, 'q-block': QuestionBlock
+	, 'projectile': Projectile
 	, 'sonic': Sonic
+	, 'tails': Tails
+	, 'knuckles': Knuckles
 	, 'mecha-sonic': MechaSonic
+	, 'eggman': Eggman
+	, 'eggrobo': Eggrobo
 	, 'window': Window
 	, 'emerald': Emerald
 	, 'ring':    Ring
@@ -130,9 +146,7 @@ export class Viewport extends View
 		this.actors = new Bag((i,s,a) => {
 			if(a == Bag.ITEM_ADDED)
 			{
-				i.args.display = 'none';
-				i.viewport     = this;
-
+				i.viewport = this;
 				this.setColCell(i);
 			}
 			else if(a == Bag.ITEM_REMOVED)
@@ -169,7 +183,10 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 
 		this.colCellCache = {};
-		this.colCellDiv = 192;
+		this.colCellDiv = this.args.width > this.args.height
+		 	? this.args.width / 2
+		 	: this.args.height / 2;
+
 		this.colCells   = {};
 
 		this.actorPointCache = new Map;
@@ -341,7 +358,7 @@ export class Viewport extends View
 
 		if(keyboard.getKey(' ') > 0)
 		{
-			this.controlActor.jump();
+			this.controlActor.command_0(); // jump
 		}
 	}
 
@@ -428,7 +445,12 @@ export class Viewport extends View
 
 			if(gamepad.buttons[0].pressed)
 			{
-				this.controlActor.jump(Date.now());
+				this.controlActor.command_0 && this.controlActor.command_0(); // jump
+			}
+
+			if(gamepad.buttons[2].pressed)
+			{
+				this.controlActor.command_2 && this.controlActor.command_2(); // shoot
 			}
 		}
 	}
@@ -586,6 +608,8 @@ export class Viewport extends View
 
 			this.actors.add( obj );
 		}
+
+		this.actors.add( new TextActor({x: 1250, y:1800}) );
 	}
 
 	spawnActors()
@@ -722,6 +746,13 @@ export class Viewport extends View
 
 		this.controlActor = this.controlActor || actors[0];
 
+		if(!this.args.maxSpeed)
+		{
+			this.args.maxSpeed = this.controlActor.args.gSpeedMax;
+		}
+
+		this.controlActor.args.gSpeedMax = this.args.maxSpeed;
+
 		this.controlActor.args.display = 'inital';
 
 		this.controlActor.willStick = !!this.args.willStick;
@@ -815,8 +846,9 @@ export class Viewport extends View
 
 		if(this.nextControl)
 		{
-			this.controlActor = this.nextControl;
-			this.nextControl = null;
+			this.controlActor  = this.nextControl;
+			this.args.maxSpeed = null;
+			this.nextControl   = null;
 		}
 	}
 
@@ -916,25 +948,25 @@ export class Viewport extends View
 
 		if(this.colCellCache[name])
 		{
-			return this.colCellCache[name];
+			return this.colCellCache[name].filter(set=>set.size);
 		}
 
-		return this.colCellCache[name] = [
-			this.getColCell({x:actor.x-colCellDiv, y:actor.y-colCellDiv})
-			, this.getColCell({x:actor.x-colCellDiv, y:actor.y+0})
-			, this.getColCell({x:actor.x-colCellDiv, y:actor.y+colCellDiv})
+		const space = colCellDiv;
 
-			, this.getColCell({x:actor.x, y:actor.y-colCellDiv})
-			, this.getColCell({x:actor.x, y:actor.y+0})
-			, this.getColCell({x:actor.x, y:actor.y+colCellDiv})
+		this.colCellCache[name] = [
+			  this.getColCell({x:actor.x - space, y:actor.y - space})
+			, this.getColCell({x:actor.x - space, y:actor.y})
+			, this.getColCell({x:actor.x - space, y:actor.y + space})
 
-			, this.getColCell({x:actor.x+colCellDiv, y:actor.y-colCellDiv})
-			, this.getColCell({x:actor.x+colCellDiv, y:actor.y+0})
-			, this.getColCell({x:actor.x+colCellDiv, y:actor.y+colCellDiv})
-		].filter(set=>{
+			, this.getColCell({x:actor.x, y:actor.y - space})
+			, this.getColCell({x:actor.x, y:actor.y})
+			, this.getColCell({x:actor.x, y:actor.y + space})
 
-			return set.size;
+			, this.getColCell({x:actor.x + space, y:actor.y - space})
+			, this.getColCell({x:actor.x + space, y:actor.y})
+			, this.getColCell({x:actor.x + space, y:actor.y + space})
+		]
 
-		});
+		return this.colCellCache[name].filter(set=>set.size);
 	}
 }

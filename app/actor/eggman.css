@@ -1,0 +1,63 @@
+.actor-item.actor-eggman .sprite {
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-eggman .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/Sonic/eggman.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-eggman[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-eggman[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: eggman-walk steps(3) infinite 288ms;
+}
+
+.actor-item.actor-eggman[data-animation="running"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: eggman-walk steps(3) infinite 192ms;
+}
+
+.actor-item.actor-eggman[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+
+@-webkit-keyframes eggman-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes eggman-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

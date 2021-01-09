@@ -1,7 +1,7 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
-export class Sonic extends PointActor
+export class Eggman extends PointActor
 {
 	constructor(...args)
 	{
@@ -9,12 +9,12 @@ export class Sonic extends PointActor
 
 		this.controllable   = true;
 
-		this.args.type      = 'actor-item actor-sonic';
+		this.args.type      = 'actor-item actor-eggman';
 
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 25;
+		this.args.gSpeedMax = 10;
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.45;
 
@@ -24,7 +24,6 @@ export class Sonic extends PointActor
 	onAttached()
 	{
 		this.box = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
 	}
 
 	update()

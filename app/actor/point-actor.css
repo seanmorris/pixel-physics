@@ -22,7 +22,7 @@
 	z-index: 1;
 }
 
-.actor-generic .sprite {
+.actor-generic .sprite:after {
 	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
 	display: block;
 	position: absolute;
@@ -50,36 +50,35 @@
 	transform: scale(1.25);
 }
 
-.actor-generic[data-falling="false"][data-mode="0"] .sprite {
+.actor-generic[data-falling="false"][data-mode="0"] .sprite:after {
 	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="1"] .sprite {
+.actor-generic[data-falling="false"][data-mode="1"] .sprite:after {
 	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
 }
 
-
-.actor-generic[data-falling="false"][data-mode="2"] .sprite {
+.actor-generic[data-falling="false"][data-mode="2"] .sprite:after {
 	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="3"] .sprite {
+.actor-generic[data-falling="false"][data-mode="3"] .sprite:after {
 	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
+.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite:after {
 	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
+.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite:after {
 	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
+.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite:after {
 	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
+.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite:after {
 	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
 }
 
@@ -107,12 +106,12 @@
 .actor-item.actor-explosion .sprite {
 	background-image: url(/Sonic/explosion.png);
 	--sprite-offset-x: -8px;
-	--sprite-offset-y: -136px;
+	--sprite-offset-y: -64px;
 	width: 48px;
 	height: 48px;
 
 	animation: explosion steps(5) infinite;
-	animation-duration: calc(1ms * 360);
+	animation-duration: calc(1ms * 480);
 
 	z-index: 20000;
 }
@@ -237,35 +236,55 @@
 }
 
 .actor-item[data-mode="0"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px));
+}
+
+.actor-item[data-falling="false"][data-mode="0"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle)));
 }
 
-.actor-item[data-mode="1"] .sprite {
+.actor-item[data-falling="false"][data-mode="1"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
 }
 
-.actor-item[data-mode="2"] .sprite {
+.actor-item[data-falling="false"][data-mode="2"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg)));
 }
 
-.actor-item[data-mode="3"] .sprite {
+.actor-item[data-falling="false"][data-mode="3"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
 }
 
-.actor-item[data-mode="0"][data-facing="left"] .sprite {
+.actor-item[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle))) scale(-1,1);
 }
 
-.actor-item[data-mode="1"][data-facing="left"] .sprite {
+.actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg))) scale(-1,1);
 }
 
-.actor-item[data-mode="2"][data-facing="left"] .sprite {
+.actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg))) scale(-1,1);
 }
 
-.actor-item[data-mode="3"][data-facing="left"] .sprite {
+.actor-item[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg))) scale(-1,1);
+}
+
+.actor-item[data-mode="0"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
+}
+
+.actor-item[data-mode="1"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
+}
+
+.actor-item[data-mode="2"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
+}
+
+.actor-item[data-mode="3"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
 }
 
 .actor-item {

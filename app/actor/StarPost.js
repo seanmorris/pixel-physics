@@ -52,7 +52,7 @@ export class StarPost extends PointActor
 				x: this.x - 10
 				, y: this.y - 48
 				, ySpeed: -5
-				, xSpeed: other.args.gSpeed
+				, xSpeed: 5 * Math.sign(other.args.gSpeed)
 			});
 
 			this.viewport.actors.add(monitor);

@@ -21,6 +21,12 @@ export class Monitor extends PointActor
 	{
 		super.update();
 
+		if(this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/object-destroyed.wav');
+			this.sample.volume = 0.6 + (Math.random() * -0.3);
+		}
+
 		if(!this.restingOn)
 		{
 			// this.debindYs && this.debindYs();
@@ -43,11 +49,14 @@ export class Monitor extends PointActor
 			&& this.viewport
 			&& !this.gone
 		){
-			console.log(other);
-
 			this.gone = true;
 
-			other.args.xSpeed *= -1;
+			if(this.args.falling && Math.abs(other.args.ySpeed) > 10)
+			{
+				other.args.xSpeed *= -1;
+				other.args.ySpeed *= -10;
+			}
+
 			other.args.ySpeed *= -1;
 
 			const viewport = this.viewport;
@@ -56,25 +65,61 @@ export class Monitor extends PointActor
 
 			const corpse = new BrokenMonitor({x:this.x, y:this.y+1});
 
-			if(Math.abs(other.args.xSpeed) > 64 || Math.abs(other.args.gSpeed) > 64)
-			{
+			this.onTimeout(60, () => {
 				viewport.actors.remove( this );
 				viewport.actors.add(corpse);
-			}
-			else
-			{
-				this.onTimeout(60, () => {
-					viewport.actors.remove( this );
-					viewport.actors.add(corpse);
-				});
-			}
+			});
 
 			this.onRemove(()=>setTimeout(()=>{
 				viewport.actors.remove(corpse);
 				corpse.remove();
-			}, 500));
+			}, 5000));
 
-			other.args.rings += 10;
+			if(other.args.owner)
+			{
+				other.args.owner.args.rings += 10;
+			}
+			else
+			{
+				other.args.rings += 10;
+			}
+
+			if(this.viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
+
+			return true;
+		}
+
+		if(
+			(this.args.collType === 'collision-left' || this.args.collType === 'collision-right')
+			&& (Math.abs(other.args.xSpeed) > 15 || (Math.abs(other.args.gSpeed) > 15))
+			&& this.viewport
+			&& !this.gone
+		){
+			const viewport = this.viewport;
+
+			const corpse = new BrokenMonitor({x:this.x, y:this.y+1});
+
+			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+
+			viewport.actors.remove( this );
+			viewport.actors.add(corpse);
+
+			if(other.args.owner)
+			{
+				other.args.owner.args.rings += 10;
+			}
+			else
+			{
+				other.args.rings += 10;
+			}
+
+			if(viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
 
 			return false;
 		}

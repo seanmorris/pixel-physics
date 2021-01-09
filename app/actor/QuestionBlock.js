@@ -92,18 +92,16 @@ export class QuestionBlock extends PointActor
 
 			if(!this.args.empty)
 			{
-				this.onTimeout(1250, ()=>{
-					const monitor = new Monitor({x: this.x, y: this.y - 128});
+				const monitor = new Monitor({x: this.x, y: this.y - 128});
 
-					this.viewport.actors.add(monitor);
+				this.viewport.actors.add(monitor);
 
-					monitor.onRemove(() => setTimeout(
-						()=> {
-							this.args.empty = false;
-						}
-						, 1250
-					));
-				});
+				monitor.onRemove(() => setTimeout(
+					()=> {
+						this.args.empty = false;
+					}
+					, 1250
+				));
 
 				this.args.empty = true;
 			}
