@@ -621,7 +621,7 @@ export class PointActor extends View
 
 		if(nextPosition[0] !== false || nextPosition[1] !== false)
 		{
-			if(Math.abs(this.args.gSpeed) > this.args.gSpeedMax && this.args.gSpeedMax !== Infinity)
+			if(Math.abs(this.args.gSpeed) > gSpeedMax && gSpeedMax !== Infinity && gSpeedMax !== -Infinity)
 			{
 				this.args.gSpeed = gSpeedMax * Math.sign(this.args.gSpeed);
 			}

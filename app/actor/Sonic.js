@@ -14,7 +14,7 @@ export class Sonic extends PointActor
 		this.args.accel = 0.25;
 		this.args.decel = 0.3;
 
-		this.args.gSpeedMax = 45;
+		this.args.gSpeedMax = 50;
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.45;
 	}
@@ -40,8 +40,7 @@ export class Sonic extends PointActor
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
-			const maxSpeed  = 100;
-			const minRun2   = 100;
+			const maxSpeed  = this.args.gSpeedMax;
 
 			if(gSpeed === 0)
 			{

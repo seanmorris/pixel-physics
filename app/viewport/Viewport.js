@@ -448,12 +448,12 @@ export class Viewport extends View
 			if(this.controlActor.args.cameraMode = 'normal')
 			{
 				this.args.yOffsetTarget = 0.25;
-				cameraSpeed = 10;
+				cameraSpeed = 5;
 			}
 			else
 			{
 				this.args.yOffsetTarget = 0.5;
-				cameraSpeed = 15;
+				cameraSpeed = 5;
 
 			}
 		}
