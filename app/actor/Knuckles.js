@@ -11,7 +11,7 @@ export class Knuckles extends PointActor
 
 		this.args.type      = 'actor-item actor-knuckles';
 
-		this.args.accel     = 0.12;
+		this.args.accel     = 0.13;
 		this.args.decel     = 0.5;
 
 		this.args.gSpeedMax = 20;

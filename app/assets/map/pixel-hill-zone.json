@@ -1178,7 +1178,7 @@
                  "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1432,
+                 "x":1456,
                  "y":1560
                 }, 
                 {
@@ -1196,7 +1196,7 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1400,
+                 "x":1408,
                  "y":1560
                 }, 
                 {
@@ -1362,7 +1362,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":742,
+ "nextobjectid":745,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",

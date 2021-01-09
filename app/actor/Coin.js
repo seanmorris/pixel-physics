@@ -21,7 +21,7 @@ export class Coin extends PointActor
 		if(this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/mario/smw_coin.wav');
-			this.sample.volume = 0.25 + (Math.random() * 0.5);
+			this.sample.volume = 1;
 		}
 	}
 

@@ -193,8 +193,7 @@
 				</label> -->
 
 				<label>
-					<span>select a character:</span>
-					<select cv-each = "controllable:obj:name" cv-on = "change(event)">
+					<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
 						<option value = "[[name]]">[[name]]</option>
 					</select>
 				</label>

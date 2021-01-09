@@ -6233,7 +6233,7 @@ var Coin = /*#__PURE__*/function (_PointActor) {
 
       if (this.viewport.args.audio && !this.sample) {
         this.sample = new Audio('/mario/smw_coin.wav');
-        this.sample.volume = 0.25 + Math.random() * 0.5;
+        this.sample.volume = 1;
       }
     }
   }, {
@@ -6908,7 +6908,7 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
     _this = _super.call.apply(_super, [this].concat(args));
     _this.controllable = true;
     _this.args.type = 'actor-item actor-knuckles';
-    _this.args.accel = 0.12;
+    _this.args.accel = 0.13;
     _this.args.decel = 0.5;
     _this.args.gSpeedMax = 20;
     _this.args.jumpForce = 15;
@@ -7620,11 +7620,13 @@ function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableTo
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -7732,7 +7734,8 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.args.gravity = 0.65;
     _this.args.decel = 0.85;
     _this.args.accel = 0.3;
-    _this.controllable = false;
+    _this.controllable = false; // return Bindable.make(this);
+
     return _this;
   }
 
@@ -7747,6 +7750,24 @@ var PointActor = /*#__PURE__*/function (_View) {
         }
 
         _this2.viewport.nextControl = _Bindable.Bindable.make(_this2);
+
+        var _iterator = _createForOfIteratorHelper(_this2.viewport.tags.currentActor.options),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var option = _step.value;
+
+            if (option.value === _this2.args.name) {
+              _this2.viewport.tags.currentActor.value = option.value;
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
         _this2.args.ySpeed = 0;
       });
     }
@@ -9213,7 +9234,7 @@ var Ring = /*#__PURE__*/function (_PointActor) {
 
       if (this.viewport.args.audio && !this.sample) {
         this.sample = new Audio('/Sonic/ring-collect.wav');
-        this.sample.volume = 0.2 + Math.random() * -0.1;
+        this.sample.volume = 0.15 + Math.random() * -0.05;
       }
     }
   }, {
@@ -11335,6 +11356,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.sprites = new _Bag.Bag();
     _this.tileMap = new _TileMap.TileMap();
     _this.world = null;
+    _this.args.currentActor = '';
     _this.args.yOffsetTarget = 0.75;
     _this.args.yOffset = 0.5;
     _this.args.status = new _CharacterString.CharacterString({
@@ -11497,7 +11519,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.audio = true;
     _this.nextControl = false;
     _this.args.controllable = {
-      'characters': null
+      'character select': null
     };
     _this.updateStarted = new Set();
     _this.updateEnded = new Set();
@@ -11812,7 +11834,8 @@ var Viewport = /*#__PURE__*/function (_View) {
         var objArgs = {
           x: objDef.x + 16,
           y: objDef.y - 1,
-          visible: objDef.visible
+          visible: objDef.visible,
+          name: objDef.name
         };
 
         for (var _i in objDef.properties) {
@@ -12219,7 +12242,7 @@ module.exports = "<div class = \"viewport-background\" cv-each = \"blocks:block:
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\t\t\t<div cv-ref = \"content\" class = \"viewport-content\" cv-each = \"actors:actor:a\">[[actor]]</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n<!-- \t\t\t\t<label>\n\t\t\t\t\t<small>player character:</small>\n\t\t\t\t\t<select>\n\t\t\t\t\t\t<option value = \"nuke-ball\">nuclear superball</option>\n\t\t\t\t\t\t<option value = \"sonic\">sonic</option>\n\t\t\t\t\t\t<option value = \"tails\">tails</option>\n\t\t\t\t\t\t<option value = \"knuckles\">knuckles</option>\n\t\t\t\t\t\t<option value = \"amy-rose\">amy rose</option>\n\t\t\t\t\t\t<option value = \"charmy bee\">charmy bee</option>\n\t\t\t\t\t\t<option value = \"mario\">mario</option>\n\t\t\t\t\t\t<option value = \"luigi\">luigi</option>\n\t\t\t\t\t\t<option value = \"luigi\">samus</option>\n\t\t\t\t\t\t<option value = \"luigi\">metal sonic</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label> -->\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>select a character:</span>\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
+module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\t\t\t<div cv-ref = \"content\" class = \"viewport-content\" cv-each = \"actors:actor:a\">[[actor]]</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n<!-- \t\t\t\t<label>\n\t\t\t\t\t<small>player character:</small>\n\t\t\t\t\t<select>\n\t\t\t\t\t\t<option value = \"nuke-ball\">nuclear superball</option>\n\t\t\t\t\t\t<option value = \"sonic\">sonic</option>\n\t\t\t\t\t\t<option value = \"tails\">tails</option>\n\t\t\t\t\t\t<option value = \"knuckles\">knuckles</option>\n\t\t\t\t\t\t<option value = \"amy-rose\">amy rose</option>\n\t\t\t\t\t\t<option value = \"charmy bee\">charmy bee</option>\n\t\t\t\t\t\t<option value = \"mario\">mario</option>\n\t\t\t\t\t\t<option value = \"luigi\">luigi</option>\n\t\t\t\t\t\t<option value = \"luigi\">samus</option>\n\t\t\t\t\t\t<option value = \"luigi\">metal sonic</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label> -->\n\n\t\t\t\t<label>\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
 });
 
 ;require.register("___globals___", function(exports, require, module) {

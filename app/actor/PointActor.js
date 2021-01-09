@@ -118,6 +118,8 @@ export class PointActor extends View
 		this.args.accel     = 0.3;
 
 		this.controllable = false;
+
+		// return Bindable.make(this);
 	}
 
 	onRendered()
@@ -130,6 +132,14 @@ export class PointActor extends View
 			}
 
 			this.viewport.nextControl = Bindable.make(this);
+
+			for(const option of this.viewport.tags.currentActor.options)
+			{
+				if(option.value === this.args.name)
+				{
+					this.viewport.tags.currentActor.value = option.value;
+				}
+			}
 
 			this.args.ySpeed = 0;
 		});

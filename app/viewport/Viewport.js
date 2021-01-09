@@ -74,6 +74,8 @@ export class Viewport extends View
 		this.tileMap = new TileMap;
 		this.world   = null;
 
+		this.args.currentActor = '';
+
 		this.args.yOffsetTarget = 0.75;
 		this.args.yOffset = 0.5;
 
@@ -198,7 +200,7 @@ export class Viewport extends View
 
 		this.nextControl = false;
 
-		this.args.controllable = {'characters':null};
+		this.args.controllable = {'character select':null};
 
 		this.updateStarted = new Set;
 		this.updateEnded = new Set;
@@ -603,6 +605,7 @@ export class Viewport extends View
 				x: objDef.x + 16
 				, y: objDef.y - 1
 				, visible: objDef.visible
+				, name: objDef.name
 			};
 
 			for(const i in objDef.properties)
