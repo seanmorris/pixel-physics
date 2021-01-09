@@ -3,7 +3,7 @@ import { View } from 'curvature/base/View';
 export class CharacterString extends View
 {
 	template =
-		`<div class = "hud-character-string [[hide]] [[alert]]" cv-each = "chars:char:c" style = "--scale:[[scale]];"><span
+		`<div class = "hud-character-string [[hide]] [[color]]" cv-each = "chars:char:c" style = "--scale:[[scale]];"><span
 				class = "hud-character"
 				data-type  = "[[char.type]]"
 				data-value = "[[char.pos]]"
@@ -19,23 +19,27 @@ export class CharacterString extends View
 
 		this.args.scale = this.args.scale || 1;
 
-		this.args.bindTo('value', v => {
+		this.args.bindTo(['value'], v => {
 
 			if(Math.abs(v) > this.args.high)
 			{
-				this.args.alert = 'red';
+				this.args.color = 'red';
 			}
 			else if(Math.abs(v) > this.args.med)
 			{
-				this.args.alert = 'orange';
+				this.args.color = 'orange';
 			}
 			else if(Math.abs(v) > this.args.low)
 			{
-				this.args.alert = 'yellow';
+				this.args.color = 'yellow';
 			}
+			// else if(this.args.flash > 0)
+			// {
+			// 	this.args.color = this.args.flashColor;
+			// }
 			else
 			{
-				this.args.alert = '';
+				this.args.color = '';
 			}
 
 			const chars = String(v).split('').map((pos,i) => {

@@ -1,4 +1,7 @@
 import { PointActor } from './PointActor';
+import { Tag } from 'curvature/base/Tag';
+import { Monitor } from './Monitor';
+
 
 export class StarPost extends PointActor
 {
@@ -13,29 +16,49 @@ export class StarPost extends PointActor
 		this.args.active = false;
 	}
 
+	update()
+	{
+		super.update();
+
+		if(this.viewport && this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/starpost-active.wav');
+			this.sample.volume = 0.5 + (Math.random() * 0.025);
+		}
+	}
+
+	onRendered()
+	{
+		this.sprite = this.findTag('div.sprite');
+		this.box    = this.findTag('div');
+
+		this.head   = new Tag('<div class = "star-post-head">')
+
+		this.box.appendChild(this.head.node)
+	}
+
 	collideA(other)
 	{
 		super.collideA(other);
 
-		// if(this.args.gone)
-		// {
-		// 	return;
-		// }
+		if(!this.args.active)
+		{
+			this.box.setAttribute('data-active', 'true');
+			this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
 
-		// this.args.type = 'actor-item actor-ring collected';
+			this.sample && this.sample.play();
 
-		// if(!this.args.gone)
-		// {
-		// 	this.onTimeout(240, () => {
-		// 		this.args.type = 'actor-item actor-ring collected gone'
-		// 	});
+			const monitor = new Monitor({
+				x: this.x - 10
+				, y: this.y - 48
+				, ySpeed: -5
+				, xSpeed: other.args.gSpeed
+			});
 
-		// 	this.onTimeout(480, () => {
-		// 		this.viewport.actors.remove( this );
-		// 	});
-		// }
+			this.viewport.actors.add(monitor);
 
-		// this.args.gone = true;
+			this.args.active = true;
+		}
 	}
 
 	get solid() { return false; }

@@ -31,6 +31,17 @@ html, body {
 	font-size: 0.7rem;
 }
 
+.viewport-caption button {
+	background: black;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+	padding: 0.5em;
+	margin-right: 0.5em;
+	vertical-align: middle;
+}
+
 .viewport-header {
 	position: sticky;
 	top: 0;
@@ -95,6 +106,8 @@ html, body {
 .viewport-caption label {
 	padding: 0.25em;
 	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .viewport-caption > div > div,
@@ -162,7 +175,9 @@ html, body {
 }
 
 .viewport-background[data-layer="2"] > div {
-	box-shadow: inset 0 0 4px rgba(255,0,0,0.4);
+	/*box-shadow: inset 0 0 4px rgba(255,0,0,0.4);*/
+	border-top: 0.5px solid #020;
+	border-left: 0.5px solid #020;
 }
 
 .viewport-background > div {

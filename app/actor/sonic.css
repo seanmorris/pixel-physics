@@ -1,0 +1,71 @@
+.actor-item.actor-sonic .sprite {
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-sonic .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/Sonic/sonic.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-sonic[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-sonic[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: sonic-walk steps(6) infinite 512ms;
+}
+
+.actor-item.actor-sonic[data-animation="running"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	animation: sonic-run steps(4) infinite 128ms;
+}
+
+.actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	animation: sonic-jump steps(4) infinite 96ms;
+}
+
+@-webkit-keyframes sonic-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes sonic-run {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes sonic-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

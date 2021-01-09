@@ -18,7 +18,7 @@
 
 
 .hud-character-string.red .hud-character {
-	animation: redalert 0.25s steps(2) infinite;
+	animation: redalert 150ms steps(2) infinite;
 	background-image: url(/Sonic/font-red.png);
 }
 
@@ -48,7 +48,6 @@
 @-webkit-keyframes redalert{
 	from{
 		background-image: url(/Sonic/font-red.png);
-		transform: scale(1.25);
 	}
 	to{
 		background-image: url(/Sonic/font.png);

@@ -4,7 +4,7 @@
 	height: 32px;
 }
 
-.actor-item.actor-spring:after {
+.actor-item.actor-spring .sprite {
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	background-image: url(/Sonic/springs.png);
 	width: 32px;
@@ -34,7 +34,7 @@
 	--sprite-offset-x: -15px;
 }
 
-.actor-item.actor-spring.collision-top[data-colliding=true]:after {
+.actor-item.actor-spring.collision-top[data-colliding=true] .sprite {
 	--sprite-offset-x: -80px;
 }
 

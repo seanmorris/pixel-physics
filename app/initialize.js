@@ -6,8 +6,6 @@ import { Viewport } from './viewport/Viewport';
 const viewportA = new Viewport;
 // const viewportB = new Viewport;
 
-const minFrameTime = 16;
-
 document.addEventListener('DOMContentLoaded', function() {
 	let lastTime = Date.now();
 

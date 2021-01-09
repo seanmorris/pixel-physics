@@ -28,7 +28,7 @@ export class TileMap
 
 				const image = new Image();
 
-				image.src = '/Sonic/testTiles2-transparent.png';
+				image.src = '/map/shapes.png';
 
 				image.addEventListener('load', event => {
 					this.width  = image.width;
@@ -186,7 +186,7 @@ export class TileMap
 			xPixel, yPixel, 1, 1
 		).data;
 
-		if(pixel[3] === 255)
+		if(pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
 		{
 			heightMaskCache[heightMaskKey] = true;
 		}

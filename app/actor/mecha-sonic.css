@@ -1,0 +1,156 @@
+.actor-item.actor-mecha-sonic .sprite {
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-mecha-sonic .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/Sonic/mecha-sonic.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="skidding"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -768px;
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-mecha-sonic[data-animation="running"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -64px;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="running2"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
+	--sprite-offset-y: -704px;
+	animation: mecha-sonic-runningb steps(2) infinite 1ms;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="curling"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	animation: mecha-sonic-curl steps(1) 1 64ms forwards;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	animation: mecha-sonic-jump steps(3) infinite 96ms;
+}
+
+.actor-item.actor-mecha-sonic .mecha-sonic-flame {
+	display: none;
+	position: absolute;
+	top: 6px;
+	left: 26px;
+	transform: scale(-1,1);
+	transform-origin: left;
+	z-index: 0;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -0px;
+	animation: mecha-sonic-flame steps(4) infinite 64ms;
+	background-image: url(/Sonic/mecha-flame.png);
+	height: 48px;
+	width: 48px;
+	opacity: 0.75;
+}
+
+.actor-item.actor-mecha-sonic .mecha-sonic-sparks {
+	z-index: 1000;
+	opacity: 0.5;
+	display: none;
+	position: absolute;
+	bottom: 0px;
+	left: 8px;
+	transform: scale(1,1);
+	transform-origin: left;
+	--sprite-offset-y: -0px;
+	--sprite-offset-x: -0px;
+	background-image: url(/Sonic/mecha-sparks.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: mecha-sonic-sparks steps(3) infinite 125ms;
+	height: 8px;
+	width: 24px;
+	opacity: 0.75;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="running2"] .mecha-sonic-flame {
+	display: initial;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="skidding"] .mecha-sonic-sparks,
+.actor-item.actor-mecha-sonic[data-animation="walking"] .mecha-sonic-sparks,
+.actor-item.actor-mecha-sonic[data-animation="running"] .mecha-sonic-sparks {
+	display: initial;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="skidding"] .mecha-sonic-sparks {
+	left: -4px;
+}
+
+@-webkit-keyframes mecha-sonic-curl {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-runningb {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-flame {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-sparks {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-72px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

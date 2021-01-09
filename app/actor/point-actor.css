@@ -22,7 +22,7 @@
 	z-index: 1;
 }
 
-.actor-generic:after {
+.actor-generic .sprite {
 	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
 	display: block;
 	position: absolute;
@@ -38,7 +38,7 @@
 	left: 0;
 	--translate: translate(5px, calc(-50%));
 	transform-origin: -5px 50%;
-	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--debugVector))));
+	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--display-angle))));
 	opacity: 0.75;
 }
 
@@ -50,40 +50,40 @@
 	transform: scale(1.25);
 }
 
-.actor-generic[data-falling="false"][data-mode="0"]:after {
-	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="0"] .sprite {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="1"]:after {
-	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="1"] .sprite {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
 }
 
 
-.actor-generic[data-falling="false"][data-mode="2"]:after {
-	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="2"] .sprite {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="3"]:after {
-	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="3"] .sprite {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"]:after {
-	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"]:after {
-	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"]:after {
-	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"]:after {
-	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--debugVector))));
+.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
 }
 
-.actor-item:after {
+.actor-item .sprite {
 	content: ' ';
 	font-size: 0.25rem;
 	color: black;
@@ -98,13 +98,13 @@
 	background-repeat: no-repeat;
 }
 
-.actor-item.actor-block-marble:after {
+.actor-item.actor-block-marble .sprite {
 	background-image: url(/Sonic/marble-zone-block.png);
 	width: 32px;
 	height: 32px;
 }
 
-.actor-item.actor-explosion:after {
+.actor-item.actor-explosion .sprite {
 	background-image: url(/Sonic/explosion.png);
 	--sprite-offset-x: -8px;
 	--sprite-offset-y: -136px;
@@ -117,28 +117,28 @@
 	z-index: 20000;
 }
 
-.actor-item.actor-ring:after {
+.actor-item.actor-ring .sprite {
 	background-image: url(/Sonic/rings.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -148px;
 	animation: ringSpin steps(4) infinite;
-	animation-duration: calc(1ms * 360);
-	transition: opacity 0.125s ease-out;
+	animation-duration: calc(1ms * 320);
+	transition: opacity 0.25s ease-in;
 }
 
-.actor-item.actor-emerald:after {
+.actor-item.actor-emerald .sprite {
 	background-image: url(/Sonic/emerald-white.png);
 }
 
-.actor-item.actor-ring.gone:after,
-.actor-item.actor-ring.collected:after {
-	--sprite-offset-y: -88px;
+.actor-item.actor-ring.gone .sprite,
+.actor-item.actor-ring.collected .sprite {
+	--sprite-offset-y: -84px;
 	animation: ringTwinkle steps(4) infinite;
-	animation-duration: calc(1ms * 360);
+	animation-duration: calc(1ms * 140);
 }
 
 
-.actor-item.actor-coin:after {
+.actor-item.actor-coin .sprite {
 	background-image: url(/mario/coins.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -16px;
@@ -147,24 +147,24 @@
 	transition: opacity 0.5s ease-out, top 0.25s ease-in, filter 0.5s ease-in;
 }
 
-.actor-item.actor-coin.gone:after,
-.actor-item.actor-coin.collected:after {
+.actor-item.actor-coin.gone .sprite,
+.actor-item.actor-coin.collected .sprite {
 	animation-duration: calc(1ms * 15);
 	--sprite-offset-y: -82px;
 	top: -40px;
 }
 
-.actor-item.actor-coin.gone:after {
+.actor-item.actor-coin.gone .sprite {
 	animation: coinTwinkle steps(6) infinite;
 	animation-duration: calc(1ms * 15);
 }
 
-.actor-item.actor-ring.gone:after {
+.actor-item.actor-ring.gone .sprite {
 	opacity: 0;
 	filter: brightness(5);
 }
 
-.actor-item.actor-monitor:after {
+.actor-item.actor-monitor .sprite {
 	background-image: url(/Sonic/ringMonitor.png);
 	--sprite-offset-x: -18px;
 	--sprite-offset-y: -13px;
@@ -172,7 +172,7 @@
 	animation-duration: calc(1ms * 480);
 }
 
-.actor-item.actor-monitor.actor-monitor-broken:after {
+.actor-item.actor-monitor.actor-monitor-broken .sprite {
 	background-image: url(/Sonic/brokenMonitor.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
  	--sprite-offset-x: -18px;
@@ -180,7 +180,7 @@
 	animation: none;
 }
 
-.actor-item.actor-question-block:after {
+.actor-item.actor-question-block .sprite {
 	background-image: url(/Sonic/question-block.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -13px;
@@ -188,7 +188,7 @@
 	animation-duration: calc(1ms * 480);
 }
 
-.actor-item.actor-question-block[data-empty="true"]:after {
+.actor-item.actor-question-block[data-empty="true"] .sprite {
 	background-image: url(/Sonic/question-block.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -76px;
@@ -196,20 +196,76 @@
 	animation: none;
 }
 
-.actor-item[data-mode="0"]:after {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--angle)));
+.actor-item.actor-window .sprite {
+	background-image: url(/castlevania/window.png);
 }
 
-.actor-item[data-mode="1"]:after {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 90deg)));
+.actor-item.actor-star-post .sprite {
+	background-image: url(/Sonic/star-post.png);
+	height: 48px;
+	width: 16px;
 }
 
-.actor-item[data-mode="2"]:after {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 180deg)));
+.actor-star-post {
+	z-index:1;
 }
 
-.actor-item[data-mode="3"]:after {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--angle) + 270deg)));
+.star-post-head {
+	background-image: url(/Sonic/star-post-head.png);
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	top: -60px;
+	left: -8px;
+	transform-origin: bottom center;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-star-post[data-active="true"] .star-post-head {
+	animation: spin2x 1 ease-in-out 0.75s both, starPostActive steps(2) 10ms  0.5s infinite;
+}
+
+.actor-star-post[data-active="true"][direction="-1"] .star-post-head {
+	animation-direction: reverse;
+}
+
+.actor-item.actor-star-post .sprite {
+	background-image: url(/Sonic/star-post.png);
+	height: 48px;
+	width: 16px;
+}
+
+.actor-item[data-mode="0"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle)));
+}
+
+.actor-item[data-mode="1"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
+}
+
+.actor-item[data-mode="2"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg)));
+}
+
+.actor-item[data-mode="3"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
+}
+
+.actor-item[data-mode="0"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle))) scale(-1,1);
+}
+
+.actor-item[data-mode="1"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg))) scale(-1,1);
+}
+
+.actor-item[data-mode="2"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg))) scale(-1,1);
+}
+
+.actor-item[data-mode="3"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg))) scale(-1,1);
 }
 
 .actor-item {
@@ -282,11 +338,39 @@
 	}
 }
 
+@-webkit-keyframes starPostActive{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-32px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
 @-webkit-keyframes coinTwinkle{
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-386px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes spin{
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(-360deg);
+	}
+}
+
+
+@-webkit-keyframes spin2x{
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(-720deg);
 	}
 }

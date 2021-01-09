@@ -3,7 +3,7 @@
 		<span class = "sean-icon"></span>
 		<h1>Pixel Physics</h1>
 	</div>
-	<div class = "viewport" cv-ref = "viewport" tabindex="0">
+	<div class = "viewport [[fullscreen]]" cv-ref = "viewport" tabindex="0">
 
 		<div class = "viewport-zoom">
 			<div cv-ref = "background" class = "viewport-bg-layers" cv-each = "layers:layer">[[layer]]</div>
@@ -98,8 +98,9 @@
 
 			</div>
 			<div class = "focus-me">
-				<div class = "status-message">[[status]]</div>
+				<div class = "status-message">[[focusMe]]</div>
 			</div>
+			<div class = "status-message">[[status]]</div>
 
 		</div>
 
@@ -120,6 +121,14 @@
 	<div class = "viewport-caption">
 		<div>
 			<div>
+				<div class = "right">
+					<label>
+						<button cv-on = "click:fullscreen(event)">fullscreen</button>
+						<small><small>[esc to revert]</small></small>
+					</label>
+				</div>
+
+
 				<span class = "button-index">
 					<span class = "arrow button arrow-west"></span>
 					/ <span class = "arrow button arrow-east"></span>
@@ -162,13 +171,7 @@
 						view the project on github
 					</a>
 				</p>
-			</div>
 
-			<div class = "right">
-				<label>
-					<button cv-on = "click:fullscreen(event)">fullscreen</button>
-				</label>
-				<small><small>(esc to revert)</small></small>
 			</div>
 
 			<div class = "right">
@@ -223,8 +226,6 @@
 						<input type = "number" cv-bind = "scale" min = "1" max = "5" />
 					</form>
 				</label>
-
-				<span class = "label"><i>(pixels enlarged to show texture)</i></span>
 
 			</div>
 		</div>

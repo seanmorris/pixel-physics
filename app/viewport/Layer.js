@@ -66,7 +66,7 @@ export class Layer extends View
 
 					block.style({
 						transform: `translate(${transX}px, ${transY}px)`
-						, 'background-image': 'url(/Sonic/testTiles2-transparent.png)'
+						, 'background-image': 'url(/map/shapes.png)'
 						, position: 'absolute'
 						, left: 0
 						, top: 0

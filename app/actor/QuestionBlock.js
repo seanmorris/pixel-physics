@@ -10,7 +10,7 @@ export class QuestionBlock extends PointActor
 		style = "
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
-			--debugVector:[[debugVector]];
+			--display-angle:[[_angle]];
 			--height:[[height]];
 			--width:[[width]];
 			--x:[[x]];
@@ -22,7 +22,7 @@ export class QuestionBlock extends PointActor
 		data-angle     = "[[angle|rad2deg]]"
 		data-mode      = "[[mode]]"
 		data-empty     = "[[empty]]"
-	></div>`;
+	><div class = "sprite"></div></div>`;
 
 	constructor(...args)
 	{

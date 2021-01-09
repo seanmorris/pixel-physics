@@ -4,7 +4,7 @@
 	left: 1px;
 	display: flex;
 	flex-direction: column;
-	transform: scale(2);
+	transform: scale(var(--scale));
 	transform-origin: top left;
 	justify-content: flex-start;
 }

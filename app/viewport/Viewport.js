@@ -11,9 +11,13 @@ import { QuestionBlock } from '../actor/QuestionBlock';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 import { MarbleBlock } from '../actor/MarbleBlock';
 import { LayerSwitch } from '../actor/LayerSwitch';
+import { MechaSonic } from '../actor/MechaSonic';
+import { Sonic } from '../actor/Sonic';
 import { PointActor } from '../actor/PointActor';
 import { Explosion } from '../actor/Explosion';
+import { StarPost } from '../actor/StarPost';
 import { Emerald } from '../actor/Emerald';
+import { Window } from '../actor/Window';
 import { Monitor } from '../actor/Monitor';
 import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
@@ -28,7 +32,11 @@ const objectPalette = {
 	player: PointActor
 	, spring: Spring
 	, 'layer-switch': LayerSwitch
+	, 'star-post': StarPost
 	, 'q-block': QuestionBlock
+	, 'sonic': Sonic
+	, 'mecha-sonic': MechaSonic
+	, 'window': Window
 	, 'emerald': Emerald
 	, 'ring':    Ring
 	, 'coin':    Coin
@@ -52,9 +60,8 @@ export class Viewport extends View
 		this.args.yOffsetTarget = 0.75;
 		this.args.yOffset = 0.5;
 
-		this.args.maxSpeed = 0;
-
-		this.args.status = new CharacterString({value:'', scale: 2});
+		this.args.status  = new CharacterString({value:'', scale: 2});
+		this.args.focusMe = new CharacterString({value:'', scale: 2});
 
 		this.args.labelX = new CharacterString({value:'x pos: '});
 		this.args.labelY = new CharacterString({value:'y pos: '});
@@ -71,7 +78,7 @@ export class Viewport extends View
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
-		this.args.gSpeed = new CharacterString({value:0, high: 200, med: 100, low: 25});
+		this.args.gSpeed = new CharacterString({value:0, high: 199, med: 99, low: 49});
 		this.args.ground = new CharacterString({value:''});
 		this.args.xSpeed = new CharacterString({value:0});
 		this.args.ySpeed = new CharacterString({value:0});
@@ -95,18 +102,24 @@ export class Viewport extends View
 
 		this.args.blockSize = 32;
 
+		this.args.populated = false;
+
 		this.args.willStick = false;
 		this.args.stayStuck = false;
 
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 10.5;
-		this.args.height = 32 * 7;
+		this.args.width  = 32 * 14;
+		this.args.height = 32 * 8;
 		this.args.scale  = 2;
 
-		this.args.x = 0;
-		this.args.y = 0;
+		// this.args.width  = 32 * 10.5;
+		// this.args.height = 32 * 7;
+		// this.args.scale  = 2;
+
+		this.args.x = this.args.x || 0;
+		this.args.y = this.args.y || 0;
 
 		this.args.layers = [];
 
@@ -117,8 +130,8 @@ export class Viewport extends View
 		this.actors = new Bag((i,s,a) => {
 			if(a == Bag.ITEM_ADDED)
 			{
-				i.viewport = this;
 				i.args.display = 'none';
+				i.viewport     = this;
 
 				this.setColCell(i);
 			}
@@ -133,7 +146,6 @@ export class Viewport extends View
 
 			}
 		});
-
 
 		this.blocks = new Bag;
 
@@ -165,18 +177,36 @@ export class Viewport extends View
 		this.startTime = null;
 
 		this.args.audio = true;
+
+		this.nextControl = false;
+
+		this.updateStarted = new Set;
+		this.updateEnded = new Set;
+		this.updated = new Set;
 	}
 
 	fullscreen()
 	{
+		this.args.focusMe.args.hide = 'hide';
 		this.initScale = this.args.scale;
 
 		this.tags.viewport.requestFullscreen().then(res=>{
 			requestAnimationFrame(()=>{
+
 				const hScale = window.innerHeight / this.args.height;
 				const vScale = window.innerWidth / this.args.width;
 
 				this.args.scale = hScale > vScale ? hScale : vScale;
+				this.args.fullscreen = 'fullscreen';
+
+				this.args.status.args.value = ' hit escape to revert. ';
+
+				this.args.status.args.hide  = '';
+
+				this.onTimeout(2500, ()=>{
+					this.args.focusMe.args.hide = '';
+					this.args.status.args.hide  = 'hide';
+				});
 			});
 		});
 	}
@@ -187,6 +217,7 @@ export class Viewport extends View
 			if (!document.fullscreenElement)
 			{
 				this.args.scale = this.initScale;
+				this.args.fullscreen = ''
 			}
 		});
 
@@ -227,7 +258,7 @@ export class Viewport extends View
 						this.args.animation = 'closing';
 						this.tags.viewport.focus();
 
-						this.args.status.args.value = ' Click here for keyboard control. ';
+						this.args.focusMe.args.value = ' Click here for keyboard control. ';
 						this.args.status.args.hide = '';
 
 						this.onTimeout(750, () => {
@@ -262,278 +293,171 @@ export class Viewport extends View
 		keyboard.focusElement = this.tags.viewport.node;
 	}
 
-	update()
+	takeKeyboardInput()
 	{
-		const time    = (Date.now() - this.startTime) / 1000;
-		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
-		let seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5,'0');
+		const keyboard = Keyboard.get();
 
-		const neg = time < 0 ? '-' : '';
-
-		if(neg)
+		if(keyboard.getKey('Shift') > 0)
 		{
-			minutes = Number(minutes);
+			this.controlActor.running  = false;
+			this.controlActor.crawling = true;
+		}
+		else if(keyboard.getKey('Control') > 0)
+		{
+			this.controlActor.running  = true;
+			this.controlActor.crawling = false;
 		}
 
-		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
-
-		this.actorPointCache.clear();
-
-		if(this.args.paused)
+		if(keyboard.getKey('ArrowLeft') > 0 || keyboard.getKey('a') > 0)
 		{
-			this.tags.frame.style({'--scale': this.args.scale, '--width': this.args.width});
+			this.controlActor.xAxis = -1;
+		}
+		else if(keyboard.getKey('ArrowRight') > 0 || keyboard.getKey('d') > 0)
+		{
+			this.controlActor.xAxis = 1;
+		}
+		else if(keyboard.getKey('ArrowUp') > 0 || keyboard.getKey('w') > 0)
+		{
+			if(this.controlActor.args.mode === 1)
+			{
+				this.controlActor.xAxis = -1;
+			}
+			else if(this.controlActor.args.mode === 3)
+			{
+				this.controlActor.xAxis = 1;
+			}
+		}
+		else if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
+		{
+			if(this.controlActor.args.mode === 1)
+			{
+				this.controlActor.xAxis = 1;
+			}
+			else if(this.controlActor.args.mode === 3)
+			{
+				this.controlActor.xAxis = -1;
+			}
+		}
 
+		if(keyboard.getKey(' ') > 0)
+		{
+			this.controlActor.jump();
+		}
+	}
+
+	takeGamepadInput()
+	{
+		if(!this.gamepad)
+		{
 			return;
 		}
 
-		// this.args.type === 'actor-item actor-question-block' && console.log(this.viewport.args.x);
+		const gamepads = navigator.getGamepads();
 
-		const actors = this.actors.list;
-
-		if(!actors.length)
+		for(let i = 0; i < gamepads.length; i++)
 		{
-			const objDefs = this.tileMap.getObjectDefs();
+			const gamepad = gamepads.item(i);
 
-			for(let i in objDefs)
+			if(!gamepad)
 			{
-				const objDef  = objDefs[i];
-				const objType = objDef.type;
-
-				if(!objectPalette[objType])
-				{
-					continue;
-				}
-
-				const objClass = objectPalette[objType];
-
-				const objArgs = {
-					x: objDef.x + 16
-					, y: objDef.y - 1
-					, visible: objDef.visible
-				};
-
-				for(const i in objDef.properties)
-				{
-					const property = objDef.properties[i];
-
-					objArgs[ property.name ] = property.value;
-				}
-
-				const obj = new objClass(Object.assign({}, objArgs));
-
-				this.actors.add( obj );
+				continue;
 			}
-		}
 
-		if(!this.args.maxSpeed)
-		{
-			this.args.maxSpeed = actors[0].args.maxGSpeed;
-		}
-
-		actors[0].args.maxGSpeed = this.args.maxSpeed;
-		actors[0].willStick = !!this.args.willStick;
-		actors[0].stayStuck = !!this.args.stayStuck;
-
-		actors[0].xAxis = 0;
-
-		actors[0].running  = false;
-		actors[0].crawling = false;
-
-		if(this.gamepad)
-		{
-			const gamepads = navigator.getGamepads();
-
-			for(let i = 0; i < gamepads.length; i++)
+			if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.3)
 			{
-				const gamepad = gamepads.item(i);
-
-				if(!gamepad)
+				this.controlActor.xAxis = gamepad.axes[0];
+			}
+			else if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
+			{
+				if(this.controlActor.args.mode === 1)
 				{
-					continue;
+					this.controlActor.xAxis = gamepad.axes[1];
 				}
-
-				if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.3)
+				else if(this.controlActor.args.mode === 3)
 				{
-					actors[0].xAxis = gamepad.axes[0];
-				}
-				else if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
-				{
-					if(actors[0].args.mode === 1)
-					{
-						actors[0].xAxis = gamepad.axes[1];
-					}
-					else if(actors[0].args.mode === 3)
-					{
-						actors[0].xAxis = gamepad.axes[1];
-					}
-				}
-				else
-				{
-					actors[0].xAxis = 0;
-				}
-
-				if(gamepad.buttons[14].pressed)
-				{
-					actors[0].xAxis = -1;
-				}
-				else if(gamepad.buttons[15].pressed)
-				{
-					actors[0].xAxis = 1;
-				}
-				else if(gamepad.buttons[12].pressed)
-				{
-					if(actors[0].args.mode === 1)
-					{
-						actors[0].xAxis = -1;
-					}
-					else if(actors[0].args.mode === 3)
-					{
-						actors[0].xAxis = 1;
-					}
-				}
-				else if(gamepad.buttons[13].pressed)
-				{
-					if(actors[0].args.mode === 1)
-					{
-						actors[0].xAxis = 1;
-					}
-					else if(actors[0].args.mode === 3)
-					{
-						actors[0].xAxis = -1;
-					}
-				}
-
-				if(gamepad.buttons[5].pressed)
-				{
-					actors[0].running  = false;
-					actors[0].crawling = true;
-				}
-				else if(gamepad.buttons[1].pressed || gamepad.buttons[4].pressed)
-				{
-					actors[0].running  = true;
-					actors[0].crawling = false;
-				}
-
-
-				if(gamepad.buttons[0].pressed)
-				{
-					actors[0].jump(Date.now());
+					this.controlActor.xAxis = gamepad.axes[1];
 				}
 			}
-		}
-
-		if(Keyboard.get().getKey('Shift') > 0)
-		{
-			actors[0].running  = false;
-			actors[0].crawling = true;
-		}
-		else if(Keyboard.get().getKey('Control') > 0)
-		{
-			actors[0].running  = true;
-			actors[0].crawling = false;
-		}
-
-		if(Keyboard.get().getKey('ArrowLeft') > 0 || Keyboard.get().getKey('a') > 0)
-		{
-			actors[0].xAxis = -1;
-		}
-		else if(Keyboard.get().getKey('ArrowRight') > 0 || Keyboard.get().getKey('d') > 0)
-		{
-			actors[0].xAxis = 1;
-		}
-		else if(Keyboard.get().getKey('ArrowUp') > 0 || Keyboard.get().getKey('w') > 0)
-		{
-			if(actors[0].args.mode === 1)
+			else
 			{
-				actors[0].xAxis = -1;
+				this.controlActor.xAxis = 0;
 			}
-			else if(actors[0].args.mode === 3)
+
+			if(gamepad.buttons[14].pressed)
 			{
-				actors[0].xAxis = 1;
+				this.controlActor.xAxis = -1;
 			}
-		}
-		else if(Keyboard.get().getKey('ArrowDown') > 0 || Keyboard.get().getKey('s') > 0)
-		{
-			if(actors[0].args.mode === 1)
+			else if(gamepad.buttons[15].pressed)
 			{
-				actors[0].xAxis = 1;
+				this.controlActor.xAxis = 1;
 			}
-			else if(actors[0].args.mode === 3)
+			else if(gamepad.buttons[12].pressed)
 			{
-				actors[0].xAxis = -1;
+				if(this.controlActor.args.mode === 1)
+				{
+					this.controlActor.xAxis = -1;
+				}
+				else if(this.controlActor.args.mode === 3)
+				{
+					this.controlActor.xAxis = 1;
+				}
 			}
-		}
-
-		if(Keyboard.get().getKey('PageUp'))
-		{
-			actors[0].args.layer = 1;
-		}
-		else if(Keyboard.get().getKey('PageDown'))
-		{
-			actors[0].args.layer = 2;
-		}
-
-		if(Keyboard.get().getKey(' ') > 0)
-		{
-			actors[0].jump();
-		}
-
-		const angle = actors[0].angle;
-
-		actors[0].updateStart();
-
-		const nearbyCells = this.getNearbyColCells(actors[0]);
-
-		for(const i in nearbyCells)
-		{
-			const cell   = nearbyCells[i];
-			const actors = cell.values();
-
-			for(const actor of actors)
+			else if(gamepad.buttons[13].pressed)
 			{
-				actor.args.display = 'inital';
-				actor.updateStart();
+				if(this.controlActor.args.mode === 1)
+				{
+					this.controlActor.xAxis = 1;
+				}
+				else if(this.controlActor.args.mode === 3)
+				{
+					this.controlActor.xAxis = -1;
+				}
+			}
+
+			if(gamepad.buttons[5].pressed)
+			{
+				this.controlActor.running  = false;
+				this.controlActor.crawling = true;
+			}
+			else if(gamepad.buttons[1].pressed || gamepad.buttons[4].pressed)
+			{
+				this.controlActor.running  = true;
+				this.controlActor.crawling = false;
+			}
+
+
+			if(gamepad.buttons[0].pressed)
+			{
+				this.controlActor.jump(Date.now());
 			}
 		}
+	}
 
-		actors[0].update();
+	moveCamera()
+	{
+		let cameraSpeed = 15;
 
-		for(const i in nearbyCells)
-		{
-			const cell   = nearbyCells[i];
-			const actors = cell.values();
-
-			for(const actor of actors)
-			{
-				actor.update();
-
-				this.setColCell(actor);
-			}
-		}
-
-		let cameraSpeed = 5;
-
-		if(actors[0].args.falling)
+		if(this.controlActor.args.falling)
 		{
 			this.args.yOffsetTarget = 0.5;
 			cameraSpeed = 25;
 
 		}
-		else if(actors[0].args.mode === 2)
+		else if(this.controlActor.args.mode === 2)
 		{
-			if(actors[0].args.cameraMode = 'normal')
+			if(this.controlActor.args.cameraMode = 'normal')
 			{
 				this.args.yOffsetTarget = 0.25;
-				cameraSpeed = 1;
+				cameraSpeed = 10;
 			}
 			else
 			{
 				this.args.yOffsetTarget = 0.5;
-				cameraSpeed = 4;
+				cameraSpeed = 15;
 
 			}
 		}
-		else if(actors[0].args.mode)
+		else if(this.controlActor.args.mode)
 		{
 			this.args.yOffsetTarget = 0.5;
 		}
@@ -542,8 +466,8 @@ export class Viewport extends View
 			this.args.yOffsetTarget = 0.75;
 		}
 
-		this.args.x = -actors[0].x + this.args.width  * 0.5;
-		this.args.y = -actors[0].y + this.args.height * this.args.yOffset;
+		this.args.x = -this.controlActor.x + this.args.width  * 0.5;
+		this.args.y = -this.controlActor.y + this.args.height * this.args.yOffset;
 
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
 		{
@@ -554,18 +478,18 @@ export class Viewport extends View
 			this.args.yOffset += ((this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed);
 		}
 
-		if(this.args.x > 0)
+		if(this.args.x > 96)
 		{
-			this.args.x = 0;
+			this.args.x = 96;
 		}
 
-		if(this.args.y > 0)
+		if(this.args.y > 96)
 		{
-			this.args.y = 0;
+			this.args.y = 96;
 		}
 
-		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width;
-		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height; + 92
+		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width - 96;
+		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height - 96;
 
 		if(this.args.x < xMax)
 		{
@@ -576,7 +500,10 @@ export class Viewport extends View
 		{
 			this.args.y = yMax;
 		}
+	}
 
+	updateBackground()
+	{
 		const layers = this.tileMap.tileLayers;
 		const layerCount = layers.length;
 
@@ -617,30 +544,111 @@ export class Viewport extends View
 			, '--height': this.args.height
 			, '--scale': this.args.scale
 		});
+	}
 
-		this.emeralds.args.value = `${actors[0].args.emeralds}/7`;
-		this.rings.args.value = actors[0].args.rings;
-		this.coins.args.value = actors[0].args.coins;
+	populateMap()
+	{
+		if(this.args.populated)
+		{
+			return;
+		}
 
-		this.args.hasRings    = !!actors[0].args.rings;
-		this.args.hasCoins    = !!actors[0].args.coins;
-		this.args.hasEmeralds = !!actors[0].args.emeralds;
+		this.args.populated = true;
 
-		this.args.xPos.args.value     = Math.round(actors[0].x);
-		this.args.yPos.args.value     = Math.round(actors[0].y);
-		this.args.ground.args.value   = actors[0].args.landed;
-		this.args.gSpeed.args.value   = actors[0].args.gSpeed.toFixed(2);
-		this.args.xSpeed.args.value   = Math.round(actors[0].args.xSpeed);
-		this.args.ySpeed.args.value   = Math.round(actors[0].args.ySpeed);
-		this.args.angle.args.value    = (Math.round((actors[0].args.angle) * 1000) / 1000).toFixed(3);
-		this.args.airAngle.args.value = (Math.round((actors[0].args.airAngle) * 1000) / 1000).toFixed(3);
+		const objDefs = this.tileMap.getObjectDefs();
 
-		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+		for(let i in objDefs)
+		{
+			const objDef  = objDefs[i];
+			const objType = objDef.type;
 
-		this.args.mode.args.value = modes[Math.floor(actors[0].args.mode)] || Math.floor(actors[0].args.mode);
+			if(!objectPalette[objType])
+			{
+				continue;
+			}
 
-		actors[0].updateEnd();
+			const objClass = objectPalette[objType];
 
+			const objArgs = {
+				x: objDef.x + 16
+				, y: objDef.y - 1
+				, visible: objDef.visible
+			};
+
+			for(const i in objDef.properties)
+			{
+				const property = objDef.properties[i];
+
+				objArgs[ property.name ] = property.value;
+			}
+
+			const obj = new objClass(Object.assign({}, objArgs));
+
+			this.actors.add( obj );
+		}
+	}
+
+	spawnActors()
+	{
+		const idle = window.requestIdleCallback || window.requestAnimationFrame;
+
+		for(const spawn of this.spawn.values())
+		{
+			if(spawn.time < Date.now())
+			{
+				this.spawn.delete(spawn);
+				idle(()=>this.actors.add(spawn.object));
+			}
+		}
+	}
+
+	actorUpdateStart(nearbyCells)
+	{
+		for(const i in nearbyCells)
+		{
+			const cell   = nearbyCells[i];
+			const actors = cell.values();
+
+			for(const actor of actors)
+			{
+				if(this.updateStarted.has(actor))
+				{
+					continue;
+				}
+
+				actor.args.display = 'inital';
+				actor.updateStart();
+
+				this.updateStarted.add(actor);
+			}
+		}
+	}
+
+	actorUpdate(nearbyCells)
+	{
+		for(const i in nearbyCells)
+		{
+			const cell   = nearbyCells[i];
+			const actors = cell.values();
+
+			for(const actor of actors)
+			{
+				if(this.updated.has(actor))
+				{
+					continue;
+				}
+
+				actor.update();
+
+				this.setColCell(actor);
+
+				this.updated.add(actor);
+			}
+		}
+	}
+
+	actorUpdateEnd(nearbyCells)
+	{
 		const width  = this.args.width;
 		const height = this.args.height;
 		const x = this.args.x;
@@ -653,6 +661,11 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
+				if(this.updateEnded.has(actor))
+				{
+					continue;
+				}
+
 				actor.updateEnd();
 
 				const actorX = actor.x + x - (width / 2);
@@ -667,20 +680,144 @@ export class Viewport extends View
 				{
 					actor.args.display = 'none';
 				}
+
+				this.updateEnded.add(actor);
 			}
 		}
+	}
 
-		const idle = window.requestIdleCallback || window.requestAnimationFrame;
+	update()
+	{
+		const time    = (Date.now() - this.startTime) / 1000;
+		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
+		let seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5,'0');
 
-		for(const spawn of this.spawn.values())
+		const neg = time < 0 ? '-' : '';
+
+		if(neg)
 		{
-			if(spawn.time < Date.now())
-			{
-				this.spawn.delete(spawn);
-				idle(()=>this.actors.add(spawn.object));
-			}
+			minutes = Number(minutes);
 		}
 
+		if(!this.args.populated)
+		{
+			this.populateMap();
+		}
+
+		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
+
+		this.actorPointCache.clear();
+
+		if(this.args.paused)
+		{
+			this.tags.frame.style({
+				'--scale':   this.args.scale
+				, '--width': this.args.width
+			});
+
+			return;
+		}
+
+		const actors = this.actors.list;
+
+		this.controlActor = this.controlActor || actors[0];
+
+		this.controlActor.args.display = 'inital';
+
+		this.controlActor.willStick = !!this.args.willStick;
+		this.controlActor.stayStuck = !!this.args.stayStuck;
+
+		this.controlActor.xAxis     = 0;
+		this.controlActor.running   = false;
+		this.controlActor.crawling  = false;
+
+		this.updateStarted.clear();
+		this.updated.clear();
+		this.updateEnded.clear();
+
+		this.takeGamepadInput();
+
+		this.takeKeyboardInput();
+
+		this.controlActor.updateStart();
+
+		this.updateStarted.add(this.controlActor);
+
+		const nearbyCells = this.getNearbyColCells(this.controlActor);
+
+		this.actorUpdateStart(nearbyCells);
+
+		this.controlActor.update();
+
+		this.updated.add(this.controlActor);
+
+		this.actorUpdate(nearbyCells);
+
+		this.moveCamera();
+
+		this.updateBackground();
+
+		if(this.rings.args.value != this.controlActor.args.rings)
+		{
+			this.rings.args.color = 'yellow';
+		}
+		else
+		{
+			this.rings.args.color = '';
+		}
+
+		if(this.coins.args.value != this.controlActor.args.coins)
+		{
+			this.coins.args.color = 'yellow';
+		}
+		else
+		{
+			this.coins.args.color = '';
+		}
+
+		if(this.emeralds.args.value[0] != this.controlActor.args.emeralds)
+		{
+			this.emeralds.args.color = 'yellow';
+		}
+		else
+		{
+			this.emeralds.args.color = '';
+		}
+
+		this.rings.args.value = this.controlActor.args.rings;
+		this.coins.args.value = this.controlActor.args.coins;
+		this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
+
+		this.args.hasRings    = !!this.controlActor.args.rings;
+		this.args.hasCoins    = !!this.controlActor.args.coins;
+		this.args.hasEmeralds = !!this.controlActor.args.emeralds;
+
+		this.args.xPos.args.value     = Math.round(this.controlActor.x);
+		this.args.yPos.args.value     = Math.round(this.controlActor.y);
+		this.args.ground.args.value   = this.controlActor.args.landed;
+		this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+		this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
+		this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+		this.args.angle.args.value    = (Math.round((this.controlActor.args.angle) * 1000) / 1000).toFixed(3);
+		this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+
+		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+
+		this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+
+		this.controlActor.updateEnd();
+
+		this.updateEnded.add(this.controlActor);
+
+		this.actorUpdateEnd(nearbyCells);
+
+		this.spawnActors();
+
+		if(this.nextControl)
+		{
+			this.controlActor = this.nextControl;
+			this.nextControl = null;
+		}
 	}
 
 	actorsAtPoint(x, y)

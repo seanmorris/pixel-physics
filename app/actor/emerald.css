@@ -1,28 +1,27 @@
-.actor-item.actor-emerald:after {
+.actor-item.actor-emerald .sprite {
 	background-image: url(/Sonic/emerald-white.png);
-	filter: saturate(200%);
 }
 
-.actor-item.actor-emerald.emerald-orangered:after {
+.actor-item.actor-emerald.emerald-orangered .sprite {
 	background-image: url(/Sonic/emerald-orangered.png);
 }
 
-.actor-item.actor-emerald.emerald-pink:after {
+.actor-item.actor-emerald.emerald-pink .sprite {
 	background-image: url(/Sonic/emerald-pink.png);
 }
 
-.actor-item.actor-emerald.emerald-purple:after {
+.actor-item.actor-emerald.emerald-purple .sprite {
 	background-image: url(/Sonic/emerald-purple.png);
 }
 
-.actor-item.actor-emerald.emerald-yellow:after {
+.actor-item.actor-emerald.emerald-yellow .sprite {
 	background-image: url(/Sonic/emerald-yellow.png);
 }
 
-.actor-item.actor-emerald.emerald-green:after {
+.actor-item.actor-emerald.emerald-green .sprite {
 	background-image: url(/Sonic/emerald-green.png);
 }
 
-.actor-item.actor-emerald.emerald-yellow:after {
+.actor-item.actor-emerald.emerald-yellow .sprite {
 	background-image: url(/Sonic/emerald-red-alt.png);
 }

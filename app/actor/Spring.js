@@ -7,7 +7,7 @@ export class Spring extends PointActor
 		style = "
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
-			--debugVector:[[debugVector]];
+			--display-angle:[[_angle]];
 			--height:[[height]];
 			--width:[[width]];
 			--x:[[x]];

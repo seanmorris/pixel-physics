@@ -29,8 +29,8 @@ export class Actor extends View
 		this.state = 'standing';
 
 		this.gSpeed    = 0;
-		// this.maxGSpeed = 48;
-		this.maxGSpeed = 40;
+		// this.gSpeedMax = 48;
+		this.gSpeedMax = 40;
 		this.xSpeed    = 0;
 		this.ySpeed    = 0;
 		this.angle     = 0;
@@ -80,7 +80,7 @@ export class Actor extends View
 
 		let g = this.gSpeed;
 
-		this.args.animspeed = Math.floor((this.maxGSpeed - Math.abs(g) ) / 12);
+		this.args.animspeed = Math.floor((this.gSpeedMax - Math.abs(g) ) / 12);
 
 		if(this.args.animspeed < 1)
 		{
@@ -131,7 +131,7 @@ export class Actor extends View
 				}
 			}
 
-			if(Math.abs(g) > this.maxGSpeed / 2)
+			if(Math.abs(g) > this.gSpeedMax / 2)
 			{
 				this.args.state = 'running';
 			}
@@ -490,7 +490,7 @@ export class Actor extends View
 			this.gSpeed = 0;
 		}
 
-		if(this.gSpeed > -this.maxGSpeed)
+		if(this.gSpeed > -this.gSpeedMax)
 		{
 			this.gSpeed--;
 		}
@@ -503,7 +503,7 @@ export class Actor extends View
 			this.gSpeed = 0;
 		}
 
-		if(this.gSpeed < this.maxGSpeed)
+		if(this.gSpeed < this.gSpeedMax)
 		{
 			this.gSpeed++;
 		}

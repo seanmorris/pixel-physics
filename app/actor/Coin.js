@@ -58,7 +58,7 @@ export class Coin extends PointActor
 			const viewport = this.viewport;
 
 			viewport.spawn.add({
-				time: Date.now() + 3500
+				time: Date.now() + 7500
 				, object: new Coin({x,y})
 			});
 
