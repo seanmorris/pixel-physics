@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { Bag  } from 'curvature/base/Bag';
 import { Tag  } from 'curvature/base/Tag';
 import { View } from 'curvature/base/View';
@@ -360,7 +361,12 @@ export class Viewport extends View
 
 		if(keyboard.getKey(' ') > 0)
 		{
-			this.controlActor.command_0(); // jump
+			this.controlActor.command_0 && this.controlActor.command_0(); // jump
+		}
+
+		if(keyboard.getKey('z') > 0)
+		{
+			this.controlActor.command_0 && this.controlActor.command_2(); // shoot
 		}
 	}
 
@@ -991,7 +997,7 @@ export class Viewport extends View
 
 		const actor = this.args.controllable[ event.target.value ];
 
-		this.nextControl = actor;
+		this.nextControl = Bindable.make(actor);
 
 		this.tags.viewport.focus();
 	}

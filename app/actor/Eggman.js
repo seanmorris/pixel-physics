@@ -16,7 +16,7 @@ export class Eggman extends PointActor
 
 		this.args.gSpeedMax = 10;
 		this.args.jumpForce = 12;
-		this.args.gravity   = 0.45;
+		this.args.gravity   = 0.6;
 
 		this.args.width     = 1;
 	}

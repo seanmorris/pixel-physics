@@ -43,7 +43,6 @@
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 }
 
-
 .actor-item.actor-eggrobo[data-animation="flying"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
@@ -86,8 +85,8 @@
 	width: 16px;
 	height: 8px;
 	position: absolute;
-	top: 21px;
-	left: 64px;
+	top: 22px;
+	left: 62px;
 }
 
 .actor-item.actor-eggrobo[data-animation="flying"] .eggrobo-muzzle-flash,
@@ -116,10 +115,10 @@
 @-webkit-keyframes eggrobo-muzzle-flash {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-		opacity: 0.33;
+		opacity: 0.5;
 	}
 	to{
 		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
-		opacity: 0;
+		opacity: 0.125;
 	}
 }

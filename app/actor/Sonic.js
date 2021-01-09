@@ -12,11 +12,11 @@ export class Sonic extends PointActor
 		this.args.type      = 'actor-item actor-sonic';
 
 		this.args.accel     = 0.15;
-		this.args.decel     = 0.3;
+		this.args.decel     = 0.5;
 
-		this.args.gSpeedMax = 25;
-		this.args.jumpForce = 12;
-		this.args.gravity   = 0.45;
+		this.args.gSpeedMax = 30;
+		this.args.jumpForce = 17;
+		this.args.gravity   = 0.8;
 
 		this.args.width     = 1;
 	}

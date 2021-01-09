@@ -44,20 +44,19 @@ export class Monitor extends PointActor
 		if(
 			this.args.collType !== 'collision-bottom'
 			&& (!this.args.falling || this.args.float === -1)
-			&& (Math.abs(other.args.xSpeed) > 3 || other.args.ySpeed > 1)
+			&& other.args.ySpeed > 0
 			&& other.y < this.y
 			&& this.viewport
 			&& !this.gone
 		){
 			this.gone = true;
 
-			if(this.args.falling && Math.abs(other.args.ySpeed) > 10)
+			other.args.ySpeed *= -1;
+
+			if(this.args.falling && Math.abs(other.args.ySpeed) > 1)
 			{
 				other.args.xSpeed *= -1;
-				other.args.ySpeed *= -10;
 			}
-
-			other.args.ySpeed *= -1;
 
 			const viewport = this.viewport;
 

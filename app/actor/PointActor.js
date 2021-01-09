@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { View } from 'curvature/base/View';
 
 const MODE_FLOOR   = 0;
@@ -128,7 +129,8 @@ export class PointActor extends View
 				return;
 			}
 
-			this.viewport.nextControl = this;
+			this.viewport.nextControl = Bindable.make(this);
+
 			this.args.ySpeed = 0;
 		});
 	}

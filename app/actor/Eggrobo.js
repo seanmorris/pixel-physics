@@ -17,8 +17,8 @@ export class Eggrobo extends PointActor
 		this.args.decel     = 0.3;
 
 		this.args.gSpeedMax = 20;
-		this.args.jumpForce = 12;
-		this.args.gravity   = 0.40;
+		this.args.jumpForce = 13;
+		this.args.gravity   = 0.60;
 
 		this.args.width     = 1;
 	}
@@ -198,6 +198,6 @@ export class Eggrobo extends PointActor
 			this.shootingSample.play();
 		}
 
-		this.args.shotCoolDown = 35;
+		this.args.shotCoolDown = 16;
 	}
 }

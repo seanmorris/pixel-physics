@@ -7,7 +7,7 @@
 }
 
 .actor-item.actor-knuckles .sprite:after {
-	content: '';
+	content: ' ';
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -43,16 +43,24 @@
 	animation: knuckles-jump steps(3) infinite 96ms;
 }
 
-.actor-item.actor-knuckles[data-animation="skidding"] .sprite:after {
+.actor-item.actor-knuckles[data-animation="flying"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -256px;
+	--animation-steps: 2;
+	--animation-width: 64px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+/*.actor-item.actor-knuckles[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -256px;
 	--animation-steps: -2;
 	--animation-width: 64px;
 
 	animation: knuckles-animate steps(var(--animation-steps)) infinite 96ms;
-}
+}*/
 
-@-webkit-keyframes knuckles-animate {
+@keyframes knuckles-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}

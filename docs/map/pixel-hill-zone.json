@@ -1178,7 +1178,7 @@
                  "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1416,
+                 "x":1432,
                  "y":1560
                 }, 
                 {
@@ -1196,7 +1196,7 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1392,
+                 "x":1400,
                  "y":1560
                 }, 
                 {
@@ -1226,7 +1226,7 @@
                  "type":"eggrobo",
                  "visible":true,
                  "width":32,
-                 "x":1248,
+                 "x":1256,
                  "y":1888
                 }, 
                 {
@@ -1238,7 +1238,7 @@
                  "type":"mecha-sonic",
                  "visible":true,
                  "width":32,
-                 "x":1216,
+                 "x":1224,
                  "y":1888
                 }, 
                 {

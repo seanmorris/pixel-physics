@@ -43,6 +43,11 @@
 	animation: tails-jump steps(3) infinite 96ms;
 }
 
+.actor-item.actor-tails[data-animation="flying"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -320px;
+}
+
 .actor-item.actor-tails[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -256px;
@@ -122,4 +127,12 @@
 	left: -10px;
 	transform-origin: 42px 16px;
 	transform: rotate(calc(0deg + calc(1rad * var(--display-angle))));
+}
+
+.actor-item.actor-tails[data-animation="flying"] .tails-tails {
+	--sprite-offset-y: -64px;
+	--animation-steps: 2;
+	top: 24px;
+	left: 16px;
+	transform-origin: 42px 16px;
 }
