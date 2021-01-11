@@ -2,6 +2,21 @@ import { PointActor } from './PointActor';
 
 export class LayerSwitch extends PointActor
 {
+	static fromDef(objDef)
+	{
+		const obj = super.fromDef(objDef);
+
+		obj.args.width  = objDef.width;
+		obj.args.height = objDef.height;
+
+		return obj;
+	}
+
+	onAttach(event)
+	{
+		event.preventDefault(event);
+	}
+
 	constructor(...args)
 	{
 		super(...args);

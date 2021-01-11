@@ -11,14 +11,15 @@ export class Tails extends PointActor
 
 		this.args.type      = 'actor-item actor-tails';
 
-		this.args.accel     = 0.14;
-		this.args.decel     = 0.5;
+		this.args.accel     = 0.18;
+		this.args.decel     = 0.7;
 
-		this.args.gSpeedMax = 25;
-		this.args.jumpForce = 17;
-		this.args.gravity   = 0.8;
+		this.args.gSpeedMax = 27;
+		this.args.jumpForce = 15;
+		this.args.gravity   = 0.7;
 
-		this.args.width     = 1;
+		this.args.width  = 40;
+		this.args.height = 16;
 	}
 
 	onAttached()
@@ -34,6 +35,24 @@ export class Tails extends PointActor
 	{
 		const falling = this.args.falling;
 
+		if(this.viewport.args.audio && !this.flyingSound)
+		{
+			this.flyingSound = new Audio('/Sonic/tails-flying.wav');
+
+			this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
+			this.flyingSound.loop   = true;
+		}
+
+		if(!this.flyingSound.paused)
+		{
+			this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
+		}
+
+		if(this.flyingSound.currentTime > 0.2)
+		{
+			this.flyingSound.currentTime = 0.0;
+		}
+
 		if(!this.box)
 		{
 			super.update();
@@ -42,6 +61,8 @@ export class Tails extends PointActor
 
 		if(!falling)
 		{
+			this.flyingSound.pause();
+
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
@@ -70,12 +91,17 @@ export class Tails extends PointActor
 		}
 		else if(this.args.falling)
 		{
+			this.flyingSound.pause();
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
-		if(this.args.tailFlyCoolDown == 0 && this.args.ySpeed > 5)
+		if(this.args.tailFlyCoolDown == 0)
 		{
-			this.args.flying = false;
+			if(this.args.ySpeed > 5)
+			{
+				this.flyingSound.pause();
+		 		this.args.flying = false;
+			}
 		}
 		else if(this.args.tailFlyCoolDown > 0)
 		{
@@ -103,6 +129,11 @@ export class Tails extends PointActor
 
 		if(this.args.ySpeed > 1)
 		{
+			if(!this.args.flying)
+			{
+				this.flyingSound.play();
+			}
+
 			this.args.flying = true;
 
 			if(this.args.tailFlyCoolDown == 0)
@@ -115,6 +146,6 @@ export class Tails extends PointActor
 		}
 	}
 
-	get solid() { return true; }
+	get solid() { return false; }
 	get isEffect() { return false; }
 }

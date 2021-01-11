@@ -1,3 +1,85 @@
+.point-actor.actor-generic {
+	background: red;
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	left: calc(1px * var(--x));
+	top: calc(1px * var(--y));
+	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
+}
+
+.point-actor.actor-generic[data-colliding=true] {
+	box-shadow: 0 0 4px 4px rgba(0,255,255,0.45);
+}
+
+.actor-generic {
+	z-index: 1;
+}
+
+.actor-generic .sprite:after {
+	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
+	display: block;
+	position: absolute;
+	content: ' ';
+	background-image: url(/debug/arrow-east.svg);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	width: 20px;
+	height: 20px;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	--translate: translate(5px, calc(-50%));
+	transform-origin: -5px 50%;
+	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--ground-angle))));
+	opacity: 0.75;
+}
+
+.actor-generic {
+	transition: transform 0.1s ease-out 0.1s;
+}
+
+.actor-generic[data-camera-mode="aerial"] {
+	transform: scale(1.25);
+}
+
+.actor-generic[data-falling="false"][data-mode="0"] .sprite:after {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="1"] .sprite:after {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="2"] .sprite:after {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="3"] .sprite:after {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="true"] .sprite:after {
+	transform: var(--translate) rotate(calc(1rad * var(--air-angle)));
+}
+
 .actor-item.actor-eggman .sprite {
 	height: 64px;
 	width: 64px;
@@ -137,7 +219,7 @@
 	width: 17px;
 	height: 23px;
 	position: absolute;
-	top: 50px;
+	top: 48px;
 	left: -3px;
 	animation: eggrobo-flame-flicker steps(4) infinite 40ms forwards;
 }
@@ -512,84 +594,6 @@
 	top: calc(1px * var(--y));
 }
 
-.point-actor.actor-generic {
-	background: red;
-	width: 1px;
-	height: 1px;
-	position: absolute;
-	left: calc(1px * var(--x));
-	top: calc(1px * var(--y));
-	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
-}
-
-.point-actor.actor-generic[data-colliding=true] {
-	box-shadow: 0 0 4px 4px rgba(0,255,255,0.45);
-}
-
-.actor-generic {
-	z-index: 1;
-}
-
-.actor-generic .sprite:after {
-	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
-	display: block;
-	position: absolute;
-	content: ' ';
-	background-image: url(/debug/arrow-east.svg);
-	background-repeat: no-repeat;
-	background-size: contain;
-	background-position: center;
-	width: 20px;
-	height: 20px;
-	z-index: 1000;
-	top: 0;
-	left: 0;
-	--translate: translate(5px, calc(-50%));
-	transform-origin: -5px 50%;
-	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--display-angle))));
-	opacity: 0.75;
-}
-
-.actor-generic {
-	transition: transform 0.1s ease-out 0.1s;
-}
-
-.actor-generic[data-camera-mode="aerial"] {
-	transform: scale(1.25);
-}
-
-.actor-generic[data-falling="false"][data-mode="0"] .sprite:after {
-	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="1"] .sprite:after {
-	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="2"] .sprite:after {
-	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="3"] .sprite:after {
-	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite:after {
-	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite:after {
-	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite:after {
-	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--display-angle))));
-}
-
-.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite:after {
-	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--display-angle))));
-}
-
 .actor-item .sprite {
 	content: ' ';
 	font-size: 0.25rem;
@@ -748,35 +752,35 @@
 }
 
 .actor-item[data-falling="false"][data-mode="0"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle)));
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--ground-angle)));
 }
 
 .actor-item[data-falling="false"][data-mode="1"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="2"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg)));
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="3"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--display-angle))) scale(-1,1);
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc(-1rad * var(--ground-angle))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 90deg))) scale(-1,1);
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg))) scale(-1,1);
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg))) scale(-1,1);
+	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
 }
 
 .actor-item[data-mode="0"][data-facing="left"] .sprite {
@@ -902,6 +906,11 @@
 	}
 }
 
+
+.actor-layer-switch .sprite {
+	background-color: yellow;
+}
+
 .actor-item.actor-projectile .sprite {
 	background-image: url(/Sonic/projectile.png);
 	height: 8px;
@@ -1017,6 +1026,8 @@
 	position: absolute;
 	width: 32px;
 	height: 32px;
+	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	transform-origin: 0px -16px;
 }
 
 .actor-item.actor-spring .sprite {
@@ -1187,14 +1198,14 @@
 	top: 32px;
 	left: -10px;
 	transform-origin: 42px 16px;
-	transform: rotate(calc(0deg + calc(1rad * var(--display-angle))));
+	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 
 .actor-item.actor-tails[data-animation="flying"] .tails-tails {
 	--sprite-offset-y: -64px;
 	--animation-steps: 2;
 	top: 24px;
-	left: 16px;
+	left: 8px;
 	transform-origin: 42px 16px;
 }
 

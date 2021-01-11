@@ -20,7 +20,8 @@ export class Eggrobo extends PointActor
 		this.args.jumpForce = 13;
 		this.args.gravity   = 0.60;
 
-		this.args.width     = 1;
+		this.args.width  = 48;
+		this.args.height = 64;
 	}
 
 	onAttached()
@@ -43,7 +44,17 @@ export class Eggrobo extends PointActor
 		if(this.viewport.args.audio && !this.shootingSample)
 		{
 			this.shootingSample = new Audio('/Sonic/shot-fired.wav');
+			this.thrusterSound = new Audio('/Sonic/mecha-sonic-thruster.wav');
+
+			this.thrusterSound.loop = true;
 		}
+
+		if(this.thrusterSound.currentTime > 0.5)
+		{
+			this.thrusterSound.currentTime = 0.25;
+		}
+
+		this.thrusterSound.volume = 0.15 + (Math.random() * -0.10);
 
 		if(!this.box)
 		{
@@ -60,18 +71,22 @@ export class Eggrobo extends PointActor
 
 			if(gSpeed === 0)
 			{
+				this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'standing');
 			}
 			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
+				this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'skidding');
 			}
 			else if(speed > maxSpeed / 2)
 			{
+				this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'running');
 			}
 			else
 			{
+				this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'walking');
 			}
 		}
@@ -97,6 +112,11 @@ export class Eggrobo extends PointActor
 		if(this.args.shotCoolDown > 0)
 		{
 			this.args.shotCoolDown--;
+		}
+
+		if(this.args.rocketCoolDown == 0)
+		{
+			this.thrusterSound.pause();
 		}
 
 		if(this.args.rocketCoolDown > 0)
@@ -126,13 +146,14 @@ export class Eggrobo extends PointActor
 			return;
 		}
 
-		if(this.args.ySpeed > 1)
+		if(this.args.ySpeed > 1 || this.args.flying)
 		{
 			this.args.flying = true;
 
-			if(this.args.rocketCoolDown == 0)
+			if(this.args.rocketCoolDown <= 1)
 			{
-				this.args.rocketCoolDown = 2;
+				this.thrusterSound.play();
+				this.args.rocketCoolDown = 3;
 			}
 
 			this.args.ySpeed = 0;
@@ -200,4 +221,6 @@ export class Eggrobo extends PointActor
 
 		this.args.shotCoolDown = 16;
 	}
+
+	get solid() { return false; }
 }

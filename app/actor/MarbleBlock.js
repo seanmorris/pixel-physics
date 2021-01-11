@@ -10,81 +10,107 @@ export class MarbleBlock extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
-
-		this.hanging = 0;
 	}
 
 	update()
 	{
 		super.update();
 
-		if(this.args.falling)
+		const scan = this.scanBottomEdge();
+
+		if(scan === 0)
 		{
-			this.hanging = false;
+			this.args.falling = true;
 		}
 	}
 
 	collideA(other, type)
 	{
-		super.collideA(other);
+		super.collideA(other, type);
 
-		if(type === 1 && other.args.gSpeed < 0)
+		if(other.args.falling)
 		{
 			return true;
 		}
 
-		if(type === 3 && other.args.gSpeed > 0)
+		if(type === 1 && other.args.gSpeed <= 0)
 		{
-			return true;
+			return false;
 		}
 
-		if(type === 3 || type === 1)
+		if(type === 3 && other.args.gSpeed >= 0)
 		{
-			if(other.args.falling)
+			return false;
+		}
+
+		if(type === 1 || type === 3)
+		{
+			if(!other.args.gSpeed)
+			{
+				console.log(others.args.gSpeed);
+
+				return true;
+			}
+
+			const tileMap = this.viewport.tileMap;
+			const moveBy  = (type === 1 && 1) || (type === 3 && -1);
+
+			const blockers = tileMap.getSolid(this.x + (this.args.width/2) * moveBy, this.y)
+
+			if(blockers)
 			{
 				return true;
 			}
 
-			if(!other.args.gSpeed || this.args.falling)
+			const scan = this.scanBottomEdge(moveBy);
+
+			if(moveBy > 0 && scan === 0)
 			{
+				this.args.falling = true;
+			}
+			else if(moveBy < 0 && scan === 0)
+			{
+				this.args.falling = true;
+			}
+			else if(!this.args.falling)
+			{
+				const nextPosition = this.findNextStep(moveBy);
+
+				if(!nextPosition[1])
+				{
+					const realMoveBy = nextPosition[0] || moveBy;
+
+					this.args.x += nextPosition[0] || moveBy;
+
+					return false;
+				}
+
 				return true;
-			}
-
-			const speed = Math.abs(other.args.gSpeed);
-
-			if(Math.abs(this.hanging) + speed > this.args.width)
-			{
-				other.args.gSpeed = other.args.direction;
-			}
-			else if(speed > 1)
-			{
-				other.args.gSpeed = 1 * other.args.direction;
-			}
-
-			this.args.direction = other.args.direction;
-
-			const nextPos = this.findNextStep(other.args.gSpeed);
-
-			if(nextPos[3])
-			{
-				return true;
-			}
-			else if(nextPos[2] === true)
-			{
-				this.hanging += other.args.direction;
-				this.args.x += other.args.direction;
-				return false;
-			}
-			else if(nextPos[0] || nextPos[1])
-			{
-				this.args.x += nextPos[0];
-				this.args.y += nextPos[1];
-
-				return false;
 			}
 		}
 
 		return true;
+	}
+
+	scanBottomEdge(direction = 1)
+	{
+		const tileMap = this.viewport.tileMap;
+
+		return this.castRay(
+			this.args.width
+			, (direction < 0 ? Math.PI : 0)
+			, [-direction * (this.args.width/2), 0]
+			, (i,point) => {
+				const actors = this.viewport
+					.actorsAtPoint(point[0], point[1] + 1)
+					.filter(a => a.args !== this.args);
+
+				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
+				{
+					return i;
+				}
+			}
+		);
 	}
 
 	get canStick() { return false; }

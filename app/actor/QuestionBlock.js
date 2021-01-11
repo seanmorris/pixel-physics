@@ -39,7 +39,7 @@ export class QuestionBlock extends PointActor
 		this.empty = false;
 	}
 
-	collideA(other)
+	collideA(other, type)
 	{
 		super.collideA(other);
 
@@ -48,7 +48,22 @@ export class QuestionBlock extends PointActor
 			this.initY = this.y;
 		}
 
-		if(this.args.collType === 'collision-bottom' && !this.args.empty)
+		if(type === 0)
+		{
+			// other.debindY && other.debindY();
+
+			// other.restingOn = this;
+
+			// other.debindY = this.args.bindTo('y', v => other.args.y = v - this.args.height);
+
+			// this.onRemove(()=>{
+			// 	other.debindY && other.debindY();
+			// });
+
+			// console.log(other);
+		}
+
+		if(type === 2)
 		{
 			const impulse = Math.abs(other.args.ySpeed);
 
@@ -76,7 +91,7 @@ export class QuestionBlock extends PointActor
 
 			if(this.args.ySpeed)
 			{
-				return;
+				return true;
 			}
 
 			const ySpeedMax = this.maxBounce;
@@ -90,27 +105,24 @@ export class QuestionBlock extends PointActor
 				speed = ySpeedMax * Math.sign(speed);
 			}
 
+			this.args.ySpeed = speed;
+
+			other.args.ySpeed = -other.args.ySpeed;
+		}
+
+		if(type === 2 && !this.args.empty)
+		{
 			if(!this.args.empty)
 			{
 				const monitor = new Monitor({x: this.x, y: this.y - 128});
 
 				this.viewport.actors.add(monitor);
 
-				monitor.onRemove(() => setTimeout(
-					()=> {
-						this.args.empty = false;
-					}
-					, 1250
-				));
+				monitor.onRemove(() => this.args.empty = false);
 
 				this.args.empty = true;
 			}
-
-			this.args.ySpeed = speed;
-
-			other.args.ySpeed = -other.args.ySpeed;
 		}
-
 
 		return true;
 	}

@@ -18,7 +18,8 @@ export class Eggman extends PointActor
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
 
-		this.args.width     = 1;
+		this.args.width  = 48;
+		this.args.height = 64;
 	}
 
 	onAttached()
@@ -68,6 +69,6 @@ export class Eggman extends PointActor
 		super.update();
 	}
 
-	get solid() { return true; }
+	get solid() { return false; }
 	get isEffect() { return false; }
 }

@@ -2,6 +2,8 @@
 	position: absolute;
 	width: 32px;
 	height: 32px;
+	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	transform-origin: 0px -16px;
 }
 
 .actor-item.actor-spring .sprite {

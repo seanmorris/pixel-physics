@@ -26,23 +26,14 @@ export class Monitor extends PointActor
 			this.sample = new Audio('/Sonic/object-destroyed.wav');
 			this.sample.volume = 0.6 + (Math.random() * -0.3);
 		}
-
-		if(!this.restingOn)
-		{
-			// this.debindYs && this.debindYs();
-			// this.debindXs && this.debindXs();
-			// this.debindGs && this.debindGs();
-			// this.debindX  && this.debindX();
-			this.debindY  && this.debindY();
-		}
 	}
 
-	collideA(other)
+	collideA(other, type)
 	{
-		super.collideA(other);
+		super.collideA(other, type);
 
 		if(
-			this.args.collType !== 'collision-bottom'
+			type !== 2
 			&& (!this.args.falling || this.args.float === -1)
 			&& other.args.ySpeed > 0
 			&& other.y < this.y
@@ -92,7 +83,7 @@ export class Monitor extends PointActor
 		}
 
 		if(
-			(this.args.collType === 'collision-left' || this.args.collType === 'collision-right')
+			(type === 1 || type === 3)
 			&& (Math.abs(other.args.xSpeed) > 15 || (Math.abs(other.args.gSpeed) > 15))
 			&& this.viewport
 			&& !this.gone
@@ -120,44 +111,7 @@ export class Monitor extends PointActor
 				this.sample.play();
 			}
 
-			return false;
-		}
-
-		return true;
-	}
-
-	collideB(other)
-	{
-		super.collideB(other);
-
-		if(this.restingOn)
-		{
 			return true;
-		}
-
-		if(other.solid && this.args.collType === 'collision-bottom' && other.y > this.y)
-		{
-			// this.debindYs && this.debindYs();
-			// this.debindXs && this.debindXs();
-			// this.debindGs && this.debindGs();
-			this.debindX  && this.debindX();
-			this.debindY  && this.debindY();
-
-			this.restingOn = other;
-
-			// this.debindYs = other.args.bindTo('ySpeed', v => this.args.gSpeed = v);
-			// this.debindXs = other.args.bindTo('xSpeed', v => this.args.gSpeed = v);
-			// this.debindGs = other.args.bindTo('gSpeed', v => this.args.gSpeed = v);
-			// this.debindX  = other.args.bindTo('x', v => this.args.x = v);
-			this.debindY  = other.args.bindTo('y', v => this.args.y = v - this.args.height);
-
-			this.onRemove(()=>{
-				// this.debindYs && this.debindYs();
-				// this.debindXs && this.debindXs();
-				// this.debindGs && this.debindGs();
-				// this.debindX  && this.debindX();
-				this.debindY  && this.debindY();
-			});
 		}
 
 		return true;

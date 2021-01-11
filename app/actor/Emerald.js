@@ -43,15 +43,8 @@ export class Emerald extends PointActor
 
 			this.args.type = 'actor-item actor-emerald collected gone emerald-' + (this.args.color || 'white');
 
-			this.onTimeout(180, () => {
-				this.viewport.actors.remove( this );
-				this.remove();
-			});
-
-			const x = this.x;
-			const y = this.y;
-
-			const viewport = this.viewport;
+			this.viewport.actors.remove( this );
+			this.remove();
 
 			other.args.emeralds++;
 		}

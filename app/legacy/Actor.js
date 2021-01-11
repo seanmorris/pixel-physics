@@ -430,12 +430,10 @@ export class Actor extends View
 
 		if(leftScan > 0 && rightScan > 0)
 		{
-			console.log(leftScan, rightScan);
 			this.falling = true;
 		}
 		else
 		{
-			console.log(leftScan, rightScan);
 			this.falling = false;
 		}
 

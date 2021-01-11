@@ -3,11 +3,11 @@ import { PointActor } from './PointActor';
 export class Spring extends PointActor
 {
 	template = `<div
-		class = "point-actor [[type]] [[collType]]"
+		class = "point-actor actor-item [[type]] [[collType]]"
 		style = "
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
-			--display-angle:[[_angle]];
+			--ground-angle:[[groundAngle]];
 			--height:[[height]];
 			--width:[[width]];
 			--x:[[x]];
@@ -28,6 +28,15 @@ export class Spring extends PointActor
 		<div class = "sprite"></div>
 	</div>`;
 
+	static fromDef(objDef)
+	{
+		const obj = super.fromDef(objDef);
+
+		obj.args.angle = Number(obj.args.angle);
+
+		return obj;
+	}
+
 	constructor(...args)
 	{
 		super(...args);
@@ -35,9 +44,11 @@ export class Spring extends PointActor
 		this.args.type = 'actor-item actor-spring';
 
 		this.args.width  = 32;
-		this.args.height = 16;
+		this.args.height = 32;
 
 		this.args.color  = this.args.color || 0;
+
+		this.args.float  = -1;
 	}
 
 	update()
@@ -49,18 +60,14 @@ export class Spring extends PointActor
 	{
 		super.collideA(other);
 
-		if(this.args.collType === 'collision-top')
-		{
-			other.impulse(this.args.power, -Math.PI / 2, true);
-			// other.args.ySpeed  = -this.args.power || -15;
-			other.args.falling = true;
-			return true;
-		}
+		other.args.falling = true;
 
-		return true;
+		other.impulse(this.args.power, this.args.angle, true);
+
+		return false;
 	}
 
 	get canStick() { return false; }
-	get solid() { return true; }
+	get solid() { return false; }
 }
 

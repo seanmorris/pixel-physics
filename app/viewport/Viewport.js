@@ -47,6 +47,7 @@ const objectPalette = {
 	, 'star-post': StarPost
 	, 'q-block': QuestionBlock
 	, 'projectile': Projectile
+	, 'marble-block': MarbleBlock
 	, 'sonic': Sonic
 	, 'tails': Tails
 	, 'knuckles': Knuckles
@@ -280,7 +281,7 @@ export class Viewport extends View
 						this.args.animation = 'closing';
 						this.tags.viewport.focus();
 
-						this.args.focusMe.args.value = ' Click here for keyboard control. ';
+						this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 						this.args.status.args.hide = '';
 
 						this.onTimeout(750, () => {
@@ -368,7 +369,7 @@ export class Viewport extends View
 
 		if(keyboard.getKey('z') > 0)
 		{
-			this.controlActor.command_0 && this.controlActor.command_2(); // shoot
+			this.controlActor.command_2 && this.controlActor.command_2(); // shoot
 		}
 	}
 
@@ -601,21 +602,7 @@ export class Viewport extends View
 
 			const objClass = objectPalette[objType];
 
-			const objArgs = {
-				x: objDef.x + 16
-				, y: objDef.y - 1
-				, visible: objDef.visible
-				, name: objDef.name
-			};
-
-			for(const i in objDef.properties)
-			{
-				const property = objDef.properties[i];
-
-				objArgs[ property.name ] = property.value;
-			}
-
-			const obj = new objClass(Object.assign({}, objArgs));
+			const obj = objClass.fromDef(objDef);
 
 			this.actors.add( obj );
 
@@ -623,6 +610,7 @@ export class Viewport extends View
 			{
 				this.args.controllable[ objDef.name ] = obj;
 			}
+
 		}
 
 		this.actors.add( new TextActor({x: 1250, y:1800}) );

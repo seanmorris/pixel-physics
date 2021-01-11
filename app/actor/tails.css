@@ -126,13 +126,13 @@
 	top: 32px;
 	left: -10px;
 	transform-origin: 42px 16px;
-	transform: rotate(calc(0deg + calc(1rad * var(--display-angle))));
+	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 
 .actor-item.actor-tails[data-animation="flying"] .tails-tails {
 	--sprite-offset-y: -64px;
 	--animation-steps: 2;
 	top: 24px;
-	left: 16px;
+	left: 8px;
 	transform-origin: 42px 16px;
 }

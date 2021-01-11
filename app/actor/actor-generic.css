@@ -1,0 +1,81 @@
+.point-actor.actor-generic {
+	background: red;
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	left: calc(1px * var(--x));
+	top: calc(1px * var(--y));
+	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
+}
+
+.point-actor.actor-generic[data-colliding=true] {
+	box-shadow: 0 0 4px 4px rgba(0,255,255,0.45);
+}
+
+.actor-generic {
+	z-index: 1;
+}
+
+.actor-generic .sprite:after {
+	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
+	display: block;
+	position: absolute;
+	content: ' ';
+	background-image: url(/debug/arrow-east.svg);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	width: 20px;
+	height: 20px;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	--translate: translate(5px, calc(-50%));
+	transform-origin: -5px 50%;
+	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--ground-angle))));
+	opacity: 0.75;
+}
+
+.actor-generic {
+	transition: transform 0.1s ease-out 0.1s;
+}
+
+.actor-generic[data-camera-mode="aerial"] {
+	transform: scale(1.25);
+}
+
+.actor-generic[data-falling="false"][data-mode="0"] .sprite:after {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="1"] .sprite:after {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="2"] .sprite:after {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="3"] .sprite:after {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="0"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(180deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="1"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(270deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="2"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(0deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="false"][data-mode="3"][data-facing="left"] .sprite:after {
+	transform: var(--translate) rotate(calc(90deg - calc(1rad * var(--ground-angle))));
+}
+
+.actor-generic[data-falling="true"] .sprite:after {
+	transform: var(--translate) rotate(calc(1rad * var(--air-angle)));
+}

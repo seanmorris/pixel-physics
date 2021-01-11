@@ -11,14 +11,15 @@ export class Knuckles extends PointActor
 
 		this.args.type      = 'actor-item actor-knuckles';
 
-		this.args.accel     = 0.13;
-		this.args.decel     = 0.5;
+		this.args.accel     = 0.18;
+		this.args.decel     = 0.7;
 
-		this.args.gSpeedMax = 20;
-		this.args.jumpForce = 15;
-		this.args.gravity   = 0.8;
+		this.args.gSpeedMax = 25;
+		this.args.jumpForce = 14;
+		this.args.gravity   = 0.7;
 
-		this.args.width     = 1;
+		this.args.width  = 40;
+		this.args.height = 16;
 	}
 
 	onAttached()
@@ -131,6 +132,6 @@ export class Knuckles extends PointActor
 		}
 	}
 
-	get solid() { return true; }
+	get solid() { return false; }
 	get isEffect() { return false; }
 }
