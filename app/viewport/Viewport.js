@@ -151,6 +151,7 @@ export class Viewport extends View
 			if(a == Bag.ITEM_ADDED)
 			{
 				i.viewport = this;
+				i.args.display = 'none';
 				this.setColCell(i);
 			}
 			else if(a == Bag.ITEM_REMOVED)
@@ -162,6 +163,7 @@ export class Viewport extends View
 					i[ColCell].delete(i);
 				}
 
+				delete i[ColCell];
 			}
 		});
 
@@ -872,6 +874,12 @@ export class Viewport extends View
 
 			for(const actor of cell.values())
 			{
+				if(actor.removed)
+				{
+					cell.delete(actor);
+					continue;
+				}
+
 				const offset = Math.floor(actor.args.width / 2);
 
 				const left   = -offset + actor.args.x;
@@ -930,9 +938,11 @@ export class Viewport extends View
 	{
 		const cell = this.getColCell(actor);
 
-		if(actor[ColCell] && actor[ColCell] !== cell)
+		const originalCell = actor[ColCell];
+
+		if(originalCell && originalCell !== cell)
 		{
-			actor[ColCell].delete(actor);
+			originalCell.delete(actor);
 		}
 
 		actor[ColCell] = cell;

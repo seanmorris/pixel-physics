@@ -49,12 +49,12 @@ export class Eggrobo extends PointActor
 			this.thrusterSound.loop = true;
 		}
 
-		if(this.thrusterSound.currentTime > 0.5)
+		if(this.thrusterSound.currentTime > 0.4 + (Math.random() / 10))
 		{
-			this.thrusterSound.currentTime = 0.25;
+			this.thrusterSound.currentTime = 0.05;
 		}
 
-		this.thrusterSound.volume = 0.15 + (Math.random() * -0.10);
+		this.thrusterSound.volume = 0.2 + (Math.random() * -0.05);
 
 		if(!this.box)
 		{
@@ -168,34 +168,40 @@ export class Eggrobo extends PointActor
 			return;
 		}
 
-		const direction  = Math.sign(this.args.direction);
+		const direction   = Math.sign(this.args.direction);
+		const groundAngle = this.args.groundAngle;
 
-		let offset, angle;
+		let offset, trajectory, spotAngle;
 
 		switch(this.args.mode)
 		{
 			case 0:
-				offset = [0, -36 - this.args.ySpeed];
-				angle  = -this.args.angle;
+				spotAngle  = (-groundAngle - (Math.PI / 2)) + (Math.PI / 4 * direction);
+				trajectory = (-groundAngle);
 				break;
 			case 1:
-				offset = [36, this.args.ySpeed];
-				angle  = -this.args.angle + (Math.PI / 2);
+				spotAngle  = (-groundAngle) + (Math.PI / 4 * direction);
+				trajectory = (-groundAngle + (Math.PI / 2));
 				break;
 			case 2:
-				offset = [0, 42 - this.args.ySpeed];
-				angle  = -this.args.angle + (Math.PI);
+				spotAngle  = (-groundAngle + (Math.PI / 2)) + (Math.PI / 4 * direction);
+				trajectory = (-groundAngle) - (Math.PI);
 				break;
 			case 3:
-				offset = [-36, this.args.ySpeed];
-				angle  = -this.args.angle + ((Math.PI / 2) * 3);
+				spotAngle  = (-groundAngle) - (Math.PI) + (Math.PI / 4 * direction);
+				trajectory = (-groundAngle - (Math.PI / 2));
 				break;
 		}
 
+		offset = [
+			50 * Math.cos(spotAngle)
+			, 50 * Math.sin(spotAngle)
+		];
+
 		if(this.args.falling)
 		{
-			angle  = this.direction === -1 ? Math.PI : 0;
-			offset = [0, -26];
+			trajectory = 0;
+			offset = [26 * direction, -26];
 		}
 
 		const projectile = new Projectile({
@@ -204,9 +210,10 @@ export class Eggrobo extends PointActor
 			, owner: this
 		});
 
-		projectile.impulse(75 * this.args.direction, angle);
+		projectile.impulse(75, trajectory + (direction < 0 ? Math.PI : 0));
 
 		this.viewport.actors.add(projectile);
+
 		this.box.setAttribute('data-shooting', 'true');
 
 		this.onTimeout(140, () => {
@@ -216,10 +223,11 @@ export class Eggrobo extends PointActor
 		if(this.viewport.args.audio && this.shootingSample)
 		{
 			this.shootingSample.volume = 0.6 + (Math.random() * -0.3);
+			this.shootingSample.currentTime = 0;
 			this.shootingSample.play();
 		}
 
-		this.args.shotCoolDown = 16;
+		this.args.shotCoolDown = 18;
 	}
 
 	get solid() { return false; }

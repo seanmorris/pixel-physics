@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 
 import { Explosion } from '../actor/Explosion';
+import { Projectile } from '../actor/Projectile';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 
 export class Monitor extends PointActor
@@ -43,59 +44,29 @@ export class Monitor extends PointActor
 			this.gone = true;
 
 			other.args.ySpeed *= -1;
+			other.args.falling = true;
 
-			if(this.args.falling && Math.abs(other.args.ySpeed) > 1)
+			if(this.args.falling && Math.abs(other.args.ySpeed) > 0)
 			{
 				other.args.xSpeed *= -1;
 			}
 
 			const viewport = this.viewport;
 
-			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
-			const corpse = new BrokenMonitor({x:this.x, y:this.y+1});
-
-			this.onTimeout(60, () => {
-				viewport.actors.remove( this );
-				viewport.actors.add(corpse);
-			});
-
-			this.onRemove(()=>setTimeout(()=>{
-				viewport.actors.remove(corpse);
-				corpse.remove();
-			}, 5000));
-
-			if(other.args.owner)
-			{
-				other.args.owner.args.rings += 10;
-			}
-			else
-			{
-				other.args.rings += 10;
-			}
-
-			if(this.viewport.args.audio && this.sample)
-			{
-				this.sample.play();
-			}
-
-			return true;
-		}
-
-		if(
-			(type === 1 || type === 3)
-			&& (Math.abs(other.args.xSpeed) > 15 || (Math.abs(other.args.gSpeed) > 15))
-			&& this.viewport
-			&& !this.gone
-		){
-			const viewport = this.viewport;
-
-			const corpse = new BrokenMonitor({x:this.x, y:this.y+1});
-
-			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+			const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
 
 			viewport.actors.remove( this );
-			viewport.actors.add(corpse);
+
+			setTimeout(()=>{
+				viewport.actors.add(corpse);
+				viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+			}, 0);
+
+			setTimeout(()=>{
+				viewport.actors.remove(corpse);
+				corpse.remove();
+			}, 5000);
 
 			if(other.args.owner)
 			{
@@ -111,7 +82,49 @@ export class Monitor extends PointActor
 				this.sample.play();
 			}
 
-			return true;
+			return false;
+		}
+
+		if(
+			(type === 1 || type === 3)
+			&& ((Math.abs(other.args.xSpeed) > 15
+				|| (Math.abs(other.args.gSpeed) > 15))
+				|| (other instanceof Projectile)
+			)
+			&& this.viewport
+			&& !this.gone
+		){
+			const viewport = this.viewport;
+
+			const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
+
+			viewport.actors.remove( this );
+
+			setTimeout(()=>{
+				viewport.actors.add(corpse);
+				viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+			}, 0);
+
+			setTimeout(()=>{
+				viewport.actors.remove(corpse);
+				corpse.remove();
+			}, 5000);
+
+			if(other.args.owner)
+			{
+				other.args.owner.args.rings += 10;
+			}
+			else
+			{
+				other.args.rings += 10;
+			}
+
+			if(viewport.args.audio && this.sample)
+			{
+				this.sample.play();
+			}
+
+			return false;
 		}
 
 		return true;

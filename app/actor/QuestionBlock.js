@@ -3,7 +3,7 @@ import { Monitor } from './Monitor';
 
 export class QuestionBlock extends PointActor
 {
-	maxBounce = 4;
+	maxBounce = 3;
 
 	template = `<div
 		class = "point-actor [[type]] [[collType]]"
@@ -48,21 +48,6 @@ export class QuestionBlock extends PointActor
 			this.initY = this.y;
 		}
 
-		if(type === 0)
-		{
-			// other.debindY && other.debindY();
-
-			// other.restingOn = this;
-
-			// other.debindY = this.args.bindTo('y', v => other.args.y = v - this.args.height);
-
-			// this.onRemove(()=>{
-			// 	other.debindY && other.debindY();
-			// });
-
-			// console.log(other);
-		}
-
 		if(type === 2)
 		{
 			const impulse = Math.abs(other.args.ySpeed);
@@ -96,7 +81,7 @@ export class QuestionBlock extends PointActor
 
 			const ySpeedMax = this.maxBounce;
 
-			let speed = this.args.collType === 'collision-bottom'
+			let speed = type === 2
 				? -Math.abs(other.args.ySpeed)
 				: other.args.ySpeed;
 

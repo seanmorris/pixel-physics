@@ -2,8 +2,8 @@ import { View } from 'curvature/base/View';
 
 export class PointDump extends View
 {
-	template = `<div class = "point-dump" style = "--x:[[x]];--y:[[y]];">
-		<div class = "point" style = "--color:[[color]]"></div>
+	template = `<div class = "point-dump">
+		<div class = "point" style = "--color:[[color]]">[[x]], [[y]]</div>
 	</div>`;
 	constructor(...args)
 	{

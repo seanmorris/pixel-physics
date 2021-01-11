@@ -34,7 +34,7 @@
 .actor-item.actor-eggrobo[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
-	animation: eggrobo-walk steps(3) infinite 128ms;
+	animation: eggrobo-walk steps(3) infinite 192ms;
 }
 
 .actor-item.actor-eggrobo[data-animation="jumping"] .sprite:after {

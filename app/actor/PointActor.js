@@ -223,6 +223,8 @@ export class PointActor extends View
 			this.args.xSpeed  = Math.cos(this.impulseDir) * this.impulseMag;
 			this.args.ySpeed  = Math.sin(this.impulseDir) * this.impulseMag;
 
+			console.log(this.args.xSpeed, this.args.ySpeed);
+
 			this.args.falling = true;
 
 			this.impulseMag   = null;
@@ -277,6 +279,7 @@ export class PointActor extends View
 				if(!tileMap.getSolid(this.x, this.y+1, this.args.layer))
 				{
 					this.args.mode = DEFAULT_GRAVITY;
+					this.lastAngles = [];
 				}
 			}
 		}
@@ -291,9 +294,13 @@ export class PointActor extends View
 			this.resolveIntersection();
 		}
 
-		if(this.args.falling && !this.args.float && this.args.ySpeed < this.args.ySpeedMax)
+		if(this.args.falling && this.args.ySpeed < this.args.ySpeedMax)
 		{
-			this.args.ySpeed += this.args.gravity;
+			if(!this.args.float)
+			{
+				this.args.ySpeed += this.args.gravity;
+			}
+
 			this.args.airAngle = this.args.airAngle;
 			this.args.landed = false;
 		}
@@ -327,6 +334,8 @@ export class PointActor extends View
 
 			const standingOn = this.getMapSolidAt(...this.groundPoint);
 
+			const half = Math.floor(this.args.width / 2);
+
 			if(Array.isArray(standingOn) && standingOn.length)
 			{
 				const groundActors = standingOn.filter(
@@ -336,15 +345,59 @@ export class PointActor extends View
 				this.standingOn = groundActors[0];
 
 			}
-			else
+			else if(!standingOn)
 			{
-				this.standingOn = null;
-
-				if(!standingOn)
+				if(half)
 				{
-					// this.args.falling = true;
+					const leftGroundPoint  = [...this.groundPoint];
+
+					leftGroundPoint[0] -= half;
+
+					const standingOnLeft = this.getMapSolidAt(...leftGroundPoint);
+
+					if(Array.isArray(standingOnLeft) && standingOnLeft.length)
+					{
+						const groundActors = standingOnLeft.filter(
+							a => a.args !== this.args && a.solid
+						);
+
+						this.standingOn = groundActors[0];
+
+					}
+					else if(!standingOnLeft)
+					{
+						const rightGroundPoint = [...this.groundPoint];
+
+						rightGroundPoint[0] += half;
+
+						const standingOnRight = this.getMapSolidAt(...rightGroundPoint);
+
+						if(Array.isArray(standingOnRight) && standingOnRight.length)
+						{
+							const groundActors = standingOnRight.filter(
+								a => a.args !== this.args && a.solid
+							);
+
+							this.standingOn = groundActors[0];
+
+						}
+						else if(!standingOnRight)
+						{
+							this.standingOn = null;
+							this.args.falling = true;
+						}
+					}
+				}
+				else
+				{
+					this.standingOn = null;
+					this.args.falling = true;
 				}
 			}
+		}
+		else
+		{
+			this.standingOn = null;
 		}
 
 		this.args.colliding = this.colliding;
@@ -388,6 +441,7 @@ export class PointActor extends View
 					if(this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT)
 					{
 						this.args.mode = MODE_FLOOR;
+						this.lastAngles = [];
 					}
 
 					break;
@@ -502,7 +556,7 @@ export class PointActor extends View
 					if(this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2)
 					{
 
-						this.lastAngles = [];
+						this.lastAngles = this.lastAngles.map(n => n - Math.PI / 2);
 
 						switch(this.args.mode)
 						{
@@ -523,13 +577,13 @@ export class PointActor extends View
 								break;
 						}
 
-						this.args.angle -= Math.PI / 8*3;
+						this.args.groundAngle -= Math.PI / 2;
 					}
 					else if(this.args.angle < -Math.PI / 4 && this.args.angle > -Math.PI / 2)
 					{
 						const orig = this.args.mode;
 
-						this.lastAngles = [];
+						this.lastAngles = this.lastAngles.map(n => n + Math.PI / 2);
 
 						switch(this.args.mode)
 						{
@@ -550,7 +604,7 @@ export class PointActor extends View
 								break;
 						}
 
-						this.args.angle += Math.PI / 8*3;
+						this.args.groundAngle += Math.PI / 2;
 					}
 				}
 			}
@@ -768,6 +822,7 @@ export class PointActor extends View
 		else if(this.args.ySpeed > 0)
 		{
 			this.args.mode = DEFAULT_GRAVITY;
+
 			this.args.gSpeed = Math.floor(xSpeedOriginal);
 		}
 
@@ -901,7 +956,7 @@ export class PointActor extends View
 				this.args.ySpeed = 0;
 				this.args.xSpeed = 0;
 			}
-			else
+			else if(blockers)
 			{
 				this.args.falling = false;
 			}
@@ -1238,45 +1293,47 @@ export class PointActor extends View
 		this.args.landed  = false;
 		this.args.falling = true;
 
+		const angle = this.args.angle || 0;
+
 		switch(originalMode)
 		{
 			case MODE_FLOOR:
 
-				this.args.xSpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
-				this.args.ySpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
+				this.args.xSpeed = this.args.gSpeed * Math.sin(angle + Math.PI/2);
+				this.args.ySpeed = this.args.gSpeed * Math.cos(angle + Math.PI/2);
 
-				this.args.xSpeed += force * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed -= force * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed += force * Math.cos(angle + Math.PI/2);
+				this.args.ySpeed -= force * Math.sin(angle + Math.PI/2);
 
 				break;
 
 			case MODE_LEFT:
 
-				this.args.xSpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed =  this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed = -this.args.gSpeed * Math.cos(angle + Math.PI/2);
+				this.args.ySpeed =  this.args.gSpeed * Math.sin(angle + Math.PI/2);
 
-				this.args.xSpeed -= force * Math.sin(this.args.angle - Math.PI/2);
-				this.args.ySpeed -= force * Math.cos(this.args.angle - Math.PI/2);
+				this.args.xSpeed -= force * Math.sin(angle - Math.PI/2);
+				this.args.ySpeed -= force * Math.cos(angle - Math.PI/2);
 
 				break;
 
 			case MODE_CEILING:
 
-				this.args.xSpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
-				this.args.ySpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
+				this.args.xSpeed = -this.args.gSpeed * Math.sin(angle + Math.PI/2);
+				this.args.ySpeed = -this.args.gSpeed * Math.cos(angle + Math.PI/2);
 
-				this.args.xSpeed -= force * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed += force * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed -= force * Math.cos(angle + Math.PI/2);
+				this.args.ySpeed += force * Math.sin(angle + Math.PI/2);
 
 				break;
 
 			case MODE_RIGHT:
 
-				this.args.xSpeed =  this.args.gSpeed * Math.cos(this.args.angle + Math.PI/2);
-				this.args.ySpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI/2);
+				this.args.xSpeed =  this.args.gSpeed * Math.cos(angle + Math.PI/2);
+				this.args.ySpeed = -this.args.gSpeed * Math.sin(angle + Math.PI/2);
 
-				this.args.xSpeed += force * Math.sin(this.args.angle - Math.PI/2);
-				this.args.ySpeed += force * Math.cos(this.args.angle - Math.PI/2);
+				this.args.xSpeed += force * Math.sin(angle - Math.PI/2);
+				this.args.ySpeed += force * Math.cos(angle - Math.PI/2);
 
 				break;
 		}

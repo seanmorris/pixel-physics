@@ -121,42 +121,6 @@
 	background-image: url(/castlevania/window.png);
 }
 
-.actor-item.actor-star-post .sprite {
-	background-image: url(/Sonic/star-post.png);
-	height: 48px;
-	width: 16px;
-}
-
-.actor-star-post {
-	z-index:1;
-}
-
-.star-post-head {
-	background-image: url(/Sonic/star-post-head.png);
-	width: 16px;
-	height: 16px;
-	position: absolute;
-	top: -60px;
-	left: -8px;
-	transform-origin: bottom center;
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-}
-
-.actor-star-post[data-active="true"] .star-post-head {
-	animation: spin2x 1 ease-in-out 0.75s both, starPostActive steps(2) 10ms  0.5s infinite;
-}
-
-.actor-star-post[data-active="true"][direction="-1"] .star-post-head {
-	animation-direction: reverse;
-}
-
-.actor-item.actor-star-post .sprite {
-	background-image: url(/Sonic/star-post.png);
-	height: 48px;
-	width: 16px;
-}
-
 .actor-item[data-mode="0"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px));
 }

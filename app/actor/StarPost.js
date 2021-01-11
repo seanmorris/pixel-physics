@@ -1,7 +1,7 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 import { Monitor } from './Monitor';
-
+import { Projectile } from '../actor/Projectile';
 
 export class StarPost extends PointActor
 {
@@ -14,6 +14,8 @@ export class StarPost extends PointActor
 		this.args.width  = 16;
 		this.args.height = 48;
 		this.args.active = false;
+
+		this.spinning = false;
 	}
 
 	update()
@@ -32,9 +34,12 @@ export class StarPost extends PointActor
 		this.sprite = this.findTag('div.sprite');
 		this.box    = this.findTag('div');
 
+		this.headBox = new Tag('<div class = "star-post-head-box">')
 		this.head   = new Tag('<div class = "star-post-head">')
 
-		this.box.appendChild(this.head.node)
+		this.headBox.appendChild(this.head.node);
+
+		this.box.appendChild(this.headBox.node)
 	}
 
 	collideA(other)
@@ -43,21 +48,43 @@ export class StarPost extends PointActor
 
 		if(!this.args.active)
 		{
-			this.box.setAttribute('data-active', 'true');
 			this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+			this.box.setAttribute('data-active', 'true');
+			this.box.setAttribute('data-spin', 'true');
 
 			this.sample && this.sample.play();
 
 			const monitor = new Monitor({
 				x: this.x - 10
 				, y: this.y - 48
+				, xSpeed: 5 * (Math.sign(other.args.gSpeed) || 1)
 				, ySpeed: -5
-				, xSpeed: 5 * Math.sign(other.args.gSpeed)
 			});
 
 			this.viewport.actors.add(monitor);
 
 			this.args.active = true;
+
+			this.spinning = true;
+
+			this.onTimeout(750, () => this.spinning = false);
+		}
+		else if(other instanceof Projectile && !this.spinning)
+		{
+			this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+			this.box.setAttribute('data-spin', 'false');
+
+			if(this.sample)
+			{
+				this.sample.currentTime = 0;
+				this.sample.play();
+			}
+
+			this.onTimeout(0, () => this.box.setAttribute('data-spin', 'true'));
+
+			this.spinning = true;
+
+			this.onTimeout(750, () => this.spinning = false);
 		}
 	}
 

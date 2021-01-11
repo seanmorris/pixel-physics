@@ -20,7 +20,7 @@ export class MechaSonic extends PointActor
 
 		this.args.takeoffPlayed = false;
 
-		this.args.width  = 32;
+		this.args.width  = 48;
 		this.args.height = 64;
 	}
 

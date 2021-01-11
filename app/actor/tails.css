@@ -129,6 +129,11 @@
 	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 
+.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails,
+.actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails {
+	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
+}
+
 .actor-item.actor-tails[data-animation="flying"] .tails-tails {
 	--sprite-offset-y: -64px;
 	--animation-steps: 2;

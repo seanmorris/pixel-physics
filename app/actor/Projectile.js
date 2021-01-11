@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Explosion } from '../actor/Explosion';
 
 export class Projectile extends PointActor
 {
@@ -27,27 +28,25 @@ export class Projectile extends PointActor
 
 		if(!this.args.xSpeed && !this.args.ySpeed)
 		{
-			this.viewport && this.viewport.actors.remove( this );
+			this.explode();
 		}
 
 		if(!this.removeTimer)
 		{
-			this.removeTimer = this.onTimeout(2000, ()=>{
-				this.viewport && this.viewport.actors.remove( this );
-			});
+			this.removeTimer = this.onTimeout(2000, () => this.explode());
 		}
 	}
 
 	collideA(other)
 	{
-		if(other instanceof Projectile)
+		if(other === this.args.owner || other instanceof Projectile || other instanceof Explosion)
 		{
 			return false;
 		}
 
 		if(this.viewport)
 		{
-			this.viewport.actors.remove( this );
+			this.explode();
 		}
 
 		return false;
@@ -55,17 +54,38 @@ export class Projectile extends PointActor
 
 	collideB(other)
 	{
-		if(other instanceof Projectile)
+		if(other === this.args.owner || other instanceof Projectile || other instanceof Explosion)
 		{
 			return false;
 		}
 
 		if(this.viewport)
 		{
-			this.viewport.actors.remove( this );
+			this.explode();
 		}
 
 		return false;
+	}
+
+	explode()
+	{
+		const viewport  = this.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		// const explosion = new Explosion({x:this.x, y:this.y+8});
+
+		// viewport.actors.add(explosion);
+
+		// setTimeout(()=>{
+		// 	viewport.actors.remove( explosion );
+		// }, 20);
+
+		this.viewport.actors.remove( this );
+		this.remove();
 	}
 
 	get canStick() { return false; }

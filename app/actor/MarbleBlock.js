@@ -28,7 +28,7 @@ export class MarbleBlock extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(other.args.falling)
+		if(this.args.falling)
 		{
 			return true;
 		}
@@ -47,8 +47,6 @@ export class MarbleBlock extends PointActor
 		{
 			if(!other.args.gSpeed)
 			{
-				console.log(others.args.gSpeed);
-
 				return true;
 			}
 
@@ -80,9 +78,9 @@ export class MarbleBlock extends PointActor
 				{
 					const realMoveBy = nextPosition[0] || moveBy;
 
-					this.args.x += nextPosition[0] || moveBy;
+					this.args.x += realMoveBy;
 
-					return false;
+					return scan !== false && scan <= 1;
 				}
 
 				return true;

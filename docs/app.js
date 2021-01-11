@@ -6503,11 +6503,11 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
         this.thrusterSound.loop = true;
       }
 
-      if (this.thrusterSound.currentTime > 0.5) {
-        this.thrusterSound.currentTime = 0.25;
+      if (this.thrusterSound.currentTime > 0.4 + Math.random() / 10) {
+        this.thrusterSound.currentTime = 0.05;
       }
 
-      this.thrusterSound.volume = 0.15 + Math.random() * -0.10;
+      this.thrusterSound.volume = 0.2 + Math.random() * -0.05;
 
       if (!this.box) {
         _get(_getPrototypeOf(Eggrobo.prototype), "update", this).call(this);
@@ -6599,33 +6599,36 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
       }
 
       var direction = Math.sign(this.args.direction);
-      var offset, angle;
+      var groundAngle = this.args.groundAngle;
+      var offset, trajectory, spotAngle;
 
       switch (this.args.mode) {
         case 0:
-          offset = [0, -36 - this.args.ySpeed];
-          angle = -this.args.angle;
+          spotAngle = -groundAngle - Math.PI / 2 + Math.PI / 4 * direction;
+          trajectory = -groundAngle;
           break;
 
         case 1:
-          offset = [36, this.args.ySpeed];
-          angle = -this.args.angle + Math.PI / 2;
+          spotAngle = -groundAngle + Math.PI / 4 * direction;
+          trajectory = -groundAngle + Math.PI / 2;
           break;
 
         case 2:
-          offset = [0, 42 - this.args.ySpeed];
-          angle = -this.args.angle + Math.PI;
+          spotAngle = -groundAngle + Math.PI / 2 + Math.PI / 4 * direction;
+          trajectory = -groundAngle - Math.PI;
           break;
 
         case 3:
-          offset = [-36, this.args.ySpeed];
-          angle = -this.args.angle + Math.PI / 2 * 3;
+          spotAngle = -groundAngle - Math.PI + Math.PI / 4 * direction;
+          trajectory = -groundAngle - Math.PI / 2;
           break;
       }
 
+      offset = [50 * Math.cos(spotAngle), 50 * Math.sin(spotAngle)];
+
       if (this.args.falling) {
-        angle = this.direction === -1 ? Math.PI : 0;
-        offset = [0, -26];
+        trajectory = 0;
+        offset = [26 * direction, -26];
       }
 
       var projectile = new _Projectile.Projectile({
@@ -6633,7 +6636,7 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
         y: this.args.y + offset[1],
         owner: this
       });
-      projectile.impulse(75 * this.args.direction, angle);
+      projectile.impulse(75, trajectory + (direction < 0 ? Math.PI : 0));
       this.viewport.actors.add(projectile);
       this.box.setAttribute('data-shooting', 'true');
       this.onTimeout(140, function () {
@@ -6642,10 +6645,11 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
 
       if (this.viewport.args.audio && this.shootingSample) {
         this.shootingSample.volume = 0.6 + Math.random() * -0.3;
+        this.shootingSample.currentTime = 0;
         this.shootingSample.play();
       }
 
-      this.args.shotCoolDown = 16;
+      this.args.shotCoolDown = 18;
     }
   }, {
     key: "solid",
@@ -6841,8 +6845,9 @@ var Explosion = /*#__PURE__*/function (_PointActor) {
       _get(_getPrototypeOf(Explosion.prototype), "update", this).call(this);
 
       if (!this.removeTimer) {
+        var viewport = this.viewport;
         this.removeTimer = this.onTimeout(360, function () {
-          _this2.viewport.actors.remove(_this2);
+          viewport.actors.remove(_this2);
         });
       }
     }
@@ -7209,7 +7214,7 @@ var MarbleBlock = /*#__PURE__*/function (_PointActor) {
     value: function collideA(other, type) {
       _get(_getPrototypeOf(MarbleBlock.prototype), "collideA", this).call(this, other, type);
 
-      if (other.args.falling) {
+      if (this.args.falling) {
         return true;
       }
 
@@ -7223,7 +7228,6 @@ var MarbleBlock = /*#__PURE__*/function (_PointActor) {
 
       if (type === 1 || type === 3) {
         if (!other.args.gSpeed) {
-          console.log(others.args.gSpeed);
           return true;
         }
 
@@ -7246,8 +7250,8 @@ var MarbleBlock = /*#__PURE__*/function (_PointActor) {
 
           if (!nextPosition[1]) {
             var realMoveBy = nextPosition[0] || moveBy;
-            this.args.x += nextPosition[0] || moveBy;
-            return false;
+            this.args.x += realMoveBy;
+            return scan !== false && scan <= 1;
           }
 
           return true;
@@ -7357,7 +7361,7 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
     _this.args.jumpForce = 15;
     _this.args.gravity = 0.7;
     _this.args.takeoffPlayed = false;
-    _this.args.width = 32;
+    _this.args.width = 48;
     _this.args.height = 64;
     return _this;
   }
@@ -7504,6 +7508,8 @@ var _PointActor2 = require("./PointActor");
 
 var _Explosion = require("../actor/Explosion");
 
+var _Projectile = require("../actor/Projectile");
+
 var _BrokenMonitor = require("../actor/BrokenMonitor");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -7572,30 +7578,29 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
       if (type !== 2 && (!this.args.falling || this.args["float"] === -1) && other.args.ySpeed > 0 && other.y < this.y && this.viewport && !this.gone) {
         this.gone = true;
         other.args.ySpeed *= -1;
+        other.args.falling = true;
 
-        if (this.args.falling && Math.abs(other.args.ySpeed) > 1) {
+        if (this.args.falling && Math.abs(other.args.ySpeed) > 0) {
           other.args.xSpeed *= -1;
         }
 
         var viewport = this.viewport;
-        viewport.actors.add(new _Explosion.Explosion({
-          x: this.x,
-          y: this.y + 8
-        }));
         var corpse = new _BrokenMonitor.BrokenMonitor({
           x: this.x,
-          y: this.y + 1
+          y: this.y + 30
         });
-        this.onTimeout(60, function () {
-          viewport.actors.remove(_this2);
+        viewport.actors.remove(this);
+        setTimeout(function () {
           viewport.actors.add(corpse);
-        });
-        this.onRemove(function () {
-          return setTimeout(function () {
-            viewport.actors.remove(corpse);
-            corpse.remove();
-          }, 5000);
-        });
+          viewport.actors.add(new _Explosion.Explosion({
+            x: _this2.x,
+            y: _this2.y + 8
+          }));
+        }, 0);
+        setTimeout(function () {
+          viewport.actors.remove(corpse);
+          corpse.remove();
+        }, 5000);
 
         if (other.args.owner) {
           other.args.owner.args.rings += 10;
@@ -7603,29 +7608,36 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
           other.args.rings += 10;
         }
 
-        if (this.viewport.args.audio && this.sample) {
+        if (viewport.args.audio && this.sample) {
           this.sample.play();
         }
 
-        return true;
+        return false;
       }
 
-      if ((type === 1 || type === 3) && (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15) && this.viewport && !this.gone) {
+      if ((type === 1 || type === 3) && (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof _Projectile.Projectile) && this.viewport && !this.gone) {
         var _viewport = this.viewport;
 
         var _corpse = new _BrokenMonitor.BrokenMonitor({
           x: this.x,
-          y: this.y + 1
+          y: this.y + 30
         });
-
-        _viewport.actors.add(new _Explosion.Explosion({
-          x: this.x,
-          y: this.y + 8
-        }));
 
         _viewport.actors.remove(this);
 
-        _viewport.actors.add(_corpse);
+        setTimeout(function () {
+          _viewport.actors.add(_corpse);
+
+          _viewport.actors.add(new _Explosion.Explosion({
+            x: _this2.x,
+            y: _this2.y + 8
+          }));
+        }, 0);
+        setTimeout(function () {
+          _viewport.actors.remove(_corpse);
+
+          _corpse.remove();
+        }, 5000);
 
         if (other.args.owner) {
           other.args.owner.args.rings += 10;
@@ -7637,7 +7649,7 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
           this.sample.play();
         }
 
-        return true;
+        return false;
       }
 
       return true;
@@ -7896,6 +7908,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       if (this.impulseMag !== null) {
         this.args.xSpeed = Math.cos(this.impulseDir) * this.impulseMag;
         this.args.ySpeed = Math.sin(this.impulseDir) * this.impulseMag;
+        console.log(this.args.xSpeed, this.args.ySpeed);
         this.args.falling = true;
         this.impulseMag = null;
         this.impulseDir = null;
@@ -7939,6 +7952,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
           if (!tileMap.getSolid(this.x, this.y + 1, this.args.layer)) {
             this.args.mode = DEFAULT_GRAVITY;
+            this.lastAngles = [];
           }
         }
       }
@@ -7951,8 +7965,11 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.resolveIntersection();
       }
 
-      if (this.args.falling && !this.args["float"] && this.args.ySpeed < this.args.ySpeedMax) {
-        this.args.ySpeed += this.args.gravity;
+      if (this.args.falling && this.args.ySpeed < this.args.ySpeedMax) {
+        if (!this.args["float"]) {
+          this.args.ySpeed += this.args.gravity;
+        }
+
         this.args.airAngle = this.args.airAngle;
         this.args.landed = false;
       }
@@ -7980,17 +7997,50 @@ var PointActor = /*#__PURE__*/function (_View) {
 
         var standingOn = this.getMapSolidAt.apply(this, _toConsumableArray(this.groundPoint));
 
+        var _half = Math.floor(this.args.width / 2);
+
         if (Array.isArray(standingOn) && standingOn.length) {
           var groundActors = standingOn.filter(function (a) {
             return a.args !== _this3.args && a.solid;
           });
           this.standingOn = groundActors[0];
-        } else {
-          this.standingOn = null;
+        } else if (!standingOn) {
+          if (_half) {
+            var leftGroundPoint = _toConsumableArray(this.groundPoint);
 
-          if (!standingOn) {// this.args.falling = true;
+            leftGroundPoint[0] -= _half;
+            var standingOnLeft = this.getMapSolidAt.apply(this, _toConsumableArray(leftGroundPoint));
+
+            if (Array.isArray(standingOnLeft) && standingOnLeft.length) {
+              var _groundActors = standingOnLeft.filter(function (a) {
+                return a.args !== _this3.args && a.solid;
+              });
+
+              this.standingOn = _groundActors[0];
+            } else if (!standingOnLeft) {
+              var rightGroundPoint = _toConsumableArray(this.groundPoint);
+
+              rightGroundPoint[0] += _half;
+              var standingOnRight = this.getMapSolidAt.apply(this, _toConsumableArray(rightGroundPoint));
+
+              if (Array.isArray(standingOnRight) && standingOnRight.length) {
+                var _groundActors2 = standingOnRight.filter(function (a) {
+                  return a.args !== _this3.args && a.solid;
+                });
+
+                this.standingOn = _groundActors2[0];
+              } else if (!standingOnRight) {
+                this.standingOn = null;
+                this.args.falling = true;
+              }
+            }
+          } else {
+            this.standingOn = null;
+            this.args.falling = true;
           }
         }
+      } else {
+        this.standingOn = null;
       }
 
       this.args.colliding = this.colliding;
@@ -8025,6 +8075,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
             if (this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT) {
               this.args.mode = MODE_FLOOR;
+              this.lastAngles = [];
             }
 
             break;
@@ -8116,7 +8167,9 @@ var PointActor = /*#__PURE__*/function (_View) {
             }
 
             if (this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2) {
-              this.lastAngles = [];
+              this.lastAngles = this.lastAngles.map(function (n) {
+                return n - Math.PI / 2;
+              });
 
               switch (this.args.mode) {
                 case MODE_FLOOR:
@@ -8136,10 +8189,12 @@ var PointActor = /*#__PURE__*/function (_View) {
                   break;
               }
 
-              this.args.angle -= Math.PI / 8 * 3;
+              this.args.groundAngle -= Math.PI / 2;
             } else if (this.args.angle < -Math.PI / 4 && this.args.angle > -Math.PI / 2) {
               var orig = this.args.mode;
-              this.lastAngles = [];
+              this.lastAngles = this.lastAngles.map(function (n) {
+                return n + Math.PI / 2;
+              });
 
               switch (this.args.mode) {
                 case MODE_FLOOR:
@@ -8159,7 +8214,7 @@ var PointActor = /*#__PURE__*/function (_View) {
                   break;
               }
 
-              this.args.angle += Math.PI / 8 * 3;
+              this.args.groundAngle += Math.PI / 2;
             }
           }
         }
@@ -8427,7 +8482,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
           this.args.ySpeed = 0;
           this.args.xSpeed = 0;
-        } else {
+        } else if (blockers) {
           this.args.falling = false;
         }
 
@@ -8706,34 +8761,35 @@ var PointActor = /*#__PURE__*/function (_View) {
       this.args.ignore = 1;
       this.args.landed = false;
       this.args.falling = true;
+      var angle = this.args.angle || 0;
 
       switch (originalMode) {
         case MODE_FLOOR:
-          this.args.xSpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.ySpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.xSpeed += force * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed -= force * Math.sin(this.args.angle + Math.PI / 2);
+          this.args.xSpeed = this.args.gSpeed * Math.sin(angle + Math.PI / 2);
+          this.args.ySpeed = this.args.gSpeed * Math.cos(angle + Math.PI / 2);
+          this.args.xSpeed += force * Math.cos(angle + Math.PI / 2);
+          this.args.ySpeed -= force * Math.sin(angle + Math.PI / 2);
           break;
 
         case MODE_LEFT:
-          this.args.xSpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed = this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.xSpeed -= force * Math.sin(this.args.angle - Math.PI / 2);
-          this.args.ySpeed -= force * Math.cos(this.args.angle - Math.PI / 2);
+          this.args.xSpeed = -this.args.gSpeed * Math.cos(angle + Math.PI / 2);
+          this.args.ySpeed = this.args.gSpeed * Math.sin(angle + Math.PI / 2);
+          this.args.xSpeed -= force * Math.sin(angle - Math.PI / 2);
+          this.args.ySpeed -= force * Math.cos(angle - Math.PI / 2);
           break;
 
         case MODE_CEILING:
-          this.args.xSpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.ySpeed = -this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.xSpeed -= force * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed += force * Math.sin(this.args.angle + Math.PI / 2);
+          this.args.xSpeed = -this.args.gSpeed * Math.sin(angle + Math.PI / 2);
+          this.args.ySpeed = -this.args.gSpeed * Math.cos(angle + Math.PI / 2);
+          this.args.xSpeed -= force * Math.cos(angle + Math.PI / 2);
+          this.args.ySpeed += force * Math.sin(angle + Math.PI / 2);
           break;
 
         case MODE_RIGHT:
-          this.args.xSpeed = this.args.gSpeed * Math.cos(this.args.angle + Math.PI / 2);
-          this.args.ySpeed = -this.args.gSpeed * Math.sin(this.args.angle + Math.PI / 2);
-          this.args.xSpeed += force * Math.sin(this.args.angle - Math.PI / 2);
-          this.args.ySpeed += force * Math.cos(this.args.angle - Math.PI / 2);
+          this.args.xSpeed = this.args.gSpeed * Math.cos(angle + Math.PI / 2);
+          this.args.ySpeed = -this.args.gSpeed * Math.sin(angle + Math.PI / 2);
+          this.args.xSpeed += force * Math.sin(angle - Math.PI / 2);
+          this.args.ySpeed += force * Math.cos(angle - Math.PI / 2);
           break;
       }
 
@@ -8979,6 +9035,8 @@ exports.Projectile = void 0;
 
 var _PointActor2 = require("./PointActor");
 
+var _Explosion = require("../actor/Explosion");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -9038,24 +9096,24 @@ var Projectile = /*#__PURE__*/function (_PointActor) {
       _get(_getPrototypeOf(Projectile.prototype), "update", this).call(this);
 
       if (!this.args.xSpeed && !this.args.ySpeed) {
-        this.viewport && this.viewport.actors.remove(this);
+        this.explode();
       }
 
       if (!this.removeTimer) {
         this.removeTimer = this.onTimeout(2000, function () {
-          _this2.viewport && _this2.viewport.actors.remove(_this2);
+          return _this2.explode();
         });
       }
     }
   }, {
     key: "collideA",
     value: function collideA(other) {
-      if (other instanceof Projectile) {
+      if (other === this.args.owner || other instanceof Projectile || other instanceof _Explosion.Explosion) {
         return false;
       }
 
       if (this.viewport) {
-        this.viewport.actors.remove(this);
+        this.explode();
       }
 
       return false;
@@ -9063,15 +9121,32 @@ var Projectile = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideB",
     value: function collideB(other) {
-      if (other instanceof Projectile) {
+      if (other === this.args.owner || other instanceof Projectile || other instanceof _Explosion.Explosion) {
         return false;
       }
 
       if (this.viewport) {
-        this.viewport.actors.remove(this);
+        this.explode();
       }
 
       return false;
+    }
+  }, {
+    key: "explode",
+    value: function explode() {
+      var viewport = this.viewport;
+
+      if (!viewport) {
+        return;
+      } // const explosion = new Explosion({x:this.x, y:this.y+8});
+      // viewport.actors.add(explosion);
+      // setTimeout(()=>{
+      // 	viewport.actors.remove( explosion );
+      // }, 20);
+
+
+      this.viewport.actors.remove(this);
+      this.remove();
     }
   }, {
     key: "canStick",
@@ -9147,7 +9222,7 @@ var QuestionBlock = /*#__PURE__*/function (_PointActor) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "maxBounce", 4);
+    _defineProperty(_assertThisInitialized(_this), "maxBounce", 3);
 
     _defineProperty(_assertThisInitialized(_this), "template", "<div\n\t\tclass = \"point-actor [[type]] [[collType]]\"\n\t\tstyle = \"\n\t\t\t--angle:[[angle]];\n\t\t\t--airAngle:[[airAngle]];\n\t\t\t--display-angle:[[_angle]];\n\t\t\t--height:[[height]];\n\t\t\t--width:[[width]];\n\t\t\t--x:[[x]];\n\t\t\t--y:[[y]];\n\t\t\"\n\t\tdata-colliding = \"[[colliding]]\"\n\t\tdata-falling   = \"[[falling]]\"\n\t\tdata-facing    = \"[[facing]]\"\n\t\tdata-angle     = \"[[angle|rad2deg]]\"\n\t\tdata-mode      = \"[[mode]]\"\n\t\tdata-empty     = \"[[empty]]\"\n\t><div class = \"sprite\"></div></div>");
 
@@ -9169,15 +9244,6 @@ var QuestionBlock = /*#__PURE__*/function (_PointActor) {
 
       if (this.initY === null) {
         this.initY = this.y;
-      }
-
-      if (type === 0) {// other.debindY && other.debindY();
-        // other.restingOn = this;
-        // other.debindY = this.args.bindTo('y', v => other.args.y = v - this.args.height);
-        // this.onRemove(()=>{
-        // 	other.debindY && other.debindY();
-        // });
-        // console.log(other);
       }
 
       if (type === 2) {
@@ -9205,7 +9271,7 @@ var QuestionBlock = /*#__PURE__*/function (_PointActor) {
         }
 
         var ySpeedMax = this.maxBounce;
-        var speed = this.args.collType === 'collision-bottom' ? -Math.abs(other.args.ySpeed) : other.args.ySpeed;
+        var speed = type === 2 ? -Math.abs(other.args.ySpeed) : other.args.ySpeed;
 
         if (Math.abs(speed) > ySpeedMax) {
           speed = ySpeedMax * Math.sign(speed);
@@ -9649,6 +9715,8 @@ var _Tag = require("curvature/base/Tag");
 
 var _Monitor = require("./Monitor");
 
+var _Projectile = require("../actor/Projectile");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -9692,6 +9760,7 @@ var StarPost = /*#__PURE__*/function (_PointActor) {
     _this.args.width = 16;
     _this.args.height = 48;
     _this.args.active = false;
+    _this.spinning = false;
     return _this;
   }
 
@@ -9710,26 +9779,51 @@ var StarPost = /*#__PURE__*/function (_PointActor) {
     value: function onRendered() {
       this.sprite = this.findTag('div.sprite');
       this.box = this.findTag('div');
+      this.headBox = new _Tag.Tag('<div class = "star-post-head-box">');
       this.head = new _Tag.Tag('<div class = "star-post-head">');
-      this.box.appendChild(this.head.node);
+      this.headBox.appendChild(this.head.node);
+      this.box.appendChild(this.headBox.node);
     }
   }, {
     key: "collideA",
     value: function collideA(other) {
+      var _this2 = this;
+
       _get(_getPrototypeOf(StarPost.prototype), "collideA", this).call(this, other);
 
       if (!this.args.active) {
-        this.box.setAttribute('data-active', 'true');
         this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+        this.box.setAttribute('data-active', 'true');
+        this.box.setAttribute('data-spin', 'true');
         this.sample && this.sample.play();
         var monitor = new _Monitor.Monitor({
           x: this.x - 10,
           y: this.y - 48,
-          ySpeed: -5,
-          xSpeed: 5 * Math.sign(other.args.gSpeed)
+          xSpeed: 5 * (Math.sign(other.args.gSpeed) || 1),
+          ySpeed: -5
         });
         this.viewport.actors.add(monitor);
         this.args.active = true;
+        this.spinning = true;
+        this.onTimeout(750, function () {
+          return _this2.spinning = false;
+        });
+      } else if (other instanceof _Projectile.Projectile && !this.spinning) {
+        this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+        this.box.setAttribute('data-spin', 'false');
+
+        if (this.sample) {
+          this.sample.currentTime = 0;
+          this.sample.play();
+        }
+
+        this.onTimeout(0, function () {
+          return _this2.box.setAttribute('data-spin', 'true');
+        });
+        this.spinning = true;
+        this.onTimeout(750, function () {
+          return _this2.spinning = false;
+        });
       }
     }
   }, {
@@ -10190,7 +10284,7 @@ var PointDump = /*#__PURE__*/function (_View) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "template", "<div class = \"point-dump\" style = \"--x:[[x]];--y:[[y]];\">\n\t\t<div class = \"point\" style = \"--color:[[color]]\"></div>\n\t</div>");
+    _defineProperty(_assertThisInitialized(_this), "template", "<div class = \"point-dump\">\n\t\t<div class = \"point\" style = \"--color:[[color]]\">[[x]], [[y]]</div>\n\t</div>");
 
     _this.args.x = _this.args.x || 0;
     _this.args.y = _this.args.y || 0;
@@ -11619,6 +11713,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.actors = new _Bag.Bag(function (i, s, a) {
       if (a == _Bag.Bag.ITEM_ADDED) {
         i.viewport = _assertThisInitialized(_this);
+        i.args.display = 'none';
 
         _this.setColCell(i);
       } else if (a == _Bag.Bag.ITEM_REMOVED) {
@@ -11627,6 +11722,8 @@ var Viewport = /*#__PURE__*/function (_View) {
         if (i[ColCell]) {
           i[ColCell]["delete"](i);
         }
+
+        delete i[ColCell];
       }
     });
     _this.blocks = new _Bag.Bag();
@@ -12238,6 +12335,12 @@ var Viewport = /*#__PURE__*/function (_View) {
         try {
           for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
             var actor = _step5.value;
+
+            if (actor.removed) {
+              cell["delete"](actor);
+              continue;
+            }
+
             var offset = Math.floor(actor.args.width / 2);
             var left = -offset + actor.args.x;
             var right = -offset + actor.args.x + actor.args.width;
@@ -12284,9 +12387,10 @@ var Viewport = /*#__PURE__*/function (_View) {
     key: "setColCell",
     value: function setColCell(actor) {
       var cell = this.getColCell(actor);
+      var originalCell = actor[ColCell];
 
-      if (actor[ColCell] && actor[ColCell] !== cell) {
-        actor[ColCell]["delete"](actor);
+      if (originalCell && originalCell !== cell) {
+        originalCell["delete"](actor);
       }
 
       actor[ColCell] = cell;
