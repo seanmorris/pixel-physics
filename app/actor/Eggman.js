@@ -19,7 +19,7 @@ export class Eggman extends PointActor
 		this.args.gravity   = 0.6;
 
 		this.args.width  = 48;
-		this.args.height = 64;
+		this.args.height = 55;
 	}
 
 	onAttached()

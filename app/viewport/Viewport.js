@@ -798,6 +798,7 @@ export class Viewport extends View
 		this.controlActor.stayStuck = !!this.args.stayStuck;
 
 		this.controlActor.xAxis     = 0;
+		this.controlActor.yAxis     = 0;
 		this.controlActor.running   = false;
 		this.controlActor.crawling  = false;
 

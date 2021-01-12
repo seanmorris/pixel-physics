@@ -21,7 +21,7 @@ export class Eggrobo extends PointActor
 		this.args.gravity   = 0.60;
 
 		this.args.width  = 48;
-		this.args.height = 64;
+		this.args.height = 57;
 	}
 
 	onAttached()

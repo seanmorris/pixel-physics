@@ -214,8 +214,8 @@ export class PointActor extends View
 					prevGroundObject.occupant = null;
 				}
 
-				prevGroundObject.xAxis    = 0;
-				prevGroundObject.yAxis    = 0;
+				prevGroundObject.xAxis = 0;
+				prevGroundObject.yAxis = 0;
 			}
 		});
 
@@ -276,8 +276,6 @@ export class PointActor extends View
 		{
 			this.args.xSpeed  = Math.cos(this.impulseDir) * this.impulseMag;
 			this.args.ySpeed  = Math.sin(this.impulseDir) * this.impulseMag;
-
-			console.log(this.args.xSpeed, this.args.ySpeed);
 
 			this.args.falling = true;
 
@@ -812,10 +810,10 @@ export class PointActor extends View
 
 		let blockers = false;
 
-		const upMargin = this.args.flying ? (this.args.height + this.args.yMargin) : 1;
+		const upMargin = this.args.flying ? (this.args.height + this.args.yMargin) : 0;
 
 		const upDistance = this.castRay(
-			Math.abs(this.args.ySpeed) + upMargin
+			Math.abs(this.args.ySpeed) + upMargin + 1
 			, this.upAngle
 			, (i, point) => {
 
@@ -848,7 +846,8 @@ export class PointActor extends View
 		{
 			this.args.ignore = 1;
 
-			this.args.y -= Math.floor(upDistance - (upMargin + 1));
+			this.args.y -= Math.floor(upDistance - upMargin);
+			this.args.ySpeed = 0;
 
 			blockers = this.getMapSolidAt(this.x, this.y);
 

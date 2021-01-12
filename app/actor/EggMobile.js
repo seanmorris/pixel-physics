@@ -11,9 +11,9 @@ export class EggMobile extends PointActor
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.8;
 
-		this.args.gSpeedMax = 10;
-		this.args.xSpeedMax = 10;
-		this.args.ySpeedMax = 10;
+		this.args.gSpeedMax = 20;
+		this.args.xSpeedMax = 20;
+		this.args.ySpeedMax = 20;
 
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
@@ -30,7 +30,7 @@ export class EggMobile extends PointActor
 
 	update()
 	{
-		if(this.yAxis)
+		if(Math.abs(this.yAxis) > 0.1)
 		{
 			if(Math.abs(this.args.ySpeed) < this.args.ySpeedMax)
 			{

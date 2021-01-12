@@ -18,8 +18,8 @@ export class Tails extends PointActor
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.7;
 
-		this.args.width  = 40;
-		this.args.height = 16;
+		this.args.width  = 16;
+		this.args.height = 32;
 	}
 
 	onAttached()
