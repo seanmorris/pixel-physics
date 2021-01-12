@@ -62,7 +62,18 @@ export class Coin extends PointActor
 				, object: new Coin({x,y})
 			});
 
-			other.args.coins++;
+			if(other.args.owner)
+			{
+				other.args.owner.args.coins += 1;
+			}
+			else if(other.occupant)
+			{
+				other.occupant.args.coins += 1;
+			}
+			else
+			{
+				other.args.coins += 1;
+			}
 		}
 
 		this.args.gone = true;

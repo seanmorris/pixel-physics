@@ -10,7 +10,7 @@
 .star-post-head-box {
 	z-index:1;
 	position: absolute;
-	top: -60px;
+	top: -62px;
 	left: -8px;
 }
 
@@ -18,7 +18,7 @@
 .star-post-head-box {
 	width: 16px;
 	height: 16px;
-	transform-origin: bottom center;
+	transform-origin: center calc(100% + 1px);
 }
 
 .star-post-head {
@@ -28,7 +28,7 @@
 }
 
 .actor-star-post[data-spin="true"] .star-post-head-box {
-	animation: spin2x 1 ease-in-out 750ms both;
+	animation: spin2x 1 ease-in-out 700ms both;
 	width: 16px;
 	height: 16px;
 }
@@ -37,7 +37,7 @@
 	animation: starPostActive steps(2) 10ms 0.5s infinite;
 }
 
-.actor-star-post[data-active="true"][direction="-1"] .star-post-head {
+.actor-star-post[data-active="true"][data-direction="-1"] .star-post-head-box {
 	animation-direction: reverse;
 }
 

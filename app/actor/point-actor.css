@@ -283,4 +283,5 @@
 
 .actor-layer-switch .sprite {
 	background-color: yellow;
+	opacity: 0.5;
 }

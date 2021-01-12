@@ -49,15 +49,6 @@
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 }
 
-@-webkit-keyframes eggrobo-animate {
-	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	}
-	to{
-		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
-	}
-}
-
 @-webkit-keyframes eggrobo-walk {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);

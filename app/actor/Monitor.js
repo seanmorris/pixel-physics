@@ -72,6 +72,10 @@ export class Monitor extends PointActor
 			{
 				other.args.owner.args.rings += 10;
 			}
+			else if(other.occupant)
+			{
+				other.occupant.args.rings += 10;
+			}
 			else
 			{
 				other.args.rings += 10;

@@ -48,7 +48,7 @@ export class StarPost extends PointActor
 
 		if(!this.args.active)
 		{
-			this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+			this.box.setAttribute('data-direction', other.args.direction);
 			this.box.setAttribute('data-active', 'true');
 			this.box.setAttribute('data-spin', 'true');
 
@@ -67,11 +67,11 @@ export class StarPost extends PointActor
 
 			this.spinning = true;
 
-			this.onTimeout(750, () => this.spinning = false);
+			this.onTimeout(600, () => this.spinning = false);
 		}
 		else if(other instanceof Projectile && !this.spinning)
 		{
-			this.box.setAttribute('data-direction', Math.sign(other.args.gSpeed));
+			this.box.setAttribute('data-direction', other.args.direction);
 			this.box.setAttribute('data-spin', 'false');
 
 			if(this.sample)
@@ -84,7 +84,7 @@ export class StarPost extends PointActor
 
 			this.spinning = true;
 
-			this.onTimeout(750, () => this.spinning = false);
+			this.onTimeout(600, () => this.spinning = false);
 		}
 	}
 

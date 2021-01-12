@@ -27,6 +27,8 @@ import { PointActor } from '../actor/PointActor';
 import { Projectile } from '../actor/Projectile';
 import { TextActor } from '../actor/TextActor';
 
+import { EggMobile } from '../actor/EggMobile';
+
 import { Eggman     } from '../actor/Eggman';
 import { Eggrobo     } from '../actor/Eggrobo';
 import { MechaSonic } from '../actor/MechaSonic';
@@ -48,6 +50,7 @@ const objectPalette = {
 	, 'q-block': QuestionBlock
 	, 'projectile': Projectile
 	, 'marble-block': MarbleBlock
+	, 'egg-mobile': EggMobile
 	, 'sonic': Sonic
 	, 'tails': Tails
 	, 'knuckles': Knuckles
@@ -351,6 +354,10 @@ export class Viewport extends View
 			{
 				this.controlActor.xAxis = 1;
 			}
+			else
+			{
+				this.controlActor.yAxis = -1;
+			}
 		}
 		else if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
 		{
@@ -362,6 +369,15 @@ export class Viewport extends View
 			{
 				this.controlActor.xAxis = -1;
 			}
+			else
+			{
+				this.controlActor.yAxis = 1;
+			}
+		}
+
+		if(keyboard.getKey('ArrowUp') <= 0 && keyboard.getKey('ArrowDown') <= 0)
+		{
+			// this.controlActor.yAxis = 0;
 		}
 
 		if(keyboard.getKey(' ') > 0)
@@ -397,7 +413,12 @@ export class Viewport extends View
 			{
 				this.controlActor.xAxis = gamepad.axes[0];
 			}
-			else if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
+			else
+			{
+				this.controlActor.xAxis = 0;
+			}
+
+			if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
 			{
 				if(this.controlActor.args.mode === 1)
 				{
@@ -407,10 +428,14 @@ export class Viewport extends View
 				{
 					this.controlActor.xAxis = gamepad.axes[1];
 				}
+				else
+				{
+					this.controlActor.yAxis = -gamepad.axes[1];
+				}
 			}
 			else
 			{
-				this.controlActor.xAxis = 0;
+				this.controlActor.yAxis = 0;
 			}
 
 			if(gamepad.buttons[14].pressed)
@@ -431,6 +456,10 @@ export class Viewport extends View
 				{
 					this.controlActor.xAxis = 1;
 				}
+				else
+				{
+					this.controlActor.yAxis = -1;
+				}
 			}
 			else if(gamepad.buttons[13].pressed)
 			{
@@ -441,6 +470,10 @@ export class Viewport extends View
 				else if(this.controlActor.args.mode === 3)
 				{
 					this.controlActor.xAxis = -1;
+				}
+				else
+				{
+					this.controlActor.yAxis = 1;
 				}
 			}
 

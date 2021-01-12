@@ -66,7 +66,18 @@ export class Ring extends PointActor
 
 			}, 7500);
 
-			other.args.rings++;
+			if(other.args.owner)
+			{
+				other.args.owner.args.rings += 1;
+			}
+			else if(other.occupant)
+			{
+				other.occupant.args.rings += 1;
+			}
+			else
+			{
+				other.args.rings += 1;
+			}
 		}
 
 		this.args.gone = true;

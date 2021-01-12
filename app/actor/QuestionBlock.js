@@ -3,7 +3,7 @@ import { Monitor } from './Monitor';
 
 export class QuestionBlock extends PointActor
 {
-	maxBounce = 3;
+	maxBounce = 4;
 
 	template = `<div
 		class = "point-actor [[type]] [[collType]]"
@@ -118,11 +118,11 @@ export class QuestionBlock extends PointActor
 		{
 			if(this.initY > this.y)
 			{
-				this.args.ySpeed += 1;
+				this.args.ySpeed += 0.75;
 			}
 			else if(this.initY < this.y)
 			{
-				this.args.ySpeed -= 1;
+				this.args.ySpeed -= 0.75;
 			}
 
 			if(Math.abs(this.args.y - this.initY) < 1 && Math.abs(this.args.ySpeed) < 1)

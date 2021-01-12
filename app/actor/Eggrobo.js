@@ -208,6 +208,7 @@ export class Eggrobo extends PointActor
 			x: this.args.x + offset[0]
 			, y: this.args.y + offset[1]
 			, owner: this
+			, direction: this.args.direction
 		});
 
 		projectile.impulse(75, trajectory + (direction < 0 ? Math.PI : 0));
