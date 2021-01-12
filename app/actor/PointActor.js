@@ -190,6 +190,8 @@ export class PointActor extends View
 
 				groundObject.occupant = this;
 
+				groundObject.args.yMargin = this.args.height;
+
 				if(occupant)
 				{
 					occupant.standingOn = null;
@@ -810,10 +812,10 @@ export class PointActor extends View
 
 		let blockers = false;
 
-		const upMargin = this.args.flying ? (this.args.height + this.args.yMargin) : 0;
+		const upMargin = this.args.flying ? (this.args.height + this.args.yMargin) : 1;
 
 		const upDistance = this.castRay(
-			Math.abs(this.args.ySpeed) + upMargin + 1
+			Math.abs(this.args.ySpeed) + upMargin
 			, this.upAngle
 			, (i, point) => {
 

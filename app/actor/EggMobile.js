@@ -22,7 +22,7 @@ export class EggMobile extends PointActor
 		this.args.height = 20;
 		this.args.float  = -1;
 
-		this.args.yMargin = 32;
+		this.args.yMargin = 42;
 
 		this.args.falling = true;
 		this.args.flying = true;
