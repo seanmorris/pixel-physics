@@ -430,7 +430,7 @@ export class Viewport extends View
 				}
 				else
 				{
-					this.controlActor.yAxis = -gamepad.axes[1];
+					this.controlActor.yAxis = gamepad.axes[1];
 				}
 			}
 			else

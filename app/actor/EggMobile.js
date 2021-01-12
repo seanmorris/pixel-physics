@@ -39,11 +39,11 @@ export class EggMobile extends PointActor
 
 				if(Math.sign(this.yAxis) === Math.sign(this.args.ySpeed))
 				{
-					ySpeed += -(this.yAxis * this.args.accel);
+					ySpeed += (this.yAxis * this.args.accel);
 				}
 				else
 				{
-					ySpeed += -(this.yAxis * this.args.accel) * 2;
+					ySpeed += (this.yAxis * this.args.accel) * 2;
 				}
 
 				ySpeed = Math.floor(ySpeed * 1000) / 1000;

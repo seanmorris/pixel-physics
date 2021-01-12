@@ -6378,9 +6378,9 @@ var EggMobile = /*#__PURE__*/function (_PointActor) {
           var ySpeed = this.args.ySpeed;
 
           if (Math.sign(this.yAxis) === Math.sign(this.args.ySpeed)) {
-            ySpeed += -(this.yAxis * this.args.accel);
+            ySpeed += this.yAxis * this.args.accel;
           } else {
-            ySpeed += -(this.yAxis * this.args.accel) * 2;
+            ySpeed += this.yAxis * this.args.accel * 2;
           }
 
           ySpeed = Math.floor(ySpeed * 1000) / 1000;
@@ -12227,7 +12227,7 @@ var Viewport = /*#__PURE__*/function (_View) {
           } else if (this.controlActor.args.mode === 3) {
             this.controlActor.xAxis = gamepad.axes[1];
           } else {
-            this.controlActor.yAxis = -gamepad.axes[1];
+            this.controlActor.yAxis = gamepad.axes[1];
           }
         } else {
           this.controlActor.yAxis = 0;
