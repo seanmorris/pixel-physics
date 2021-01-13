@@ -83,6 +83,8 @@ export class DrillCar extends PointActor
 
 		if(!falling)
 		{
+			this.flyingSound.pause();
+
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
