@@ -486,6 +486,21 @@ export class Viewport extends View
 				}
 			}
 
+			if(gamepad.buttons[12].pressed)
+			{
+				if(this.controlActor.args.mode === 0)
+				{
+					this.controlActor.yAxis = -1;
+				}
+			}
+			else if(gamepad.buttons[13].pressed)
+			{
+				if(this.controlActor.args.mode === 0)
+				{
+					this.controlActor.yAxis = 1;
+				}
+			}
+
 			if(gamepad.buttons[5].pressed)
 			{
 				this.controlActor.running  = false;

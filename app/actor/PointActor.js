@@ -1167,7 +1167,7 @@ export class PointActor extends View
 					}
 					else
 					{
-						gSpeed += (this.xAxis * this.args.accel) * 2;
+						gSpeed += (this.xAxis * this.args.accel) * 5;
 					}
 
 					gSpeed = Math.floor(gSpeed * 1000) / 1000;
