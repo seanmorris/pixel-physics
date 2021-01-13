@@ -3,9 +3,14 @@
 	background-image: url(/Sonic/drill-car-body.png);
 	position: absolute;
 	left: 0px;
-	width: 93px;
+	width: 100px;
 	height: 32px;
 	z-index: 1;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 2;
+	--animation-width: 100px;
+	animation: drill-car-animate steps(2) infinite 64ms;
 }
 
 .actor-item.actor-drill-car .drill-car-tire {
@@ -115,7 +120,7 @@
 	height: 23px;
 	position: absolute;
 	top: 14px;
-	right: -20px;
+	right: -27px;
 	z-index: 2;
 }
 
