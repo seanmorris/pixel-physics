@@ -28,6 +28,7 @@ import { Projectile } from '../actor/Projectile';
 import { TextActor } from '../actor/TextActor';
 
 import { EggMobile } from '../actor/EggMobile';
+import { DrillCar } from '../actor/DrillCar';
 
 import { NuclearSuperball } from '../actor/NuclearSuperball';
 
@@ -52,6 +53,7 @@ const objectPalette = {
 	, 'q-block': QuestionBlock
 	, 'projectile': Projectile
 	, 'marble-block': MarbleBlock
+	, 'drill-car': DrillCar
 	, 'egg-mobile': EggMobile
 	, 'sonic': Sonic
 	, 'tails': Tails

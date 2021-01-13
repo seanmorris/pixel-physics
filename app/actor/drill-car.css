@@ -1,0 +1,99 @@
+.actor-item.actor-drill-car .sprite:after {
+	content: ' ';
+	background-image: url(/Sonic/drill-car-body.png);
+	position: absolute;
+	left: 0px;
+	width: 93px;
+	height: 32px;
+	z-index: 1;
+}
+
+.actor-item.actor-drill-car .drill-car-tire {
+	background-image: url(/Sonic/drill-car-tire.png);
+	width: 32px;
+	height: 32px;
+	position: absolute;
+}
+
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire,
+.actor-item.actor-drill-car[data-animation='walking'] .drill-car-tire {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 2;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite 96ms;
+}
+
+.actor-item.actor-drill-car .drill-car-seat {
+	background-image: url(/Sonic/drill-car-seat.png);
+	width: 37px;
+	height: 20px;
+	position: absolute;
+	top: -20px;
+	left: 12px;
+}
+
+
+.actor-item.actor-drill-car .drill-car-windsheild {
+	background-image: url(/Sonic/drill-car-windsheild.png);
+	width: 23px;
+	height: 11px;
+	position: absolute;
+	top: -11px;
+	left: 53px;
+}
+
+.actor-item.actor-drill-car .drill-car-drill {
+	background-image: url(/Sonic/drill-car-drill.png);
+	width: 31px;
+	height: 23px;
+	position: absolute;
+	top: 14px;
+	right: -20px;
+	z-index: 2;
+}
+
+
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-drill,
+.actor-item.actor-drill-car[data-animation='walking'] .drill-car-drill {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 3;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite 256ms;
+}
+
+.actor-item.actor-drill-car .drill-car-tire-back-a {
+	bottom: 0px;
+	left: 0px;
+	z-index: 2;
+}
+
+.actor-item.actor-drill-car .drill-car-tire-back-b {
+	bottom: 0px;
+	left: 14px;
+	background-position: 0px 32px;
+	z-index: 0;
+}
+
+.actor-item.actor-drill-car .drill-car-tire-front-a {
+	bottom: 0px;
+	right: -14px;
+	z-index: 0;
+	background-position: 0px 32px;
+}
+
+.actor-item.actor-drill-car .drill-car-tire-front-b {
+	z-index: 2;
+	bottom: 0px;
+	right: 14px;
+}
+
+@keyframes drill-car-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

@@ -1122,6 +1122,9 @@ export class PointActor extends View
 			this.args.direction = vehicle.args.direction;
 			this.args.facing    = vehicle.args.facing;
 			this.args.layer     = vehicle.args.layer;
+			this.args.mode      = vehicle.args.mode;
+			this.args.angle     = vehicle.args.angle;
+			this.args.groundAngle = vehicle.args.groundAngle;
 
 			const seatX = (vehicle.args.seatX || 0) * this.args.direction;
 			const seatY = (vehicle.args.seatY || 0);

@@ -42,11 +42,7 @@ export class Eggman extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(gSpeed === 0)
-			{
-				this.box.setAttribute('data-animation', 'standing');
-			}
-			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.box.setAttribute('data-animation', 'skidding');
 			}
@@ -54,9 +50,13 @@ export class Eggman extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'running');
 			}
-			else
+			else if(this.args.moving && gSpeed)
 			{
 				this.box.setAttribute('data-animation', 'walking');
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
 		else

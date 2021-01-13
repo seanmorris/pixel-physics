@@ -1155,8 +1155,8 @@
                  "type":"star-post",
                  "visible":true,
                  "width":16,
-                 "x":1544,
-                 "y":1856
+                 "x":1512,
+                 "y":1920
                 }, 
                 {
                  "gid":2,
@@ -1313,6 +1313,18 @@
                  "width":32,
                  "x":5216,
                  "y":3136
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":853,
+                 "name":"drill-car",
+                 "rotation":0,
+                 "type":"drill-car",
+                 "visible":true,
+                 "width":93,
+                 "x":1568,
+                 "y":1840
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1357,7 +1369,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":852,
+ "nextobjectid":854,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",

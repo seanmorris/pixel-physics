@@ -90,13 +90,9 @@ export class MechaSonic extends PointActor
 
 		if(!falling)
 		{
-			if(gSpeed === 0)
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
-				this.scrapeSound.pause();
-				this.box.setAttribute('data-animation', 'standing');
-			}
-			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
-			{
+				this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'skidding');
 			}
 			else if(speed >= minRun2)
@@ -124,10 +120,15 @@ export class MechaSonic extends PointActor
 				this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'running');
 			}
-			else
+			else if(this.args.moving && gSpeed)
 			{
 				this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'walking');
+			}
+			else
+			{
+				this.scrapeSound.pause();
+				this.box.setAttribute('data-animation', 'standing');
 			}
 
 			if(speed < minRun2)
