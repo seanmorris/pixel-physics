@@ -46,13 +46,18 @@ export class StarPost extends PointActor
 	{
 		super.collideA(other);
 
+		if(!this.box)
+		{
+			return;
+		}
+
 		if(!this.args.active)
 		{
 			this.box.setAttribute('data-direction', other.args.direction);
 			this.box.setAttribute('data-active', 'true');
 			this.box.setAttribute('data-spin', 'true');
 
-			this.sample && this.sample.play();
+			this.viewport.args.audio && this.sample && this.sample.play();
 
 			const monitor = new Monitor({
 				x: this.x - 10
@@ -74,7 +79,7 @@ export class StarPost extends PointActor
 			this.box.setAttribute('data-direction', other.args.direction);
 			this.box.setAttribute('data-spin', 'false');
 
-			if(this.sample)
+			if(this.viewport.args.audio && this.sample)
 			{
 				this.sample.currentTime = 0;
 				this.sample.play();

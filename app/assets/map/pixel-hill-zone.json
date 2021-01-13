@@ -218,7 +218,7 @@
                  "type":"q-block",
                  "visible":true,
                  "width":32,
-                 "x":1448,
+                 "x":1440,
                  "y":1792
                 }, 
                 {
@@ -1131,7 +1131,7 @@
                  "type":"marble-block",
                  "visible":true,
                  "width":32,
-                 "x":1481,
+                 "x":1472,
                  "y":1888
                 }, 
                 {
@@ -1155,8 +1155,8 @@
                  "type":"star-post",
                  "visible":true,
                  "width":16,
-                 "x":1536,
-                 "y":1888
+                 "x":1544,
+                 "y":1856
                 }, 
                 {
                  "gid":2,

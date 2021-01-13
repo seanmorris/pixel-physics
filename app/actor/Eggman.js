@@ -7,8 +7,6 @@ export class Eggman extends PointActor
 	{
 		super(...args);
 
-		this.controllable   = true;
-
 		this.args.type      = 'actor-item actor-eggman';
 
 		this.args.accel     = 0.15;
@@ -71,4 +69,5 @@ export class Eggman extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get controllable() { return true; }
 }

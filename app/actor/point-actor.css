@@ -65,14 +65,14 @@
 	--sprite-offset-y: -16px;
 	animation: ringSpin steps(4) infinite;
 	animation-duration: calc(1ms * 350);
-	transition: opacity 0.5s ease-out, top 0.25s ease-in, filter 0.5s ease-in;
+	transition: opacity 0.5s ease-out, top 0.05s ease-in, filter 0.5s ease-in;
 }
 
 .actor-item.actor-coin.gone .sprite,
 .actor-item.actor-coin.collected .sprite {
 	animation-duration: calc(1ms * 15);
 	--sprite-offset-y: -82px;
-	top: -40px;
+	top: -10px;
 }
 
 .actor-item.actor-coin.gone .sprite {

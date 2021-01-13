@@ -7,8 +7,6 @@ export class Tails extends PointActor
 	{
 		super(...args);
 
-		this.controllable   = true;
-
 		this.args.type      = 'actor-item actor-tails';
 
 		this.args.accel     = 0.18;
@@ -148,4 +146,5 @@ export class Tails extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get controllable() { return true; }
 }

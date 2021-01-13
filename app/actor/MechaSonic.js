@@ -7,8 +7,6 @@ export class MechaSonic extends PointActor
 	{
 		super(...args);
 
-		this.controllable = true;
-
 		this.args.type = 'actor-item actor-mecha-sonic';
 
 		this.args.accel = 0.3;
@@ -164,4 +162,5 @@ export class MechaSonic extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get controllable() { return true; }
 }

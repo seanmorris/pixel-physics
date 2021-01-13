@@ -29,6 +29,8 @@ import { TextActor } from '../actor/TextActor';
 
 import { EggMobile } from '../actor/EggMobile';
 
+import { NuclearSuperball } from '../actor/NuclearSuperball';
+
 import { Eggman     } from '../actor/Eggman';
 import { Eggrobo     } from '../actor/Eggrobo';
 import { MechaSonic } from '../actor/MechaSonic';
@@ -43,7 +45,7 @@ import { HudFrame } from '../ui/HudFrame';
 import { Layer } from './Layer';
 
 const objectPalette = {
-	player: PointActor
+	player: NuclearSuperball
 	, spring: Spring
 	, 'layer-switch': LayerSwitch
 	, 'star-post': StarPost
@@ -354,10 +356,6 @@ export class Viewport extends View
 			{
 				this.controlActor.xAxis = 1;
 			}
-			else
-			{
-				this.controlActor.yAxis = -1;
-			}
 		}
 		else if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
 		{
@@ -369,7 +367,18 @@ export class Viewport extends View
 			{
 				this.controlActor.xAxis = -1;
 			}
-			else
+		}
+
+		if(keyboard.getKey('ArrowUp') > 0 || keyboard.getKey('w') > 0)
+		{
+			if(this.controlActor.args.mode === 0)
+			{
+				this.controlActor.yAxis = -1;
+			}
+		}
+		else if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
+		{
+			if(this.controlActor.args.mode === 0)
 			{
 				this.controlActor.yAxis = 1;
 			}
@@ -797,10 +806,11 @@ export class Viewport extends View
 		this.controlActor.willStick = !!this.args.willStick;
 		this.controlActor.stayStuck = !!this.args.stayStuck;
 
-		this.controlActor.xAxis     = 0;
-		this.controlActor.yAxis     = 0;
-		this.controlActor.running   = false;
-		this.controlActor.crawling  = false;
+		this.controlActor.crawling = false;
+		this.controlActor.running  = false;
+
+		this.controlActor.xAxis = 0;
+		this.controlActor.yAxis = 0;
 
 		this.updateStarted.clear();
 		this.updated.clear();
@@ -914,13 +924,19 @@ export class Viewport extends View
 					continue;
 				}
 
-				const offset = Math.floor(actor.args.width / 2);
+				const actorX = actor.args.x;
+				const actorY = actor.args.y;
 
-				const left   = -offset + actor.args.x;
-				const right  = -offset + actor.args.x + actor.args.width;
+				const width  = actor.args.width;
+				const height = actor.args.height;
 
-				const top    = actor.args.y - actor.args.height;
-				const bottom = actor.args.y;
+				const offset = Math.floor(width / 2);
+
+				const left   = -offset + actorX;
+				const right  = -offset + actorX + width;
+
+				const top    = actorY - height;
+				const bottom = actorY;
 
 				if(x >= left && right > x)
 				{

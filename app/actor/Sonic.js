@@ -7,8 +7,6 @@ export class Sonic extends PointActor
 	{
 		super(...args);
 
-		this.controllable   = true;
-
 		this.args.type      = 'actor-item actor-sonic';
 
 		this.args.accel     = 0.18;
@@ -45,11 +43,7 @@ export class Sonic extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(gSpeed === 0)
-			{
-				this.box.setAttribute('data-animation', 'standing');
-			}
-			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.box.setAttribute('data-animation', 'skidding');
 			}
@@ -57,9 +51,13 @@ export class Sonic extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'running');
 			}
-			else
+			else if(this.args.moving && this.args.gSpeed)
 			{
 				this.box.setAttribute('data-animation', 'walking');
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
 		else
@@ -72,4 +70,5 @@ export class Sonic extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get controllable() { return true; }
 }

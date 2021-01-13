@@ -7,8 +7,6 @@ export class Knuckles extends PointActor
 	{
 		super(...args);
 
-		this.controllable   = true;
-
 		this.args.type      = 'actor-item actor-knuckles';
 
 		this.args.accel     = 0.18;
@@ -134,4 +132,5 @@ export class Knuckles extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get controllable() { return true; }
 }

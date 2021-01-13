@@ -9,8 +9,6 @@ export class Eggrobo extends PointActor
 	{
 		super(...args);
 
-		this.controllable   = true;
-
 		this.args.type      = 'actor-item actor-eggrobo';
 
 		this.args.accel     = 0.125;
@@ -232,4 +230,5 @@ export class Eggrobo extends PointActor
 	}
 
 	get solid() { return false; }
+	get controllable() { return true; }
 }
