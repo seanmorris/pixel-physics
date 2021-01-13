@@ -40,6 +40,8 @@ import { Sonic }      from '../actor/Sonic';
 import { Tails }      from '../actor/Tails';
 import { Knuckles }   from '../actor/Knuckles';
 
+import { Seymour }   from '../actor/Seymour';
+
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
 
@@ -61,6 +63,7 @@ const objectPalette = {
 	, 'mecha-sonic': MechaSonic
 	, 'eggman': Eggman
 	, 'eggrobo': Eggrobo
+	, 'seymour': Seymour
 	, 'window': Window
 	, 'emerald': Emerald
 	, 'ring':    Ring

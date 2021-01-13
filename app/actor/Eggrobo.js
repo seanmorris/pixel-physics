@@ -62,6 +62,15 @@ export class Eggrobo extends PointActor
 
 		if(!falling)
 		{
+			if(this.yAxis > 0)
+			{
+				this.args.crouching = true;
+			}
+			else
+			{
+				this.args.crouching = false;
+			}
+
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
@@ -81,6 +90,10 @@ export class Eggrobo extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'walking');
 			}
+			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
+			{
+				this.box.setAttribute('data-animation', 'crouching');
+			}
 			else
 			{
 				this.box.setAttribute('data-animation', 'standing');
@@ -88,6 +101,7 @@ export class Eggrobo extends PointActor
 		}
 		else
 		{
+			this.args.crouching = false;
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
@@ -194,7 +208,7 @@ export class Eggrobo extends PointActor
 			, 50 * Math.sin(spotAngle)
 		];
 
-		if(this.args.falling)
+		if(this.args.falling || this.args.crouching)
 		{
 			trajectory = 0;
 			offset = [26 * direction, -26];

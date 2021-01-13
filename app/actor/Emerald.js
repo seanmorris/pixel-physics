@@ -46,7 +46,18 @@ export class Emerald extends PointActor
 			this.viewport.actors.remove( this );
 			this.remove();
 
-			other.args.emeralds++;
+			if(other.args.owner)
+			{
+				other.args.owner.args.emeralds += 1;
+			}
+			else if(other.occupant)
+			{
+				other.occupant.args.emeralds += 1;
+			}
+			else
+			{
+				other.args.emeralds += 1;
+			}
 		}
 
 		this.args.gone = true;

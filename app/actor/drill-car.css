@@ -1,16 +1,23 @@
-.actor-item.actor-drill-car .sprite:after {
+.actor-item.actor-drill-car .sprite {
 	content: ' ';
 	background-image: url(/Sonic/drill-car-body.png);
 	position: absolute;
 	left: 0px;
 	width: 100px;
-	height: 32px;
+	height: 48px;
 	z-index: 1;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	--animation-steps: 2;
 	--animation-width: 100px;
 	animation: drill-car-animate steps(2) infinite 64ms;
+}
+
+.actor-item.actor-drill-car .sprite:not(.sprite-back) {
+}
+
+.actor-item.actor-drill-car .sprite-back {
+	z-index: -1;
 }
 
 .actor-item.actor-drill-car .drill-car-tire {
@@ -44,6 +51,7 @@
 	width: 37px;
 	height: 20px;
 	position: absolute;
+	z-index: 0;
 	top: -20px;
 	left: 12px;
 }
@@ -62,10 +70,10 @@
 	width: 16px;
 	height: 16px;
 	position: absolute;
-	left: 26px;
+	left: 30px;
 	z-index: 0;
 	top:0px;
-	transition: top 0.5s ease-out 0.25s;
+	transition: top 0.5s 0.2s ease-out, z-index 0s linear 0.1s;
 }
 
 .actor-item.actor-drill-car .drill-car-copter-blade-a,
@@ -76,7 +84,7 @@
 	position: absolute;
 	top: -24px;
 	transition: width 0.125s ease-in;
-	z-index: 2;
+	z-index: 0;
 }
 
 .actor-item.actor-drill-car[data-animation='flying'] .drill-car-copter-blade-a,
@@ -86,15 +94,15 @@
 
 .actor-item.actor-drill-car .drill-car-copter-blade-a {
 	/*display: none;*/
-	left: 42px;
+	left: 46px;
 }
 .actor-item.actor-drill-car .drill-car-copter-blade-b {
 	/*display: none;*/
-	right: 67px;
+	right: 63px;
 }
 
 .actor-item.actor-drill-car[data-animation='flying'] .drill-car-copter-cap {
-	transition: top 0.125s ease-out, z-index 0s linear 0.25s;
+	transition: top 0.125s ease-out, z-index 0s linear 0.1s;
 	top: -33px;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
@@ -120,7 +128,7 @@
 	height: 23px;
 	position: absolute;
 	top: 14px;
-	right: -27px;
+	right: -20px;
 	z-index: 2;
 }
 

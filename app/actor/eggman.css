@@ -43,6 +43,11 @@
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 }
 
+.actor-item.actor-eggman[data-animation="crouching"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
 
 @-webkit-keyframes eggman-animate {
 	from{

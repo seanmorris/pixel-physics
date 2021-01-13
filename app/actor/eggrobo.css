@@ -37,6 +37,7 @@
 	animation: eggrobo-walk steps(3) infinite 192ms;
 }
 
+.actor-item.actor-eggrobo[data-animation="crouching"] .sprite:after,
 .actor-item.actor-eggrobo[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
@@ -81,7 +82,8 @@
 }
 
 .actor-item.actor-eggrobo[data-animation="flying"] .eggrobo-muzzle-flash,
-.actor-item.actor-eggrobo[data-animation="jumping"] .eggrobo-muzzle-flash {
+.actor-item.actor-eggrobo[data-animation="jumping"] .eggrobo-muzzle-flash,
+.actor-item.actor-eggrobo[data-animation="crouching"] .eggrobo-muzzle-flash {
 	top: 32px;
 }
 

@@ -14,12 +14,34 @@ export class DrillCar extends PointActor
 		this.args.height = 48;
 
 		this.removeTimer = null;
+
+		this.args.gSpeedMax = 25;
+		this.args.decel     = 0.25;
+		this.args.accel     = 0.75;
+
+		this.args.seatHeight = 28;
+	}
+
+	collideA(other)
+	{
+		if(!other.controllable)
+		{
+			return false;
+		}
+
+		if(other.y >= this.y)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	onAttached()
 	{
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
+		this.backSprite = new Tag('<div class = "sprite-back sprite">');
 
 		this.drill = new Tag('<div class = "drill-car-tire drill-car-drill">');
 
@@ -37,23 +59,24 @@ export class DrillCar extends PointActor
 		this.backWheelB = new Tag('<div class = "drill-car-tire drill-car-tire-back-b">');
 
 		this.sprite.appendChild(this.drill.node);
-		this.sprite.appendChild(this.copterCap.node);
+		this.backSprite.appendChild(this.copterCap.node);
 
-		this.sprite.appendChild(this.copterBladeA.node);
-		this.sprite.appendChild(this.copterBladeB.node);
+		this.backSprite.appendChild(this.copterBladeA.node);
+		this.backSprite.appendChild(this.copterBladeB.node);
 
-		this.sprite.appendChild(this.seat.node);
 		this.sprite.appendChild(this.windsheild.node);
+		this.backSprite.appendChild(this.seat.node);
 
 		this.sprite.appendChild(this.frontWheelA.node);
-		this.sprite.appendChild(this.frontWheelB.node);
+		this.backSprite.appendChild(this.frontWheelB.node);
 
 		this.sprite.appendChild(this.backWheelA.node);
-		this.sprite.appendChild(this.backWheelB.node);
+		this.backSprite.appendChild(this.backWheelB.node);
+
+		this.box.appendChild(this.backSprite.node);
 	}
 
-	update()
-	{
+	update()	{
 		const falling = this.args.falling;
 
 		if(this.viewport.args.audio && !this.flyingSound)
@@ -113,7 +136,7 @@ export class DrillCar extends PointActor
 		{
 			if(this.args.ySpeed > 5)
 			{
-				// this.flyingSound.pause();
+				this.flyingSound.pause();
 		 		this.args.flying = false;
 			}
 		}
@@ -127,8 +150,6 @@ export class DrillCar extends PointActor
 
 	command_0()
 	{
-		console.log('jump');
-
 		if(!this.args.falling)
 		{
 			this.args.copterCoolDown = 15;
@@ -163,5 +184,6 @@ export class DrillCar extends PointActor
 	}
 
 	get solid() { return true; }
-	get controllable() { return true; }
+	get controllable() { return false; }
+	get isVehicle() { return true; }
 }

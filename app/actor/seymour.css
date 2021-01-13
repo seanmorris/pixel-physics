@@ -1,0 +1,67 @@
+.actor-item.actor-seymour .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-seymour .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/secret/seymour.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-seymour[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 1px;
+}
+
+.actor-item.actor-seymour[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: seymour-walk steps(3) infinite 288ms;
+}
+
+.actor-item.actor-seymour[data-animation="running"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -128px;
+	animation: seymour-run steps(5) infinite 192ms;
+}
+
+/*.actor-item.actor-seymour[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+*/
+@-webkit-keyframes seymour-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes seymour-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+
+@-webkit-keyframes seymour-run {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

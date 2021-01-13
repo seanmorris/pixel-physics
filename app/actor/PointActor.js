@@ -149,16 +149,16 @@ export class PointActor extends View
 
 		bindable.bindTo('standingOn', (groundObject,key,target) => {
 
-			const prevGroundObject = target[key];
+			bindable.debindGroundX && bindable.debindGroundX();
+			bindable.debindGroundY && bindable.debindGroundY();
+			bindable.debindGroundL && bindable.debindGroundL();
 
 			if(!this.controllable)
 			{
 				return;
 			}
 
-			bindable.debindGroundX && bindable.debindGroundX();
-			bindable.debindGroundY && bindable.debindGroundY();
-			bindable.debindGroundL && bindable.debindGroundL();
+			const prevGroundObject = target[key];
 
 			if(!groundObject)
 			{
@@ -176,20 +176,33 @@ export class PointActor extends View
 				return;
 			}
 
-			bindable.debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
-				this.args.x += vv - groundObject.args.x
-			});
-
-			bindable.debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-				this.args.y = vv - groundObject.args.height
-			});
-
-			bindable.debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
-				this.args.layer = vv;
-			});
-
 			if(groundObject.isVehicle)
 			{
+				bindable.debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
+					const x = 0;
+					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
+
+					const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
+					const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
+
+					this.args.x = xRot + vv;
+					this.args.y = yRot + groundObject.y;
+				});
+
+				bindable.debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
+					const x = 0; //groundObject.x;
+					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
+
+					const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
+					const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
+
+					this.args.x = xRot + groundObject.x;
+					this.args.y = yRot + vv;
+				});
+
+				bindable.debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
+					this.args.layer = vv;
+				});
 				const occupant = groundObject.occupant;
 
 				groundObject.occupant = this;
@@ -202,13 +215,27 @@ export class PointActor extends View
 
 					occupant.args.gSpeed = 0;
 					occupant.args.xSpeed = 8 * this.args.direction
-					occupant.args.ySpeed = -8;
+					occupant.args.ySpeed = -12;
 					occupant.args.falling = true;
 				}
 
 				this.args.gSpeed = 0;
 				this.args.xSpeed = 0;
 				this.args.ySpeed = 0;
+			}
+			else
+			{
+				bindable.debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
+					this.args.x += vv - groundObject.args.x
+				});
+
+				bindable.debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
+					this.args.y = vv - groundObject.args.height
+				});
+
+				bindable.debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
+					this.args.layer = vv;
+				});
 			}
 
 			if(prevGroundObject && prevGroundObject.isVehicle)
@@ -262,6 +289,36 @@ export class PointActor extends View
 	{
 		if(!this.viewport || this.removed)
 		{
+			return;
+		}
+
+
+		if(this.standingOn && this.standingOn.isVehicle)
+		{
+			const vehicle = this.standingOn;
+
+			this.processInput();
+
+			if(this.willJump && !this.running)
+			{
+				this.willJump = false;
+
+				this.standingOn.command_0();
+			}
+
+			if(this.willJump && this.running)
+			{
+				this.willJump   = false;
+
+
+				this.standingOn   = false;
+				this.args.falling = true;
+
+				this.args.y -= vehicle.args.seatHeight || vehicle.args.height;
+
+				this.args.ySpeed  = -this.args.jumpForce;
+			}
+
 			return;
 		}
 
@@ -673,7 +730,7 @@ export class PointActor extends View
 		}
 		else if(this.args.stopped === 1)
 		{
-			const sensorSpread = this.args.width / 2;
+			const sensorSpread = this.args.width;
 
 			const backPosition = this.findNextStep(-sensorSpread);
 			const forePosition = this.findNextStep(sensorSpread);
@@ -1117,6 +1174,9 @@ export class PointActor extends View
 			vehicle.xAxis = this.xAxis;
 			vehicle.yAxis = this.yAxis;
 
+			vehicle.stayStuck = this.stayStuck;
+			vehicle.willStick = this.willStick;
+
 			this.processInputVehicle();
 
 			this.args.direction = vehicle.args.direction;
@@ -1126,10 +1186,10 @@ export class PointActor extends View
 			this.args.angle     = vehicle.args.angle;
 			this.args.groundAngle = vehicle.args.groundAngle;
 
-			const seatX = (vehicle.args.seatX || 0) * this.args.direction;
-			const seatY = (vehicle.args.seatY || 0);
+			// const seatX = (vehicle.args.seatX || 0) * this.args.direction;
+			// const seatY = (vehicle.args.seatY || 0);
 
-			this.args.x = vehicle.args.x + seatX;
+			// this.args.x = vehicle.args.x + seatX;
 			// this.args.y = vehicle.args.y + vehicle.args.height + seatY;
 		}
 		else
@@ -1587,6 +1647,62 @@ export class PointActor extends View
 				}
 			}
 		);
+	}
+
+	rotatePoint(...point)
+	{
+
+	}
+
+	get realAngle()
+	{
+		if(this.args.falling)
+		{
+			return Math.PI;
+		}
+
+		const groundAngle = this.args.groundAngle;
+
+		let trajectory;
+
+		// if(this.args.direction > 0)
+		// {
+		// 	switch(this.args.mode)
+		// 	{
+		// 		case 0:
+		// 			trajectory = -groundAngle;
+		// 			break;
+		// 		case 1:
+		// 			trajectory = -groundAngle + (Math.PI / 2);
+		// 			break;
+		// 		case 2:
+		// 			trajectory = -groundAngle - (Math.PI);
+		// 			break;
+		// 		case 3:
+		// 			trajectory = -groundAngle - (Math.PI / 2);
+		// 			break;
+		// 	}
+		// }
+		// else
+		// {
+		// }
+		switch(this.args.mode)
+		{
+			case 0:
+				trajectory = -groundAngle - (Math.PI);
+				break;
+			case 1:
+				trajectory = -groundAngle - (Math.PI / 2);
+				break;
+			case 2:
+				trajectory = -groundAngle;
+				break;
+			case 3:
+				trajectory = -groundAngle + (Math.PI / 2);
+				break;
+		}
+
+		return trajectory;
 	}
 
 	get downAngle()

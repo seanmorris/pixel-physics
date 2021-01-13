@@ -1,18 +1,18 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
-export class Eggman extends PointActor
+export class Seymour extends PointActor
 {
 	constructor(...args)
 	{
 		super(...args);
 
-		this.args.type      = 'actor-item actor-eggman';
+		this.args.type      = 'actor-item actor-seymour';
 
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 10;
+		this.args.gSpeedMax = 30;
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
 
@@ -55,7 +55,7 @@ export class Eggman extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'skidding');
 			}
-			else if(speed > maxSpeed / 2)
+			else if(speed > maxSpeed * 0.25)
 			{
 				this.box.setAttribute('data-animation', 'running');
 			}
@@ -63,10 +63,10 @@ export class Eggman extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'walking');
 			}
-			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
-			{
-				this.box.setAttribute('data-animation', 'crouching');
-			}
+			// else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
+			// {
+			// 	this.box.setAttribute('data-animation', 'crouching');
+			// }
 			else
 			{
 				this.box.setAttribute('data-animation', 'standing');
