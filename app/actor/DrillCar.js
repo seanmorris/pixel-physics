@@ -26,6 +26,10 @@ export class DrillCar extends PointActor
 		this.seat = new Tag('<div class = "drill-car-seat">');
 		this.windsheild = new Tag('<div class = "drill-car-windsheild">');
 
+		this.copterCap = new Tag('<div class = "drill-car-copter-cap">');
+		this.copterBladeA = new Tag('<div class = "drill-car-copter-blade-a">');
+		this.copterBladeB = new Tag('<div class = "drill-car-copter-blade-b">');
+
 		this.frontWheelA = new Tag('<div class = "drill-car-tire drill-car-tire-front-a">');
 		this.frontWheelB = new Tag('<div class = "drill-car-tire drill-car-tire-front-b">');
 
@@ -33,6 +37,10 @@ export class DrillCar extends PointActor
 		this.backWheelB = new Tag('<div class = "drill-car-tire drill-car-tire-back-b">');
 
 		this.sprite.appendChild(this.drill.node);
+		this.sprite.appendChild(this.copterCap.node);
+
+		this.sprite.appendChild(this.copterBladeA.node);
+		this.sprite.appendChild(this.copterBladeB.node);
 
 		this.sprite.appendChild(this.seat.node);
 		this.sprite.appendChild(this.windsheild.node);
@@ -47,6 +55,25 @@ export class DrillCar extends PointActor
 	update()
 	{
 		const falling = this.args.falling;
+
+		if(this.viewport.args.audio && !this.flyingSound)
+		{
+			this.flyingSound = new Audio('/Sonic/drill-car-copter.wav');
+
+			this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
+			this.flyingSound.loop   = true;
+		}
+
+		if(!this.flyingSound.paused)
+		{
+			this.flyingSound.volume = 0.25 + (Math.random() * -0.2);
+		}
+
+		if(this.flyingSound.currentTime > 0.2)
+		{
+			this.flyingSound.currentTime = 0.0;
+		}
+
 
 		if(!this.box)
 		{
@@ -70,12 +97,67 @@ export class DrillCar extends PointActor
 				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
-		else
+		else if(this.args.flying)
 		{
+			this.box.setAttribute('data-animation', 'flying');
+		}
+		else if(this.args.falling)
+		{
+			this.flyingSound.pause();
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
+		if(this.args.copterCoolDown == 0)
+		{
+			if(this.args.ySpeed > 5)
+			{
+				// this.flyingSound.pause();
+		 		this.args.flying = false;
+			}
+		}
+		else if(this.args.copterCoolDown > 0)
+		{
+			this.args.copterCoolDown--;
+		}
+
 		super.update();
+	}
+
+	command_0()
+	{
+		console.log('jump');
+
+		if(!this.args.falling)
+		{
+			this.args.copterCoolDown = 15;
+
+			super.command_0();
+
+			return;
+		}
+
+		if(this.args.copterCoolDown > 0)
+		{
+			return;
+		}
+
+		if(this.args.ySpeed > 1)
+		{
+			if(!this.args.flying)
+			{
+				this.flyingSound.play();
+			}
+
+			this.args.flying = true;
+
+			if(this.args.copterCoolDown == 0)
+			{
+				this.args.copterCoolDown = 7;
+			}
+
+			this.args.ySpeed = -1;
+			this.args.float  = 8;
+		}
 	}
 
 	get solid() { return true; }
