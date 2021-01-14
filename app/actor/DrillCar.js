@@ -34,6 +34,11 @@ export class DrillCar extends PointActor
 			return false;
 		}
 
+		if(other.isVehicle)
+		{
+			return false;
+		}
+
 		return true;
 	}
 
@@ -184,6 +189,5 @@ export class DrillCar extends PointActor
 	}
 
 	get solid() { return true; }
-	get controllable() { return false; }
 	get isVehicle() { return true; }
 }

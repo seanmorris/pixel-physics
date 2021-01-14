@@ -162,7 +162,7 @@ export class PointActor extends View
 
 			if(!groundObject)
 			{
-				if(prevGroundObject)
+				if(prevGroundObject && prevGroundObject.isVehicle)
 				{
 					if(prevGroundObject.occupant === this)
 					{
@@ -299,14 +299,14 @@ export class PointActor extends View
 
 			this.processInput();
 
-			if(this.willJump && !this.running)
+			if(this.willJump && this.yAxis >= 0)
 			{
 				this.willJump = false;
 
 				this.standingOn.command_0();
 			}
 
-			if(this.willJump && this.running)
+			if(this.willJump && this.yAxis < 0)
 			{
 				this.willJump   = false;
 
@@ -1162,14 +1162,9 @@ export class PointActor extends View
 
 	processInput()
 	{
-		if(this.standingOn && this.standingOn.isVehicle)
+		if(this.controllable && this.standingOn && this.standingOn.isVehicle)
 		{
 			const vehicle = this.standingOn;
-
-			if(!this.controllable)
-			{
-				return;
-			}
 
 			vehicle.xAxis = this.xAxis;
 			vehicle.yAxis = this.yAxis;

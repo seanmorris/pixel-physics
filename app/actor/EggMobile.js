@@ -28,6 +28,26 @@ export class EggMobile extends PointActor
 		this.args.flying = true;
 	}
 
+	collideA(other)
+	{
+		if(!other.controllable)
+		{
+			return false;
+		}
+
+		if(other.y >= this.y)
+		{
+			return false;
+		}
+
+		if(other.isVehicle)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	update()
 	{
 		if(Math.abs(this.yAxis) > 0.1)
