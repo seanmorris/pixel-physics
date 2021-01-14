@@ -389,3 +389,12 @@ span.button-index b{
 	margin-left: 0.5em;
 	margin-right: 0.5em;
 }
+
+.viewport-actors,
+.viewport-particles {
+	display: contents;
+}
+
+.viewport-particles {
+	pointer-events: none;
+}

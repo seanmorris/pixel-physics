@@ -892,7 +892,7 @@
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":1456,
+                 "x":1424,
                  "y":1888
                 }, 
                 {
@@ -910,7 +910,7 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1488,
+                 "x":1464,
                  "y":1888
                 }, 
                 {
@@ -928,7 +928,7 @@
                  "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1520,
+                 "x":1504,
                  "y":1888
                 }, 
                 {
@@ -939,7 +939,7 @@
                  "rotation":0,
                  "type":"eggrobo",
                  "visible":true,
-                 "width":32,
+                 "width":40,
                  "x":1368,
                  "y":1888
                 }, 
@@ -952,7 +952,7 @@
                  "type":"mecha-sonic",
                  "visible":true,
                  "width":32,
-                 "x":1328,
+                 "x":1320,
                  "y":1888
                 }, 
                 {
@@ -963,7 +963,7 @@
                  "rotation":0,
                  "type":"eggman",
                  "visible":true,
-                 "width":32,
+                 "width":40,
                  "x":1280,
                  "y":1888
                 }, 
@@ -1150,8 +1150,8 @@
                  "type":"egg-mobile",
                  "visible":true,
                  "width":32,
-                 "x":1464,
-                 "y":1776
+                 "x":1200,
+                 "y":1760
                 }, 
                 {
                  "gid":2,
@@ -1318,8 +1318,8 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1216,
-                 "y":1760
+                 "x":1232,
+                 "y":1808
                 }, 
                 {
                  "gid":2,
@@ -1330,8 +1330,8 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1248,
-                 "y":1760
+                 "x":1264,
+                 "y":1808
                 }, 
                 {
                  "gid":2,
@@ -1342,8 +1342,8 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1280,
-                 "y":1760
+                 "x":1296,
+                 "y":1808
                 }, 
                 {
                  "gid":2,

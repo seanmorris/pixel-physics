@@ -332,6 +332,8 @@ export class Viewport extends View
 	{
 		const keyboard = Keyboard.get();
 
+		keyboard.update();
+
 		if(keyboard.getKey('Shift') > 0)
 		{
 			this.controlActor.running  = false;
@@ -376,17 +378,12 @@ export class Viewport extends View
 
 		if(keyboard.getKey('ArrowUp') > 0 || keyboard.getKey('w') > 0)
 		{
-			if(this.controlActor.args.mode === 0)
-			{
-				this.controlActor.yAxis = -1;
-			}
+			this.controlActor.yAxis = -1;
 		}
-		else if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
+
+		if(keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0)
 		{
-			if(this.controlActor.args.mode === 0)
-			{
-				this.controlActor.yAxis = 1;
-			}
+			this.controlActor.yAxis = 1;
 		}
 
 		if(keyboard.getKey('ArrowUp') <= 0 && keyboard.getKey('ArrowDown') <= 0)
@@ -470,10 +467,8 @@ export class Viewport extends View
 				{
 					this.controlActor.xAxis = 1;
 				}
-				else
-				{
-					this.controlActor.yAxis = -1;
-				}
+
+				this.controlActor.yAxis = -1;
 			}
 			else if(gamepad.buttons[13].pressed)
 			{
@@ -485,25 +480,17 @@ export class Viewport extends View
 				{
 					this.controlActor.xAxis = -1;
 				}
-				else
-				{
-					this.controlActor.yAxis = 1;
-				}
+
+				this.controlActor.yAxis = 1;
 			}
 
 			if(gamepad.buttons[12].pressed)
 			{
-				if(this.controlActor.args.mode === 0)
-				{
-					this.controlActor.yAxis = -1;
-				}
+				this.controlActor.yAxis = -1;
 			}
 			else if(gamepad.buttons[13].pressed)
 			{
-				if(this.controlActor.args.mode === 0)
-				{
-					this.controlActor.yAxis = 1;
-				}
+				this.controlActor.yAxis = 1;
 			}
 
 			if(gamepad.buttons[5].pressed)

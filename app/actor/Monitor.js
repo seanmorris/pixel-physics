@@ -33,6 +33,13 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other, type);
 
+		if(this.args.falling)
+		{
+			this.pop(other);
+
+			return false;
+		}
+
 		if(
 			type !== 2
 			&& (!this.args.falling || this.args.float === -1)
@@ -51,40 +58,7 @@ export class Monitor extends PointActor
 				other.args.xSpeed *= -1;
 			}
 
-			const viewport = this.viewport;
-
-
-			const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
-
-			viewport.actors.remove( this );
-
-			setTimeout(()=>{
-				viewport.actors.add(corpse);
-				viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
-			}, 0);
-
-			setTimeout(()=>{
-				viewport.actors.remove(corpse);
-				corpse.remove();
-			}, 5000);
-
-			if(other.args.owner)
-			{
-				other.args.owner.args.rings += 10;
-			}
-			else if(other.occupant)
-			{
-				other.occupant.args.rings += 10;
-			}
-			else
-			{
-				other.args.rings += 10;
-			}
-
-			if(viewport.args.audio && this.sample)
-			{
-				this.sample.play();
-			}
+			this.pop(other);
 
 			return false;
 		}
@@ -98,44 +72,49 @@ export class Monitor extends PointActor
 			&& this.viewport
 			&& !this.gone
 		){
-			const viewport = this.viewport;
-
-			const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
-
-			viewport.actors.remove( this );
-
-			setTimeout(()=>{
-				viewport.actors.add(corpse);
-				viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
-			}, 0);
-
-			setTimeout(()=>{
-				viewport.actors.remove(corpse);
-				corpse.remove();
-			}, 5000);
-
-			if(other.args.owner)
-			{
-				other.args.owner.args.rings += 10;
-			}
-			else if(other.occupant)
-			{
-				other.occupant.args.rings += 10;
-			}
-			else
-			{
-				other.args.rings += 10;
-			}
-
-			if(viewport.args.audio && this.sample)
-			{
-				this.sample.play();
-			}
+			this.pop(other);
 
 			return false;
 		}
 
 		return true;
+	}
+
+	pop(other)
+	{
+		const viewport = this.viewport;
+
+		const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
+
+		viewport.actors.remove( this );
+
+		setTimeout(()=>{
+			viewport.actors.add(corpse);
+			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
+		}, 0);
+
+		setTimeout(()=>{
+			viewport.actors.remove(corpse);
+			corpse.remove();
+		}, 5000);
+
+		if(other.args.owner)
+		{
+			other.args.owner.args.rings += 10;
+		}
+		else if(other.occupant)
+		{
+			other.occupant.args.rings += 10;
+		}
+		else
+		{
+			other.args.rings += 10;
+		}
+
+		if(viewport.args.audio && this.sample)
+		{
+			this.sample.play();
+		}
 	}
 
 	get canStick() { return false; }

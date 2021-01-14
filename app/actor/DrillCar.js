@@ -16,12 +16,12 @@ export class DrillCar extends PointActor
 		this.removeTimer = null;
 
 		this.args.gSpeedMax = 25;
-		this.args.decel     = 0.25;
-		this.args.accel     = 0.75;
+		this.args.decel     = 0.3;
+		this.args.accel     = 1.75;
 
 		this.args.seatHeight = 30;
 
-		this.args.skidTraction = 0.25;
+		this.args.skidTraction = 0.5;
 	}
 
 	collideA(other)

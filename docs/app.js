@@ -6360,10 +6360,10 @@ var DrillCar = /*#__PURE__*/function (_PointActor) {
     _this.args.height = 48;
     _this.removeTimer = null;
     _this.args.gSpeedMax = 25;
-    _this.args.decel = 0.25;
-    _this.args.accel = 0.75;
+    _this.args.decel = 0.3;
+    _this.args.accel = 1.75;
     _this.args.seatHeight = 30;
-    _this.args.skidTraction = 0.25;
+    _this.args.skidTraction = 0.5;
     return _this;
   }
 
@@ -7966,9 +7966,12 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
-      var _this2 = this;
-
       _get(_getPrototypeOf(Monitor.prototype), "collideA", this).call(this, other, type);
+
+      if (this.args.falling) {
+        this.pop(other);
+        return false;
+      }
 
       if (type !== 2 && (!this.args.falling || this.args["float"] === -1) && other.args.ySpeed > 0 && other.y < this.y && this.viewport && !this.gone) {
         this.gone = true;
@@ -7979,79 +7982,51 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
           other.args.xSpeed *= -1;
         }
 
-        var viewport = this.viewport;
-        var corpse = new _BrokenMonitor.BrokenMonitor({
-          x: this.x,
-          y: this.y + 30
-        });
-        viewport.actors.remove(this);
-        setTimeout(function () {
-          viewport.actors.add(corpse);
-          viewport.actors.add(new _Explosion.Explosion({
-            x: _this2.x,
-            y: _this2.y + 8
-          }));
-        }, 0);
-        setTimeout(function () {
-          viewport.actors.remove(corpse);
-          corpse.remove();
-        }, 5000);
-
-        if (other.args.owner) {
-          other.args.owner.args.rings += 10;
-        } else if (other.occupant) {
-          other.occupant.args.rings += 10;
-        } else {
-          other.args.rings += 10;
-        }
-
-        if (viewport.args.audio && this.sample) {
-          this.sample.play();
-        }
-
+        this.pop(other);
         return false;
       }
 
       if ((type === 1 || type === 3) && (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof _Projectile.Projectile) && this.viewport && !this.gone) {
-        var _viewport = this.viewport;
-
-        var _corpse = new _BrokenMonitor.BrokenMonitor({
-          x: this.x,
-          y: this.y + 30
-        });
-
-        _viewport.actors.remove(this);
-
-        setTimeout(function () {
-          _viewport.actors.add(_corpse);
-
-          _viewport.actors.add(new _Explosion.Explosion({
-            x: _this2.x,
-            y: _this2.y + 8
-          }));
-        }, 0);
-        setTimeout(function () {
-          _viewport.actors.remove(_corpse);
-
-          _corpse.remove();
-        }, 5000);
-
-        if (other.args.owner) {
-          other.args.owner.args.rings += 10;
-        } else if (other.occupant) {
-          other.occupant.args.rings += 10;
-        } else {
-          other.args.rings += 10;
-        }
-
-        if (_viewport.args.audio && this.sample) {
-          this.sample.play();
-        }
-
+        this.pop(other);
         return false;
       }
 
       return true;
+    }
+  }, {
+    key: "pop",
+    value: function pop(other) {
+      var _this2 = this;
+
+      var viewport = this.viewport;
+      var corpse = new _BrokenMonitor.BrokenMonitor({
+        x: this.x,
+        y: this.y + 30
+      });
+      viewport.actors.remove(this);
+      setTimeout(function () {
+        viewport.actors.add(corpse);
+        viewport.actors.add(new _Explosion.Explosion({
+          x: _this2.x,
+          y: _this2.y + 8
+        }));
+      }, 0);
+      setTimeout(function () {
+        viewport.actors.remove(corpse);
+        corpse.remove();
+      }, 5000);
+
+      if (other.args.owner) {
+        other.args.owner.args.rings += 10;
+      } else if (other.occupant) {
+        other.occupant.args.rings += 10;
+      } else {
+        other.args.rings += 10;
+      }
+
+      if (viewport.args.audio && this.sample) {
+        this.sample.play();
+      }
     }
   }, {
     key: "canStick",
@@ -9150,17 +9125,17 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (!this.args.falling) {
         if (this.xAxis) {
-          if (this.args.gSpeed < gSpeedMax && this.args.gSpeed > -gSpeedMax) {
-            var gSpeed = this.args.gSpeed;
+          var gSpeed = this.args.gSpeed;
 
-            if (Math.sign(this.xAxis) === Math.sign(this.args.gSpeed)) {
+          if (Math.sign(this.xAxis) === Math.sign(this.args.gSpeed)) {
+            if (Math.abs(this.args.gSpeed) < gSpeedMax) {
               gSpeed += this.xAxis * this.args.accel;
-            } else {
-              gSpeed += this.xAxis * this.args.skidTraction;
             }
-
-            this.args.gSpeed = gSpeed;
+          } else {
+            gSpeed += this.xAxis * this.args.skidTraction;
           }
+
+          this.args.gSpeed = gSpeed;
         } else if (Math.abs(this.args.gSpeed) < this.args.decel) {
           this.args.gSpeed = 0;
         } else if (this.args.gSpeed > 0) {
@@ -12773,6 +12748,8 @@ var Viewport = /*#__PURE__*/function (_View) {
     value: function takeKeyboardInput() {
       var keyboard = _Keyboard.Keyboard.get();
 
+      keyboard.update();
+
       if (keyboard.getKey('Shift') > 0) {
         this.controlActor.running = false;
         this.controlActor.crawling = true;
@@ -12800,13 +12777,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       if (keyboard.getKey('ArrowUp') > 0 || keyboard.getKey('w') > 0) {
-        if (this.controlActor.args.mode === 0) {
-          this.controlActor.yAxis = -1;
-        }
-      } else if (keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0) {
-        if (this.controlActor.args.mode === 0) {
-          this.controlActor.yAxis = 1;
-        }
+        this.controlActor.yAxis = -1;
+      }
+
+      if (keyboard.getKey('ArrowDown') > 0 || keyboard.getKey('s') > 0) {
+        this.controlActor.yAxis = 1;
       }
 
       if (keyboard.getKey('ArrowUp') <= 0 && keyboard.getKey('ArrowDown') <= 0) {// this.controlActor.yAxis = 0;
@@ -12863,27 +12838,23 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.controlActor.xAxis = -1;
           } else if (this.controlActor.args.mode === 3) {
             this.controlActor.xAxis = 1;
-          } else {
-            this.controlActor.yAxis = -1;
           }
+
+          this.controlActor.yAxis = -1;
         } else if (gamepad.buttons[13].pressed) {
           if (this.controlActor.args.mode === 1) {
             this.controlActor.xAxis = 1;
           } else if (this.controlActor.args.mode === 3) {
             this.controlActor.xAxis = -1;
-          } else {
-            this.controlActor.yAxis = 1;
           }
+
+          this.controlActor.yAxis = 1;
         }
 
         if (gamepad.buttons[12].pressed) {
-          if (this.controlActor.args.mode === 0) {
-            this.controlActor.yAxis = -1;
-          }
+          this.controlActor.yAxis = -1;
         } else if (gamepad.buttons[13].pressed) {
-          if (this.controlActor.args.mode === 0) {
-            this.controlActor.yAxis = 1;
-          }
+          this.controlActor.yAxis = 1;
         }
 
         if (gamepad.buttons[5].pressed) {
@@ -13422,7 +13393,7 @@ module.exports = "<div class = \"viewport-background\" cv-each = \"blocks:block:
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\t\t\t<div cv-ref = \"content\" class = \"viewport-content\" cv-each = \"actors:actor:a\">[[actor]]</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n<!-- \t\t\t\t<label>\n\t\t\t\t\t<small>player character:</small>\n\t\t\t\t\t<select>\n\t\t\t\t\t\t<option value = \"nuke-ball\">nuclear superball</option>\n\t\t\t\t\t\t<option value = \"sonic\">sonic</option>\n\t\t\t\t\t\t<option value = \"tails\">tails</option>\n\t\t\t\t\t\t<option value = \"knuckles\">knuckles</option>\n\t\t\t\t\t\t<option value = \"amy-rose\">amy rose</option>\n\t\t\t\t\t\t<option value = \"charmy bee\">charmy bee</option>\n\t\t\t\t\t\t<option value = \"mario\">mario</option>\n\t\t\t\t\t\t<option value = \"luigi\">luigi</option>\n\t\t\t\t\t\t<option value = \"luigi\">samus</option>\n\t\t\t\t\t\t<option value = \"luigi\">metal sonic</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label> -->\n\n\t\t\t\t<label>\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
+module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\n\t\t\t<div  cv-ref = \"content\" class = \"viewport-content\">\n\n\t\t\t\t<div class = \"viewport-actors\" cv-each = \"actors:actor:a\">\t[[actor]]\n\t\t\t\t</div>\n\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\" cv-each = \"particles:particle:p\">\n\t\t\t\t\t[[particle]]\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n<!-- \t\t\t\t<label>\n\t\t\t\t\t<small>player character:</small>\n\t\t\t\t\t<select>\n\t\t\t\t\t\t<option value = \"nuke-ball\">nuclear superball</option>\n\t\t\t\t\t\t<option value = \"sonic\">sonic</option>\n\t\t\t\t\t\t<option value = \"tails\">tails</option>\n\t\t\t\t\t\t<option value = \"knuckles\">knuckles</option>\n\t\t\t\t\t\t<option value = \"amy-rose\">amy rose</option>\n\t\t\t\t\t\t<option value = \"charmy bee\">charmy bee</option>\n\t\t\t\t\t\t<option value = \"mario\">mario</option>\n\t\t\t\t\t\t<option value = \"luigi\">luigi</option>\n\t\t\t\t\t\t<option value = \"luigi\">samus</option>\n\t\t\t\t\t\t<option value = \"luigi\">metal sonic</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label> -->\n\n\t\t\t\t<label>\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
 });
 
 ;require.register("___globals___", function(exports, require, module) {

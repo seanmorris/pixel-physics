@@ -7,7 +7,17 @@
 
 		<div class = "viewport-zoom">
 			<div cv-ref = "background" class = "viewport-bg-layers" cv-each = "layers:layer">[[layer]]</div>
-			<div cv-ref = "content" class = "viewport-content" cv-each = "actors:actor:a">[[actor]]</div>
+
+			<div  cv-ref = "content" class = "viewport-content">
+
+				<div class = "viewport-actors" cv-each = "actors:actor:a">	[[actor]]
+				</div>
+
+				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">
+					[[particle]]
+				</div>
+
+			</div>
 		</div>
 
 		<div class = "viewport-double-zoom">

@@ -1,5 +1,5 @@
 .actor-eggmobile {
-	mix-blend-mode: exclusion;
+	z-index: 1;
 }
 
 .actor-eggmobile .sprite {
@@ -8,7 +8,6 @@
 	height: 45px !important;
 	width:  70px !important;
 
-	z-index: 1;
 
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -0px;

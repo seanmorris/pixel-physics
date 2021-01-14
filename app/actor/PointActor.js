@@ -1219,21 +1219,21 @@ export class PointActor extends View
 		{
 			if(this.xAxis)
 			{
-				if(this.args.gSpeed < gSpeedMax && this.args.gSpeed > -gSpeedMax)
-				{
-					let gSpeed = this.args.gSpeed
+				let gSpeed = this.args.gSpeed
 
-					if(Math.sign(this.xAxis) === Math.sign(this.args.gSpeed))
+				if(Math.sign(this.xAxis) === Math.sign(this.args.gSpeed))
+				{
+					if(Math.abs(this.args.gSpeed) < gSpeedMax)
 					{
 						gSpeed += (this.xAxis * this.args.accel);
 					}
-					else
-					{
-						gSpeed += (this.xAxis * this.args.skidTraction);
-					}
-
-					this.args.gSpeed = gSpeed;
 				}
+				else
+				{
+					gSpeed += (this.xAxis * this.args.skidTraction);
+				}
+
+				this.args.gSpeed = gSpeed;
 			}
 			else if(Math.abs(this.args.gSpeed) < this.args.decel)
 			{
