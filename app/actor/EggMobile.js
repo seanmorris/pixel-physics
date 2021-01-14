@@ -85,6 +85,7 @@ export class EggMobile extends PointActor
 
 		this.args.falling = true;
 		this.args.flying = true;
+		this.args.mode = 0;
 	}
 
 	get solid() { return true; }

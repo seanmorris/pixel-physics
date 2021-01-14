@@ -19,7 +19,9 @@ export class DrillCar extends PointActor
 		this.args.decel     = 0.25;
 		this.args.accel     = 0.75;
 
-		this.args.seatHeight = 28;
+		this.args.seatHeight = 30;
+
+		this.args.skidTraction = 0.25;
 	}
 
 	collideA(other)
@@ -118,7 +120,15 @@ export class DrillCar extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(this.args.moving && gSpeed)
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			{
+				this.box.setAttribute('data-animation', 'skidding');
+			}
+			else if(this.args.moving && speed > maxSpeed * 0.75)
+			{
+				this.box.setAttribute('data-animation', 'running');
+			}
+			else if(this.args.moving && speed)
 			{
 				this.box.setAttribute('data-animation', 'walking');
 			}

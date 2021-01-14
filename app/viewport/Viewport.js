@@ -551,16 +551,21 @@ export class Viewport extends View
 			{
 				this.args.yOffsetTarget = 0.5;
 				cameraSpeed = 5;
-
 			}
 		}
 		else if(this.controlActor.args.mode)
 		{
 			this.args.yOffsetTarget = 0.5;
 		}
-		else
+		else if(this.controlActor.args.cameraMode = 'normal')
 		{
 			this.args.yOffsetTarget = 0.75;
+			cameraSpeed = 5;
+		}
+		else
+		{
+			this.args.yOffsetTarget = 0.5;
+			cameraSpeed = 5;
 		}
 
 		this.args.x = -this.controlActor.x + this.args.width  * 0.5;

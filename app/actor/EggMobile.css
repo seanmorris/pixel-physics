@@ -1,7 +1,13 @@
+.actor-eggmobile {
+	mix-blend-mode: exclusion;
+}
+
 .actor-eggmobile .sprite {
 	background-image: url(/Sonic/egg-mobile.png);
+
 	height: 45px !important;
-	width: 70px !important;
+	width:  70px !important;
+
 	z-index: 1;
 
 	--sprite-offset-x: 0px;
@@ -15,10 +21,8 @@
 @keyframes eggmobile-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-		/*opacity: 0.5;*/
 	}
 	to{
 		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
-		/*opacity: 0.25;*/
 	}
 }

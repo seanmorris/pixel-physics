@@ -104,6 +104,8 @@ export class PointActor extends View
 		this.backStep  = 0;
 		this.frontStep = 0;
 
+		this.args.skidTraction = 5;
+
 		this.args.falling  = true;
 		this.args.running  = false;
 		this.args.crawling = false;
@@ -310,7 +312,6 @@ export class PointActor extends View
 			{
 				this.willJump   = false;
 
-
 				this.standingOn   = false;
 				this.args.falling = true;
 
@@ -420,7 +421,7 @@ export class PointActor extends View
 
 		this.processInput();
 
-		if(this.getMapSolidAt(this.x, this.y + 240))
+		if(this.getMapSolidAt(this.x, this.y + 96))
 		{
 			this.args.cameraMode = 'normal';
 		}
@@ -1179,7 +1180,10 @@ export class PointActor extends View
 			this.args.layer     = vehicle.args.layer;
 			this.args.mode      = vehicle.args.mode;
 			this.args.angle     = vehicle.args.angle;
-			this.args.groundAngle = vehicle.args.groundAngle;
+
+			this.args.groundAngle = vehicle.args.falling ? 0 : vehicle.args.groundAngle;
+
+			this.args.cameraMode = vehicle.args.cameraMode;
 
 			// const seatX = (vehicle.args.seatX || 0) * this.args.direction;
 			// const seatY = (vehicle.args.seatY || 0);
@@ -1225,10 +1229,8 @@ export class PointActor extends View
 					}
 					else
 					{
-						gSpeed += (this.xAxis * this.args.accel) * 5;
+						gSpeed += (this.xAxis * this.args.skidTraction);
 					}
-
-					gSpeed = Math.floor(gSpeed * 1000) / 1000;
 
 					this.args.gSpeed = gSpeed;
 				}

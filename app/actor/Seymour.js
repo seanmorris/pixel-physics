@@ -53,7 +53,7 @@ export class Seymour extends PointActor
 
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
-				this.box.setAttribute('data-animation', 'skidding');
+				this.box.setAttribute('data-animation', 'standing');
 			}
 			else if(speed > maxSpeed * 0.25)
 			{

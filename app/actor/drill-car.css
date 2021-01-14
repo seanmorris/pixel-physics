@@ -25,15 +25,34 @@
 	width: 32px;
 	height: 32px;
 	position: absolute;
+	transition: animation-duration 0.5s ease-in-out;
 }
 
-.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire,
 .actor-item.actor-drill-car[data-animation='walking'] .drill-car-tire {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	--animation-steps: 2;
 	--animation-width: 32px;
-	animation: drill-car-animate steps(var(--animation-steps)) infinite 96ms;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite;
+	animation-duration: 128ms;
+}
+
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 2;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite;
+	animation-duration: 64ms;
+}
+
+.actor-item.actor-drill-car[data-animation='skidding'] .drill-car-tire {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 2;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite;
+	animation-duration: 256ms;
 }
 
 .actor-item.actor-drill-car[data-animation='walking'] .drill-car-tire-front-b,
@@ -98,7 +117,7 @@
 }
 .actor-item.actor-drill-car .drill-car-copter-blade-b {
 	/*display: none;*/
-	right: 63px;
+	right: 70px;
 }
 
 .actor-item.actor-drill-car[data-animation='flying'] .drill-car-copter-cap {
@@ -132,13 +151,32 @@
 	z-index: 2;
 }
 
-.actor-item.actor-drill-car[data-animation='running'] .drill-car-drill,
 .actor-item.actor-drill-car[data-animation='walking'] .drill-car-drill {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	--animation-steps: 3;
 	--animation-width: 32px;
-	animation: drill-car-animate steps(var(--animation-steps)) infinite 256ms;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite;
+	animation-duration: 256ms;
+}
+
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-drill {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 3;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite;
+	animation-duration: 128ms;
+}
+
+.actor-item.actor-drill-car[data-animation='skidding'] .drill-car-drill {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 3;
+	--animation-width: 32px;
+	animation: drill-car-animate steps(var(--animation-steps)) infinite 128ms;
+	transition: animation-duration 0.5s ease-in;
+	animation-duration: 256ms;
 }
 
 .actor-item.actor-drill-car .drill-car-tire-back-a {
