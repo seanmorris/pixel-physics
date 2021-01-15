@@ -1,0 +1,51 @@
+.viewport-content {
+
+}
+
+.region.region-water .sprite {
+	position: absolute;
+	top: calc(1px + calc(-1px * var(--height)));
+	left: -16px;
+	width: calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	background-color: #EEE;
+	background-color: #000;
+	background-color: #333;
+	background-color: #FFF;
+	background-color: #F30;
+	background-color: #07F;
+	background-color: #036;
+	z-index: 1000;
+	mix-blend-mode: color-dodge;
+	mix-blend-mode: color-burn;
+	mix-blend-mode: hard-light;
+	mix-blend-mode: soft-light;
+	mix-blend-mode: soft-light;
+	mix-blend-mode: exclusion;
+	mix-blend-mode: lighten;
+	mix-blend-mode: darken;
+	mix-blend-mode: hue;
+	opacity: .75;
+}
+
+.region.region-water .sprite:after {
+	content: '.';
+	color: transparent;
+	background-image: url(Sonic/water-surface.png);
+	background-repeat: repeat-x;
+	position: absolute;
+	transform: translateY(-50%);
+	opacity: 0.75;
+	width: 100%;
+
+	animation: water-animate infinite 1280ms linear;
+}
+
+@keyframes water-animate {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 64px 0px;
+	}
+}

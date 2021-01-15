@@ -1,0 +1,47 @@
+.viewport-particles > * {
+	position: absolute;
+	left: calc(1px * var(--x));
+	top: calc(1px * var(--y));
+	transform: scale(var(--particleScale));
+}
+
+.particle-dust {
+	background-image: url(/Sonic/dust.png);
+	width: 14px;
+	height: 14px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 4;
+	--animation-width: 14px;
+
+	animation: particle-animate steps(var(--animation-steps)) infinite 110ms;
+
+	opacity: 0.75;
+}
+
+
+.particle-splash {
+	transform: translate(-50%, -100%) scale(var(--particleScale, 1));
+	transform-origin: bottom center;
+	background-image: url(/Sonic/splash.png);
+	width: 32px;
+	height: 32px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 7;
+	--animation-width: 32px;
+
+	animation: particle-animate steps(var(--animation-steps)) 1 calc(140ms * var(--particleScale, 1));
+}
+
+
+@keyframes particle-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
