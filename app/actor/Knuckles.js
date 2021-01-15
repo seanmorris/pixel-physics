@@ -18,10 +18,10 @@ export class Knuckles extends PointActor
 		this.args.skidTraction = 0.5;
 
 
-		this.args.width  = 16;
+		this.args.width  = 32;
 		this.args.height = 41;
 
-		this.args.skidTraction = 0.8;
+		this.args.skidTraction = 0.7;
 	}
 
 	onAttached()

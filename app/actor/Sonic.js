@@ -18,7 +18,7 @@ export class Sonic extends PointActor
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.7;
 
-		this.args.width  = 16;
+		this.args.width  = 32;
 		this.args.height = 40;
 	}
 

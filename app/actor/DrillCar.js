@@ -10,18 +10,18 @@ export class DrillCar extends PointActor
 
 		this.args.type = 'actor-item actor-drill-car';
 
-		this.args.width  = 93;
+		this.args.width  = 100;
 		this.args.height = 48;
 
 		this.removeTimer = null;
 
-		this.args.gSpeedMax = 25;
-		this.args.decel     = 0.3;
-		this.args.accel     = 1.75;
+		this.args.gSpeedMax = 22;
+		this.args.decel     = 0.30;
+		this.args.accel     = 0.75;
 
 		this.args.seatHeight = 30;
 
-		this.args.skidTraction = 0.5;
+		this.args.skidTraction = 0.95;
 
 		this.dustCount = 0;
 
@@ -87,7 +87,8 @@ export class DrillCar extends PointActor
 		this.box.appendChild(this.backSprite.node);
 	}
 
-	update()	{
+	update()
+	{
 		const falling = this.args.falling;
 
 		if(this.viewport.args.audio && !this.flyingSound)
@@ -139,7 +140,7 @@ export class DrillCar extends PointActor
 
 					const particleA = new Tag('<div class = "particle-dust">');
 
-					const pointA = this.rotatePoint(this.args.gSpeed, 6);
+					const pointA = this.rotatePoint(this.args.gSpeed, 0);
 
 					particleA.style({
 						'--x': pointA[0] + this.x
@@ -151,7 +152,7 @@ export class DrillCar extends PointActor
 
 					const particleB = new Tag('<div class = "particle-dust">');
 
-					const pointB = this.rotatePoint(this.args.gSpeed + (40 * this.args.direction), 6);
+					const pointB = this.rotatePoint(this.args.gSpeed + (40 * this.args.direction), 0);
 
 					particleB.style({
 						'--x': pointB[0] + this.x
@@ -166,7 +167,7 @@ export class DrillCar extends PointActor
 					setTimeout(() => {
 						viewport.particles.remove(particleA);
 						viewport.particles.remove(particleB);
-					}, 320);
+					}, 350);
 
 					// this.dustCount = 5;
 				}

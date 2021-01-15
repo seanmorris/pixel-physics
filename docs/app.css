@@ -1028,8 +1028,8 @@
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	height: calc(1px + calc(1px * var(--height)));
-	width: calc(2px + calc(1px * var(--width)));
+	height: calc(0px + calc(1px * var(--height)));
+	width: calc(0px + calc(1px * var(--width)));
 }
 
 .actor-item[data-colliding="true"]:before {
@@ -1738,7 +1738,7 @@ h1 {
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
-	transform: scale(var(--particleScale));
+	transform: translate(-50%, -50%);
 }
 
 .particle-dust {

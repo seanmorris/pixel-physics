@@ -144,8 +144,8 @@ export class Viewport extends View
 		this.args.willStick = false;
 		this.args.stayStuck = false;
 
-		this.args.willStick = true;
-		this.args.stayStuck = true;
+		// this.args.willStick = true;
+		// this.args.stayStuck = true;
 
 		this.args.width  = 32 * 14;
 		this.args.height = 32 * 8;
@@ -439,7 +439,7 @@ export class Viewport extends View
 				continue;
 			}
 
-			if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.3)
+			if(gamepad.axes[0] && Math.abs(gamepad.axes[0]) > 0.25)
 			{
 				this.controlActor.xAxis = gamepad.axes[0];
 			}
@@ -448,7 +448,7 @@ export class Viewport extends View
 				this.controlActor.xAxis = 0;
 			}
 
-			if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.3)
+			if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.25)
 			{
 				if(this.controlActor.args.mode === 1)
 				{
@@ -928,7 +928,7 @@ export class Viewport extends View
 		this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
 		this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
 		this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
-		this.args.angle.args.value    = (Math.round((this.controlActor.args.angle) * 1000) / 1000).toFixed(3);
+		this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 		this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
 		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
