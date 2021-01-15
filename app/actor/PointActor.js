@@ -1,5 +1,6 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { View } from 'curvature/base/View';
+import { Tag  } from 'curvature/base/Tag';
 
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
@@ -17,7 +18,7 @@ const DEFAULT_GRAVITY = MODE_FLOOR;
 export class PointActor extends View
 {
 	template = `<div
-		class  = "point-actor [[type]] [[collType]]"
+		class  = "point-actor [[type]]"
 		style  = "
 			display:[[display]];
 			--angle:[[angle]];
@@ -30,7 +31,7 @@ export class PointActor extends View
 			--y:[[y]];
 		"
 		data-camera-mode = "[[cameraMode]]"
-		data-colliding = "[[colliding]]"
+		data-colliding   = "[[colliding]]"
 		data-falling   = "[[falling]]"
 		data-facing    = "[[facing]]"
 		data-angle     = "[[angle|rad2deg]]"
@@ -62,6 +63,8 @@ export class PointActor extends View
 	constructor(...args)
 	{
 		super(...args);
+
+		this.region = null;
 
 		this.args.type = 'actor-generic'
 
@@ -145,9 +148,42 @@ export class PointActor extends View
 		this.args.decel     = 0.85;
 		this.args.accel     = 0.3;
 
+		this.args.particleScale = 1;
+
 		const bindable = Bindable.make(this);
 
 		bindable.debindGround = null;
+
+		bindable.bindTo('region', (region,key,target) => {
+
+			if(!region)
+			{
+				return;
+			}
+
+			const drag = region.args.drag;
+
+			this.args.xSpeed *= drag;
+			this.args.ySpeed *= drag;
+			this.args.gSpeed *= drag;
+
+			if(this.viewport)
+			{
+				const viewport = this.viewport;
+				const spash    = new Tag('<div class = "particle-splash">');
+
+				spash.style({
+					'--x': this.x, '--y': region.y - region.args.height
+					, 'z-index': 5, opacity: Math.random
+					, '--particleScale': this.args.particleScale
+				});
+
+				viewport.particles.add(spash);
+
+				setTimeout(() => viewport.particles.remove(spash), 140 * (this.args.particleScale||1));
+			}
+
+		});
 
 		bindable.bindTo('standingOn', (groundObject,key,target) => {
 
@@ -168,7 +204,9 @@ export class PointActor extends View
 				{
 					if(prevGroundObject.occupant === this)
 					{
-						prevGroundObject.occupant = null;
+						prevGroundObject.occupant  = null;
+						prevGroundObject.stayStuck = false;
+						prevGroundObject.willStick = false;
 					}
 
 					prevGroundObject.xAxis = 0;
@@ -244,7 +282,9 @@ export class PointActor extends View
 			{
 				if(prevGroundObject.occupant === this)
 				{
-					prevGroundObject.occupant = null;
+					prevGroundObject.occupant  = null;
+					prevGroundObject.stayStuck = false;
+					prevGroundObject.willStick = false;
 				}
 
 				prevGroundObject.xAxis = 0;
@@ -294,7 +334,6 @@ export class PointActor extends View
 			return;
 		}
 
-
 		if(this.standingOn && this.standingOn.isVehicle)
 		{
 			const vehicle = this.standingOn;
@@ -318,7 +357,10 @@ export class PointActor extends View
 				this.args.y -= vehicle.args.seatHeight || vehicle.args.height;
 
 				this.args.ySpeed  = -this.args.jumpForce;
+				vehicle.args.ySpeed = 0;
 			}
+
+			this.region = this.viewport.regionAtPoint(this.x, this.y);
 
 			return;
 		}
@@ -367,6 +409,8 @@ export class PointActor extends View
 			this.lastAngles  = [];
 		}
 
+		this.region = this.viewport.regionAtPoint(this.x, this.y);
+
 		if(!this.isEffect && this.args.falling && this.viewport)
 		{
 			this.updateAirPosition();
@@ -412,7 +456,7 @@ export class PointActor extends View
 		{
 			if(!this.args.float)
 			{
-				this.args.ySpeed += this.args.gravity;
+				this.args.ySpeed += this.args.gravity * (this.region ? this.region.args.gravity : 1);
 			}
 
 			this.args.airAngle = this.args.airAngle;
@@ -420,15 +464,6 @@ export class PointActor extends View
 		}
 
 		this.processInput();
-
-		if(this.getMapSolidAt(this.x, this.y + 96))
-		{
-			this.args.cameraMode = 'normal';
-		}
-		else
-		{
-			this.args.cameraMode = 'aerial';
-		}
 
 		if(this.args.falling || this.args.gSpeed)
 		{
@@ -512,6 +547,27 @@ export class PointActor extends View
 		else
 		{
 			this.standingOn = null;
+		}
+
+		if(this.standingOn && this.standingOn.isVehicle)
+		{
+			this.args.cameraMode = this.standingOn.args.cameraMode;
+		}
+		else
+		{
+			if(this.getMapSolidAt(this.x, this.y + 48))
+			{
+				this.args.cameraMode = 'normal';
+			}
+			else
+			{
+				this.onTimeout(350, ()=>{
+					if(!this.getMapSolidAt(this.x, this.y + 48))
+					{
+						this.args.cameraMode = 'aerial';
+					}
+				});
+			}
 		}
 
 		this.args.colliding = this.colliding;
@@ -1215,6 +1271,8 @@ export class PointActor extends View
 			gSpeedMax = CRAWLING_SPEED;
 		}
 
+		const drag = this.region ? this.region.args.drag : 1;
+
 		if(!this.args.falling)
 		{
 			if(this.xAxis)
@@ -1225,32 +1283,32 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.gSpeed) < gSpeedMax)
 					{
-						gSpeed += (this.xAxis * this.args.accel);
+						gSpeed += this.xAxis * this.args.accel * drag;
 					}
 				}
 				else
 				{
-					gSpeed += (this.xAxis * this.args.skidTraction);
+					gSpeed += this.xAxis * this.args.skidTraction * drag;
 				}
 
 				this.args.gSpeed = gSpeed;
 			}
-			else if(Math.abs(this.args.gSpeed) < this.args.decel)
+			else if(Math.abs(this.args.gSpeed) < this.args.decel * 1/drag)
 			{
 				this.args.gSpeed = 0;
 			}
 			else if(this.args.gSpeed > 0)
 			{
-				this.args.gSpeed -= this.args.decel;
+				this.args.gSpeed -= this.args.decel * 1/drag;
 			}
 			else if(this.args.gSpeed < 0)
 			{
-				this.args.gSpeed += this.args.decel;
+				this.args.gSpeed += this.args.decel * 1/drag;
 			}
 		}
 		else if(this.xAxis)
 		{
-			this.args.xSpeed += this.xAxis * 0.3;
+			this.args.xSpeed += this.xAxis * 0.3 * drag;
 		}
 
 		if(this.xAxis < 0)
@@ -1508,7 +1566,9 @@ export class PointActor extends View
 			return;
 		}
 
-		let force = this.args.jumpForce;
+		const drag = this.region ? this.region.args.drag : 1;
+
+		let force = this.args.jumpForce * drag;
 
 		if(this.running)
 		{
@@ -1810,6 +1870,14 @@ export class PointActor extends View
 				return [this.x - 1, this.y + 0];
 				break;
 		}
+	}
+
+	rotatePoint(x,y)
+	{
+		const xRot = x * Math.cos(this.realAngle) - y * Math.sin(this.realAngle);
+		const yRot = y * Math.cos(this.realAngle) + x * Math.sin(this.realAngle);
+
+		return [xRot, yRot];
 	}
 
 	// get leftPoint()

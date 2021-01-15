@@ -5,6 +5,7 @@ export class Spring extends PointActor
 	template = `<div
 		class = "point-actor actor-item [[type]] [[collType]]"
 		style = "
+			display:[[display]];
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
 			--ground-angle:[[groundAngle]];

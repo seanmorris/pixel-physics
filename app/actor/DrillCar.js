@@ -22,6 +22,10 @@ export class DrillCar extends PointActor
 		this.args.seatHeight = 30;
 
 		this.args.skidTraction = 0.5;
+
+		this.dustCount = 0;
+
+		this.args.particleScale = 2;
 	}
 
 	collideA(other)
@@ -50,7 +54,7 @@ export class DrillCar extends PointActor
 		this.sprite = this.findTag('div.sprite');
 		this.backSprite = new Tag('<div class = "sprite-back sprite">');
 
-		this.drill = new Tag('<div class = "drill-car-tire drill-car-drill">');
+		this.drill = new Tag('<div class = "drill-car-drill">');
 
 		this.seat = new Tag('<div class = "drill-car-seat">');
 		this.windsheild = new Tag('<div class = "drill-car-windsheild">');
@@ -120,9 +124,53 @@ export class DrillCar extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
+			if(this.dustCount > 0)
+			{
+				this.dustCount--;
+			}
+
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.box.setAttribute('data-animation', 'skidding');
+
+				if(1)
+				{
+					const viewport = this.viewport;
+
+					const particleA = new Tag('<div class = "particle-dust">');
+
+					const pointA = this.rotatePoint(this.args.gSpeed, 6);
+
+					particleA.style({
+						'--x': pointA[0] + this.x
+						, '--y': pointA[1] + this.y
+						, 'z-index': 0
+						, opacity: Math.random * 2
+					});
+
+
+					const particleB = new Tag('<div class = "particle-dust">');
+
+					const pointB = this.rotatePoint(this.args.gSpeed + (40 * this.args.direction), 6);
+
+					particleB.style({
+						'--x': pointB[0] + this.x
+						, '--y': pointB[1] + this.y
+						, 'z-index': 0
+						, opacity: Math.random * 2
+					});
+
+					viewport.particles.add(particleA);
+					viewport.particles.add(particleB);
+
+					setTimeout(() => {
+						viewport.particles.remove(particleA);
+						viewport.particles.remove(particleB);
+					}, 320);
+
+					// this.dustCount = 5;
+				}
+
 			}
 			else if(this.args.moving && speed > maxSpeed * 0.75)
 			{

@@ -175,6 +175,7 @@
 
 .actor-item {
 	position: relative;
+	display: none;
 }
 
 .actor-item:before {

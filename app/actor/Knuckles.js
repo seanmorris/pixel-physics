@@ -15,9 +15,13 @@ export class Knuckles extends PointActor
 		this.args.gSpeedMax = 25;
 		this.args.jumpForce = 14;
 		this.args.gravity   = 0.7;
+		this.args.skidTraction = 0.5;
+
 
 		this.args.width  = 16;
 		this.args.height = 41;
+
+		this.args.skidTraction = 0.8;
 	}
 
 	onAttached()

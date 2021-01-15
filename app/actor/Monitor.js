@@ -33,7 +33,7 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(this.args.falling)
+		if(this.args.falling || other.occupant)
 		{
 			this.pop(other);
 
@@ -83,6 +83,11 @@ export class Monitor extends PointActor
 	pop(other)
 	{
 		const viewport = this.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
 
 		const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
 

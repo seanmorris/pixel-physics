@@ -42,6 +42,8 @@ import { Knuckles }   from '../actor/Knuckles';
 
 import { Seymour }   from '../actor/Seymour';
 
+import { Region }   from '../actor/Region';
+
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
 
@@ -61,11 +63,12 @@ const objectPalette = {
 	, 'tails': Tails
 	, 'knuckles': Knuckles
 	, 'mecha-sonic': MechaSonic
-	, 'eggman': Eggman
+	, 'eggman':  Eggman
 	, 'eggrobo': Eggrobo
 	, 'seymour': Seymour
-	, 'window': Window
+	, 'window':  Window
 	, 'emerald': Emerald
+	, 'region':  Region
 	, 'ring':    Ring
 	, 'coin':    Coin
 };
@@ -84,6 +87,10 @@ export class Viewport extends View
 		this.sprites = new Bag;
 		this.tileMap = new TileMap;
 		this.world   = null;
+
+		this.particles = new Bag;
+
+		this.args.particles = this.particles.list;
 
 		this.args.currentActor = '';
 
@@ -157,12 +164,19 @@ export class Viewport extends View
 
 		this.spawn = new Set;
 
+		this.regions = new Set;
+
 		this.actors = new Bag((i,s,a) => {
 			if(a == Bag.ITEM_ADDED)
 			{
 				i.viewport = this;
-				i.args.display = 'none';
+
 				this.setColCell(i);
+
+				if(i instanceof Region)
+				{
+					this.regions.add(i);
+				}
 			}
 			else if(a == Bag.ITEM_REMOVED)
 			{
@@ -171,6 +185,11 @@ export class Viewport extends View
 				if(i[ColCell])
 				{
 					i[ColCell].delete(i);
+				}
+
+				if(i instanceof Region)
+				{
+					this.regions.delete(i);
 				}
 
 				delete i[ColCell];
@@ -200,8 +219,8 @@ export class Viewport extends View
 
 		this.colCellCache = {};
 		this.colCellDiv = this.args.width > this.args.height
-		 	? this.args.width / 2
-		 	: this.args.height / 2;
+		 	? this.args.width * 0.75
+		 	: this.args.height * 0.75;
 
 		this.colCells   = {};
 
@@ -226,7 +245,7 @@ export class Viewport extends View
 		this.initScale = this.args.scale;
 
 		this.tags.viewport.requestFullscreen().then(res=>{
-			requestAnimationFrame(()=>{
+			this.onTimeout(100, ()=>{
 
 				const hScale = window.innerHeight / this.args.height;
 				const vScale = window.innerWidth / this.args.width;
@@ -529,30 +548,30 @@ export class Viewport extends View
 		}
 		else if(this.controlActor.args.mode === 2)
 		{
-			if(this.controlActor.args.cameraMode = 'normal')
+			if(this.controlActor.args.cameraMode == 'normal')
 			{
 				this.args.yOffsetTarget = 0.25;
-				cameraSpeed = 5;
+				cameraSpeed = 10;
 			}
 			else
 			{
 				this.args.yOffsetTarget = 0.5;
-				cameraSpeed = 5;
+				cameraSpeed = 10;
 			}
 		}
 		else if(this.controlActor.args.mode)
 		{
 			this.args.yOffsetTarget = 0.5;
 		}
-		else if(this.controlActor.args.cameraMode = 'normal')
+		else if(this.controlActor.args.cameraMode == 'normal')
 		{
 			this.args.yOffsetTarget = 0.75;
-			cameraSpeed = 5;
+			cameraSpeed = 10;
 		}
 		else
 		{
 			this.args.yOffsetTarget = 0.5;
-			cameraSpeed = 5;
+			cameraSpeed = 20;
 		}
 
 		this.args.x = -this.controlActor.x + this.args.width  * 0.5;
@@ -700,7 +719,8 @@ export class Viewport extends View
 					continue;
 				}
 
-				actor.args.display = 'inital';
+				actor.args.display = 'initial';
+
 				actor.updateStart();
 
 				this.updateStarted.add(actor);
@@ -757,12 +777,15 @@ export class Viewport extends View
 
 				if(Math.abs(actorX) > width)
 				{
-					actor.args.display = 'none';
+					actor.args.display = '';
 				}
-
-				if(Math.abs(actorY) > height)
+				else if(Math.abs(actorY) > height)
 				{
-					actor.args.display = 'none';
+					actor.args.display = '';
+				}
+				else
+				{
+					actor.args.display = 'initial';
 				}
 
 				this.updateEnded.add(actor);
@@ -802,6 +825,18 @@ export class Viewport extends View
 			return;
 		}
 
+		for(const region of this.regions.values())
+		{
+			region.updateStart();
+			this.updateStarted.add(this.controlActor);
+
+			region.update();
+			this.updated.add(this.controlActor);
+
+			region.updateEnd();
+			this.updateEnded.add(this.controlActor);
+		}
+
 		const actors = this.actors.list;
 
 		this.controlActor = this.controlActor || actors[0];
@@ -813,7 +848,7 @@ export class Viewport extends View
 
 		this.controlActor.args.gSpeedMax = this.args.maxSpeed;
 
-		this.controlActor.args.display = 'inital';
+		// this.controlActor.args.display = 'none';
 
 		this.controlActor.willStick = !!this.args.willStick;
 		this.controlActor.stayStuck = !!this.args.stayStuck;
@@ -837,6 +872,8 @@ export class Viewport extends View
 		this.updateStarted.add(this.controlActor);
 
 		const nearbyCells = this.getNearbyColCells(this.controlActor);
+
+		this.controlActor.args.display = 'initial';
 
 		this.actorUpdateStart(nearbyCells);
 
@@ -911,6 +948,34 @@ export class Viewport extends View
 			this.controlActor  = this.nextControl;
 			this.args.maxSpeed = null;
 			this.nextControl   = null;
+		}
+	}
+
+	regionAtPoint(x, y)
+	{
+		for(const region of this.regions.values())
+		{
+			const regionX = region.args.x;
+			const regionY = region.args.y;
+
+			const width  = region.args.width;
+			const height = region.args.height;
+
+			const offset = Math.floor(width / 2);
+
+			const left   = regionX;
+			const right  = regionX + width;
+
+			const top    = regionY - height;
+			const bottom = regionY;
+
+			if(x >= left && right > x)
+			{
+				if(bottom >= y && y > top)
+				{
+					return region;
+				}
+			}
 		}
 	}
 

@@ -8,6 +8,7 @@ export class QuestionBlock extends PointActor
 	template = `<div
 		class = "point-actor [[type]] [[collType]]"
 		style = "
+			display:[[display]];
 			--angle:[[angle]];
 			--airAngle:[[airAngle]];
 			--display-angle:[[_angle]];

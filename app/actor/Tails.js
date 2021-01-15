@@ -15,6 +15,8 @@ export class Tails extends PointActor
 		this.args.gSpeedMax = 27;
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.7;
+		this.args.skidTraction = 0.5;
+
 
 		this.args.width  = 16;
 		this.args.height = 32;
@@ -85,7 +87,15 @@ export class Tails extends PointActor
 		}
 		else if(this.args.flying)
 		{
-			this.box.setAttribute('data-animation', 'flying');
+			if(this.yAxis > 0)
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+				this.args.ySpeed = this.args.jumpForce;
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'flying');
+			}
 		}
 		else if(this.args.falling)
 		{
