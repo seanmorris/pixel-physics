@@ -42,6 +42,8 @@ import { Knuckles }   from '../actor/Knuckles';
 
 import { Seymour }   from '../actor/Seymour';
 
+import { Switch }   from '../actor/Switch';
+
 import { Region }   from '../actor/Region';
 
 import { CharacterString } from '../ui/CharacterString';
@@ -57,20 +59,21 @@ const objectPalette = {
 	, 'q-block': QuestionBlock
 	, 'projectile': Projectile
 	, 'marble-block': MarbleBlock
-	, 'drill-car': DrillCar
-	, 'egg-mobile': EggMobile
-	, 'sonic': Sonic
-	, 'tails': Tails
-	, 'knuckles': Knuckles
-	, 'mecha-sonic': MechaSonic
-	, 'eggman':  Eggman
-	, 'eggrobo': Eggrobo
-	, 'seymour': Seymour
-	, 'window':  Window
-	, 'emerald': Emerald
-	, 'region':  Region
-	, 'ring':    Ring
-	, 'coin':    Coin
+	, 'drill-car':    DrillCar
+	, 'egg-mobile':   EggMobile
+	, 'mecha-sonic':  MechaSonic
+	, 'sonic':        Sonic
+	, 'tails':        Tails
+	, 'knuckles':     Knuckles
+	, 'eggman':       Eggman
+	, 'eggrobo':      Eggrobo
+	, 'seymour':      Seymour
+	, 'switch':       Switch
+	, 'window':       Window
+	, 'emerald':      Emerald
+	, 'region':       Region
+	, 'ring':         Ring
+	, 'coin':         Coin
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -100,6 +103,8 @@ export class Viewport extends View
 		this.args.status  = new CharacterString({value:'', scale: 2});
 		this.args.focusMe = new CharacterString({value:'', scale: 2});
 
+		this.args.labelChar = new CharacterString({value:'Char: '});
+
 		this.args.labelX = new CharacterString({value:'x pos: '});
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
@@ -112,6 +117,8 @@ export class Viewport extends View
 		this.args.labelFps    = new CharacterString({value:'FPS: '});
 
 		this.args.labelAirAngle  = new CharacterString({value:'Air theta: '});
+
+		this.args.char   = new CharacterString({value:''});
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
@@ -166,6 +173,8 @@ export class Viewport extends View
 
 		this.regions = new Set;
 
+		this.actorsById = {};
+
 		this.actors = new Bag((i,s,a) => {
 			if(a == Bag.ITEM_ADDED)
 			{
@@ -177,6 +186,8 @@ export class Viewport extends View
 				{
 					this.regions.add(i);
 				}
+
+				this.actorsById[i.args.id] = i;
 			}
 			else if(a == Bag.ITEM_REMOVED)
 			{
@@ -191,6 +202,8 @@ export class Viewport extends View
 				{
 					this.regions.delete(i);
 				}
+
+				delete this.actorsById[i.args.id];
 
 				delete i[ColCell];
 			}
@@ -232,7 +245,7 @@ export class Viewport extends View
 
 		this.nextControl = false;
 
-		this.args.controllable = {'character select':null};
+		this.args.controllable = {};
 
 		this.updateStarted = new Set;
 		this.updateEnded = new Set;
@@ -260,6 +273,7 @@ export class Viewport extends View
 				this.onTimeout(2500, ()=>{
 					this.args.focusMe.args.hide = '';
 					this.args.status.args.hide  = 'hide';
+					this.tags.viewport.focus();
 				});
 			});
 		});
@@ -688,7 +702,7 @@ export class Viewport extends View
 
 		}
 
-		this.actors.add( new TextActor({x: 1250, y:1800}) );
+		this.actors.add( new TextActor({x: 1300, y:1800}) );
 	}
 
 	spawnActors()
@@ -922,6 +936,7 @@ export class Viewport extends View
 		this.args.hasCoins    = !!this.controlActor.args.coins;
 		this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
+		this.args.char.args.value     = this.controlActor.args.name;
 		this.args.xPos.args.value     = Math.round(this.controlActor.x);
 		this.args.yPos.args.value     = Math.round(this.controlActor.y);
 		this.args.ground.args.value   = this.controlActor.args.landed;

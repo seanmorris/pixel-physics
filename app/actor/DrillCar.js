@@ -1,8 +1,8 @@
-import { PointActor } from './PointActor';
+import { Vehicle } from './Vehicle';
 
 import { Tag } from 'curvature/base/Tag';
 
-export class DrillCar extends PointActor
+export class DrillCar extends Vehicle
 {
 	constructor(...args)
 	{
@@ -10,7 +10,7 @@ export class DrillCar extends PointActor
 
 		this.args.type = 'actor-item actor-drill-car';
 
-		this.args.width  = 100;
+		this.args.width  = 64;
 		this.args.height = 48;
 
 		this.removeTimer = null;
@@ -26,26 +26,6 @@ export class DrillCar extends PointActor
 		this.dustCount = 0;
 
 		this.args.particleScale = 2;
-	}
-
-	collideA(other)
-	{
-		if(!other.controllable)
-		{
-			return false;
-		}
-
-		if(other.y >= this.y)
-		{
-			return false;
-		}
-
-		if(other.isVehicle)
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	onAttached()
@@ -108,7 +88,6 @@ export class DrillCar extends PointActor
 		{
 			this.flyingSound.currentTime = 0.0;
 		}
-
 
 		if(!this.box)
 		{
@@ -248,5 +227,4 @@ export class DrillCar extends PointActor
 	}
 
 	get solid() { return true; }
-	get isVehicle() { return true; }
 }

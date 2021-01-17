@@ -87,27 +87,6 @@ export class MarbleBlock extends PointActor
 		return true;
 	}
 
-	scanBottomEdge(direction = 1)
-	{
-		const tileMap = this.viewport.tileMap;
-
-		return this.castRay(
-			this.args.width
-			, (direction < 0 ? Math.PI : 0)
-			, [-direction * (this.args.width/2), 0]
-			, (i,point) => {
-				const actors = this.viewport
-					.actorsAtPoint(point[0], point[1] + 1)
-					.filter(a => a.args !== this.args);
-
-				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
-				{
-					return i;
-				}
-			}
-		);
-	}
-
 	get canStick() { return false; }
 	get solid() { return true; }
 	get rotateLock() { return true; }

@@ -98,13 +98,13 @@
 	top: 32px;
 	left: -6px;
 
-	--sprite-offset-x: -0px;
-	--sprite-offset-y: -0px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
 	--animation-steps: 6;
 	--animation-width: 32px;
 
 	width: 32px;
-	height: 32px;
+	height: 31px;
 
 	background-image: url(/Sonic/tails-tails.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
@@ -121,7 +121,7 @@
 
 .actor-item.actor-tails[data-animation="jumping"] .tails-tails,
 .actor-item.actor-tails[data-animation="rolling"] .tails-tails {
-	--sprite-offset-y: -32px;
+	--sprite-offset-y: 64px;
 	--animation-steps: 5;
 	top: 32px;
 	left: -10px;
@@ -140,4 +140,11 @@
 	top: 24px;
 	left: 8px;
 	transform-origin: 42px 16px;
+}
+
+.change-character {
+	background: black;
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
 }

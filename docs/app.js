@@ -6312,7 +6312,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DrillCar = void 0;
 
-var _PointActor2 = require("./PointActor");
+var _Vehicle2 = require("./Vehicle");
 
 var _Tag = require("curvature/base/Tag");
 
@@ -6340,8 +6340,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var DrillCar = /*#__PURE__*/function (_PointActor) {
-  _inherits(DrillCar, _PointActor);
+var DrillCar = /*#__PURE__*/function (_Vehicle) {
+  _inherits(DrillCar, _Vehicle);
 
   var _super = _createSuper(DrillCar);
 
@@ -6356,7 +6356,7 @@ var DrillCar = /*#__PURE__*/function (_PointActor) {
 
     _this = _super.call.apply(_super, [this].concat(args));
     _this.args.type = 'actor-item actor-drill-car';
-    _this.args.width = 100;
+    _this.args.width = 64;
     _this.args.height = 48;
     _this.removeTimer = null;
     _this.args.gSpeedMax = 22;
@@ -6370,23 +6370,6 @@ var DrillCar = /*#__PURE__*/function (_PointActor) {
   }
 
   _createClass(DrillCar, [{
-    key: "collideA",
-    value: function collideA(other) {
-      if (!other.controllable) {
-        return false;
-      }
-
-      if (other.y >= this.y) {
-        return false;
-      }
-
-      if (other.isVehicle) {
-        return false;
-      }
-
-      return true;
-    }
-  }, {
     key: "onAttached",
     value: function onAttached() {
       this.box = this.findTag('div');
@@ -6538,15 +6521,10 @@ var DrillCar = /*#__PURE__*/function (_PointActor) {
     get: function get() {
       return true;
     }
-  }, {
-    key: "isVehicle",
-    get: function get() {
-      return true;
-    }
   }]);
 
   return DrillCar;
-}(_PointActor2.PointActor);
+}(_Vehicle2.Vehicle);
 
 exports.DrillCar = DrillCar;
 });
@@ -6561,7 +6539,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EggMobile = void 0;
 
-var _PointActor2 = require("./PointActor");
+var _Vehicle2 = require("./Vehicle");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6587,8 +6565,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var EggMobile = /*#__PURE__*/function (_PointActor) {
-  _inherits(EggMobile, _PointActor);
+var EggMobile = /*#__PURE__*/function (_Vehicle) {
+  _inherits(EggMobile, _Vehicle);
 
   var _super = _createSuper(EggMobile);
 
@@ -6620,25 +6598,10 @@ var EggMobile = /*#__PURE__*/function (_PointActor) {
   }
 
   _createClass(EggMobile, [{
-    key: "collideA",
-    value: function collideA(other) {
-      if (!other.controllable) {
-        return false;
-      }
-
-      if (other.y >= this.y) {
-        return false;
-      }
-
-      if (other.isVehicle) {
-        return false;
-      }
-
-      return true;
-    }
-  }, {
     key: "update",
     value: function update() {
+      this.args.falling = false;
+
       if (Math.abs(this.yAxis) > 0.1) {
         if (Math.abs(this.args.ySpeed) < this.args.ySpeedMax) {
           var ySpeed = this.args.ySpeed;
@@ -6660,26 +6623,21 @@ var EggMobile = /*#__PURE__*/function (_PointActor) {
         this.args.xSpeed = this.args.xSpeed * this.args.decel;
       }
 
-      _get(_getPrototypeOf(EggMobile.prototype), "update", this).call(this);
-
       this.args.falling = true;
       this.args.flying = true;
       this.args.mode = 0;
+
+      _get(_getPrototypeOf(EggMobile.prototype), "update", this).call(this);
     }
   }, {
     key: "solid",
     get: function get() {
       return true;
     }
-  }, {
-    key: "isVehicle",
-    get: function get() {
-      return true;
-    }
   }]);
 
   return EggMobile;
-}(_PointActor2.PointActor);
+}(_Vehicle2.Vehicle);
 
 exports.EggMobile = EggMobile;
 });
@@ -7343,15 +7301,14 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
 
     _this = _super.call.apply(_super, [this].concat(args));
     _this.args.type = 'actor-item actor-knuckles';
-    _this.args.accel = 0.18;
+    _this.args.accel = 0.30;
     _this.args.decel = 0.7;
     _this.args.gSpeedMax = 25;
     _this.args.jumpForce = 14;
     _this.args.gravity = 0.7;
-    _this.args.skidTraction = 0.5;
     _this.args.width = 32;
     _this.args.height = 41;
-    _this.args.skidTraction = 0.7;
+    _this.args.skidTraction = 1.7;
     return _this;
   }
 
@@ -7540,12 +7497,19 @@ var LayerSwitch = /*#__PURE__*/function (_PointActor) {
 
   _createClass(LayerSwitch, [{
     key: "collideA",
-    value: function collideA(other) {
-      var back = !!Number(this.args.back);
+    value: function collideA(other, type) {
+      if (type !== -1) {
+        return;
+      }
 
-      if (other.args.gSpeed >= 0) {
+      var back = !!Number(this.args.back);
+      var speed = other.args.gSpeed || other.args.xSpeed;
+
+      if (speed > 0) {
         other.args.layer = back ? 1 : 2;
-      } else if (other.args.gSpeed < 0) {
+      }
+
+      if (speed < 0) {
         other.args.layer = back ? 2 : 1;
       }
     }
@@ -7683,23 +7647,6 @@ var MarbleBlock = /*#__PURE__*/function (_PointActor) {
       }
 
       return true;
-    }
-  }, {
-    key: "scanBottomEdge",
-    value: function scanBottomEdge() {
-      var _this2 = this;
-
-      var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var tileMap = this.viewport.tileMap;
-      return this.castRay(this.args.width, direction < 0 ? Math.PI : 0, [-direction * (this.args.width / 2), 0], function (i, point) {
-        var actors = _this2.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
-          return a.args !== _this2.args;
-        });
-
-        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this2.args.layer)) {
-          return i;
-        }
-      });
     }
   }, {
     key: "canStick",
@@ -8040,7 +7987,7 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
 
       var corpse = new _BrokenMonitor.BrokenMonitor({
         x: this.x,
-        y: this.y + 30
+        y: this.y
       });
       viewport.actors.remove(this);
       setTimeout(function () {
@@ -8075,7 +8022,7 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "solid",
     get: function get() {
-      return true;
+      return false;
     }
   }]);
 
@@ -8232,7 +8179,8 @@ var PointActor = /*#__PURE__*/function (_View) {
         x: objDef.x + 16,
         y: objDef.y - 1,
         visible: objDef.visible,
-        name: objDef.name
+        name: objDef.name,
+        id: objDef.id
       };
 
       for (var i in objDef.properties) {
@@ -8314,7 +8262,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.args.stopped = 0;
     _this.args.gravity = 0.65;
     _this.args.decel = 0.85;
-    _this.args.accel = 0.3;
+    _this.args.accel = 0.2;
     _this.args.airAccel = 0.3;
     _this.args.particleScale = 1;
 
@@ -8322,14 +8270,20 @@ var PointActor = /*#__PURE__*/function (_View) {
 
     bindable.debindGround = null;
     bindable.bindTo('region', function (region, key, target) {
+      if (region) {
+        var drag = region.args.drag;
+        _this.args.xSpeed *= drag;
+        _this.args.ySpeed *= drag;
+        _this.args.gSpeed *= drag;
+      }
+
+      if (!region) {
+        region = target[key];
+      }
+
       if (!region) {
         return;
       }
-
-      var drag = region.args.drag;
-      _this.args.xSpeed *= drag;
-      _this.args.ySpeed *= drag;
-      _this.args.gSpeed *= drag;
 
       if (_this.viewport) {
         var viewport = _this.viewport;
@@ -8351,11 +8305,6 @@ var PointActor = /*#__PURE__*/function (_View) {
       bindable.debindGroundX && bindable.debindGroundX();
       bindable.debindGroundY && bindable.debindGroundY();
       bindable.debindGroundL && bindable.debindGroundL();
-
-      if (!_this.controllable) {
-        return;
-      }
-
       var prevGroundObject = target[key];
 
       if (!groundObject) {
@@ -8373,7 +8322,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         return;
       }
 
-      if (groundObject.isVehicle) {
+      if (_this.controllable && groundObject.isVehicle) {
         bindable.debindGroundX = groundObject.args.bindTo('x', function (vv, kk) {
           var x = 0;
           var y = groundObject.args.seatHeight || groundObject.args.height || 0;
@@ -8402,8 +8351,8 @@ var PointActor = /*#__PURE__*/function (_View) {
           occupant.standingOn = null;
           occupant.args.y -= 32;
           occupant.args.gSpeed = 0;
-          occupant.args.xSpeed = -3 * _this.args.direction;
-          occupant.args.ySpeed = -6;
+          occupant.args.xSpeed = -5 * _this.args.direction;
+          occupant.args.ySpeed = -8;
           occupant.args.falling = true;
         }
 
@@ -8432,6 +8381,8 @@ var PointActor = /*#__PURE__*/function (_View) {
         prevGroundObject.xAxis = 0;
         prevGroundObject.yAxis = 0;
       }
+
+      groundObject.standBelow(_assertThisInitialized(_this));
     });
     return _possibleConstructorReturn(_this, bindable);
   }
@@ -8538,6 +8489,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       if (this.args.falling) {
+        this.standingOn = null;
         this.args.landed = false;
         this.lastAngles = [];
       }
@@ -8705,11 +8657,22 @@ var PointActor = /*#__PURE__*/function (_View) {
       var nextPosition = [0, 0];
 
       if (this.args.gSpeed) {
+        var radius = Math.floor(this.args.width / 2);
+        var scanDist = radius + Math.abs(this.args.gSpeed);
+        var direction = Math.sign(this.args.gSpeed);
         var max = Math.abs(this.args.gSpeed);
         var step = Math.ceil(max / 64);
-        var direction = Math.sign(this.args.gSpeed);
 
         for (var s = 0; s < max; s += step) {
+          if (this.args.width > 1) {
+            var scanForward = this.scanForward(step * direction);
+
+            if (scanForward !== false) {
+              this.args.gSpeed = 0;
+              continue;
+            }
+          }
+
           nextPosition = this.findNextStep(step * direction);
 
           if (!nextPosition) {
@@ -8735,16 +8698,18 @@ var PointActor = /*#__PURE__*/function (_View) {
             switch (this.args.mode) {
               case MODE_FLOOR:
                 this.args.xSpeed = this.args.gSpeed;
-                this.args.falling = true;
+                this.args.falling = !!this.args.gSpeed;
+                this.args["float"] = 1;
                 break;
 
               case MODE_CEILING:
                 this.args.xSpeed = -this.args.gSpeed;
-                this.args.falling = true;
+                this.args.falling = !!this.args.gSpeed;
+                this.args["float"] = 1;
                 break;
 
               case MODE_LEFT:
-                if (Math.abs(this.args.gSpeed) < 50) {
+                if (Math.abs(this.args.gSpeed) < 20) {
                   this.args.mode = MODE_FLOOR;
                   this.args.y--;
                   this.args.x += this.args.direction;
@@ -8758,7 +8723,7 @@ var PointActor = /*#__PURE__*/function (_View) {
                 break;
 
               case MODE_RIGHT:
-                if (Math.abs(this.args.gSpeed) < 50) {
+                if (Math.abs(this.args.gSpeed) < 20) {
                   this.args.mode = MODE_FLOOR;
                   this.args.y--;
                   this.args.x += this.args.direction;
@@ -8870,9 +8835,9 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
         }
       } else if (this.args.stopped === 1) {
-        var backPosition = this.findNextStep(-2);
-        var forePosition = this.findNextStep(2);
-        var sensorSpread = 4;
+        var backPosition = this.findNextStep(-this.args.width / 2);
+        var forePosition = this.findNextStep(this.args.width / 2);
+        var sensorSpread = this.args.width;
 
         if (nextPosition[0] === false && nextPosition[1] === false) {
           this.args.falling = true;
@@ -8919,69 +8884,22 @@ var PointActor = /*#__PURE__*/function (_View) {
       var cSquared = Math.pow(this.args.xSpeed, 2) + Math.pow(this.args.ySpeed, 2);
       var airSpeed = cSquared ? Math.sqrt(cSquared) : 0;
       var viewport = this.viewport;
-
-      if (this.args.flying || this.args.falling && this.args.xSpeed) {
-        var frontEdge = 2 + Math.floor(this.args.width / 2) * Math.sign(this.args.xSpeed);
-        var midHeight = Math.floor(this.args.height / 2); // const foreHeadDistance = this.castRay(
-        // 	Math.abs(this.args.xSpeed) + 1
-        // 	, this.args.xSpeed < 0 ? Math.PI : 0
-        // 	, [frontEdge, -(-1 + this.args.height + this.args.yMargin)]
-        // 	, (i, point) => {
-        // 		const actors = viewport.actorsAtPoint(...point)
-        // 			.filter(x => x.args !== this.args)
-        // 			.filter(x => x.callCollideHandler(this))
-        // 			.filter(x => x.isSolid);
-        // 		if(actors.length > 0)
-        // 		{
-        // 			return i+1;
-        // 		}
-        // 		if(tileMap.getSolid(...point, this.args.layer))
-        // 		{
-        // 			return i+1;
-        // 		}
-        // 	}
-        // );
-        // if(foreHeadDistance && this.args.xSpeed)
-        // {
-        // 	console.log(foreHeadDistance, this.args.xSpeed, Math.sign(this.args.xSpeed));
-        // 	this.args.x += ((-1+foreHeadDistance) * Math.sign(this.args.xSpeed));
-        // 	this.args.xSpeed = 0;
-        // }
-
-        var radius = Math.round(this.args.width / 2);
-        var scanDist = Math.abs(this.args.xSpeed) + radius;
-
-        if (this.args.xSpeed) {
-          var foreDistance = this.castRay(scanDist, this.args.xSpeed > 0 ? 0 : Math.PI, function (i, point) {
-            var actors = viewport.actorsAtPoint.apply(viewport, _toConsumableArray(point)).filter(function (x) {
-              return x.args !== _this4.args;
-            }).filter(function (x) {
-              return x.callCollideHandler(_this4);
-            }).filter(function (x) {
-              return x.isSolid;
-            });
-
-            if (actors.length > 0) {
-              return i;
-            }
-
-            if (tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this4.args.layer]))) {
-              return i;
-            }
-          });
-
-          if (foreDistance !== false) {
-            var space = foreDistance - radius;
-
-            if (this.args.xSpeed) {
-              this.args.x += (space + 1) * Math.sign(this.args.xSpeed);
-              this.args.xSpeed = 0;
-              this.args.ignore = 2;
-            }
-          }
-        }
-      } // console.log(this.args.airAngle)
-
+      var radius = Math.round(this.args.width / 2);
+      var speed = this.args.xSpeed; // if(this.args.height > this.maxStep)
+      // {
+      // 	const foreDistance = this.scanForward(this.args.xSpeed + 1 * Math.sign(this.args.xSpeed));
+      // 	if(foreDistance !== false)
+      // 	{
+      // 		const space = 1 + foreDistance;
+      // 		if(speed)
+      // 		{
+      // 			this.args.x += foreDistance * Math.sign(speed);
+      // 			this.args.xSpeed = 0;
+      // 			this.args.ignore = 2;
+      // 			return;
+      // 		}
+      // 	}
+      // }
 
       var airPoint = this.castRay(airSpeed, this.args.airAngle, function (i, point) {
         var actors = viewport.actorsAtPoint.apply(viewport, _toConsumableArray(point)).filter(function (x) {
@@ -8989,7 +8907,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         }).filter(function (x) {
           return x.callCollideHandler(_this4);
         }).filter(function (x) {
-          return x.isSolid;
+          return x.solid;
         });
 
         if (actors.length > 0) {
@@ -9032,6 +8950,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       var ySpeedOriginal = this.args.ySpeed;
 
       if (this.args.ySpeed < 0 && upDistance !== false) {
+        console.log(upDistance);
         this.args.ignore = 1;
         this.args.y -= Math.floor(upDistance - upMargin);
         this.args.ySpeed = 0;
@@ -9069,6 +8988,16 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.args.y = Math.floor(airPoint[1]);
         blockers = this.getMapSolidAt(this.x + direction, this.y);
 
+        if (Array.isArray(blockers)) {
+          blockers = blockers.filter(function (a) {
+            return a.callCollideHandler(_this4);
+          });
+
+          if (!blockers.length) {
+            blockers = false;
+          }
+        }
+
         if (!blockers) {
           this.args.mode = MODE_FLOOR;
           this.args.gSpeed = Math.floor(xSpeedOriginal);
@@ -9084,16 +9013,12 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
 
           this.args.falling = false;
-        } else if (Array.isArray(blockers)) {
+        } else if (blockers && blockers.length) {
           if (this.willJump) {
             this.args.xSpeed *= -1.1;
             this.args.ySpeed *= -1.1;
             this.willJump = false;
           } else {
-            blockers = blockers.filter(function (a) {
-              return a.callCollideHandler(_this4);
-            });
-
             if (blockers.length && this.willStick) {
               if (blockers.filter(function (a) {
                 return a.canStick;
@@ -9210,19 +9135,35 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
         }
 
+        var below = this.getMapSolidAt(testX + Math.floor(this.args.width / 2), testY + 1);
+
+        if (!below) {
+          below = this.getMapSolidAt(testX - Math.floor(this.args.width / 2), testY + 1);
+        }
+
+        if (Array.isArray(below)) {
+          below = below.filter(function (x) {
+            return x.solid && x.callCollideHandler(_this5);
+          }).length;
+        }
+
         if (Array.isArray(blockers)) {
-          if (blockers.filter(function (a) {
+          if (this.willStick && blockers.filter(function (a) {
             return a.canStick;
-          }).length || this.getMapSolidAt(testX, testY + 1)) {
-            this.args.falling = false;
-          } else {
-            this.args.falling = true;
+          }).length) {
+            this.args.ySpeed = 0;
+            this.args.xSpeed = 0;
           }
 
-          this.args.ySpeed = 0;
-          this.args.xSpeed = 0;
+          if (!below) {
+            this.args.falling = true;
+          }
         } else if (blockers) {
-          this.args.falling = false;
+          if (this.willStick || below) {
+            this.args.falling = false;
+          } else if (!below) {
+            this.args.falling = true;
+          }
         }
 
         this.args.x = testX;
@@ -9330,23 +9271,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
-      other.collideB(this);
       return this.solid;
-    }
-  }, {
-    key: "collideB",
-    value: function collideB(other, type) {
-      if (other.y <= this.y - this.args.height) {
-        this.args.collType = 'collision-top';
-      } else if (other.x < this.x - Math.floor(this.args.width / 2)) {
-        this.args.collType = 'collision-left';
-      } else if (other.x >= this.x + Math.floor(this.args.width / 2)) {
-        this.args.collType = 'collision-right';
-      } else if (other.y >= this.y) {
-        this.args.collType = 'collision-bottom';
-      }
-
-      this.colliding = true;
     }
   }, {
     key: "findNextStep",
@@ -9603,20 +9528,67 @@ var PointActor = /*#__PURE__*/function (_View) {
       return rAngle;
     }
   }, {
+    key: "scanForward",
+    value: function scanForward(speed) {
+      var _this7 = this;
+
+      var dir = Math.sign(speed);
+      var radius = Math.round(this.args.width / 2);
+      var hRadius = Math.round(this.args.height / 2);
+      var scanDist = Math.abs(speed);
+      var viewport = this.viewport;
+      var tileMap = viewport.tileMap;
+      var startPoint = this.rotatePoint(radius * -dir, hRadius);
+      return this.castRay(scanDist, this.args.falling ? Math.sign(speed) > 0 ? 0 : Math.PI : this.realAngle + (Math.sign(speed) < 0 ? Math.PI : 0), startPoint, function (i, point) {
+        var actors = viewport.actorsAtPoint.apply(viewport, _toConsumableArray(point)).filter(function (x) {
+          return x.args !== _this7.args;
+        }).filter(function (x) {
+          return i <= radius && x.callCollideHandler(_this7);
+        }).filter(function (x) {
+          return x.solid;
+        });
+
+        if (actors.length > 0) {
+          return i;
+        }
+
+        if (tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this7.args.layer]))) {
+          return i;
+        }
+      });
+    }
+  }, {
+    key: "scanBottomEdge",
+    value: function scanBottomEdge() {
+      var _this8 = this;
+
+      var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var tileMap = this.viewport.tileMap;
+      return this.castRay(this.args.width, direction < 0 ? Math.PI : 0, [-direction * (this.args.width / 2), 0], function (i, point) {
+        var actors = _this8.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
+          return a.args !== _this8.args;
+        });
+
+        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this8.args.layer)) {
+          return i;
+        }
+      });
+    }
+  }, {
     key: "scanVerticalEdge",
     value: function scanVerticalEdge() {
-      var _this7 = this;
+      var _this9 = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var tileMap = this.viewport.tileMap;
       return this.castRay(this.args.height + 1, Math.PI / 2, [direction * this.args.width / 2, -this.args.height], function (i, point) {
-        var _this7$viewport;
+        var _this9$viewport;
 
-        var actors = (_this7$viewport = _this7.viewport).actorsAtPoint.apply(_this7$viewport, _toConsumableArray(point)).filter(function (a) {
-          return a.args !== _this7.args;
+        var actors = (_this9$viewport = _this9.viewport).actorsAtPoint.apply(_this9$viewport, _toConsumableArray(point)).filter(function (a) {
+          return a.args !== _this9.args;
         });
 
-        if (actors.length || tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this7.args.layer]))) {
+        if (actors.length || tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this9.args.layer]))) {
           return i;
         }
       });
@@ -9627,27 +9599,14 @@ var PointActor = /*#__PURE__*/function (_View) {
       var xRot = x * Math.cos(this.realAngle) - y * Math.sin(this.realAngle);
       var yRot = y * Math.cos(this.realAngle) + x * Math.sin(this.realAngle);
       return [xRot, yRot];
-    } // get leftPoint()
-    // {
-    // 	const halfWidth  = Math.floor(this.args.width  / 2);
-    // 	const halfHeight = Math.floor(this.args.height / 2);
-    // 	return [this.x - halfWidth, this.y - halfHeight];
-    // }
-    // get rightPoint()
-    // {
-    // 	const halfWidth  = Math.floor(this.args.width  / 2);
-    // 	const halfHeight = Math.floor(this.args.height / 2);
-    // 	return [this.x + halfWidth, this.y - halfHeight];
-    // }
-    // get topPoint()
-    // {
-    // 	return [this.x, this.y - this.args.height];
-    // }
-
+    }
+  }, {
+    key: "standBelow",
+    value: function standBelow(other) {}
   }, {
     key: "getMapSolidAt",
     value: function getMapSolidAt(x, y) {
-      var _this8 = this;
+      var _this10 = this;
 
       var actors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
@@ -9657,7 +9616,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (actors) {
         var _actors = this.viewport.actorsAtPoint(x, y).filter(function (x) {
-          return x.args !== _this8.args;
+          return x.args !== _this10.args;
         }).filter(function (x) {
           return x.solid;
         });
@@ -9690,27 +9649,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       var groundAngle = this.args.groundAngle;
-      var trajectory; // if(this.args.direction > 0)
-      // {
-      // 	switch(this.args.mode)
-      // 	{
-      // 		case 0:
-      // 			trajectory = -groundAngle;
-      // 			break;
-      // 		case 1:
-      // 			trajectory = -groundAngle + (Math.PI / 2);
-      // 			break;
-      // 		case 2:
-      // 			trajectory = -groundAngle - (Math.PI);
-      // 			break;
-      // 		case 3:
-      // 			trajectory = -groundAngle - (Math.PI / 2);
-      // 			break;
-      // 	}
-      // }
-      // else
-      // {
-      // }
+      var trajectory;
 
       switch (this.args.mode) {
         case 0:
@@ -9967,7 +9906,7 @@ var Projectile = /*#__PURE__*/function (_PointActor) {
       }
 
       if (!this.removeTimer) {
-        this.removeTimer = this.onTimeout(2000, function () {
+        this.removeTimer = this.onTimeout(4000, function () {
           return _this2.explode();
         });
       }
@@ -9975,19 +9914,6 @@ var Projectile = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideA",
     value: function collideA(other) {
-      if (other === this.args.owner || other instanceof Projectile || other instanceof _Explosion.Explosion) {
-        return false;
-      }
-
-      if (this.viewport) {
-        this.explode();
-      }
-
-      return false;
-    }
-  }, {
-    key: "collideB",
-    value: function collideB(other) {
       if (other === this.args.owner || other instanceof Projectile || other instanceof _Explosion.Explosion) {
         return false;
       }
@@ -10221,6 +10147,8 @@ exports.Region = void 0;
 
 var _PointActor2 = require("./PointActor");
 
+var _Tag = require("curvature/base/Tag");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -10274,20 +10202,46 @@ var Region = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'region region-water';
     _this.args.width = _this.args.width || 32;
     _this.args.height = _this.args.height || 32;
-    _this.args.gravity = 0.1;
-    _this.args.drag = 0.2;
+    _this.args.gravity = 0.3;
+    _this.args.drag = 0.5;
+    _this.draining = 0;
     return _this;
   }
 
   _createClass(Region, [{
+    key: "onAttached",
+    value: function onAttached() {
+      this.box = this.findTag('div');
+      this.altFilter = new _Tag.Tag('<div class = "region-alt-filter">');
+      this.box.appendChild(this.altFilter.node);
+    }
+  }, {
     key: "update",
     value: function update() {
+      var _this2 = this;
+
+      if (!this["switch"]) {
+        this["switch"] = this.viewport.actorsById[this.args["switch"]];
+        this["switch"].args.bindTo('active', function (v) {
+          if (!v) {
+            _this2.draining = -1;
+          }
+
+          if (v && _this2.draining < 0) {
+            _this2.draining = 1;
+          }
+        });
+      }
+
       if (!this.originalHeight) {
         this.originalHeight = this.args.height;
       }
 
-      var min = 32 * 4.5;
-      this.args.height = Math.floor(Math.abs((this.originalHeight - min) * Math.sin(Date.now() / 60000)) + min);
+      if (this.draining > 0 && this.args.height > 0) {
+        this.args.height -= 3;
+      } else if (this.draining < 0 && this.args.height < this.originalHeight) {
+        this.args.height += 0.75;
+      }
     }
   }, {
     key: "solid",
@@ -10632,9 +10586,9 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
 
     _this = _super.call.apply(_super, [this].concat(args));
     _this.args.type = 'actor-item actor-sonic';
-    _this.args.accel = 0.18;
+    _this.args.accel = 0.35;
     _this.args.decel = 0.7;
-    _this.args.skidTraction = 0.5;
+    _this.args.skidTraction = 1.75;
     _this.args.gSpeedMax = 30;
     _this.args.jumpForce = 15;
     _this.args.gravity = 0.7;
@@ -10911,14 +10865,26 @@ var StarPost = /*#__PURE__*/function (_PointActor) {
         this.box.setAttribute('data-active', 'true');
         this.box.setAttribute('data-spin', 'true');
         this.viewport.args.audio && this.sample && this.sample.play();
+        var throwSpeed = (other.args.gSpeed || other.args.xSpeed) / 2;
+
+        if (Math.abs(throwSpeed) > 20) {
+          throwSpeed = 20 * Math.sign(throwSpeed);
+        }
+
         var monitor = new _Monitor.Monitor({
+          direction: other.args.direction,
+          xSpeed: throwSpeed,
+          ySpeed: -5,
           x: this.x - 10,
-          y: this.y - 48,
-          xSpeed: 5 * (Math.sign(other.args.gSpeed) || 1),
-          ySpeed: -5
+          y: this.y - 48
         });
         this.viewport.actors.add(monitor);
         this.args.active = true;
+        this.onTimeout(3000, function () {
+          _this2.box.setAttribute('data-active', 'false');
+
+          _this2.args.active = false;
+        });
         this.spinning = true;
         this.onTimeout(600, function () {
           return _this2.spinning = false;
@@ -10949,7 +10915,7 @@ var StarPost = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "isEffect",
     get: function get() {
-      return false;
+      return true;
     }
   }]);
 
@@ -10957,6 +10923,110 @@ var StarPost = /*#__PURE__*/function (_PointActor) {
 }(_PointActor2.PointActor);
 
 exports.StarPost = StarPost;
+});
+
+;require.register("actor/Switch.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Switch = void 0;
+
+var _PointActor2 = require("./PointActor");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var Switch = /*#__PURE__*/function (_PointActor) {
+  _inherits(Switch, _PointActor);
+
+  var _super = _createSuper(Switch);
+
+  function Switch() {
+    var _this;
+
+    _classCallCheck(this, Switch);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+    _this.args.type = 'actor-item actor-switch';
+    _this.args.width = 32;
+    _this.args.height = 10;
+    _this.args["float"] = -1;
+    _this.removeTimer = null;
+    _this.args.active = false;
+    _this.activator = null;
+
+    _this.args.bindTo('active', function (v) {
+      _this.box && _this.box.setAttribute('data-active', v ? 'true' : 'false');
+    });
+
+    return _this;
+  }
+
+  _createClass(Switch, [{
+    key: "update",
+    value: function update() {
+      if (!this.activator || this.activator.standingOn !== this) {
+        this.args.active = false;
+        this.activator = null;
+      }
+    }
+  }, {
+    key: "onAttached",
+    value: function onAttached() {
+      this.box = this.findTag('div');
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      var _this2 = this;
+
+      if ([0, -1].includes(type) && other.args.ySpeed >= 0) {
+        this.args.active = true;
+        this.activator = other;
+        other.onRemove(function () {
+          if (_this2.activator === other) {
+            _this2.activator = null;
+          }
+        });
+        return true;
+      }
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return true;
+    }
+  }]);
+
+  return Switch;
+}(_PointActor2.PointActor);
+
+exports.Switch = Switch;
 });
 
 ;require.register("actor/Tails.js", function(exports, require, module) {
@@ -11013,12 +11083,12 @@ var Tails = /*#__PURE__*/function (_PointActor) {
 
     _this = _super.call.apply(_super, [this].concat(args));
     _this.args.type = 'actor-item actor-tails';
-    _this.args.accel = 0.18;
+    _this.args.accel = 0.32;
     _this.args.decel = 0.7;
     _this.args.gSpeedMax = 27;
     _this.args.jumpForce = 15;
     _this.args.gravity = 0.7;
-    _this.args.skidTraction = 0.5;
+    _this.args.skidTraction = 1.75;
     _this.args.width = 16;
     _this.args.height = 32;
     return _this;
@@ -11230,6 +11300,122 @@ var TextActor = /*#__PURE__*/function (_PointActor) {
 }(_PointActor2.PointActor);
 
 exports.TextActor = TextActor;
+});
+
+;require.register("actor/Vehicle.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Vehicle = void 0;
+
+var _PointActor2 = require("./PointActor");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var Vehicle = /*#__PURE__*/function (_PointActor) {
+  _inherits(Vehicle, _PointActor);
+
+  var _super = _createSuper(Vehicle);
+
+  function Vehicle() {
+    _classCallCheck(this, Vehicle);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Vehicle, [{
+    key: "update",
+    value: function update() {
+      if (this.occupant) {
+        this.running = this.occupant.running;
+        this.crawling = this.occupant.crawling;
+      }
+
+      _get(_getPrototypeOf(Vehicle.prototype), "update", this).call(this);
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (other.controllable) {
+        if ([0, -1].includes(type) && other.args.ySpeed >= 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      if (other.y >= this.y) {
+        return false;
+      }
+
+      if (!other.args["float"]) {
+        other.args.ySpeed = -other.args.ySpeed;
+        other.args.xSpeed = other.args.xSpeed || other.args.direction * 5;
+
+        if (other.args.ySpeed > -5) {
+          other.args.ySpeed = -5;
+        }
+
+        other.args.falling = true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "standBelow",
+    value: function standBelow(other) {
+      this.onTimeout(0, function () {
+        if (!other.controllable) {
+          other.args.ySpeed = -other.args.ySpeed;
+          other.args.xSpeed = other.args.xSpeed || other.args.direction * 5;
+
+          if (other.args.ySpeed > -5) {
+            other.args.ySpeed = -5;
+          }
+
+          other.args.falling = true;
+          other.standingOn = null;
+          console.log(other);
+        }
+      });
+    }
+  }, {
+    key: "isVehicle",
+    get: function get() {
+      return true;
+    }
+  }]);
+
+  return Vehicle;
+}(_PointActor2.PointActor);
+
+exports.Vehicle = Vehicle;
 });
 
 ;require.register("actor/Window.js", function(exports, require, module) {
@@ -12648,6 +12834,8 @@ var _Knuckles = require("../actor/Knuckles");
 
 var _Seymour = require("../actor/Seymour");
 
+var _Switch = require("../actor/Switch");
+
 var _Region = require("../actor/Region");
 
 var _CharacterString = require("../ui/CharacterString");
@@ -12694,13 +12882,14 @@ var objectPalette = {
   'marble-block': _MarbleBlock.MarbleBlock,
   'drill-car': _DrillCar.DrillCar,
   'egg-mobile': _EggMobile.EggMobile,
+  'mecha-sonic': _MechaSonic.MechaSonic,
   'sonic': _Sonic.Sonic,
   'tails': _Tails.Tails,
   'knuckles': _Knuckles.Knuckles,
-  'mecha-sonic': _MechaSonic.MechaSonic,
   'eggman': _Eggman.Eggman,
   'eggrobo': _Eggrobo.Eggrobo,
   'seymour': _Seymour.Seymour,
+  'switch': _Switch.Switch,
   'window': _Window.Window,
   'emerald': _Emerald.Emerald,
   'region': _Region.Region,
@@ -12740,6 +12929,9 @@ var Viewport = /*#__PURE__*/function (_View) {
       value: '',
       scale: 2
     });
+    _this.args.labelChar = new _CharacterString.CharacterString({
+      value: 'Char: '
+    });
     _this.args.labelX = new _CharacterString.CharacterString({
       value: 'x pos: '
     });
@@ -12769,6 +12961,9 @@ var Viewport = /*#__PURE__*/function (_View) {
     });
     _this.args.labelAirAngle = new _CharacterString.CharacterString({
       value: 'Air theta: '
+    });
+    _this.args["char"] = new _CharacterString.CharacterString({
+      value: ''
     });
     _this.args.xPos = new _CharacterString.CharacterString({
       value: 0
@@ -12852,6 +13047,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.animation = '';
     _this.spawn = new Set();
     _this.regions = new Set();
+    _this.actorsById = {};
     _this.actors = new _Bag.Bag(function (i, s, a) {
       if (a == _Bag.Bag.ITEM_ADDED) {
         i.viewport = _assertThisInitialized(_this);
@@ -12861,6 +13057,8 @@ var Viewport = /*#__PURE__*/function (_View) {
         if (i instanceof _Region.Region) {
           _this.regions.add(i);
         }
+
+        _this.actorsById[i.args.id] = i;
       } else if (a == _Bag.Bag.ITEM_REMOVED) {
         i.viewport = null;
 
@@ -12872,6 +13070,7 @@ var Viewport = /*#__PURE__*/function (_View) {
           _this.regions["delete"](i);
         }
 
+        delete _this.actorsById[i.args.id];
         delete i[ColCell];
       }
     });
@@ -12902,9 +13101,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.startTime = null;
     _this.args.audio = true;
     _this.nextControl = false;
-    _this.args.controllable = {
-      'character select': null
-    };
+    _this.args.controllable = {};
     _this.updateStarted = new Set();
     _this.updateEnded = new Set();
     _this.updated = new Set();
@@ -12930,6 +13127,8 @@ var Viewport = /*#__PURE__*/function (_View) {
           _this2.onTimeout(2500, function () {
             _this2.args.focusMe.args.hide = '';
             _this2.args.status.args.hide = 'hide';
+
+            _this2.tags.viewport.focus();
           });
         });
       });
@@ -13257,7 +13456,7 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       this.actors.add(new _TextActor.TextActor({
-        x: 1250,
+        x: 1300,
         y: 1800
       }));
     }
@@ -13496,6 +13695,7 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.args.hasRings = !!this.controlActor.args.rings;
       this.args.hasCoins = !!this.controlActor.args.coins;
       this.args.hasEmeralds = !!this.controlActor.args.emeralds;
+      this.args["char"].args.value = this.controlActor.args.name;
       this.args.xPos.args.value = Math.round(this.controlActor.x);
       this.args.yPos.args.value = Math.round(this.controlActor.y);
       this.args.ground.args.value = this.controlActor.args.landed;
@@ -13710,7 +13910,7 @@ module.exports = "<div class = \"viewport-background\" cv-each = \"blocks:block:
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\n\t\t\t<div  cv-ref = \"content\" class = \"viewport-content\">\n\n\t\t\t\t<div class = \"viewport-actors\" cv-each = \"actors:actor:a\">\t[[actor]]\n\t\t\t\t</div>\n\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\" cv-each = \"particles:particle:p\">\n\t\t\t\t\t[[particle]]\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span class= \"alert\">ignore speed limit (hold)</span>\n\t\t\t\t</span>\n\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\n<!-- \t\t\t\t<label>\n\t\t\t\t\t<small>player character:</small>\n\t\t\t\t\t<select>\n\t\t\t\t\t\t<option value = \"nuke-ball\">nuclear superball</option>\n\t\t\t\t\t\t<option value = \"sonic\">sonic</option>\n\t\t\t\t\t\t<option value = \"tails\">tails</option>\n\t\t\t\t\t\t<option value = \"knuckles\">knuckles</option>\n\t\t\t\t\t\t<option value = \"amy-rose\">amy rose</option>\n\t\t\t\t\t\t<option value = \"charmy bee\">charmy bee</option>\n\t\t\t\t\t\t<option value = \"mario\">mario</option>\n\t\t\t\t\t\t<option value = \"luigi\">luigi</option>\n\t\t\t\t\t\t<option value = \"luigi\">samus</option>\n\t\t\t\t\t\t<option value = \"luigi\">metal sonic</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label> -->\n\n\t\t\t\t<label>\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
+module.exports = "<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\">\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div cv-ref = \"background\" class = \"viewport-bg-layers\" cv-each = \"layers:layer\">[[layer]]</div>\n\n\t\t\t<div  cv-ref = \"content\" class = \"viewport-content\">\n\n\t\t\t\t<div class = \"viewport-actors\" cv-each = \"actors:actor:a\">\t[[actor]]\n\t\t\t\t</div>\n\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\" cv-each = \"particles:particle:p\">\n\t\t\t\t\t[[particle]]\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td colspan = \"2\">[[char]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<div class = \"right\">\n\t\t\t\t\t<label>\n\t\t\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t\t\t<small><small>[esc to revert]</small></small>\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t\t\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t\t\t\t/ <b>wasd</b>\n\t\t\t\t\t- move\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-x\"></span>\n\t\t\t\t\t/ <span class = \"button xb-a\"></span>\n\t\t\t\t\t/ <b>space</b>\n\t\t\t\t\t- jump\n\t\t\t\t</span>\n\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-o\"></span>\n\t\t\t\t\t/ <span class = \"button xb-b\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span>run (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-l1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-lb\"></span>\n\t\t\t\t\t/ <b>ctrl</b>\n\t\t\t\t\t- <span>run (hold)</span>\n\t\t\t\t</span>\n\n\t\t\t\t<span class = \"button-index\">\n\t\t\t\t\t<span class = \"button ps-r1\"></span>\n\t\t\t\t\t/ <span class = \"button xb-rb\"></span>\n\t\t\t\t\t/ <b>shift</b>\n\t\t\t\t\t- brakes (hold)\n\t\t\t\t</span>\n\n\t\t\t\t<p>\n\t\t\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\t\t\tview the project on github\n\t\t\t\t\t</a>\n\t\t\t\t</p>\n\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\t\t\t\t<label class = \"change-character\">\n\t\t\t\t\tchange character:\n\t\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t\t</select>\n\t\t\t\t</label>\n\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n"
 });
 
 ;require.register("___globals___", function(exports, require, module) {

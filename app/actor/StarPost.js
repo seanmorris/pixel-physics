@@ -59,16 +59,29 @@ export class StarPost extends PointActor
 
 			this.viewport.args.audio && this.sample && this.sample.play();
 
+			let throwSpeed = (other.args.gSpeed || other.args.xSpeed) / 2;
+
+			if(Math.abs(throwSpeed) > 20)
+			{
+				throwSpeed = 20 * Math.sign(throwSpeed);
+			}
+
 			const monitor = new Monitor({
-				x: this.x - 10
-				, y: this.y - 48
-				, xSpeed: 5 * (Math.sign(other.args.gSpeed) || 1)
-				, ySpeed: -5
+				direction: other.args.direction
+				, xSpeed:  throwSpeed
+				, ySpeed:  -5
+				, x:       this.x - 10
+				, y:       this.y - 48
 			});
 
 			this.viewport.actors.add(monitor);
 
 			this.args.active = true;
+
+			this.onTimeout(3000, () => {
+				this.box.setAttribute('data-active', 'false');
+				this.args.active = false
+			});
 
 			this.spinning = true;
 
@@ -94,5 +107,5 @@ export class StarPost extends PointActor
 	}
 
 	get solid() { return false; }
-	get isEffect() { return false; }
+	get isEffect() { return true; }
 }

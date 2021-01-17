@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Tag } from 'curvature/base/Tag';
+
 export class Region extends PointActor
 {
 	static fromDef(objDef)
@@ -21,21 +23,53 @@ export class Region extends PointActor
 		this.args.width  = this.args.width  || 32;
 		this.args.height = this.args.height || 32;
 
-		this.args.gravity = 0.1;
-		this.args.drag    = 0.2;
+		this.args.gravity = 0.3;
+		this.args.drag    = 0.5;
+
+		this.draining = 0;
+	}
+
+	onAttached()
+	{
+		this.box = this.findTag('div');
+
+		this.altFilter = new Tag('<div class = "region-alt-filter">');
+
+		this.box.appendChild(this.altFilter.node);
 	}
 
 	update()
 	{
+		if(!this.switch)
+		{
+			this.switch = this.viewport.actorsById[ this.args.switch ]
+
+			this.switch.args.bindTo('active', v => {
+				if(!v)
+				{
+					this.draining = -1;
+				}
+
+				if(v && this.draining < 0)
+				{
+					this.draining = 1;
+				}
+			});
+		}
+
 		if(!this.originalHeight)
 		{
 			this.originalHeight = this.args.height;
 		}
 
-		const min =  32 * 4.5;
-
-		this.args.height = Math.floor(Math.abs((this.originalHeight - min) * Math.sin(Date.now() / 60000)) + min);
-
+		if(this.draining > 0 && this.args.height > 0)
+		{
+			this.args.height -= 3;
+		}
+		else if(this.draining < 0 && this.args.height < this.originalHeight)
+		{
+			this.args.height += 0.75;
+		}
 	}
 
 	get solid() { return false; }

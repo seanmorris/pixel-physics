@@ -33,26 +33,11 @@ export class Projectile extends PointActor
 
 		if(!this.removeTimer)
 		{
-			this.removeTimer = this.onTimeout(2000, () => this.explode());
+			this.removeTimer = this.onTimeout(4000, () => this.explode());
 		}
 	}
 
 	collideA(other)
-	{
-		if(other === this.args.owner || other instanceof Projectile || other instanceof Explosion)
-		{
-			return false;
-		}
-
-		if(this.viewport)
-		{
-			this.explode();
-		}
-
-		return false;
-	}
-
-	collideB(other)
 	{
 		if(other === this.args.owner || other instanceof Projectile || other instanceof Explosion)
 		{

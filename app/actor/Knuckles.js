@@ -9,19 +9,18 @@ export class Knuckles extends PointActor
 
 		this.args.type      = 'actor-item actor-knuckles';
 
-		this.args.accel     = 0.18;
+		this.args.accel     = 0.30;
 		this.args.decel     = 0.7;
 
 		this.args.gSpeedMax = 25;
 		this.args.jumpForce = 14;
 		this.args.gravity   = 0.7;
-		this.args.skidTraction = 0.5;
 
 
 		this.args.width  = 32;
 		this.args.height = 41;
 
-		this.args.skidTraction = 0.7;
+		this.args.skidTraction = 1.7;
 	}
 
 	onAttached()

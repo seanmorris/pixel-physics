@@ -25,6 +25,10 @@
 				<table>
 
 					<tr>
+						<td colspan = "2">[[char]]</td>
+					</tr>
+
+					<tr>
 						<td>[[labelGround]]</td>
 						<td>[[ground]]</td>
 					</tr>
@@ -153,27 +157,27 @@
 					- jump
 				</span>
 
-				<span class = "button-index">
-					<span class = "button ps-r1"></span>
-					/ <span class = "button xb-rb"></span>
-					/ <b>shift</b>
-					- brakes (hold)
-				</span>
 
 				<span class = "button-index">
 					<span class = "button ps-o"></span>
 					/ <span class = "button xb-b"></span>
 					/ <b>ctrl</b>
-					- <span class= "alert">ignore speed limit (hold)</span>
+					- <span>run (hold)</span>
 				</span>
 
 				<span class = "button-index">
 					<span class = "button ps-l1"></span>
 					/ <span class = "button xb-lb"></span>
 					/ <b>ctrl</b>
-					- <span class= "alert">ignore speed limit (hold)</span>
+					- <span>run (hold)</span>
 				</span>
 
+				<span class = "button-index">
+					<span class = "button ps-r1"></span>
+					/ <span class = "button xb-rb"></span>
+					/ <b>shift</b>
+					- brakes (hold)
+				</span>
 
 				<p>
 					<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
@@ -185,24 +189,8 @@
 			</div>
 
 			<div class = "right">
-
-<!-- 				<label>
-					<small>player character:</small>
-					<select>
-						<option value = "nuke-ball">nuclear superball</option>
-						<option value = "sonic">sonic</option>
-						<option value = "tails">tails</option>
-						<option value = "knuckles">knuckles</option>
-						<option value = "amy-rose">amy rose</option>
-						<option value = "charmy bee">charmy bee</option>
-						<option value = "mario">mario</option>
-						<option value = "luigi">luigi</option>
-						<option value = "luigi">samus</option>
-						<option value = "luigi">metal sonic</option>
-					</select>
-				</label> -->
-
-				<label>
+				<label class = "change-character">
+					change character:
 					<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
 						<option value = "[[name]]">[[name]]</option>
 					</select>

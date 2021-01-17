@@ -1,6 +1,6 @@
-import { PointActor } from './PointActor';
+import { Vehicle } from './Vehicle';
 
-export class EggMobile extends PointActor
+export class EggMobile extends Vehicle
 {
 	constructor(...args)
 	{
@@ -28,34 +28,15 @@ export class EggMobile extends PointActor
 		this.args.flying = true;
 	}
 
-	collideA(other)
-	{
-		if(!other.controllable)
-		{
-			return false;
-		}
-
-		if(other.y >= this.y)
-		{
-			return false;
-		}
-
-		if(other.isVehicle)
-		{
-			return false;
-		}
-
-		return true;
-	}
-
 	update()
 	{
+		this.args.falling = false;
+
 		if(Math.abs(this.yAxis) > 0.1)
 		{
 			if(Math.abs(this.args.ySpeed) < this.args.ySpeedMax)
 			{
-
-				let ySpeed = this.args.ySpeed
+				let ySpeed = this.args.ySpeed;
 
 				if(Math.sign(this.yAxis) === Math.sign(this.args.ySpeed))
 				{
@@ -81,13 +62,14 @@ export class EggMobile extends PointActor
 			this.args.xSpeed = this.args.xSpeed * this.args.decel;
 		}
 
+		this.args.falling = true;
+		this.args.flying  = true;
+
+		this.args.mode = 0;
+
 		super.update();
 
-		this.args.falling = true;
-		this.args.flying = true;
-		this.args.mode = 0;
 	}
 
 	get solid() { return true; }
-	get isVehicle() { return true; }
 }

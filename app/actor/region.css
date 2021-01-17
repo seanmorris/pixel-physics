@@ -2,30 +2,42 @@
 
 }
 
+.region.region-water .region-alt-filter,
 .region.region-water .sprite {
 	position: absolute;
 	top: calc(1px + calc(-1px * var(--height)));
 	left: -16px;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
+	pointer-events: none;
+}
+
+.region.region-water .sprite {
+	z-index: 1010;
 	background-color: #EEE;
-	background-color: #000;
 	background-color: #333;
 	background-color: #FFF;
 	background-color: #F30;
 	background-color: #07F;
-	background-color: #036;
+	background-color: #000;
+	mix-blend-mode: soft-light;
+	opacity: 0.25;
+}
+
+.region.region-water .region-alt-filter {
 	z-index: 1000;
+	background-color: #000;
+	background-color: #036;
+	mix-blend-mode: darken;
 	mix-blend-mode: color-dodge;
 	mix-blend-mode: color-burn;
 	mix-blend-mode: hard-light;
 	mix-blend-mode: soft-light;
-	mix-blend-mode: soft-light;
-	mix-blend-mode: exclusion;
 	mix-blend-mode: lighten;
-	mix-blend-mode: darken;
 	mix-blend-mode: hue;
-	opacity: .75;
+	mix-blend-mode: hue;
+	opacity: 0;
+	opacity: 0.75;
 }
 
 .region.region-water .sprite:after {
@@ -35,7 +47,7 @@
 	background-repeat: repeat-x;
 	position: absolute;
 	transform: translateY(-50%);
-	opacity: 0.75;
+	opacity: 1;
 	width: 100%;
 
 	animation: water-animate infinite 1280ms linear;

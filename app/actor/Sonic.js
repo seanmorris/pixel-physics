@@ -9,10 +9,10 @@ export class Sonic extends PointActor
 
 		this.args.type      = 'actor-item actor-sonic';
 
-		this.args.accel     = 0.18;
+		this.args.accel     = 0.35;
 		this.args.decel     = 0.7;
 
-		this.args.skidTraction = 0.5;
+		this.args.skidTraction = 1.75;
 
 		this.args.gSpeedMax = 30;
 		this.args.jumpForce = 15;

@@ -29,15 +29,23 @@ export class LayerSwitch extends PointActor
 		this.args.float  = -1;
 	}
 
-	collideA(other)
+	collideA(other, type)
 	{
+		if(type !== -1)
+		{
+			return;
+		}
+
 		const back = !!Number(this.args.back);
 
-		if(other.args.gSpeed >= 0)
+		const speed = other.args.gSpeed || other.args.xSpeed;
+
+		if(speed > 0)
 		{
 			other.args.layer = back ? 1 : 2;
 		}
-		else if(other.args.gSpeed < 0)
+
+		if(speed < 0)
 		{
 			other.args.layer = back ? 2 : 1;
 		}

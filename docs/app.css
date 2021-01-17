@@ -144,19 +144,11 @@
 	--animation-steps: 2;
 	--animation-width: 32px;
 	animation: drill-car-animate steps(var(--animation-steps)) infinite;
-	animation-duration: 96ms;
-}
-
-.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire {
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	--animation-steps: 2;
-	--animation-width: 32px;
-	animation: drill-car-animate steps(var(--animation-steps)) infinite;
-	animation-duration: 32ms;
+	animation-duration: 128ms;
 }
 
 .actor-item.actor-drill-car[data-animation='flying'] .drill-car-tire,
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire,
 .actor-item.actor-drill-car[data-animation='jumping'] .drill-car-tire {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
@@ -308,21 +300,21 @@
 
 .actor-item.actor-drill-car .drill-car-tire-back-b {
 	bottom: 0px;
-	left: 14px;
+	left: 16px;
 	background-position: 0px 32px;
 	z-index: 0;
 }
 
 .actor-item.actor-drill-car .drill-car-tire-front-a {
 	bottom: 0px;
-	right: 14px;
+	right: 8px;
 	z-index: 2;
 }
 
 .actor-item.actor-drill-car .drill-car-tire-front-b {
 	z-index: 0;
 	bottom: 0px;
-	right: -14px;
+	right: -8px;
 	background-position: 0px 32px;
 }
 
@@ -1155,30 +1147,42 @@
 
 }
 
+.region.region-water .region-alt-filter,
 .region.region-water .sprite {
 	position: absolute;
 	top: calc(1px + calc(-1px * var(--height)));
 	left: -16px;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
+	pointer-events: none;
+}
+
+.region.region-water .sprite {
+	z-index: 1010;
 	background-color: #EEE;
-	background-color: #000;
 	background-color: #333;
 	background-color: #FFF;
 	background-color: #F30;
 	background-color: #07F;
-	background-color: #036;
+	background-color: #000;
+	mix-blend-mode: soft-light;
+	opacity: 0.25;
+}
+
+.region.region-water .region-alt-filter {
 	z-index: 1000;
+	background-color: #000;
+	background-color: #036;
+	mix-blend-mode: darken;
 	mix-blend-mode: color-dodge;
 	mix-blend-mode: color-burn;
 	mix-blend-mode: hard-light;
 	mix-blend-mode: soft-light;
-	mix-blend-mode: soft-light;
-	mix-blend-mode: exclusion;
 	mix-blend-mode: lighten;
-	mix-blend-mode: darken;
 	mix-blend-mode: hue;
-	opacity: .75;
+	mix-blend-mode: hue;
+	opacity: 0;
+	opacity: 0.75;
 }
 
 .region.region-water .sprite:after {
@@ -1188,7 +1192,7 @@
 	background-repeat: repeat-x;
 	position: absolute;
 	transform: translateY(-50%);
-	opacity: 0.75;
+	opacity: 1;
 	width: 100%;
 
 	animation: water-animate infinite 1280ms linear;
@@ -1458,6 +1462,21 @@
 	width: 16px;
 }
 
+.actor-item.actor-switch .sprite {
+	content: ' ';
+	display: block;
+	height: 16px;
+	width: 32px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	background-image: url(/Sonic/switch.png);
+}
+
+.actor-item.actor-switch[data-active=true] .sprite {
+	--sprite-offset-x: -32px;
+}
+
 .actor-item.actor-tails .sprite {
 	height: 64px;
 	width: 64px;
@@ -1558,13 +1577,13 @@
 	top: 32px;
 	left: -6px;
 
-	--sprite-offset-x: -0px;
-	--sprite-offset-y: -0px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
 	--animation-steps: 6;
 	--animation-width: 32px;
 
 	width: 32px;
-	height: 32px;
+	height: 31px;
 
 	background-image: url(/Sonic/tails-tails.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
@@ -1581,7 +1600,7 @@
 
 .actor-item.actor-tails[data-animation="jumping"] .tails-tails,
 .actor-item.actor-tails[data-animation="rolling"] .tails-tails {
-	--sprite-offset-y: -32px;
+	--sprite-offset-y: 64px;
 	--animation-steps: 5;
 	top: 32px;
 	left: -10px;
@@ -1600,6 +1619,13 @@
 	top: 24px;
 	left: 8px;
 	transform-origin: 42px 16px;
+}
+
+.change-character {
+	background: black;
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
 }
 
 

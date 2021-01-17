@@ -34,19 +34,11 @@
 	--animation-steps: 2;
 	--animation-width: 32px;
 	animation: drill-car-animate steps(var(--animation-steps)) infinite;
-	animation-duration: 96ms;
-}
-
-.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire {
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	--animation-steps: 2;
-	--animation-width: 32px;
-	animation: drill-car-animate steps(var(--animation-steps)) infinite;
-	animation-duration: 32ms;
+	animation-duration: 128ms;
 }
 
 .actor-item.actor-drill-car[data-animation='flying'] .drill-car-tire,
+.actor-item.actor-drill-car[data-animation='running'] .drill-car-tire,
 .actor-item.actor-drill-car[data-animation='jumping'] .drill-car-tire {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
@@ -198,21 +190,21 @@
 
 .actor-item.actor-drill-car .drill-car-tire-back-b {
 	bottom: 0px;
-	left: 14px;
+	left: 16px;
 	background-position: 0px 32px;
 	z-index: 0;
 }
 
 .actor-item.actor-drill-car .drill-car-tire-front-a {
 	bottom: 0px;
-	right: 14px;
+	right: 8px;
 	z-index: 2;
 }
 
 .actor-item.actor-drill-car .drill-car-tire-front-b {
 	z-index: 0;
 	bottom: 0px;
-	right: -14px;
+	right: -8px;
 	background-position: 0px 32px;
 }
 

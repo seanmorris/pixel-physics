@@ -89,7 +89,7 @@ export class Monitor extends PointActor
 			return;
 		}
 
-		const corpse = new BrokenMonitor({x:this.x, y:this.y+30});
+		const corpse = new BrokenMonitor({x:this.x, y:this.y});
 
 		viewport.actors.remove( this );
 
@@ -123,6 +123,6 @@ export class Monitor extends PointActor
 	}
 
 	get canStick() { return false; }
-	get solid() { return true; }
+	get solid() { return false; }
 }
 
