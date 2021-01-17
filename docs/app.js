@@ -6583,9 +6583,9 @@ var EggMobile = /*#__PURE__*/function (_Vehicle) {
     _this.args.type = 'actor-item actor-vehicle actor-eggmobile';
     _this.args.accel = 0.15;
     _this.args.decel = 0.8;
-    _this.args.gSpeedMax = 20;
-    _this.args.xSpeedMax = 20;
-    _this.args.ySpeedMax = 20;
+    _this.args.gSpeedMax = 15;
+    _this.args.xSpeedMax = 25;
+    _this.args.ySpeedMax = 30;
     _this.args.jumpForce = 12;
     _this.args.gravity = 0.6;
     _this.args.width = 54;
@@ -11004,6 +11004,16 @@ var Switch = /*#__PURE__*/function (_PointActor) {
     key: "collideA",
     value: function collideA(other, type) {
       var _this2 = this;
+
+      if (other.isVehicle) {
+        this.args.active = true;
+
+        if (type === 0) {
+          return true;
+        }
+
+        return false;
+      }
 
       if ([0, -1].includes(type) && other.args.ySpeed >= 0) {
         this.args.active = true;

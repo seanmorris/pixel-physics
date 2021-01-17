@@ -11,9 +11,9 @@ export class EggMobile extends Vehicle
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.8;
 
-		this.args.gSpeedMax = 20;
-		this.args.xSpeedMax = 20;
-		this.args.ySpeedMax = 20;
+		this.args.gSpeedMax = 15;
+		this.args.xSpeedMax = 25;
+		this.args.ySpeedMax = 30;
 
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
