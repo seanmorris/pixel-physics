@@ -21,6 +21,8 @@ html, body {
 
 .viewport {
 	image-rendering: pixelated;
+	image-rendering: high-quality;
+	image-rendering: crisp-edges;
 	width: calc(1px * calc(var(--width)  * var(--scale) ));
 	height: calc(1px * calc(var(--height)  * var(--scale) ));
 	transition: width var(--scale-transition), height var(--scale-transition);
@@ -102,6 +104,10 @@ html, body {
 	padding: 0.5em;
 }
 
+.viewport-caption > div:not(:last-child) {
+	padding-bottom: 0;
+}
+
 .viewport-caption .label,
 .viewport-caption label {
 	padding: 0.25em;
@@ -122,6 +128,21 @@ html, body {
 .viewport-caption select {
 	margin-left: 0.25em;
 	text-align: right;
+}
+
+.viewport-caption select {
+	background: none;
+	color: white;
+	border: none;
+}
+
+.viewport-caption select option {
+	color: black;
+	background: white;
+}
+
+.viewport-caption a {
+	margin-right: 1em;
 }
 
 .viewport-zoom {
@@ -236,8 +257,27 @@ span.arrow-west {
 	margin-right: 0.25em;
 }
 
+span.arrow-north,
+span.arrow-south {
+	background-image: url(/debug/arrow-north.svg);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 1em;
+	height: 1.5em;
+	display: inline-block;
+	margin-left: 0.25em;
+	margin-right: 0.25em;
+	margin-bottom: -0.25em;
+}
+
 span.arrow-west {
 	transform: scaleX(-1);
+}
+
+span.arrow-south {
+	transform: scaleY(-1);
+	margin-bottom: -0.5em;
 }
 
 span.button {
@@ -257,6 +297,12 @@ span.button.ps-x {
 span.button.ps-o {
 	background-image: url(/ui/playstation-button-circle.svg);
 }
+span.button.ps-s {
+	background-image: url(/ui/playstation-button-square.svg);
+}
+span.button.ps-t {
+	background-image: url(/ui/playstation-button-triangle.svg);
+}
 
 span.button.ps-l1 {
 	background-image: url(/ui/playstation-button-l1.svg);
@@ -269,9 +315,14 @@ span.button.ps-r1 {
 span.button.xb-a {
 	background-image: url(/ui/xbox-button-a.svg);
 }
-
 span.button.xb-b {
 	background-image: url(/ui/xbox-button-b.svg);
+}
+span.button.xb-x {
+	background-image: url(/ui/xbox-button-x.svg);
+}
+span.button.xb-y {
+	background-image: url(/ui/xbox-button-y.svg);
 }
 
 span.button.xb-lb {
@@ -397,4 +448,13 @@ span.button-index b{
 
 .viewport-particles {
 	pointer-events: none;
+}
+
+
+.change-character {
+	background: black;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	border-radius: 5px;
 }

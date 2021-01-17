@@ -42,6 +42,7 @@ import { Knuckles }   from '../actor/Knuckles';
 
 import { Seymour }   from '../actor/Seymour';
 
+import { Rocks }   from '../actor/Rocks';
 import { Switch }   from '../actor/Switch';
 
 import { Region }   from '../actor/Region';
@@ -61,6 +62,9 @@ const objectPalette = {
 	, 'marble-block': MarbleBlock
 	, 'drill-car':    DrillCar
 	, 'egg-mobile':   EggMobile
+	, 'rocks-tall':   Rocks
+	, 'rocks-med':    Rocks
+	, 'rocks-short':  Rocks
 	, 'mecha-sonic':  MechaSonic
 	, 'sonic':        Sonic
 	, 'tails':        Tails
@@ -562,16 +566,18 @@ export class Viewport extends View
 		}
 		else if(this.controlActor.args.mode === 2)
 		{
-			if(this.controlActor.args.cameraMode == 'normal')
-			{
-				this.args.yOffsetTarget = 0.25;
-				cameraSpeed = 10;
-			}
-			else
-			{
-				this.args.yOffsetTarget = 0.5;
-				cameraSpeed = 10;
-			}
+			this.args.yOffsetTarget = 0.25;
+			cameraSpeed = 10;
+			// if(this.controlActor.args.cameraMode == 'normal')
+			// {
+			// 	this.args.yOffsetTarget = 0.25;
+			// 	cameraSpeed = 10;
+			// }
+			// else
+			// {
+			// 	this.args.yOffsetTarget = 0.5;
+			// 	cameraSpeed = 10;
+			// }
 		}
 		else if(this.controlActor.args.mode)
 		{
@@ -789,17 +795,20 @@ export class Viewport extends View
 				const actorX = actor.x + x - (width / 2);
 				const actorY = actor.y + y - (height / 2);
 
-				if(Math.abs(actorX) > width)
+				if(!(actor instanceof Region))
 				{
-					actor.args.display = '';
-				}
-				else if(Math.abs(actorY) > height)
-				{
-					actor.args.display = '';
-				}
-				else
-				{
-					actor.args.display = 'initial';
+					if(Math.abs(actorX) > width)
+					{
+						actor.args.display = 'none';
+					}
+					else if(Math.abs(actorY) > height)
+					{
+						actor.args.display = 'none';
+					}
+					else
+					{
+						actor.args.display = 'initial';
+					}
 				}
 
 				this.updateEnded.add(actor);

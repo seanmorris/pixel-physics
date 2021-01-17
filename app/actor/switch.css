@@ -1,0 +1,14 @@
+.actor-item.actor-switch .sprite {
+	content: ' ';
+	display: block;
+	height: 16px;
+	width: 32px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	background-image: url(/Sonic/switch.png);
+}
+
+.actor-item.actor-switch[data-active=true] .sprite {
+	--sprite-offset-x: -32px;
+}

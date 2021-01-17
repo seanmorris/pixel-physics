@@ -923,25 +923,24 @@ export class PointActor extends View
 		const radius = Math.round(this.args.width / 2);
 		const speed  = this.args.xSpeed;
 
-		// if(this.args.height > this.maxStep)
-		// {
-		// 	const foreDistance = this.scanForward(this.args.xSpeed + 1 * Math.sign(this.args.xSpeed));
+		if(this.args.height > this.maxStep)
+		{
+			const foreDistance = this.scanForward(this.args.xSpeed + 1 * Math.sign(this.args.xSpeed));
 
-		// 	if(foreDistance !== false)
-		// 	{
-		// 		const space = 1 + foreDistance;
+			if(foreDistance !== false)
+			{
+				const space = 1 + foreDistance;
 
-		// 		if(speed)
-		// 		{
-		// 			this.args.x += foreDistance * Math.sign(speed);
-		// 			this.args.xSpeed = 0;
-		// 			this.args.ignore = 2;
+				if(speed)
+				{
+					this.args.x += foreDistance * Math.sign(speed);
+					this.args.xSpeed = 0;
+					this.args.ignore = 2;
 
-		// 			return;
-		// 		}
-		// 	}
-		// }
-
+					return;
+				}
+			}
+		}
 
 		const airPoint = this.castRay(
 			airSpeed

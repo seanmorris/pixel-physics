@@ -64,12 +64,16 @@ export class Region extends PointActor
 
 		if(this.draining > 0 && this.args.height > 0)
 		{
-			this.args.height -= 3;
+			this.args.height -= 6;
 		}
 		else if(this.draining < 0 && this.args.height < this.originalHeight)
 		{
 			this.args.height += 0.75;
 		}
+
+		this.args.height += Math.round(Math.sin(Date.now() / 100)) / 10;
+
+		super.update();
 	}
 
 	get solid() { return false; }

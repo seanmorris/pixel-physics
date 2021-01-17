@@ -6,7 +6,7 @@ export class TileMap
 	{
 		this.heightMask = null;
 
-		this.tileNumberCache = {};
+		this.tileNumberCache = new Map;
 		this.heightMaskCache = {};
 		this.solidCache = {};
 
@@ -67,14 +67,14 @@ export class TileMap
 		const tileLayers      = this.tileLayers;
 		const mapData         = this.mapData;
 
-		if(cacheKey in tileNumberCache)
+		if(tileNumberCache.has(cacheKey))
 		{
-			return tileNumberCache[cacheKey];
+			return tileNumberCache.get(cacheKey);
 		}
 
 		if(!tileLayers[layer])
 		{
-			return tileNumberCache[cacheKey] = false;
+			return tileNumberCache.set(cacheKey, false);
 		}
 
 		if(x >= mapData.width || y >= mapData.height
@@ -82,9 +82,14 @@ export class TileMap
 		){
 			if(layer !== 0)
 			{
-				return tileNumberCache[cacheKey] = false;
+				tileNumberCache.set(cacheKey, false);
+
+				return false;
 			}
-			return tileNumberCache[cacheKey] = 1;
+
+			tileNumberCache.set(cacheKey, 1);
+
+			return 1;
 		}
 
 		const tileIndex = (y * mapData.width) + x;
@@ -93,11 +98,15 @@ export class TileMap
 		{
 			if(tileLayers[layer].data[tileIndex] !== 0)
 			{
-				return tileNumberCache[cacheKey] = tileLayers[layer].data[tileIndex] -1;
+				tileNumberCache.set(cacheKey, tileLayers[layer].data[tileIndex] - 1);
+
+				return tileLayers[layer].data[tileIndex] - 1;
 			}
 		}
 
-		return tileNumberCache[cacheKey] = false;
+		tileNumberCache[cacheKey] = false;
+
+		return false;
 	}
 
 	getObjectDefs()

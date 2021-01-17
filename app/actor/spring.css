@@ -25,7 +25,7 @@
 	height: 8px;
 	--sprite-offset-x: -80px;
 	--sprite-offset-y: -92px;
-	transition: top 0.4s ease-out 0.0s;
+	transition: top 0.4s ease-out 0.2s;
 }
 
 .actor-item.actor-spring .spring-pad:not([data-color=""]) {
@@ -36,12 +36,12 @@
 	--sprite-offset-x: -15px;
 }
 
-.actor-item.actor-spring.collision-top[data-colliding=true] .sprite {
+.actor-item.actor-spring[data-colliding=true] .sprite {
 	--sprite-offset-x: -80px;
 }
 
-.actor-item.actor-spring.collision-top[data-colliding=true] .spring-pad {
-	transition: top 0s;
+.actor-item.actor-spring[data-colliding=true] .spring-pad {
+	transition: top 0.2s;
 	z-index: 1;
 	top: -52px;
 }

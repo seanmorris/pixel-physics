@@ -55,17 +55,25 @@ export class Spring extends PointActor
 	update()
 	{
 		super.update();
+
+		if(this.viewport && this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/spring-activated.wav');
+			this.sample.volume = 0.25 + (Math.random() * 0.1);
+		}
 	}
 
 	collideA(other)
 	{
 		super.collideA(other);
 
-		other.args.falling = true;
+		this.sample.currentTime = 0;
 
-		other.impulse(this.args.power, this.args.angle, true);
-
-		return false;
+		this.onTimeout(64, () => {
+			this.sample.play();
+			other.args.falling = true;
+			other.impulse(this.args.power, this.args.angle, true);
+		});
 	}
 
 	get canStick() { return false; }

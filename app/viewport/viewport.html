@@ -135,14 +135,27 @@
 	<div class = "viewport-caption">
 		<div>
 			<div>
-				<div class = "right">
-					<label>
-						<button cv-on = "click:fullscreen(event)">fullscreen</button>
-						<small><small>[esc to revert]</small></small>
-					</label>
-				</div>
+				<label>
+					<button cv-on = "click:fullscreen(event)">fullscreen</button>
+				</label>
+			</div>
 
+			<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
+				<span class = "github-icon"></span>
+				view the project on github
+			</a>
 
+			<label class = "change-character">
+				change character:
+				<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
+					<option value = "[[name]]">[[name]]</option>
+				</select>
+			</label>
+		</div>
+
+		<div>
+			<div>
+				<b>controls:</b>
 				<span class = "button-index">
 					<span class = "arrow button arrow-west"></span>
 					/ <span class = "arrow button arrow-east"></span>
@@ -157,12 +170,25 @@
 					- jump
 				</span>
 
-
 				<span class = "button-index">
 					<span class = "button ps-o"></span>
 					/ <span class = "button xb-b"></span>
 					/ <b>ctrl</b>
 					- <span>run (hold)</span>
+				</span>
+
+				<span class = "button-index">
+					<span class = "button ps-s"></span>
+					/ <span class = "button xb-x"></span>
+					/ <b>z</b>
+					- <span>shoot (eggrobo)</span>
+				</span>
+
+				<span class = "button-index">
+					<span class = "button ps-t"></span>
+					/ <span class = "button xb-y"></span>
+					/ <b>x</b>
+					- <span>no action</span>
 				</span>
 
 				<span class = "button-index">
@@ -179,23 +205,23 @@
 					- brakes (hold)
 				</span>
 
-				<p>
-					<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
-						<span class = "github-icon"></span>
-						view the project on github
-					</a>
-				</p>
+
+
+			</div>
+
+			<div>
+				<b>moves:</b>
+
+				<p><b>jump</b> + <b>jump</b> - fly / double jump action</p>
+
+				<p><span class = "arrow-button arrow-north"></span> + <b>jump</b> - disengage vehicle</p>
+
+				<p><span class = "arrow-button arrow-south"></span> + <b>jump</b> - spindash</p>
 
 			</div>
 
 			<div class = "right">
-				<label class = "change-character">
-					change character:
-					<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
-						<option value = "[[name]]">[[name]]</option>
-					</select>
-				</label>
-
+				<b>options:</b>
 
 				<label>
 					<span>enable audio</span>

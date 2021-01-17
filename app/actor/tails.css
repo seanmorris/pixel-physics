@@ -141,10 +141,3 @@
 	left: 8px;
 	transform-origin: 42px 16px;
 }
-
-.change-character {
-	background: black;
-	color: white;
-	font-weight: bold;
-	border-radius: 5px;
-}
