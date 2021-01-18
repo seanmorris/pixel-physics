@@ -2,6 +2,10 @@
 
 }
 
+.region .sprite {
+	filter:url(#motionBlur);
+}
+
 .region.region-water .region-alt-filter,
 .region.region-water .sprite {
 	position: absolute;

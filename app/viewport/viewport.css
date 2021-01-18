@@ -183,7 +183,7 @@ html, body {
 
 .viewport-background {
 	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
-	transform: translate(0, 0);
+	transform: translate3d(0,0,0)
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -209,7 +209,7 @@ html, body {
 
 .viewport-background > div {
 	background-repeat: no-repeat;
-		/*border-bottom: 1px solid #CCC;
+	/*border-bottom: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 	box-sizing: border-box;*/
 }

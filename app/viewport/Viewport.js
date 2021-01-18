@@ -254,6 +254,9 @@ export class Viewport extends View
 		this.updateStarted = new Set;
 		this.updateEnded = new Set;
 		this.updated = new Set;
+
+		this.args.xBlur = 0;
+		this.args.yBlur = 0;
 	}
 
 	fullscreen()
@@ -594,8 +597,11 @@ export class Viewport extends View
 			cameraSpeed = 20;
 		}
 
-		this.args.x = -this.controlActor.x + this.args.width  * 0.5;
-		this.args.y = -this.controlActor.y + this.args.height * this.args.yOffset;
+		const xNext = -this.controlActor.x + this.args.width  * 0.5;
+		const yNext = -this.controlActor.y + this.args.height * this.args.yOffset;
+
+		this.args.x = xNext;
+		this.args.y = yNext;
 
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
 		{
@@ -634,6 +640,31 @@ export class Viewport extends View
 	{
 		const layers = this.tileMap.tileLayers;
 		const layerCount = layers.length;
+
+		if(this.controlActor && this.tags.blur)
+		{
+			let xBlur = Number(((this.controlActor.x - this.xPrev) * 100) / 500).toFixed(4);
+			let yBlur = Number(((this.controlActor.y - this.yPrev) * 100) / 500).toFixed(4);
+
+			let blurAngle = Number(this.controlActor.realAngle + Math.PI).toFixed(4);
+
+			const maxBlur = 16;
+
+			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
+			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
+
+			const blur = Math.sqrt(xBlur**2 + yBlur**2) / 4	;
+
+			this.tags.blurAngle.setAttribute('style', `transform:rotate(${blurAngle}rad)`);
+			this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(${-blurAngle}rad)`);
+
+			this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
+
+			this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+
+			this.xPrev = this.controlActor.x;
+			this.yPrev = this.controlActor.y;
+		}
 
 		for(let i = 0; i < layerCount; i++)
 		{
@@ -862,25 +893,32 @@ export class Viewport extends View
 
 		const actors = this.actors.list;
 
-		this.controlActor = this.controlActor || actors[0];
-
-		if(!this.args.maxSpeed)
+		if(!this.controlActor)
 		{
-			this.args.maxSpeed = this.controlActor.args.gSpeedMax;
+			this.nextControl = this.nextControl || actors[0];
 		}
 
-		this.controlActor.args.gSpeedMax = this.args.maxSpeed;
+		if(this.controlActor)
+		{
+			if(!this.args.maxSpeed)
+			{
+				this.args.maxSpeed = this.controlActor.args.gSpeedMax;
+			}
 
-		// this.controlActor.args.display = 'none';
+			this.controlActor.args.gSpeedMax = this.args.maxSpeed;
 
-		this.controlActor.willStick = !!this.args.willStick;
-		this.controlActor.stayStuck = !!this.args.stayStuck;
+			// this.controlActor.args.display = 'none';
 
-		this.controlActor.crawling = false;
-		this.controlActor.running  = false;
+			this.controlActor.willStick = !!this.args.willStick;
+			this.controlActor.stayStuck = !!this.args.stayStuck;
 
-		this.controlActor.xAxis = 0;
-		this.controlActor.yAxis = 0;
+			this.controlActor.crawling = false;
+			this.controlActor.running  = false;
+
+			this.controlActor.xAxis = 0;
+			this.controlActor.yAxis = 0;
+		}
+
 
 		this.updateStarted.clear();
 		this.updated.clear();
@@ -890,80 +928,88 @@ export class Viewport extends View
 
 		this.takeKeyboardInput();
 
-		this.controlActor.updateStart();
+		const nearbyCells = this.controlActor
+			? this.getNearbyColCells(this.controlActor)
+			: {};
 
-		this.updateStarted.add(this.controlActor);
+		if(this.controlActor)
+		{
+			this.controlActor.updateStart();
 
-		const nearbyCells = this.getNearbyColCells(this.controlActor);
+			this.updateStarted.add(this.controlActor);
 
-		this.controlActor.args.display = 'initial';
+			this.controlActor.args.display = 'initial';
 
-		this.actorUpdateStart(nearbyCells);
+			this.actorUpdateStart(nearbyCells);
 
-		this.controlActor.update();
+			this.controlActor.update();
 
-		this.updated.add(this.controlActor);
+			this.updated.add(this.controlActor);
 
-		this.actorUpdate(nearbyCells);
+			this.actorUpdate(nearbyCells);
 
-		this.moveCamera();
+			this.moveCamera();
+		}
 
 		this.updateBackground();
 
-		if(this.rings.args.value != this.controlActor.args.rings)
+		if(this.controlActor)
 		{
-			this.rings.args.color = 'yellow';
+			if(this.rings.args.value != this.controlActor.args.rings)
+			{
+				this.rings.args.color = 'yellow';
+			}
+			else
+			{
+				this.rings.args.color = '';
+			}
+
+			if(this.coins.args.value != this.controlActor.args.coins)
+			{
+				this.coins.args.color = 'yellow';
+			}
+			else
+			{
+				this.coins.args.color = '';
+			}
+
+			if(this.emeralds.args.value[0] != this.controlActor.args.emeralds)
+			{
+				this.emeralds.args.color = 'yellow';
+			}
+			else
+			{
+				this.emeralds.args.color = '';
+			}
+
+			this.rings.args.value = this.controlActor.args.rings;
+			this.coins.args.value = this.controlActor.args.coins;
+			this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
+
+			this.args.hasRings    = !!this.controlActor.args.rings;
+			this.args.hasCoins    = !!this.controlActor.args.coins;
+			this.args.hasEmeralds = !!this.controlActor.args.emeralds;
+
+			this.args.char.args.value     = this.controlActor.args.name;
+			this.args.xPos.args.value     = Math.round(this.controlActor.x);
+			this.args.yPos.args.value     = Math.round(this.controlActor.y);
+			this.args.ground.args.value   = this.controlActor.args.landed;
+			this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+			this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
+			this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+			this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
+			this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+
+			const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+
+			this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+
+			this.controlActor.updateEnd();
+
+			this.updateEnded.add(this.controlActor);
+
+			this.actorUpdateEnd(nearbyCells);
 		}
-		else
-		{
-			this.rings.args.color = '';
-		}
-
-		if(this.coins.args.value != this.controlActor.args.coins)
-		{
-			this.coins.args.color = 'yellow';
-		}
-		else
-		{
-			this.coins.args.color = '';
-		}
-
-		if(this.emeralds.args.value[0] != this.controlActor.args.emeralds)
-		{
-			this.emeralds.args.color = 'yellow';
-		}
-		else
-		{
-			this.emeralds.args.color = '';
-		}
-
-		this.rings.args.value = this.controlActor.args.rings;
-		this.coins.args.value = this.controlActor.args.coins;
-		this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
-
-		this.args.hasRings    = !!this.controlActor.args.rings;
-		this.args.hasCoins    = !!this.controlActor.args.coins;
-		this.args.hasEmeralds = !!this.controlActor.args.emeralds;
-
-		this.args.char.args.value     = this.controlActor.args.name;
-		this.args.xPos.args.value     = Math.round(this.controlActor.x);
-		this.args.yPos.args.value     = Math.round(this.controlActor.y);
-		this.args.ground.args.value   = this.controlActor.args.landed;
-		this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
-		this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
-		this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
-		this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
-		this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
-
-		const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
-
-		this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
-
-		this.controlActor.updateEnd();
-
-		this.updateEnded.add(this.controlActor);
-
-		this.actorUpdateEnd(nearbyCells);
 
 		this.spawnActors();
 

@@ -5,8 +5,24 @@
 	</div>
 	<div class = "viewport [[fullscreen]]" cv-ref = "viewport" tabindex="0">
 
+		<svg><defs>
+			<filter id="motionBlur">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
+			</filter>
+		</defs></svg>
+
 		<div class = "viewport-zoom">
-			<div cv-ref = "background" class = "viewport-bg-layers" cv-each = "layers:layer">[[layer]]</div>
+			<div cv-ref = "blurAngle">
+			<div cv-ref = "blurDistance">
+			<div cv-ref = "blurAngleCancel">
+				<div
+					cv-ref  = "background"
+					class   = "viewport-bg-layers"
+					cv-each = "layers:layer"
+				>[[layer]]</div>
+			</div>
+			</div>
+			</div>
 
 			<div  cv-ref = "content" class = "viewport-content">
 
