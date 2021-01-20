@@ -108,6 +108,7 @@ export class Viewport extends View
 		this.args.yOffsetTarget = 0.75;
 		this.args.yOffset = 0.5;
 
+		this.args.topLine = new CharacterString({value:'', scale: 2});
 		this.args.status  = new CharacterString({value:'', scale: 2});
 		this.args.focusMe = new CharacterString({value:'', scale: 2});
 
@@ -283,6 +284,10 @@ export class Viewport extends View
 		{
 			this.args.hasRecording = true;
 		}
+
+		this.args.topLine.args.value = ' i cant believe its not canvas. ';
+		this.args.status.args.value = ' click here to exit demo. ';
+
 	}
 
 	fullscreen()
@@ -1097,6 +1102,18 @@ export class Viewport extends View
 
 			this.args.maxSpeed = null;
 			this.nextControl   = null;
+		}
+	}
+
+	click(event)
+	{
+		this.args.topLine.args.hide = 'hide';
+		this.args.status.args.hide  = 'hide';
+
+		if(this.args.isReplaying)
+		{
+			this.controlActor.controller.zero();
+			this.stop();
 		}
 	}
 
