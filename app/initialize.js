@@ -9,7 +9,22 @@ const viewportA = new Viewport;
 document.addEventListener('DOMContentLoaded', function() {
 	let lastTime = Date.now();
 
-	Promise.all([viewportA.tileMap.ready]).then(()=>{
+	const replayUrl = '/debug/replay.json';
+
+	const replay = fetch(replayUrl);
+
+	Promise.all([viewportA.tileMap.ready, replay]).then(([tileMap,replayResult])=>{
+
+		return replayResult.json()
+	}).then (replay => {
+
+		viewportA.replayInputs = replay;
+
+		if(replay.length)
+		{
+			viewportA.args.hasRecording = true;
+			viewportA.args.isReplaying  = true;
+		}
 
 		viewportA.render(document.body);
 		// viewportB.render(document.body);
@@ -32,13 +47,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		const update = ()=>{
 
+			requestAnimationFrame(update);
+
 			viewportA.update();
 
 			const frameTime = (Date.now() - lastTime);
 
 			frameTimes.push(frameTime);
 
-			if(frameTimes.length > 10)
+			if(frameTimes.length > 15)
 			{
 				frameTimes.shift();
 			}
@@ -58,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			lastTime = Date.now();
 
-			requestAnimationFrame(update);
 		};
 
 		update();

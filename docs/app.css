@@ -2259,10 +2259,20 @@ html, body {
 	justify-content: center;
 }
 
+.viewport-caption .top-bar label {
+	padding: 0.5em;
+}
+
+.viewport-caption .top-bar .buttons {
+	display: flex;
+	flex-direction: row;
+}
+
 .viewport-caption > div > div,
 .viewport-caption > div > .label {
 	flex: 1;
 	display: flex;
+	min-height: 2em;
 	flex-direction: column;
 	align-items: flex-start;
 }
@@ -2357,6 +2367,12 @@ html, body {
 	box-sizing: border-box;*/
 }
 
+.viewport-zoom .blurAngle {
+	transform:rotate(calc(1rad * var(--blurAngle)));
+}
+.viewport-zoom .blurAngleCancel {
+	transform:rotate(calc(-1rad * var(--blurAngle)));
+}
 
 .viewport .hud {
 	position: absolute;

@@ -23,7 +23,7 @@ export class Rocks extends PointActor
 		if(this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/rock-smash.wav');
-			this.sample.volume = 0.6 + (Math.random() * -0.3);
+			this.sample.volume = 0.3 + (Math.random() * -0.2);
 		}
 	}
 

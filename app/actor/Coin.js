@@ -59,6 +59,7 @@ export class Coin extends PointActor
 
 			viewport.spawn.add({
 				time: Date.now() + 7500
+				, frame:  this.viewport.args.frameId + 450
 				, object: new Coin({x,y})
 			});
 

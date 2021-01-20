@@ -12,9 +12,9 @@
 		</defs></svg>
 
 		<div class = "viewport-zoom">
-			<div cv-ref = "blurAngle">
-			<div cv-ref = "blurDistance">
-			<div cv-ref = "blurAngleCancel">
+			<div class = "blurAngle" cv-ref = "blurAngle">
+			<div class = "blurDistance" cv-ref = "blurDistance">
+			<div class = "blurAngleCancel" cv-ref = "blurAngleCancel">
 				<div
 					cv-ref  = "background"
 					class   = "viewport-bg-layers"
@@ -85,6 +85,11 @@
 					</tr>
 
 					<tr>
+						<td>[[labelFrame]]</td>
+						<td>[[frame]]</td>
+					</tr>
+
+					<tr>
 						<td>[[labelFps]]</td>
 						<td>[[fpsSprite]]</td>
 					</tr>
@@ -149,11 +154,24 @@
 	</div>
 
 	<div class = "viewport-caption">
-		<div>
-			<div>
-				<label>
-					<button cv-on = "click:fullscreen(event)">fullscreen</button>
-				</label>
+		<div class = "top-bar">
+			<div class = "buttons">
+				<button cv-on = "click:fullscreen(event)">fullscreen</button>
+				<span cv-if = "!isRecording">
+					<span cv-if = "!isReplaying">
+						<button cv-on = "click:reset(event)">reset</button>
+						<button cv-on = "click:record(event)">record</button>
+						<span cv-if = "hasRecording">
+							<button cv-on = "click:playback(event)">playback</button>
+						</span>
+					</span>
+				</span>
+				<span cv-if = "isReplaying">
+					<button cv-on = "click:stop(event)">stop</button>
+				</span>
+				<span cv-if = "isRecording">
+					<button cv-on = "click:stop(event)">stop</button>
+				</span>
 			</div>
 
 			<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
@@ -172,68 +190,12 @@
 		<div>
 			<div>
 				<b>controls:</b>
-				<span class = "button-index">
-					<span class = "arrow button arrow-west"></span>
-					/ <span class = "arrow button arrow-east"></span>
-					/ <b>wasd</b>
-					- move
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-x"></span>
-					/ <span class = "button xb-a"></span>
-					/ <b>space</b>
-					- jump
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-o"></span>
-					/ <span class = "button xb-b"></span>
-					/ <b>ctrl</b>
-					- <span>run (hold)</span>
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-s"></span>
-					/ <span class = "button xb-x"></span>
-					/ <b>z</b>
-					- <span>shoot (eggrobo)</span>
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-t"></span>
-					/ <span class = "button xb-y"></span>
-					/ <b>x</b>
-					- <span>no action</span>
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-l1"></span>
-					/ <span class = "button xb-lb"></span>
-					/ <b>ctrl</b>
-					- <span>run (hold)</span>
-				</span>
-
-				<span class = "button-index">
-					<span class = "button ps-r1"></span>
-					/ <span class = "button xb-rb"></span>
-					/ <b>shift</b>
-					- brakes (hold)
-				</span>
-
-
-
+				[[controlCard]]
 			</div>
 
 			<div>
 				<b>moves:</b>
-
-				<p><b>jump</b> + <b>jump</b> - fly / double jump action</p>
-
-				<p><span class = "arrow-button arrow-north"></span> + <b>jump</b> - disengage vehicle</p>
-
-				<p><span class = "arrow-button arrow-south"></span> + <b>jump</b> - spindash</p>
-
+				[[moveCard]]
 			</div>
 
 			<div class = "right">

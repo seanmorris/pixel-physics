@@ -223,6 +223,7 @@ export class Eggrobo extends PointActor
 
 		projectile.impulse(75, trajectory + (direction < 0 ? Math.PI : 0));
 
+		this.viewport.auras.add(projectile);
 		this.viewport.actors.add(projectile);
 
 		this.box.setAttribute('data-shooting', 'true');

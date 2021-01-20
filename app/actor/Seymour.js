@@ -9,15 +9,15 @@ export class Seymour extends PointActor
 
 		this.args.type      = 'actor-item actor-seymour';
 
-		this.args.accel     = 0.15;
+		this.args.accel     = 0.45;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 30;
-		this.args.jumpForce = 12;
+		this.args.gSpeedMax = 40;
+		this.args.jumpForce = 20;
 		this.args.gravity   = 0.6;
 
-		this.args.width  = 48;
-		this.args.height = 55;
+		this.args.width  = 25;
+		this.args.height = 64;
 	}
 
 	onAttached()

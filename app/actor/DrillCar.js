@@ -113,44 +113,37 @@ export class DrillCar extends Vehicle
 			{
 				this.box.setAttribute('data-animation', 'skidding');
 
-				if(1)
-				{
-					const viewport = this.viewport;
+				const viewport = this.viewport;
 
-					const particleA = new Tag('<div class = "particle-dust">');
+				const particleA = new Tag('<div class = "particle-dust">');
 
-					const pointA = this.rotatePoint(this.args.gSpeed, 0);
+				const pointA = this.rotatePoint(this.args.gSpeed, 0);
 
-					particleA.style({
-						'--x': pointA[0] + this.x
-						, '--y': pointA[1] + this.y
-						, 'z-index': 0
-						, opacity: Math.random * 2
-					});
+				particleA.style({
+					'--x': pointA[0] + this.x
+					, '--y': pointA[1] + this.y
+					, 'z-index': 0
+					, opacity: Math.random() * 2
+				});
 
+				const particleB = new Tag('<div class = "particle-dust">');
 
-					const particleB = new Tag('<div class = "particle-dust">');
+				const pointB = this.rotatePoint(this.args.gSpeed + (40 * this.args.direction), 0);
 
-					const pointB = this.rotatePoint(this.args.gSpeed + (40 * this.args.direction), 0);
+				particleB.style({
+					'--x': pointB[0] + this.x
+					, '--y': pointB[1] + this.y
+					, 'z-index': 0
+					, opacity: Math.random() * 2
+				});
 
-					particleB.style({
-						'--x': pointB[0] + this.x
-						, '--y': pointB[1] + this.y
-						, 'z-index': 0
-						, opacity: Math.random * 2
-					});
+				viewport.particles.add(particleA);
+				viewport.particles.add(particleB);
 
-					viewport.particles.add(particleA);
-					viewport.particles.add(particleB);
-
-					setTimeout(() => {
-						viewport.particles.remove(particleA);
-						viewport.particles.remove(particleB);
-					}, 350);
-
-					// this.dustCount = 5;
-				}
-
+				setTimeout(() => {
+					viewport.particles.remove(particleA);
+					viewport.particles.remove(particleB);
+				}, 350);
 			}
 			else if(this.args.moving && speed > maxSpeed * 0.75)
 			{

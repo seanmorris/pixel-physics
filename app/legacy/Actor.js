@@ -1,7 +1,5 @@
 import { View } from 'curvature/base/View';
 
-import { TileMap } from '../tileMap/TileMap';
-
 import { PointDump } from '../debug/PointDump';
 
 export class Actor extends View

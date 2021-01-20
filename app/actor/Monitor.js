@@ -36,11 +36,8 @@ export class Monitor extends PointActor
 		if(this.args.falling || other.occupant)
 		{
 			this.pop(other);
-
-			return false;
 		}
-
-		if(
+		else if(
 			type !== 2
 			&& (!this.args.falling || this.args.float === -1)
 			&& other.args.ySpeed > 0
@@ -59,11 +56,8 @@ export class Monitor extends PointActor
 			}
 
 			this.pop(other);
-
-			return false;
 		}
-
-		if(
+		else if(
 			(type === 1 || type === 3)
 			&& ((Math.abs(other.args.xSpeed) > 15
 				|| (Math.abs(other.args.gSpeed) > 15))
@@ -73,11 +67,7 @@ export class Monitor extends PointActor
 			&& !this.gone
 		){
 			this.pop(other);
-
-			return false;
 		}
-
-		return true;
 	}
 
 	pop(other)
@@ -93,10 +83,8 @@ export class Monitor extends PointActor
 
 		viewport.actors.remove( this );
 
-		setTimeout(()=>{
-			viewport.actors.add(corpse);
-			viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
-		}, 0);
+		viewport.actors.add(corpse);
+		viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
 		setTimeout(()=>{
 			viewport.actors.remove(corpse);

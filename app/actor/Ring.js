@@ -57,14 +57,11 @@ export class Ring extends PointActor
 
 			const viewport = this.viewport;
 
-			setTimeout(() => {
-
-				viewport.spawn.add({
-					time: Date.now() + 3500
-					, object: new Ring({x,y})
-				});
-
-			}, 7500);
+			viewport.spawn.add({
+				time: Date.now() + 3500
+				, frame:  this.viewport.args.frameId + 210
+				, object: new Ring({x,y})
+			});
 
 			if(other.args.owner)
 			{

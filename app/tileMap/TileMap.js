@@ -18,8 +18,7 @@ export class TileMap
 		this.ready = new Promise(accept => {
 
 			fetch(mapUrl).then(r=> r.json()).then(data => {
-
-				this.mapData = data;
+				Object.defineProperty(this, 'mapData', {value: data});
 
 				const layers = data.layers || [];
 

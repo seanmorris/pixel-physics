@@ -20,10 +20,10 @@ export class Region extends PointActor
 
 		this.args.type = 'region region-water';
 
-		this.args.width  = this.args.width  || 32;
-		this.args.height = this.args.height || 32;
+		this.args.width  = this.public.width  || 32;
+		this.args.height = this.public.height || 32;
 
-		this.args.gravity = 0.3;
+		this.args.gravity = 0.25;
 		this.args.drag    = 0.5;
 
 		this.draining = 0;
@@ -42,7 +42,7 @@ export class Region extends PointActor
 	{
 		if(!this.switch)
 		{
-			this.switch = this.viewport.actorsById[ this.args.switch ]
+			this.switch = this.viewport.actorsById[ this.public.switch ]
 
 			this.switch.args.bindTo('active', v => {
 				if(!v)
@@ -59,19 +59,21 @@ export class Region extends PointActor
 
 		if(!this.originalHeight)
 		{
-			this.originalHeight = this.args.height;
+			this.originalHeight = this.public.height;
 		}
 
-		if(this.draining > 0 && this.args.height > 0)
+		if(this.draining > 0 && this.public.height > 0)
 		{
 			this.args.height -= 6;
 		}
-		else if(this.draining < 0 && this.args.height < this.originalHeight)
+		else if(this.draining < 0 && this.public.height < this.originalHeight)
 		{
 			this.args.height += 0.75;
 		}
 
-		this.args.height += Math.round(Math.sin(Date.now() / 100)) / 10;
+		const frame = this.viewport.args.frameId;
+
+		this.args.height += Math.sin(frame / 10);
 
 		super.update();
 	}

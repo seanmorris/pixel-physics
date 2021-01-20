@@ -61,9 +61,9 @@ export class StarPost extends PointActor
 
 			let throwSpeed = (other.args.gSpeed || other.args.xSpeed) / 2;
 
-			if(Math.abs(throwSpeed) > 10)
+			if(Math.abs(throwSpeed) > 5)
 			{
-				throwSpeed = 10 * Math.sign(throwSpeed);
+				throwSpeed = 5 * Math.sign(throwSpeed);
 			}
 
 			const monitor = new Monitor({
