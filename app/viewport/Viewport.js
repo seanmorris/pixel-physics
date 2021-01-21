@@ -201,6 +201,11 @@ export class Viewport extends View
 					this.regions.add(i);
 				}
 
+				if(i.controllable)
+				{
+					this.auras.add(i);
+				}
+
 				this.actorsById[i.args.id] = i;
 			}
 			else if(a == Bag.ITEM_REMOVED)
@@ -433,25 +438,19 @@ export class Viewport extends View
 
 		if(this.args.isRecording)
 		{
-			const frozenFrame = {
-				frame:   this.args.frameId
-				, input: controller.serialize()
+			const frame = this.args.frameId;
+			const input = controller.serialize();
+			const args  = {
+				[this.controlActor.public.id]: {
+					x: this.controlActor.public.x
+					, y: this.controlActor.public.y
+					, gSpeed: this.controlActor.public.gSpeed
+					, xSpeed: this.controlActor.public.xSpeed
+					, ySpeed: this.controlActor.public.ySpeed
+				}
 			};
 
-			if(this.args.frameId % 20)
-			{
-				frozenFrame['state'] = {
-					[this.controlActor.public.id]: {
-						gSpeed:   this.controlActor.public.gSpeed
-						, xSpeed: this.controlActor.public.xSpeed
-						, ySpeed: this.controlActor.public.ySpeed
-						, x: this.controlActor.public.x
-						, y: this.controlActor.public.y
-					}
-				};
-			}
-
-			this.replayInputs.push(frozenFrame);
+			this.replayInputs.push({frame, input, args});
 		}
 	}
 
@@ -667,21 +666,34 @@ export class Viewport extends View
 
 			let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
 
-			if(controlActor.public.falling)
-			{
-				blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-			}
-
 			const maxBlur = 32;
 
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			const blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
+			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
 
-			this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-			this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-			this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+			if(blur > 3)
+			{
+				if(controlActor.public.falling)
+				{
+					blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
+				}
+
+				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+			}
+			else
+			{
+				blurAngle = 0;
+				blur = 0;
+
+				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+			}
+
 
 			this.xPrev = controlActor.x;
 			this.yPrev = controlActor.y;
@@ -884,6 +896,8 @@ export class Viewport extends View
 
 		this.args.frameId++;
 
+		const actorThree = this.actorsById[3];
+
 		if(this.controlActor)
 		{
 			if(this.args.isReplaying)
@@ -892,38 +906,39 @@ export class Viewport extends View
 
 				const replay = this.replayInputs[this.args.frameId];
 
-				if(replay)
+				if(replay && replay.actors)
 				{
-					if(replay.input)
+					for(const actorId in replay.actors)
 					{
-						this.controlActor.controller.replay(replay.input);
-					}
+						const actor = this.actorsById[actorId];
+						const frame = replay.actors[actorId];
 
-					if(replay.state)
-					{
-						for(const actorId in replay.state)
+						if(frame.input)
 						{
-							const state = replay.state[actorId];
+							actor.controller.replay(frame.input);
+							actor.readInput();
+						}
 
-							const actor = this.actorsById[actorId];
-
-							Object.assign(actor.args, state);
+						if(frame.args)
+						{
+							Object.assign(actor.args, frame.args);
 						}
 					}
 				}
 				else
 				{
+					this.args.status.args.hide = 'hide';
 					this.args.isReplaying = false;
 				}
 			}
-			else
+
+			if(!this.args.isReplaying || this.controlActor !== actorThree)
 			{
 				this.args.focusMe.args.hide = '';
 
 				this.takeInput(this.controlActor.controller);
+				this.controlActor.readInput();
 			}
-
-			this.controlActor.readInput();
 
 			if(!this.args.maxSpeed)
 			{
@@ -1091,10 +1106,10 @@ export class Viewport extends View
 
 		if(this.nextControl)
 		{
-			if(this.controlActor)
-			{
-				this.auras.delete(this.controlActor);
-			}
+			// if(this.controlActor)
+			// {
+			// 	this.auras.delete(this.controlActor);
+			// }
 
 			this.controlActor = this.nextControl;
 
@@ -1370,5 +1385,7 @@ export class Viewport extends View
 		}
 
 		this.args.isRecording = false;
+
+		this.controlActor.controller.zero();
 	}
 }

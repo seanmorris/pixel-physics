@@ -30,6 +30,11 @@
 	--sprite-offset-y: -64px;
 }
 
+.actor-item.actor-mecha-sonic[data-animation="crouching"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -64px;
+}
+
 .actor-item.actor-mecha-sonic[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -768px;

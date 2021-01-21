@@ -5,11 +5,54 @@
 	</div>
 	<div class = "viewport [[fullscreen]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event)">
 
-		<svg><defs>
+		<svg>
+		<defs>
 			<filter id="motionBlur">
 				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
 			</filter>
-		</defs></svg>
+			<filter
+				color-interpolation-filters="sRGB"
+				id = "waves"
+				x="-0%"
+				y="-0%"
+				height="200%"
+				width="200%"
+			>
+				<feImage
+					xlink:href="/effects/wave.png"
+					result="DisplacementSource"
+					height="64"
+					width="16"
+				/>
+				<feTile
+					in="DisplacementSource"
+					result="DisplacementTile"
+					y="0%"
+				/>
+				<feOffset
+					in  = "DisplacementTile"
+					out = "DisplacementOffset"
+					dx  = "0"
+					dy  = "0"
+				>
+					<animate
+						repeatCount="indefinite"
+						attributeName="dy"
+						values="0;-127"
+						dur="8s"
+					/>
+				</feOffset>
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="DisplacementOffset"
+					xChannelSelector="R"
+					yChannelSelector="G"
+					scale="17"
+				>
+				</feDisplacementMap>
+   			</filter>
+		</defs>
+		</svg>
 
 		<div class = "viewport-zoom">
 			<div class = "blurAngle" cv-ref = "blurAngle">

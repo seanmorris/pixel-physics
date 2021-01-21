@@ -29,8 +29,8 @@
                  "type":"player",
                  "visible":true,
                  "width":32,
-                 "x":1416,
-                 "y":1664
+                 "x":6696,
+                 "y":960
                 }, 
                 {
                  "gid":2,
@@ -1257,7 +1257,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":568,
+                 "height":632,
                  "id":921,
                  "name":"region",
                  "properties":[
@@ -1271,7 +1271,7 @@
                  "visible":true,
                  "width":1704,
                  "x":6096,
-                 "y":1056
+                 "y":1120
                 }, 
                 {
                  "gid":2,
@@ -2180,7 +2180,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":1071,
+ "nextobjectid":1072,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",

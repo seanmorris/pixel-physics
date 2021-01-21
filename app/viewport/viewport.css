@@ -91,6 +91,7 @@ html, body {
 	background-color: rgba(255,255,255,0.75);
 	padding: 0.5em;
 	flex-direction: column;
+	filter: url(#waves);
 }
 
 .viewport-caption > div {

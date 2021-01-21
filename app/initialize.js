@@ -9,7 +9,7 @@ const viewportA = new Viewport;
 document.addEventListener('DOMContentLoaded', function() {
 	let lastTime = Date.now();
 
-	const replayUrl = '/debug/replay.json';
+	const replayUrl = '/debug/replay-updated.json';
 
 	const replay = fetch(replayUrl);
 
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(replay.length)
 		{
 			viewportA.args.hasRecording = true;
-			viewportA.args.isReplaying  = true;
 		}
 
 		viewportA.render(document.body);

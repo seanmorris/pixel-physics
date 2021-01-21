@@ -125,6 +125,10 @@ export class MechaSonic extends PointActor
 				this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'walking');
 			}
+			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
+			{
+				this.box.setAttribute('data-animation', 'crouching');
+			}
 			else
 			{
 				this.scrapeSound.pause();
