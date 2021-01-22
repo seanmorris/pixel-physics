@@ -49,7 +49,7 @@
 	display: block;
 	position: absolute;
 	content: ' ';
-	background-image: url(/debug/arrow-east.svg);
+	background-image: url(/debug/arrow-slim-east.svg);
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;
@@ -1148,33 +1148,55 @@
 	}
 }
 
-.region .sprite {
+.region {
+	--widthPx: calc(1px * var(--width));
+	--heightPx: calc(1px * var(--height));
+
+	--widthNx: calc(-1px * var(--width));
+	--heightNx: calc(-1px * var(--height));
+
+	/*pointer-events: none;*/
 }
 
-.region-water {
-}
-
-.region.region-water .region-alt-filter,
+.region.region-water .region-color,
+.region.region-water .region-filter,
+.region.region-water .region-filter-wrapper,
 .region.region-water .sprite {
 	position: absolute;
-	top: calc(1px + calc(-1px * var(--height)));
-	left: -16px;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
 	pointer-events: none;
 }
 
 .region.region-water .sprite {
-	backdrop-filter: url(#waves);
+	top: calc(1px + calc(-1px * var(--height)));
+	left: -16px;
 	background-attachment: fixed;
-	z-index: 1010;
-	background-color: transparent;
-	background-color: rgba(0,128,255,0.5);
-	opacity: 1;
+	z-index: 1001;
 }
 
-.region.region-water .region-alt-filter {
-	z-index: 1000;
+.region.region-water .region-filter-wrapper {
+	overflow: hidden;
+	background-color: rgba(0,128,255,0.25);
+}
+
+.region.region-water .region-color {
+	bottom: 0px;
+	z-index: 10001;
+	display: none;
+	background-color: rgba(0,128,255,0.5);
+}
+
+.region.region-water .region-filter {
+	background-color: rgba(0,128,255,0.25);
+	animation: water-distort infinite 2s linear;
+	position: absolute;
+	left:    calc(var(--leftBoundry) + 32px);
+	top:     calc(var(--topBoundry));
+	width:   calc(var(--viewportWidth));
+	height:  calc(var(--viewportHeight) + 128px);
+	backdrop-filter: saturate(0.25) url(#waves);
+	opacity: 0.90 ;
 }
 
 .region.region-water .sprite:after {
@@ -1188,15 +1210,25 @@
 	width: 100%;
 	opacity: 0.5;
 
-	animation: water-animate infinite 1280ms linear;
+	animation: water-waves infinite 1280ms linear;
 }
 
-@keyframes water-animate {
+@keyframes water-waves {
 	from{
 		background-position: 0px 0px;
 	}
 	to{
 		background-position: 64px 0px;
+	}
+}
+
+
+@keyframes water-distort {
+	from{
+		transform: translateY(0px);
+	}
+	to{
+		transform: translateY(-64px);
 	}
 }
 
@@ -2201,7 +2233,6 @@ html, body {
 .viewport,
 .viewport-caption {
 	box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-
 }
 
 .viewport-header,
@@ -2223,7 +2254,6 @@ html, body {
 	background-color: rgba(255,255,255,0.75);
 	padding: 0.5em;
 	flex-direction: column;
-	filter: url(#waves);
 }
 
 .viewport-caption > div {
@@ -2318,6 +2348,8 @@ html, body {
 }
 
 .viewport-double-zoom {
+	position: absolute;
+	z-index: 10000;
 }
 
 .viewport-content {

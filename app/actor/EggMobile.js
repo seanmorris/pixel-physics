@@ -30,8 +30,6 @@ export class EggMobile extends Vehicle
 
 	update()
 	{
-		this.args.falling = false;
-
 		if(Math.abs(this.yAxis) > 0.1)
 		{
 			if(Math.abs(this.args.ySpeed) < this.args.ySpeedMax)

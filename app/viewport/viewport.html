@@ -13,43 +13,53 @@
 			<filter
 				color-interpolation-filters="sRGB"
 				id = "waves"
-				x="-0%"
-				y="-0%"
-				height="200%"
-				width="200%"
+				x      ="-0%"
+				y      ="0%"
+				height ="100%"
+				width  ="100%"
 			>
+				<feFlood flood-color="#408000" result = "DisplacementGreen" />
+
 				<feImage
 					xlink:href="/effects/wave.png"
 					result="DisplacementSource"
 					height="64"
-					width="16"
+					width="1"
 				/>
+
 				<feTile
 					in="DisplacementSource"
 					result="DisplacementTile"
-					y="0%"
 				/>
-				<feOffset
+
+				<feComposite
 					in  = "DisplacementTile"
+					in2 = "DisplacementGreen"
+					result ="DisplacementField"
+					operator ="over"
+				/>
+
+				<feOffset
+					in  = "DisplacementField"
 					out = "DisplacementOffset"
 					dx  = "0"
 					dy  = "0"
-				>
-					<animate
-						repeatCount="indefinite"
-						attributeName="dy"
-						values="0;-127"
-						dur="8s"
-					/>
-				</feOffset>
+				/>
+
 				<feDisplacementMap
 					in="SourceGraphic"
 					in2="DisplacementOffset"
+					result="Displaced"
 					xChannelSelector="R"
 					yChannelSelector="G"
-					scale="17"
-				>
-				</feDisplacementMap>
+					scale="4"
+				/>
+
+				<feGaussianBlur
+					in="Displaced"
+					stdDeviation="0.25"
+				/>
+
    			</filter>
 		</defs>
 		</svg>

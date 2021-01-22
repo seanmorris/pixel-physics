@@ -29,53 +29,84 @@ export class Region extends PointActor
 		this.draining = 0;
 	}
 
-	onAttached()
-	{
-		this.box = this.findTag('div');
-
-		this.altFilter = new Tag('<div class = "region-alt-filter">');
-
-		this.box.appendChild(this.altFilter.node);
-	}
-
 	update()
 	{
+		if(!this.wrapper && this.tags.sprite)
+		{
+			this.wrapper = new Tag('<div class = "region-filter-wrapper">');
+			this.color   = new Tag('<div class = "region-color">');
+			this.filter  = new Tag('<div class = "region-filter">');
+
+			this.wrapper.appendChild(this.filter.node);
+
+			this.tags.sprite.appendChild(this.wrapper.node);
+			this.tags.sprite.parentNode.appendChild(this.color.node);
+		}
+
 		if(!this.switch)
 		{
 			this.switch = this.viewport.actorsById[ this.public.switch ]
 
 			this.switch.args.bindTo('active', v => {
-				if(!v)
+				if(!v && this.draining > 0)
 				{
 					this.draining = -1;
 				}
 
-				if(v && this.draining < 0)
+				if(v)
 				{
 					this.draining = 1;
 				}
 			});
 		}
 
+		super.update();
+
 		if(!this.originalHeight)
 		{
 			this.originalHeight = this.public.height;
 		}
 
-		if(this.draining > 0 && this.public.height > 0)
+		if(this.draining)
 		{
-			this.args.height -= 6;
+			if(this.public.height <= 0)
+			{
+				this.args.display = 'none';
+			}
+			else
+			{
+				this.args.display = 'initial';
+			}
+
+			if(this.draining > 0 && this.public.height > 0)
+			{
+				this.args.height -= 3;
+			}
+			else if(this.draining < 0 && this.public.height < this.originalHeight)
+			{
+				this.args.height += 0.5;
+			}
 		}
-		else if(this.draining < 0 && this.public.height < this.originalHeight)
+		else
 		{
-			this.args.height += 0.75;
+			// const frame  = this.viewport.args.frameId;
+			// const offset = Math.sin(frame / 10) * 8;
+
+			// this.args.height = this.originalHeight - offset;
+
+			// this.wrapper && this.wrapper.style({'--offset': offset});
 		}
 
-		const frame = this.viewport.args.frameId;
+		const topBoundry  = -this.viewport.args.y - (this.y - this.args.height);
+		const leftBoundry = -16 + -this.viewport.args.x - this.x;
 
-		this.args.height += Math.sin(frame / 10);
+		this.tags.sprite && this.tags.sprite.style({
+			'--viewportWidth':    this.viewport.args.width  + 'px'
+			, '--viewportHeight': this.viewport.args.height + 'px'
+			, '--leftBoundry':    leftBoundry + 'px'
+			, '--topBoundry':     topBoundry + 'px'
+		});
 
-		super.update();
 	}
 
 	get solid() { return false; }

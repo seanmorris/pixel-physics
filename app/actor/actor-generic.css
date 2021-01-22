@@ -21,7 +21,7 @@
 	display: block;
 	position: absolute;
 	content: ' ';
-	background-image: url(/debug/arrow-east.svg);
+	background-image: url(/debug/arrow-slim-east.svg);
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;

@@ -1,37 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg:svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   version="1.0"
-   width="902.25049"
-   height="364.71875"
-   viewBox="0 0 902.25049 364.71875"
-   id="svg2868"
-   xml:space="preserve"><svg:defs
-   id="defs2874" />
-	
-		
-			<namedview
-   id="base"
-   pagecolor="#ffffff"
-   bordercolor="#666666"
-   borderopacity="1.0"
-   pageopacity="0.0"
-   pageshadow="2"
-   window-width="640"
-   window-height="541"
-   zoom="0.34493828"
-   cx="372.04722"
-   cy="256.66814"
-   window-x="75"
-   window-y="152"
-   current-layer="svg2033">
-			</namedview>
-		<svg:g
-   transform="matrix(-1,0,0,-1,902.25049,364.71875)"
-   id="Ebene_1">
-			<svg:polygon
-   points="902.25049,222.98633 233.17773,222.98633 233.17773,364.71875 0,182.35938 233.17773,0 233.17773,141.73242 902.25049,141.73242 902.25049,222.98633 "
-   id="path2050" />
-		</svg:g>
-	</svg:svg>
+<svg width="497.81px" height="497.81px" enable-background="new 0 0 497.812 497.812" version="1.1" viewBox="0 0 497.81 497.81" xmlns="http://www.w3.org/2000/svg">
+	<g transform="rotate(180 248.91 248.91)">
+		<path d="m203.66 312.91 117.03 117.03-67.906 67.875-248.91-248.91 248.91-248.91 67.906 67.875-117.06 117.06 290.28-0.031 0.031 127.97z"/>
+	</g>
+</svg>

@@ -69,7 +69,6 @@ html, body {
 .viewport,
 .viewport-caption {
 	box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-
 }
 
 .viewport-header,
@@ -91,7 +90,6 @@ html, body {
 	background-color: rgba(255,255,255,0.75);
 	padding: 0.5em;
 	flex-direction: column;
-	filter: url(#waves);
 }
 
 .viewport-caption > div {
@@ -186,6 +184,8 @@ html, body {
 }
 
 .viewport-double-zoom {
+	position: absolute;
+	z-index: 10000;
 }
 
 .viewport-content {

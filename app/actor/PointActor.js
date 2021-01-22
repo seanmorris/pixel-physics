@@ -38,7 +38,7 @@ export class PointActor extends View
 		data-angle     = "[[angle|rad2deg]]"
 		data-mode      = "[[mode]]"
 		data-layer     = "[[layer]]"
-	><div class = "sprite"></div></div>`;
+	><div class = "sprite" cv-ref = "sprite"></div></div>`;
 
 	static fromDef(objDef)
 	{
@@ -205,7 +205,7 @@ export class PointActor extends View
 
 				viewport.particles.add(splash);
 
-				setTimeout(() => viewport.particles.remove(splash), 140 * (this.args.particleScale||1));
+				setTimeout(() => viewport.particles.remove(splash), 240 * (this.args.particleScale||1));
 			}
 
 		});

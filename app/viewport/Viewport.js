@@ -284,15 +284,6 @@ export class Viewport extends View
 
 		this.replayInputs = [];
 		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
-
-		if(this.replayInputs.length)
-		{
-			this.args.hasRecording = true;
-		}
-
-		this.args.topLine.args.value = ' i cant believe its not canvas. ';
-		this.args.status.args.value = ' click here to exit demo. ';
-
 	}
 
 	fullscreen()
@@ -804,9 +795,9 @@ export class Viewport extends View
 					continue;
 				}
 
-				actor.args.display = 'initial';
-
 				actor.updateStart();
+
+				actor.args.display = actor.args.display || 'initial';
 
 				this.updateStarted.add(actor);
 			}
@@ -882,6 +873,8 @@ export class Viewport extends View
 
 		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
+		this.args.rippleFrame = this.args.frameId % 128;
+
 		this.actorPointCache.clear();
 
 		if(this.args.paused)
@@ -895,6 +888,8 @@ export class Viewport extends View
 		}
 
 		this.args.frameId++;
+
+		this.args.displaceWater = this.args.frameId % 128;
 
 		const actorThree = this.actorsById[3];
 
@@ -923,6 +918,13 @@ export class Viewport extends View
 						{
 							Object.assign(actor.args, frame.args);
 						}
+					}
+
+					if(this.replayInputs.length)
+					{
+						this.args.hasRecording = true;
+						this.args.topLine.args.value = ' i cant believe its not canvas. ';
+						this.args.status.args.value = ' click here to exit demo. ';
 					}
 				}
 				else
@@ -983,8 +985,6 @@ export class Viewport extends View
 
 				this.updateStarted.add(actor);
 
-				actor.args.display = 'initial';
-
 				this.actorUpdateStart(nearbyCells);
 			}
 
@@ -996,7 +996,6 @@ export class Viewport extends View
 
 				this.actorUpdate(nearbyCells);
 			}
-
 		}
 
 		if(this.controlActor)
@@ -1078,12 +1077,19 @@ export class Viewport extends View
 		const width  = this.args.width;
 		const height = this.args.height;
 
+		const inAuras = new WeakSet;
+
 		for(const i in this.actors.list)
 		{
 			const actor = this.actors.list[i];
 
-			if(!(actor instanceof Region))
+			if(!(actor instanceof Region) && !this.auras.has(actor))
 			{
+				if(inAuras.has(actor))
+				{
+					continue;
+				}
+
 				const actorX = actor.x + x - (width / 2);
 				const actorY = actor.y + y - (height / 2);
 
@@ -1098,6 +1104,8 @@ export class Viewport extends View
 				else
 				{
 					actor.args.display = 'initial';
+
+					inAuras.add(actor);
 				}
 			}
 		}
@@ -1106,11 +1114,6 @@ export class Viewport extends View
 
 		if(this.nextControl)
 		{
-			// if(this.controlActor)
-			// {
-			// 	this.auras.delete(this.controlActor);
-			// }
-
 			this.controlActor = this.nextControl;
 
 			this.auras.add(this.controlActor);
@@ -1333,7 +1336,7 @@ export class Viewport extends View
 			this.actors.remove(actor);
 		}
 
-		this.actors.remove(this.controlActor);
+		this.controlActor && this.actors.remove(this.controlActor);
 
 		this.spawn.clear();
 		this.actorPointCache.clear();
@@ -1386,6 +1389,6 @@ export class Viewport extends View
 
 		this.args.isRecording = false;
 
-		this.controlActor.controller.zero();
+		this.controlActor && this.controlActor.controller.zero();
 	}
 }

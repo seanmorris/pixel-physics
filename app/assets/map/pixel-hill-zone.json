@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":100,
  "infinite":false,
  "layers":[
@@ -29,8 +22,8 @@
                  "type":"player",
                  "visible":true,
                  "width":32,
-                 "x":6696,
-                 "y":960
+                 "x":1408,
+                 "y":1696
                 }, 
                 {
                  "gid":2,
@@ -1257,7 +1250,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":632,
+                 "height":608,
                  "id":921,
                  "name":"region",
                  "properties":[
@@ -1269,8 +1262,8 @@
                  "rotation":0,
                  "type":"region",
                  "visible":true,
-                 "width":1704,
-                 "x":6096,
+                 "width":1664,
+                 "x":6112,
                  "y":1120
                 }, 
                 {
@@ -2180,7 +2173,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":1072,
+ "nextobjectid":1093,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",
