@@ -1,0 +1,14 @@
+.particle-dust {
+	background-image: url(/Sonic/dust.png);
+	width: 14px;
+	height: 14px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 4;
+	--animation-width: 14px;
+
+	animation: particle-animate steps(var(--animation-steps)) infinite 110ms;
+
+	opacity: 0.75;
+}

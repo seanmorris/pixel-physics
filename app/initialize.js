@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(replay.length)
 		{
 			viewportA.args.hasRecording = true;
-			viewportA.args.isReplaying  = true;
+			// viewportA.args.isReplaying  = true;
 		}
 
 		viewportA.render(document.body);

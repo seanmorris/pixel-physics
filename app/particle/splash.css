@@ -1,0 +1,14 @@
+.particle-splash {
+	transform: translate(-50%, -100%) scale(var(--particleScale, 1));
+	transform-origin: bottom center;
+	background-image: url(/Sonic/splash.png);
+	width: 32px;
+	height: 32px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 7;
+	--animation-width: 32px;
+
+	animation: particle-animate steps(var(--animation-steps)) 1 forwards calc(240ms * var(--particleScale, 1));
+}

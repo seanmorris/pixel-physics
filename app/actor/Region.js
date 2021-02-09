@@ -24,7 +24,7 @@ export class Region extends PointActor
 		this.args.height = this.public.height || 32;
 
 		this.args.gravity = 0.25;
-		this.args.drag    = 0.5;
+		this.args.drag    = 0.85;
 
 		this.draining = 0;
 	}

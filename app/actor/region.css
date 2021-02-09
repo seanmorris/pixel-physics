@@ -15,7 +15,7 @@
 	position: absolute;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 .region.region-water .sprite {
@@ -39,14 +39,17 @@
 
 .region.region-water .region-filter {
 	background-color: rgba(0,128,255,0.25);
-	animation: water-distort infinite 2s linear;
+	transform: translateY(-2px);
 	position: absolute;
 	left:    calc(var(--leftBoundry) + 32px);
-	top:     calc(var(--topBoundry));
+	top:     calc(var(--topBoundry) - 0px);
 	width:   calc(var(--viewportWidth));
 	height:  calc(var(--viewportHeight) + 128px);
-	backdrop-filter: saturate(0.25) url(#waves);
-	opacity: 0.90 ;
+	backdrop-filter: saturate(0.5);
+	filter: url(#waves);
+	opacity: 1;
+
+	/*animation: water-distort infinite 3s alternate ease-in-out;*/
 }
 
 .region.region-water .sprite:after {
@@ -55,29 +58,46 @@
 	background-image: url(Sonic/water-surface.png);
 	background-repeat: repeat-x;
 	position: absolute;
-	transform: translateY(-50%);
+	transform: translateY(-10px);
 	opacity: 1;
 	width: 100%;
-	opacity: 0.5;
+	opacity: 0.333;
+	height: 10px;
+	filter: darken;
 
-	animation: water-waves infinite 1280ms linear;
+	animation: water-waves infinite linear 1250ms,
+		water-waves-shift infinite linear 750ms;
 }
 
 @keyframes water-waves {
-	from{
-		background-position: 0px 0px;
+	0% {
+		background-position-y: 7px;
 	}
-	to{
-		background-position: 64px 0px;
+	50% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: 7px;
 	}
 }
 
 
+@keyframes water-waves-shift {
+	from{
+		background-position-x: 0px;
+	}
+	to {
+		background-position-x: 64px;
+	}
+}
+
 @keyframes water-distort {
 	from{
-		transform: translateY(0px);
+		top:     calc(var(--topBoundry) - 0px);
+		/*transform: translateY(0px);*/
 	}
 	to{
-		transform: translateY(-64px);
+		top:     calc(var(--topBoundry) + 0px);
+		/*transform: translateY(-32px);*/
 	}
 }

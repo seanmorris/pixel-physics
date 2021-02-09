@@ -19,6 +19,11 @@ html, body {
 	--scale: 1;
 }
 
+section.filters {
+	width: 0px;
+	height: 0px;
+}
+
 .viewport {
 	image-rendering: pixelated;
 	image-rendering: high-quality;

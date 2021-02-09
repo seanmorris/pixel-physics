@@ -100,8 +100,10 @@ export class Viewport extends View
 		Object.defineProperty(this, 'tileMap', {value: new TileMap});
 
 		this.particles = new Bag;
+		this.effects   = new Bag;
 
 		this.args.particles = this.particles.list;
+		this.args.effects   = this.effects.list;
 
 		this.args.currentActor = '';
 

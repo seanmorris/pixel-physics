@@ -6,62 +6,6 @@
 	filter:url(#motionBlur);
 }
 
-.particle-dust {
-	background-image: url(/Sonic/dust.png);
-	width: 14px;
-	height: 14px;
-
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	--animation-steps: 4;
-	--animation-width: 14px;
-
-	animation: particle-animate steps(var(--animation-steps)) infinite 110ms;
-
-	opacity: 0.75;
-}
-
-.particle-splash {
-	transform: translate(-50%, -100%) scale(var(--particleScale, 1));
-	transform-origin: bottom center;
-	background-image: url(/Sonic/splash.png);
-	width: 32px;
-	height: 32px;
-
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	--animation-steps: 7;
-	--animation-width: 32px;
-
-	animation: particle-animate steps(var(--animation-steps)) 1 forwards calc(240ms * var(--particleScale, 1));
-}
-
-.particle-rock {
-	width: 23px;
-	height: 23px;
-
-	animation: particle-x-fall ease-out 1 calc(1ms * var(--fallSpeed)) forwards;
-}
-
-.particle-rock:after {
-	content: ' ';
-	display: block;
-	transform-origin: bottom center;
-	background-image: url(/Sonic/rocks-split.png);
-	width: 23px;
-	height: 23px;
-
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	--animation-steps: 4;
-	--animation-width: 23px;
-50
-	transform: translate(0, calc(-1px * var(--yMomentum)));
-
-	animation: particle-y-fall ease-in 1 calc(1ms * var(--fallSpeed)) forwards, particle-animate steps(var(--animation-steps)) infinite 512ms;
-
-}
-
 @keyframes particle-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);

@@ -23,6 +23,8 @@ export class PointActor extends View
 		class  = "point-actor [[type]]"
 		style  = "
 			display:[[display]];
+			--fg-filter:[[fgFilter]];
+			--bg-filter:[[bgFilter]];
 			--angle:[[angle]];
 			--ground-angle:[[groundAngle]];
 			--air-angle:[[airAngle]];
@@ -33,11 +35,12 @@ export class PointActor extends View
 		"
 		data-camera-mode = "[[cameraMode]]"
 		data-colliding   = "[[colliding]]"
-		data-falling   = "[[falling]]"
-		data-facing    = "[[facing]]"
-		data-angle     = "[[angle|rad2deg]]"
-		data-mode      = "[[mode]]"
-		data-layer     = "[[layer]]"
+		data-falling     = "[[falling]]"
+		data-facing      = "[[facing]]"
+		data-filter      = "[[filter]]"
+		data-angle       = "[[angle|rad2deg]]"
+		data-layer       = "[[layer]]"
+		data-mode        = "[[mode]]"
 	><div class = "sprite" cv-ref = "sprite"></div></div>`;
 
 	static fromDef(objDef)

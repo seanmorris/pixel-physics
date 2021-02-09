@@ -8,12 +8,28 @@
 	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
 }
 
+.point-actor.actor-generic:before {
+	 /*filter: url(#pinch) !important;
+	 filter: url(#twist) !important;*/
+	 backdrop-filter: url(#pinch) !important;
+}
+
+.point-actor:before {
+	z-index: 100000;
+	content:  ' ';
+	display: block;
+	height: 64px;
+	width: 64px;
+	position: relative;
+	top: -32px;
+	left: -32px;
+}
+
 .point-actor.actor-generic[data-colliding=true] {
 	box-shadow: 0 0 4px 4px rgba(0,255,255,0.45);
 }
 
 .actor-generic {
-	z-index: 1;
 }
 
 .actor-generic .sprite:after {
@@ -27,7 +43,6 @@
 	background-position: center;
 	width: 20px;
 	height: 20px;
-	z-index: 1000;
 	top: 0;
 	left: 0;
 	--translate: translate(5px, calc(-50%));
@@ -38,10 +53,6 @@
 
 .actor-generic {
 	transition: transform 0.1s ease-out 0.1s;
-}
-
-.actor-generic[data-camera-mode="aerial"] {
-	transform: scale(1.25);
 }
 
 .actor-generic[data-falling="false"][data-mode="0"] .sprite:after {

@@ -1,3 +1,6 @@
+.actor-item.actor-sonic {
+}
+
 .actor-item.actor-sonic .sprite {
 	height: 64px;
 	width: 64px;
@@ -13,11 +16,32 @@
 	left: 0;
 	background-image: url(/Sonic/sonic.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	height: 64px;
-	width: 64px;
+	height: 100%;
+	width: 100%;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
+	filter: var(--fg-filter);
+}
+
+.actor-item.actor-sonic .sprite:before {
+	backdrop-filter: var(--bg-filter);
+	filter: var(--bg-filter);
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	z-index: 1000000;
+}
+
+.actor-item.actor-sonic .sprite:before {
+	transform: scale(3,3);
+}
+
+.actor-item.actor-sonic[data-facing="left"] .sprite:before {
+	transform: scale(-3,3);
 }
 
 .actor-item.actor-sonic[data-animation="standing"] .sprite:after {

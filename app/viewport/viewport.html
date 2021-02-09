@@ -1,3 +1,5 @@
+<section class = "filters" cv-each = "effects:effect">[[effect]]</section>
+
 <div class = "viewport-frame" cv-ref = "frame">
 	<div class = "viewport-header">
 		<span class = "sean-icon"></span>
@@ -7,13 +9,15 @@
 
 		<svg>
 		<defs>
+
 			<filter id="motionBlur">
-				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
+				<feGaussianBlur in="SourceGraphic" stdDeviation="0" cv-ref = "blur" />
 			</filter>
+
 			<filter
 				color-interpolation-filters="sRGB"
 				id = "waves"
-				x      ="-0%"
+				x      ="0%"
 				y      ="0%"
 				height ="100%"
 				width  ="100%"
@@ -24,27 +28,38 @@
 					xlink:href="/effects/wave.png"
 					result="DisplacementSource"
 					height="64"
-					width="1"
+					width="64"
 				/>
 
 				<feTile
 					in="DisplacementSource"
 					result="DisplacementTile"
-				/>
+				>
+
+				</feTile>
 
 				<feComposite
 					in  = "DisplacementTile"
 					in2 = "DisplacementGreen"
 					result ="DisplacementField"
 					operator ="over"
-				/>
+				>
+
+				</feComposite>
 
 				<feOffset
 					in  = "DisplacementField"
 					out = "DisplacementOffset"
 					dx  = "0"
-					dy  = "0"
-				/>
+				>
+					<animate
+						attributeName="dy"
+						values = "0;-64"
+						dur="2s"
+						repeatCount="indefinite" />
+
+				</feOffset>
+
 
 				<feDisplacementMap
 					in="SourceGraphic"
@@ -57,10 +72,82 @@
 
 				<feGaussianBlur
 					in="Displaced"
-					stdDeviation="0.25"
+					stdDeviation="0.35"
 				/>
 
-   			</filter>
+			</filter>
+
+			<!-- <filter
+				color-interpolation-filters="sRGB"
+				id = "twist"
+				x      ="-0%"
+				y      ="0%"
+				height ="100%"
+				width  ="100%"
+			>
+				<feImage
+					xlink:href="/effects/twist.png"
+					result="DisplacementSource"
+					height="64"
+					width="64"
+				/>
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="DisplacementSource"
+					xChannelSelector="R"
+					yChannelSelector="G"
+					scale="10"
+				/>
+
+			</filter> -->
+
+			<!-- <filter
+				color-interpolation-filters="sRGB"
+				id = "pinch"
+				x      ="-0%"
+				y      ="0%"
+				height ="100%"
+				width  ="100%"
+			>
+				<feImage
+					xlink:href="/effects/pinch.png"
+					result="DisplacementSource"
+					height="64"
+					width="64"
+				/>
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="DisplacementSource"
+					xChannelSelector="R"
+					yChannelSelector="G"
+					scale="30"
+				/>
+
+			</filter>
+
+			<filter
+				color-interpolation-filters="sRGB"
+				id = "unpinch"
+				x      ="-0%"
+				y      ="0%"
+				height ="100%"
+				width  ="100%"
+			>
+				<feImage
+					xlink:href="/effects/pinch.png"
+					result="DisplacementSource"
+					height="64"
+					width="64"
+				/>
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="DisplacementSource"
+					xChannelSelector="R"
+					yChannelSelector="G"
+					scale="-30"
+				/>
+
+			</filter> -->
 		</defs>
 		</svg>
 
@@ -301,3 +388,4 @@
 <div class = "sun"></div>
 <div class = "clouds-a"></div>
 <div class = "clouds-b"></div>
+

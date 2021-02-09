@@ -1,0 +1,5 @@
+.displace {
+	/*background: white;*/
+	pointer-events: initial;
+	z-index: 10000;
+}
