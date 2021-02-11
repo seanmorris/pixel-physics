@@ -4,6 +4,8 @@ import { Tag } from 'curvature/base/Tag';
 import { Twist } from '../effects/Twist';
 import { Pinch } from '../effects/Pinch';
 
+import { Png } from '../sprite/Png';
+
 export class Sonic extends PointActor
 {
 	constructor(...args)
@@ -23,6 +25,11 @@ export class Sonic extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 40;
+
+		if(!Sonic.png)
+		{
+			Sonic.png = new Png('/Sonic/sonic.png');
+		}
 	}
 
 	onAttached()

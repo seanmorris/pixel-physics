@@ -1,29 +1,180 @@
 [
     {
+        "color": "#ffa0a0a4",
+        "name": "rocks-tall",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffffff00",
+        "name": "coin",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "drill-car",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff4f4f51",
+        "name": "egg-mobile",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff300001",
+        "name": "eggman",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa1a1a5",
+        "name": "eggrobo",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff00ffff",
+        "name": "emerald",
+        "properties": [
+            {
+                "name": "color",
+                "type": "string",
+                "value": "red"
+            }
+        ]
+    },
+    {
+        "color": "#ff70191a",
+        "name": "knuckles",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffd0ff01",
+        "name": "layer-switch",
+        "properties": [
+            {
+                "name": "back",
+                "type": "string",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "color": "#ff39c881",
+        "name": "marble-block",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff4573a4",
+        "name": "mecha-sonic",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ff00ff00",
         "name": "player",
         "properties": [
         ]
     },
     {
-        "color": "#00ff0000",
+        "color": "#ffa40003",
+        "name": "projectile",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "q-block",
+        "properties": [
+            {
+                "name": "item",
+                "type": "string",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "color": "#ff000000",
+        "name": "region",
+        "properties": [
+            {
+                "name": "switch",
+                "type": "object",
+                "value": 0
+            },
+            {
+                "name": "type",
+                "type": "string",
+                "value": ""
+            }
+        ]
+    },
+    {
+        "color": "#ffffff00",
+        "name": "ring",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa49f00",
+        "name": "seymour",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff0008a4",
+        "name": "sonic",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa40003",
         "name": "spring",
         "properties": [
             {
                 "name": "angle",
-                "type": "number",
+                "type": "string",
                 "value": "0"
             },
             {
                 "name": "color",
-                "type": "number",
+                "type": "string",
                 "value": "0"
             },
             {
                 "name": "power",
-                "type": "number",
+                "type": "string",
                 "value": "10"
             }
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "star-post",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "switch",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa47300",
+        "name": "tails",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "window",
+        "properties": [
         ]
     }
 ]
