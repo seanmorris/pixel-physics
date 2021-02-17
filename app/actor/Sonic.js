@@ -102,11 +102,11 @@ export class Sonic extends PointActor
 
 		// this.twister.args.scale = Math.abs(this.args.gSpeed);
 
-		if(!this.public.rolling && !this.public.falling && this.skidding)
+		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
 		{
 			if(this.twister)
 			{
-				this.twister.args.scale = -this.public.gSpeed * 2;
+				this.twister.args.scale = -this.public.gSpeed;
 			}
 		}
 		else if(!this.spindashCharge)
@@ -117,8 +117,13 @@ export class Sonic extends PointActor
 
 	release_1() // spindash
 	{
-		const dashPower = this.spindashCharge / 40;
 		const direction = this.public.direction;
+		let   dashPower = this.spindashCharge / 40;
+
+		if(dashPower > 1)
+		{
+			dashPower = 1;
+		}
 
 		this.args.rolling = true;
 

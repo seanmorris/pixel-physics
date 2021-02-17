@@ -39,12 +39,20 @@
 }
 
 .actor-item.actor-sonic .sprite:before {
-	transform: scale(1.5,1.5) translateX(-6px);
+	transform: scale(2,2);
 }
 
 .actor-item.actor-sonic[data-facing="left"] .sprite:before {
-	transform: scale(-1.5,1.5) translateX(6px);
+	transform: scale(-2,2);
 	pointer-events: none;
+}
+
+.actor-item.actor-sonic[data-animation="spindash"] .sprite:before {
+	transform: scale(3,2) translateX(-2px);
+}
+
+.actor-item.actor-sonic[data-animation="spindash"][data-facing="left"] .sprite:before {
+	transform: scale(-3,2) translateX(2px);
 }
 
 .actor-item.actor-sonic[data-animation="standing"] .sprite:after {

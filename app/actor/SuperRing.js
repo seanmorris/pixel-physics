@@ -214,7 +214,7 @@ export class SuperRing extends PointActor
 		}
 		else
 		{
-			this.wireframe.material.opacity = 0.05;
+			this.wireframe.material.opacity = 0.1;
 
 			if(this.args.speed > 4)
 			{
