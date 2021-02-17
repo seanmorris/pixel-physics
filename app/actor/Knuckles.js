@@ -13,8 +13,8 @@ export class Knuckles extends PointActor
 		this.args.decel     = 0.7;
 
 		this.args.gSpeedMax = 25;
-		this.args.jumpForce = 14;
-		this.args.gravity   = 0.7;
+		this.args.jumpForce = 16.5;
+		this.args.gravity   = 1;
 
 
 		this.args.width  = 32;
@@ -49,21 +49,28 @@ export class Knuckles extends PointActor
 
 			this.args.flying = false;
 
-			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(!this.public.rolling)
 			{
-				this.box.setAttribute('data-animation', 'skidding');
-			}
-			else if(speed > maxSpeed / 2)
-			{
-				this.box.setAttribute('data-animation', 'running');
-			}
-			else if(this.args.moving && this.args.gSpeed)
-			{
-				this.box.setAttribute('data-animation', 'walking');
+				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+				{
+					this.box.setAttribute('data-animation', 'skidding');
+				}
+				else if(speed > maxSpeed / 2)
+				{
+					this.box.setAttribute('data-animation', 'running');
+				}
+				else if(this.args.moving && this.args.gSpeed)
+				{
+					this.box.setAttribute('data-animation', 'walking');
+				}
+				else
+				{
+					this.box.setAttribute('data-animation', 'standing');
+				}
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.box.setAttribute('data-animation', 'rolling');
 			}
 		}
 		else if(this.args.flying)
@@ -134,6 +141,7 @@ export class Knuckles extends PointActor
 	}
 
 	get solid() { return false; }
+	get canRoll() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }

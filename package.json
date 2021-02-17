@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "curvature": "^0.0.66-k",
-    "pokemon-parser": "0.0.5-c"
+    "pokemon-parser": "0.0.5-c",
+    "three": "^0.110.0",
+    "three-collada-loader": "0.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",

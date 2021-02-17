@@ -37,10 +37,21 @@
 	animation: knuckles-run steps(4) infinite 128ms;
 }
 
+.actor-item.actor-knuckles[data-animation="rolling"] .sprite:after,
 .actor-item.actor-knuckles[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
-	animation: knuckles-jump steps(3) infinite 96ms;
+	animation: knuckles-jump steps(4) infinite 192ms;
+}
+
+.actor-item.actor-knuckles[data-animation="spindash"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -320px;
+	animation: knuckles-spindash steps(5) infinite 96ms;
+}
+
+.actor-item.actor-knuckles[data-animation="rolling"] .sprite:after {
+	animation-direction: reverse;
 }
 
 .actor-item.actor-knuckles[data-animation="flying"] .sprite:after {
@@ -83,7 +94,16 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes knuckles-spindash {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

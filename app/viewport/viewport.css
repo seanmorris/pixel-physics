@@ -188,6 +188,11 @@ section.filters {
 	min-height: 100%;
 }
 
+.viewport-background[data-name^="Foreground"],
+.viewport-background[data-name^="Background"] {
+	z-index: 1000;
+}
+
 .viewport-double-zoom {
 	position: absolute;
 	z-index: 10000;

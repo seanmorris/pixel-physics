@@ -1,0 +1,15 @@
+.point-actor.actor-super-ring .sprite {
+	/*background: black;*/
+	z-index: 2;
+}
+
+.point-actor.actor-super-ring canvas {
+	position: absolute;
+	left: calc(var(--width) * -0.5px);
+	top: calc(var(--height) * -1px);
+	z-index: -1;
+}
+
+.point-actor.actor-super-ring canvas:last-child {
+	z-index: 10;
+}

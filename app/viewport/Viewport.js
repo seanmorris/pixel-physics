@@ -22,6 +22,9 @@ import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
 import { Coin } from '../actor/Coin';
 
+import { PowerupGlow } from '../actor/PowerupGlow';
+import { SuperRing } from '../actor/SuperRing';
+
 import { PointActor } from '../actor/PointActor';
 
 import { Projectile } from '../actor/Projectile';
@@ -79,7 +82,9 @@ const objectPalette = {
 	, 'emerald':      Emerald
 	, 'region':       Region
 	, 'ring':         Ring
+	, 'super-ring':   SuperRing
 	, 'coin':         Coin
+	, 'powerup-glow': PowerupGlow
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -146,8 +151,8 @@ export class Viewport extends View
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
 
-		this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
-		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
+		// this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
+		// this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
 
 		this.args.frameId = -1;
 
@@ -445,6 +450,8 @@ export class Viewport extends View
 
 			this.replayInputs.push({frame, input, args});
 		}
+
+		controller.update();
 	}
 
 	readInput()
@@ -675,7 +682,7 @@ export class Viewport extends View
 
 				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
 				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 3}, 0`);
 			}
 			else
 			{
@@ -687,7 +694,6 @@ export class Viewport extends View
 				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
 			}
 
-
 			this.xPrev = controlActor.x;
 			this.yPrev = controlActor.y;
 		}
@@ -696,7 +702,7 @@ export class Viewport extends View
 		{
 			if(!this.args.layers[i])
 			{
-				this.args.layers[i] = new Layer({layerId: i});
+				this.args.layers[i] = new Layer({layerId: i, name: layers[i].name});
 				this.args.layers[i].args.height = this.args.height;
 				this.args.layers[i].args.width  = this.args.width;
 			}
@@ -1044,15 +1050,15 @@ export class Viewport extends View
 			this.args.hasCoins    = !!this.controlActor.args.coins;
 			this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
-			this.args.char.args.value     = this.controlActor.args.name;
-			this.args.xPos.args.value     = Math.round(this.controlActor.x);
-			this.args.yPos.args.value     = Math.round(this.controlActor.y);
-			this.args.ground.args.value   = this.controlActor.args.landed;
-			this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
-			this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
-			this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
-			this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
-			this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+			// this.args.char.args.value     = this.controlActor.args.name;
+			// this.args.xPos.args.value     = Math.round(this.controlActor.x);
+			// this.args.yPos.args.value     = Math.round(this.controlActor.y);
+			// this.args.ground.args.value   = this.controlActor.args.landed;
+			// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+			// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
+			// this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+			// this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
+			// this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
 			const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 

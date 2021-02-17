@@ -157,6 +157,48 @@
 	transform: translate(-50%, calc(-100% + 1px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
 }
 
+
+
+
+/*.actor-item[data-animation="rolling"][data-mode="0"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px));
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="0"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px));
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="1"] .sprite {
+	transform: translate(-25%, calc(-100% + 1px));
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="2"] .sprite {
+	transform: translate(-50%, calc(-100% + 31px));
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="3"] .sprite {
+	transform: translate(calc(-75% + 2px), calc(-100% + 1px));
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
+	transform: translate(-25%, calc(-100% + 1px)) scale(-1,1);
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
+	transform: translate(-50%, calc(-100% + 31px)) scale(-1,1);
+}
+
+.actor-item[data-animation="rolling"][data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
+	transform: translate(calc(-75% + 2px), calc(-100% - 1px)) scale(-1,1);
+}
+
+*/
+
+
 .actor-item[data-mode="0"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 1px)) scale(-1,1);
 }

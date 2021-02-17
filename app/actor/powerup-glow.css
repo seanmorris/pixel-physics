@@ -1,0 +1,82 @@
+.actor-powerup-glow {
+	z-index: 10;
+	overflow: hidden;
+}
+
+.actor-powerup-glow .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-powerup-glow .sprite .powerup-icon {
+	position: absolute;
+	transform: translate(-50%, 25%);
+	left: 50%;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	background-image: url(Sonic/speed-shoes-bubble.png);
+	z-index: 3;
+	mix-blend-mode: hue;
+	transition: top 0.3s ease-out;
+}
+
+.actor-powerup-glow .sprite .powerup-halo {
+	background: url(custom/powerup-glow.png);
+	background-size: 128px 100%;
+	background-repeat: repeat-x;
+	z-index: 2;
+	content: ' ';
+	display: block;
+	height: 64px;
+	width: 64px;
+	transform-origin: bottom;
+	transform: perspective(50em) rotateX(-55deg) scale(0.667, 1);
+	animation: powerup-glow-scroll linear infinite 10s forwards;
+	mix-blend-mode: hue;
+	/*background-blend-mode: lighten;*/
+	opacity: 0.5;
+	filter: blur(0.5px);
+	transition: transform 0.2s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
+}
+
+.actor-powerup-glow .sprite .powerup-icon {
+	animation: powerup-glow-bob ease-in-out infinite 1.75s alternate both;
+}
+
+.actor-powerup-glow .sprite.closed .powerup-icon {
+	top: -16px;
+}
+
+.actor-powerup-glow .sprite.closed .powerup-halo {
+	opacity: 1;
+	filter: blur(5px);
+	transform: perspective(50em) rotateX(0deg) scale(0, 0.5);
+	transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-in;
+}
+
+.actor-powerup-glow .sprite.closed .powerup-icon {
+	transform: translate(-50%, -175%);
+}
+
+.actor-powerup-glow .sprite {
+	left: 16px;
+}
+
+@-webkit-keyframes powerup-glow-scroll {
+	from{
+		background-position: 0% 0%;
+	}
+	to{
+		background-position: 256px 0%;
+	}
+}
+
+@-webkit-keyframes powerup-glow-bob {
+	from{
+		transform: translate(-50%, 12.5%);
+	}
+	to{
+		transform: translate(-50%, -125%);
+	}
+}

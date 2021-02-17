@@ -20,11 +20,13 @@ export class Sonic extends PointActor
 		this.args.skidTraction = 1.75;
 
 		this.args.gSpeedMax = 30;
-		this.args.jumpForce = 15;
-		this.args.gravity   = 0.7;
+		this.args.jumpForce = 18;
+		this.args.gravity   = 1;
 
 		this.args.width  = 32;
 		this.args.height = 40;
+
+		this.spindashCharge = 0;
 
 		if(!Sonic.png)
 		{
@@ -37,82 +39,12 @@ export class Sonic extends PointActor
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
-		// this.twister = new Pinch;
 		this.twister = new Twist;
 
 		this.viewport.effects.add(this.twister);
 
-		this.args.fgFilter = `url(#twist)`;
+		// this.args.fgFilter = `url(#twist)`;
 		this.args.bgFilter = `url(#twist)`;
-
-		// this.twister.listen('attached', () => , {once:true});
-
-		// const displacer = new Tag('<canvas width = "64" height = "64">');
-
-		// const context = displacer.getContext('2d');
-
-		// context.imageSmoothingEnabled = false;
-
-		// const image  = context.getImageData(0, 0, 64, 64);
-		// const pixels = image.data;
-
-		// for(let i = 0; i < pixels.length; i += 4)
-		// {
-		// 	let r,g,b,a,c = 1;
-
-		// 	const w = i / 4;
-		// 	const y = Math.floor(w / 64);
-		// 	const x = (w % 64);
-
-		// 	const ox = x - 31.5;
-		// 	const oy = y - 31.5;
-
-		// 	// r = 128 - Math.abs(oy * 4);
-		// 	// g = 128 - Math.abs(ox * 4);
-		// 	// b = 0;
-
-		// 	const p = Math.sqrt(ox**2+oy**2);
-
-		// 	if(p > 32)
-		// 	{
-		// 		c = 0;
-		// 	}
-		// 	else
-		// 	{
-		// 		c = 1 - p / 32;
-		// 	}
-
-		// 	const tr = ((Math.atan2(ox, oy) - (Math.PI * 0.50)) % (Math.PI * 2));
-		// 	const tg = ((Math.atan2(ox, oy) - (Math.PI * 0.00)) % (Math.PI * 2));
-
-		// 	r = 128 + (ox * 4) * c;
-		// 	g = 128 + (oy * 4) * c;
-		// 	b = 0;
-
-		// 	// r = Math.abs((Math.PI/4 - tr) * 255);
-		// 	// g = Math.abs((Math.PI/2 - tg) * 255);
-
-		// 	pixels[i + 0] = r ?? 0;
-		// 	pixels[i + 1] = g ?? 0;
-		// 	pixels[i + 2] = b ?? 0;
-		// 	pixels[i + 3] = a ?? 255;
-		// }
-
-		// context.putImageData(image, 0, 0);
-
-		// displacer.toBlob(png => {
-
-		// 	const display = new Tag(`<img class = "displace" src = "${URL.createObjectURL(png)}" />`);
-
-		// 	display.style({
-		// 		'--x':       this.x
-		// 		, '--y':     this.y - 100
-		// 		, 'z-index': 100*100
-		// 	});
-
-		// 	this.viewport.particles.add(display);
-
-		// }, 'image/png');
 	}
 
 	update()
@@ -127,27 +59,39 @@ export class Sonic extends PointActor
 
 		if(!falling)
 		{
-			const direction = this.args.direction;
-			const gSpeed    = this.args.gSpeed;
+			const direction = this.public.direction;
+			const gSpeed    = this.public.gSpeed;
 			const speed     = Math.abs(gSpeed);
-			const maxSpeed  = this.args.gSpeedMax;
+			const maxSpeed  = this.public.gSpeedMax;
 
-			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(this.spindashCharge)
 			{
-				this.box.setAttribute('data-animation', 'skidding');
+				this.box.setAttribute('data-animation', 'spindash');
 			}
-			else if(speed > maxSpeed / 2)
+			else if(!this.public.rolling)
 			{
-				this.box.setAttribute('data-animation', 'running');
-			}
-			else if(this.args.moving && this.args.gSpeed)
-			{
-				this.box.setAttribute('data-animation', 'walking');
+				if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
+				{
+					this.box.setAttribute('data-animation', 'skidding');
+				}
+				else if(speed > maxSpeed / 2)
+				{
+					this.box.setAttribute('data-animation', 'running');
+				}
+				else if(this.public.moving && this.public.gSpeed)
+				{
+					this.box.setAttribute('data-animation', 'walking');
+				}
+				else
+				{
+					this.box.setAttribute('data-animation', 'standing');
+				}
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.box.setAttribute('data-animation', 'rolling');
 			}
+
 		}
 		else
 		{
@@ -158,17 +102,66 @@ export class Sonic extends PointActor
 
 		// this.twister.args.scale = Math.abs(this.args.gSpeed);
 
-		if(!this.public.falling && this.twister && Math.abs(this.public.gSpeed) > 15)
+		if(!this.public.rolling && !this.public.falling && this.skidding)
 		{
-			this.twister.args.scale = this.public.gSpeed / 2;
+			if(this.twister)
+			{
+				this.twister.args.scale = -this.public.gSpeed * 2;
+			}
 		}
-		else
+		else if(!this.spindashCharge)
 		{
 			this.twister.args.scale = 0;
 		}
 	}
 
+	release_1() // spindash
+	{
+		const dashPower = this.spindashCharge / 40;
+		const direction = this.public.direction;
+
+		this.args.rolling = true;
+
+		const dashBoost = dashPower * 80 * direction;
+
+		if(Math.sign(direction) !== Math.sign(dashBoost))
+		{
+			this.args.gSpeed = dashBoost;
+		}
+		else
+		{
+			this.args.gSpeed += dashBoost;
+		}
+
+		this.spindashCharge = 0;
+	}
+
+	hold_1(button) // spindash
+	{
+		if(this.args.falling || this.willJump)
+		{
+			return;
+		}
+
+		this.spindashCharge++;
+
+		let dashCharge = this.spindashCharge / 20;
+
+		if(dashCharge > 1)
+		{
+			dashCharge = 1;
+		}
+
+		if(this.twister)
+		{
+			this.twister.args.scale = 60 * dashCharge * this.public.direction
+		}
+
+		this.box.setAttribute('data-animation', 'spindash');
+	}
+
 	get solid() { return false; }
+	get canRoll() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }

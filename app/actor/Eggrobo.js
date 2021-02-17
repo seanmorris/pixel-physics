@@ -145,13 +145,39 @@ export class Eggrobo extends PointActor
 	get solid() { return true; }
 	get isEffect() { return false; }
 
-	command_0()
+	// command_0()
+	// {
+	// 	if(!this.args.falling)
+	// 	{
+	// 		this.args.rocketCoolDown = 5;
+
+	// 		super.command_0();
+
+	// 		return;
+	// 	}
+
+	// 	if(this.args.ySpeed > 1 || this.args.flying)
+	// 	{
+	// 		this.args.flying = true;
+
+	// 		if(this.args.rocketCoolDown <= 1)
+	// 		{
+	// 			this.thrusterSound.play();
+	// 			this.args.rocketCoolDown = 3;
+	// 		}
+
+	// 		this.args.ySpeed = 0;
+	// 		this.args.float  = 4;
+	// 	}
+	// }
+
+	hold_0()
 	{
 		if(!this.args.falling)
 		{
 			this.args.rocketCoolDown = 5;
 
-			super.command_0();
+			super.hold_0();
 
 			return;
 		}

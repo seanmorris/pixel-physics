@@ -118,7 +118,12 @@ export class PointActor extends View
 		this.backStep  = 0;
 		this.frontStep = 0;
 
+		this.args.rolling = false;
+
 		this.args.skidTraction = 5;
+
+		this.args.fgFilter = 'none';
+		this.args.bgFilter = 'none';
 
 		this.args.falling  = true;
 		this.args.running  = false;
@@ -866,6 +871,110 @@ export class PointActor extends View
 					}
 				}
 			}
+
+			let slopeFactor = 0;
+
+			switch(this.args.mode)
+			{
+				case MODE_FLOOR:
+
+					slopeFactor = this.public.groundAngle / (Math.PI/4);
+
+					if(direction > 0)
+					{
+						slopeFactor *= -1;
+					}
+					break;
+
+				case MODE_CEILING:
+
+					slopeFactor = 0;
+
+					break;
+
+				case MODE_RIGHT:
+
+					if(direction > 0)
+					{
+						slopeFactor = -2;
+
+						slopeFactor -= this.public.groundAngle / (Math.PI/4);
+					}
+					else
+					{
+						slopeFactor = 2;
+
+						slopeFactor += this.public.groundAngle / (Math.PI/4) ;
+					}
+					break;
+
+				case MODE_LEFT:
+
+					if(direction > 0)
+					{
+						slopeFactor = 2;
+
+						slopeFactor -= this.public.groundAngle / (Math.PI/4);
+					}
+					else
+					{
+						slopeFactor = -2;
+
+						slopeFactor += this.public.groundAngle / (Math.PI/4) ;
+					}
+
+					break;
+			}
+
+			if(this.public.rolling)
+			{
+				if(slopeFactor < 0)
+				{
+					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.025);
+				}
+				else if(slopeFactor > 0)
+				{
+					this.args.gSpeed *= 1.0000 * (1+(slopeFactor/2) * 0.125);
+				}
+
+				if(Math.sign(this.public.gSpeed) !== Math.sign(this.xAxis) && Math.abs(this.public.gSpeed) < 1)
+				{
+					// this.public.gSpeed = 10 * Math.sign(this.xAxis);
+				}
+			}
+			else if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.333))
+			{
+				if(slopeFactor > 0)
+				{
+					this.args.gSpeed *= 1.0005 * (1+(slopeFactor/2));
+				}
+				else if(slopeFactor < 0)
+				{
+					this.args.gSpeed *= (1/1.0005) * (0-(slopeFactor/2));
+				}
+
+				if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.1))
+				{
+					if(slopeFactor < -1)
+					{
+						this.args.gSpeed *= -1;
+						this.args.ignore = 8;
+						this.xAxis = 0;
+					}
+				}
+			}
+
+			if(slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
+			{
+				if(this.args.mode === 1)
+				{
+					this.args.gSpeed = 1;
+				}
+				else if(this.args.mode === 3)
+				{
+					this.args.gSpeed = -1;
+				}
+			}
 		}
 		else if(this.public.stopped === 1)
 		{
@@ -1367,19 +1476,40 @@ export class PointActor extends View
 
 		if(!this.public.falling)
 		{
-			if(this.xAxis)
+			if(Math.abs(this.public.gSpeed) < 0.01)
+			{
+				this.args.rolling = false;
+
+				this.public.gSpeed = 0;
+			}
+			else if(this.canRoll && this.yAxis > 0)
+			{
+				this.args.rolling = true;
+			}
+		}
+		else
+		{
+			this.args.rolling = false;
+		}
+
+		if(!this.public.falling)
+		{
+			if(this.xAxis && !this.public.rolling)
 			{
 				let gSpeed = this.public.gSpeed
 				const axisSign = Math.sign(this.xAxis);
 				const sign     = Math.sign(this.public.gSpeed);
 
-				if(axisSign === sign || !sign)
+				if(!this.public.rolling)
 				{
-					gSpeed += this.xAxis * this.public.accel * drag;
-				}
-				else
-				{
-					gSpeed += this.xAxis  * this.public.accel * drag * this.public.skidTraction;
+					if(axisSign === sign || !sign)
+					{
+						gSpeed += this.xAxis * this.public.accel * drag;
+					}
+					else
+					{
+						gSpeed += this.xAxis  * this.public.accel * drag * this.public.skidTraction;
+					}
 				}
 
 				if(Math.abs(gSpeed) > gSpeedMax)
@@ -1389,6 +1519,7 @@ export class PointActor extends View
 
 				if(!Math.sign(this.public.gSpeed) || Math.sign(this.public.gSpeed) === Math.sign(gSpeed))
 				{
+
 					this.args.gSpeed = gSpeed;
 				}
 				else
@@ -1404,14 +1535,29 @@ export class PointActor extends View
 			}
 			else if(this.public.gSpeed > 0)
 			{
-				this.args.gSpeed -= this.public.decel * 1/drag;
+				if(this.public.rolling)
+				{
+					this.args.gSpeed -= this.public.decel * 1/drag * 0.125;
+				}
+				else
+				{
+					this.args.gSpeed -= this.public.decel * 1/drag
+				}
+
 			}
 			else if(this.public.gSpeed < 0)
 			{
-				this.args.gSpeed += this.public.decel * 1/drag;
+				if(this.public.rolling)
+				{
+					this.args.gSpeed += this.public.decel * 1/drag * 0.125;
+				}
+				else
+				{
+					this.args.gSpeed += this.public.decel * 1/drag
+				}
 			}
 		}
-		if(this.xAxis)
+		else if(this.public.falling && this.xAxis)
 		{
 			this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
 		}
@@ -1982,7 +2128,9 @@ export class PointActor extends View
 		return tileMap.getSolid(x,y, this.public.layer);
 	}
 
+	get canRoll() { return false; }
 	get canStick() { return false; }
+	get canSpindash() { return false; }
 	get isEffect() { return false; }
 	get isVehicle() { return false; }
 	get solid() { return false; }
@@ -1992,6 +2140,7 @@ export class PointActor extends View
 	get point() { return [this.public.x, this.public.y] }
 	get rotateLock() { return false; }
 	get controllable() { return false; }
+	get skidding() { return Math.abs(this.args.gSpeed) && Math.sign(this.args.gSpeed) !== this.args.direction }
 
 	readInput()
 	{
@@ -2012,14 +2161,29 @@ export class PointActor extends View
 			this.yAxis = controller.axes[1].magnitude;
 		}
 
-		if(controller.buttons[0] && controller.buttons[0].delta === 1)
-		{
-			this.command_0 && this.command_0(); // jump
-		}
+		const buttons = controller.buttons;
 
-		if(controller.buttons[2] && controller.buttons[2].delta === 1)
+		for(const i in buttons)
 		{
-			this.command_2 && this.command_2(); // shoot
+			const button = buttons[i];
+
+			const release = `release_${i}`;
+			// const change  = `change_${i}`;
+			const press   = `command_${i}`;
+			const hold    = `hold_${i}`;
+
+			if(button.delta === 1)
+			{
+				this[press] && this[press]( button );
+			}
+			else if(button.delta === -1)
+			{
+				this[release] && this[release]( button );
+			}
+			else if(button.active)
+			{
+				this[hold] && this[hold]( button );
+			}
 		}
 	}
 

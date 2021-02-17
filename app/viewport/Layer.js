@@ -8,6 +8,8 @@ export class Layer extends View
 
 	constructor(args,parent)
 	{
+		console.log(args);
+
 		super(args,parent);
 
 		this.args.width  = 320;

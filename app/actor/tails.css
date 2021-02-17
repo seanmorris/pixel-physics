@@ -37,9 +37,18 @@
 	animation: tails-run steps(4) infinite 128ms;
 }
 
+.actor-item.actor-tails[data-animation="rolling"] .sprite:after,
 .actor-item.actor-tails[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
+	top: 1px;
+	animation: tails-jump steps(3) infinite 192ms;
+}
+
+.actor-item.actor-tails[data-animation="spindash"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -384px;
+	top: 1px;
 	animation: tails-jump steps(3) infinite 96ms;
 }
 
@@ -126,11 +135,27 @@
 	top: 32px;
 	left: -10px;
 	transform-origin: 42px 16px;
-	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
+	transform: rotate(calc(-90deg + calc(1rad * var(--air-angle))));
 }
 
-.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails,
+.actor-item.actor-tails[data-animation="spindash"] .tails-tails {
+	--sprite-offset-y: 64px;
+	--animation-steps: 5;
+	top: 42px;
+	left: -10px;
+	transform-origin: 42px 16px;
+	transform: rotate(calc(-90deg + calc(1rad * var(--air-angle))));
+}
+
+.actor-item.actor-tails[data-animation="rolling"] .tails-tails {
+	transform: rotate(180deg - calc(calc(-1rad * var(--angle))));
+}
+
 .actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails {
+	transform: rotate(180deg - calc(calc(1rad * var(--angle))));
+}
+
+.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails {
 	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
 }
 
