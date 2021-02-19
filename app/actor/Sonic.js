@@ -64,7 +64,7 @@ export class Sonic extends PointActor
 			this.lightDashingCoolDown--;
 		}
 
-		const falling = this.args.falling;
+		const falling = this.public.falling;
 
 		if(!this.box)
 		{
@@ -72,7 +72,27 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(!falling)
+		if(this.lightDashing)
+		{
+			const direction = Math.sign(this.public.xSpeed) || Math.sign(this.public.gSpeed);
+
+			if(direction < 0)
+			{
+				this.box.setAttribute('data-animation', 'lightdash-back');
+			}
+			else if(direction > 0)
+			{
+				this.box.setAttribute('data-animation', 'lightdash');
+			}
+
+			if(falling)
+			{
+				this.args.direction = Math.sign(this.public.xSpeed) || this.args.direction;
+
+				this.args.mode = MODE_FLOOR;
+			}
+		}
+		else if(!falling)
 		{
 			const direction = this.public.direction;
 			const gSpeed    = this.public.gSpeed;
@@ -202,6 +222,20 @@ export class Sonic extends PointActor
 		}
 	}
 
+	command_8()
+	{
+		// this.args.direction *= -1;
+
+		// if(this.public.direction < 0)
+		// {
+		// 	this.args.facing = 'left';
+		// }
+		// else if(this.public.direction > 0)
+		// {
+		// 	this.args.facing = 'right';
+		// }
+	}
+
 	findNearestRing()
 	{
 		const viewport = this.viewport;
@@ -224,7 +258,7 @@ export class Sonic extends PointActor
 		const distances = [...rings.keys()];
 		const shortest  = Math.min(...distances);
 
-		if(Math.abs(shortest) > 64)
+		if(Math.abs(shortest) > 128)
 		{
 			return;
 		}
@@ -232,6 +266,14 @@ export class Sonic extends PointActor
 		const ring = rings.get(shortest);
 
 		return ring
+	}
+
+	readInput()
+	{
+		if(!this.lightDashing)
+		{
+			super.readInput();
+		}
 	}
 
 	lightDash(ring)
@@ -278,12 +320,19 @@ export class Sonic extends PointActor
 			}
 		}
 
+		// if(this.public.mode !== MODE_FLOOR && this.args.groundAngle !== 0)
+		// {
+		// 	return;
+		// }
+
 		const angleDiff = Math.abs(currentAngle - angle);
 
 		if(angleDiff >= Math.PI / 2)
 		{
 			return;
 		}
+
+		this.args.ignore = 24;
 
 		let dashSpeed = this.distanceFrom(ring);
 
@@ -294,7 +343,20 @@ export class Sonic extends PointActor
 
 		this.args.float = -1;
 
-		if(this.public.falling || angleDiff > (Math.PI / 8) * 2)
+		const direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
+
+		if(this.public.direction < 0)
+		{
+			this.box.setAttribute('data-animation', 'lightdash-back');
+		}
+		else if(this.public.direction > 0)
+		{
+			this.box.setAttribute('data-animation', 'lightdash');
+		}
+
+		const breakGroundAngle = (Math.PI / 8) * 2;
+
+		if(this.public.falling || angleDiff > breakGroundAngle)
 		{
 			this.args.gSpeed = 0;
 			this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
@@ -302,18 +364,25 @@ export class Sonic extends PointActor
 
 			this.args.airAngle = angle;
 
-			this.public.falling = true;
+			this.public.falling  = true;
+
+			if(angleDiff > breakGroundAngle)
+			{
+			}
+
 		}
 		else
 		{
 			this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this.public.gSpeed) || this.public.direction));
 			this.args.xSpeed = 0;
 			this.args.ySpeed = 0;
-			this.args.float  = 0;
+
+			// this.args.airAngle = this.realAngle;
 		}
 
-		this.args.rolling = false;
+		this.lightDashTimeout();
 
+		this.args.rolling = false;
 		this.lightDashing = true;
 	}
 
@@ -323,25 +392,15 @@ export class Sonic extends PointActor
 		{
 			if(this.lightDashing)
 			{
-				this.args.float   = 0;
-
 				other.gone = other.gone || true;
+
+				this.args.float = 0;
 
 				const ring = this.findNearestRing();
 
 				if(ring)
 				{
-					if(this.clearLightDash)
-					{
-						clearTimeout(this.clearLightDash);
-					}
-
 					this.lightDash(ring);
-
-					this.clearLightDash = this.onTimeout(500, () => {
-						this.lightDashing = false
-						this.args.float   = 0;
-					});
 				}
 				else
 				{
@@ -352,6 +411,22 @@ export class Sonic extends PointActor
 		}
 
 		return super.collideA(other);
+	}
+
+	lightDashTimeout()
+	{
+		if(this.clearLightDash)
+		{
+			clearTimeout(this.clearLightDash);
+
+			this.clearLightDash = false;
+		}
+
+		this.clearLightDash = this.onTimeout(500, () => {
+			this.clearLightDash = false;
+			this.lightDashing   = false;
+			this.args.float     = 0;
+		});
 	}
 
 	get solid() { return false; }

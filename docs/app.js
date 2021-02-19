@@ -63726,6 +63726,23 @@ exports.World = World;
 _defineProperty(World, "globals", _Bindable.Bindable.make({}));
 });
 
+;require.register("abilities/LightDash.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LightDash = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LightDash = function LightDash() {
+  _classCallCheck(this, LightDash);
+};
+
+exports.LightDash = LightDash;
+});
+
 ;require.register("actor/BrokenMonitor.js", function(exports, require, module) {
 "use strict";
 
@@ -68858,7 +68875,7 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         this.lightDashingCoolDown--;
       }
 
-      var falling = this.args.falling;
+      var falling = this["public"].falling;
 
       if (!this.box) {
         _get(_getPrototypeOf(Sonic.prototype), "update", this).call(this);
@@ -68866,8 +68883,21 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         return;
       }
 
-      if (!falling) {
-        var direction = this["public"].direction;
+      if (this.lightDashing) {
+        var direction = Math.sign(this["public"].xSpeed) || Math.sign(this["public"].gSpeed);
+
+        if (direction < 0) {
+          this.box.setAttribute('data-animation', 'lightdash-back');
+        } else if (direction > 0) {
+          this.box.setAttribute('data-animation', 'lightdash');
+        }
+
+        if (falling) {
+          this.args.direction = Math.sign(this["public"].xSpeed) || this.args.direction;
+          this.args.mode = MODE_FLOOR;
+        }
+      } else if (!falling) {
+        var _direction = this["public"].direction;
         var gSpeed = this["public"].gSpeed;
         var speed = Math.abs(gSpeed);
         var maxSpeed = this["public"].gSpeedMax;
@@ -68875,7 +68905,7 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         if (this.spindashCharge) {
           this.box.setAttribute('data-animation', 'spindash');
         } else if (!this["public"].rolling) {
-          if (Math.sign(this["public"].gSpeed) !== direction && Math.abs(this["public"].gSpeed - direction) > 5) {
+          if (Math.sign(this["public"].gSpeed) !== _direction && Math.abs(this["public"].gSpeed - _direction) > 5) {
             this.box.setAttribute('data-animation', 'skidding');
           } else if (speed > maxSpeed / 2) {
             this.box.setAttribute('data-animation', 'running');
@@ -68964,6 +68994,18 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
     }
   }, {
+    key: "command_8",
+    value: function command_8() {// this.args.direction *= -1;
+      // if(this.public.direction < 0)
+      // {
+      // 	this.args.facing = 'left';
+      // }
+      // else if(this.public.direction > 0)
+      // {
+      // 	this.args.facing = 'right';
+      // }
+    }
+  }, {
     key: "findNearestRing",
     value: function findNearestRing() {
       var _this2 = this;
@@ -68986,12 +69028,19 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
 
       var shortest = Math.min.apply(Math, _toConsumableArray(distances));
 
-      if (Math.abs(shortest) > 64) {
+      if (Math.abs(shortest) > 128) {
         return;
       }
 
       var ring = rings.get(shortest);
       return ring;
+    }
+  }, {
+    key: "readInput",
+    value: function readInput() {
+      if (!this.lightDashing) {
+        _get(_getPrototypeOf(Sonic.prototype), "readInput", this).call(this);
+      }
     }
   }, {
     key: "lightDash",
@@ -69029,7 +69078,11 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         if (currentAngle > Math.PI) {
           currentAngle -= Math.PI * 2;
         }
-      }
+      } // if(this.public.mode !== MODE_FLOOR && this.args.groundAngle !== 0)
+      // {
+      // 	return;
+      // }
+
 
       var angleDiff = Math.abs(currentAngle - angle);
 
@@ -69037,6 +69090,7 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         return;
       }
 
+      this.args.ignore = 24;
       var dashSpeed = this.distanceFrom(ring);
 
       if (dashSpeed > 40) {
@@ -69044,44 +69098,45 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
 
       this.args["float"] = -1;
+      var direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
-      if (this["public"].falling || angleDiff > Math.PI / 8 * 2) {
+      if (this["public"].direction < 0) {
+        this.box.setAttribute('data-animation', 'lightdash-back');
+      } else if (this["public"].direction > 0) {
+        this.box.setAttribute('data-animation', 'lightdash');
+      }
+
+      var breakGroundAngle = Math.PI / 8 * 2;
+
+      if (this["public"].falling || angleDiff > breakGroundAngle) {
         this.args.gSpeed = 0;
         this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
         this.args.ySpeed = Math.round(dashSpeed * Math.sin(angle));
         this.args.airAngle = angle;
         this["public"].falling = true;
+
+        if (angleDiff > breakGroundAngle) {}
       } else {
         this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this["public"].gSpeed) || this["public"].direction));
         this.args.xSpeed = 0;
-        this.args.ySpeed = 0;
-        this.args["float"] = 0;
+        this.args.ySpeed = 0; // this.args.airAngle = this.realAngle;
       }
 
+      this.lightDashTimeout();
       this.args.rolling = false;
       this.lightDashing = true;
     }
   }, {
     key: "collideA",
     value: function collideA(other) {
-      var _this3 = this;
-
       if (other instanceof _Ring.Ring && !other.gone) {
         if (this.lightDashing) {
-          this.args["float"] = 0;
           other.gone = other.gone || true;
+          this.args["float"] = 0;
           var ring = this.findNearestRing();
 
           if (ring) {
-            if (this.clearLightDash) {
-              clearTimeout(this.clearLightDash);
-            }
-
             this.lightDash(ring);
-            this.clearLightDash = this.onTimeout(500, function () {
-              _this3.lightDashing = false;
-              _this3.args["float"] = 0;
-            });
           } else {
             this.lightDashing = false;
             this.args["float"] = 0;
@@ -69090,6 +69145,22 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
 
       return _get(_getPrototypeOf(Sonic.prototype), "collideA", this).call(this, other);
+    }
+  }, {
+    key: "lightDashTimeout",
+    value: function lightDashTimeout() {
+      var _this3 = this;
+
+      if (this.clearLightDash) {
+        clearTimeout(this.clearLightDash);
+        this.clearLightDash = false;
+      }
+
+      this.clearLightDash = this.onTimeout(500, function () {
+        _this3.clearLightDash = false;
+        _this3.lightDashing = false;
+        _this3.args["float"] = 0;
+      });
     }
   }, {
     key: "solid",
@@ -73016,6 +73087,10 @@ var Viewport = /*#__PURE__*/function (_View) {
       return _this.padConnected(event);
     });
 
+    _this.listen(window, 'gamepaddisconnected', function (event) {
+      return _this.padRemoved(event);
+    });
+
     _this.colCellCache = {};
     _this.colCellDiv = _this.args.width > _this.args.height ? _this.args.width * 0.75 : _this.args.height * 0.75;
     _this.colCells = {};
@@ -73149,6 +73224,13 @@ var Viewport = /*#__PURE__*/function (_View) {
       var keyboard = _Keyboard.Keyboard.get();
 
       keyboard.update();
+
+      if (controller.buttons[9] && controller.buttons[9].time === 2) {
+        this.args.paused = !this.args.paused;
+        console.log(this.args.paused, controller.buttons[9]);
+        controller.update();
+        return;
+      }
 
       if (!this.gamepad) {
         controller.readInput({
@@ -73496,6 +73578,11 @@ var Viewport = /*#__PURE__*/function (_View) {
           '--scale': this.args.scale,
           '--width': this.args.width
         });
+
+        if (this.controlActor && this.controlActor.controller) {
+          this.takeInput(this.controlActor.controller);
+        }
+
         return;
       }
 
@@ -73810,6 +73897,17 @@ var Viewport = /*#__PURE__*/function (_View) {
     key: "padConnected",
     value: function padConnected(event) {
       this.gamepad = event.gamepad;
+    }
+  }, {
+    key: "padRemoved",
+    value: function padRemoved(event) {
+      if (!this.gamepad) {
+        return;
+      }
+
+      if (this.gamepad.index === event.gamepad.index) {
+        this.gamepad = null;
+      }
     }
   }, {
     key: "getColCell",

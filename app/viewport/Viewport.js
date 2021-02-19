@@ -258,6 +258,7 @@ export class Viewport extends View
 		});
 
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
+		this.listen(window, 'gamepaddisconnected', event => this.padRemoved(event));
 
 		this.colCellCache = {};
 		this.colCellDiv = this.args.width > this.args.height
@@ -412,6 +413,17 @@ export class Viewport extends View
 		const keyboard = Keyboard.get();
 
 		keyboard.update();
+
+		if(controller.buttons[9] && controller.buttons[9].time === 2)
+		{
+			this.args.paused = !this.args.paused;
+
+			console.log(this.args.paused, controller.buttons[9]);
+
+			controller.update();
+
+			return;
+		}
 
 		if(!this.gamepad)
 		{
@@ -783,6 +795,11 @@ export class Viewport extends View
 				, '--width': this.args.width
 			});
 
+			if(this.controlActor && this.controlActor.controller)
+			{
+				this.takeInput(this.controlActor.controller);
+			}
+
 			return;
 		}
 
@@ -1131,6 +1148,19 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+	}
+
+	padRemoved(event)
+	{
+		if(!this.gamepad)
+		{
+			return;
+		}
+
+		if(this.gamepad.index === event.gamepad.index)
+		{
+			this.gamepad = null;
+		}
 	}
 
 	getColCell(actor)
