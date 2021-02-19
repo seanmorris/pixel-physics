@@ -60,7 +60,7 @@
 }
 
 .actor-powerup-glow .sprite {
-	left: 16px;
+	/*left: 16px;*/
 }
 
 @-webkit-keyframes powerup-glow-scroll {

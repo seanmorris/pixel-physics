@@ -224,7 +224,7 @@ export class Sonic extends PointActor
 		const distances = [...rings.keys()];
 		const shortest  = Math.min(...distances);
 
-		if(Math.abs(shortest) > 128)
+		if(Math.abs(shortest) > 64)
 		{
 			return;
 		}
@@ -263,7 +263,7 @@ export class Sonic extends PointActor
 					break;
 
 				case MODE_RIGHT:
-					currentAngle = -(currentAngle + (Math.PI / 2));
+					currentAngle = (currentAngle + (Math.PI / 2));
 					break;
 			}
 
@@ -287,14 +287,14 @@ export class Sonic extends PointActor
 
 		let dashSpeed = this.distanceFrom(ring);
 
-		if(dashSpeed > 35)
+		if(dashSpeed > 40)
 		{
-			dashSpeed = 35;
+			dashSpeed = 40;
 		}
 
 		this.args.float = -1;
 
-		if(this.public.falling || angleDiff > (Math.PI / 8) * 3)
+		if(this.public.falling || angleDiff > (Math.PI / 8) * 2)
 		{
 			this.args.gSpeed = 0;
 			this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
