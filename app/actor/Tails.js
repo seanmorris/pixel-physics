@@ -131,33 +131,39 @@ export class Tails extends PointActor
 	{
 		if(!this.args.falling)
 		{
-			this.args.tailFlyCoolDown = 15;
-
 			super.command_0();
 
 			return;
 		}
 
-		if(this.args.tailFlyCoolDown > 0)
+		if(!this.args.flying)
+		{
+			this.args.tailFlyCoolDown = 25;
+			this.args.flying = true;
+		}
+	}
+
+	release_0(button)
+	{
+		this.args.tailFlyCoolDown = 0;
+		this.args.flying = false;
+	}
+
+	hold_0(button)
+	{
+		if(!this.public.flying)
 		{
 			return;
 		}
 
-		if(this.args.ySpeed > 1)
+		if(this.public.ySpeed < 1)
 		{
-			if(!this.args.flying)
+			if(!this.public.flying)
 			{
 				this.flyingSound.play();
 			}
 
-			this.args.flying = true;
-
-			if(this.args.tailFlyCoolDown == 0)
-			{
-				this.args.tailFlyCoolDown = 7;
-			}
-
-			this.args.ySpeed = -1;
+			this.args.ySpeed = this.args.ySpeed < 0 ? this.args.ySpeed : -1;
 			this.args.float  = 8;
 		}
 	}

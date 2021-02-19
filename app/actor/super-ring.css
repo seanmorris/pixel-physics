@@ -1,3 +1,7 @@
+.point-actor.actor-super-ring {
+	pointer-events: none;
+}
+
 .point-actor.actor-super-ring .sprite {
 	/*background: black;*/
 	z-index: 2;

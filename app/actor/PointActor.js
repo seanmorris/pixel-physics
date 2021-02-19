@@ -519,7 +519,7 @@ export class PointActor extends View
 		this.args.x = Math.floor(this.public.x);
 		this.args.y = Math.floor(this.public.y);
 
-		if(!this.isEffect)
+		if(this.public.falling && !this.isEffect)
 		{
 			this.resolveIntersection();
 		}
@@ -999,8 +999,10 @@ export class PointActor extends View
 
 		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
 		{
-			if(Math.abs(this.public.gSpeed) > gSpeedMax && gSpeedMax !== Infinity && gSpeedMax !== -Infinity)
-			{
+			if(Math.abs(this.public.gSpeed) > gSpeedMax
+				&& gSpeedMax !== Infinity
+				&& gSpeedMax !== -Infinity
+			){
 				this.args.gSpeed = gSpeedMax * Math.sign(this.public.gSpeed);
 			}
 		}
@@ -1313,19 +1315,24 @@ export class PointActor extends View
 			type = 2;
 		}
 
-		return this.collideA(other, type)
+		return this.collideA(other, type) || other.collideA(this);
 	}
 
 	resolveIntersection()
 	{
-		const backAngle = this.args.airAngle + Math.PI;
+		let backAngle = this.args.airAngle + Math.PI;
+
+		if(!this.args.falling)
+		{
+			backAngle = this.args.groundAngle - Math.PI;
+		}
 
 		if(this.getMapSolidAt(this.x, this.y))
 		{
 			let testX = this.x;
 			let testY = this.y;
 
-			// this.args.ignore = 1;
+			this.args.ignore = 10;
 
 			let blockers, b;
 
@@ -1359,23 +1366,7 @@ export class PointActor extends View
 				testY += Math.sin(backAngle);
 			}
 
-			let below = this.getMapSolidAt(
-				testX + Math.floor(this.args.width / 2)
-				, testY + 1
-			);
-
-			if(!below)
-			{
-				below = this.getMapSolidAt(
-					testX - Math.floor(this.args.width / 2)
-					, testY + 1
-				);
-			}
-
-			if(Array.isArray(below))
-			{
-				below = below.filter(x => x.solid && x.callCollideHandler(this)).length;
-			}
+			const below = this.checkBelow(testX, testY);
 
 			if(Array.isArray(blockers))
 			{
@@ -1409,6 +1400,29 @@ export class PointActor extends View
 
 			this.willJump = false;
 		}
+	}
+
+	checkBelow(testX, testY)
+	{
+		let below = this.getMapSolidAt(
+			testX + Math.floor(this.args.width / 2)
+			, testY + 1
+		);
+
+		if(!below)
+		{
+			below = this.getMapSolidAt(
+				testX - Math.floor(this.args.width / 2)
+				, testY + 1
+			);
+		}
+
+		if(Array.isArray(below))
+		{
+			below = below.filter(x => x.solid && x.callCollideHandler(this)).length;
+		}
+
+		return below;
 	}
 
 	processInput()
@@ -2198,5 +2212,19 @@ export class PointActor extends View
 		{
 			this.willJump = true;
 		}
+	}
+
+	distanceFrom({x,y})
+	{
+		const aSquared = (this.x - x)**2;
+		const bSquared = (this.y - y)**2;
+		const cSquared = aSquared + bSquared;
+
+		if(cSquared)
+		{
+			return Math.sqrt(cSquared);
+		}
+
+		return 0;
 	}
 }

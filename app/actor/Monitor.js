@@ -22,6 +22,11 @@ export class Monitor extends PointActor
 	{
 		super.update();
 
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/object-destroyed.wav');

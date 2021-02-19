@@ -52,7 +52,7 @@
 	opacity: 1;
 	filter: blur(5px);
 	transform: perspective(50em) rotateX(0deg) scale(0, 0.5);
-	transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-in;
+	transition: transform 0.1s ease-out, opacity 0.1s ease-out, filter 0.1s ease-in;
 }
 
 .actor-powerup-glow .sprite.closed .powerup-icon {

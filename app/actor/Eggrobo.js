@@ -177,8 +177,6 @@ export class Eggrobo extends PointActor
 		{
 			this.args.rocketCoolDown = 5;
 
-			super.hold_0();
-
 			return;
 		}
 

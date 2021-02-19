@@ -32,8 +32,8 @@ export class PowerupGlow extends PointActor
 			return;
 		}
 
-		this.onTimeout(500, () => this.tags.sprite.classList.add('closed'));
-		this.onTimeout(5000, () => this.tags.sprite.classList.remove('closed'));
+		this.onTimeout(125, () => this.tags.sprite.classList.add('closed'));
+		this.onTimeout(2500, () => this.tags.sprite.classList.remove('closed'));
 	}
 
 	get canStick() { return false; }

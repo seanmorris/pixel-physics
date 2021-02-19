@@ -454,115 +454,6 @@ export class Viewport extends View
 		controller.update();
 	}
 
-	readInput()
-	{
-		// if(!this.controlActor)
-		// {
-		// 	return;
-		// }
-
-		// const controller = this.controlActor.controller;
-
-		// if(0 in controller.axes)
-		// {
-		// 	this.controlActor.xAxis = controller.axes[0].magnitude;
-		// }
-
-		// if(1 in controller.axes)
-		// {
-		// 	this.controlActor.yAxis = controller.axes[1].magnitude;
-		// }
-
-		// if(controller.buttons[0] && controller.buttons[0].delta === 1)
-		// {
-		// 	this.controlActor.command_0 && this.controlActor.command_0(); // jump
-		// }
-
-		// if(controller.buttons[2] && controller.buttons[2].delta === 1)
-		// {
-		// 	this.controlActor.command_2 && this.controlActor.command_2(); // shoot
-		// }
-
-		// if(controller.buttons[1])
-		// {
-		// 	if(controller.buttons[1].pressure)
-		// 	{
-		// 		this.controlActor.running  = false;
-		// 		this.controlActor.crawling = true;
-		// 	}
-		// 	else if(controller.buttons[1].pressure || controller.buttons[4] && controller.buttons[4].pressure)
-		// 	{
-		// 		this.controlActor.running  = true;
-		// 		this.controlActor.crawling = false;
-		// 	}
-		// }
-
-
-		// if(gamepad.axes[1] && Math.abs(gamepad.axes[1]) > 0.25)
-		// {
-		// 	if(this.controlActor.args.mode === 1)
-		// 	{
-		// 		this.controlActor.xAxis = gamepad.axes[1];
-		// 	}
-		// 	else if(this.controlActor.args.mode === 3)
-		// 	{
-		// 		this.controlActor.xAxis = gamepad.axes[1];
-		// 	}
-		// 	else
-		// 	{
-		// 		this.controlActor.yAxis = gamepad.axes[1];
-		// 	}
-		// }
-		// else
-		// {
-		// 	this.controlActor.yAxis = 0;
-		// }
-
-		// if(gamepad.buttons[14].pressed)
-		// {
-		// 	this.controlActor.xAxis = -1;
-		// }
-		// else if(gamepad.buttons[15].pressed)
-		// {
-		// 	this.controlActor.xAxis = 1;
-		// }
-		// else if(gamepad.buttons[12].pressed)
-		// {
-		// 	if(this.controlActor.args.mode === 1)
-		// 	{
-		// 		this.controlActor.xAxis = -1;
-		// 	}
-		// 	else if(this.controlActor.args.mode === 3)
-		// 	{
-		// 		this.controlActor.xAxis = 1;
-		// 	}
-
-		// 	this.controlActor.yAxis = -1;
-		// }
-		// else if(gamepad.buttons[13].pressed)
-		// {
-		// 	if(this.controlActor.args.mode === 1)
-		// 	{
-		// 		this.controlActor.xAxis = 1;
-		// 	}
-		// 	else if(this.controlActor.args.mode === 3)
-		// 	{
-		// 		this.controlActor.xAxis = -1;
-		// 	}
-
-		// 	this.controlActor.yAxis = 1;
-		// }
-
-		// if(gamepad.buttons[12].pressed)
-		// {
-		// 	this.controlActor.yAxis = -1;
-		// }
-		// else if(gamepad.buttons[13].pressed)
-		// {
-		// 	this.controlActor.yAxis = 1;
-		// }
-	}
-
 	moveCamera()
 	{
 		if(!this.controlActor)
@@ -659,44 +550,44 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(controlActor && this.tags.blur)
-		{
-			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
+		// if(controlActor && this.tags.blur)
+		// {
+		// 	let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
+		// 	let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
 
-			let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
+		// 	let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
 
-			const maxBlur = 32;
+		// 	const maxBlur = 32;
 
-			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
-			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
+		// 	xBlur = xBlur < maxBlur ? xBlur : maxBlur;
+		// 	yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
+		// 	let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
 
-			if(blur > 3)
-			{
-				if(controlActor.public.falling)
-				{
-					blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-				}
+		// 	if(blur > 3)
+		// 	{
+		// 		if(controlActor.public.falling)
+		// 		{
+		// 			blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
+		// 		}
 
-				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 3}, 0`);
-			}
-			else
-			{
-				blurAngle = 0;
-				blur = 0;
+		// 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+		// 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+		// 		this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 3}, 0`);
+		// 	}
+		// 	else
+		// 	{
+		// 		blurAngle = 0;
+		// 		blur = 0;
 
-				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
-			}
+		// 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+		// 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+		// 		this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+		// 	}
 
-			this.xPrev = controlActor.x;
-			this.yPrev = controlActor.y;
-		}
+		// 	this.xPrev = controlActor.x;
+		// 	this.yPrev = controlActor.y;
+		// }
 
 		for(let i = 0; i < layerCount; i++)
 		{
@@ -957,8 +848,8 @@ export class Viewport extends View
 
 			this.controlActor.args.gSpeedMax = this.args.maxSpeed;
 
-			this.controlActor.willStick = !!this.args.willStick;
-			this.controlActor.stayStuck = !!this.args.stayStuck;
+			// this.controlActor.willStick = !!this.args.willStick;
+			// this.controlActor.stayStuck = !!this.args.stayStuck;
 
 			this.controlActor.crawling = false;
 			this.controlActor.running  = false;

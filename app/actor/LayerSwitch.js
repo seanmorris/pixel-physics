@@ -36,9 +36,14 @@ export class LayerSwitch extends PointActor
 			return;
 		}
 
-		const back = !!Number(this.args.back);
+		let speed = other.args.gSpeed;
+		let back  = !!Number(this.args.back);
 
-		const speed = other.args.gSpeed || other.args.xSpeed;
+		if(back && other.public.falling)
+		{
+			back  = !back;
+			speed = other.args.xSpeed;
+		}
 
 		if(speed > 0)
 		{
