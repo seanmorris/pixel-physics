@@ -673,22 +673,25 @@ export class PointActor extends View
 			{
 				nextPosition = this.findNextStep(step * direction);
 
+
+				if(!nextPosition)
+				{
+					break;
+				}
+
+				// console.log(nextPosition[3]);
+
 				// if(this.public.width > 1)
 				// {
 				// 	const scanForward = this.scanForward(step * direction);
 
 				// 	if(scanForward !== false)
 				// 	{
-				// 		this.args.gSpeed = 0;
+				// 		this.args.gSpeed = scanForward;
 
 				// 		continue;
 				// 	}
 				// }
-
-				if(!nextPosition)
-				{
-					break;
-				}
 
 				if(nextPosition[3])
 				{
@@ -950,7 +953,7 @@ export class PointActor extends View
 				}
 				else if(slopeFactor < 0)
 				{
-					this.args.gSpeed *= (1/1.0005) * (0-(slopeFactor/2));
+					this.args.gSpeed *= (1/1.0025) * (0-(slopeFactor/2));
 				}
 
 				if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.1))
@@ -1885,7 +1888,56 @@ export class PointActor extends View
 		return rAngle;
 	}
 
-	scanForward(speed)
+	findNearestActor(selector, maxDistance)
+	{
+		const viewport = this.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		const cells = viewport.getNearbyColCells(this);
+
+		const actors = new Map;
+
+		cells.map(s => s.forEach(a =>{
+
+			if(a === this)
+			{
+				return;
+			}
+
+			if(a.public.gone)
+			{
+				return;
+			}
+
+			if(!selector(a))
+			{
+				return;
+			}
+
+			const distance = this.distanceFrom(a);
+			const angle    = Math.atan2(a.y - this.y, a.x - this.x);
+
+			if(Math.abs(distance) > maxDistance)
+			{
+				return;
+			}
+
+			actors.set(distance, a);
+		}));
+
+		const distances = [...actors.keys()];
+		const shortest  = Math.min(...distances);
+
+		const closest = actors.get(shortest);
+
+		return closest;
+	}
+
+	scanForward(speed, scanActors = true)
 	{
 		const dir      = Math.sign(speed);
 		const radius   = Math.round(this.public.width / 2);
@@ -1904,15 +1956,19 @@ export class PointActor extends View
 			, startPoint
 			, (i, point) => {
 
-				const actors = viewport.actorsAtPoint(...point)
-					.filter(x => x.args !== this.args)
-					.filter(x => (i <= radius) && x.callCollideHandler(this))
-					.filter(x => x.solid);
-
-				if(actors.length > 0)
+				if(scanActors)
 				{
-					return i;
+					const actors = viewport.actorsAtPoint(...point)
+						.filter(x => x.args !== this.args)
+						.filter(x => (i <= radius) && x.callCollideHandler(this))
+						.filter(x => x.solid);
+
+					if(actors.length > 0)
+					{
+						return i;
+					}
 				}
+
 
 				if(tileMap.getSolid(...point, this.public.layer))
 				{

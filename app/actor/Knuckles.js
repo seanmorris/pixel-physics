@@ -95,12 +95,19 @@ export class Knuckles extends PointActor
 		super.update();
 	}
 
-	command_0()
+	release_0()
+	{
+		if(this.args.flying)
+		{
+			this.args.flying = false;
+			this.args.float  = 0;
+		}
+	}
+
+	hold_0()
 	{
 		if(!this.args.falling)
 		{
-			super.command_0();
-
 			return;
 		}
 

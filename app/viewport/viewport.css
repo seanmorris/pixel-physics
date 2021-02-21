@@ -458,21 +458,6 @@ input[type=number]::-webkit-outer-spin-button {
    -webkit-appearance: "Always Show Up/Down Arrows";
 }
 
-span.button-index {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 0.125em;
-	margin-bottom: 0.125em;
-}
-
-span.button-index .arrow,
-span.button-index .button,
-span.button-index b{
-	margin-left: 0.5em;
-	margin-right: 0.5em;
-}
-
 .viewport-actors,
 .viewport-particles {
 	display: contents;

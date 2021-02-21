@@ -914,7 +914,7 @@
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -148px;
 	animation: ringSpin steps(4) infinite;
-	animation-duration: calc(1ms * 320);
+	animation-duration: calc(1ms * 350);
 	transition: opacity 0.25s ease-in;
 }
 
@@ -1238,8 +1238,11 @@
 	mix-blend-mode: hue;
 	/*background-blend-mode: lighten;*/
 	opacity: 0.5;
-	filter: blur(0.5px);
-	transition: transform 0.2s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
+	filter: blur(2.5px);
+	transition:
+		transform 0.25s 0.75s ease-out
+		, opacity 0.25s 0.75s ease-out
+		, filter 0.75s 0.25s ease-out;
 }
 
 .actor-powerup-glow .sprite .powerup-icon {
@@ -1254,7 +1257,10 @@
 	opacity: 1;
 	filter: blur(5px);
 	transform: perspective(50em) rotateX(0deg) scale(0, 0.5);
-	transition: transform 0.1s ease-out, opacity 0.1s ease-out, filter 0.1s ease-in;
+	transition:
+		transform 0.25s 0.75s ease-in
+		, opacity 0.25s 0.75s ease-in
+		, filter 0.75s 0.25s ease-in;
 }
 
 .actor-powerup-glow .sprite.closed .powerup-icon {
@@ -1592,7 +1598,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
-	transform: scale(1,1) rotate(calc(calc(1rad * var(--air-angle)) + 0deg));
+	transform: scale(1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));
 
 	animation: sonic-flicker steps(4) infinite 128ms;
 }
@@ -1601,7 +1607,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
-	transform: scale(-1,-1) rotate(calc(1rad * var(--dash-angle)));
+	transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));
 
 	animation: sonic-flicker steps(4) infinite 128ms;
 }
@@ -1981,6 +1987,26 @@
 	top: 24px;
 	left: 8px;
 	transform-origin: 42px 16px;
+}
+
+.control-card + .control-card {
+	display: none;
+	text-align: left;
+}
+
+span.button-index {
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	margin-top: 0.125em;
+	margin-bottom: 0.125em;
+}
+
+span.button-index .arrow,
+span.button-index .button,
+span.button-index b{
+	margin-left: 0.5em;
+	margin-right: 0.5em;
 }
 
 
@@ -2957,21 +2983,6 @@ a.github {
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
    -webkit-appearance: "Always Show Up/Down Arrows";
-}
-
-span.button-index {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 0.125em;
-	margin-bottom: 0.125em;
-}
-
-span.button-index .arrow,
-span.button-index .button,
-span.button-index b{
-	margin-left: 0.5em;
-	margin-right: 0.5em;
 }
 
 .viewport-actors,

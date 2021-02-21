@@ -50,6 +50,8 @@ import { Switch }   from '../actor/Switch';
 
 import { Region }   from '../actor/Region';
 
+import { WaterRegion }   from '../actor/WaterRegion';
+
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
 
@@ -80,7 +82,7 @@ const objectPalette = {
 	, 'switch':       Switch
 	, 'window':       Window
 	, 'emerald':      Emerald
-	, 'region':       Region
+	, 'region':       WaterRegion
 	, 'ring':         Ring
 	, 'super-ring':   SuperRing
 	, 'coin':         Coin
@@ -164,6 +166,9 @@ export class Viewport extends View
 		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
+
+		this.controlCard = View.from(require('../cards/basic-controls.html'));
+		this.moveCard    = View.from(require('../cards/basic-moves.html'));
 
 		this.args.blockSize = 32;
 
@@ -285,6 +290,7 @@ export class Viewport extends View
 		this.args.yBlur = 0;
 
 		this.args.controlCard = View.from(require('../cards/basic-controls.html'));
+		this.args.controlCard = View.from(require('../cards/sonic-controls.html'));
 		this.args.moveCard    = View.from(require('../cards/basic-moves.html'));
 
 		this.args.isRecording = false;
@@ -561,45 +567,45 @@ export class Viewport extends View
 		{
 			controlActor = this.controlActor.standingOn;
 		}
+		/*
+		if(controlActor && this.tags.blur)
+		{
+			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
+			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
 
-		// if(controlActor && this.tags.blur)
-		// {
-		// 	let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-		// 	let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
+			let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
 
-		// 	let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
+			const maxBlur = 32;
 
-		// 	const maxBlur = 32;
+			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
+			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-		// 	xBlur = xBlur < maxBlur ? xBlur : maxBlur;
-		// 	yBlur = yBlur < maxBlur ? yBlur : maxBlur;
+			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
 
-		// 	let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
+			if(blur > 1)
+			{
+				if(controlActor.public.falling)
+				{
+					blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
+				}
 
-		// 	if(blur > 3)
-		// 	{
-		// 		if(controlActor.public.falling)
-		// 		{
-		// 			blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-		// 		}
+				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.25) - 1}, 0`);
+			}
+			else
+			{
+				blurAngle = 0;
+				blur = 0;
 
-		// 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-		// 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-		// 		this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 3}, 0`);
-		// 	}
-		// 	else
-		// 	{
-		// 		blurAngle = 0;
-		// 		blur = 0;
+				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+			}
 
-		// 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-		// 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-		// 		this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
-		// 	}
-
-		// 	this.xPrev = controlActor.x;
-		// 	this.yPrev = controlActor.y;
-		// }
+			this.xPrev = controlActor.x;
+			this.yPrev = controlActor.y;
+		}*/
 
 		for(let i = 0; i < layerCount; i++)
 		{
@@ -1037,6 +1043,24 @@ export class Viewport extends View
 			this.args.maxSpeed = null;
 			this.nextControl   = null;
 		}
+
+		if(this.controlActor && this.controlActor.controlCard)
+		{
+			if(this.controlActor.public.falling)
+			{
+				this.args.controlCard = this.controlActor.airControlCard;
+			}
+			else
+			{
+				this.args.controlCard = this.controlActor.controlCard;
+			}
+		}
+		else
+		{
+			this.args.controlCard = this.controlCard;
+		}
+
+		this.args.moveCard    = this.moveCard;
 	}
 
 	click(event)

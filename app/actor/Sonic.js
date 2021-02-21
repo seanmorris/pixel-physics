@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
+
 import { Tag } from 'curvature/base/Tag';
+import { View } from 'curvature/base/View';
 
 import { Twist } from '../effects/Twist';
 import { Pinch } from '../effects/Pinch';
@@ -37,6 +39,11 @@ export class Sonic extends PointActor
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.airControlCard = View.from(require('../cards/sonic-air-controls.html'));
+		this.controlCard    = View.from(require('../cards/sonic-controls.html'));
+
+		this.moveCard       = View.from(require('../cards/basic-moves.html'));
 
 		if(!Sonic.png)
 		{
@@ -108,6 +115,25 @@ export class Sonic extends PointActor
 				if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 				{
 					this.box.setAttribute('data-animation', 'skidding');
+
+					const viewport = this.viewport;
+
+					const particleA = new Tag('<div class = "particle-dust">');
+
+					const pointA = this.rotatePoint(this.args.gSpeed, 0);
+
+					particleA.style({
+						'--x': pointA[0] + this.x
+						, '--y': pointA[1] + this.y
+						, 'z-index': 0
+						, opacity: Math.random() * 2
+					});
+
+					viewport.particles.add(particleA);
+
+					setTimeout(() => {
+						viewport.particles.remove(particleA);
+					}, 350);
 				}
 				else if(speed > maxSpeed / 2)
 				{
@@ -152,6 +178,11 @@ export class Sonic extends PointActor
 
 	release_1() // spindash
 	{
+		if(!this.spindashCharge)
+		{
+			return;
+		}
+
 		const direction = this.public.direction;
 		let   dashPower = this.spindashCharge / 40;
 
@@ -178,8 +209,9 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
-		if(this.args.falling || this.willJump)
+		if(this.args.falling || this.willJump || this.public.gSpeed)
 		{
+			this.spindashCharge = 0;
 			return;
 		}
 
@@ -202,6 +234,11 @@ export class Sonic extends PointActor
 
 	hold_2()
 	{
+		if(!this.public.falling)
+		{
+			return;
+		}
+
 		if(this.lightDashing)
 		{
 			return;
@@ -212,60 +249,46 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		const ring = this.findNearestRing();
+		const ring = this.findDashableRing(64);
 
 		if(ring)
 		{
 			this.lightDash(ring);
 
-			this.lightDashingCoolDown = 12;
+			// this.lightDashingCoolDown = 9;
 		}
-	}
-
-	command_8()
-	{
-		// this.args.direction *= -1;
-
-		// if(this.public.direction < 0)
-		// {
-		// 	this.args.facing = 'left';
-		// }
-		// else if(this.public.direction > 0)
-		// {
-		// 	this.args.facing = 'right';
-		// }
 	}
 
 	findNearestRing()
 	{
-		const viewport = this.viewport;
+		return this.findDashableRing();
+	}
 
-		if(!viewport)
+	findDashableRing(maxDist = 128)
+	{
+		const ring = this.findNearestActor(actor => actor instanceof Ring, maxDist);
+
+		if(!ring)
 		{
 			return;
 		}
 
-		const cells = viewport.getNearbyColCells(this);
+		const nextRing = ring.findNearestActor(actor => actor instanceof Ring, maxDist);
 
-		const rings = new Map;
-
-		cells.map(s => s.forEach(a =>
-			a instanceof Ring
-			&& !a.public.gone
-			&& rings.set(this.distanceFrom(a), a)
-		));
-
-		const distances = [...rings.keys()];
-		const shortest  = Math.min(...distances);
-
-		if(Math.abs(shortest) > 128)
+		if(!nextRing)
 		{
 			return;
 		}
 
-		const ring = rings.get(shortest);
+		const firstAngle  = Math.atan2(this.y - ring.y, this.x - ring.x);
+		const secondAngle = Math.atan2(ring.y - nextRing.y, ring.x - nextRing.x);
 
-		return ring
+		if(Math.abs(firstAngle - secondAngle) > Math.PI / 2)
+		{
+			return;
+		}
+
+		return ring;
 	}
 
 	readInput()
@@ -280,66 +303,75 @@ export class Sonic extends PointActor
 	{
 		let currentAngle;
 
+		this.spindashCharge = 0;
+
 		let angle = Math.atan2(ring.y - this.y, ring.x - this.x);
 
 		if(this.public.falling)
 		{
 			currentAngle = this.public.airAngle;
 		}
-		else
-		{
-			currentAngle = this.public.groundAngle;
-
-			switch(this.public.mode)
-			{
-				case MODE_FLOOR:
-					currentAngle = currentAngle;
-					break;
-
-				case MODE_LEFT:
-					currentAngle = -(currentAngle - (Math.PI / 2));
-					break;
-
-				case MODE_CEILING:
-					currentAngle = -(currentAngle - (Math.PI));
-					break;
-
-				case MODE_RIGHT:
-					currentAngle = (currentAngle + (Math.PI / 2));
-					break;
-			}
-
-			if(this.public.direction < 0)
-			{
-				currentAngle += Math.PI;
-			}
-
-			if(currentAngle > Math.PI)
-			{
-				currentAngle -= Math.PI * 2;
-			}
-		}
-
-		// if(this.public.mode !== MODE_FLOOR && this.args.groundAngle !== 0)
+		// else
 		// {
-		// 	return;
+		// 	currentAngle = this.public.groundAngle;
+
+		// 	switch(this.public.mode)
+		// 	{
+		// 		case MODE_FLOOR:
+		// 			currentAngle = currentAngle;
+		// 			break;
+
+		// 		case MODE_LEFT:
+		// 			currentAngle = -(currentAngle - (Math.PI / 2));
+		// 			break;
+
+		// 		case MODE_CEILING:
+		// 			currentAngle = -(currentAngle - (Math.PI));
+		// 			break;
+
+		// 		case MODE_RIGHT:
+		// 			currentAngle = (currentAngle + (Math.PI / 2));
+		// 			break;
+		// 	}
+
+		// 	if(this.public.direction < 0)
+		// 	{
+		// 		currentAngle += Math.PI;
+		// 	}
+
+		// 	if(currentAngle > Math.PI)
+		// 	{
+		// 		currentAngle -= Math.PI * 2;
+		// 	}
 		// }
 
 		const angleDiff = Math.abs(currentAngle - angle);
 
-		if(angleDiff >= Math.PI / 2)
+		if(!this.lightDashing)
 		{
-			return;
+			if(angleDiff >= (Math.PI / 2))
+			{
+				return;
+			}
 		}
-
-		this.args.ignore = 24;
 
 		let dashSpeed = this.distanceFrom(ring);
 
-		if(dashSpeed > 40)
+		const maxDash = 55;
+
+		if(dashSpeed > maxDash)
 		{
-			dashSpeed = 40;
+			dashSpeed = maxDash;
 		}
+
+		const space = this.scanForward(dashSpeed, false);
+
+		if(space && dashSpeed > space)
+		{
+			dashSpeed = space;
+		}
+
+		this.args.ignore = 4;
 
 		this.args.float = -1;
 
@@ -356,50 +388,40 @@ export class Sonic extends PointActor
 
 		const breakGroundAngle = (Math.PI / 8) * 2;
 
+		this.args.airAngle  = angle;
+
 		if(this.public.falling || angleDiff > breakGroundAngle)
 		{
 			this.args.gSpeed = 0;
 			this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
 			this.args.ySpeed = Math.round(dashSpeed * Math.sin(angle));
 
-			this.args.airAngle = angle;
+			this.public.falling = true;
 
-			this.public.falling  = true;
+			this.lightDashTimeout();
 
-			if(angleDiff > breakGroundAngle)
-			{
-			}
-
+			this.args.rolling = false;
+			this.lightDashing = true;
 		}
-		else
-		{
-			this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this.public.gSpeed) || this.public.direction));
-			this.args.xSpeed = 0;
-			this.args.ySpeed = 0;
-
-			// this.args.airAngle = this.realAngle;
-		}
-
-		this.lightDashTimeout();
-
-		this.args.rolling = false;
-		this.lightDashing = true;
+		// else
+		// {
+		// 	this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this.public.gSpeed) || this.public.direction));
+		// }
 	}
 
-	collideA(other)
+	collect(pickup)
 	{
-		if(other instanceof Ring && !other.gone)
+		if(pickup instanceof Ring)
 		{
 			if(this.lightDashing)
 			{
-				other.gone = other.gone || true;
-
-				this.args.float = 0;
-
-				const ring = this.findNearestRing();
+				const ring = this.findNearestActor(actor => actor instanceof Ring, 128);
 
 				if(ring)
 				{
+					// this.args.x = pickup.x;
+					// this.args.y = pickup.y;
+
 					this.lightDash(ring);
 				}
 				else
@@ -409,8 +431,6 @@ export class Sonic extends PointActor
 				}
 			}
 		}
-
-		return super.collideA(other);
 	}
 
 	lightDashTimeout()
@@ -422,7 +442,7 @@ export class Sonic extends PointActor
 			this.clearLightDash = false;
 		}
 
-		this.clearLightDash = this.onTimeout(500, () => {
+		this.clearLightDash = this.onTimeout(150, () => {
 			this.clearLightDash = false;
 			this.lightDashing   = false;
 			this.args.float     = 0;

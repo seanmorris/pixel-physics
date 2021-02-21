@@ -15,7 +15,7 @@ export class Monitor extends PointActor
 		this.args.width  = 28;
 		this.args.height = 32;
 
-		this.gone = false;
+		this.args.gone = false;
 	}
 
 	update()
@@ -38,19 +38,17 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(this.args.falling || other.occupant)
-		{
-			this.pop(other);
-		}
-		else if(
+		if(
 			type !== 2
-			&& (!this.args.falling || this.args.float === -1)
-			&& other.args.ySpeed > 0
-			&& other.y < this.y
+			&& (!this.public.falling || this.public.float === -1)
+			&& (
+				(other.public.ySpeed > 0 && other.y < this.y)
+				|| other.public.rolling
+			)
 			&& this.viewport
-			&& !this.gone
+			&& !this.public.gone
 		){
-			this.gone = true;
+			this.args.gone = true;
 
 			other.args.ySpeed *= -1;
 			other.args.falling = true;
@@ -69,7 +67,7 @@ export class Monitor extends PointActor
 				|| (other instanceof Projectile)
 			)
 			&& this.viewport
-			&& !this.gone
+			&& !this.public.gone
 		){
 			this.pop(other);
 		}

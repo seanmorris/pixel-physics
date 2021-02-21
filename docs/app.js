@@ -65047,11 +65047,17 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
       _get(_getPrototypeOf(Knuckles.prototype), "update", this).call(this);
     }
   }, {
-    key: "command_0",
-    value: function command_0() {
+    key: "release_0",
+    value: function release_0() {
+      if (this.args.flying) {
+        this.args.flying = false;
+        this.args["float"] = 0;
+      }
+    }
+  }, {
+    key: "hold_0",
+    value: function hold_0() {
       if (!this.args.falling) {
-        _get(_getPrototypeOf(Knuckles.prototype), "command_0", this).call(this);
-
         return;
       }
 
@@ -65627,7 +65633,7 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'actor-item actor-monitor';
     _this.args.width = 28;
     _this.args.height = 32;
-    _this.gone = false;
+    _this.args.gone = false;
     return _this;
   }
 
@@ -65650,10 +65656,8 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
     value: function collideA(other, type) {
       _get(_getPrototypeOf(Monitor.prototype), "collideA", this).call(this, other, type);
 
-      if (this.args.falling || other.occupant) {
-        this.pop(other);
-      } else if (type !== 2 && (!this.args.falling || this.args["float"] === -1) && other.args.ySpeed > 0 && other.y < this.y && this.viewport && !this.gone) {
-        this.gone = true;
+      if (type !== 2 && (!this["public"].falling || this["public"]["float"] === -1) && (other["public"].ySpeed > 0 && other.y < this.y || other["public"].rolling) && this.viewport && !this["public"].gone) {
+        this.args.gone = true;
         other.args.ySpeed *= -1;
         other.args.falling = true;
 
@@ -65662,7 +65666,7 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
         }
 
         this.pop(other);
-      } else if ((type === 1 || type === 3) && (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof _Projectile.Projectile) && this.viewport && !this.gone) {
+      } else if ((type === 1 || type === 3) && (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof _Projectile.Projectile) && this.viewport && !this["public"].gone) {
         this.pop(other);
       }
     }
@@ -66377,19 +66381,21 @@ var PointActor = /*#__PURE__*/function (_View) {
         var step = Math.ceil(max / 256);
 
         for (var s = 0; s < max; s += step) {
-          nextPosition = this.findNextStep(step * direction); // if(this.public.width > 1)
+          nextPosition = this.findNextStep(step * direction);
+
+          if (!nextPosition) {
+            break;
+          } // console.log(nextPosition[3]);
+          // if(this.public.width > 1)
           // {
           // 	const scanForward = this.scanForward(step * direction);
           // 	if(scanForward !== false)
           // 	{
-          // 		this.args.gSpeed = 0;
+          // 		this.args.gSpeed = scanForward;
           // 		continue;
           // 	}
           // }
 
-          if (!nextPosition) {
-            break;
-          }
 
           if (nextPosition[3]) {
             this.args.moving = false;
@@ -66599,7 +66605,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           if (slopeFactor > 0) {
             this.args.gSpeed *= 1.0005 * (1 + slopeFactor / 2);
           } else if (slopeFactor < 0) {
-            this.args.gSpeed *= 1 / 1.0005 * (0 - slopeFactor / 2);
+            this.args.gSpeed *= 1 / 1.0025 * (0 - slopeFactor / 2);
           }
 
           if (Math.abs(this["public"].gSpeed) < this["public"].gSpeedMax * 0.1) {
@@ -67334,10 +67340,56 @@ var PointActor = /*#__PURE__*/function (_View) {
       return rAngle;
     }
   }, {
-    key: "scanForward",
-    value: function scanForward(speed) {
+    key: "findNearestActor",
+    value: function findNearestActor(selector, maxDistance) {
       var _this8 = this;
 
+      var viewport = this.viewport;
+
+      if (!viewport) {
+        return;
+      }
+
+      var cells = viewport.getNearbyColCells(this);
+      var actors = new Map();
+      cells.map(function (s) {
+        return s.forEach(function (a) {
+          if (a === _this8) {
+            return;
+          }
+
+          if (a["public"].gone) {
+            return;
+          }
+
+          if (!selector(a)) {
+            return;
+          }
+
+          var distance = _this8.distanceFrom(a);
+
+          var angle = Math.atan2(a.y - _this8.y, a.x - _this8.x);
+
+          if (Math.abs(distance) > maxDistance) {
+            return;
+          }
+
+          actors.set(distance, a);
+        });
+      });
+
+      var distances = _toConsumableArray(actors.keys());
+
+      var shortest = Math.min.apply(Math, _toConsumableArray(distances));
+      var closest = actors.get(shortest);
+      return closest;
+    }
+  }, {
+    key: "scanForward",
+    value: function scanForward(speed) {
+      var _this9 = this;
+
+      var scanActors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var dir = Math.sign(speed);
       var radius = Math.round(this["public"].width / 2);
       var hRadius = Math.round(this["public"].height / 2);
@@ -67346,19 +67398,21 @@ var PointActor = /*#__PURE__*/function (_View) {
       var tileMap = viewport.tileMap;
       var startPoint = this.rotatePoint(radius * -dir, hRadius);
       return this.castRay(scanDist, this["public"].falling ? Math.sign(speed) > 0 ? 0 : Math.PI : this.realAngle + (Math.sign(speed) < 0 ? Math.PI : 0), startPoint, function (i, point) {
-        var actors = viewport.actorsAtPoint.apply(viewport, _toConsumableArray(point)).filter(function (x) {
-          return x.args !== _this8.args;
-        }).filter(function (x) {
-          return i <= radius && x.callCollideHandler(_this8);
-        }).filter(function (x) {
-          return x.solid;
-        });
+        if (scanActors) {
+          var actors = viewport.actorsAtPoint.apply(viewport, _toConsumableArray(point)).filter(function (x) {
+            return x.args !== _this9.args;
+          }).filter(function (x) {
+            return i <= radius && x.callCollideHandler(_this9);
+          }).filter(function (x) {
+            return x.solid;
+          });
 
-        if (actors.length > 0) {
-          return i;
+          if (actors.length > 0) {
+            return i;
+          }
         }
 
-        if (tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this8["public"].layer]))) {
+        if (tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this9["public"].layer]))) {
           return i;
         }
       });
@@ -67366,16 +67420,16 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "scanBottomEdge",
     value: function scanBottomEdge() {
-      var _this9 = this;
+      var _this10 = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var tileMap = this.viewport.tileMap;
       return this.castRay(this["public"].width, direction < 0 ? Math.PI : 0, [-direction * (this["public"].width / 2), 0], function (i, point) {
-        var actors = _this9.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
-          return a.args !== _this9.args;
+        var actors = _this10.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
+          return a.args !== _this10.args;
         });
 
-        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this9["public"].layer)) {
+        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this10["public"].layer)) {
           return i;
         }
       });
@@ -67383,18 +67437,18 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "scanVerticalEdge",
     value: function scanVerticalEdge() {
-      var _this10 = this;
+      var _this11 = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var tileMap = this.viewport.tileMap;
       return this.castRay(this["public"].height + 1, Math.PI / 2, [direction * this["public"].width / 2, -this["public"].height], function (i, point) {
-        var _this10$viewport;
+        var _this11$viewport;
 
-        var actors = (_this10$viewport = _this10.viewport).actorsAtPoint.apply(_this10$viewport, _toConsumableArray(point)).filter(function (a) {
-          return a.args !== _this10.args;
+        var actors = (_this11$viewport = _this11.viewport).actorsAtPoint.apply(_this11$viewport, _toConsumableArray(point)).filter(function (a) {
+          return a.args !== _this11.args;
         });
 
-        if (actors.length || tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this10["public"].layer]))) {
+        if (actors.length || tileMap.getSolid.apply(tileMap, _toConsumableArray(point).concat([_this11["public"].layer]))) {
           return i;
         }
       });
@@ -67412,7 +67466,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "getMapSolidAt",
     value: function getMapSolidAt(x, y) {
-      var _this11 = this;
+      var _this12 = this;
 
       var actors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
@@ -67422,7 +67476,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (actors) {
         var _actors = this.viewport.actorsAtPoint(x, y).filter(function (x) {
-          return x.args !== _this11.args;
+          return x.args !== _this12.args;
         }).filter(function (x) {
           return x.solid;
         });
@@ -68121,8 +68175,6 @@ exports.Region = void 0;
 
 var _PointActor2 = require("./PointActor");
 
-var _Tag = require("curvature/base/Tag");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -68173,65 +68225,16 @@ var Region = /*#__PURE__*/function (_PointActor) {
     }
 
     _this = _super.call.apply(_super, [this].concat(args));
-    _this.args.type = 'region region-water';
+    _this.args.type = 'region';
     _this.args.width = _this["public"].width || 32;
     _this.args.height = _this["public"].height || 32;
-    _this.args.gravity = 0.25;
-    _this.args.drag = 0.85;
-    _this.draining = 0;
     return _this;
   }
 
   _createClass(Region, [{
     key: "update",
     value: function update() {
-      var _this2 = this;
-
-      if (!this.wrapper && this.tags.sprite) {
-        this.wrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
-        this.color = new _Tag.Tag('<div class = "region-color">');
-        this.filter = new _Tag.Tag('<div class = "region-filter">');
-        this.wrapper.appendChild(this.filter.node);
-        this.tags.sprite.appendChild(this.wrapper.node);
-        this.tags.sprite.parentNode.appendChild(this.color.node);
-      }
-
-      if (!this["switch"]) {
-        this["switch"] = this.viewport.actorsById[this["public"]["switch"]];
-        this["switch"].args.bindTo('active', function (v) {
-          if (!v && _this2.draining > 0) {
-            _this2.draining = -1;
-          }
-
-          if (v) {
-            _this2.draining = 1;
-          }
-        });
-      }
-
       _get(_getPrototypeOf(Region.prototype), "update", this).call(this);
-
-      if (!this.originalHeight) {
-        this.originalHeight = this["public"].height;
-      }
-
-      if (this.draining) {
-        if (this["public"].height <= 0) {
-          this.args.display = 'none';
-        } else {
-          this.args.display = 'initial';
-        }
-
-        if (this.draining > 0 && this["public"].height > 0) {
-          this.args.height -= 3;
-        } else if (this.draining < 0 && this["public"].height < this.originalHeight) {
-          this.args.height += 0.5;
-        }
-      } else {// const frame  = this.viewport.args.frameId;
-        // const offset = Math.sin(frame / 10) * 8;
-        // this.args.height = this.originalHeight - offset;
-        // this.wrapper && this.wrapper.style({'--offset': offset});
-      }
 
       var topBoundry = -this.viewport.args.y - (this.y - this.args.height);
       var leftBoundry = -16 + -this.viewport.args.x - this.x;
@@ -68334,49 +68337,54 @@ var Ring = /*#__PURE__*/function (_PointActor) {
     value: function collideA(other) {
       var _this2 = this;
 
-      _get(_getPrototypeOf(Ring.prototype), "collideA", this).call(this, other);
-
-      if (this.args.gone) {
+      if (this["public"].gone) {
         return;
       }
 
+      _get(_getPrototypeOf(Ring.prototype), "collideA", this).call(this, other);
+
       this.args.type = 'actor-item actor-ring collected';
 
-      if (!this.args.gone) {
-        if (this.viewport.args.audio && this.sample) {
-          this.sample.play();
-        }
+      if (this.viewport.args.audio && this.sample) {
+        this.sample.play();
+      }
 
-        this.onTimeout(60, function () {
-          _this2.args.type = 'actor-item actor-ring collected gone';
-        });
-        this.onTimeout(120, function () {
-          _this2.viewport.actors.remove(_this2);
+      this.onTimeout(60, function () {
+        _this2.args.type = 'actor-item actor-ring collected gone';
+      });
+      var x = this.x;
+      var y = this.y;
+      var viewport = this.viewport;
+      this.onTimeout(3500, function () {
+        _this2.args.gone = false;
+        _this2.args.type = 'actor-item actor-ring';
+      });
 
-          _this2.remove();
+      if (other.collect) {
+        this.onNextFrame(function () {
+          other.collect(_this2);
         });
-        var x = this.x;
-        var y = this.y;
-        var viewport = this.viewport;
-        viewport.spawn.add({
-          time: Date.now() + 3500,
-          frame: this.viewport.args.frameId + 210,
-          object: new Ring({
-            x: x,
-            y: y
-          })
-        });
-
-        if (other.args.owner) {
-          other.args.owner.args.rings += 1;
-        } else if (other.occupant) {
-          other.occupant.args.rings += 1;
-        } else {
-          other.args.rings += 1;
-        }
       }
 
       this.args.gone = true;
+
+      if (other.args.owner) {
+        other.args.owner.args.rings += 1;
+      } else if (other.occupant) {
+        other.occupant.args.rings += 1;
+      } else {
+        other.args.rings += 1;
+      } // this.onTimeout(120, () => {
+      // 	viewport.actors.remove( this );
+      // 	this.remove();
+      // });
+      // viewport.spawn.add({
+      // 	time: Date.now() + 3500
+      // 	, frame:  this.viewport.args.frameId + 210
+      // 	, object: new Ring({x,y})
+      // });
+      // this.args.gone = true;
+
     }
   }, {
     key: "solid",
@@ -68774,6 +68782,8 @@ var _PointActor2 = require("./PointActor");
 
 var _Tag = require("curvature/base/Tag");
 
+var _View = require("curvature/base/View");
+
 var _Twist = require("../effects/Twist");
 
 var _Pinch = require("../effects/Pinch");
@@ -68781,18 +68791,6 @@ var _Pinch = require("../effects/Pinch");
 var _Png = require("../sprite/Png");
 
 var _Ring = require("./Ring");
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -68850,6 +68848,9 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     _this.spindashCharge = 0;
     _this.willStick = false;
     _this.stayStuck = false;
+    _this.airControlCard = _View.View.from(require('../cards/sonic-air-controls.html'));
+    _this.controlCard = _View.View.from(require('../cards/sonic-controls.html'));
+    _this.moveCard = _View.View.from(require('../cards/basic-moves.html'));
 
     if (!Sonic.png) {
       Sonic.png = new _Png.Png('/Sonic/sonic.png');
@@ -68907,6 +68908,19 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         } else if (!this["public"].rolling) {
           if (Math.sign(this["public"].gSpeed) !== _direction && Math.abs(this["public"].gSpeed - _direction) > 5) {
             this.box.setAttribute('data-animation', 'skidding');
+            var viewport = this.viewport;
+            var particleA = new _Tag.Tag('<div class = "particle-dust">');
+            var pointA = this.rotatePoint(this.args.gSpeed, 0);
+            particleA.style({
+              '--x': pointA[0] + this.x,
+              '--y': pointA[1] + this.y,
+              'z-index': 0,
+              opacity: Math.random() * 2
+            });
+            viewport.particles.add(particleA);
+            setTimeout(function () {
+              viewport.particles.remove(particleA);
+            }, 350);
           } else if (speed > maxSpeed / 2) {
             this.box.setAttribute('data-animation', 'running');
           } else if (this["public"].moving && this["public"].gSpeed) {
@@ -68936,6 +68950,10 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     key: "release_1",
     value: function release_1() // spindash
     {
+      if (!this.spindashCharge) {
+        return;
+      }
+
       var direction = this["public"].direction;
       var dashPower = this.spindashCharge / 40;
 
@@ -68958,7 +68976,8 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     key: "hold_1",
     value: function hold_1(button) // spindash
     {
-      if (this.args.falling || this.willJump) {
+      if (this.args.falling || this.willJump || this["public"].gSpeed) {
+        this.spindashCharge = 0;
         return;
       }
 
@@ -68978,6 +68997,10 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "hold_2",
     value: function hold_2() {
+      if (!this["public"].falling) {
+        return;
+      }
+
       if (this.lightDashing) {
         return;
       }
@@ -68986,53 +69009,44 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         return;
       }
 
-      var ring = this.findNearestRing();
+      var ring = this.findDashableRing(64);
 
       if (ring) {
-        this.lightDash(ring);
-        this.lightDashingCoolDown = 12;
+        this.lightDash(ring); // this.lightDashingCoolDown = 9;
       }
-    }
-  }, {
-    key: "command_8",
-    value: function command_8() {// this.args.direction *= -1;
-      // if(this.public.direction < 0)
-      // {
-      // 	this.args.facing = 'left';
-      // }
-      // else if(this.public.direction > 0)
-      // {
-      // 	this.args.facing = 'right';
-      // }
     }
   }, {
     key: "findNearestRing",
     value: function findNearestRing() {
-      var _this2 = this;
+      return this.findDashableRing();
+    }
+  }, {
+    key: "findDashableRing",
+    value: function findDashableRing() {
+      var maxDist = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 128;
+      var ring = this.findNearestActor(function (actor) {
+        return actor instanceof _Ring.Ring;
+      }, maxDist);
 
-      var viewport = this.viewport;
-
-      if (!viewport) {
+      if (!ring) {
         return;
       }
 
-      var cells = viewport.getNearbyColCells(this);
-      var rings = new Map();
-      cells.map(function (s) {
-        return s.forEach(function (a) {
-          return a instanceof _Ring.Ring && !a["public"].gone && rings.set(_this2.distanceFrom(a), a);
-        });
-      });
+      var nextRing = ring.findNearestActor(function (actor) {
+        return actor instanceof _Ring.Ring;
+      }, maxDist);
 
-      var distances = _toConsumableArray(rings.keys());
-
-      var shortest = Math.min.apply(Math, _toConsumableArray(distances));
-
-      if (Math.abs(shortest) > 128) {
+      if (!nextRing) {
         return;
       }
 
-      var ring = rings.get(shortest);
+      var firstAngle = Math.atan2(this.y - ring.y, this.x - ring.x);
+      var secondAngle = Math.atan2(ring.y - nextRing.y, ring.x - nextRing.x);
+
+      if (Math.abs(firstAngle - secondAngle) > Math.PI / 2) {
+        return;
+      }
+
       return ring;
     }
   }, {
@@ -69046,57 +69060,62 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     key: "lightDash",
     value: function lightDash(ring) {
       var currentAngle;
+      this.spindashCharge = 0;
       var angle = Math.atan2(ring.y - this.y, ring.x - this.x);
 
       if (this["public"].falling) {
         currentAngle = this["public"].airAngle;
-      } else {
-        currentAngle = this["public"].groundAngle;
-
-        switch (this["public"].mode) {
-          case MODE_FLOOR:
-            currentAngle = currentAngle;
-            break;
-
-          case MODE_LEFT:
-            currentAngle = -(currentAngle - Math.PI / 2);
-            break;
-
-          case MODE_CEILING:
-            currentAngle = -(currentAngle - Math.PI);
-            break;
-
-          case MODE_RIGHT:
-            currentAngle = currentAngle + Math.PI / 2;
-            break;
-        }
-
-        if (this["public"].direction < 0) {
-          currentAngle += Math.PI;
-        }
-
-        if (currentAngle > Math.PI) {
-          currentAngle -= Math.PI * 2;
-        }
-      } // if(this.public.mode !== MODE_FLOOR && this.args.groundAngle !== 0)
+      } // else
       // {
-      // 	return;
+      // 	currentAngle = this.public.groundAngle;
+      // 	switch(this.public.mode)
+      // 	{
+      // 		case MODE_FLOOR:
+      // 			currentAngle = currentAngle;
+      // 			break;
+      // 		case MODE_LEFT:
+      // 			currentAngle = -(currentAngle - (Math.PI / 2));
+      // 			break;
+      // 		case MODE_CEILING:
+      // 			currentAngle = -(currentAngle - (Math.PI));
+      // 			break;
+      // 		case MODE_RIGHT:
+      // 			currentAngle = (currentAngle + (Math.PI / 2));
+      // 			break;
+      // 	}
+      // 	if(this.public.direction < 0)
+      // 	{
+      // 		currentAngle += Math.PI;
+      // 	}
+      // 	if(currentAngle > Math.PI)
+      // 	{
+      // 		currentAngle -= Math.PI * 2;
+      // 	}
       // }
 
 
       var angleDiff = Math.abs(currentAngle - angle);
 
-      if (angleDiff >= Math.PI / 2) {
-        return;
+      if (!this.lightDashing) {
+        if (angleDiff >= Math.PI / 2) {
+          return;
+        }
       }
 
-      this.args.ignore = 24;
       var dashSpeed = this.distanceFrom(ring);
+      var maxDash = 55;
 
-      if (dashSpeed > 40) {
-        dashSpeed = 40;
+      if (dashSpeed > maxDash) {
+        dashSpeed = maxDash;
       }
 
+      var space = this.scanForward(dashSpeed, false);
+
+      if (space && dashSpeed > space) {
+        dashSpeed = space;
+      }
+
+      this.args.ignore = 4;
       this.args["float"] = -1;
       var direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
@@ -69107,35 +69126,34 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
 
       var breakGroundAngle = Math.PI / 8 * 2;
+      this.args.airAngle = angle;
 
       if (this["public"].falling || angleDiff > breakGroundAngle) {
         this.args.gSpeed = 0;
         this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
         this.args.ySpeed = Math.round(dashSpeed * Math.sin(angle));
-        this.args.airAngle = angle;
         this["public"].falling = true;
+        this.lightDashTimeout();
+        this.args.rolling = false;
+        this.lightDashing = true;
+      } // else
+      // {
+      // 	this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this.public.gSpeed) || this.public.direction));
+      // }
 
-        if (angleDiff > breakGroundAngle) {}
-      } else {
-        this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this["public"].gSpeed) || this["public"].direction));
-        this.args.xSpeed = 0;
-        this.args.ySpeed = 0; // this.args.airAngle = this.realAngle;
-      }
-
-      this.lightDashTimeout();
-      this.args.rolling = false;
-      this.lightDashing = true;
     }
   }, {
-    key: "collideA",
-    value: function collideA(other) {
-      if (other instanceof _Ring.Ring && !other.gone) {
+    key: "collect",
+    value: function collect(pickup) {
+      if (pickup instanceof _Ring.Ring) {
         if (this.lightDashing) {
-          other.gone = other.gone || true;
-          this.args["float"] = 0;
-          var ring = this.findNearestRing();
+          var ring = this.findNearestActor(function (actor) {
+            return actor instanceof _Ring.Ring;
+          }, 128);
 
           if (ring) {
+            // this.args.x = pickup.x;
+            // this.args.y = pickup.y;
             this.lightDash(ring);
           } else {
             this.lightDashing = false;
@@ -69143,23 +69161,21 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
           }
         }
       }
-
-      return _get(_getPrototypeOf(Sonic.prototype), "collideA", this).call(this, other);
     }
   }, {
     key: "lightDashTimeout",
     value: function lightDashTimeout() {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.clearLightDash) {
         clearTimeout(this.clearLightDash);
         this.clearLightDash = false;
       }
 
-      this.clearLightDash = this.onTimeout(500, function () {
-        _this3.clearLightDash = false;
-        _this3.lightDashing = false;
-        _this3.args["float"] = 0;
+      this.clearLightDash = this.onTimeout(150, function () {
+        _this2.clearLightDash = false;
+        _this2.lightDashing = false;
+        _this2.args["float"] = 0;
       });
     }
   }, {
@@ -70277,6 +70293,133 @@ var Vehicle = /*#__PURE__*/function (_PointActor) {
 exports.Vehicle = Vehicle;
 });
 
+;require.register("actor/WaterRegion.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WaterRegion = void 0;
+
+var _Region2 = require("./Region");
+
+var _Tag = require("curvature/base/Tag");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var WaterRegion = /*#__PURE__*/function (_Region) {
+  _inherits(WaterRegion, _Region);
+
+  var _super = _createSuper(WaterRegion);
+
+  function WaterRegion() {
+    var _this;
+
+    _classCallCheck(this, WaterRegion);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+    _this.args.type = 'region region-water';
+    _this.args.gravity = 0.25;
+    _this.args.drag = 0.85;
+    _this.draining = 0;
+    return _this;
+  }
+
+  _createClass(WaterRegion, [{
+    key: "update",
+    value: function update() {
+      var _this2 = this;
+
+      _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
+
+      if (!this.wrapper && this.tags.sprite) {
+        this.wrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
+        this.color = new _Tag.Tag('<div class = "region-color">');
+        this.filter = new _Tag.Tag('<div class = "region-filter">');
+        this.wrapper.appendChild(this.filter.node);
+        this.tags.sprite.appendChild(this.wrapper.node);
+        this.tags.sprite.parentNode.appendChild(this.color.node);
+      }
+
+      if (!this["switch"]) {
+        this["switch"] = this.viewport.actorsById[this["public"]["switch"]];
+        this["switch"].args.bindTo('active', function (v) {
+          if (!v && _this2.draining > 0) {
+            _this2.draining = -1;
+          }
+
+          if (v) {
+            _this2.draining = 1;
+          }
+        });
+      }
+
+      _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
+
+      if (!this.originalHeight) {
+        this.originalHeight = this["public"].height;
+      }
+
+      if (this.draining) {
+        if (this["public"].height <= 0) {
+          this.args.display = 'none';
+        } else {
+          this.args.display = 'initial';
+        }
+
+        if (this.draining > 0 && this["public"].height > 0) {
+          this.args.height -= 3;
+        } else if (this.draining < 0 && this["public"].height < this.originalHeight) {
+          this.args.height += 0.5;
+        }
+      }
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: "isEffect",
+    get: function get() {
+      return true;
+    }
+  }]);
+
+  return WaterRegion;
+}(_Region2.Region);
+
+exports.WaterRegion = WaterRegion;
+});
+
 ;require.register("actor/Window.js", function(exports, require, module) {
 "use strict";
 
@@ -70350,11 +70493,19 @@ exports.Window = Window;
 });
 
 ;require.register("cards/basic-controls.html", function(exports, require, module) {
-module.exports = "<span class = \"button-index\">\n\t<span class = \"arrow button arrow-west\"></span>\n\t/ <span class = \"arrow button arrow-east\"></span>\n\t/ <b>wasd</b>\n\t- move\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-x\"></span>\n\t/ <span class = \"button xb-a\"></span>\n\t/ <b>space</b>\n\t- jump\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-o\"></span>\n\t/ <span class = \"button xb-b\"></span>\n\t/ <b>ctrl</b>\n\t- <span>spindash (sonic)</span>\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-s\"></span>\n\t/ <span class = \"button xb-x\"></span>\n\t/ <b>z</b>\n\t- <span>shoot (eggrobo)</span>\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-t\"></span>\n\t/ <span class = \"button xb-y\"></span>\n\t/ <b>x</b>\n\t- <span>no action</span>\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-l1\"></span>\n\t/ <span class = \"button xb-lb\"></span>\n\t/ <b>ctrl</b>\n\t- <span>run (hold)</span>\n</span>\n\n<span class = \"button-index\">\n\t<span class = \"button ps-r1\"></span>\n\t/ <span class = \"button xb-rb\"></span>\n\t/ <b>shift</b>\n\t- brakes (hold)\n</span>\n"
+module.exports = "<div class = \"control-card\">\n\t<span class = \"button-index\">\n\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t/ <b>wasd</b>\n\t\t- move\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-x\"></span>\n\t\t/ <span class = \"button xb-a\"></span>\n\t\t/ <b>space</b>\n\t\t- jump\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-o\"></span>\n\t\t/ <span class = \"button xb-b\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-s\"></span>\n\t\t/ <span class = \"button xb-x\"></span>\n\t\t/ <b>z</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-t\"></span>\n\t\t/ <span class = \"button xb-y\"></span>\n\t\t/ <b>x</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-l1\"></span>\n\t\t/ <span class = \"button xb-lb\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-r1\"></span>\n\t\t/ <span class = \"button xb-rb\"></span>\n\t\t/ <b>shift</b>\n\t\t- <span>no action</span>\n\t</span>\n</div>\n"
 });
 
 ;require.register("cards/basic-moves.html", function(exports, require, module) {
 module.exports = "<p><b>jump</b> + <b>jump</b> - fly / double jump action</p>\n\n<p><span class = \"arrow-button arrow-north\"></span> + <b>jump</b> - disengage vehicle</p>\n\n<!-- <p><span class = \"arrow-button arrow-south\"></span> + <b>jump</b> - spindash</p> -->\n"
+});
+
+;require.register("cards/sonic-air-controls.html", function(exports, require, module) {
+module.exports = "<div class = \"control-card\">\n\t<span class = \"button-index\">\n\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t/ <b>wasd</b>\n\t\t- move\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-x\"></span>\n\t\t/ <span class = \"button xb-a\"></span>\n\t\t/ <b>space</b>\n\t\t- double barrier\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-o\"></span>\n\t\t/ <span class = \"button xb-b\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-s\"></span>\n\t\t/ <span class = \"button xb-x\"></span>\n\t\t/ <b>z</b>\n\t\t- <span>light dash</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-t\"></span>\n\t\t/ <span class = \"button xb-y\"></span>\n\t\t/ <b>x</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-l1\"></span>\n\t\t/ <span class = \"button xb-lb\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-r1\"></span>\n\t\t/ <span class = \"button xb-rb\"></span>\n\t\t/ <b>shift</b>\n\t\t- <span>no action</span>\n\t</span>\n</div>\n"
+});
+
+;require.register("cards/sonic-controls.html", function(exports, require, module) {
+module.exports = "<div class = \"control-card\">\n\t<span class = \"button-index\">\n\t\t<span class = \"arrow button arrow-west\"></span>\n\t\t/ <span class = \"arrow button arrow-east\"></span>\n\t\t/ <b>wasd</b>\n\t\t- move\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-x\"></span>\n\t\t/ <span class = \"button xb-a\"></span>\n\t\t/ <b>space</b>\n\t\t- jump\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-o\"></span>\n\t\t/ <span class = \"button xb-b\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>spindash</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-s\"></span>\n\t\t/ <span class = \"button xb-x\"></span>\n\t\t/ <b>z</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-t\"></span>\n\t\t/ <span class = \"button xb-y\"></span>\n\t\t/ <b>x</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-l1\"></span>\n\t\t/ <span class = \"button xb-lb\"></span>\n\t\t/ <b>ctrl</b>\n\t\t- <span>no action</span>\n\t</span>\n\n\t<span class = \"button-index\">\n\t\t<span class = \"button ps-r1\"></span>\n\t\t/ <span class = \"button xb-rb\"></span>\n\t\t/ <b>shift</b>\n\t\t- <span>no action</span>\n\t</span>\n</div>\n"
 });
 
 ;require.register("controller/Axis.js", function(exports, require, module) {
@@ -72796,6 +72947,8 @@ var _Switch = require("../actor/Switch");
 
 var _Region = require("../actor/Region");
 
+var _WaterRegion = require("../actor/WaterRegion");
+
 var _CharacterString = require("../ui/CharacterString");
 
 var _HudFrame = require("../ui/HudFrame");
@@ -72863,7 +73016,7 @@ var objectPalette = {
   'switch': _Switch.Switch,
   'window': _Window.Window,
   'emerald': _Emerald.Emerald,
-  'region': _Region.Region,
+  'region': _WaterRegion.WaterRegion,
   'ring': _Ring.Ring,
   'super-ring': _SuperRing.SuperRing,
   'coin': _Coin.Coin,
@@ -73014,6 +73167,8 @@ var Viewport = /*#__PURE__*/function (_View) {
       value: _this.coins,
       type: 'coin-frame'
     });
+    _this.controlCard = _View2.View.from(require('../cards/basic-controls.html'));
+    _this.moveCard = _View2.View.from(require('../cards/basic-moves.html'));
     _this.args.blockSize = 32;
     _this.args.populated = false;
     _this.args.willStick = false;
@@ -73105,6 +73260,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.xBlur = 0;
     _this.args.yBlur = 0;
     _this.args.controlCard = _View2.View.from(require('../cards/basic-controls.html'));
+    _this.args.controlCard = _View2.View.from(require('../cards/sonic-controls.html'));
     _this.args.moveCard = _View2.View.from(require('../cards/basic-moves.html'));
     _this.args.isRecording = false;
     _this.args.isReplaying = false;
@@ -73347,36 +73503,38 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       if (controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle) {
         controlActor = this.controlActor.standingOn;
-      } // if(controlActor && this.tags.blur)
-      // {
-      // 	let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-      // 	let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
-      // 	let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
-      // 	const maxBlur = 32;
-      // 	xBlur = xBlur < maxBlur ? xBlur : maxBlur;
-      // 	yBlur = yBlur < maxBlur ? yBlur : maxBlur;
-      // 	let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
-      // 	if(blur > 3)
-      // 	{
-      // 		if(controlActor.public.falling)
-      // 		{
-      // 			blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-      // 		}
-      // 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-      // 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-      // 		this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 3}, 0`);
-      // 	}
-      // 	else
-      // 	{
-      // 		blurAngle = 0;
-      // 		blur = 0;
-      // 		this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-      // 		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-      // 		this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
-      // 	}
-      // 	this.xPrev = controlActor.x;
-      // 	this.yPrev = controlActor.y;
-      // }
+      }
+      /*
+      if(controlActor && this.tags.blur)
+      {
+      	let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
+      	let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
+      		let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
+      		const maxBlur = 32;
+      		xBlur = xBlur < maxBlur ? xBlur : maxBlur;
+      	yBlur = yBlur < maxBlur ? yBlur : maxBlur;
+      		let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
+      		if(blur > 1)
+      	{
+      		if(controlActor.public.falling)
+      		{
+      			blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
+      		}
+      			this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+      		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+      		this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.25) - 1}, 0`);
+      	}
+      	else
+      	{
+      		blurAngle = 0;
+      		blur = 0;
+      			this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+      		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+      		this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+      	}
+      		this.xPrev = controlActor.x;
+      	this.yPrev = controlActor.y;
+      }*/
 
 
       for (var i = 0; i < layerCount; i++) {
@@ -73792,6 +73950,18 @@ var Viewport = /*#__PURE__*/function (_View) {
         this.args.maxSpeed = null;
         this.nextControl = null;
       }
+
+      if (this.controlActor && this.controlActor.controlCard) {
+        if (this.controlActor["public"].falling) {
+          this.args.controlCard = this.controlActor.airControlCard;
+        } else {
+          this.args.controlCard = this.controlActor.controlCard;
+        }
+      } else {
+        this.args.controlCard = this.controlCard;
+      }
+
+      this.args.moveCard = this.moveCard;
     }
   }, {
     key: "click",

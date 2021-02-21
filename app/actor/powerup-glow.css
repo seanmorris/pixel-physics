@@ -36,8 +36,11 @@
 	mix-blend-mode: hue;
 	/*background-blend-mode: lighten;*/
 	opacity: 0.5;
-	filter: blur(0.5px);
-	transition: transform 0.2s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
+	filter: blur(2.5px);
+	transition:
+		transform 0.25s 0.75s ease-out
+		, opacity 0.25s 0.75s ease-out
+		, filter 0.75s 0.25s ease-out;
 }
 
 .actor-powerup-glow .sprite .powerup-icon {
@@ -52,7 +55,10 @@
 	opacity: 1;
 	filter: blur(5px);
 	transform: perspective(50em) rotateX(0deg) scale(0, 0.5);
-	transition: transform 0.1s ease-out, opacity 0.1s ease-out, filter 0.1s ease-in;
+	transition:
+		transform 0.25s 0.75s ease-in
+		, opacity 0.25s 0.75s ease-in
+		, filter 0.75s 0.25s ease-in;
 }
 
 .actor-powerup-glow .sprite.closed .powerup-icon {

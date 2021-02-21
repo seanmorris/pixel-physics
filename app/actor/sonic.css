@@ -109,7 +109,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
-	transform: scale(1,1) rotate(calc(calc(1rad * var(--air-angle)) + 0deg));
+	transform: scale(1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));
 
 	animation: sonic-flicker steps(4) infinite 128ms;
 }
@@ -118,7 +118,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
-	transform: scale(-1,-1) rotate(calc(1rad * var(--dash-angle)));
+	transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));
 
 	animation: sonic-flicker steps(4) infinite 128ms;
 }

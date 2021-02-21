@@ -27,57 +27,70 @@ export class Ring extends PointActor
 
 	collideA(other)
 	{
-		super.collideA(other);
-
-		if(this.args.gone)
+		if(this.public.gone)
 		{
 			return;
 		}
 
+		super.collideA(other);
+
 		this.args.type = 'actor-item actor-ring collected';
 
-		if(!this.args.gone)
+		if(this.viewport.args.audio && this.sample)
 		{
-			if(this.viewport.args.audio && this.sample)
-			{
-				this.sample.play();
-			}
+			this.sample.play();
+		}
 
-			this.onTimeout(60, () => {
-				this.args.type = 'actor-item actor-ring collected gone'
+		this.onTimeout(60, () => {
+			this.args.type = 'actor-item actor-ring collected gone'
+		});
+
+		const x = this.x;
+		const y = this.y;
+
+		const viewport = this.viewport;
+
+		this.onTimeout(3500, () => {
+			this.args.gone = false;
+			this.args.type = 'actor-item actor-ring'
+		});
+
+		if(other.collect)
+		{
+			this.onNextFrame(()=> {
+				other.collect(this);
 			});
-
-			this.onTimeout(120, () => {
-				this.viewport.actors.remove( this );
-				this.remove();
-			});
-
-			const x = this.x;
-			const y = this.y;
-
-			const viewport = this.viewport;
-
-			viewport.spawn.add({
-				time: Date.now() + 3500
-				, frame:  this.viewport.args.frameId + 210
-				, object: new Ring({x,y})
-			});
-
-			if(other.args.owner)
-			{
-				other.args.owner.args.rings += 1;
-			}
-			else if(other.occupant)
-			{
-				other.occupant.args.rings += 1;
-			}
-			else
-			{
-				other.args.rings += 1;
-			}
 		}
 
 		this.args.gone = true;
+
+		if(other.args.owner)
+		{
+			other.args.owner.args.rings += 1;
+		}
+		else if(other.occupant)
+		{
+			other.occupant.args.rings += 1;
+		}
+		else
+		{
+			other.args.rings += 1;
+		}
+
+		// this.onTimeout(120, () => {
+		// 	viewport.actors.remove( this );
+		// 	this.remove();
+		// });
+
+		// viewport.spawn.add({
+		// 	time: Date.now() + 3500
+		// 	, frame:  this.viewport.args.frameId + 210
+		// 	, object: new Ring({x,y})
+		// });
+
+
+
+		// this.args.gone = true;
 	}
 
 	get solid() { return false; }
