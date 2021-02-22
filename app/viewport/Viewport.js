@@ -51,6 +51,7 @@ import { Switch }   from '../actor/Switch';
 import { Region }   from '../actor/Region';
 
 import { WaterRegion }   from '../actor/WaterRegion';
+import { ShadeRegion }   from '../region/ShadeRegion';
 
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
@@ -83,6 +84,7 @@ const objectPalette = {
 	, 'window':       Window
 	, 'emerald':      Emerald
 	, 'region':       WaterRegion
+	, 'shade-region': ShadeRegion
 	, 'ring':         Ring
 	, 'super-ring':   SuperRing
 	, 'coin':         Coin
@@ -993,11 +995,15 @@ export class Viewport extends View
 			this.updateEnded.add(region);
 		}
 
-		const x = this.args.x;
-		const y = this.args.y;
-
 		const width  = this.args.width;
 		const height = this.args.height;
+		const margin = 32;
+
+		const camLeft   = -this.args.x + -16 + -margin;
+		const camRight  = -this.args.x + width + -16 + margin;
+
+		const camTop    = -this.args.y;
+		const camBottom = -this.args.y + height;
 
 		const inAuras = new WeakSet;
 
@@ -1005,29 +1011,29 @@ export class Viewport extends View
 		{
 			const actor = this.actors.list[i];
 
-			if(!(actor instanceof Region) && !this.auras.has(actor))
+			if(!this.auras.has(actor))
 			{
+				const actorTop   = actor.y - actor.public.height;
+				const actorRight = actor.x + actor.public.width;
+				const actorLeft  = actor.x;
+
 				if(inAuras.has(actor))
 				{
 					continue;
 				}
 
-				const actorX = actor.x + x - (width / 2);
-				const actorY = actor.y + y - (height / 2);
-
-				if(Math.abs(actorX) > width)
-				{
-					actor.args.display = 'none';
-				}
-				else if(Math.abs(actorY) > height)
-				{
-					actor.args.display = 'none';
-				}
-				else
-				{
+				if(camLeft < actorRight
+					&& camRight > actorLeft
+					&& camBottom > actorTop
+					&& camTop < actor.y
+				){
 					actor.args.display = 'initial';
 
 					inAuras.add(actor);
+				}
+				else
+				{
+					actor.args.display = 'none';
 				}
 			}
 		}

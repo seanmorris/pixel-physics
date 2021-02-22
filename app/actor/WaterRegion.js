@@ -4,6 +4,8 @@ import { Tag } from 'curvature/base/Tag';
 
 export class WaterRegion extends Region
 {
+	isWater = true;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -20,19 +22,22 @@ export class WaterRegion extends Region
 	{
 		super.update();
 
-		if(!this.wrapper && this.tags.sprite)
+		if(!this.filterWrapper && this.tags.sprite)
 		{
-			this.wrapper = new Tag('<div class = "region-filter-wrapper">');
-			this.color   = new Tag('<div class = "region-color">');
-			this.filter  = new Tag('<div class = "region-filter">');
+			this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
+			this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
 
-			this.wrapper.appendChild(this.filter.node);
+			this.filter = new Tag('<div class = "region-filter">');
+			this.color  = new Tag('<div class = "region-color">');
 
-			this.tags.sprite.appendChild(this.wrapper.node);
-			this.tags.sprite.parentNode.appendChild(this.color.node);
+			this.filterWrapper.appendChild(this.filter.node);
+			this.colorWrapper.appendChild(this.color.node);
+
+			this.tags.sprite.appendChild(this.filterWrapper.node);
+			this.tags.sprite.appendChild(this.colorWrapper.node);
 		}
 
-		if(!this.switch)
+		if(!this.switch && this.public.switch)
 		{
 			this.switch = this.viewport.actorsById[ this.public.switch ]
 
@@ -48,8 +53,6 @@ export class WaterRegion extends Region
 				}
 			});
 		}
-
-		super.update();
 
 		if(!this.originalHeight)
 		{

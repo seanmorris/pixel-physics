@@ -531,7 +531,7 @@ export class PointActor extends View
 				this.args.ySpeed += this.public.gravity * (this.region ? this.region.public.gravity : 1);
 			}
 
-			this.args.airAngle = this.public.airAngle;
+			// this.args.airAngle = this.public.airAngle;
 			this.args.landed = false;
 		}
 

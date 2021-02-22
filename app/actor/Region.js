@@ -20,6 +20,9 @@ export class Region extends PointActor
 
 		this.args.width  = this.public.width  || 32;
 		this.args.height = this.public.height || 32;
+
+		this.args.gravity = 1;
+		this.args.drag    = 1;
 	}
 
 	update()

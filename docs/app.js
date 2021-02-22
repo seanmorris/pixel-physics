@@ -66277,9 +66277,9 @@ var PointActor = /*#__PURE__*/function (_View) {
       if (this["public"].falling && this["public"].ySpeed < this["public"].ySpeedMax) {
         if (!this["public"]["float"]) {
           this.args.ySpeed += this["public"].gravity * (this.region ? this.region["public"].gravity : 1);
-        }
+        } // this.args.airAngle = this.public.airAngle;
 
-        this.args.airAngle = this["public"].airAngle;
+
         this.args.landed = false;
       }
 
@@ -68228,6 +68228,8 @@ var Region = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'region';
     _this.args.width = _this["public"].width || 32;
     _this.args.height = _this["public"].height || 32;
+    _this.args.gravity = 1;
+    _this.args.drag = 1;
     return _this;
   }
 
@@ -70331,6 +70333,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var WaterRegion = /*#__PURE__*/function (_Region) {
   _inherits(WaterRegion, _Region);
 
@@ -70346,6 +70350,9 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
     }
 
     _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "isWater", true);
+
     _this.args.type = 'region region-water';
     _this.args.gravity = 0.25;
     _this.args.drag = 0.85;
@@ -70360,16 +70367,18 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
 
       _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
 
-      if (!this.wrapper && this.tags.sprite) {
-        this.wrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
-        this.color = new _Tag.Tag('<div class = "region-color">');
+      if (!this.filterWrapper && this.tags.sprite) {
+        this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
+        this.colorWrapper = new _Tag.Tag('<div class = "region-color-wrapper">');
         this.filter = new _Tag.Tag('<div class = "region-filter">');
-        this.wrapper.appendChild(this.filter.node);
-        this.tags.sprite.appendChild(this.wrapper.node);
-        this.tags.sprite.parentNode.appendChild(this.color.node);
+        this.color = new _Tag.Tag('<div class = "region-color">');
+        this.filterWrapper.appendChild(this.filter.node);
+        this.colorWrapper.appendChild(this.color.node);
+        this.tags.sprite.appendChild(this.filterWrapper.node);
+        this.tags.sprite.appendChild(this.colorWrapper.node);
       }
 
-      if (!this["switch"]) {
+      if (!this["switch"] && this["public"]["switch"]) {
         this["switch"] = this.viewport.actorsById[this["public"]["switch"]];
         this["switch"].args.bindTo('active', function (v) {
           if (!v && _this2.draining > 0) {
@@ -70381,8 +70390,6 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
           }
         });
       }
-
-      _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
 
       if (!this.originalHeight) {
         this.originalHeight = this["public"].height;
@@ -71972,6 +71979,150 @@ exports.Walker = Walker;
 module.exports = "<div class = \"actor knuckles [[state]] [[facing]]\" cv-ref = \"actor\" data-mode = \"[[mode]]\" style = \"--animspeed:[[animspeed]]\">\n\t<div class = \"sprite\" cv-ref = \"sprite\" ></div>\n</div>\n<div cv-each = \"debugs:debug\">[[debug]]</div>\n"
 });
 
+;require.register("region/ShadeRegion.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ShadeRegion = void 0;
+
+var _Region2 = require("../actor/Region");
+
+var _CharacterString = require("../ui/CharacterString");
+
+var _Tag = require("curvature/base/Tag");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var ShadeRegion = /*#__PURE__*/function (_Region) {
+  _inherits(ShadeRegion, _Region);
+
+  var _super = _createSuper(ShadeRegion);
+
+  function ShadeRegion() {
+    var _this;
+
+    _classCallCheck(this, ShadeRegion);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "currentFilter", -1);
+
+    _defineProperty(_assertThisInitialized(_this), "filters", ['studio', 'runners', 'old-west', 'water', 'heat', 'eight-bit', 'corruption']);
+
+    _this.args.type = 'region region-shade';
+    return _this;
+  }
+
+  _createClass(ShadeRegion, [{
+    key: "update",
+    value: function update() {
+      var _this2 = this;
+
+      _get(_getPrototypeOf(ShadeRegion.prototype), "update", this).call(this);
+
+      if (!this.filterWrapper && this.tags.sprite) {
+        this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
+        this.colorWrapper = new _Tag.Tag('<div class = "region-color-wrapper">');
+        this.filter = new _Tag.Tag('<div class = "region-filter">');
+        this.color = new _Tag.Tag('<div class = "region-color">');
+        this.filterWrapper.appendChild(this.filter.node);
+        this.colorWrapper.appendChild(this.color.node);
+        this.mainElem = this.tags.sprite.parentNode;
+        this.tags.sprite.appendChild(this.filterWrapper.node);
+        this.mainElem.appendChild(this.colorWrapper.node);
+        this.text = new _CharacterString.CharacterString({
+          value: 'null'
+        });
+        this.text.render(this.tags.sprite);
+        this.rotateFilter();
+      }
+
+      if (!this["switch"] && this["public"]["switch"]) {
+        this["switch"] = this.viewport.actorsById[this["public"]["switch"]];
+        this["switch"].args.bindTo('active', function (v) {
+          if (!v) {
+            console.log('switch off');
+          }
+
+          if (v) {
+            _this2.rotateFilter();
+          }
+        });
+      }
+    }
+  }, {
+    key: "rotateFilter",
+    value: function rotateFilter() {
+      var _this3 = this;
+
+      if (this.mainElem && this["public"].filter) {
+        this.mainElem.classList.remove(this["public"].filter);
+      }
+
+      if (this.mainElem) {
+        this.args.filter = this.filters[this.currentFilter++];
+
+        if (this.currentFilter >= this.filters.length) {
+          this.currentFilter = 0;
+        }
+
+        this.mainElem.classList.add(this["public"].filter);
+        this.text.args.value = '';
+        this.onNextFrame(function () {
+          return _this3.text.args.value = _this3["public"].filter || '';
+        });
+      }
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: "isEffect",
+    get: function get() {
+      return true;
+    }
+  }]);
+
+  return ShadeRegion;
+}(_Region2.Region);
+
+exports.ShadeRegion = ShadeRegion;
+});
+
 ;require.register("sprite/Png.js", function(exports, require, module) {
 "use strict";
 
@@ -72949,6 +73100,8 @@ var _Region = require("../actor/Region");
 
 var _WaterRegion = require("../actor/WaterRegion");
 
+var _ShadeRegion = require("../region/ShadeRegion");
+
 var _CharacterString = require("../ui/CharacterString");
 
 var _HudFrame = require("../ui/HudFrame");
@@ -73017,6 +73170,7 @@ var objectPalette = {
   'window': _Window.Window,
   'emerald': _Emerald.Emerald,
   'region': _WaterRegion.WaterRegion,
+  'shade-region': _ShadeRegion.ShadeRegion,
   'ring': _Ring.Ring,
   'super-ring': _SuperRing.SuperRing,
   'coin': _Coin.Coin,
@@ -73914,30 +74068,32 @@ var Viewport = /*#__PURE__*/function (_View) {
         _iterator7.f();
       }
 
-      var x = this.args.x;
-      var y = this.args.y;
       var width = this.args.width;
       var height = this.args.height;
+      var margin = 32;
+      var camLeft = -this.args.x + -16 + -margin;
+      var camRight = -this.args.x + width + -16 + margin;
+      var camTop = -this.args.y;
+      var camBottom = -this.args.y + height;
       var inAuras = new WeakSet();
 
       for (var i in this.actors.list) {
         var _actor = this.actors.list[i];
 
-        if (!(_actor instanceof _Region.Region) && !this.auras.has(_actor)) {
+        if (!this.auras.has(_actor)) {
+          var actorTop = _actor.y - _actor["public"].height;
+          var actorRight = _actor.x + _actor["public"].width;
+          var actorLeft = _actor.x;
+
           if (inAuras.has(_actor)) {
             continue;
           }
 
-          var actorX = _actor.x + x - width / 2;
-          var actorY = _actor.y + y - height / 2;
-
-          if (Math.abs(actorX) > width) {
-            _actor.args.display = 'none';
-          } else if (Math.abs(actorY) > height) {
-            _actor.args.display = 'none';
-          } else {
+          if (camLeft < actorRight && camRight > actorLeft && camBottom > actorTop && camTop < _actor.y) {
             _actor.args.display = 'initial';
             inAuras.add(_actor);
+          } else {
+            _actor.args.display = 'none';
           }
         }
       }
@@ -74312,7 +74468,7 @@ require.alias("three/build/three.js", "three");require.register("___globals___",
       });
     }
   };
-  var port = ar.port || 9486;
+  var port = ar.port || 9485;
   var host = br.server || window.location.hostname || 'localhost';
 
   var connect = function connect() {
