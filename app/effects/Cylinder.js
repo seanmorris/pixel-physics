@@ -1,7 +1,7 @@
 import { View } from 'curvature/base/View';
 import { Tag  } from 'curvature/base/Tag';
 
-export class Pinch extends View
+export class Cylinder extends View
 {
 	template = require('./twist.svg');
 
@@ -10,7 +10,7 @@ export class Pinch extends View
 		super(args,parent);
 
 		this.args.scale = this.args.scale || 0;
-		this.args.id    = this.args.id    || 'pinch';
+		this.args.id    = this.args.id    || 'cylinder';
 
 		this.args.width  = this.args.width  || 64;
 		this.args.height = this.args.height || 64;
@@ -46,24 +46,13 @@ export class Pinch extends View
 
 			const p = Math.sqrt(ox**2+oy**2);
 
-			const ss = Math.min(this.args.width, this.args.height);
+			const s = Math.min(this.args.width, this.args.height) / 2;
 
-			const s = (ss / 2);
-
-			if(p < s)
-			{
-				c = (1 - p / s) ** 2;
-				d = (1 - p / s) ** 2;
-			}
-			else
-			{
-				c = 0;
-				d = 0;
-			}
-
+			c = Math.abs(ox / this.args.width) / 2;
+			// d = p / s;
 
 			r = 128 + (ox * 4) * c;
-			g = 128 + (oy * 4) * d;
+			g = 128; // + (oy * 4) * d;
 			b = 0;
 
 			pixels[i + 0] = r ?? 128;

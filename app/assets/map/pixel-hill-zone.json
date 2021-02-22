@@ -29,7 +29,7 @@
                  "type":"player",
                  "visible":true,
                  "width":32,
-                 "x":1408,
+                 "x":1424,
                  "y":1728
                 }, 
                 {
@@ -757,8 +757,8 @@
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":1448,
-                 "y":1856
+                 "x":1472,
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -775,8 +775,8 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1488,
-                 "y":1856
+                 "x":1512,
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -793,8 +793,8 @@
                  "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1536,
-                 "y":1888
+                 "x":1552,
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -806,7 +806,7 @@
                  "visible":true,
                  "width":40,
                  "x":1360,
-                 "y":1856
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -817,8 +817,8 @@
                  "type":"mecha-sonic",
                  "visible":true,
                  "width":40,
-                 "x":1312,
-                 "y":1856
+                 "x":1304,
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -830,7 +830,7 @@
                  "visible":true,
                  "width":40,
                  "x":1264,
-                 "y":1856
+                 "y":1872
                 }, 
                 {
                  "gid":2,
@@ -1171,7 +1171,7 @@
                  "type":"drill-car",
                  "visible":true,
                  "width":64,
-                 "x":1616,
+                 "x":1648,
                  "y":1888
                 }, 
                 {
@@ -2074,7 +2074,7 @@
                  "type":"super-ring",
                  "visible":true,
                  "width":64,
-                 "x":1456,
+                 "x":1480,
                  "y":1792
                 }, 
                 {
@@ -3584,7 +3584,7 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1544,
+                 "x":1584,
                  "y":1808
                 }, 
                 {
@@ -3596,7 +3596,7 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1624,
+                 "x":1648,
                  "y":1808
                 }, 
                 {
@@ -3613,7 +3613,7 @@
                 }, 
                 {
                  "gid":90,
-                 "height":144,
+                 "height":136,
                  "id":2777,
                  "name":"shade-region",
                  "properties":[
@@ -3625,7 +3625,7 @@
                  "rotation":0,
                  "type":"shade-region",
                  "visible":true,
-                 "width":352,
+                 "width":384,
                  "x":1248,
                  "y":1888
                 }, 
@@ -3638,31 +3638,7 @@
                  "type":"switch",
                  "visible":true,
                  "width":32,
-                 "x":1408,
-                 "y":1888
-                }, 
-                {
-                 "gid":90,
-                 "height":160,
-                 "id":2780,
-                 "name":"region",
-                 "rotation":0,
-                 "type":"region",
-                 "visible":true,
-                 "width":64,
-                 "x":1728,
-                 "y":1888
-                }, 
-                {
-                 "gid":2,
-                 "height":64,
-                 "id":2781,
-                 "name":"",
-                 "rotation":0,
-                 "type":"powerup-glow",
-                 "visible":true,
-                 "width":32,
-                 "x":1552,
+                 "x":1424,
                  "y":1888
                 }, 
                 {
@@ -3674,7 +3650,7 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1584,
+                 "x":1616,
                  "y":1808
                 }],
          "opacity":0.9,

@@ -1,6 +1,9 @@
 import { Region } from "../actor/Region";
 import { CharacterString } from '../ui/CharacterString';
 
+import { Cylinder } from '../effects/Cylinder';
+import { Pinch    } from '../effects/Pinch';
+
 import { Tag } from 'curvature/base/Tag';
 
 export class ShadeRegion extends Region
@@ -8,7 +11,7 @@ export class ShadeRegion extends Region
 	currentFilter = -1;
 
 	filters = [
-		'studio', 'runners', 'old-west', 'water', 'heat', 'eight-bit', 'corruption'
+		'studio', 'runners', 'western', 'hydro', 'heat', 'eight-bit', 'corruption', 'black-hole', 'normal'
 	];
 
 	constructor(...args)
@@ -18,32 +21,50 @@ export class ShadeRegion extends Region
 		this.args.type = 'region region-shade';
 	}
 
-	update()
+	onAttached()
 	{
-		super.update();
+		this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
+		this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
 
-		if(!this.filterWrapper && this.tags.sprite)
-		{
-			this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
-			this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
+		this.filter = new Tag('<div class = "region-filter">');
+		this.color  = new Tag('<div class = "region-color">');
 
-			this.filter = new Tag('<div class = "region-filter">');
-			this.color  = new Tag('<div class = "region-color">');
+		this.filterWrapper.appendChild(this.filter.node);
+		this.colorWrapper.appendChild(this.color.node);
 
-			this.filterWrapper.appendChild(this.filter.node);
-			this.colorWrapper.appendChild(this.color.node);
+		this.mainElem = this.tags.sprite.parentNode;
 
-			this.mainElem = this.tags.sprite.parentNode;
+		this.tags.sprite.appendChild(this.filterWrapper.node);
+		this.mainElem.appendChild(this.colorWrapper.node);
 
-			this.tags.sprite.appendChild(this.filterWrapper.node);
-			this.mainElem.appendChild(this.colorWrapper.node);
+		this.text = new CharacterString({value:'null'});
 
-			this.text = new CharacterString({value:'null'});
+		this.text.render(this.tags.sprite);
 
-			this.text.render(this.tags.sprite);
+		this.cylinder = new Cylinder({
+			id:'shade-cylinder'
+			, width: this.args.width
+			, height: this.args.height
+		});
 
-			this.rotateFilter();
-		}
+		this.cylinder.render(this.tags.sprite);
+
+		this.pinch = new Pinch({
+			id:'shade-pinch'
+			, width: this.args.width
+			, height: this.args.height
+		});
+
+		this.pinch.render(this.tags.sprite);
+
+		this.args.bindTo('scale', v => {
+			this.pinch.args.scale = v;
+			this.cylinder.args.scale = v;
+		});
+
+		this.onFrame(() => this.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25));
+
+		this.rotateFilter();
 
 		if(!this.switch && this.public.switch)
 		{
@@ -63,6 +84,12 @@ export class ShadeRegion extends Region
 		}
 	}
 
+	update()
+	{
+		super.update();
+
+	}
+
 	rotateFilter()
 	{
 		if(this.mainElem && this.public.filter)
@@ -79,7 +106,7 @@ export class ShadeRegion extends Region
 				this.currentFilter = 0;
 			}
 
-			this.mainElem.classList.add(this.public.filter);
+			this.public.filter && this.mainElem.classList.add(this.public.filter);
 
 			this.text.args.value = '';
 

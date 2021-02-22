@@ -71081,6 +71081,123 @@ exports.PointDump = PointDump;
 module.exports = "<svg width=\"497.81px\" height=\"497.81px\" enable-background=\"new 0 0 497.812 497.812\" version=\"1.1\" viewBox=\"0 0 497.81 497.81\" xmlns=\"http://www.w3.org/2000/svg\">\n\t<g transform=\"matrix(-1 0 0 1 497.81 0)\">\n\t\t<path d=\"m203.66 312.91 117.03 117.03-67.906 67.875-248.91-248.91 248.91-248.91 67.906 67.875-117.06 117.06 290.28-0.031 0.031 127.97z\"/>\n\t</g>\n</svg>\n"
 });
 
+;require.register("effects/Cylinder.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Cylinder = void 0;
+
+var _View2 = require("curvature/base/View");
+
+var _Tag = require("curvature/base/Tag");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Cylinder = /*#__PURE__*/function (_View) {
+  _inherits(Cylinder, _View);
+
+  var _super = _createSuper(Cylinder);
+
+  function Cylinder(args, parent) {
+    var _this;
+
+    _classCallCheck(this, Cylinder);
+
+    _this = _super.call(this, args, parent);
+
+    _defineProperty(_assertThisInitialized(_this), "template", require('./twist.svg'));
+
+    _this.args.scale = _this.args.scale || 0;
+    _this.args.id = _this.args.id || 'cylinder';
+    _this.args.width = _this.args.width || 64;
+    _this.args.height = _this.args.height || 64;
+    return _this;
+  }
+
+  _createClass(Cylinder, [{
+    key: "onAttached",
+    value: function onAttached() {
+      var _this2 = this;
+
+      this.onFrame(function () {// this.tags.displace.setAttribute('scale', Math.round(Math.sin(Date.now() / 500) * 25));
+        // this.args.scale = Math.sin(Date.now() / 500) * 25;
+      });
+      var displacer = new _Tag.Tag("<canvas width = \"".concat(this.args.width, "\" height = \"").concat(this.args.height, "\">"));
+      var context = displacer.getContext('2d');
+      context.imageSmoothingEnabled = false;
+      var image = context.getImageData(0, 0, this.args.width, this.args.height);
+      var pixels = image.data;
+
+      for (var i = 0; i < pixels.length; i += 4) {
+        var _r, _g, _b;
+
+        var r = void 0,
+            g = void 0,
+            b = void 0,
+            a = void 0,
+            c = void 0,
+            d = 0;
+        var w = i / 4;
+        var y = Math.floor(w / this.args.width);
+        var x = w % this.args.width;
+        var ox = x - this.args.width / 2;
+        var oy = y - this.args.height / 2;
+        var p = Math.sqrt(Math.pow(ox, 2) + Math.pow(oy, 2));
+        var s = Math.min(this.args.width, this.args.height) / 2;
+        c = Math.abs(ox / this.args.width) / 2; // d = p / s;
+
+        r = 128 + ox * 4 * c;
+        g = 128; // + (oy * 4) * d;
+
+        b = 0;
+        pixels[i + 0] = (_r = r) !== null && _r !== void 0 ? _r : 128;
+        pixels[i + 1] = (_g = g) !== null && _g !== void 0 ? _g : 128;
+        pixels[i + 2] = (_b = b) !== null && _b !== void 0 ? _b : 128;
+        pixels[i + 3] = a !== null && a !== void 0 ? a : 255;
+      }
+
+      context.putImageData(image, 0, 0);
+      displacer.toBlob(function (png) {
+        return _this2.args.blob = URL.createObjectURL(png);
+      }, 'image/png');
+    }
+  }, {
+    key: "name",
+    get: function get() {
+      return "".concat(this.args.id); // return `filter_${this.args.id}`;
+    }
+  }]);
+
+  return Cylinder;
+}(_View2.View);
+
+exports.Cylinder = Cylinder;
+});
+
 ;require.register("effects/Pinch.js", function(exports, require, module) {
 "use strict";
 
@@ -71131,8 +71248,10 @@ var Pinch = /*#__PURE__*/function (_View) {
 
     _defineProperty(_assertThisInitialized(_this), "template", require('./twist.svg'));
 
-    _this.args.id = 'pinch';
-    _this.args.scale = 0;
+    _this.args.scale = _this.args.scale || 0;
+    _this.args.id = _this.args.id || 'pinch';
+    _this.args.width = _this.args.width || 64;
+    _this.args.height = _this.args.height || 64;
     return _this;
   }
 
@@ -71144,10 +71263,10 @@ var Pinch = /*#__PURE__*/function (_View) {
       this.onFrame(function () {// this.tags.displace.setAttribute('scale', Math.round(Math.sin(Date.now() / 500) * 25));
         // this.args.scale = Math.sin(Date.now() / 500) * 25;
       });
-      var displacer = new _Tag.Tag('<canvas width = "64" height = "64">');
+      var displacer = new _Tag.Tag("<canvas width = \"".concat(this.args.width, "\" height = \"").concat(this.args.height, "\">"));
       var context = displacer.getContext('2d');
       context.imageSmoothingEnabled = false;
-      var image = context.getImageData(0, 0, 64, 64);
+      var image = context.getImageData(0, 0, this.args.width, this.args.height);
       var pixels = image.data;
 
       for (var i = 0; i < pixels.length; i += 4) {
@@ -71157,28 +71276,31 @@ var Pinch = /*#__PURE__*/function (_View) {
             g = void 0,
             b = void 0,
             a = void 0,
-            c = 1;
+            c = void 0,
+            d = 0;
         var w = i / 4;
-        var y = Math.floor(w / 64);
-        var x = w % 64;
-        var ox = x - 31.5;
-        var oy = y - 31.5 - 15.5;
+        var y = Math.floor(w / this.args.width);
+        var x = w % this.args.width;
+        var ox = x - this.args.width / 2;
+        var oy = y - this.args.height / 2;
         var p = Math.sqrt(Math.pow(ox, 2) + Math.pow(oy, 2));
+        var ss = Math.min(this.args.width, this.args.height);
+        var s = ss / 2;
 
-        if (p > 32) {
-          c = 0;
+        if (p < s) {
+          c = Math.pow(1 - p / s, 2);
+          d = Math.pow(1 - p / s, 2);
         } else {
-          c = 1 - p / 32;
+          c = 0;
+          d = 0;
         }
 
-        var tr = (Math.atan2(ox, oy) - Math.PI * 0.50) % (Math.PI * 2);
-        var tg = (Math.atan2(ox, oy) - Math.PI * 0.00) % (Math.PI * 2);
         r = 128 + ox * 4 * c;
-        g = 128 + oy * 4 * c;
+        g = 128 + oy * 4 * d;
         b = 0;
-        pixels[i + 0] = (_r = r) !== null && _r !== void 0 ? _r : 0;
-        pixels[i + 1] = (_g = g) !== null && _g !== void 0 ? _g : 0;
-        pixels[i + 2] = (_b = b) !== null && _b !== void 0 ? _b : 0;
+        pixels[i + 0] = (_r = r) !== null && _r !== void 0 ? _r : 128;
+        pixels[i + 1] = (_g = g) !== null && _g !== void 0 ? _g : 128;
+        pixels[i + 2] = (_b = b) !== null && _b !== void 0 ? _b : 128;
         pixels[i + 3] = a !== null && a !== void 0 ? a : 255;
       }
 
@@ -71252,6 +71374,8 @@ var Twist = /*#__PURE__*/function (_View) {
 
     _this.args.id = 'twist';
     _this.args.scale = 0;
+    _this.args.width = _this.args.width || '100%';
+    _this.args.height = _this.args.height || '100%';
     return _this;
   }
 
@@ -71317,7 +71441,7 @@ exports.Twist = Twist;
 });
 
 ;require.register("effects/twist.svg", function(exports, require, module) {
-module.exports = "<svg>\n<defs>\n\n<filter\n\tcv-ref = \"filter\"\n\tcolor-interpolation-filters=\"sRGB\"\n\tid     = \"[[id]]\"\n\tx      =\"0%\"\n\ty      =\"0%\"\n\theight =\"100%\"\n\twidth  =\"100%\"\n>\n\n\t<feImage\n\t\txlink:href=\"[[blob]]\"\n\t\tresult    =\"DisplacementSource\"\n\t\theight    =\"64\"\n\t\twidth     =\"64\"\n\t/>\n\n\t<feDisplacementMap\n\t\txChannelSelector = \"R\"\n\t\tyChannelSelector = \"G\"\n\t\tin2    = \"DisplacementSource\"\n\t\tin     = \"SourceGraphic\"\n\t\tcv-ref = \"displace\"\n\t\tscale  = \"[[scale]]\"\n\t/>\n\n</filter>\n\n</defs>\n</svg>\n"
+module.exports = "<svg\n\theight =\"100%\"\n\twidth  =\"100%\"\n>\n\t<defs>\n\n\t\t<filter\n\t\t\tcv-ref = \"filter\"\n\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\tid     = \"[[id]]\"\n\t\t\tx      =\"0%\"\n\t\t\ty      =\"0%\"\n\t\t\theight =\"100%\"\n\t\t\twidth  =\"100%\"\n\n\t\t>\n\t\t\t<feImage\n\t\t\t\txlink:href=\"[[blob]]\"\n\t\t\t\tresult    =\"DisplacementSource\"\n\t\t\t\theight    =\"100%\"\n\t\t\t\twidth     =\"100%\"\n\t\t\t/>\n\n\t\t\t<feDisplacementMap\n\t\t\t\txChannelSelector = \"R\"\n\t\t\t\tyChannelSelector = \"G\"\n\t\t\t\tin2    = \"DisplacementSource\"\n\t\t\t\tin     = \"SourceGraphic\"\n\t\t\t\tcv-ref = \"displace\"\n\t\t\t\tscale  = \"[[scale]]\"\n\t\t\t/>\n\n\t\t</filter>\n\n\t</defs>\n</svg>\n"
 });
 
 ;require.register("initialize.js", function(exports, require, module) {
@@ -71993,6 +72117,10 @@ var _Region2 = require("../actor/Region");
 
 var _CharacterString = require("../ui/CharacterString");
 
+var _Cylinder = require("../effects/Cylinder");
+
+var _Pinch = require("../effects/Pinch");
+
 var _Tag = require("curvature/base/Tag");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -72039,35 +72167,50 @@ var ShadeRegion = /*#__PURE__*/function (_Region) {
 
     _defineProperty(_assertThisInitialized(_this), "currentFilter", -1);
 
-    _defineProperty(_assertThisInitialized(_this), "filters", ['studio', 'runners', 'old-west', 'water', 'heat', 'eight-bit', 'corruption']);
+    _defineProperty(_assertThisInitialized(_this), "filters", ['studio', 'runners', 'western', 'hydro', 'heat', 'eight-bit', 'corruption', 'black-hole', 'normal']);
 
     _this.args.type = 'region region-shade';
     return _this;
   }
 
   _createClass(ShadeRegion, [{
-    key: "update",
-    value: function update() {
+    key: "onAttached",
+    value: function onAttached() {
       var _this2 = this;
 
-      _get(_getPrototypeOf(ShadeRegion.prototype), "update", this).call(this);
-
-      if (!this.filterWrapper && this.tags.sprite) {
-        this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
-        this.colorWrapper = new _Tag.Tag('<div class = "region-color-wrapper">');
-        this.filter = new _Tag.Tag('<div class = "region-filter">');
-        this.color = new _Tag.Tag('<div class = "region-color">');
-        this.filterWrapper.appendChild(this.filter.node);
-        this.colorWrapper.appendChild(this.color.node);
-        this.mainElem = this.tags.sprite.parentNode;
-        this.tags.sprite.appendChild(this.filterWrapper.node);
-        this.mainElem.appendChild(this.colorWrapper.node);
-        this.text = new _CharacterString.CharacterString({
-          value: 'null'
-        });
-        this.text.render(this.tags.sprite);
-        this.rotateFilter();
-      }
+      this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
+      this.colorWrapper = new _Tag.Tag('<div class = "region-color-wrapper">');
+      this.filter = new _Tag.Tag('<div class = "region-filter">');
+      this.color = new _Tag.Tag('<div class = "region-color">');
+      this.filterWrapper.appendChild(this.filter.node);
+      this.colorWrapper.appendChild(this.color.node);
+      this.mainElem = this.tags.sprite.parentNode;
+      this.tags.sprite.appendChild(this.filterWrapper.node);
+      this.mainElem.appendChild(this.colorWrapper.node);
+      this.text = new _CharacterString.CharacterString({
+        value: 'null'
+      });
+      this.text.render(this.tags.sprite);
+      this.cylinder = new _Cylinder.Cylinder({
+        id: 'shade-cylinder',
+        width: this.args.width,
+        height: this.args.height
+      });
+      this.cylinder.render(this.tags.sprite);
+      this.pinch = new _Pinch.Pinch({
+        id: 'shade-pinch',
+        width: this.args.width,
+        height: this.args.height
+      });
+      this.pinch.render(this.tags.sprite);
+      this.args.bindTo('scale', function (v) {
+        _this2.pinch.args.scale = v;
+        _this2.cylinder.args.scale = v;
+      });
+      this.onFrame(function () {
+        return _this2.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25);
+      });
+      this.rotateFilter();
 
       if (!this["switch"] && this["public"]["switch"]) {
         this["switch"] = this.viewport.actorsById[this["public"]["switch"]];
@@ -72081,6 +72224,11 @@ var ShadeRegion = /*#__PURE__*/function (_Region) {
           }
         });
       }
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(ShadeRegion.prototype), "update", this).call(this);
     }
   }, {
     key: "rotateFilter",
@@ -72098,7 +72246,7 @@ var ShadeRegion = /*#__PURE__*/function (_Region) {
           this.currentFilter = 0;
         }
 
-        this.mainElem.classList.add(this["public"].filter);
+        this["public"].filter && this.mainElem.classList.add(this["public"].filter);
         this.text.args.value = '';
         this.onNextFrame(function () {
           return _this3.text.args.value = _this3["public"].filter || '';

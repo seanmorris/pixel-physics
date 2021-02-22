@@ -1,33 +1,36 @@
-<svg>
-<defs>
-
-<filter
-	cv-ref = "filter"
-	color-interpolation-filters="sRGB"
-	id     = "[[id]]"
-	x      ="0%"
-	y      ="0%"
+<svg
 	height ="100%"
 	width  ="100%"
 >
+	<defs>
 
-	<feImage
-		xlink:href="[[blob]]"
-		result    ="DisplacementSource"
-		height    ="64"
-		width     ="64"
-	/>
+		<filter
+			cv-ref = "filter"
+			color-interpolation-filters="sRGB"
+			id     = "[[id]]"
+			x      ="0%"
+			y      ="0%"
+			height ="100%"
+			width  ="100%"
 
-	<feDisplacementMap
-		xChannelSelector = "R"
-		yChannelSelector = "G"
-		in2    = "DisplacementSource"
-		in     = "SourceGraphic"
-		cv-ref = "displace"
-		scale  = "[[scale]]"
-	/>
+		>
+			<feImage
+				xlink:href="[[blob]]"
+				result    ="DisplacementSource"
+				height    ="100%"
+				width     ="100%"
+			/>
 
-</filter>
+			<feDisplacementMap
+				xChannelSelector = "R"
+				yChannelSelector = "G"
+				in2    = "DisplacementSource"
+				in     = "SourceGraphic"
+				cv-ref = "displace"
+				scale  = "[[scale]]"
+			/>
 
-</defs>
+		</filter>
+
+	</defs>
 </svg>
