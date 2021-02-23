@@ -9,20 +9,15 @@ export class Twist extends View
 	{
 		super(args,parent);
 
-		this.args.id    = 'twist';
-		this.args.scale = 0;
+		this.args.scale = this.args.scale   || 0;
+		this.args.id    = this.args.id      || 'twist';
 
-		this.args.width  = this.args.width  || '100%';
-		this.args.height = this.args.height ||'100%';
+		this.args.width  = this.args.width  || 64;
+		this.args.height = this.args.height || 64;
 	}
 
 	onAttached()
 	{
-		this.onFrame(()=>{
-			// this.args.scale = Math.cos(Date.now() / 500) * 25;
-			// this.tags.displace.setAttribute('scale', );
-		});
-
 		const displacer = new Tag('<canvas width = "64" height = "64">');
 
 		const context = displacer.getContext('2d');

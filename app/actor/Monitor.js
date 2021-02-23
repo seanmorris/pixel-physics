@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Tag } from 'curvature/base/Tag';
+
 import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
@@ -50,10 +52,12 @@ export class Monitor extends PointActor
 		){
 			this.args.gone = true;
 
-			other.args.ySpeed *= -1;
-			other.args.falling = true;
+			if(other.args.falling)
+			{
+				other.args.ySpeed *= -1;
+			}
 
-			if(this.args.falling && Math.abs(other.args.ySpeed) > 0)
+			if(this.args.falling && other.args.falling)
 			{
 				other.args.xSpeed *= -1;
 			}
@@ -82,16 +86,23 @@ export class Monitor extends PointActor
 			return;
 		}
 
+		const particle = new Tag('<div class = "particle-explosion">');
+
+		particle.style({'--x': this.x, '--y': this.y});
+
+		viewport.particles.add(particle);
+
+		setTimeout(() => viewport.particles.remove(particle), 350);
+
 		const corpse = new BrokenMonitor({x:this.x, y:this.y});
 
 		viewport.actors.remove( this );
 
 		viewport.actors.add(corpse);
-		viewport.actors.add(new Explosion({x:this.x, y:this.y+8}));
 
 		setTimeout(()=>{
-			viewport.actors.remove(corpse);
-			corpse.remove();
+			// viewport.actors.remove(corpse);
+			// corpse.remove();
 		}, 5000);
 
 		if(other.args.owner)

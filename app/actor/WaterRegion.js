@@ -12,6 +12,8 @@ export class WaterRegion extends Region
 
 		this.args.type = 'region region-water';
 
+		this.entryParticle = '<div class = "particle-splash">';
+
 		this.args.gravity = 0.25;
 		this.args.drag    = 0.85;
 
@@ -20,8 +22,6 @@ export class WaterRegion extends Region
 
 	update()
 	{
-		super.update();
-
 		if(!this.filterWrapper && this.tags.sprite)
 		{
 			this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
@@ -79,6 +79,8 @@ export class WaterRegion extends Region
 				this.args.height += 0.5;
 			}
 		}
+
+		super.update();
 	}
 
 	get solid() { return false; }

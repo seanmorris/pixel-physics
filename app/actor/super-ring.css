@@ -17,3 +17,14 @@
 .point-actor.actor-super-ring canvas:last-child {
 	z-index: 10;
 }
+
+.pinch-filter {
+	transition: transform 0.5s ease-in-out;
+	transform: scale(0);
+}
+
+.pinch-filter.grabbing {
+	transform: scale(2.5);
+	/*filter: blur(1px) brightness(0) !important;*/
+	/*backdrop-filter: blur(1px) !important;*/
+}

@@ -134,13 +134,13 @@
 }
 
 .region.region-shade.heat .region-filter {
-	filter: brightness(4) url(#waves) blur(0.5px) url(#waves) contrast(1) sepia(0.25);
+	filter: brightness(4) url(#waves) blur(0.5px) url(#waves) contrast(1.25);
 	backdrop-filter:
 		drop-shadow(0px -0.25px  0.5px rgba(255, 255,  32, 0.333))
 		drop-shadow(0px -0.50px  0.5px  rgba(255, 64,  32, 0.25))
 		drop-shadow(0px -1.25px  1.00px rgba(128, 0,   0,  0.5))
 		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5))
-		opacity(0.5);
+		opacity(0.4);
 }
 
 .region.region-shade.eight-bit .region-color-wrapper {

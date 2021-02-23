@@ -7,7 +7,7 @@ export class NuclearSuperball extends PointActor
 	{
 		super(...args);
 
-		this.args.gSpeedMax = 75;
+		this.args.gSpeedMax = 20;
 		this.args.accel     = 2;
 	}
 

@@ -8,8 +8,6 @@ export class Layer extends View
 
 	constructor(args,parent)
 	{
-		console.log(args);
-
 		super(args,parent);
 
 		this.args.width  = 320;
@@ -32,7 +30,7 @@ export class Layer extends View
 		this.args.blocks = this.blocks.list;
 	}
 
-	update(tileMap)
+	update(tileMap, xDir, yDir)
 	{
 		const blockSize  = this.args.blockSize;
 		const blocksWide = Math.ceil((this.args.width  / blockSize));
@@ -45,11 +43,14 @@ export class Layer extends View
 
 		const layerId = this.args.layerId;
 
-		for(let i = 0; i <= blocksWide; i++)
+		let startColumn = 0;
+		let endColumn   = blocksWide;
+
+		for(let i = startColumn; i <= endColumn; i += Math.sign(blocksWide))
 		{
 			const tileX = i - Math.ceil(this.x / blockSize);
 
-			for(let j = 0; j <= blocksHigh; j++)
+			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
 			{
 				const xy = [i,j].join('::');
 

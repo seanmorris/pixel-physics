@@ -869,10 +869,33 @@
 	}
 }
 
-.point-actor {
+.point-actor,
+.point-actor-filter {
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
+}
+
+.point-actor-filter {
+	left: calc(calc(calc(1px * calc(var(--xOff)) + calc(1px * calc(var(--x) - 16)))) - 16px);
+	top: calc(calc(calc(1px * calc(var(--yOff)) + calc(1px * calc(var(--y) - 16)))) - calc(1px * var(--height)));
+	/*height: calc(0px + calc(1px * var(--height)));
+	width: calc(0px + calc(1px * var(--width)));*/
+	width: 64px;
+	height: 64px;
+	/*transform: translate(
+		calc(-50% + calc(0.5px * var(--width)))
+		, calc(-50% + calc(0.5px * var(--height)))
+	);*/
+	background: rgba(255,0,0,0);
+	opacity: 1;
+}
+
+.point-actor-filter {
+	/*background-color: black;*/
+	/*filter: url(#waves);*/
+	backdrop-filter: blur(0px);
+	filter: var(--bgFilter);
 }
 
 .actor-item .sprite {
@@ -888,6 +911,12 @@
 	transform-origin: center bottom;
 	box-shadow: none;
 	background-repeat: no-repeat;
+}
+
+.sprite > svg {
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
 
 .actor-item.actor-block-marble .sprite {
@@ -1378,7 +1407,7 @@
 	transform: translateY(-16px);
 	opacity: 1;
 	width: 100%;
-	opacity: 0.333;
+	opacity: 0.75;
 	height: 16px;
 
 	background-position: 0px 0px;
@@ -1510,14 +1539,20 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
-	filter: var(--fg-filter);
+
+	backdrop-filter: var(--bg-filter);
+	filter: blur(0px);
+	/*filter: url(#sonic-pinch);*/
+
+
+	/*backdrop-filter: blur(1px);*/
+	/*backdrop-filter: var(--fg-filter) blur(0);*/
 	/*transform: rotate(calc(1rad * var(--ground-angle)));
 	transform-origin: 50%, bottom - 16px;*/
 }
 
 .actor-item.actor-sonic .sprite:before {
-	backdrop-filter: var(--bg-filter);
-	filter: var(--bg-filter);
+
 	content: '';
 	position: absolute;
 	top: 0px;
@@ -1803,6 +1838,17 @@
 
 .point-actor.actor-super-ring canvas:last-child {
 	z-index: 10;
+}
+
+.pinch-filter {
+	transition: transform 0.5s ease-in-out;
+	transform: scale(0);
+}
+
+.pinch-filter.grabbing {
+	transform: scale(2.5);
+	/*filter: blur(1px) brightness(0) !important;*/
+	/*backdrop-filter: blur(1px) !important;*/
 }
 
 .actor-item.actor-switch .sprite {
@@ -2161,6 +2207,23 @@ h1 {
 	opacity: 0.75;
 }
 
+.particle-explosion {
+	background-image: url(/Sonic/explosion.png);
+	width: 64px;
+	height: 64px;
+
+	--animation-steps: 4;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+
+	z-index: 20000;
+
+	animation: explosion steps(5) infinite;
+	animation-duration: calc(1ms * 480);
+
+	/*opacity: 0;*/
+}
+
 .viewport-particles > * {
 	position: absolute;
 	left: calc(1px * var(--x));
@@ -2183,7 +2246,7 @@ h1 {
 		transform: translate(0px, 0);
 	}
 	to{
-		transform: translate(calc(50vh + calc(-1px * var(--xMomentum))), 0);
+		transform: translate(calc(1px * var(--xMomentum)), 0);
 	}
 }
 
@@ -2374,13 +2437,13 @@ h1 {
 }
 
 .region.region-shade.heat .region-filter {
-	filter: brightness(4) url(#waves) blur(0.5px) url(#waves) contrast(1) sepia(0.25);
+	filter: brightness(4) url(#waves) blur(0.5px) url(#waves) contrast(1.25);
 	backdrop-filter:
 		drop-shadow(0px -0.25px  0.5px rgba(255, 255,  32, 0.333))
 		drop-shadow(0px -0.50px  0.5px  rgba(255, 64,  32, 0.25))
 		drop-shadow(0px -1.25px  1.00px rgba(128, 0,   0,  0.5))
 		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5))
-		opacity(0.5);
+		opacity(0.4);
 }
 
 .region.region-shade.eight-bit .region-color-wrapper {
@@ -2896,6 +2959,8 @@ section.filters {
 	transition: transform var(--scale-transition);
 	transform: scale(var(--scale));
 	transform-origin: top left;
+	width: calc(100% / var(--scale));
+	height: calc(100% / var(--scale));
 }
 
 .viewport-double-zoom {
@@ -2917,8 +2982,6 @@ section.filters {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	min-width: 100%;
-	min-height: 100%;
 }
 
 .viewport-background[data-name^="Foreground"],
@@ -2931,13 +2994,14 @@ section.filters {
 	z-index: 10000;
 }
 
+.viewport .filters,
 .viewport-content {
 	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
 }
 
 .viewport-background {
 	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
-	transform: translate3d(0,0,0)
+	transform: translate3d(0,0,0);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -2977,6 +3041,7 @@ section.filters {
 
 .viewport .hud {
 	position: absolute;
+	z-index: 1000;
 	top: 0.5em;
 	right: 0.5em;
 	padding: 1em;
@@ -2996,6 +3061,11 @@ section.filters {
 
 .viewport .hud tr > td {
 	padding: 0;
+	margin: 0;
+}
+
+.viewport .hud tr > td > * {
+	vertical-align: middle;
 }
 
 .viewport .hud tr > td:nth-child(2) {
@@ -3200,7 +3270,6 @@ input[type=number]::-webkit-outer-spin-button {
 	pointer-events: none;
 }
 
-
 .change-character {
 	background: black;
 	color: white;
@@ -3208,6 +3277,18 @@ input[type=number]::-webkit-outer-spin-button {
 	font-size: smaller;
 	border-radius: 5px;
 }
+
+.viewport .filters {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.viewport .filters.filters-foreground {
+	z-index: 10000;
+}
+
 
 
 /*# sourceMappingURL=app.css.map*/

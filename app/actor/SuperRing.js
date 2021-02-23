@@ -28,6 +28,8 @@ export class SuperRing extends PointActor
 	onAttached()
 	{
 		this.initRenderer();
+
+		this.pinch(0);
 	}
 
 	initRenderer()
@@ -162,7 +164,6 @@ export class SuperRing extends PointActor
 
 			if(this.caught.yAxis > 0)
 			{
-
 				this.drop();
 			}
 			else if(this.caught.yAxis < 0)
@@ -261,11 +262,26 @@ export class SuperRing extends PointActor
 		if(this.caught)
 		{
 			this.caught.args.xSpeed = (Math.sign(other.public.xSpeed) * 3) || 3;
-
-			this.drop();
 		}
 
-		this.caught = other;
+		if(this.caught !== other)
+		{
+			this.drop();
+
+			this.onTimeout(500, () => {
+
+				if(this.leaving.has(other))
+				{
+					return;
+				}
+
+				this.caught = other
+
+			});
+
+			this.grab();
+		}
+
 
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
@@ -278,10 +294,31 @@ export class SuperRing extends PointActor
 		{
 			const caught = this.caught;
 			this.leaving.add(caught);
-			this.onTimeout(1250, () => this.leaving.delete(caught));
+
 			caught.args.float = 0;
 
-			this.caught = null;
+			this.onTimeout(100, () => {
+				this.caught = null;
+			});
+
+			this.onTimeout(500, () => {
+				this.leaving.delete(caught)
+			});
+		}
+	}
+
+	grab()
+	{
+		if(this.pinchFilter)
+		{
+			this.pinchFilter.classList.add('grabbing');
+
+			this.pinch(75);
+
+			this.onTimeout(500, () => {
+				this.pinch(0)
+				this.pinchFilter.classList.remove('grabbing');
+			});
 		}
 	}
 }

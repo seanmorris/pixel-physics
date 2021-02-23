@@ -21,14 +21,20 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
-	filter: var(--fg-filter);
+
+	backdrop-filter: var(--bg-filter);
+	filter: blur(0px);
+	/*filter: url(#sonic-pinch);*/
+
+
+	/*backdrop-filter: blur(1px);*/
+	/*backdrop-filter: var(--fg-filter) blur(0);*/
 	/*transform: rotate(calc(1rad * var(--ground-angle)));
 	transform-origin: 50%, bottom - 16px;*/
 }
 
 .actor-item.actor-sonic .sprite:before {
-	backdrop-filter: var(--bg-filter);
-	filter: var(--bg-filter);
+
 	content: '';
 	position: absolute;
 	top: 0px;

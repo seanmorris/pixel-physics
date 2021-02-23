@@ -25,11 +25,11 @@ export class Explosion extends PointActor
 			const viewport = this.viewport;
 
 			this.removeTimer = this.onTimeout(360, ()=>{
-				viewport.actors.remove( this );
+				// viewport.actors.remove( this );
 			});
 		}
 	}
 
 	get solid() { return false; }
-	get isEffect() { return true; }
+	get isEffect() { return false; }
 }

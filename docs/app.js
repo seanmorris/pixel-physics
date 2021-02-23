@@ -63930,16 +63930,12 @@ var Coin = /*#__PURE__*/function (_PointActor) {
           _this2.remove();
         });
         var x = this.x;
-        var y = this.y;
-        var viewport = this.viewport;
-        viewport.spawn.add({
-          time: Date.now() + 7500,
-          frame: this.viewport.args.frameId + 450,
-          object: new Coin({
-            x: x,
-            y: y
-          })
-        });
+        var y = this.y; // const viewport = this.viewport;
+        // viewport.spawn.add({
+        // 	time: Date.now() + 7500
+        // 	, frame:  this.viewport.args.frameId + 450
+        // 	, object: new Coin({x,y})
+        // });
 
         if (other.args.owner) {
           other.args.owner.args.coins += 1;
@@ -64495,7 +64491,7 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'actor-item actor-eggrobo';
     _this.args.accel = 0.125;
     _this.args.decel = 0.3;
-    _this.args.gSpeedMax = 20;
+    _this.args.gSpeedMax = 15;
     _this.args.jumpForce = 13;
     _this.args.gravity = 0.60;
     _this.args.width = 48;
@@ -64899,14 +64895,11 @@ var Explosion = /*#__PURE__*/function (_PointActor) {
   _createClass(Explosion, [{
     key: "update",
     value: function update() {
-      var _this2 = this;
-
       _get(_getPrototypeOf(Explosion.prototype), "update", this).call(this);
 
       if (!this.removeTimer) {
         var viewport = this.viewport;
-        this.removeTimer = this.onTimeout(360, function () {
-          viewport.actors.remove(_this2);
+        this.removeTimer = this.onTimeout(360, function () {// viewport.actors.remove( this );
         });
       }
     }
@@ -64918,7 +64911,7 @@ var Explosion = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "isEffect",
     get: function get() {
-      return true;
+      return false;
     }
   }]);
 
@@ -64984,7 +64977,7 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'actor-item actor-knuckles';
     _this.args.accel = 0.30;
     _this.args.decel = 0.7;
-    _this.args.gSpeedMax = 25;
+    _this.args.gSpeedMax = 18;
     _this.args.jumpForce = 16.5;
     _this.args.gravity = 1;
     _this.args.width = 32;
@@ -65428,7 +65421,7 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'actor-item actor-mecha-sonic';
     _this.args.accel = 0.3;
     _this.args.decel = 0.3;
-    _this.args.gSpeedMax = 50;
+    _this.args.gSpeedMax = 30;
     _this.args.jumpForce = 15;
     _this.args.gravity = 0.7;
     _this.args.takeoffPlayed = false;
@@ -65457,12 +65450,12 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
       }
 
       this.args.accel = 0.3;
-      var direction = this.args.direction;
-      var gSpeed = this.args.gSpeed;
+      var direction = this["public"].direction;
+      var gSpeed = this["public"].gSpeed;
       var speed = Math.abs(gSpeed);
       var maxSpeed = 100;
       var minRun = 100 * 0.1;
-      var minRun2 = 100 * 0.35;
+      var minRun2 = 0.65 * this["public"].gSpeedMax;
 
       if (!this.flame) {
         this.sparks = new _Tag.Tag('<div class = "mecha-sonic-sparks">');
@@ -65496,7 +65489,7 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
       }
 
       if (!falling) {
-        if (Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5) {
+        if (Math.sign(this["public"].gSpeed) !== direction && Math.abs(this["public"].gSpeed - direction) > 5) {
           this.scrapeSound.play();
           this.box.setAttribute('data-animation', 'skidding');
         } else if (speed >= minRun2) {
@@ -65504,7 +65497,7 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
           this.box.setAttribute('data-animation', 'running2');
           this.thrusterSound.play();
 
-          if (!this.args.takeoffPlayed) {
+          if (!this["public"].takeoffPlayed) {
             this.args.takeoffPlayed = true;
             this.takeoffSound.play();
           }
@@ -65529,14 +65522,14 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
 
         if (speed < minRun2) {
           if (this.args.takeoffPlayed) {
-            this.thrusterCloseSound.play();
+            this.thrusterCloseSound && this.thrusterCloseSound.play();
           }
 
           this.args.takeoffPlayed = false;
-          this.thrusterSound.pause();
+          this.thrusterSound && this.thrusterSound.pause();
         }
       } else {
-        this.scrapeSound.pause();
+        this.scrapeSound && this.scrapeSound.pause();
 
         if (this.box.getAttribute('data-animation') !== 'jumping') {
           this.box.setAttribute('data-animation', 'curling');
@@ -65584,6 +65577,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.Monitor = void 0;
 
 var _PointActor2 = require("./PointActor");
+
+var _Tag = require("curvature/base/Tag");
 
 var _Explosion = require("../actor/Explosion");
 
@@ -65658,10 +65653,12 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
 
       if (type !== 2 && (!this["public"].falling || this["public"]["float"] === -1) && (other["public"].ySpeed > 0 && other.y < this.y || other["public"].rolling) && this.viewport && !this["public"].gone) {
         this.args.gone = true;
-        other.args.ySpeed *= -1;
-        other.args.falling = true;
 
-        if (this.args.falling && Math.abs(other.args.ySpeed) > 0) {
+        if (other.args.falling) {
+          other.args.ySpeed *= -1;
+        }
+
+        if (this.args.falling && other.args.falling) {
           other.args.xSpeed *= -1;
         }
 
@@ -65679,19 +65676,23 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
         return;
       }
 
+      var particle = new _Tag.Tag('<div class = "particle-explosion">');
+      particle.style({
+        '--x': this.x,
+        '--y': this.y
+      });
+      viewport.particles.add(particle);
+      setTimeout(function () {
+        return viewport.particles.remove(particle);
+      }, 350);
       var corpse = new _BrokenMonitor.BrokenMonitor({
         x: this.x,
         y: this.y
       });
       viewport.actors.remove(this);
       viewport.actors.add(corpse);
-      viewport.actors.add(new _Explosion.Explosion({
-        x: this.x,
-        y: this.y + 8
-      }));
-      setTimeout(function () {
-        viewport.actors.remove(corpse);
-        corpse.remove();
+      setTimeout(function () {// viewport.actors.remove(corpse);
+        // corpse.remove();
       }, 5000);
 
       if (other.args.owner) {
@@ -65773,7 +65774,7 @@ var NuclearSuperball = /*#__PURE__*/function (_PointActor) {
     }
 
     _this = _super.call.apply(_super, [this].concat(args));
-    _this.args.gSpeedMax = 75;
+    _this.args.gSpeedMax = 20;
     _this.args.accel = 2;
     return _this;
   }
@@ -65816,6 +65817,10 @@ var _Bindable = require("curvature/base/Bindable");
 var _View2 = require("curvature/base/View");
 
 var _Tag = require("curvature/base/Tag");
+
+var _Twist = require("../effects/Twist");
+
+var _Pinch = require("../effects/Pinch");
 
 var _Controller = require("../controller/Controller");
 
@@ -65902,7 +65907,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "template", "<div\n\t\tclass  = \"point-actor [[type]]\"\n\t\tstyle  = \"\n\t\t\tdisplay:[[display]];\n\t\t\t--fg-filter:[[fgFilter]];\n\t\t\t--bg-filter:[[bgFilter]];\n\t\t\t--angle:[[angle]];\n\t\t\t--ground-angle:[[groundAngle]];\n\t\t\t--air-angle:[[airAngle]];\n\t\t\t--height:[[height]];\n\t\t\t--width:[[width]];\n\t\t\t--x:[[x]];\n\t\t\t--y:[[y]];\n\t\t\"\n\t\tdata-camera-mode = \"[[cameraMode]]\"\n\t\tdata-colliding   = \"[[colliding]]\"\n\t\tdata-falling     = \"[[falling]]\"\n\t\tdata-facing      = \"[[facing]]\"\n\t\tdata-filter      = \"[[filter]]\"\n\t\tdata-angle       = \"[[angle|rad2deg]]\"\n\t\tdata-layer       = \"[[layer]]\"\n\t\tdata-mode        = \"[[mode]]\"\n\t><div class = \"sprite\" cv-ref = \"sprite\"></div></div>");
+    _defineProperty(_assertThisInitialized(_this), "template", "<div\n\t\tclass  = \"point-actor [[type]]\"\n\t\tstyle  = \"\n\t\t\tdisplay:[[display]];\n\t\t\t--fg-filter:[[fgFilter]];\n\t\t\t--angle:[[angle]];\n\t\t\t--ground-angle:[[groundAngle]];\n\t\t\t--air-angle:[[airAngle]];\n\t\t\t--height:[[height]];\n\t\t\t--width:[[width]];\n\t\t\t--x:[[x]];\n\t\t\t--y:[[y]];\n\t\t\"\n\t\tdata-camera-mode = \"[[cameraMode]]\"\n\t\tdata-colliding   = \"[[colliding]]\"\n\t\tdata-falling     = \"[[falling]]\"\n\t\tdata-facing      = \"[[facing]]\"\n\t\tdata-filter      = \"[[filter]]\"\n\t\tdata-angle       = \"[[angle|rad2deg]]\"\n\t\tdata-layer       = \"[[layer]]\"\n\t\tdata-mode        = \"[[mode]]\"\n\t><div class = \"sprite\" cv-ref = \"sprite\"></div></div>");
 
     _this.region = null;
     Object.defineProperty(_assertThisInitialized(_this), 'public', {
@@ -65924,6 +65929,8 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.args.moving = false;
     _this.args.x = _this.args.x || 1024 + 256;
     _this.args.y = _this.args.y || 32;
+    _this.args.xOff = 0;
+    _this.args.yOff = 0;
     _this.args.width = _this.args.width || 1;
     _this.args.height = _this.args.height || 1;
     _this.args.direction = _this.args.direction || 1;
@@ -66006,18 +66013,21 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (_this.viewport) {
         var viewport = _this.viewport;
-        var splash = new _Tag.Tag('<div class = "particle-splash">');
-        splash.style({
-          '--x': _this.x,
-          '--y': region.y - region.args.height,
-          'z-index': 5,
-          opacity: Math.random,
-          '--particleScale': _this.args.particleScale
-        });
-        viewport.particles.add(splash);
-        setTimeout(function () {
-          return viewport.particles.remove(splash);
-        }, 240 * (_this.args.particleScale || 1));
+
+        if (region.entryParticle) {
+          var splash = new _Tag.Tag(region.entryParticle);
+          splash.style({
+            '--x': _this.x,
+            '--y': region.y - region.args.height,
+            'z-index': 5,
+            opacity: Math.random,
+            '--particleScale': _this.args.particleScale
+          });
+          viewport.particles.add(splash);
+          setTimeout(function () {
+            return viewport.particles.remove(splash);
+          }, 240 * (_this.args.particleScale || 1));
+        }
       }
     });
     bindable.bindTo('standingOn', function (groundObject, key, target) {
@@ -66111,6 +66121,8 @@ var PointActor = /*#__PURE__*/function (_View) {
     value: function onRendered() {
       var _this2 = this;
 
+      this.box = this.findTag('div');
+      this.sprite = this.findTag('div.sprite');
       this.listen('click', function () {
         if (!_this2.controllable) {
           return;
@@ -66386,16 +66398,16 @@ var PointActor = /*#__PURE__*/function (_View) {
           if (!nextPosition) {
             break;
           } // console.log(nextPosition[3]);
-          // if(this.public.width > 1)
-          // {
-          // 	const scanForward = this.scanForward(step * direction);
-          // 	if(scanForward !== false)
-          // 	{
-          // 		this.args.gSpeed = scanForward;
-          // 		continue;
-          // 	}
-          // }
 
+
+          if (this["public"].width > 1) {
+            var scanForward = this.scanForward(step * direction);
+
+            if (scanForward !== false) {
+              this.args.gSpeed = scanForward;
+              continue;
+            }
+          }
 
           if (nextPosition[3]) {
             this.args.moving = false;
@@ -66594,7 +66606,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
         if (this["public"].rolling) {
           if (slopeFactor < 0) {
-            this.args.gSpeed *= 1.0000 - (0 - slopeFactor / 2 * 0.025);
+            this.args.gSpeed *= 1.0000 - (0 - slopeFactor / 2 * 0.015);
           } else if (slopeFactor > 0) {
             this.args.gSpeed *= 1.0000 * (1 + slopeFactor / 2 * 0.125);
           }
@@ -66605,7 +66617,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           if (slopeFactor > 0) {
             this.args.gSpeed *= 1.0005 * (1 + slopeFactor / 2);
           } else if (slopeFactor < 0) {
-            this.args.gSpeed *= 1 / 1.0025 * (0 - slopeFactor / 2);
+            this.args.gSpeed *= 1 / 1.00025 * (0 - slopeFactor / 2);
           }
 
           if (Math.abs(this["public"].gSpeed) < this["public"].gSpeedMax * 0.1) {
@@ -66624,20 +66636,19 @@ var PointActor = /*#__PURE__*/function (_View) {
             this.args.gSpeed = -1;
           }
         }
-      } else if (this["public"].stopped === 1) {
-        var backPosition = this.findNextStep(-this["public"].width / 2);
-        var forePosition = this.findNextStep(this["public"].width / 2);
-        var sensorSpread = this["public"].width;
-
-        if (nextPosition[0] === false && nextPosition[1] === false) {
-          this.args.falling = true;
-        }
-
-        if ((nextPosition[0] || nextPosition[1]) && !this.rotateLock) {
-          this.lastAngles.unshift(this["public"].angle);
-          this.lastAngles.splice(this.angleAvg);
-          this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread);
-        }
+      } else if (this["public"].stopped === 1) {// const backPosition = this.findNextStep(-this.public.width / 2);
+        // const forePosition = this.findNextStep(this.public.width / 2);
+        // const sensorSpread = this.public.width;
+        // if(nextPosition[0] === false && nextPosition[1] === false)
+        // {
+        // 	this.args.falling = true;
+        // }
+        // if((nextPosition[0] || nextPosition[1]) && !this.rotateLock)
+        // {
+        // 	this.lastAngles.unshift(this.public.angle);
+        // 	this.lastAngles.splice(this.angleAvg);
+        // 	this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread);
+        // }
       }
 
       if (nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false)) {
@@ -66793,11 +66804,11 @@ var PointActor = /*#__PURE__*/function (_View) {
           this.args.gSpeed = Math.floor(xSpeedOriginal);
 
           if (!this["public"].gSpeed) {
-            var halfWidth = Math.floor(this["public"].width / 2);
-            var backPosition = this.findNextStep(-halfWidth);
+            var halfWidth = Math.floor(this["public"].width / 2); // const backPosition = this.findNextStep(-halfWidth);
+
             var forePosition = this.findNextStep(halfWidth);
             var sensorSpread = this["public"].width;
-            this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread * 2 + 1);
+            this.args.angle = Math.atan2(forePosition[1], sensorSpread + 1);
             this.lastAngles.unshift(this["public"].angle);
             this.lastAngles.splice(this.angleAvg);
           }
@@ -66869,6 +66880,15 @@ var PointActor = /*#__PURE__*/function (_View) {
       } else if (other.y >= this.y) {
         this.args.collType = 'collision-bottom';
         type = 2;
+      }
+
+      if (this.viewport) {
+        var collisionListA = this.viewport.collisions.get(this) || new Set();
+        var collisionListB = this.viewport.collisions.get(other) || new Set();
+        collisionListA.add(other);
+        collisionListB.add(this);
+        this.viewport.collisions.set(this, collisionListA);
+        this.viewport.collisions.set(other, collisionListB);
       }
 
       return this.collideA(other, type) || other.collideA(this);
@@ -67550,6 +67570,51 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       return 0;
+    }
+  }, {
+    key: "twist",
+    value: function twist(warp) {
+      var _this13 = this;
+
+      if (!this.twister) {
+        var filterContainer = this.viewport.tags.bgFilters;
+        this.twistFilter = new _Tag.Tag("<div class = \"point-actor-filter twist-filter filter-".concat(this.args.id, "\">"));
+        filterContainer.appendChild(this.twistFilter.node);
+        this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], function (v, k) {
+          _this13.twistFilter.style(_defineProperty({}, "--".concat(k), v));
+        });
+        this.twister = new _Twist.Twist({
+          id: 'twist-' + this.args.id,
+          scale: 60
+        });
+        this.twister.render(this.sprite);
+      }
+
+      this.args.bgFilter = 'url("#twist-' + this.args.id + '")';
+      this.twister.args.scale = warp;
+    }
+  }, {
+    key: "pinch",
+    value: function pinch(warp) {
+      var _this14 = this;
+
+      if (!this.pincher) {
+        var filterContainer = this.viewport.tags.fgFilters;
+        this.pinchFilter = new _Tag.Tag("<div class = \"point-actor-filter pinch-filter filter-".concat(this.args.id, "\">"));
+        filterContainer.appendChild(this.pinchFilter.node);
+        this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], function (v, k) {
+          _this14.pinchFilter.style(_defineProperty({}, "--".concat(k), v));
+        });
+        this.pincher = new _Pinch.Pinch({
+          id: 'pinch-' + this.args.id,
+          scale: 60
+        });
+        this.args.yOff = 16;
+        this.pincher.render(this.sprite);
+      }
+
+      this.args.bgFilter = 'url("#pinch-' + this.args.id + '")';
+      this.pincher.args.scale = warp;
     }
   }, {
     key: "realAngle",
@@ -68483,7 +68548,7 @@ var Rocks = /*#__PURE__*/function (_PointActor) {
     value: function collideA(other, type) {
       _get(_getPrototypeOf(Rocks.prototype), "collideA", this).call(this, other, type);
 
-      if (this.args.falling || other.occupant) {
+      if (this.args.falling || other.occupant || other.rolling) {
         this.pop(other);
         return false;
       }
@@ -68529,11 +68594,12 @@ var Rocks = /*#__PURE__*/function (_PointActor) {
       var particleF = new _Tag.Tag('<div class = "particle-rock">');
       var particleG = new _Tag.Tag('<div class = "particle-rock">');
       var particleH = new _Tag.Tag('<div class = "particle-rock">');
-      var direction = Math.sign(other.args.xSpeed);
+      var direction = Math.sign(other.args.gSpeed || other.args.xSpeed);
       var fuzzFactor = 60;
       var fallSpeed = 1250;
       var xForce = 180;
       var yForce = 10;
+      console.log(xForce * direction) + fuzzFactor * Math.random();
       particleA.style({
         '--x': this.x,
         '--y': this.y - 10,
@@ -68594,7 +68660,7 @@ var Rocks = /*#__PURE__*/function (_PointActor) {
         '--x': this.x + 10,
         '--y': this.y - 40,
         '--fallSpeed': fallSpeed + fuzzFactor * Math.random(),
-        '--xMomentum': 90 * direction + fuzzFactor * Math.random(),
+        '--xMomentum': xForce * direction + fuzzFactor * Math.random(),
         '--yMomentum': 50,
         'z-index': 0
       });
@@ -68842,7 +68908,7 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     _this.args.accel = 0.35;
     _this.args.decel = 0.7;
     _this.args.skidTraction = 1.75;
-    _this.args.gSpeedMax = 30;
+    _this.args.gSpeedMax = 20;
     _this.args.jumpForce = 18;
     _this.args.gravity = 1;
     _this.args.width = 32;
@@ -68862,16 +68928,6 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
   }
 
   _createClass(Sonic, [{
-    key: "onAttached",
-    value: function onAttached() {
-      this.box = this.findTag('div');
-      this.sprite = this.findTag('div.sprite');
-      this.twister = new _Twist.Twist();
-      this.viewport.effects.add(this.twister); // this.args.fgFilter = `url(#twist)`;
-
-      this.args.bgFilter = "url(#twist)";
-    }
-  }, {
     key: "update",
     value: function update() {
       if (this.lightDashingCoolDown > 0) {
@@ -68937,16 +68993,20 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         this.box.setAttribute('data-animation', 'jumping');
       }
 
-      _get(_getPrototypeOf(Sonic.prototype), "update", this).call(this); // this.twister.args.scale = Math.abs(this.args.gSpeed);
-
-
       if (this.skidding && !this["public"].rolling && !this["public"].falling && !this.spindashCharge) {
-        if (this.twister) {
-          this.twister.args.scale = -this["public"].gSpeed;
+        this.args.xOff = 8 * -this["public"].direction;
+        var warp = -this["public"].gSpeed * 15;
+
+        if (Math.abs(warp) > 120) {
+          warp = 120 * Math.sign(warp);
         }
+
+        this.twist(warp);
       } else if (!this.spindashCharge) {
-        this.twister.args.scale = 0;
+        this.twist(0);
       }
+
+      _get(_getPrototypeOf(Sonic.prototype), "update", this).call(this);
     }
   }, {
     key: "release_1",
@@ -68964,12 +69024,12 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
 
       this.args.rolling = true;
-      var dashBoost = dashPower * 80 * direction;
+      var dashBoost = dashPower * 32;
 
       if (Math.sign(direction) !== Math.sign(dashBoost)) {
-        this.args.gSpeed = dashBoost;
+        this.args.gSpeed = dashBoost * Math.sign(direction);
       } else {
-        this.args.gSpeed += dashBoost;
+        this.args.gSpeed += dashBoost * Math.sign(direction);
       }
 
       this.spindashCharge = 0;
@@ -68990,10 +69050,8 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         dashCharge = 1;
       }
 
-      if (this.twister) {
-        this.twister.args.scale = 60 * dashCharge * this["public"].direction;
-      }
-
+      this.twist(120 * dashCharge * this["public"].direction);
+      this.args.xOff = 6 * -this["public"].direction;
       this.box.setAttribute('data-animation', 'spindash');
     }
   }, {
@@ -69558,6 +69616,7 @@ var SuperRing = /*#__PURE__*/function (_PointActor) {
     key: "onAttached",
     value: function onAttached() {
       this.initRenderer();
+      this.pinch(0);
     }
   }, {
     key: "initRenderer",
@@ -69734,6 +69793,8 @@ var SuperRing = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideA",
     value: function collideA(other) {
+      var _this4 = this;
+
       _get(_getPrototypeOf(SuperRing.prototype), "collideA", this).call(this, other);
 
       if (!other.controllable) {
@@ -69746,10 +69807,20 @@ var SuperRing = /*#__PURE__*/function (_PointActor) {
 
       if (this.caught) {
         this.caught.args.xSpeed = Math.sign(other["public"].xSpeed) * 3 || 3;
-        this.drop();
       }
 
-      this.caught = other;
+      if (this.caught !== other) {
+        this.drop();
+        this.onTimeout(500, function () {
+          if (_this4.leaving.has(other)) {
+            return;
+          }
+
+          _this4.caught = other;
+        });
+        this.grab();
+      }
+
       other.args.xSpeed = 0;
       other.args.ySpeed = 0;
       other.args["float"] = -1;
@@ -69757,16 +69828,33 @@ var SuperRing = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "drop",
     value: function drop() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.caught) {
         var caught = this.caught;
         this.leaving.add(caught);
-        this.onTimeout(1250, function () {
-          return _this4.leaving["delete"](caught);
-        });
         caught.args["float"] = 0;
-        this.caught = null;
+        this.onTimeout(100, function () {
+          _this5.caught = null;
+        });
+        this.onTimeout(500, function () {
+          _this5.leaving["delete"](caught);
+        });
+      }
+    }
+  }, {
+    key: "grab",
+    value: function grab() {
+      var _this6 = this;
+
+      if (this.pinchFilter) {
+        this.pinchFilter.classList.add('grabbing');
+        this.pinch(75);
+        this.onTimeout(500, function () {
+          _this6.pinch(0);
+
+          _this6.pinchFilter.classList.remove('grabbing');
+        });
       }
     }
   }]);
@@ -69857,8 +69945,20 @@ var Switch = /*#__PURE__*/function (_PointActor) {
     value: function collideA(other, type) {
       var _this2 = this;
 
+      other.onRemove(function () {
+        if (_this2.activator === other) {
+          _this2.activator = null;
+        }
+      });
+
       if (other.isVehicle) {
         this.args.active = true;
+        this.activator = other;
+        var top = this.y - this["public"].height;
+
+        if (other.args.y > top && !other["public"].falling) {
+          other.args.y = top;
+        }
 
         if (type === 0) {
           return true;
@@ -69870,11 +69970,6 @@ var Switch = /*#__PURE__*/function (_PointActor) {
       if ([0, -1].includes(type) && other.args.ySpeed >= 0) {
         this.args.active = true;
         this.activator = other;
-        other.onRemove(function () {
-          if (_this2.activator === other) {
-            _this2.activator = null;
-          }
-        });
         return true;
       }
     }
@@ -69947,7 +70042,7 @@ var Tails = /*#__PURE__*/function (_PointActor) {
     _this.args.type = 'actor-item actor-tails';
     _this.args.accel = 0.32;
     _this.args.decel = 0.7;
-    _this.args.gSpeedMax = 28;
+    _this.args.gSpeedMax = 20;
     _this.args.jumpForce = 18;
     _this.args.gravity = 1;
     _this.args.skidTraction = 1.75;
@@ -70151,15 +70246,13 @@ var TextActor = /*#__PURE__*/function (_PointActor) {
   }
 
   _createClass(TextActor, [{
-    key: "update",
-    value: function update() {
-      if (!this.sprite) {
-        this.sprite = this.findTag('div.sprite');
-        this.text = new _CharacterString.CharacterString({
-          value: 'Click a character to select.'
-        });
-        this.text.render(this.sprite);
-      }
+    key: "onAttached",
+    value: function onAttached() {
+      this.sprite = this.findTag('div.sprite');
+      this.text = new _CharacterString.CharacterString({
+        value: 'Click a character to select.'
+      });
+      this.text.render(this.sprite);
     }
   }, {
     key: "solid",
@@ -70354,6 +70447,7 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
     _defineProperty(_assertThisInitialized(_this), "isWater", true);
 
     _this.args.type = 'region region-water';
+    _this.entryParticle = '<div class = "particle-splash">';
     _this.args.gravity = 0.25;
     _this.args.drag = 0.85;
     _this.draining = 0;
@@ -70364,8 +70458,6 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
     key: "update",
     value: function update() {
       var _this2 = this;
-
-      _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
 
       if (!this.filterWrapper && this.tags.sprite) {
         this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
@@ -70408,6 +70500,8 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
           this.args.height += 0.5;
         }
       }
+
+      _get(_getPrototypeOf(WaterRegion.prototype), "update", this).call(this);
     }
   }, {
     key: "solid",
@@ -71143,9 +71237,6 @@ var Cylinder = /*#__PURE__*/function (_View) {
     value: function onAttached() {
       var _this2 = this;
 
-      this.onFrame(function () {// this.tags.displace.setAttribute('scale', Math.round(Math.sin(Date.now() / 500) * 25));
-        // this.args.scale = Math.sin(Date.now() / 500) * 25;
-      });
       var displacer = new _Tag.Tag("<canvas width = \"".concat(this.args.width, "\" height = \"").concat(this.args.height, "\">"));
       var context = displacer.getContext('2d');
       context.imageSmoothingEnabled = false;
@@ -71260,9 +71351,6 @@ var Pinch = /*#__PURE__*/function (_View) {
     value: function onAttached() {
       var _this2 = this;
 
-      this.onFrame(function () {// this.tags.displace.setAttribute('scale', Math.round(Math.sin(Date.now() / 500) * 25));
-        // this.args.scale = Math.sin(Date.now() / 500) * 25;
-      });
       var displacer = new _Tag.Tag("<canvas width = \"".concat(this.args.width, "\" height = \"").concat(this.args.height, "\">"));
       var context = displacer.getContext('2d');
       context.imageSmoothingEnabled = false;
@@ -71372,10 +71460,10 @@ var Twist = /*#__PURE__*/function (_View) {
 
     _defineProperty(_assertThisInitialized(_this), "template", require('./twist.svg'));
 
-    _this.args.id = 'twist';
-    _this.args.scale = 0;
-    _this.args.width = _this.args.width || '100%';
-    _this.args.height = _this.args.height || '100%';
+    _this.args.scale = _this.args.scale || 0;
+    _this.args.id = _this.args.id || 'twist';
+    _this.args.width = _this.args.width || 64;
+    _this.args.height = _this.args.height || 64;
     return _this;
   }
 
@@ -71384,9 +71472,6 @@ var Twist = /*#__PURE__*/function (_View) {
     value: function onAttached() {
       var _this2 = this;
 
-      this.onFrame(function () {// this.args.scale = Math.cos(Date.now() / 500) * 25;
-        // this.tags.displace.setAttribute('scale', );
-      });
       var displacer = new _Tag.Tag('<canvas width = "64" height = "64">');
       var context = displacer.getContext('2d');
       context.imageSmoothingEnabled = false;
@@ -71487,12 +71572,19 @@ document.addEventListener('DOMContentLoaded', function () {
     viewportA.render(document.body); // viewportB.render(document.body);
 
     var body = new _Tag.Tag(document.body);
-    var skyShift = 100;
-    setInterval(function () {
-      return body.style({
-        'background-position': "".concat(skyShift++ / 25, "px top,") + " -".concat(skyShift / 23, "px 63%,") + " -".concat(skyShift / 10, "px 63%,") + " ".concat(skyShift++ / 20, "px 63%,") + " -10% bottom"
-      });
-    }, 9);
+    var skyShift = 100; // const drawBg = ()=>
+    // {
+    // 	body.style({
+    // 		'background-position': `${(skyShift++ / 25)}px top,`
+    // 			+` -${(skyShift  / 23)}px 63%,`
+    // 			+` -${(skyShift  / 10)}px 63%,`
+    // 			+` ${(skyShift++ / 20)}px 63%,`
+    // 			+` -10% bottom`
+    // 	});
+    // 	requestAnimationFrame(drawBg);
+    // };
+    // requestAnimationFrame(drawBg);
+
     viewportA.update();
     var frameTimes = [];
 
@@ -71502,7 +71594,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var frameTime = Date.now() - lastTime;
       frameTimes.push(frameTime);
 
-      if (frameTimes.length > 15) {
+      if (frameTimes.length > 5) {
         frameTimes.shift();
       }
 
@@ -71511,7 +71603,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return a + b;
         });
         var frameTimeAvg = frameTimeSum / frameTimes.length;
-        viewportA.args.fps = 1000 / frameTimeAvg;
+        viewportA.args.fps = 1000 / frameTimeAvg; // viewportA.args.fps = frameTimeAvg;
       } else {
         viewportA.args.fps = '...';
       }
@@ -72875,7 +72967,7 @@ var CharacterString = /*#__PURE__*/function (_View) {
 
     _this = _super.call.apply(_super, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_this), "template", "<div class = \"hud-character-string [[hide]] [[color]]\" cv-each = \"chars:char:c\" style = \"--scale:[[scale]];\"><span\n\t\t\t\tclass = \"hud-character\"\n\t\t\t\tdata-type  = \"[[char.type]]\"\n\t\t\t\tdata-value = \"[[char.pos]]\"\n\t\t\t\tdata-index = \"[[c]]\"\n\t\t\t\tstyle      = \"--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];\"\n\t\t\t>[[char.original]]</span></div>");
+    _defineProperty(_assertThisInitialized(_this), "template", "<div cv-ref = \"main\" class = \"hud-character-string [[hide]] [[color]]\" cv-each = \"chars:char:c\" style = \"--scale:[[scale]];\"><span\n\t\t\t\tclass = \"hud-character\"\n\t\t\t\tdata-type  = \"[[char.type]]\"\n\t\t\t\tdata-value = \"[[char.pos]]\"\n\t\t\t\tdata-index = \"[[c]]\"\n\t\t\t\tstyle      = \"--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];\"\n\t\t\t>[[char.original]]</span></div>");
 
     _this.args.chars = [];
     _this.args.scale = _this.args.scale || 1;
@@ -73065,7 +73157,6 @@ var Layer = /*#__PURE__*/function (_View) {
 
     _classCallCheck(this, Layer);
 
-    console.log(args);
     _this = _super.call(this, args, parent);
 
     _defineProperty(_assertThisInitialized(_this), "template", require('./layer.html'));
@@ -73093,7 +73184,7 @@ var Layer = /*#__PURE__*/function (_View) {
 
   _createClass(Layer, [{
     key: "update",
-    value: function update(tileMap) {
+    value: function update(tileMap, xDir, yDir) {
       var blockSize = this.args.blockSize;
       var blocksWide = Math.ceil(this.args.width / blockSize);
       var blocksHigh = Math.ceil(this.args.height / blockSize);
@@ -73103,11 +73194,13 @@ var Layer = /*#__PURE__*/function (_View) {
       var offsetX = this.args.offsetX;
       var offsetY = this.args.offsetY;
       var layerId = this.args.layerId;
+      var startColumn = 0;
+      var endColumn = blocksWide;
 
-      for (var i = 0; i <= blocksWide; i++) {
+      for (var i = startColumn; i <= endColumn; i += Math.sign(blocksWide)) {
         var tileX = i - Math.ceil(this.x / blockSize);
 
-        for (var j = 0; j <= blocksHigh; j++) {
+        for (var j = 0; j <= blocksHigh; j += Math.sign(blocksHigh)) {
           var xy = [i, j].join('::');
           var block = void 0;
 
@@ -73322,7 +73415,8 @@ var objectPalette = {
   'ring': _Ring.Ring,
   'super-ring': _SuperRing.SuperRing,
   'coin': _Coin.Coin,
-  'powerup-glow': _PowerupGlow.PowerupGlow
+  'powerup-glow': _PowerupGlow.PowerupGlow,
+  'explosion': _Explosion.Explosion
 };
 var ColCellsNear = Symbol('collision-cells-near');
 var ColCell = Symbol('collision-cell');
@@ -73440,7 +73534,10 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.frame = new _CharacterString.CharacterString({
       value: 0
     }); // this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
-    // this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
+
+    _this.args.bindTo('fps', function (v) {
+      return _this.args.fpsSprite.args.value = Number(v).toFixed(2);
+    });
 
     _this.args.frameId = -1;
     _this.rings = new _CharacterString.CharacterString({
@@ -73479,10 +73576,14 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.stayStuck = true;
     _this.args.width = 32 * 14;
     _this.args.height = 32 * 8;
-    _this.args.scale = 2; // this.args.width  = 32 * 14 * 2;
+    _this.args.scale = 2; // this.args.width  = 32 * 7;
+    // this.args.height = 32 * 4;
+    // this.args.scale  = 2;
+    // this.args.width  = 32 * 14 * 2;
     // this.args.height = 32 * 8 * 2;
     // this.args.scale  = 1;
 
+    _this.collisions = new WeakMap();
     _this.args.x = _this.args.x || 0;
     _this.args.y = _this.args.y || 0;
     _this.args.layers = [];
@@ -73501,8 +73602,7 @@ var Viewport = /*#__PURE__*/function (_View) {
           _this.regions.add(i);
         }
 
-        if (i.controllable) {
-          _this.auras.add(i);
+        if (i.controllable) {// this.auras.add(i);
         }
 
         _this.actorsById[i.args.id] = i;
@@ -73683,14 +73783,14 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       keyboard.update();
 
-      if (controller.buttons[9] && controller.buttons[9].time === 2) {
+      if (controller && controller.buttons[9] && controller.buttons[9].time === 2) {
         this.args.paused = !this.args.paused;
         console.log(this.args.paused, controller.buttons[9]);
         controller.update();
         return;
       }
 
-      if (!this.gamepad) {
+      if (controller && !this.gamepad) {
         controller.readInput({
           keyboard: keyboard
         });
@@ -73704,7 +73804,7 @@ var Viewport = /*#__PURE__*/function (_View) {
             continue;
           }
 
-          controller.readInput({
+          controller && controller.readInput({
             keyboard: keyboard,
             gamepad: gamepad
           });
@@ -73730,7 +73830,7 @@ var Viewport = /*#__PURE__*/function (_View) {
         });
       }
 
-      controller.update();
+      controller && controller.update();
     }
   }, {
     key: "moveCamera",
@@ -73806,38 +73906,35 @@ var Viewport = /*#__PURE__*/function (_View) {
       if (controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle) {
         controlActor = this.controlActor.standingOn;
       }
-      /*
-      if(controlActor && this.tags.blur)
-      {
-      	let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-      	let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
-      		let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
-      		const maxBlur = 32;
-      		xBlur = xBlur < maxBlur ? xBlur : maxBlur;
-      	yBlur = yBlur < maxBlur ? yBlur : maxBlur;
-      		let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
-      		if(blur > 1)
-      	{
-      		if(controlActor.public.falling)
-      		{
-      			blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-      		}
-      			this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-      		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-      		this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.25) - 1}, 0`);
-      	}
-      	else
-      	{
-      		blurAngle = 0;
-      		blur = 0;
-      			this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-      		this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-      		this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
-      	}
-      		this.xPrev = controlActor.x;
-      	this.yPrev = controlActor.y;
-      }*/
 
+      if (controlActor && this.tags.blur) {
+        var xBlur = Math.pow(Number((controlActor.x - this.xPrev) * 100 / 500), 2).toFixed(2);
+        var yBlur = Math.pow(Number((controlActor.y - this.yPrev) * 100 / 500), 2).toFixed(2);
+        var blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
+        var maxBlur = 32;
+        xBlur = xBlur < maxBlur ? xBlur : maxBlur;
+        yBlur = yBlur < maxBlur ? yBlur : maxBlur;
+        var blur = (Math.sqrt(Math.pow(xBlur, 2) + Math.pow(yBlur, 2)) / 4).toFixed(2);
+
+        if (blur > 1) {
+          if (controlActor["public"].falling) {
+            blurAngle = Math.atan2(controlActor["public"].ySpeed, controlActor["public"].xSpeed);
+          }
+
+          this.tags.blurAngle.setAttribute('style', "transform:rotate(calc(1rad * ".concat(blurAngle, "))"));
+          this.tags.blurAngleCancel.setAttribute('style', "transform:rotate(calc(-1rad * ".concat(blurAngle, "))"));
+          this.tags.blur.setAttribute('stdDeviation', "".concat(blur * 0.75 - 1, ", 0"));
+        } else {
+          blurAngle = 0;
+          blur = 0;
+          this.tags.blurAngle.setAttribute('style', "transform:rotate(calc(1rad * ".concat(blurAngle, "))"));
+          this.tags.blurAngleCancel.setAttribute('style', "transform:rotate(calc(-1rad * ".concat(blurAngle, "))"));
+          this.tags.blur.setAttribute('stdDeviation', "".concat(blur, ", 0"));
+        }
+
+        this.xPrev = controlActor.x;
+        this.yPrev = controlActor.y;
+      }
 
       for (var i = 0; i < layerCount; i++) {
         if (!this.args.layers[i]) {
@@ -73845,16 +73942,26 @@ var Viewport = /*#__PURE__*/function (_View) {
             layerId: i,
             name: layers[i].name
           });
-          this.args.layers[i].args.height = this.args.height;
-          this.args.layers[i].args.width = this.args.width;
+          this.args.layers[i].args.height = this.args.height * 2;
+          this.args.layers[i].args.width = this.args.width * 2;
         }
 
+        var xDir = Math.sign(this.args.layers[i].x - this.args.x);
+        var yDir = Math.sign(this.args.layers[i].y = this.args.y);
         this.args.layers[i].x = this.args.x;
         this.args.layers[i].y = this.args.y;
-        this.args.layers[i].update(this.tileMap);
+        this.args.layers[i].update(this.tileMap, xDir, yDir);
       }
 
       this.tags.content.style({
+        '--x': Math.round(this.args.x),
+        '--y': Math.round(this.args.y)
+      });
+      this.tags.bgFilters.style({
+        '--x': Math.round(this.args.x),
+        '--y': Math.round(this.args.y)
+      });
+      this.tags.fgFilters.style({
         '--x': Math.round(this.args.x),
         '--y': Math.round(this.args.y)
       });
@@ -73888,18 +73995,40 @@ var Viewport = /*#__PURE__*/function (_View) {
         }
 
         var objClass = objectPalette[objType];
-        var obj = objClass.fromDef(objDef);
-        this.actors.add(obj);
+        var actor = objClass.fromDef(objDef); // if(!actor.controllable)
+        // {
+        // 	continue;
+        // }
 
-        if (obj.controllable || obj.args.controllable) {
-          this.args.controllable[objDef.name] = obj; // this.auras.add( obj );
+        this.actors.add(actor);
+
+        if (actor.controllable) {
+          this.args.controllable[objDef.name] = actor; // this.auras.add( actor );
+        }
+
+        var width = this.args.width;
+        var height = this.args.height;
+        var margin = 32;
+        var camLeft = -this.args.x + -16 + -margin;
+        var camRight = -this.args.x + width + -16 + margin;
+        var camTop = -this.args.y;
+        var camBottom = -this.args.y + height;
+        var actorTop = actor.y - actor["public"].height;
+        var actorRight = actor.x + actor["public"].width;
+        var actorLeft = actor.x;
+
+        if (camLeft < actorRight && camRight > actorLeft && camBottom > actorTop && camTop < actor.y) {
+          actor.args.display = 'initial';
+        } else {
+          actor.args.display = 'none';
         }
       }
 
-      this.actors.add(new _TextActor.TextActor({
+      var selectChar = new _TextActor.TextActor({
         x: 1300,
         y: 1800
-      }));
+      });
+      this.actors.add(selectChar); // this.actors.add(new Sonic({x: 1300, y:1800}));
     }
   }, {
     key: "spawnActors",
@@ -73941,7 +74070,6 @@ var Viewport = /*#__PURE__*/function (_View) {
             }
 
             actor.updateStart();
-            actor.args.display = actor.args.display || 'initial';
             this.updateStarted.add(actor);
           }
         } catch (err) {
@@ -74014,8 +74142,41 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
     }
   }, {
+    key: "nearbyActors",
+    value: function nearbyActors(actor) {
+      var nearbyCells = this.getNearbyColCells(actor);
+      var width = this.args.width;
+      var height = this.args.height;
+      var x = this.args.x;
+      var y = this.args.y;
+      var result = new Set();
+
+      for (var i in nearbyCells) {
+        var cell = nearbyCells[i];
+        var actors = cell.values();
+
+        var _iterator5 = _createForOfIteratorHelper(actors),
+            _step5;
+
+        try {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var _actor = _step5.value;
+            result.add(_actor);
+          }
+        } catch (err) {
+          _iterator5.e(err);
+        } finally {
+          _iterator5.f();
+        }
+      }
+
+      return result;
+    }
+  }, {
     key: "update",
     value: function update() {
+      var _this4 = this;
+
       var time = (Date.now() - this.startTime) / 1000;
       var minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2, '0');
       var seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5, '0');
@@ -74104,46 +74265,18 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.updateStarted.clear();
       this.updated.clear();
       this.updateEnded.clear();
+      this.updateBackground();
 
-      var _iterator5 = _createForOfIteratorHelper(this.regions.values()),
-          _step5;
-
-      try {
-        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-          var region = _step5.value;
-          region.updateStart();
-          this.updateStarted.add(region);
-          region.update();
-          this.updated.add(region);
-        }
-      } catch (err) {
-        _iterator5.e(err);
-      } finally {
-        _iterator5.f();
-      }
-
-      var _iterator6 = _createForOfIteratorHelper(this.auras.values()),
+      var _iterator6 = _createForOfIteratorHelper(this.regions.values()),
           _step6;
 
       try {
         for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-          var _actor2 = _step6.value;
-
-          var _nearbyCells = this.getNearbyColCells(_actor2);
-
-          if (!this.updateStarted.has(_actor2)) {
-            _actor2.updateStart();
-
-            this.updateStarted.add(_actor2);
-            this.actorUpdateStart(_nearbyCells);
-          }
-
-          if (!this.updated.has(_actor2)) {
-            _actor2.update();
-
-            this.updated.add(_actor2);
-            this.actorUpdate(_nearbyCells);
-          }
+          var region = _step6.value;
+          region.updateStart();
+          this.updateStarted.add(region);
+          region.update();
+          this.updated.add(region);
         }
       } catch (err) {
         _iterator6.e(err);
@@ -74151,31 +74284,54 @@ var Viewport = /*#__PURE__*/function (_View) {
         _iterator6.f();
       }
 
-      if (this.controlActor) {
-        this.moveCamera();
+      var actorCells = new WeakMap();
+
+      var _iterator7 = _createForOfIteratorHelper(this.auras.values()),
+          _step7;
+
+      try {
+        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+          var _actor3 = _step7.value;
+          var nearbyCells = this.getNearbyColCells(_actor3);
+          actorCells.set(_actor3, nearbyCells);
+
+          if (!this.updateStarted.has(_actor3)) {
+            _actor3.updateStart();
+
+            this.updateStarted.add(_actor3);
+            this.actorUpdateStart(nearbyCells);
+          }
+        }
+      } catch (err) {
+        _iterator7.e(err);
+      } finally {
+        _iterator7.f();
       }
 
-      this.updateBackground();
+      var _iterator8 = _createForOfIteratorHelper(this.auras.values()),
+          _step8;
+
+      try {
+        for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+          var _actor4 = _step8.value;
+
+          var _nearbyCells = actorCells.get(_actor4);
+
+          if (!this.updated.has(_actor4)) {
+            _actor4.update();
+
+            this.updated.add(_actor4);
+            this.actorUpdate(_nearbyCells);
+          }
+        }
+      } catch (err) {
+        _iterator8.e(err);
+      } finally {
+        _iterator8.f();
+      }
 
       if (this.controlActor) {
-        if (this.rings.args.value != this.controlActor.args.rings) {
-          this.rings.args.color = 'yellow';
-        } else {
-          this.rings.args.color = '';
-        }
-
-        if (this.coins.args.value != this.controlActor.args.coins) {
-          this.coins.args.color = 'yellow';
-        } else {
-          this.coins.args.color = '';
-        }
-
-        if (this.emeralds.args.value[0] != this.controlActor.args.emeralds) {
-          this.emeralds.args.color = 'yellow';
-        } else {
-          this.emeralds.args.color = '';
-        }
-
+        this.moveCamera();
         this.rings.args.value = this.controlActor.args.rings;
         this.coins.args.value = this.controlActor.args.coins;
         this.emeralds.args.value = "".concat(this.controlActor.args.emeralds, "/7");
@@ -74193,27 +74349,47 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         var modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
         this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
-        this.controlActor.updateEnd();
-        this.updateEnded.add(this.controlActor);
-        var nearbyCells = this.getNearbyColCells(this.controlActor);
-        this.actorUpdateEnd(nearbyCells);
       }
 
-      var _iterator7 = _createForOfIteratorHelper(this.regions.values()),
-          _step7;
+      var _iterator9 = _createForOfIteratorHelper(this.auras.values()),
+          _step9;
 
       try {
-        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-          var _region = _step7.value;
+        for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+          var _actor5 = _step9.value;
 
-          _region.updateEnd();
+          var _nearbyCells2 = actorCells.get(_actor5);
 
-          this.updateEnded.add(_region);
+          if (!this.updateEnded.has(_actor5)) {
+            _actor5.updateEnd();
+
+            this.updateEnded.add(_actor5);
+            this.actorUpdateEnd(_nearbyCells2);
+          }
         }
       } catch (err) {
-        _iterator7.e(err);
+        _iterator9.e(err);
       } finally {
-        _iterator7.f();
+        _iterator9.f();
+      }
+
+      var _iterator10 = _createForOfIteratorHelper(this.regions.values()),
+          _step10;
+
+      try {
+        for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+          var _region = _step10.value;
+
+          if (!this.updateEnded.has(_region)) {
+            _region.updateEnd();
+
+            this.updateEnded.add(_region);
+          }
+        }
+      } catch (err) {
+        _iterator10.e(err);
+      } finally {
+        _iterator10.f();
       }
 
       var width = this.args.width;
@@ -74225,32 +74401,63 @@ var Viewport = /*#__PURE__*/function (_View) {
       var camBottom = -this.args.y + height;
       var inAuras = new WeakSet();
 
-      for (var i in this.actors.list) {
-        var _actor = this.actors.list[i];
-
-        if (!this.auras.has(_actor)) {
-          var actorTop = _actor.y - _actor["public"].height;
-          var actorRight = _actor.x + _actor["public"].width;
-          var actorLeft = _actor.x;
-
-          if (inAuras.has(_actor)) {
-            continue;
-          }
-
-          if (camLeft < actorRight && camRight > actorLeft && camBottom > actorTop && camTop < _actor.y) {
-            _actor.args.display = 'initial';
-            inAuras.add(_actor);
-          } else {
-            _actor.args.display = 'none';
-          }
+      if (this.controlActor) {
+        if (this.visibilityTimer) {
+          clearTimeout(this.visibilityTimer);
+          this.visibilityTimer = false;
         }
+
+        this.visibilityTimer = setTimeout(function () {
+          _this4.visibilityTimer = false;
+
+          for (var i in _this4.actors.list) {
+            var _actor2 = _this4.actors.list[i];
+
+            if (!_this4.auras.has(_actor2)) {
+              var actorTop = _actor2.y - _actor2["public"].height;
+              var actorRight = _actor2.x + _actor2["public"].width + 64;
+              var actorLeft = _actor2.x - _actor2["public"].width - 64;
+
+              if (inAuras.has(_actor2)) {
+                continue;
+              }
+
+              if (camLeft < actorRight && camRight > actorLeft && camBottom > actorTop && camTop < _actor2.y && !(_actor2 instanceof _LayerSwitch.LayerSwitch)) {
+                _actor2.args.display = 'initial';
+
+                if (!_actor2.vizi) {
+                  _actor2.nodes.map(function (n) {
+                    return _this4.tags.actors.append(n);
+                  });
+
+                  _actor2.vizi = true;
+                }
+
+                inAuras.add(_actor2);
+              } else {
+                // actor.args.display = 'none';
+                _actor2.nodes.map(function (n) {
+                  return n.remove();
+                });
+
+                _actor2.vizi = false;
+              }
+            }
+          }
+        }, 0);
       }
 
       this.spawnActors();
 
       if (this.nextControl) {
+        this.auras["delete"](this.controlActor);
         this.controlActor = this.nextControl;
         this.auras.add(this.controlActor);
+        this.controlActor.args.display = 'initial';
+        this.controlActor.nodes.map(function (n) {
+          return _this4.tags.actors.append(n);
+        });
+        this.controlActor.vizi = true;
         this.args.maxSpeed = null;
         this.nextControl = null;
       }
@@ -74266,6 +74473,7 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       this.args.moveCard = this.moveCard;
+      this.collisions = new WeakMap();
     }
   }, {
     key: "click",
@@ -74281,12 +74489,12 @@ var Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "regionAtPoint",
     value: function regionAtPoint(x, y) {
-      var _iterator8 = _createForOfIteratorHelper(this.regions.values()),
-          _step8;
+      var _iterator11 = _createForOfIteratorHelper(this.regions.values()),
+          _step11;
 
       try {
-        for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-          var region = _step8.value;
+        for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+          var region = _step11.value;
           var regionArgs = region["public"];
           var regionX = regionArgs.x;
           var regionY = regionArgs.y;
@@ -74305,9 +74513,9 @@ var Viewport = /*#__PURE__*/function (_View) {
           }
         }
       } catch (err) {
-        _iterator8.e(err);
+        _iterator11.e(err);
       } finally {
-        _iterator8.f();
+        _iterator11.f();
       }
     }
   }, {
@@ -74325,17 +74533,18 @@ var Viewport = /*#__PURE__*/function (_View) {
         x: x,
         y: y
       }).map(function (cell) {
-        var _iterator9 = _createForOfIteratorHelper(cell.values()),
-            _step9;
+        var _iterator12 = _createForOfIteratorHelper(cell.values()),
+            _step12;
 
         try {
-          for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
-            var actor = _step9.value;
-            // if(actor.removed)
-            // {
-            // 	cell.delete(actor);
-            // 	continue;
-            // }
+          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+            var actor = _step12.value;
+
+            if (actor.removed) {
+              // cell.delete(actor);
+              continue;
+            }
+
             var actorArgs = actor["public"];
             var actorX = actorArgs.x;
             var actorY = actorArgs.y;
@@ -74354,9 +74563,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             }
           }
         } catch (err) {
-          _iterator9.e(err);
+          _iterator12.e(err);
         } finally {
-          _iterator9.f();
+          _iterator12.f();
         }
       });
       actorPointCache.set(cacheKey, actors);
@@ -74539,7 +74748,7 @@ module.exports = "<div data-name = \"[[name]]\" class = \"viewport-background\" 
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<section class = \"filters\" cv-each = \"effects:effect\">[[effect]]</section>\n\n<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\" cv-on = \"click(event)\">\n\n\t\t<svg>\n\t\t<defs>\n\n\t\t\t<filter id=\"motionBlur\">\n\t\t\t\t<feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"0\" cv-ref = \"blur\" />\n\t\t\t</filter>\n\n\t\t\t<filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"waves\"\n\t\t\t\tx      =\"0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feFlood flood-color=\"#408000\" result = \"DisplacementGreen\" />\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/wave.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t>\n\n\t\t\t\t</feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t>\n\n\t\t\t\t</feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"0;-64\"\n\t\t\t\t\t\tdur=\"2s\"\n\t\t\t\t\t\trepeatCount=\"indefinite\" />\n\n\t\t\t\t</feOffset>\n\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"4\"\n\t\t\t\t/>\n\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin=\"Displaced\"\n\t\t\t\t\tstdDeviation=\"0.35\"\n\t\t\t\t/>\n\n\t\t\t</filter>\n\n\t\t\t<!-- <filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"twist\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/twist.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"10\"\n\t\t\t\t/>\n\n\t\t\t</filter> -->\n\n\t\t\t<!-- <filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"pinch\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/pinch.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"30\"\n\t\t\t\t/>\n\n\t\t\t</filter>\n\n\t\t\t<filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"unpinch\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/pinch.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"-30\"\n\t\t\t\t/>\n\n\t\t\t</filter> -->\n\t\t</defs>\n\t\t</svg>\n\n\t\t<div class = \"viewport-zoom\">\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngle\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistance\">\n\t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancel\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"background\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"layers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div  cv-ref = \"content\" class = \"viewport-content\">\n\n\t\t\t\t<div class = \"viewport-actors\" cv-each = \"actors:actor:a\">\t[[actor]]\n\t\t\t\t</div>\n\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\" cv-each = \"particles:particle:p\">\n\t\t\t\t\t[[particle]]\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n<!-- \t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td colspan = \"2\">[[char]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFrame]]</td>\n\t\t\t\t\t\t<td>[[frame]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div> -->\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\t\t\t<div class = \"topLine\">\n\t\t\t\t<div class = \"status-message\">[[topLine]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div class = \"top-bar\">\n\t\t\t<div class = \"buttons\">\n\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t<span cv-if = \"!isRecording\">\n\t\t\t\t\t<span cv-if = \"!isReplaying\">\n\t\t\t\t\t\t<button cv-on = \"click:reset(event)\">reset</button>\n\t\t\t\t\t\t<button cv-on = \"click:record(event)\">record</button>\n\t\t\t\t\t\t<span cv-if = \"hasRecording\">\n\t\t\t\t\t\t\t<button cv-on = \"click:playback(event)\">playback</button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</span>\n\t\t\t\t</span>\n\t\t\t\t<span cv-if = \"isReplaying\">\n\t\t\t\t\t<button cv-on = \"click:stop(event)\">stop</button>\n\t\t\t\t</span>\n\t\t\t\t<span cv-if = \"isRecording\">\n\t\t\t\t\t<button cv-on = \"click:stop(event)\">stop</button>\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\tview the project on github\n\t\t\t</a>\n\n\t\t\t<label class = \"change-character\">\n\t\t\t\tchange character:\n\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t</select>\n\t\t\t</label>\n\t\t</div>\n\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<b>controls:</b>\n\t\t\t\t[[controlCard]]\n\t\t\t</div>\n\n\t\t\t<div>\n\t\t\t\t<b>moves:</b>\n\t\t\t\t[[moveCard]]\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\t\t\t\t<b>options:</b>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n\n"
+module.exports = "<section class = \"filters\" cv-each = \"effects:effect\">[[effect]]</section>\n\n<div class = \"viewport-frame\" cv-ref = \"frame\">\n\t<div class = \"viewport-header\">\n\t\t<span class = \"sean-icon\"></span>\n\t\t<h1>Pixel Physics</h1>\n\t</div>\n\t<div class = \"viewport [[fullscreen]]\" cv-ref = \"viewport\" tabindex=\"0\" cv-on = \"click(event)\">\n\n\t\t<svg>\n\t\t<defs>\n\n\t\t\t<filter id=\"motionBlur\">\n\t\t\t\t<feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"0\" cv-ref = \"blur\" />\n\t\t\t</filter>\n\n\t\t\t<filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"waves\"\n\t\t\t\tx      =\"0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feFlood flood-color=\"#408000\" result = \"DisplacementGreen\" />\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/wave.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t>\n\n\t\t\t\t</feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t>\n\n\t\t\t\t</feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"0;-64\"\n\t\t\t\t\t\tdur=\"2s\"\n\t\t\t\t\t\trepeatCount=\"indefinite\" />\n\n\t\t\t\t</feOffset>\n\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"4\"\n\t\t\t\t/>\n\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin=\"Displaced\"\n\t\t\t\t\tstdDeviation=\"0.35\"\n\t\t\t\t/>\n\n\t\t\t</filter>\n\n\t\t\t<!-- <filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"twist\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/twist.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"10\"\n\t\t\t\t/>\n\n\t\t\t</filter> -->\n\n\t\t\t<!-- <filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"pinch\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/pinch.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"30\"\n\t\t\t\t/>\n\n\t\t\t</filter>\n\n\t\t\t<filter\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tid = \"unpinch\"\n\t\t\t\tx      =\"-0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/pinch.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t/>\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementSource\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"-30\"\n\t\t\t\t/>\n\n\t\t\t</filter> -->\n\t\t</defs>\n\t\t</svg>\n\n\t\t<div class = \"viewport-zoom\">\n\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngle\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistance\">\n\t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancel\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"background\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"layers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"filters filters-background\" cv-ref = \"bgFilters\"></div>\n\n\t\t\t<div  cv-ref = \"content\" class = \"viewport-content\">\n\n\n\t\t\t\t<div cv-ref = \"actors\" class = \"viewport-actors\" cv-each = \"actors:actor:a\">\t[[actor]]\n\t\t\t\t</div>\n\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\" cv-each = \"particles:particle:p\">\n\t\t\t\t\t[[particle]]\n\t\t\t\t</div>\n\n \t\t\t</div>\n\n\t\t\t<div class = \"filters filters-foreground\" cv-ref = \"fgFilters\"></div>\n\n\t\t\t<div class = \"topLine\">\n\t\t\t\t<div class = \"status-message\">[[topLine]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\n\t\t</div>\n\n\t\t<div class = \"viewport-double-zoom\">\n\n\t\t\t<div class = \"hud\">\n\t\t\t\t<table>\n\n\t\t\t\t\t<!-- <tr>\n\t\t\t\t\t\t<td colspan = \"2\">[[char]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFrame]]</td>\n\t\t\t\t\t\t<td>[[frame]]</td>\n\t\t\t\t\t</tr> -->\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<!-- <tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr> -->\n\n\t\t\t\t</table>\n\t\t\t</div>\n\n\t\t\t<div class = \"titlecard [[animation]]\">\n\n\t\t\t\t<div class = \"titlecard-field\"></div>\n\n\t\t\t\t<div class = \"titlecard-bottom-border\">\n\t\t\t\t\t<div class = \"titlecard-border-text\">SEAN MORRIS</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-left-border\">\n\t\t\t\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t\t\t\t<div class = \"titlecard-border-color\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class = \"titlecard-title\">\n\n\t\t\t\t\t<div class = \"titlecard-title-box\">\n\t\t\t\t\t\t<div class = \"titlecard-title-line-1\">\n\t\t\t\t\t\t\tPIXEL HILL\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t\t\t\tZONE<div class = \"titlecard-title-number\">\n\t\t\t\t\t\t\t\t1\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t</div>\n\n\t\t</div>\n\n\t\t<span class = \"hud-top-left\">\n\t\t\t<div class = \"timer\">[[timer]]</div>\n\t\t\t<div cv-if = \"hasRings\">\n\t\t\t\t[[rings]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasCoins\">\n\t\t\t\t[[coins]]\n\t\t\t</div>\n\t\t\t<div cv-if = \"hasEmeralds\">\n\t\t\t\t[[emeralds]]\n\t\t\t</div>\n\t\t</span>\n\t</div>\n\n\t<div class = \"viewport-caption\">\n\t\t<div class = \"top-bar\">\n\t\t\t<div class = \"buttons\">\n\t\t\t\t<button cv-on = \"click:fullscreen(event)\">fullscreen</button>\n\t\t\t\t<span cv-if = \"!isRecording\">\n\t\t\t\t\t<span cv-if = \"!isReplaying\">\n\t\t\t\t\t\t<button cv-on = \"click:reset(event)\">reset</button>\n\t\t\t\t\t\t<button cv-on = \"click:record(event)\">record</button>\n\t\t\t\t\t\t<span cv-if = \"hasRecording\">\n\t\t\t\t\t\t\t<button cv-on = \"click:playback(event)\">playback</button>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</span>\n\t\t\t\t</span>\n\t\t\t\t<span cv-if = \"isReplaying\">\n\t\t\t\t\t<button cv-on = \"click:stop(event)\">stop</button>\n\t\t\t\t</span>\n\t\t\t\t<span cv-if = \"isRecording\">\n\t\t\t\t\t<button cv-on = \"click:stop(event)\">stop</button>\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<a class = \"github\" cv-link = \"https://github.com/seanmorris/pixel-physics\">\n\t\t\t\t<span class = \"github-icon\"></span>\n\t\t\t\tview the project on github\n\t\t\t</a>\n\n\t\t\t<label class = \"change-character\">\n\t\t\t\tchange character:\n\t\t\t\t<select cv-each = \"controllable:obj:name\" cv-ref = \"currentActor\" cv-on = \"change(event)\">\n\t\t\t\t\t<option value = \"[[name]]\">[[name]]</option>\n\t\t\t\t</select>\n\t\t\t</label>\n\t\t</div>\n\n\t\t<div>\n\t\t\t<div>\n\t\t\t\t<b>controls:</b>\n\t\t\t\t[[controlCard]]\n\t\t\t</div>\n\n\t\t\t<div>\n\t\t\t\t<b>moves:</b>\n\t\t\t\t[[moveCard]]\n\t\t\t</div>\n\n\t\t\t<div class = \"right\">\n\t\t\t\t<b>options:</b>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>enable audio</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"audio\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>player can stop on walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"stayStuck\" value = \"1\" />\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>jumps can stick to walls</span>\n\t\t\t\t\t<input type = \"checkbox\" cv-bind = \"willStick\" value = \"1\" />\n\t\t\t\t\t<br />\n\t\t\t\t</label>\n\n\t\t\t\t<small><small>(requires \"stop on walls\")</small></small>\n\n\t\t\t\t<hr />\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>speed limit:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"maxSpeed\" min = \"1\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<span>scale:</span>\n\t\t\t\t\t<form>\n\t\t\t\t\t\t<input type = \"number\" cv-bind = \"scale\" min = \"1\" max = \"5\" />\n\t\t\t\t\t</form>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n</div>\n\n\n<div class = \"sun\"></div>\n<div class = \"clouds-a\"></div>\n<div class = \"clouds-b\"></div>\n\n"
 });
 
 ;require.alias("buffer/index.js", "buffer");
@@ -74616,7 +74825,7 @@ require.alias("three/build/three.js", "three");require.register("___globals___",
       });
     }
   };
-  var port = ar.port || 9485;
+  var port = ar.port || 9486;
   var host = br.server || window.location.hostname || 'localhost';
 
   var connect = function connect() {

@@ -20,7 +20,7 @@
 		transform: translate(0px, 0);
 	}
 	to{
-		transform: translate(calc(50vh + calc(-1px * var(--xMomentum))), 0);
+		transform: translate(calc(1px * var(--xMomentum)), 0);
 	}
 }
 

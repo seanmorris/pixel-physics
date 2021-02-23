@@ -28,7 +28,7 @@ export class Sonic extends PointActor
 
 		this.args.skidTraction = 1.75;
 
-		this.args.gSpeedMax = 30;
+		this.args.gSpeedMax = 20;
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
 
@@ -49,19 +49,6 @@ export class Sonic extends PointActor
 		{
 			Sonic.png = new Png('/Sonic/sonic.png');
 		}
-	}
-
-	onAttached()
-	{
-		this.box    = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
-
-		this.twister = new Twist;
-
-		this.viewport.effects.add(this.twister);
-
-		// this.args.fgFilter = `url(#twist)`;
-		this.args.bgFilter = `url(#twist)`;
 	}
 
 	update()
@@ -159,21 +146,25 @@ export class Sonic extends PointActor
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
-		super.update();
-
-		// this.twister.args.scale = Math.abs(this.args.gSpeed);
-
 		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
 		{
-			if(this.twister)
+			this.args.xOff = 8 * -this.public.direction;
+
+			let warp = -this.public.gSpeed * 15;
+
+			if(Math.abs(warp) > 120)
 			{
-				this.twister.args.scale = -this.public.gSpeed;
+				warp = 120 * Math.sign(warp);
 			}
+
+			this.twist(warp);
 		}
 		else if(!this.spindashCharge)
 		{
-			this.twister.args.scale = 0;
+			this.twist(0);
 		}
+
+		super.update();
 	}
 
 	release_1() // spindash
@@ -193,15 +184,15 @@ export class Sonic extends PointActor
 
 		this.args.rolling = true;
 
-		const dashBoost = dashPower * 80 * direction;
+		const dashBoost = dashPower * 32;
 
 		if(Math.sign(direction) !== Math.sign(dashBoost))
 		{
-			this.args.gSpeed = dashBoost;
+			this.args.gSpeed = dashBoost * Math.sign(direction);
 		}
 		else
 		{
-			this.args.gSpeed += dashBoost;
+			this.args.gSpeed += dashBoost * Math.sign(direction);
 		}
 
 		this.spindashCharge = 0;
@@ -224,10 +215,9 @@ export class Sonic extends PointActor
 			dashCharge = 1;
 		}
 
-		if(this.twister)
-		{
-			this.twister.args.scale = 60 * dashCharge * this.public.direction
-		}
+		this.twist(120 * dashCharge * this.public.direction);
+
+		this.args.xOff = 6 * -this.public.direction;
 
 		this.box.setAttribute('data-animation', 'spindash');
 	}

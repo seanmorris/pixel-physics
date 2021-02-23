@@ -12,7 +12,7 @@ export class MechaSonic extends PointActor
 		this.args.accel = 0.3;
 		this.args.decel = 0.3;
 
-		this.args.gSpeedMax = 50;
+		this.args.gSpeedMax = 30;
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.7;
 
@@ -40,12 +40,12 @@ export class MechaSonic extends PointActor
 
 		this.args.accel = 0.3;
 
-		const direction = this.args.direction;
-		const gSpeed    = this.args.gSpeed;
+		const direction = this.public.direction;
+		const gSpeed    = this.public.gSpeed;
 		const speed     = Math.abs(gSpeed);
 		const maxSpeed  = 100;
 		const minRun    = 100 * 0.1;
-		const minRun2   = 100 * 0.35;
+		const minRun2   = 0.65 * this.public.gSpeedMax;
 
 		if(!this.flame)
 		{
@@ -90,7 +90,7 @@ export class MechaSonic extends PointActor
 
 		if(!falling)
 		{
-			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 			{
 				this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'skidding');
@@ -102,7 +102,7 @@ export class MechaSonic extends PointActor
 
 				this.thrusterSound.play();
 
-				if(!this.args.takeoffPlayed)
+				if(!this.public.takeoffPlayed)
 				{
 					this.args.takeoffPlayed = true;
 					this.takeoffSound.play();
@@ -139,16 +139,17 @@ export class MechaSonic extends PointActor
 			{
 				if(this.args.takeoffPlayed)
 				{
-					this.thrusterCloseSound.play();
+					this.thrusterCloseSound && this.thrusterCloseSound.play();
 				}
 
 				this.args.takeoffPlayed = false;
-				this.thrusterSound.pause();
+				this.thrusterSound && this.thrusterSound.pause();
 			}
 		}
 		else
 		{
-			this.scrapeSound.pause();
+			this.scrapeSound && this.scrapeSound.pause();
+
 			if(this.box.getAttribute('data-animation') !== 'jumping')
 			{
 				this.box.setAttribute('data-animation', 'curling');

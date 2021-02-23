@@ -31,7 +31,7 @@ export class Rocks extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(this.args.falling || other.occupant)
+		if(this.args.falling || other.occupant || other.rolling)
 		{
 			this.pop(other);
 
@@ -101,18 +101,20 @@ export class Rocks extends PointActor
 		const particleG = new Tag('<div class = "particle-rock">');
 		const particleH = new Tag('<div class = "particle-rock">');
 
-		const direction = Math.sign(other.args.xSpeed);
+		const direction = Math.sign(other.args.gSpeed || other.args.xSpeed);
 
 		const fuzzFactor = 60;
 		const fallSpeed = 1250;
 		const xForce    = 180;
 		const yForce    = 10;
 
+		console.log(xForce * direction) + (fuzzFactor * Math.random());
+
 		particleA.style({
 			'--x': this.x
 			, '--y': this.y - 10
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -121,7 +123,7 @@ export class Rocks extends PointActor
 			'--x': this.x + 20
 			, '--y': this.y - 10
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -130,7 +132,7 @@ export class Rocks extends PointActor
 			'--x': this.x
 			, '--y': this.y - 20
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -139,7 +141,7 @@ export class Rocks extends PointActor
 			'--x': this.x + 10
 			, '--y': this.y - 20
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -148,7 +150,7 @@ export class Rocks extends PointActor
 			'--x': this.x
 			, '--y': this.y - 30
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -157,7 +159,7 @@ export class Rocks extends PointActor
 			'--x': this.x + 20
 			, '--y': this.y - 30
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -166,7 +168,7 @@ export class Rocks extends PointActor
 			'--x': this.x
 			, '--y': this.y - 40
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': xForce * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': yForce
 			, 'z-index': 0
 		});
@@ -175,7 +177,7 @@ export class Rocks extends PointActor
 			'--x': this.x + 10
 			, '--y': this.y - 40
 			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': 90 * direction + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
 			, '--yMomentum': 50
 			, 'z-index': 0
 		});

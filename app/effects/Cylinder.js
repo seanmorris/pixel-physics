@@ -18,11 +18,6 @@ export class Cylinder extends View
 
 	onAttached()
 	{
-		this.onFrame(()=>{
-			// this.tags.displace.setAttribute('scale', Math.round(Math.sin(Date.now() / 500) * 25));
-			// this.args.scale = Math.sin(Date.now() / 500) * 25;
-		});
-
 		const displacer = new Tag(`<canvas width = "${this.args.width}" height = "${this.args.height}">`);
 
 		const context = displacer.getContext('2d');

@@ -152,6 +152,7 @@
 		</svg>
 
 		<div class = "viewport-zoom">
+
 			<div class = "blurAngle" cv-ref = "blurAngle">
 			<div class = "blurDistance" cv-ref = "blurDistance">
 			<div class = "blurAngleCancel" cv-ref = "blurAngleCancel">
@@ -164,23 +165,38 @@
 			</div>
 			</div>
 
+			<div class = "filters filters-background" cv-ref = "bgFilters"></div>
+
 			<div  cv-ref = "content" class = "viewport-content">
 
-				<div class = "viewport-actors" cv-each = "actors:actor:a">	[[actor]]
+
+				<div cv-ref = "actors" class = "viewport-actors" cv-each = "actors:actor:a">	[[actor]]
 				</div>
 
 				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">
 					[[particle]]
 				</div>
 
+ 			</div>
+
+			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
+
+			<div class = "topLine">
+				<div class = "status-message">[[topLine]]</div>
 			</div>
+			<div class = "focus-me">
+				<div class = "status-message">[[focusMe]]</div>
+			</div>
+			<div class = "status-message">[[status]]</div>
+
 		</div>
 
 		<div class = "viewport-double-zoom">
-<!-- 			<div class = "hud">
+
+			<div class = "hud">
 				<table>
 
-					<tr>
+					<!-- <tr>
 						<td colspan = "2">[[char]]</td>
 					</tr>
 
@@ -227,20 +243,21 @@
 					<tr>
 						<td>[[labelFrame]]</td>
 						<td>[[frame]]</td>
-					</tr>
+					</tr> -->
 
 					<tr>
 						<td>[[labelFps]]</td>
 						<td>[[fpsSprite]]</td>
 					</tr>
 
-					<tr>
+					<!-- <tr>
 						<td>[[labelGSpeed]]</td>
 						<td>[[gSpeed]]</td>
-					</tr>
+					</tr> -->
 
 				</table>
-			</div> -->
+			</div>
+
 			<div class = "titlecard [[animation]]">
 
 				<div class = "titlecard-field"></div>
@@ -255,8 +272,8 @@
 				</div>
 
 				<div class = "titlecard-title">
-					<div class = "titlecard-title-box">
 
+					<div class = "titlecard-title-box">
 						<div class = "titlecard-title-line-1">
 							PIXEL HILL
 						</div>
@@ -266,19 +283,10 @@
 								1
 							</div>
 						</div>
-
-
 					</div>
 				</div>
 
 			</div>
-			<div class = "topLine">
-				<div class = "status-message">[[topLine]]</div>
-			</div>
-			<div class = "focus-me">
-				<div class = "status-message">[[focusMe]]</div>
-			</div>
-			<div class = "status-message">[[status]]</div>
 
 		</div>
 

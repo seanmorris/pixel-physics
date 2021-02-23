@@ -12,16 +12,13 @@ export class TextActor extends PointActor
 		this.args.float  = -1;
 	}
 
-	update()
+	onAttached()
 	{
-		if(!this.sprite)
-		{
-			this.sprite = this.findTag('div.sprite');
+		this.sprite = this.findTag('div.sprite');
 
-			this.text = new CharacterString({value:'Click a character to select.'});
+		this.text = new CharacterString({value:'Click a character to select.'});
 
-			this.text.render(this.sprite);
-		}
+		this.text.render(this.sprite);
 	}
 
 	get solid() { return false; }

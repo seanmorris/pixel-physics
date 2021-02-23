@@ -55,13 +55,13 @@ export class Coin extends PointActor
 			const x = this.x;
 			const y = this.y;
 
-			const viewport = this.viewport;
+			// const viewport = this.viewport;
 
-			viewport.spawn.add({
-				time: Date.now() + 7500
-				, frame:  this.viewport.args.frameId + 450
-				, object: new Coin({x,y})
-			});
+			// viewport.spawn.add({
+			// 	time: Date.now() + 7500
+			// 	, frame:  this.viewport.args.frameId + 450
+			// 	, object: new Coin({x,y})
+			// });
 
 			if(other.args.owner)
 			{

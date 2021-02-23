@@ -2,6 +2,9 @@ import { Bindable } from 'curvature/base/Bindable';
 import { View } from 'curvature/base/View';
 import { Tag  } from 'curvature/base/Tag';
 
+import { Twist } from '../effects/Twist';
+import { Pinch } from '../effects/Pinch';
+
 import { Controller } from '../controller/Controller';
 
 const MODE_FLOOR   = 0;
@@ -24,7 +27,6 @@ export class PointActor extends View
 		style  = "
 			display:[[display]];
 			--fg-filter:[[fgFilter]];
-			--bg-filter:[[bgFilter]];
 			--angle:[[angle]];
 			--ground-angle:[[groundAngle]];
 			--air-angle:[[airAngle]];
@@ -94,6 +96,9 @@ export class PointActor extends View
 
 		this.args.x = this.args.x || 1024 + 256;
 		this.args.y = this.args.y || 32;
+
+		this.args.xOff = 0;
+		this.args.yOff = 0;
 
 		this.args.width  = this.args.width  || 1;
 		this.args.height = this.args.height || 1;
@@ -203,19 +208,22 @@ export class PointActor extends View
 			if(this.viewport)
 			{
 				const viewport = this.viewport;
-				const splash    = new Tag('<div class = "particle-splash">');
 
-				splash.style({
-					'--x': this.x, '--y': region.y - region.args.height
-					, 'z-index': 5, opacity: Math.random
-					, '--particleScale': this.args.particleScale
-				});
+				if(region.entryParticle)
+				{
+					const splash   = new Tag(region.entryParticle)
 
-				viewport.particles.add(splash);
+					splash.style({
+						'--x': this.x, '--y': region.y - region.args.height
+						, 'z-index': 5, opacity: Math.random
+						, '--particleScale': this.args.particleScale
+					});
 
-				setTimeout(() => viewport.particles.remove(splash), 240 * (this.args.particleScale||1));
+					viewport.particles.add(splash);
+
+					setTimeout(() => viewport.particles.remove(splash), 240 * (this.args.particleScale||1));
+				}
 			}
-
 		});
 
 		bindable.bindTo('standingOn', (groundObject,key,target) => {
@@ -330,6 +338,9 @@ export class PointActor extends View
 
 	onRendered()
 	{
+		this.box    = this.findTag('div');
+		this.sprite = this.findTag('div.sprite');
+
 		this.listen('click', ()=>{
 
 			if(!this.controllable)
@@ -673,7 +684,6 @@ export class PointActor extends View
 			{
 				nextPosition = this.findNextStep(step * direction);
 
-
 				if(!nextPosition)
 				{
 					break;
@@ -681,17 +691,17 @@ export class PointActor extends View
 
 				// console.log(nextPosition[3]);
 
-				// if(this.public.width > 1)
-				// {
-				// 	const scanForward = this.scanForward(step * direction);
+				if(this.public.width > 1)
+				{
+					const scanForward = this.scanForward(step * direction);
 
-				// 	if(scanForward !== false)
-				// 	{
-				// 		this.args.gSpeed = scanForward;
+					if(scanForward !== false)
+					{
+						this.args.gSpeed = scanForward;
 
-				// 		continue;
-				// 	}
-				// }
+						continue;
+					}
+				}
 
 				if(nextPosition[3])
 				{
@@ -933,7 +943,7 @@ export class PointActor extends View
 			{
 				if(slopeFactor < 0)
 				{
-					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.025);
+					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.015);
 				}
 				else if(slopeFactor > 0)
 				{
@@ -953,7 +963,7 @@ export class PointActor extends View
 				}
 				else if(slopeFactor < 0)
 				{
-					this.args.gSpeed *= (1/1.0025) * (0-(slopeFactor/2));
+					this.args.gSpeed *= (1/1.00025) * (0-(slopeFactor/2));
 				}
 
 				if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.1))
@@ -981,23 +991,23 @@ export class PointActor extends View
 		}
 		else if(this.public.stopped === 1)
 		{
-			const backPosition = this.findNextStep(-this.public.width / 2);
-			const forePosition = this.findNextStep(this.public.width / 2);
-			const sensorSpread = this.public.width;
+			// const backPosition = this.findNextStep(-this.public.width / 2);
+			// const forePosition = this.findNextStep(this.public.width / 2);
+			// const sensorSpread = this.public.width;
 
-			if(nextPosition[0] === false && nextPosition[1] === false)
-			{
-				this.args.falling = true;
-			}
+			// if(nextPosition[0] === false && nextPosition[1] === false)
+			// {
+			// 	this.args.falling = true;
+			// }
 
-			if((nextPosition[0] || nextPosition[1]) && !this.rotateLock)
-			{
-				this.lastAngles.unshift(this.public.angle);
+			// if((nextPosition[0] || nextPosition[1]) && !this.rotateLock)
+			// {
+			// 	this.lastAngles.unshift(this.public.angle);
 
-				this.lastAngles.splice(this.angleAvg);
+			// 	this.lastAngles.splice(this.angleAvg);
 
-				this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread);
-			}
+			// 	this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread);
+			// }
 		}
 
 		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
@@ -1198,12 +1208,12 @@ export class PointActor extends View
 				{
 					const halfWidth = Math.floor(this.public.width / 2);
 
-					const backPosition = this.findNextStep(-halfWidth);
+					// const backPosition = this.findNextStep(-halfWidth);
 					const forePosition = this.findNextStep(halfWidth);
 					const sensorSpread = this.public.width;
 
 
-					this.args.angle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread*2+1);
+					this.args.angle = Math.atan2(forePosition[1], sensorSpread+1);
 
 					this.lastAngles.unshift(this.public.angle);
 					this.lastAngles.splice(this.angleAvg);
@@ -1316,6 +1326,18 @@ export class PointActor extends View
 			this.args.collType = 'collision-bottom';
 
 			type = 2;
+		}
+
+		if(this.viewport)
+		{
+			const collisionListA = this.viewport.collisions.get(this)  || new Set;
+			const collisionListB = this.viewport.collisions.get(other) || new Set;
+
+			collisionListA.add(other);
+			collisionListB.add(this);
+
+			this.viewport.collisions.set(this,  collisionListA);
+			this.viewport.collisions.set(other, collisionListB);
 		}
 
 		return this.collideA(other, type) || other.collideA(this);
@@ -2282,5 +2304,55 @@ export class PointActor extends View
 		}
 
 		return 0;
+	}
+
+	twist(warp)
+	{
+		if(!this.twister)
+		{
+			const filterContainer = this.viewport.tags.bgFilters;
+
+			this.twistFilter = new Tag(`<div class = "point-actor-filter twist-filter filter-${this.args.id}">`);
+
+			filterContainer.appendChild(this.twistFilter.node);
+
+			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], (v,k) => {
+				this.twistFilter.style({[`--${k}`]: v})
+			});
+
+			this.twister = new Twist({id: 'twist-' + this.args.id, scale: 60});
+
+			this.twister.render(this.sprite);
+		}
+
+		this.args.bgFilter = 'url("#twist-' + this.args.id + '")';
+
+		this.twister.args.scale = warp;
+	}
+
+	pinch(warp)
+	{
+		if(!this.pincher)
+		{
+			const filterContainer = this.viewport.tags.fgFilters;
+
+			this.pinchFilter = new Tag(`<div class = "point-actor-filter pinch-filter filter-${this.args.id}">`);
+
+			filterContainer.appendChild(this.pinchFilter.node);
+
+			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], (v,k) => {
+				this.pinchFilter.style({[`--${k}`]: v})
+			});
+
+			this.pincher = new Pinch({id: 'pinch-' + this.args.id, scale: 60});
+
+			this.args.yOff = 16;
+
+			this.pincher.render(this.sprite);
+		}
+
+		this.args.bgFilter = 'url("#pinch-' + this.args.id + '")';
+
+		this.pincher.args.scale = warp;
 	}
 }

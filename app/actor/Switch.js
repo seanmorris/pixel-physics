@@ -40,9 +40,25 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
+		other.onRemove(()=>{
+			if(this.activator === other)
+			{
+				this.activator = null;
+			}
+		});
+
 		if(other.isVehicle)
 		{
 			this.args.active = true;
+
+			this.activator = other;
+
+			const top = this.y - this.public.height;
+
+			if(other.args.y > top && !other.public.falling)
+			{
+				other.args.y = top;
+			}
 
 			if(type === 0)
 			{
@@ -57,13 +73,6 @@ export class Switch extends PointActor
 			this.args.active = true;
 
 			this.activator = other;
-
-			other.onRemove(()=>{
-				if(this.activator === other)
-				{
-					this.activator = null;
-				}
-			});
 
 			return true;
 		}
