@@ -110,7 +110,11 @@ export class ShadeRegion extends Region
 
 			this.text.args.value = '';
 
-			this.onNextFrame(()=> this.text.args.value = this.public.filter || '');
+			if(this.public.filter)
+			{
+				this.onNextFrame(()=> this.text.args.value = `${this.currentFilter}: ${this.public.filter}` || '');
+			}
+
 		}
 	}
 

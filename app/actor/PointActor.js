@@ -689,8 +689,6 @@ export class PointActor extends View
 					break;
 				}
 
-				// console.log(nextPosition[3]);
-
 				if(this.public.width > 1)
 				{
 					const scanForward = this.scanForward(step * direction);
@@ -1052,6 +1050,9 @@ export class PointActor extends View
 		let lastPoint = [this.x, this.y];
 		let lastForePoint = [this.x, this.y];
 
+		this.lastAngles.splice(0);
+		this.args.groundAngle = 0;
+
 		const tileMap = this.viewport.tileMap;
 
 		const cSquared = this.public.xSpeed**2 + this.public.ySpeed**2;
@@ -1181,6 +1182,9 @@ export class PointActor extends View
 
 			const direction = Math.sign(this.public.xSpeed);
 
+			const xSpeedOriginal = this.args.xSpeed;
+			const ySpeedOriginal = this.args.ySpeed;
+
 			this.args.xSpeed = 0;
 			this.args.ySpeed = 0;
 
@@ -1204,19 +1208,27 @@ export class PointActor extends View
 				this.args.mode = MODE_FLOOR;
 				this.args.gSpeed = Math.floor(xSpeedOriginal);
 
-				if(!this.public.gSpeed)
+				if(Math.abs(this.public.gSpeed) < 3)
 				{
 					const halfWidth = Math.floor(this.public.width / 2);
 
-					// const backPosition = this.findNextStep(-halfWidth);
+					const backPosition = this.findNextStep(-halfWidth);
 					const forePosition = this.findNextStep(halfWidth);
 					const sensorSpread = this.public.width;
 
+					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
 
-					this.args.angle = Math.atan2(forePosition[1], sensorSpread+1);
+					if(forePosition[0] !== false || backPosition[0] !== false)
+					{
+						this.args.angle = this.args.groundAngle = newAngle;
 
-					this.lastAngles.unshift(this.public.angle);
-					this.lastAngles.splice(this.angleAvg);
+						this.lastAngles.unshift(newAngle);
+						this.lastAngles.splice(this.angleAvg);
+
+						const slopeDir = -Math.sign(this.args.groundAngle);
+
+						this.args.gSpeed = ySpeedOriginal * slopeDir;
+					}
 				}
 
 				this.args.falling = false;
@@ -1238,7 +1250,7 @@ export class PointActor extends View
 						{
 							this.args.falling = false;
 
-							this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
+							// this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
 
 							this.args.mode = direction < 0
 								? MODE_LEFT
@@ -1412,6 +1424,25 @@ export class PointActor extends View
 				if(this.willStick || below)
 				{
 					this.args.falling = false;
+
+					const halfWidth = Math.floor(this.public.width / 2);
+
+					const backPosition = this.findNextStep(-halfWidth);
+					const forePosition = this.findNextStep(halfWidth);
+					const sensorSpread = this.public.width;
+
+					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
+
+					this.args.angle = this.args.groundAngle = newAngle;
+
+					this.lastAngles.unshift(newAngle);
+					this.lastAngles.splice(this.angleAvg);
+
+					const slopeDir = -Math.sign(this.args.groundAngle);
+
+					this.args.gSpeed = (1 + this.args.ySpeed) * slopeDir;
+
+					console.log(this.args.gSpeed);
 				}
 				else if(!below)
 				{

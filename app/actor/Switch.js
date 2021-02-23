@@ -60,12 +60,17 @@ export class Switch extends PointActor
 				other.args.y = top;
 			}
 
-			if(type === 0)
+			if(type === 1 || type === 3)
 			{
-				return true;
+				return false;
 			}
 
-			return false;
+			if(type === 0 || other.public.ySpeed < 0)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		if([0,-1].includes(type) && other.args.ySpeed >= 0)

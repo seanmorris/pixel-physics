@@ -133,8 +133,6 @@ export class SuperRing extends PointActor
 		const longAxis  = width > height ? width : height;
 		const shortAxis = width < height ? width : height;
 
-		console.log(parent, width, height);
-
 		this.cameraRear.aspect = 1;
 		this.cameraFore.aspect = 1;
 

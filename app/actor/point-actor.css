@@ -159,7 +159,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"] .sprite {
-	transform: translate(-50%, calc(-100% + 0px)) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="2"] .sprite {
@@ -175,7 +175,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 0px)) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
@@ -256,8 +256,8 @@
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	height: calc(0px + calc(1px * var(--height)));
-	width: calc(0px + calc(1px * var(--width)));
+	height: calc(1px * var(--height));
+	width: calc(1px * var(--width));
 }
 
 .actor-item[data-colliding="true"]:before {
