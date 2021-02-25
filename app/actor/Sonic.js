@@ -220,6 +220,16 @@ export class Sonic extends PointActor
 		this.args.xOff = 6 * -this.public.direction;
 
 		this.box.setAttribute('data-animation', 'spindash');
+
+		if(this.public.direction < 0)
+		{
+			this.args.facing = 'left';
+		}
+
+		if(this.public.direction > 0)
+		{
+			this.args.facing = 'right';
+		}
 	}
 
 	hold_2()

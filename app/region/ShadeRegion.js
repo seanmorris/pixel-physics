@@ -73,7 +73,6 @@ export class ShadeRegion extends Region
 			this.switch.args.bindTo('active', v => {
 				if(!v)
 				{
-					console.log('switch off');
 				}
 
 				if(v)

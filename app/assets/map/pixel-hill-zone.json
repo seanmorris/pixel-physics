@@ -29,8 +29,8 @@
                  "type":"player",
                  "visible":true,
                  "width":32,
-                 "x":1400,
-                 "y":1752
+                 "x":1408,
+                 "y":1568
                 }, 
                 {
                  "gid":2,
@@ -114,7 +114,7 @@
                  "visible":true,
                  "width":32,
                  "x":1344,
-                 "y":1760
+                 "y":1792
                 }, 
                 {
                  "gid":2,
@@ -752,13 +752,18 @@
                          "name":"direction",
                          "type":"string",
                          "value":"-1"
+                        }, 
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"left"
                         }],
                  "rotation":0,
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":1472,
-                 "y":1872
+                 "x":1480,
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -775,8 +780,8 @@
                  "type":"tails",
                  "visible":true,
                  "width":32,
-                 "x":1512,
-                 "y":1872
+                 "x":1520,
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -793,8 +798,8 @@
                  "type":"knuckles",
                  "visible":true,
                  "width":32,
-                 "x":1552,
-                 "y":1872
+                 "x":1560,
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -806,7 +811,7 @@
                  "visible":true,
                  "width":40,
                  "x":1360,
-                 "y":1872
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -818,7 +823,7 @@
                  "visible":true,
                  "width":40,
                  "x":1304,
-                 "y":1872
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -830,7 +835,7 @@
                  "visible":true,
                  "width":40,
                  "x":1264,
-                 "y":1872
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -986,7 +991,7 @@
                  "visible":true,
                  "width":32,
                  "x":1264,
-                 "y":1784
+                 "y":1816
                 }, 
                 {
                  "gid":2,
@@ -1171,7 +1176,7 @@
                  "type":"drill-car",
                  "visible":true,
                  "width":64,
-                 "x":1648,
+                 "x":1704,
                  "y":1888
                 }, 
                 {
@@ -1194,7 +1199,7 @@
                  "type":"spring",
                  "visible":true,
                  "width":32,
-                 "x":200,
+                 "x":192,
                  "y":2720
                 }, 
                 {
@@ -1240,7 +1245,7 @@
                  "type":"spring",
                  "visible":true,
                  "width":32,
-                 "x":280,
+                 "x":288,
                  "y":2720
                 }, 
                 {
@@ -1717,9 +1722,9 @@
                  "rotation":0,
                  "type":"spring",
                  "visible":true,
-                 "width":32,
+                 "width":8,
                  "x":1216,
-                 "y":1376
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -1745,9 +1750,9 @@
                  "rotation":0,
                  "type":"spring",
                  "visible":true,
-                 "width":32,
+                 "width":8,
                  "x":1216,
-                 "y":1344
+                 "y":1856
                 }, 
                 {
                  "gid":2,
@@ -1773,9 +1778,9 @@
                  "rotation":0,
                  "type":"spring",
                  "visible":true,
-                 "width":32,
+                 "width":8,
                  "x":1216,
-                 "y":1312
+                 "y":1824
                 }, 
                 {
                  "gid":2,
@@ -1949,13 +1954,13 @@
                  "gid":2,
                  "height":64,
                  "id":1093,
-                 "name":"",
+                 "name":"super-ring",
                  "rotation":0,
                  "type":"super-ring",
                  "visible":true,
                  "width":64,
-                 "x":1680,
-                 "y":1760
+                 "x":1544,
+                 "y":1808
                 }, 
                 {
                  "gid":2,
@@ -2348,8 +2353,8 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1584,
-                 "y":1808
+                 "x":1424,
+                 "y":1760
                 }, 
                 {
                  "gid":2,
@@ -2360,24 +2365,12 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1648,
-                 "y":1808
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
-                 "id":2774,
-                 "name":"switch",
-                 "rotation":0,
-                 "type":"switch",
-                 "visible":true,
-                 "width":32,
-                 "x":4784,
-                 "y":2080
+                 "x":1488,
+                 "y":1760
                 }, 
                 {
                  "gid":90,
-                 "height":136,
+                 "height":176,
                  "id":2777,
                  "name":"shade-region",
                  "properties":[
@@ -2389,8 +2382,8 @@
                  "rotation":0,
                  "type":"shade-region",
                  "visible":true,
-                 "width":384,
-                 "x":1248,
+                 "width":416,
+                 "x":1216,
                  "y":1888
                 }, 
                 {
@@ -2402,7 +2395,7 @@
                  "type":"switch",
                  "visible":true,
                  "width":32,
-                 "x":1424,
+                 "x":1408,
                  "y":1888
                 }, 
                 {
@@ -2414,8 +2407,8 @@
                  "type":"ring",
                  "visible":true,
                  "width":32,
-                 "x":1616,
-                 "y":1808
+                 "x":1456,
+                 "y":1760
                 }, 
                 {
                  "gid":2,
@@ -2508,7 +2501,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":2790,
+ "nextobjectid":2792,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",

@@ -15,6 +15,8 @@ const keys = {
 	, 's': 13
 	, 'd': 15
 
+	, 'p': 9
+
 	, 'ArrowUp':    12
 	, 'ArrowLeft':  14
 	, 'ArrowDown':  13

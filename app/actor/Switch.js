@@ -22,10 +22,19 @@ export class Switch extends PointActor
 		this.args.bindTo('active', v => {
 			this.box && this.box.setAttribute('data-active', v ? 'true' : 'false');
 		});
+
+		this.ignore = 0;
 	}
 
 	update()
 	{
+		if(this.ignore > 0)
+		{
+			this.ignore--;
+
+			return;
+		}
+
 		if(!this.activator || this.activator.standingOn !== this)
 		{
 			this.args.active = false;
@@ -36,10 +45,22 @@ export class Switch extends PointActor
 	onAttached()
 	{
 		this.box = this.findTag('div');
+
+		this.sample = new Audio('/Sonic/switch-activated.wav');
 	}
 
 	collideA(other, type)
 	{
+		if(this.ignore > 0)
+		{
+			if(this.public.active)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		other.onRemove(()=>{
 			if(this.activator === other)
 			{
@@ -49,9 +70,16 @@ export class Switch extends PointActor
 
 		if(other.isVehicle)
 		{
+			if(!this.public.active)
+			{
+				this.beep();
+			}
+
 			this.args.active = true;
 
 			this.activator = other;
+
+			this.ignore = 16;
 
 			const top = this.y - this.public.height;
 
@@ -75,11 +103,26 @@ export class Switch extends PointActor
 
 		if([0,-1].includes(type) && other.args.ySpeed >= 0)
 		{
+			if(!this.public.active)
+			{
+				this.beep();
+			}
+
 			this.args.active = true;
 
 			this.activator = other;
 
+			this.ignore = 16;
+
 			return true;
+		}
+	}
+
+	beep()
+	{
+		if(this.viewport.args.audio && this.sample)
+		{
+			this.sample.play();
 		}
 	}
 

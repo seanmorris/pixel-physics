@@ -425,7 +425,31 @@ export class PointActor extends View
 			this.args.xSpeed  = Math.cos(this.impulseDir) * this.impulseMag;
 			this.args.ySpeed  = Math.sin(this.impulseDir) * this.impulseMag;
 
-			this.args.falling = true;
+			switch(this.public.mode)
+			{
+				case MODE_FLOOR:
+					this.args.gSpeed = Math.cos(this.impulseDir) * this.impulseMag;
+					this.args.direction = 1;
+					break;
+
+				case MODE_CEILING:
+					this.args.gSpeed = -Math.cos(this.impulseDir) * this.impulseMag;
+					this.args.direction = -1;
+					break;
+
+				case MODE_LEFT:
+					this.args.gSpeed = -Math.sin(this.impulseDir) * this.impulseMag;
+					this.args.direction = 1;
+					break;
+
+				case MODE_RIGHT:
+					this.args.gSpeed = Math.sin(this.impulseDir) * this.impulseMag;
+					this.args.direction = -1;
+					break;
+			}
+
+
+			this.args.falling = this.impulseFal;
 
 			this.impulseMag   = null;
 			this.impulseDir   = null;
@@ -575,6 +599,8 @@ export class PointActor extends View
 				);
 
 				this.standingOn = groundActors[0];
+
+				this.args.groundAngle = 0;
 
 			}
 			else if(!standingOn)
@@ -1216,7 +1242,7 @@ export class PointActor extends View
 					const forePosition = this.findNextStep(halfWidth);
 					const sensorSpread = this.public.width;
 
-					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
+					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1).toFixed(1);
 
 					if(forePosition[0] !== false || backPosition[0] !== false)
 					{
@@ -1226,6 +1252,8 @@ export class PointActor extends View
 						this.lastAngles.splice(this.angleAvg);
 
 						const slopeDir = -Math.sign(this.args.groundAngle);
+
+						console.log(slopeDir, this.args.angle);
 
 						this.args.gSpeed = ySpeedOriginal * slopeDir;
 					}
@@ -1441,8 +1469,6 @@ export class PointActor extends View
 					const slopeDir = -Math.sign(this.args.groundAngle);
 
 					this.args.gSpeed = (1 + this.args.ySpeed) * slopeDir;
-
-					console.log(this.args.gSpeed);
 				}
 				else if(!below)
 				{
@@ -1934,8 +1960,10 @@ export class PointActor extends View
 	{
 		segments /= 2;
 
-		var rAngle = Math.round(
+		let rAngle = Math.round(
+
 			angle / (Math.PI/segments)
+
 		) * Math.PI/segments;
 
 		return rAngle;

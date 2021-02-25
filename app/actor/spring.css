@@ -7,12 +7,14 @@
 }
 
 .actor-item.actor-spring .sprite {
+	position: relative;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	background-image: url(/Sonic/springs.png);
 	width: 32px;
 	height: 32px;
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -13px;
+	transition: background 0.1s 0.2s steps(2);
 }
 
 .actor-item.actor-spring .spring-pad {
@@ -38,10 +40,11 @@
 
 .actor-item.actor-spring[data-colliding=true] .sprite {
 	--sprite-offset-x: -80px;
+	transition: background 0s steps(2);
 }
 
 .actor-item.actor-spring[data-colliding=true] .spring-pad {
-	transition: top 0.2s;
-	z-index: 1;
-	top: -52px;
+	transition: top 0.1s;
+	z-index: 10;
+	top: -32px;
 }

@@ -100,7 +100,7 @@ export class QuestionBlock extends PointActor
 		{
 			if(!this.args.empty)
 			{
-				const monitor = new Monitor({x: this.x, y: this.y - 128});
+				const monitor = new Monitor({x: this.x + 1, y: this.y - 128});
 
 				this.viewport.actors.add(monitor);
 

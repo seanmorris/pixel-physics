@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Region } from './Region';
 
 export class Spring extends PointActor
 {
@@ -44,8 +45,8 @@ export class Spring extends PointActor
 
 		this.args.type = 'actor-item actor-spring';
 
-		this.args.width  = 32;
-		this.args.height = 32;
+		this.args.width  = this.args.width  || 32;
+		this.args.height = this.args.height || 32;
 
 		this.args.color  = this.args.color || 0;
 
@@ -67,12 +68,20 @@ export class Spring extends PointActor
 	{
 		super.collideA(other);
 
-		this.sample.currentTime = 0;
+		if(other instanceof Region)
+		{
+			return;
+		}
+
+		this.sample.play();
+		this.sample.volume = 0.2 + (Math.random() / 4);
 
 		this.onTimeout(64, () => {
-			this.sample.play();
-			other.args.falling = true;
-			other.impulse(this.args.power, this.args.angle, true);
+			const rounded = this.roundAngle(this.args.angle, 8, true);
+			other.impulse(this.args.power, rounded);
+			this.onNextFrame(()=>{
+				this.args.direction = Math.sign(this.public.gSpeed);
+			});
 		});
 	}
 
