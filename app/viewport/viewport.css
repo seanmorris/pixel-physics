@@ -171,11 +171,10 @@ section.filters {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	height: calc( 200% / var(--scale) );
-	width: calc( 200% / var(--scale) );
+	height: 100%;
+	width: 100%;
 	transition: transform var(--scale-transition) 0.25s, width var(--scale-transition) 0.25s, height var(--scale-transition) 0.25s;
 	transition-duration: 0.0s;
-	transform: scale( calc(  var(--scale) * 0.5) );
 	transform-origin: top left;
 	pointer-events: none;
 }
@@ -241,41 +240,6 @@ section.filters {
 }
 .viewport-zoom .blurAngleCancel {
 	transform:rotate(calc(-1rad * var(--blurAngle)));
-}
-
-.viewport .hud {
-	position: absolute;
-	z-index: 1000;
-	top: 0.5em;
-	right: 0.5em;
-	padding: 1em;
-	background-color: rgba(0,0,0,0.5);
-	pointer-events: initial;
-}
-
-.viewport .hud > div {
-	display: flex;
-}
-
-.viewport .hud table {
-	border-spacing: 0;
-	border-collapse: collapse;
-	font-family: 'early_gameboy_regular'
-}
-
-.viewport .hud tr > td {
-	padding: 0;
-	margin: 0;
-}
-
-.viewport .hud tr > td > * {
-	vertical-align: middle;
-}
-
-.viewport .hud tr > td:nth-child(2) {
-	margin: 0;
-	padding: 0;
-	text-align: right;
 }
 
 span.arrow-east,
@@ -417,27 +381,6 @@ span.arrow-west {
 	bottom: auto;
 }
 
-.status-message .hud-character {
-	background-color: rgb(0,0,0,0.5);
-	animation: sine 1.5s ease-in-out infinite;
-	animation-delay: calc(var(--time) * calc( var(--index) - var(--length) ));
-}
-.status-message .hud-character-string {
-	transition: opacity 0.333s 0.5s ease-in;
-	opacity: 1;
-}
-
-.status-message .hud-character-string.hide {
-	opacity: 0;
-}
-
-@keyframes sine {
-	0%,100% {transform: translateY( var(--distance) );}
-	25% {transform: translateY( calc(-1 * var(--distance)) );}
-	50% {transform: translateY( var(--distance) );}
-	75% {transform: translateY( calc(-1 * var(--distance)) );}
-}
-
 a.github {
 	background-color: black;
 	color: white;
@@ -493,3 +436,19 @@ input[type=number]::-webkit-outer-spin-button {
 	z-index: 10000;
 }
 
+.input-xbox .button.ps {
+	display: none;
+}
+
+.button.ps, .button.xb {
+	position: relative;
+	margin-right: 1em !important;
+}
+
+.button.ps::after, .button.xb::after {
+	content: '/';
+	position: absolute;
+	display: inline-block;
+	right: -1em;
+	top: 0em;
+}

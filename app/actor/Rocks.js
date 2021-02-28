@@ -44,12 +44,9 @@ export class Rocks extends PointActor
 			&& other.args.ySpeed > 0
 			&& other.y < this.y
 			&& this.viewport
-			&& !this.gone
+			&& !this.public.gone
 		){
-			this.gone = true;
-
-			other.args.ySpeed *= -1;
-			other.args.falling = true;
+			this.args.gone = true;
 
 			if(this.args.falling && Math.abs(other.args.ySpeed) > 0)
 			{
@@ -68,7 +65,7 @@ export class Rocks extends PointActor
 				|| (other instanceof Projectile)
 			)
 			&& this.viewport
-			&& !this.gone
+			&& !this.public.gone
 		){
 			this.pop(other);
 
@@ -77,6 +74,16 @@ export class Rocks extends PointActor
 
 		return true;
 	}
+
+	collideB(other)
+	{
+		if(this.public.gone)
+		{
+			other.args.ySpeed *= -1;
+			other.args.falling = true;
+		}
+	}
+
 
 	pop(other)
 	{
@@ -107,8 +114,6 @@ export class Rocks extends PointActor
 		const fallSpeed = 1250;
 		const xForce    = 180;
 		const yForce    = 10;
-
-		console.log(xForce * direction) + (fuzzFactor * Math.random());
 
 		particleA.style({
 			'--x': this.x

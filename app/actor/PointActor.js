@@ -27,6 +27,7 @@ export class PointActor extends View
 		style  = "
 			display:[[display]];
 			--fg-filter:[[fgFilter]];
+			--bg-filter:[[bgFilter]];
 			--angle:[[angle]];
 			--ground-angle:[[groundAngle]];
 			--air-angle:[[airAngle]];
@@ -456,7 +457,14 @@ export class PointActor extends View
 			this.impulseFal   = null;
 		}
 
-		if(this.public.ignore < 1)
+		if(this.public.ignore === -2 && this.public.falling === false)
+		{
+			console.log('deignore on land');
+
+			this.public.ignore = 0;
+		}
+
+		if(this.public.ignore < 1 && this.public.ignore > 0)
 		{
 			this.args.ignore = 0;
 		}
@@ -583,9 +591,14 @@ export class PointActor extends View
 
 		if(!this.public.falling && !this.public.float)
 		{
-			if(this.lastAngles.length)
+			if(this.lastAngles.length > 0)
 			{
-				this.args.groundAngle = this.lastAngles.reduce(((a,b)=>a+b)) / this.lastAngles.length;
+				this.args.groundAngle = this.lastAngles.map(a=>Number(a)).reduce(((a,b)=>a+b)) / this.lastAngles.length;
+			}
+
+			if(isNaN(this.public.groundAngle))
+			{
+				console.log(this.lastAngles, this.lastAngles.length);
 			}
 
 			const standingOn = this.getMapSolidAt(...this.groundPoint);
@@ -883,7 +896,7 @@ export class PointActor extends View
 					{
 						const orig = this.args.mode;
 
-						this.lastAngles = this.lastAngles.map(n => n + Math.PI / 2);
+						this.lastAngles = this.lastAngles.map(n => Number(n) + Math.PI / 2);
 
 						switch(this.args.mode)
 						{
@@ -979,7 +992,7 @@ export class PointActor extends View
 					// this.public.gSpeed = 10 * Math.sign(this.xAxis);
 				}
 			}
-			else if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.333))
+			else if(!this.stayStuck && Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.333))
 			{
 				if(slopeFactor > 0)
 				{
@@ -1001,7 +1014,7 @@ export class PointActor extends View
 				}
 			}
 
-			if(slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
+			if(!this.stayStuck && slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
 			{
 				if(this.args.mode === 1)
 				{
@@ -1088,32 +1101,29 @@ export class PointActor extends View
 		const viewport = this.viewport;
 
 		const radius = Math.round(this.public.width / 2);
-		const speed  = this.public.xSpeed;
 
-		if(this.public.height > this.maxStep)
+		const direction = Math.sign(this.public.xSpeed);
+
+		this.args.direction = direction;
+
+		if(!this.willStick && this.args.xSpeed)
 		{
-			const foreDistance = this.scanForward(this.public.xSpeed + 1 * Math.sign(this.public.xSpeed));
+			const foreDistance = this.scanForward(this.public.xSpeed + 1, false);
 
 			if(foreDistance !== false)
 			{
-				const space = 1 + foreDistance;
+				this.args.x += foreDistance * Math.sign(this.public.xSpeed);
+				this.args.xSpeed = 0;
+				this.args.ignore = -2;
 
-				if(speed)
-				{
-					this.args.x += foreDistance * Math.sign(speed);
-					this.args.xSpeed = 0;
-					this.args.ignore = 2;
-
-					return;
-				}
+				return;
 			}
 		}
 
 		const airPoint = this.castRay(
-			airSpeed
+			airSpeed + radius
 			, this.public.airAngle
 			, (i, point) => {
-
 				const actors = viewport.actorsAtPoint(...point)
 					.filter(x => x.args !== this.args)
 					.filter(x => x.callCollideHandler(this))
@@ -1137,7 +1147,9 @@ export class PointActor extends View
 
 		let blockers = false;
 
-		const upMargin = this.public.flying ? (this.public.height + this.public.yMargin) : 1;
+		const upMargin = (this.public.flying
+			? (this.public.height + this.public.yMargin)
+			: this.public.height) || 1;
 
 		const upDistance = this.castRay(
 			Math.abs(this.public.ySpeed) + upMargin + 1
@@ -1173,7 +1185,7 @@ export class PointActor extends View
 		{
 			this.args.ignore = 1;
 
-			this.args.y -= Math.floor(upDistance - (upMargin));
+			this.args.y -= (Math.floor(upDistance - (upMargin)));
 			this.args.ySpeed = 0;
 
 			blockers = this.getMapSolidAt(this.x, this.y);
@@ -1205,8 +1217,6 @@ export class PointActor extends View
 		else if(airPoint !== false)
 		{
 			this.args.ignore = 1;
-
-			const direction = Math.sign(this.public.xSpeed);
 
 			const xSpeedOriginal = this.args.xSpeed;
 			const ySpeedOriginal = this.args.ySpeed;
@@ -1244,6 +1254,11 @@ export class PointActor extends View
 
 					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1).toFixed(1);
 
+					if(isNaN(newAngle))
+					{
+						console.log(newAngle);
+					}
+
 					if(forePosition[0] !== false || backPosition[0] !== false)
 					{
 						this.args.angle = this.args.groundAngle = newAngle;
@@ -1253,59 +1268,67 @@ export class PointActor extends View
 
 						const slopeDir = -Math.sign(this.args.groundAngle);
 
-						console.log(slopeDir, this.args.angle);
-
 						this.args.gSpeed = ySpeedOriginal * slopeDir;
 					}
 				}
 
 				this.args.falling = false;
 			}
-			else if(blockers && blockers.length)
+			else if(blockers)
 			{
-				if(this.willJump)
+				if(this.willStick)
 				{
-					this.args.xSpeed *= -1.1;
-					this.args.ySpeed *= -1.1;
+					this.args.falling = false;
 
-					this.willJump = false;
-				}
-				else
-				{
-					if(blockers.length && this.willStick)
+					if(direction < 0)
 					{
-						if(blockers.filter(a => a.canStick).length)
-						{
-							this.args.falling = false;
-
-							// this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
-
-							this.args.mode = direction < 0
-								? MODE_LEFT
-								: MODE_RIGHT;
-						}
-
-						this.args.ignore = 1;
+						// this.args.gSpeed = Math.floor(airSpeed) * Math.sign(ySpeedOriginal);
+						this.args.gSpeed = -1;
+						this.args.mode = MODE_LEFT;
 					}
+					else
+					{
+						// this.args.gSpeed = Math.floor(airSpeed) * -Math.sign(ySpeedOriginal);
+						this.args.gSpeed = 1;
+						this.args.mode = MODE_RIGHT;
+					}
+
+
+					// if(blockers.length && this.willStick)
+					// {
+					// 	if(blockers.filter(a => a.canStick).length)
+					// 	{
+					// 	}
+
+					// 	this.args.ignore = 1;
+					// }
+
+					// if(this.willJump)
+					// {
+					// 	this.args.xSpeed *= -1.1;
+					// 	this.args.ySpeed *= -1.1;
+
+					// 	this.willJump = false;
+					// }
 				}
 			}
-			else if(this.willJump)
-			{
-				this.args.xSpeed *= -1;
-				this.args.ySpeed *= -1;
+			// else if(this.willJump)
+			// {
+			// 	this.args.xSpeed *= -1;
+			// 	this.args.ySpeed *= -1;
 
-				this.willJump = false;
-			}
-			else if(this.willStick)
-			{
-				this.args.falling = false;
+			// 	this.willJump = false;
+			// }
+			// else if(this.willStick)
+			// {
+			// 	this.args.falling = false;
 
-				this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
+			// 	this.args.gSpeed = Math.floor(ySpeedOriginal * -direction);
 
-				this.args.mode = direction < 0
-					? MODE_LEFT
-					: MODE_RIGHT;
-			}
+			// 	this.args.mode = direction < 0
+			// 		? MODE_LEFT
+			// 		: MODE_RIGHT;
+			// }
 		}
 		else if(this.public.ySpeed > 0)
 		{
@@ -1380,6 +1403,11 @@ export class PointActor extends View
 			this.viewport.collisions.set(other, collisionListB);
 		}
 
+		this.onNextFrame(()=>{
+			this.collideB(other, type);
+			other.collideB(this);
+		})
+
 		return this.collideA(other, type) || other.collideA(this);
 	}
 
@@ -1391,6 +1419,8 @@ export class PointActor extends View
 		{
 			backAngle = this.args.groundAngle - Math.PI;
 		}
+
+		let iterations = 0;
 
 		if(this.getMapSolidAt(this.x, this.y))
 		{
@@ -1429,6 +1459,13 @@ export class PointActor extends View
 
 				testX += Math.cos(backAngle);
 				testY += Math.sin(backAngle);
+
+				iterations++;
+
+				if(iterations > 100 * 1000)
+				{
+					break;
+				}
 			}
 
 			const below = this.checkBelow(testX, testY);
@@ -1461,7 +1498,13 @@ export class PointActor extends View
 
 					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
 
+					if(isNaN(newAngle))
+					{
+						console.log(newAngle);
+					}
+
 					this.args.angle = this.args.groundAngle = newAngle;
+
 
 					this.lastAngles.unshift(newAngle);
 					this.lastAngles.splice(this.angleAvg);
@@ -1680,6 +1723,9 @@ export class PointActor extends View
 	{
 		return this.solid;
 	}
+
+	collideB(other)
+	{}
 
 	findNextStep(offset)
 	{
@@ -1904,15 +1950,18 @@ export class PointActor extends View
 				break;
 
 			case MODE_RIGHT:
+				this.args.x -= this.public.width / 2;
 				angle = (this.public.groundAngle || 0);
 				this.args.direction = -1;
 				break;
 
 			case MODE_CEILING:
+				this.args.y += this.public.height;
 				angle = (this.public.groundAngle || 0) + (Math.PI / 2);
 				break;
 
 			case MODE_LEFT:
+				this.args.x += this.public.width / 2;
 				angle = (this.public.groundAngle || 0) + Math.PI;
 				this.args.direction = 1;
 				break;
@@ -2375,7 +2424,7 @@ export class PointActor extends View
 
 			filterContainer.appendChild(this.twistFilter.node);
 
-			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], (v,k) => {
+			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter', 'fgFilter'], (v,k) => {
 				this.twistFilter.style({[`--${k}`]: v})
 			});
 
@@ -2395,11 +2444,13 @@ export class PointActor extends View
 		{
 			const filterContainer = this.viewport.tags.fgFilters;
 
-			this.pinchFilter = new Tag(`<div class = "point-actor-filter pinch-filter filter-${this.args.id}">`);
+			const type = this.args.type.split(' ').shift();
+
+			this.pinchFilter = new Tag(`<div class = "point-actor-filter pinch-filter filter-${this.args.id} filter-${type}">`);
 
 			filterContainer.appendChild(this.pinchFilter.node);
 
-			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter'], (v,k) => {
+			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff', 'bgFilter', 'fgFilter'], (v,k) => {
 				this.pinchFilter.style({[`--${k}`]: v})
 			});
 
@@ -2410,7 +2461,7 @@ export class PointActor extends View
 			this.pincher.render(this.sprite);
 		}
 
-		this.args.bgFilter = 'url("#pinch-' + this.args.id + '")';
+		this.args.fgFilter = 'url("#pinch-' + this.args.id + '")';
 
 		this.pincher.args.scale = warp;
 	}

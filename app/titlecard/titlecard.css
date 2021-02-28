@@ -20,6 +20,13 @@
 	--zHeight: calc(var(--timer) * 2.4);
 
 	--tFunc: 0.25s ease-out;
+
+	transform: scale(0.5);
+	transform-origin: top left;
+	width: 200%;
+	height: 200%;
+
+	z-index: 10000;
 }
 
 .titlecard.opening {
@@ -116,10 +123,10 @@
 	width: 100%;
 	background-color: #fffd00;
 	text-shadow:
-		1px 1px 0px rgba(0,0,0,1)
-		, 1px -1px 0px rgba(0,0,0,1)
-		, -1px 1px 0px rgba(0,0,0,1)
-		, -1px -1px 0px rgba(0,0,0,1)
+		0.5px 0.5px 0px rgba(0,0,0,1)
+		, 0.5px -0.5px 0px rgba(0,0,0,1)
+		, -0.5px 0.5px 0px rgba(0,0,0,1)
+		, -0.5px -0.5px 0px rgba(0,0,0,1)
 	;
 }
 

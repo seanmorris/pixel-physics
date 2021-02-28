@@ -33,32 +33,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		let skyShift = 100;
 
-		// const drawBg = ()=>
-		// {
-		// 	body.style({
-		// 		'background-position': `${(skyShift++ / 25)}px top,`
-		// 			+` -${(skyShift  / 23)}px 63%,`
-		// 			+` -${(skyShift  / 10)}px 63%,`
-		// 			+` ${(skyShift++ / 20)}px 63%,`
-		// 			+` -10% bottom`
-		// 	});
-
-		// 	requestAnimationFrame(drawBg);
-		// };
-
-		// requestAnimationFrame(drawBg);
-
-		viewportA.update();
+		// viewportA.update();
 
 		const frameTimes = [];
 
 		const update = ()=>{
 
+			const now = performance.now();
+			const frameAgeMin = 1000 / (viewportA.args.maxFps || 60);
+
 			requestAnimationFrame(update);
+
+			// if(frameAgeMin > frameTime)
+			// {
+			// 	return;
+			// }
+
 
 			viewportA.update();
 
-			const frameTime = (Date.now() - lastTime);
+			const frameTime = (now - lastTime);
 
 			frameTimes.push(frameTime);
 
@@ -80,8 +74,15 @@ document.addEventListener('DOMContentLoaded', function() {
 				viewportA.args.fps = '...';
 			}
 
+			lastTime = now;
 
-			lastTime = Date.now();
+			body.style({
+				'background-position': `${(skyShift++ / 25)}px top,`
+					+` -${(skyShift  / 23)}px 63%,`
+					+` -${(skyShift  / 10)}px 63%,`
+					+` ${(skyShift++ / 20)}px 63%,`
+					+` -10% bottom`
+			});
 
 		};
 

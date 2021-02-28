@@ -21,7 +21,7 @@ export class Sonic extends PointActor
 	{
 		super(...args);
 
-		this.args.type      = 'actor-item actor-sonic';
+		this.args.type      = 'actor-sonic actor-item';
 
 		this.args.accel     = 0.35;
 		this.args.decel     = 0.7;
@@ -33,12 +33,18 @@ export class Sonic extends PointActor
 		this.args.gravity   = 1;
 
 		this.args.width  = 32;
+
+		this.args.normalHeight = 40;
+		this.args.rollingHeight = 23;
+
 		this.args.height = 40;
 
 		this.spindashCharge = 0;
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.dashed = false;
 
 		this.airControlCard = View.from(require('../cards/sonic-air-controls.html'));
 		this.controlCard    = View.from(require('../cards/sonic-controls.html'));
@@ -53,9 +59,19 @@ export class Sonic extends PointActor
 
 	update()
 	{
+		if(!this.public.falling)
+		{
+			this.doubleSpin = this.dashed = false;
+		}
+
 		if(this.lightDashingCoolDown > 0)
 		{
 			this.lightDashingCoolDown--;
+		}
+
+		if(this.dashTimer > 0)
+		{
+			this.dashTimer--;
 		}
 
 		const falling = this.public.falling;
@@ -92,6 +108,8 @@ export class Sonic extends PointActor
 			const gSpeed    = this.public.gSpeed;
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.public.gSpeedMax;
+
+			this.args.height = this.public.normalHeight;
 
 			if(this.spindashCharge)
 			{
@@ -141,14 +159,16 @@ export class Sonic extends PointActor
 			}
 
 		}
-		else
+		else if(!this.dashed)
 		{
+			this.args.height = this.public.rollingHeight;
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
 		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
 		{
-			this.args.xOff = 8 * -this.public.direction;
+			this.args.xOff = 8 * -this.args.direction;
+			this.args.yOff = 32;
 
 			let warp = -this.public.gSpeed * 15;
 
@@ -161,10 +181,84 @@ export class Sonic extends PointActor
 		}
 		else if(!this.spindashCharge)
 		{
+			this.twister && (this.twister.args.scale = 0);
+		}
+
+		if(this.pincher)
+		{
+			this.pincher.args.scale *= 0.8;
+
+			if(Math.abs(this.pincher.args.scale) < 0.001)
+			{
+				this.pincher.args.scale = 0;
+			}
+		}
+		else
+		{
+			this.pinch(0);
+		}
+
+		if(!this.twister)
+		{
 			this.twist(0);
 		}
 
 		super.update();
+	}
+
+	readInput()
+	{
+		if(!this.dashed)
+		{
+			super.readInput();
+		}
+	}
+
+	command_4()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(-1);
+
+			this.args.facing = 'left';
+		}
+	}
+
+	command_5()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(1);
+		}
+	}
+
+	airDash(direction)
+	{
+		if(this.dashed)
+		{
+			return;
+		}
+
+		this.box.setAttribute('data-animation', 'airdash');
+
+		this.args.xSpeed = direction * 16;
+
+		this.dashTimer = 0;
+
+		this.dashed = true;
+	}
+
+	command_0()
+	{
+		if(this.public.falling && !this.dashed && !this.doubleSpin)
+		{
+			this.pinch(-300);
+			this.args.xOff = 0;
+			this.args.yOff = 32;
+			this.doubleSpin = true;
+		}
+
+		super.command_0();
 	}
 
 	release_1() // spindash
@@ -215,9 +309,10 @@ export class Sonic extends PointActor
 			dashCharge = 1;
 		}
 
-		this.twist(120 * dashCharge * this.public.direction);
+		this.args.xOff = 5 * -this.args.direction;
+		this.args.yOff = 32;
 
-		this.args.xOff = 6 * -this.public.direction;
+		this.twist(120 * dashCharge * this.public.direction);
 
 		this.box.setAttribute('data-animation', 'spindash');
 
@@ -368,7 +463,7 @@ export class Sonic extends PointActor
 
 		if(space && dashSpeed > space)
 		{
-			dashSpeed = space;
+			dashSpeed = space / 2;
 		}
 
 		this.args.ignore = 4;

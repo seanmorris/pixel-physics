@@ -45,6 +45,12 @@ export class Knuckles extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
+			if(this.args.flying)
+			{
+				this.args.flying = false;
+				this.args.float  = 0;
+			}
+
 			this.args.knucklesFlyCoolDown = 15;
 
 			this.args.flying = false;
@@ -82,6 +88,74 @@ export class Knuckles extends PointActor
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
+		if(this.args.flying)
+		{
+			if(this.yAxis > 0)
+			{
+				this.args.flying = false;
+				return;
+			}
+
+			if(this.public.ySpeed > 0)
+			{
+				this.args.ySpeed = 0;
+			}
+
+			if(this.public.ySpeed < 1)
+			{
+				this.args.ySpeed += 1;
+			}
+
+			if(this.public.ySpeed > 1)
+			{
+				this.args.ySpeed -= 1;
+			}
+
+			if(this.xAxis)
+			{
+				this.args.flyDirection = Math.sign(this.xAxis);
+			}
+
+			this.args.direction = Math.sign(this.args.xSpeed);
+
+			if(this.public.direction < 0)
+			{
+				this.args.facing = 'left';
+			}
+			else
+			{
+				this.args.facing = 'right';
+			}
+
+			if(this.public.flyDirection)
+			{
+				console.log(this.public.flyDirection, Math.sign(this.args.xSpeed));
+
+				if(Math.abs(this.args.xSpeed) < 16)
+				{
+					if(this.public.flyDirection !== Math.sign(this.args.xSpeed))
+					{
+						this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection) * 4;
+					}
+					else
+					{
+						this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection);
+					}
+				}
+			}
+
+			this.args.float = 3;
+
+			this.willStick = true;
+			this.stayStuck = true;
+		}
+		else if(this.args.mode % 2 === 0 || this.public.groundAngle)
+		{
+			this.willStick = false;
+			this.stayStuck = false;
+			this.args.flyDirection = 0;
+		}
+
 		// if(this.args.knucklesFlyCoolDown == 0 && this.args.ySpeed > 5)
 		// {
 		// 	this.args.flying = false;
@@ -97,54 +171,20 @@ export class Knuckles extends PointActor
 
 	release_0()
 	{
-		if(this.args.flying)
-		{
-			this.args.flying = false;
-			this.args.float  = 0;
-		}
+
 	}
 
-	hold_0()
+	command_0()
 	{
+		super.command_0();
+
 		if(!this.args.falling)
 		{
 			return;
 		}
 
-		if(this.args.knucklesFlyCoolDown > 0)
-		{
-			return;
-		}
-
-		if(this.args.ySpeed > 1)
-		{
-			this.args.flying = true;
-		}
-
-		if(this.args.flying)
-		{
-			if(this.args.ySpeed > 0)
-			{
-				this.args.ySpeed = 0;
-			}
-
-			if(this.args.ySpeed < 1)
-			{
-				this.args.ySpeed += 1;
-			}
-
-			if(this.args.ySpeed > 1)
-			{
-				this.args.ySpeed -= 1;
-			}
-
-			if(!this.xAxis)
-			{
-				this.args.xSpeed += 0.15625 * this.args.direction;
-			}
-
-			this.args.float = 3;
-		}
+		this.args.flying = true;
+		this.args.willJump = false;
 	}
 
 	get solid() { return false; }

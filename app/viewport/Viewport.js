@@ -115,6 +115,8 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
+		this.args.maxFps    = 80;
+
 		this.args.currentActor = '';
 
 		this.args.yOffsetTarget = 0.75;
@@ -338,6 +340,13 @@ export class Viewport extends View
 
 	onAttached(event)
 	{
+		// const selectChar = new TextActor({x: 1300, y:1800});
+
+		// this.actors.add(selectChar);
+		// // this.actors.add(new Sonic({x: 1300, y:1800}));
+
+		// console.log(selectChar);
+
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 
 		this.listen(document, 'fullscreenchange', (event) => {
@@ -432,8 +441,6 @@ export class Viewport extends View
 		{
 			this.args.paused = !this.args.paused;
 
-			console.log(this.args.paused, controller.buttons[9]);
-
 			controller.update();
 
 			return;
@@ -457,7 +464,34 @@ export class Viewport extends View
 				}
 
 				controller && controller.readInput({keyboard, gamepad});
+
+				if(gamepad)
+				{
+					const gamepadId = String(gamepad.id);
+
+					if(gamepadId.match(/xbox/i))
+					{
+						this.args.inputName = 'xbox controller & keyboard';
+
+						this.args.inputType = 'input-xbox';
+					}
+					else
+					{
+						this.args.inputName = 'playstation controller & keyboard';
+
+						this.args.inputType = 'input-playstation';
+					}
+
+				}
+				else
+				{
+					this.args.inputName = 'keyboard';
+
+					this.args.inputType = '';
+				}
+
 			}
+
 		}
 
 		if(this.args.isRecording)
@@ -721,11 +755,6 @@ export class Viewport extends View
 				actor.args.display = 'none';
 			}
 		}
-
-		const selectChar = new TextActor({x: 1300, y:1800});
-
-		this.actors.add(selectChar);
-		// this.actors.add(new Sonic({x: 1300, y:1800}));
 	}
 
 	spawnActors()
@@ -1010,9 +1039,12 @@ export class Viewport extends View
 			this.args.hasCoins    = !!this.controlActor.args.coins;
 			this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
-			// this.args.char.args.value     = this.controlActor.args.name;
-			// this.args.xPos.args.value     = Math.round(this.controlActor.x);
-			// this.args.yPos.args.value     = Math.round(this.controlActor.y);
+			this.args.char.args.value = this.controlActor.args.name;
+			this.args.charName = this.controlActor.args.name;
+
+			this.args.xPos.args.value     = Math.round(this.controlActor.x);
+			this.args.yPos.args.value     = Math.round(this.controlActor.y);
+
 			// this.args.ground.args.value   = this.controlActor.args.landed;
 			// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
 			// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
@@ -1078,9 +1110,10 @@ export class Viewport extends View
 
 					if(!this.auras.has(actor))
 					{
-						const actorTop   = actor.y - actor.public.height;
-						const actorRight = actor.x + actor.public.width + 64;
-						const actorLeft  = actor.x - actor.public.width - 64;
+						const actorBottom = actor.y + 64;
+						const actorTop    = actor.y - actor.public.height - 64;
+						const actorRight  = actor.x + actor.public.width  + 64;
+						const actorLeft   = actor.x - actor.public.width  - 64;
 
 						if(inAuras.has(actor))
 						{
@@ -1090,7 +1123,7 @@ export class Viewport extends View
 						if(camLeft < actorRight
 							&& camRight > actorLeft
 							&& camBottom > actorTop
-							&& camTop < actor.y
+							&& camTop < actorBottom
 							&& !(actor instanceof LayerSwitch)
 						){
 							actor.args.display = 'initial';

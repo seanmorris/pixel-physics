@@ -3,9 +3,9 @@ import { CharacterString } from '../ui/CharacterString';
 
 export class TextActor extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.type = 'actor-item actor-text-actor';
 

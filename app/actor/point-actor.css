@@ -6,6 +6,8 @@
 }
 
 .point-actor-filter {
+	--width: 64 !important;
+	--height: 64 !important;
 	left: calc(calc(calc(1px * calc(var(--xOff)) + calc(1px * calc(var(--x) - 16)))) - 16px);
 	top: calc(calc(calc(1px * calc(var(--yOff)) + calc(1px * calc(var(--y) - 16)))) - calc(1px * var(--height)));
 	/*height: calc(0px + calc(1px * var(--height)));
@@ -13,16 +15,19 @@
 	width: 64px;
 	height: 64px;
 	/*transform: translate(
-		calc(-50% + calc(0.5px * var(--width)))
-		, calc(-50% + calc(0.5px * var(--height)))
+		calc(-50% + calc(0.6667px * var(--width)))
+		, calc(-50% + calc(0.6667px * var(--height)))
 	);*/
 	background: rgba(255,0,0,0);
 	opacity: 1;
 }
 
-.point-actor-filter {
-	/*background-color: black;*/
-	/*filter: url(#waves);*/
+.filters-foreground > .point-actor-filter {
+	backdrop-filter: blur(0px);
+	filter: var(--fgFilter);
+}
+
+.filters-background > .point-actor-filter {
 	backdrop-filter: blur(0px);
 	filter: var(--bgFilter);
 }
@@ -159,7 +164,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"] .sprite {
-	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
+	transform: translate(calc(-50% + 1px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="2"] .sprite {
@@ -167,7 +172,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="3"] .sprite {
-	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg)));
+	transform: translate(calc(-50% + 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
@@ -175,7 +180,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
-	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
+	transform: translate(calc(-50% + 1px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
@@ -183,7 +188,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
+	transform: translate(calc(-50% + 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
 }
 
 

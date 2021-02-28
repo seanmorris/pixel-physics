@@ -9,7 +9,7 @@ export class SuperRing extends PointActor
 	{
 		super(...args);
 
-		this.args.type = 'actor-item actor-super-ring';
+		this.args.type = 'actor-super-ring actor-item';
 
 		this.args.width  = 64;
 		this.args.height = 64;
@@ -260,6 +260,7 @@ export class SuperRing extends PointActor
 		if(this.caught)
 		{
 			this.caught.args.xSpeed = (Math.sign(other.public.xSpeed) * 3) || 3;
+			this.caught.args.ignore = 30;
 		}
 
 		if(this.caught !== other)
@@ -314,7 +315,7 @@ export class SuperRing extends PointActor
 			this.pinch(75);
 
 			this.onTimeout(500, () => {
-				this.pinch(0)
+				// this.pinch(0)
 				this.pinchFilter.classList.remove('grabbing');
 			});
 		}

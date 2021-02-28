@@ -135,7 +135,7 @@
 	top: 32px;
 	left: -10px;
 	transform-origin: 42px 16px;
-	transform: rotate(calc(-90deg + calc(1rad * var(--air-angle))));
+	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 
 .actor-item.actor-tails[data-animation="spindash"] .tails-tails {

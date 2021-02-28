@@ -1,0 +1,16 @@
+.particle-explosion {
+	background-image: url(/Sonic/explosion.png);
+	width: 64px;
+	height: 64px;
+
+	--animation-steps: 4;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+
+	z-index: 20000;
+
+	animation: explosion steps(5) infinite;
+	animation-duration: calc(1ms * 480);
+
+	/*opacity: 0;*/
+}

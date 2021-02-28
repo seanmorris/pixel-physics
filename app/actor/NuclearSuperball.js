@@ -9,6 +9,11 @@ export class NuclearSuperball extends PointActor
 
 		this.args.gSpeedMax = 20;
 		this.args.accel     = 2;
+		this.args.jumpForce = 30;
+
+
+		this.willStick = true;
+		this.stayStuck = true;
 	}
 
 	get solid() { return false; }
