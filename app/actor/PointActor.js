@@ -706,7 +706,6 @@ export class PointActor extends View
 			gSpeedMax = CRAWLING_SPEED;
 		}
 
-
 		let nextPosition = [0, 0];
 
 		if(this.public.gSpeed)
@@ -1092,16 +1091,11 @@ export class PointActor extends View
 		this.lastAngles.splice(0);
 		this.args.groundAngle = 0;
 
-		const tileMap = this.viewport.tileMap;
-
-		const cSquared = this.public.xSpeed**2 + this.public.ySpeed**2;
-
-		const airSpeed = cSquared ? Math.sqrt(cSquared) : 0;
-
-		const viewport = this.viewport;
-
-		const radius = Math.round(this.public.width / 2);
-
+		const tileMap   = this.viewport.tileMap;
+		const cSquared  = this.public.xSpeed**2 + this.public.ySpeed**2;
+		const airSpeed  = cSquared ? Math.sqrt(cSquared) : 0;
+		const viewport  = this.viewport;
+		const radius    = Math.round(this.public.width / 2);
 		const direction = Math.sign(this.public.xSpeed);
 
 		this.args.direction = direction;
@@ -1117,6 +1111,42 @@ export class PointActor extends View
 				this.args.ignore = -2;
 
 				return;
+			}
+		}
+		else
+		{
+			const isSolid = (i, point) => {
+				if(tileMap.getSolid(...point, this.public.layer))
+				{
+					return i;
+				}
+			};
+
+			const radius = Math.floor(this.public.width / 2);
+
+			const backDistance = this.castRay(
+				radius
+				, Math.PI
+				, isSolid
+			);
+
+			const foreDistance = this.castRay(
+				radius
+				, 0
+				, isSolid
+			);
+
+			if(backDistance && foreDistance)
+			{
+				// crush instakill?
+			}
+			else if(foreDistance)
+			{
+				this.args.x -= 0 + (radius - foreDistance);
+			}
+			else if(backDistance)
+			{
+				this.args.x += 0 + (radius - backDistance);
 			}
 		}
 
@@ -1254,9 +1284,34 @@ export class PointActor extends View
 
 					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1).toFixed(1);
 
+					if(backPosition[0] === false && backPosition[1] === false && forePosition[0] === false && forePosition[1] === false)
+					{
+
+						// console.log(backPosition, forePosition, this.args.direction, halfWidth, this.args.name);
+
+						// if(backPosition[2] === false && forePosition[2] === true)
+						// {
+						// 	this.args.x += this.public.width / 2;
+
+						// 	console.log('move right');
+						// }
+						// else if(backPosition[2] === true && forePosition[2] === false)
+						// {
+						// 	this.args.x -= this.public.width / 2;
+
+						// 	console.log('move left');
+						// }
+					}
+					else
+					{
+						this.args.falling = false;
+					}
+
 					if(isNaN(newAngle))
 					{
 						console.log(newAngle);
+
+						throw new Error('angle is NAN!');
 					}
 
 					if(forePosition[0] !== false || backPosition[0] !== false)
@@ -1272,7 +1327,7 @@ export class PointActor extends View
 					}
 				}
 
-				this.args.falling = false;
+
 			}
 			else if(blockers)
 			{
@@ -1935,6 +1990,12 @@ export class PointActor extends View
 			return;
 		}
 
+		const backPosition = this.findNextStep(-this.public.width / 2);
+		const forePosition = this.findNextStep(this.public.width / 2);
+		const sensorSpread = this.public.width;
+
+		const jumpAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
+
 		this.args.ignore  = 4;
 		this.args.landed  = false;
 		this.args.falling = true;
@@ -1942,36 +2003,67 @@ export class PointActor extends View
 		const originalMode = this.public.mode;
 
 		let angle;
+		let yDir = 1;
 
 		switch(this.public.mode)
 		{
 			case MODE_FLOOR:
-				angle = (this.public.groundAngle || 0) - (Math.PI / 2);
+				angle = (jumpAngle || 0) - (Math.PI / 2);
 				break;
 
 			case MODE_RIGHT:
 				this.args.x -= this.public.width / 2;
-				angle = (this.public.groundAngle || 0);
+				angle = (jumpAngle || 0);
 				this.args.direction = -1;
+				// yDir = -1
 				break;
 
 			case MODE_CEILING:
 				this.args.y += this.public.height;
-				angle = (this.public.groundAngle || 0) + (Math.PI / 2);
+				angle = (jumpAngle || 0) + (Math.PI / 2);
 				break;
 
 			case MODE_LEFT:
 				this.args.x += this.public.width / 2;
-				angle = (this.public.groundAngle || 0) + Math.PI;
+				angle = (jumpAngle || 0) + Math.PI;
 				this.args.direction = 1;
+				// yDir = -1
 				break;
 		}
 
 		this.args.xSpeed = this.public.gSpeed * Math.cos(angle + Math.PI / 2);
-		this.args.ySpeed = -this.public.gSpeed * Math.sin(angle + Math.PI / 2);
+		this.args.ySpeed = -this.public.gSpeed * Math.sin(angle + Math.PI / 2) * yDir;
 
-		this.args.xSpeed += -force * Math.cos(angle);
-		this.args.ySpeed += force * Math.sin(angle);
+		let xJump = -force * Math.cos(angle);
+		let yJump = force * Math.sin(angle) * yDir;
+
+		if(Math.abs(xJump) < 0.001)
+		{
+			xJump = 0;
+		}
+
+		if(Math.abs(yJump) < 0.001)
+		{
+			yJump = 0;
+		}
+
+		if(xJump && Math.sign(this.public.xSpeed) !== Math.sign(xJump))
+		{
+			this.args.xSpeed = xJump;
+		}
+		else
+		{
+			this.args.xSpeed += xJump;
+		}
+
+		if(yJump && Math.sign(this.public.ySpeed) !== Math.sign(yJump))
+		{
+			this.args.ySpeed = yJump;
+		}
+		else
+		{
+			this.args.ySpeed += yJump;
+		}
 
 		if(Math.abs(this.args.xSpeed) < 0.001)
 		{

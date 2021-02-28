@@ -90,27 +90,18 @@ export class Png
 
 				this.checkHeader();
 				this.indexChunks();
-
-				const newPng = this.recolor({
-					'8080e0': 'e0e080',
-					'6060c0': 'e0e000',
-					'4040a0': 'e0e001',
-					'202080': 'a0a000'
-				});
-
-				console.log( newPng.toUrl() );
 			});
 		}
 		else if(typeof source === 'object')
 		{
 			if(source instanceof Png)
 			{
+				this.ready = Promise.resolve();
+
 				this.buffer = source.buffer.slice(0);
 
 				this.checkHeader();
 				this.indexChunks();
-
-				console.log(this);
 			}
 		}
 	}

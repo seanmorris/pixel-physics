@@ -92,15 +92,17 @@ export class MechaSonic extends PointActor
 		{
 			if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 			{
-				this.scrapeSound.play();
+				this.scrapeSound && this.scrapeSound.play();
+
 				this.box.setAttribute('data-animation', 'skidding');
 			}
 			else if(speed >= minRun2)
 			{
-				this.scrapeSound.pause();
+				this.scrapeSound && this.scrapeSound.pause();
+
 				this.box.setAttribute('data-animation', 'running2');
 
-				this.thrusterSound.play();
+				this.thrusterSound && this.thrusterSound.play();
 
 				if(!this.public.takeoffPlayed)
 				{
@@ -122,7 +124,7 @@ export class MechaSonic extends PointActor
 			}
 			else if(this.args.moving && gSpeed)
 			{
-				this.scrapeSound.play();
+				this.scrapeSound && this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'walking');
 			}
 			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
@@ -131,7 +133,7 @@ export class MechaSonic extends PointActor
 			}
 			else
 			{
-				this.scrapeSound.pause();
+				this.scrapeSound && this.scrapeSound.pause();
 				this.box.setAttribute('data-animation', 'standing');
 			}
 

@@ -791,38 +791,26 @@
                 }, 
                 {
                  "gid":2,
-                 "height":64,
+                 "height":57,
                  "id":724,
                  "name":"eggrobo",
                  "rotation":0,
                  "type":"eggrobo",
                  "visible":true,
-                 "width":40,
-                 "x":1360,
+                 "width":48,
+                 "x":1384,
                  "y":1888
                 }, 
                 {
                  "gid":2,
-                 "height":64,
-                 "id":615,
-                 "name":"mecha-sonic",
-                 "rotation":0,
-                 "type":"mecha-sonic",
-                 "visible":true,
-                 "width":40,
-                 "x":1304,
-                 "y":1888
-                }, 
-                {
-                 "gid":2,
-                 "height":64,
+                 "height":55,
                  "id":725,
                  "name":"eggman",
                  "rotation":0,
                  "type":"eggman",
                  "visible":true,
-                 "width":40,
-                 "x":1264,
+                 "width":48,
+                 "x":1256,
                  "y":1888
                 }, 
                 {
@@ -1210,7 +1198,7 @@
                  "type":"spring",
                  "visible":true,
                  "width":32,
-                 "x":240,
+                 "x":224,
                  "y":2720
                 }, 
                 {
@@ -1233,7 +1221,7 @@
                  "type":"spring",
                  "visible":true,
                  "width":32,
-                 "x":288,
+                 "x":256,
                  "y":2720
                 }, 
                 {
@@ -2360,7 +2348,7 @@
                  "visible":true,
                  "width":480,
                  "x":1216,
-                 "y":1888
+                 "y":1736
                 }, 
                 {
                  "gid":2,
@@ -3297,6 +3285,52 @@
                  "width":32,
                  "x":5512,
                  "y":1512
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":2864,
+                 "name":"spring",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.5707963267948966"
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"50"
+                        }],
+                 "rotation":0,
+                 "type":"spring",
+                 "visible":true,
+                 "width":32,
+                 "x":288,
+                 "y":2720
+                }, 
+                {
+                 "gid":2,
+                 "height":63,
+                 "id":2865,
+                 "name":"mecha-sonic",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"right"
+                        }],
+                 "rotation":0,
+                 "type":"mecha-sonic",
+                 "visible":true,
+                 "width":40,
+                 "x":1324,
+                 "y":1888
                 }],
          "opacity":0.9,
          "type":"objectgroup",
@@ -3341,7 +3375,7 @@
          "y":0
         }],
  "nextlayerid":13,
- "nextobjectid":2864,
+ "nextobjectid":2866,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.12.18",

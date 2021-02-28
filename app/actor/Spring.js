@@ -73,15 +73,17 @@ export class Spring extends PointActor
 			return;
 		}
 
-		this.sample.play();
-		this.sample.volume = 0.2 + (Math.random() / 4);
+		if(this.viewport.args.audio && this.sample)
+		{
+			this.sample.currentTime = 0;
+			this.sample.volume = 0.2 + (Math.random() / 4);
+			this.sample.play();
+		}
 
-		this.onTimeout(64, () => {
-			const rounded = this.roundAngle(this.args.angle, 8, true);
-			other.impulse(this.args.power, rounded);
-			this.onNextFrame(()=>{
-				this.args.direction = Math.sign(this.public.gSpeed);
-			});
+		const rounded = this.roundAngle(this.args.angle, 8, true);
+		other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+		this.onNextFrame(()=>{
+			this.args.direction = Math.sign(this.public.gSpeed);
 		});
 	}
 

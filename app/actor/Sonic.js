@@ -49,11 +49,22 @@ export class Sonic extends PointActor
 		this.airControlCard = View.from(require('../cards/sonic-air-controls.html'));
 		this.controlCard    = View.from(require('../cards/sonic-controls.html'));
 
-		this.moveCard       = View.from(require('../cards/basic-moves.html'));
+		this.moveCard = View.from(require('../cards/basic-moves.html'));
 
 		if(!Sonic.png)
 		{
-			Sonic.png = new Png('/Sonic/sonic.png');
+			const png = Sonic.png = new Png('/Sonic/sonic.png');
+
+			png.ready.then(()=>{
+				const newPng = png.recolor({
+					'8080e0': 'e0e080',
+					'6060c0': 'e0e000',
+					'4040a0': 'e0e001',
+					'202080': 'a0a000'
+				});
+
+				console.log( newPng.toUrl() );
+			});
 		}
 	}
 

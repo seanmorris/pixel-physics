@@ -61,13 +61,13 @@ export class Projectile extends PointActor
 			return;
 		}
 
-		// const explosion = new Explosion({x:this.x, y:this.y+8});
+		const explosion = new Explosion({x:this.x, y:this.y+8});
 
-		// viewport.actors.add(explosion);
+		viewport.actors.add(explosion);
 
-		// setTimeout(()=>{
-		// 	viewport.actors.remove( explosion );
-		// }, 20);
+		setTimeout(()=>{
+			viewport.actors.remove( explosion );
+		}, 20);
 
 		this.viewport.actors.remove( this );
 		this.remove();

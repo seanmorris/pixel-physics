@@ -227,10 +227,7 @@ export class Eggrobo extends PointActor
 				break;
 		}
 
-		offset = [
-			50 * Math.cos(spotAngle)
-			, 50 * Math.sin(spotAngle)
-		];
+		offset = [50 * Math.cos(spotAngle), 50 * Math.sin(spotAngle)];
 
 		if(this.args.falling || this.args.crouching)
 		{
@@ -245,7 +242,7 @@ export class Eggrobo extends PointActor
 			, direction: this.args.direction
 		});
 
-		projectile.impulse(75, trajectory + (direction < 0 ? Math.PI : 0));
+		projectile.impulse(7, trajectory + (direction < 0 ? Math.PI : 0));
 
 		this.viewport.auras.add(projectile);
 		this.viewport.actors.add(projectile);

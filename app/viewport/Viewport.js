@@ -115,7 +115,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps    = 80;
+		this.args.maxFps    = 60;
 
 		this.args.currentActor = '';
 
@@ -168,7 +168,7 @@ export class Viewport extends View
 		this.emeralds = new CharacterString({value:'0/7'});
 
 		this.args.emeralds = new HudFrame({value:this.emeralds, type: 'emerald-frame'});
-		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
+		// this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
 
@@ -883,7 +883,7 @@ export class Viewport extends View
 			this.populateMap();
 		}
 
-		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
+		// this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		this.args.rippleFrame = this.args.frameId % 128;
 

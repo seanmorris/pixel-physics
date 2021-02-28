@@ -7,7 +7,7 @@ const viewportA = new Viewport;
 // const viewportB = new Viewport;
 
 document.addEventListener('DOMContentLoaded', function() {
-	let lastTime = Date.now();
+	let lastTime = 0;
 
 	const replayUrl = '/debug/replay-updated.json';
 
@@ -33,26 +33,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		let skyShift = 100;
 
-		// viewportA.update();
-
 		const frameTimes = [];
 
 		const update = ()=>{
 
-			const now = performance.now();
-			const frameAgeMin = 1000 / (viewportA.args.maxFps || 60);
+			const now         = performance.now();
+			const frameTime   = (now - lastTime);
+			const frameAgeMin = (1000 / (viewportA.args.maxFps || 60));
+
 
 			requestAnimationFrame(update);
 
-			// if(frameAgeMin > frameTime)
-			// {
-			// 	return;
-			// }
+			if(frameAgeMin > frameTime)
+			{
+				return;
+			}
 
+			lastTime = now;
 
 			viewportA.update();
-
-			const frameTime = (now - lastTime);
 
 			frameTimes.push(frameTime);
 
@@ -74,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				viewportA.args.fps = '...';
 			}
 
-			lastTime = now;
 
 			body.style({
 				'background-position': `${(skyShift++ / 25)}px top,`

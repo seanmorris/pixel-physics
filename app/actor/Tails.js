@@ -44,14 +44,17 @@ export class Tails extends PointActor
 			this.flyingSound.loop   = true;
 		}
 
-		if(!this.flyingSound.paused)
+		if(this.flyingSound)
 		{
-			this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
-		}
+			if(!this.flyingSound.paused)
+			{
+				this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
+			}
 
-		if(this.flyingSound.currentTime > 0.2)
-		{
-			this.flyingSound.currentTime = 0.0;
+			if(this.flyingSound.currentTime > 0.2)
+			{
+				this.flyingSound.currentTime = 0.0;
+			}
 		}
 
 		if(!this.box)

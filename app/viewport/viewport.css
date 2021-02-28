@@ -374,6 +374,8 @@ span.arrow-west {
 	justify-content: center;
 	--distance: 4px;
 	--time: 30ms;
+	z-index: 1000;
+	pointer-events: none;
 }
 
 .topLine > .status-message {
