@@ -253,7 +253,7 @@ export class SuperRing extends PointActor
 	{
 		super.collideA(other);
 
-		if(!other.controllable)
+		if(!other.controllable || other.public.flying)
 		{
 			return;
 		}
@@ -315,13 +315,17 @@ export class SuperRing extends PointActor
 	{
 		if(this.pinchFilter)
 		{
-			this.pinchFilter.classList.add('grabbing');
+			this.pinchFilter.classList.add('grabbing-start');
+			this.onTimeout(150, () => {
+				this.pinchFilter.classList.add('grabbing');
 
-			this.pinch(75);
+				this.pinch(75);
 
-			this.onTimeout(750, () => {
-				this.pinch(0)
-				this.pinchFilter.classList.remove('grabbing');
+				this.onTimeout(650, () => {
+					this.pinch(0);
+					this.pinchFilter.classList.remove('grabbing-start');
+					this.pinchFilter.classList.remove('grabbing');
+				});
 			});
 		}
 	}

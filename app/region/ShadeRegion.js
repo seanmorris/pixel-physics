@@ -37,7 +37,7 @@ export class ShadeRegion extends Region
 		this.tags.sprite.appendChild(this.filterWrapper.node);
 		this.mainElem.appendChild(this.colorWrapper.node);
 
-		this.text = new CharacterString({value:'null'});
+		this.text = new CharacterString({value:''});
 
 		this.text.render(this.tags.sprite);
 
@@ -107,11 +107,13 @@ export class ShadeRegion extends Region
 
 			this.public.filter && this.mainElem.classList.add(this.public.filter);
 
-			this.text.args.value = '';
-
 			if(this.public.filter)
 			{
-				this.onNextFrame(()=> this.text.args.value = `${this.currentFilter}: ${this.public.filter}` || '');
+				this.text.remove();
+
+				this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
+
+				this.text.render(this.tags.sprite);
 			}
 
 		}

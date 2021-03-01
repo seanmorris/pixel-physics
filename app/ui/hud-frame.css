@@ -66,7 +66,6 @@
 	position: absolute;
 	top: 5px;
 	left: 5px;
-	z-index: 0;
 	width: 69px;
 	padding-left: 1px;
 	padding-right: 1px;
@@ -87,10 +86,12 @@
 
 .viewport .hud {
 	position: absolute;
+	z-index: 0;
 }
 
 .viewport .hud-dark {
-	padding: 3px;
+	padding: 6px;
+	padding-left: 6px;
 	border-radius: 3px;
 	background-color: rgba(0,0,0,0.5);
 	pointer-events: initial;
@@ -136,65 +137,4 @@
 	25% {transform: translateY( calc(-1 * var(--distance)) );}
 	50% {transform: translateY( var(--distance) );}
 	75% {transform: translateY( calc(-1 * var(--distance)) );}
-}
-
-.char-hud {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-}
-
-.hud .char-icon {
-	width: 16px;
-	height: 16px;
-	background-color: #AAA;
-	display: inline-block;
-	margin-left: 5px;
-	border-top: 1px solid white;
-	border-bottom: 1px solid #49486e;
-	border-left: 1px solid #49486e;
-	border-right: 1px solid white;
-	box-sizing: border-box;
-	background-origin: border-box;
-	transform: scaleX(-1);
-}
-
-.hud .char-icon.atomic.superball {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -48px -64px;
-}
-
-.hud .char-icon.sonic {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -0px -16px;
-}
-
-.hud .char-icon.tails {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -16px -16px;
-}
-
-.hud .char-icon.knuckles {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -32px -16px;
-}
-
-.hud .char-icon.eggman {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -0px -64px;
-}
-
-.hud .char-icon.eggrobo {
-	background-image: url(/custom/eggrobo-icon-by-Sms8Powa.png);
-	background-position: -0px -0px;
-}
-
-.hud .char-icon.mecha-sonic {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -16px -64px;
-}
-
-.hud .char-icon.seymour {
-	background-image: url(/Sonic/monitor-screens.png);
-	background-position: -32px -64px;
 }

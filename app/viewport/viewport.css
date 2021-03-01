@@ -211,7 +211,7 @@ section.filters {
 }
 
 .viewport-content {
-	z-index: 999;
+	/*z-index: 1;*/
 }
 
 .viewport-background[data-layer="0"] {

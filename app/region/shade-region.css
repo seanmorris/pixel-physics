@@ -23,8 +23,8 @@
 	position: absolute;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
-	/*pointer-events: none;*/
-	z-index: 100;
+	pointer-events: none;
+	z-index: 20000;
 }
 
 .region.region-shade .region-color,
@@ -46,8 +46,10 @@
 
 	left:    0;
 	top:     0;
-	width:   calc(var(--viewportWidth));
-	height:  calc(var(--viewportHeight) + 128px);
+	width:   calc(100% + 128px);
+	height:  calc(100% + 128px);
+	/*width:   calc(var(--viewportWidth));
+	height:  calc(var(--viewportHeight) + 128px);*/
 }
 
 .region.region-shade.studio .region-color-wrapper {
@@ -117,7 +119,7 @@
 	height: 16px;
 	width: 100%;
 
-	z-index: 100;
+	z-index: 10000;
 
 	animation-name: water-waves-frames, water-waves-flow;
 	animation-timing-function: steps(3), linear;
@@ -199,7 +201,7 @@
 
 	filter:
 		brightness(1.25)
-		hue-rotate(-45deg)
+		hue-rotate(-180deg)
 		invert(1)
 		brightness(1.25)
 		contrast(1.75);

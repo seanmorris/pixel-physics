@@ -1415,10 +1415,8 @@ export class PointActor extends View
 			this.viewport.collisions.set(other, collisionListB);
 		}
 
-		this.onNextFrame(()=>{
-			this.collideB(other, type);
-			other.collideB(this);
-		})
+		this.collideB(other, type);
+		other.collideB(this);
 
 		return this.collideA(other, type) || other.collideA(this);
 	}
@@ -2067,7 +2065,7 @@ export class PointActor extends View
 		return rAngle;
 	}
 
-	findNearestActor(selector, maxDistance)
+	findNearestActor(selector, maxDistance, direction = 0)
 	{
 		const viewport = this.viewport;
 
@@ -2502,7 +2500,7 @@ export class PointActor extends View
 			const filterContainer = this.viewport.tags.fgFilters;
 
 			const type = this.args.type.split(' ').shift();
-			const html = `<div class = "point-actor-filter twist-filter">`;
+			const html = `<div class = "point-actor-filter pinch-filter">`;
 
 			this.pinchFilter = new Tag(html);
 

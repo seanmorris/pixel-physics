@@ -61,7 +61,7 @@ export class Knuckles extends PointActor
 				{
 					this.box.setAttribute('data-animation', 'skidding');
 				}
-				else if(speed > maxSpeed / 2)
+				else if(speed > maxSpeed * 0.75)
 				{
 					this.box.setAttribute('data-animation', 'running');
 				}
@@ -129,7 +129,7 @@ export class Knuckles extends PointActor
 
 			if(this.public.flyDirection)
 			{
-				console.log(this.public.flyDirection, Math.sign(this.args.xSpeed));
+				// console.log(this.public.flyDirection, Math.sign(this.args.xSpeed));
 
 				if(Math.abs(this.args.xSpeed) < 16)
 				{

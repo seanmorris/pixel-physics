@@ -1,0 +1,77 @@
+
+.char-hud {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.hud .char-icon {
+	position: relative;
+	width: 32px;
+	height: 32px;
+	background-color: #AAA;
+	background-color: #000;
+	display: inline-block;
+	margin-left: 5px;
+
+	box-sizing: border-box;
+	background-origin: border-box;
+	overflow: hidden;
+	transform: scale(-1, 1);
+}
+
+.hud .char-icon::after {
+	/*border-top: 1px solid white;
+	border-bottom: 1px solid #49486e;
+	border-left: 1px solid #49486e;
+	border-right: 1px solid white;*/
+	width: 16px;
+	height: 16px;
+	content: ' ';
+	position: absolute;
+	background: inherit;
+	top: 0;
+	left: 0;
+	transform: scale(2, 2);
+	transform-origin: top left;
+}
+
+.hud .char-icon.atomic.superball {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -48px -64px;
+}
+
+.hud .char-icon.sonic {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -0px -16px;
+}
+
+.hud .char-icon.tails {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -16px -16px;
+}
+
+.hud .char-icon.knuckles {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -32px -16px;
+}
+
+.hud .char-icon.eggman {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -0px -64px;
+}
+
+.hud .char-icon.eggrobo {
+	background-image: url(/custom/eggrobo-icon-by-Sms8Powa.png);
+	background-position: -0px -0px;
+}
+
+.hud .char-icon.mecha-sonic {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -16px -64px;
+}
+
+.hud .char-icon.seymour {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -32px -64px;
+}

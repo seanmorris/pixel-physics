@@ -168,9 +168,30 @@
 				</table>
 			</div>
 
+			<span class = "hud hud-top-left">
+				<div cv-if = "hasRings">
+					[[rings]]
+				</div>
+				<div cv-if = "hasCoins">
+					[[coins]]
+				</div>
+				<div cv-if = "hasEmeralds">
+					[[emeralds]]
+				</div>
+				<!-- <div class = "timer">[[timer]]</div> -->
+			</span>
+
+			<div class = "hud hud-dark hud-top-right">
+				<div class = "char-hud">
+					<span>[[char]]</span>
+					<div class = "char-icon [[charName]]"></div>
+				</div>
+			</div>
+
 		</div>
 
 		<div class = "viewport-zoom">
+
 			<div class = "blurAngle" cv-ref = "blurAngle">
 			<div class = "blurDistance" cv-ref = "blurDistance">
 			<div class = "blurAngleCancel" cv-ref = "blurAngleCancel">
@@ -195,29 +216,6 @@
 				</div>
 
  			</div>
-
-			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
-
-			<span class = "hud-top-left">
-				<div cv-if = "hasRings">
-					[[rings]]
-				</div>
-				<div cv-if = "hasCoins">
-					[[coins]]
-				</div>
-				<div cv-if = "hasEmeralds">
-					[[emeralds]]
-				</div>
-				<!-- <div class = "timer">[[timer]]</div> -->
-			</span>
-
-			<div class = "hud hud-dark hud-top-right">
-				<div class = "char-hud">
-					<span>[[char]]</span>
-					<div class = "char-icon [[charName]]"></div>
-				</div>
-			</div>
-
 
 			<div class = "hud">
 				<table>
@@ -293,6 +291,8 @@
 			</div>
 
 			<div class = "status-message">[[status]]</div>
+
+			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
 
 			<div class = "titlecard [[animation]]">
 

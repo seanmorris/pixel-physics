@@ -143,7 +143,7 @@ export class Viewport extends View
 
 		this.args.labelAirAngle  = new CharacterString({value:'Air theta: '});
 
-		this.args.char   = new CharacterString({value:''});
+		this.args.char   = new CharacterString({value:'...'});
 
 		this.args.xPos   = new CharacterString({value:0});
 		this.args.yPos   = new CharacterString({value:0});
@@ -213,6 +213,8 @@ export class Viewport extends View
 
 		this.actorsById = {};
 
+		this.playable = new Set;
+
 		this.actors = new Bag((i,s,a) => {
 			if(a == Bag.ITEM_ADDED)
 			{
@@ -227,6 +229,7 @@ export class Viewport extends View
 
 				if(i.controllable)
 				{
+					this.playable.add(i);
 					// this.auras.add(i);
 				}
 
@@ -238,6 +241,7 @@ export class Viewport extends View
 
 				if(i[ColCell])
 				{
+					this.playable.delete(i);
 					i[ColCell].delete(i);
 				}
 
@@ -431,6 +435,28 @@ export class Viewport extends View
 
 		keyboard.update();
 
+		if(controller && controller.buttons[16] && controller.buttons[16].time === 2)
+		{
+			this.playableIterator = this.playableIterator || this.playable.entries();
+
+			let next = this.playableIterator.next();
+
+			if(next.done)
+			{
+				this.playableIterator = false;
+
+				this.playableIterator = this.playable.entries();
+
+				next = this.playableIterator.next();
+
+			}
+
+			if(next.value)
+			{
+				this.nextControl = next.value[0];
+			}
+		}
+
 		if(controller && controller.buttons[9] && controller.buttons[9].time === 2)
 		{
 			this.args.paused = !this.args.paused;
@@ -604,7 +630,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(controlActor && this.tags.blur)
+		if(0 && controlActor && this.tags.blur)
 		{
 			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
 			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
@@ -707,7 +733,7 @@ export class Viewport extends View
 
 			const objClass = objectPalette[objType];
 
-			const actor = objClass.fromDef(objDef);
+			const actor = Bindable.make(objClass.fromDef(objDef));
 
 			// if(!actor.controllable)
 			// {
@@ -715,13 +741,6 @@ export class Viewport extends View
 			// }
 
 			this.actors.add( actor );
-
-			if(actor.controllable)
-			{
-				this.args.controllable[ objDef.name ] = actor;
-
-				// this.auras.add( actor );
-			}
 
 			const width  = this.args.width;
 			const height = this.args.height;
@@ -746,6 +765,15 @@ export class Viewport extends View
 			{
 				actor.args.display = 'none';
 			}
+
+			if(actor.controllable)
+			{
+				this.args.controllable[ objDef.name ] = actor;
+
+				// this.auras.add( actor );
+
+				actor.args.display = 'initial';
+			}
 		}
 	}
 
@@ -757,7 +785,7 @@ export class Viewport extends View
 			{
 				this.spawn.delete(spawn);
 
-				this.actors.add(spawn.object);
+				this.actors.add(Bindable.make(spawn.object));
 			}
 		}
 	}
@@ -994,28 +1022,32 @@ export class Viewport extends View
 
 			actorCells.set(actor, nearbyCells);
 
-			if(!this.updateStarted.has(actor))
+			if(this.updateStarted.has(actor))
 			{
-				actor.updateStart();
-
-				this.updateStarted.add(actor);
-
-				this.actorUpdateStart(nearbyCells);
+				continue;
 			}
+
+			actor.updateStart();
+
+			this.updateStarted.add(actor);
+
+			this.actorUpdateStart(nearbyCells);
 		}
 
 		for(const actor of this.auras.values())
 		{
 			const nearbyCells = actorCells.get(actor);
 
-			if(!this.updated.has(actor))
+			if(this.updated.has(actor))
 			{
-				actor.update();
-
-				this.updated.add(actor);
-
-				this.actorUpdate(nearbyCells);
+				continue;
 			}
+
+			actor.update();
+
+			this.updated.add(actor);
+
+			this.actorUpdate(nearbyCells);
 		}
 
 		if(this.controlActor)
@@ -1032,7 +1064,7 @@ export class Viewport extends View
 			this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
 			this.args.char.args.value = this.controlActor.args.name;
-			this.args.charName = this.controlActor.args.name;
+			this.args.charName        = this.controlActor.args.name;
 
 			this.args.xPos.args.value     = Math.round(this.controlActor.x);
 			this.args.yPos.args.value     = Math.round(this.controlActor.y);
@@ -1325,6 +1357,8 @@ export class Viewport extends View
 
 	setColCell(actor)
 	{
+		actor = Bindable.make(actor);
+
 		const cell = this.getColCell(actor);
 
 		const originalCell = actor[ColCell];
@@ -1394,7 +1428,7 @@ export class Viewport extends View
 
 		const actor = this.args.controllable[ event.target.value ];
 
-		this.nextControl = Bindable.make(actor);
+		this.nextControl = actor;
 
 		this.tags.viewport.focus();
 	}

@@ -446,14 +446,36 @@ export class Sonic extends PointActor
 
 	findDashableRing(maxDist = 128)
 	{
-		const ring = this.findNearestActor(actor => actor instanceof Ring, maxDist);
+		const findRing = actor => {
+
+			if(!(actor instanceof Ring))
+			{
+				return false;
+			}
+
+			const direction = Math.sign(this.public.xSpeed);
+
+			if(direction > 0 && actor.x < this.x)
+			{
+				return false;
+			}
+
+			if(direction < 0 && actor.x > this.x)
+			{
+				return false;
+			}
+
+			return true;
+		};
+
+		const ring = this.findNearestActor(findRing, maxDist);
 
 		if(!ring)
 		{
 			return;
 		}
 
-		const nextRing = ring.findNearestActor(actor => actor instanceof Ring, maxDist);
+		const nextRing = ring.findNearestActor(findRing, maxDist);
 
 		if(!nextRing)
 		{

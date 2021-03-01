@@ -19,7 +19,7 @@ export class CharacterString extends View
 
 		this.args.scale = this.args.scale || 1;
 
-		this.args.bindTo(['value'], v => {
+		this.args.bindTo('value', v => {
 
 			if(Math.abs(v) > this.args.high)
 			{

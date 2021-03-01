@@ -20,6 +20,9 @@
 
 .point-actor-filter {
 	transition: transform 0.5s ease-in-out;
+}
+
+.point-actor-filter.grabbing-start {
 	transform: scale(0);
 }
 
