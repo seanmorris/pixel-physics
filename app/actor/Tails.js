@@ -12,7 +12,7 @@ export class Tails extends PointActor
 		this.args.accel     = 0.32;
 		this.args.decel     = 0.7;
 
-		this.args.gSpeedMax = 20;
+		this.args.gSpeedMax = 14;
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
 
@@ -30,25 +30,22 @@ export class Tails extends PointActor
 
 		this.tails = new Tag('<div class = "tails-tails">');
 		this.sprite.appendChild(this.tails.node);
+
+		this.flyingSound = new Audio('/Sonic/tails-flying.wav');
+
+		this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
+		this.flyingSound.loop   = true;
 	}
 
 	update()
 	{
 		const falling = this.args.falling;
 
-		if(this.viewport.args.audio && !this.flyingSound)
-		{
-			this.flyingSound = new Audio('/Sonic/tails-flying.wav');
-
-			this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
-			this.flyingSound.loop   = true;
-		}
-
-		if(this.flyingSound)
+		if(this.viewport.args.audio && this.flyingSound)
 		{
 			if(!this.flyingSound.paused)
 			{
-				this.flyingSound.volume = 0.35 + (Math.random() * -0.2);
+				this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
 			}
 
 			if(this.flyingSound.currentTime > 0.2)
@@ -63,8 +60,26 @@ export class Tails extends PointActor
 			return;
 		}
 
+		if(this.public.tailFlyCoolDown > 0)
+		{
+			this.args.tailFlyCoolDown--;
+		}
+
+		if(this.public.tailFlyCoolDown < 0)
+		{
+			this.args.tailFlyCoolDown++;
+		}
+
+		if(this.args.tailFlyCoolDown === 0)
+		{
+			this.flyingSound.pause();
+	 		this.args.flying = false;
+		}
+
 		if(!falling)
 		{
+			this.args.tailFlyCoolDown =  0;
+
 			this.flyingSound.pause();
 
 			const direction = this.args.direction;
@@ -114,60 +129,65 @@ export class Tails extends PointActor
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
-		if(this.args.tailFlyCoolDown == 0)
-		{
-			if(this.args.ySpeed > 5)
-			{
-				this.flyingSound.pause();
-		 		this.args.flying = false;
-			}
-		}
-		else if(this.args.tailFlyCoolDown > 0)
-		{
-			this.args.tailFlyCoolDown--;
-		}
-
 		super.update();
 	}
 
-	command_0()
+	command_0(button)
 	{
-		if(!this.args.falling)
-		{
-			super.command_0();
+		super.command_0(button);
 
+		if(!this.public.falling)
+		{
+			this.args.tailFlyCoolDown = -80;
 			return;
 		}
 
-		if(!this.args.flying)
+		if(this.args.tailFlyCoolDown === 0)
 		{
-			this.args.tailFlyCoolDown = 25;
-			this.args.flying = true;
+			this.args.tailFlyCoolDown = 80;
+			return;
 		}
-	}
 
-	release_0(button)
-	{
-		this.args.tailFlyCoolDown = 0;
-		this.args.flying = false;
+		if(this.public.ySpeed > 0)
+		{
+			this.args.ySpeed = 0;
+		}
+
+		this.args.tailFlyCoolDown = 80;
+
+		this.args.flying = true;
+
+		this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
+
+		if(this.flyingSound.paused)
+		{
+			this.flyingSound.play();
+		}
 	}
 
 	hold_0(button)
 	{
-		if(!this.public.flying)
+		if(this.public.flying)
 		{
-			return;
-		}
-
-		if(this.public.ySpeed < 1)
-		{
-			if(!this.public.flying)
+			if(this.args.ySpeed > 0)
 			{
-				this.flyingSound.play();
+				this.args.ySpeed = 0;
 			}
 
-			this.args.ySpeed = this.args.ySpeed < 0 ? this.args.ySpeed : -1;
-			this.args.float  = 8;
+			if(Math.random() > 0.8)
+			{
+				this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
+			}
+
+			this.args.tailFlyCoolDown = 80;
+
+			this.args.ySpeed -= Math.min(3, (button.time / 9));
+
+			this.args.ySpeed = Math.max(-5, this.args.ySpeed);
+		}
+		else
+		{
+			this.args.flying = true;
 		}
 	}
 

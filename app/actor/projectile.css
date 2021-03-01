@@ -7,7 +7,7 @@
 	--animation-size:  16px;
 	--animation-steps: 2;
 	z-index: 1;
-	animation: projectile-animate steps(2) infinite 20ms;
+	animation: projectile-animate steps(2) infinite 200ms;
 }
 
 @keyframes projectile-animate {

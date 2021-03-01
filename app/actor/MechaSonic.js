@@ -12,13 +12,13 @@ export class MechaSonic extends PointActor
 		this.args.accel = 0.3;
 		this.args.decel = 0.3;
 
-		this.args.gSpeedMax = 30;
+		this.args.gSpeedMax = 20;
 		this.args.jumpForce = 15;
-		this.args.gravity   = 0.7;
+		// this.args.gravity   = 0.;
 
 		this.args.takeoffPlayed = false;
 
-		this.args.width  = 48;
+		this.args.width  = 32;
 		this.args.height = 63;
 	}
 
@@ -30,13 +30,12 @@ export class MechaSonic extends PointActor
 
 	update()
 	{
-		const falling = this.args.falling;
-
-		if(!this.box)
+		if(!this.sprite)
 		{
-			super.update();
 			return;
 		}
+
+		const falling = this.args.falling;
 
 		this.args.accel = 0.3;
 
@@ -45,7 +44,7 @@ export class MechaSonic extends PointActor
 		const speed     = Math.abs(gSpeed);
 		const maxSpeed  = 100;
 		const minRun    = 100 * 0.1;
-		const minRun2   = 0.65 * this.public.gSpeedMax;
+		const minRun2   = 0.75 * this.public.gSpeedMax;
 
 		if(!this.flame)
 		{
@@ -85,8 +84,6 @@ export class MechaSonic extends PointActor
 				this.scrapeSound.currentTime = 0.5;
 			}
 		}
-
-
 
 		if(!falling)
 		{

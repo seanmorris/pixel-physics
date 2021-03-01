@@ -74,13 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 
 
-			body.style({
-				'background-position': `${(skyShift++ / 25)}px top,`
-					+` -${(skyShift  / 23)}px 63%,`
-					+` -${(skyShift  / 10)}px 63%,`
-					+` ${(skyShift++ / 20)}px 63%,`
-					+` -10% bottom`
-			});
+			// body.style({
+			// 	'background-position': `${(skyShift++ / 25)}px top,`
+			// 		+` -${(skyShift  / 23)}px 63%,`
+			// 		+` -${(skyShift  / 10)}px 63%,`
+			// 		+` ${(skyShift++ / 20)}px 63%,`
+			// 		+` -10% bottom`
+			// });
 
 		};
 

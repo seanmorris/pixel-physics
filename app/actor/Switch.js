@@ -108,11 +108,11 @@ export class Switch extends PointActor
 				this.beep();
 			}
 
+			this.ignore = 8;
+
 			this.args.active = true;
 
 			this.activator = other;
-
-			this.ignore = 16;
 
 			return true;
 		}

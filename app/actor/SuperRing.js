@@ -23,6 +23,9 @@ export class SuperRing extends PointActor
 		this.args.speed = 4;
 
 		this.leaving = new WeakSet;
+
+		this.args.xOff = 0;
+		this.args.yOff = 0;
 	}
 
 	onAttached()
@@ -160,6 +163,9 @@ export class SuperRing extends PointActor
 
 			const caught = this.caught;
 
+			caught.args.xSpeed = 0;
+			caught.args.ySpeed = 0;
+
 			if(this.caught.yAxis > 0)
 			{
 				this.drop();
@@ -168,7 +174,7 @@ export class SuperRing extends PointActor
 			{
 				this.wireframe.material.opacity = 0.25;
 
-				this.args.speed = 12;
+				this.args.speed++;
 
 				caught.args.x = this.public.x;
 				caught.args.y = this.public.y - 16;
@@ -178,16 +184,16 @@ export class SuperRing extends PointActor
 				const toX = this.public.x;
 				const toY = this.public.y - 16;
 
-				const speed = 7;
+				const speed = 12;
 
 				if(caught.public.x !== toX)
 				{
-					caught.args.x += Math.sign(toX - caught.public.x) * speed;
+					caught.args.x += Math.sign(toX - caught.public.x) * this.args.speed;
 				}
 
 				if(caught.public.y !== toY)
 				{
-					caught.args.y += Math.sign(toY - caught.public.y) * speed;
+					caught.args.y += Math.sign(toY - caught.public.y) * this.args.speed;
 				}
 
 				if(Math.abs(caught.public.x - toX) < speed)
@@ -203,12 +209,12 @@ export class SuperRing extends PointActor
 
 			if(this.args.speed < 5)
 			{
-				this.args.speed += 0.125;
+				this.args.speed += 0.25;
 			}
 
 			if(this.args.speed > 5)
 			{
-				this.args.speed -= 0.25;
+				this.args.speed -= 0.5;
 			}
 		}
 		else
@@ -225,7 +231,7 @@ export class SuperRing extends PointActor
 
 		if(yRot > (Math.PI / 2 - 0.125) && yRot < (Math.PI / 2 + 0.125))
 		{
-			if(this.args.speed > 10)
+			if(this.args.speed > 20)
 			{
 				this.onTimeout(500, ()=>this.drop());
 			}
@@ -281,7 +287,6 @@ export class SuperRing extends PointActor
 			this.grab();
 		}
 
-
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 		other.args.float  = -1;
@@ -300,7 +305,7 @@ export class SuperRing extends PointActor
 				this.caught = null;
 			});
 
-			this.onTimeout(500, () => {
+			this.onTimeout(750, () => {
 				this.leaving.delete(caught)
 			});
 		}
@@ -314,8 +319,8 @@ export class SuperRing extends PointActor
 
 			this.pinch(75);
 
-			this.onTimeout(500, () => {
-				// this.pinch(0)
+			this.onTimeout(750, () => {
+				this.pinch(0)
 				this.pinchFilter.classList.remove('grabbing');
 			});
 		}

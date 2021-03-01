@@ -143,6 +143,28 @@
 		opacity(0.4);
 }
 
+
+.region.region-shade.frost .region-filter-wrapper {
+	/*background-color: rgba(255,255,255,0.0);*/
+}
+
+.region.region-shade.frost .region-color-wrapper {
+	/*background-color: rgba(255,255,255,0.0);*/
+	mix-blend-mode: lighten;
+}
+
+.region.region-shade.frost .region-color {
+}
+
+.region.region-shade.frost .region-filter {
+	backdrop-filter:
+		drop-shadow(0px -0.25px  0.5px  rgba(255, 255,  255,  0.333))
+		drop-shadow(0px -0.50px  0.5px  rgba(0,   128,  255,  0.25))
+		drop-shadow(0px -1.25px  1.00px rgba(0,   0,    128,  0.5))
+		drop-shadow(0px -1.50px  1.50px rgba(255, 255,  255,    0.5))
+		saturate(0) brightness(0.75) contrast(0.75) sepia(1) hue-rotate(180deg) saturate(1.5) brightness(1.5);
+}
+
 .region.region-shade.eight-bit .region-color-wrapper {
 	mix-blend-mode: darken;
 }
@@ -151,13 +173,14 @@
 }
 
 .region.region-shade.eight-bit .region-filter {
-	filter: saturate(1) brightness(1.25) contrast(3);
+	backdrop-filter: saturate(0) brightness(1.25) contrast(1.75);
+	/*filter: saturate(1) brightness(1.25) contrast(3);
 	backdrop-filter:
 		drop-shadow(1px 1px 0.125px rgba(0,0,0,0.75))
 		drop-shadow(-1px 1px 0.125px rgba(0,0,0,0.75))
 		drop-shadow(1px -1px 0.125px rgba(0,0,0,0.75))
 		drop-shadow(-1px -1px 0.125px rgba(0,0,0,0.75))
-	;
+	;*/
 }
 
 .region.region-shade.corruption .region-color-wrapper {

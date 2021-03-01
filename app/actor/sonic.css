@@ -14,7 +14,8 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url(/Sonic/sonic.png);
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 100%;
 	width: 100%;
@@ -136,8 +137,14 @@
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
-	animation: sonic-jump steps(7) infinite 256ms;
+}
 
+.actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
+	animation: sonic-jump steps(7) infinite 256ms;
+}
+
+.actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
+	animation: sonic-jump steps(7) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
 }
 

@@ -3,12 +3,12 @@ import { Button } from './Button';
 
 const keys = {
 	' ':   0
-	, 'x': 1
-	, 'z': 2
-	, 'c': 3
-
 	, 'Control': 1
 	, 'Shift':   2
+	, 'z': 3
+	, 'q': 4
+	, 'e': 5
+
 
 	, 'w': 12
 	, 'a': 14

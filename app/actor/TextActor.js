@@ -7,20 +7,21 @@ export class TextActor extends PointActor
 	{
 		super(args, parent);
 
-		this.args.type = 'actor-item actor-text-actor';
+		this.args.type  = 'actor-item actor-text-actor';
 
-		this.args.float  = -1;
+		this.args.float = -1;
+
+		this.text = new CharacterString({value:''});
+
+		this.args.bindTo('content', v => this.text.args.value = v);
 	}
 
 	onAttached()
 	{
 		this.sprite = this.findTag('div.sprite');
 
-		this.text = new CharacterString({value:'Click a character to select.'});
-
 		this.text.render(this.sprite);
 	}
 
 	get solid() { return false; }
-	get isEffect() { return true; }
 }

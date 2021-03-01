@@ -23,16 +23,25 @@ export class Sonic extends PointActor
 
 		this.args.type      = 'actor-sonic actor-item';
 
+		this.accelNormal = 0.35;
+		this.accelSuper  = 0.70;
+
 		this.args.accel     = 0.35;
 		this.args.decel     = 0.7;
 
 		this.args.skidTraction = 1.75;
 
-		this.args.gSpeedMax = 20;
-		this.args.jumpForce = 18;
+		this.gSpeedMaxNormal = 15;
+		this.gSpeedMaxSuper  = 30;
+
+		this.jumpForceNormal = 20;
+		this.jumpForceSuper  = 25;
+
+		this.args.gSpeedMax = this.gSpeedMaxNormal;
+		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 1;
 
-		this.args.width  = 32;
+		this.args.width = 32;
 
 		this.args.normalHeight = 40;
 		this.args.rollingHeight = 23;
@@ -51,9 +60,14 @@ export class Sonic extends PointActor
 
 		this.moveCard = View.from(require('../cards/basic-moves.html'));
 
+		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
+	}
+
+	onAttached()
+	{
 		if(!Sonic.png)
 		{
-			const png = Sonic.png = new Png('/Sonic/sonic.png');
+			const png = Sonic.png = new Png(this.public.spriteSheet);
 
 			png.ready.then(()=>{
 				const newPng = png.recolor({
@@ -63,13 +77,31 @@ export class Sonic extends PointActor
 					'202080': 'a0a000'
 				});
 
-				console.log( newPng.toUrl() );
+				this.superSpriteSheet = newPng.toUrl();
+
+				console.log(this.args.spriteSheet);
 			});
 		}
 	}
 
 	update()
 	{
+		if(this.isSuper)
+		{
+			if(this.viewport.args.frameId % 60 === 0)
+			{
+				if(this.args.rings > 0)
+				{
+					this.args.rings--;
+				}
+				else
+				{
+					this.isSuper = false;
+					this.setProfile();
+				}
+			}
+		}
+
 		if(!this.public.falling)
 		{
 			this.doubleSpin = this.dashed = false;
@@ -252,6 +284,12 @@ export class Sonic extends PointActor
 
 		this.box.setAttribute('data-animation', 'airdash');
 
+		if(Math.sign(this.public.xSpeed) !== Math.sign(direction))
+		{
+			this.public.xSpeed = 0;
+		}
+
+		this.public.ySpeed = 0;
 		this.args.xSpeed = direction * 16;
 
 		this.dashTimer = 0;
@@ -340,10 +378,10 @@ export class Sonic extends PointActor
 
 	hold_2()
 	{
-		if(!this.public.falling)
-		{
-			return;
-		}
+		// if(!this.public.falling)
+		// {
+		// 	return;
+		// }
 
 		if(this.lightDashing)
 		{
@@ -362,6 +400,42 @@ export class Sonic extends PointActor
 			this.lightDash(ring);
 
 			// this.lightDashingCoolDown = 9;
+		}
+	}
+
+	command_3()
+	{
+		this.isSuper = !this.isSuper;
+
+		this.onTimeout(150, () =>{
+			if(this.args.rings === 0)
+			{
+				this.isSuper = false;
+				this.setProfile();
+			};
+		});
+
+
+		this.setProfile();
+	}
+
+	setProfile()
+	{
+		if(this.isSuper)
+		{
+			this.args.spriteSheet = this.superSpriteSheet;
+
+			this.args.gSpeedMax = this.gSpeedMaxSuper;
+			this.args.jumpForce = this.jumpForceSuper;
+			this.args.accel     = this.accelSuper;
+		}
+		else
+		{
+			this.args.spriteSheet = this.spriteSheet;
+
+			this.args.gSpeedMax = this.gSpeedMaxNormal;
+			this.args.jumpForce = this.jumpForceNormal;
+			this.args.accel     = this.accelNormal;
 		}
 	}
 
@@ -461,7 +535,7 @@ export class Sonic extends PointActor
 			}
 		}
 
-		let dashSpeed = this.distanceFrom(ring);
+		let dashSpeed = this.distanceFrom(ring) * ((Math.PI / 2) / angleDiff);
 
 		const maxDash = 55;
 
@@ -496,23 +570,21 @@ export class Sonic extends PointActor
 
 		this.args.airAngle  = angle;
 
+		this.lightDashing = true;
+
 		if(this.public.falling || angleDiff > breakGroundAngle)
 		{
 			this.args.gSpeed = 0;
 			this.args.xSpeed = Math.round(dashSpeed * Math.cos(angle));
 			this.args.ySpeed = Math.round(dashSpeed * Math.sin(angle));
-
-			this.public.falling = true;
-
-			this.lightDashTimeout();
-
-			this.args.rolling = false;
-			this.lightDashing = true;
 		}
 		// else
 		// {
 		// 	this.args.gSpeed = Math.round(dashSpeed * (Math.sign(this.public.gSpeed) || this.public.direction));
+		// 	this.args.rolling = false;
 		// }
+
+		this.lightDashTimeout();
 	}
 
 	collect(pickup)

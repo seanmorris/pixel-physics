@@ -293,14 +293,7 @@
 	}
 }
 
-@-webkit-keyframes explosion{
-	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	}
-	to{
-		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
-	}
-}
+
 
 @-webkit-keyframes ringSpin{
 	from{

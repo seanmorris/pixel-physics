@@ -14,11 +14,11 @@ export class Eggrobo extends PointActor
 		this.args.accel     = 0.125;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 15;
-		this.args.jumpForce = 13;
-		this.args.gravity   = 0.60;
+		this.args.gSpeedMax = 10;
+		this.args.jumpForce = 18;
+		this.args.gravity   = 1;
 
-		this.args.width  = 48;
+		this.args.width  = 32;
 		this.args.height = 57;
 	}
 
@@ -145,32 +145,6 @@ export class Eggrobo extends PointActor
 	get solid() { return true; }
 	get isEffect() { return false; }
 
-	// command_0()
-	// {
-	// 	if(!this.args.falling)
-	// 	{
-	// 		this.args.rocketCoolDown = 5;
-
-	// 		super.command_0();
-
-	// 		return;
-	// 	}
-
-	// 	if(this.args.ySpeed > 1 || this.args.flying)
-	// 	{
-	// 		this.args.flying = true;
-
-	// 		if(this.args.rocketCoolDown <= 1)
-	// 		{
-	// 			this.thrusterSound.play();
-	// 			this.args.rocketCoolDown = 3;
-	// 		}
-
-	// 		this.args.ySpeed = 0;
-	// 		this.args.float  = 4;
-	// 	}
-	// }
-
 	hold_0()
 	{
 		if(!this.args.falling)
@@ -195,7 +169,7 @@ export class Eggrobo extends PointActor
 		}
 	}
 
-	command_2()
+	hold_2()
 	{
 		if(this.args.shotCoolDown > 0)
 		{
@@ -223,7 +197,7 @@ export class Eggrobo extends PointActor
 				break;
 			case 3:
 				spotAngle  = (-groundAngle) - (Math.PI) + (Math.PI / 4 * direction);
-				trajectory = (-groundAngle - (Math.PI / 2));
+				trajectory = (-groundAngle);
 				break;
 		}
 
@@ -236,13 +210,15 @@ export class Eggrobo extends PointActor
 		}
 
 		const projectile = new Projectile({
-			x: this.args.x + offset[0]
-			, y: this.args.y + offset[1]
+			direction: this.public.direction
+			, x: this.public.x + offset[0]
+			, y: this.public.y + offset[1]
 			, owner: this
-			, direction: this.args.direction
 		});
 
-		projectile.impulse(7, trajectory + (direction < 0 ? Math.PI : 0));
+		projectile.impulse(45, trajectory + (direction < 0 ? Math.PI : 0), true);
+
+		projectile.update();
 
 		this.viewport.auras.add(projectile);
 		this.viewport.actors.add(projectile);
@@ -260,7 +236,7 @@ export class Eggrobo extends PointActor
 			this.shootingSample.play();
 		}
 
-		this.args.shotCoolDown = 18;
+		this.args.shotCoolDown = 4;
 	}
 
 	get solid() { return false; }

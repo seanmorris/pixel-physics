@@ -52,7 +52,7 @@ export class Monitor extends PointActor
 		){
 			this.args.gone = true;
 
-			this.onNextFrame(()=>this.pop(other));
+			this.pop(other);
 		}
 		else if(
 			(type === 1 || type === 3)
@@ -63,7 +63,7 @@ export class Monitor extends PointActor
 			&& this.viewport
 			&& !this.public.gone
 		){
-			this.onNextFrame(()=>this.pop(other));
+			this.pop(other)
 		}
 	}
 
@@ -113,16 +113,18 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
+		const otherSpeed = other.args.ySpeed;
+
 		if(this.public.gone)
 		{
 			if(other.args.falling)
 			{
-				other.args.ySpeed *= -1;
+				this.onNextFrame(() => other.args.ySpeed = -otherSpeed );
 			}
 
 			if(this.args.falling && other.args.falling)
 			{
-				other.args.xSpeed *= -1;
+				this.onNextFrame(() => other.args.xSpeed = -otherSpeed );
 			}
 		}
 	}

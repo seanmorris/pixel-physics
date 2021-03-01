@@ -7,10 +7,22 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
 
-	z-index: 20000;
+	z-index: 10;
 
-	animation: explosion steps(5) infinite;
-	animation-duration: calc(1ms * 480);
+	animation: explosion steps(4) 1 forwards;
+	animation-duration: 240ms;
+
+	filter: blur(0.5px) !important;
 
 	/*opacity: 0;*/
+}
+
+@-webkit-keyframes explosion{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		opacity: 0.5
+	}
 }

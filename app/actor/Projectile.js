@@ -1,5 +1,9 @@
 import { PointActor } from './PointActor';
 import { Explosion } from '../actor/Explosion';
+import { Tag } from 'curvature/base/Tag';
+
+import { Spring } from './Spring';
+import { Region } from './Region';
 
 export class Projectile extends PointActor
 {
@@ -33,21 +37,21 @@ export class Projectile extends PointActor
 
 		if(!this.removeTimer)
 		{
-			this.removeTimer = this.onTimeout(4000, () => this.explode());
+			this.removeTimer = this.onTimeout(500, () => this.explode());
 		}
 	}
 
 	collideA(other)
 	{
-		if(other === this.args.owner || other instanceof Projectile || other instanceof Explosion)
+		if(other === this.args.owner || other instanceof Projectile || other instanceof Region || other instanceof Spring)
 		{
 			return false;
 		}
 
-		if(this.viewport)
-		{
-			this.explode();
-		}
+		this.args.x += Math.cos(this.public.angle) * other.args.width / 2 * Math.sign(this.public.xSpeed);
+		this.args.y += Math.sin(this.public.angle) * other.args.width / 2 * Math.sign(this.public.xSpeed);
+
+		this.explode();
 
 		return false;
 	}
@@ -61,13 +65,13 @@ export class Projectile extends PointActor
 			return;
 		}
 
-		const explosion = new Explosion({x:this.x, y:this.y+8});
+		const particle = new Tag('<div class = "particle-explosion">');
 
-		viewport.actors.add(explosion);
+		particle.style({'--x': this.x, '--y': this.y});
 
-		setTimeout(()=>{
-			viewport.actors.remove( explosion );
-		}, 20);
+		viewport.particles.add(particle);
+
+		setTimeout(() => viewport.particles.remove(particle), 350);
 
 		this.viewport.actors.remove( this );
 		this.remove();

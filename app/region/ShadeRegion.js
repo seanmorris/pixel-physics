@@ -11,7 +11,7 @@ export class ShadeRegion extends Region
 	currentFilter = -1;
 
 	filters = [
-		'studio', 'runners', 'western', 'hydro', 'heat', 'eight-bit', 'corruption', 'black-hole', 'normal'
+		'studio', 'runners', 'western', 'hydro', 'heat', 'frost', 'eight-bit', 'corruption', 'black-hole', 'normal'
 	];
 
 	constructor(...args)

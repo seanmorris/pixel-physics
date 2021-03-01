@@ -90,6 +90,7 @@ const objectPalette = {
 	, 'coin':         Coin
 	, 'powerup-glow': PowerupGlow
 	, 'explosion':    Explosion
+	, 'text-actor':   TextActor
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -340,13 +341,6 @@ export class Viewport extends View
 
 	onAttached(event)
 	{
-		// const selectChar = new TextActor({x: 1300, y:1800});
-
-		// this.actors.add(selectChar);
-		// // this.actors.add(new Sonic({x: 1300, y:1800}));
-
-		// console.log(selectChar);
-
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 
 		this.listen(document, 'fullscreenchange', (event) => {
@@ -743,10 +737,8 @@ export class Viewport extends View
 			const actorRight = actor.x + actor.public.width;
 			const actorLeft  = actor.x;
 
-			if(camLeft < actorRight
-				&& camRight > actorLeft
-				&& camBottom > actorTop
-				&& camTop < actor.y
+			if(camLeft < actorRight && camRight > actorLeft
+				&& camBottom > actorTop && camTop < actor.y
 			){
 				actor.args.display = 'initial';
 			}
@@ -959,12 +951,12 @@ export class Viewport extends View
 				this.controlActor.readInput();
 			}
 
-			if(!this.args.maxSpeed)
-			{
-				this.args.maxSpeed = this.controlActor.args.gSpeedMax;
-			}
+			// if(!this.args.maxSpeed)
+			// {
+			// 	this.args.maxSpeed = this.controlActor.args.gSpeedMax;
+			// }
 
-			this.controlActor.args.gSpeedMax = this.args.maxSpeed;
+			// this.controlActor.args.gSpeedMax = this.args.maxSpeed;
 
 			// this.controlActor.willStick = !!this.args.willStick;
 			// this.controlActor.stayStuck = !!this.args.stayStuck;

@@ -12,12 +12,15 @@ export class Eggman extends PointActor
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 10;
-		this.args.jumpForce = 12;
-		this.args.gravity   = 0.6;
+		this.args.normalHeight = 40;
+		this.args.rollingHeight = 23;
 
-		this.args.width  = 48;
-		this.args.height = 55;
+		this.args.gSpeedMax = 15;
+		this.args.jumpForce = 18;
+		this.args.gravity   = 1;
+
+		this.args.width  = 32;
+		this.args.height = 57;
 	}
 
 	onAttached()
@@ -35,21 +38,47 @@ export class Eggman extends PointActor
 			return;
 		}
 
-		if(!falling)
+		else if(this.yAxis > 0)
 		{
-			if(this.yAxis > 0)
+			this.args.crouching = true;
+		}
+		else
+		{
+			this.args.crouching = false;
+		}
+
+		const direction = this.args.direction;
+		const gSpeed    = this.args.gSpeed;
+		const speed     = Math.abs(gSpeed);
+		const maxSpeed  = this.args.gSpeedMax;
+
+		if(falling)
+		{
+			this.box.setAttribute('data-animation', 'jumping');
+			this.args.height = this.public.rollingHeight;
+		}
+		else if(this.public.rolling)
+		{
+			this.args.height = this.public.rollingHeight;
+			if(this.public.direction !== Math.sign(this.public.gSpeed))
 			{
-				this.args.crouching = true;
-			}
-			else
-			{
-				this.args.crouching = false;
+				this.args.direction = Math.sign(this.public.gSpeed);
+
+				if(this.args.direction < 0)
+				{
+					this.args.facing = 'left';
+				}
+				else
+				{
+					this.args.facing = 'right';
+				}
 			}
 
-			const direction = this.args.direction;
-			const gSpeed    = this.args.gSpeed;
-			const speed     = Math.abs(gSpeed);
-			const maxSpeed  = this.args.gSpeedMax;
+			this.box.setAttribute('data-animation', 'rolling');
+		}
+		else
+		{
+			this.args.height = this.public.normalHeight;
 
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
@@ -72,15 +101,12 @@ export class Eggman extends PointActor
 				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
-		else
-		{
-			this.box.setAttribute('data-animation', 'jumping');
-		}
 
 		super.update();
 	}
 
 	get solid() { return false; }
+	get canRoll() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }

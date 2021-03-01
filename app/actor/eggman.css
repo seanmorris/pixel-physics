@@ -27,26 +27,39 @@
 
 .actor-item.actor-eggman[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: -64px;
-	animation: eggman-walk steps(3) infinite 288ms;
+	--sprite-offset-y: -384px;
+	animation: eggman-walk steps(3) infinite 256ms;
 }
 
 .actor-item.actor-eggman[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
-	animation: eggman-walk steps(3) infinite 192ms;
+	animation: eggman-run steps(3) infinite 192ms;
 }
 
 .actor-item.actor-eggman[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
-	--sprite-offset-y: -128px;
+	--sprite-offset-y: -210px;
+	transform: translateY(28px);
+	height: 46px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: eggman-jump steps(8) infinite 160ms reverse;
+}
+
+.actor-item.actor-eggman[data-animation="rolling"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -210px;
+	transform: translateY(28px);
+	height: 46px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: eggman-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
 }
 
 .actor-item.actor-eggman[data-animation="crouching"] .sprite:after {
 	--sprite-offset-x: -0px;
-	--sprite-offset-y: -192px;
+	--sprite-offset-y: -320px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: eggman-crouch steps(1) 1 128ms forwards;
 }
 
 @-webkit-keyframes eggman-animate {
@@ -64,5 +77,33 @@
 	}
 	to{
 		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes eggman-run {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes eggman-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-512px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+
+@-webkit-keyframes eggman-crouch {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

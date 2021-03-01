@@ -68,6 +68,11 @@ export class Spring extends PointActor
 	{
 		super.collideA(other);
 
+		if(this.active)
+		{
+			return;
+		}
+
 		if(other instanceof Region)
 		{
 			return;
@@ -81,9 +86,15 @@ export class Spring extends PointActor
 		}
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
-		other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
-		this.onNextFrame(()=>{
-			this.args.direction = Math.sign(this.public.gSpeed);
+
+
+		this.active = true;
+		this.onTimeout(64,()=>{
+			other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+			other.args.direction = Math.sign(this.public.gSpeed);
+			this.onTimeout(64,()=>{
+				this.active = false;
+			});
 		});
 	}
 
