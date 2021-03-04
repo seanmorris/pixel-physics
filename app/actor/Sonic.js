@@ -291,6 +291,11 @@ export class Sonic extends PointActor
 			this.public.xSpeed = 0;
 		}
 
+		if(this.public.ySpeed > 0)
+		{
+			this.public.ySpeed = 0;
+		}
+
 		this.public.ySpeed = 0;
 		this.args.xSpeed = direction * 16;
 

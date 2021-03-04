@@ -164,11 +164,11 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"] .sprite {
-	transform: translate(calc(-50% + 0px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="2"] .sprite {
-	transform: translate(-50%, calc(-100% + 0px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg)));
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg)));
 }
 
 .actor-item[data-falling="false"][data-mode="3"] .sprite {
@@ -180,11 +180,11 @@
 }
 
 .actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
-	transform: translate(calc(-50% + 0px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 0px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg))) scale(-1,1);
+	transform: translate(-50%, -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
