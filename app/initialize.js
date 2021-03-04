@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			const frameTime   = (now - lastTime);
 			const frameAgeMin = (1000 / (viewportA.args.maxFps || 60));
 
-
 			requestAnimationFrame(update);
 
 			if(frameAgeMin > frameTime)
@@ -49,9 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				return;
 			}
 
-			lastTime = now;
-
 			viewportA.update();
+
+			lastTime = now;
 
 			frameTimes.push(frameTime);
 
@@ -65,8 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
 				const frameTimeAvg = frameTimeSum / frameTimes.length;
 
-				viewportA.args.fps = (1000 / frameTimeAvg);
+				// viewportA.args.fps = Math.max(...frameTimes);
 				// viewportA.args.fps = frameTimeAvg;
+				viewportA.args.fps = (1000 / frameTimeAvg);
 			}
 			else
 			{

@@ -137,6 +137,13 @@
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
+/*
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -224px;
+	height: 32px;
+	width: 32px;
+	top: 32px;
+	transform-origin: center;*/
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
@@ -144,7 +151,8 @@
 }
 
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
-	animation: sonic-jump steps(7) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);
+	animation: sonic-jump steps(7) infinite 128ms;
+	/*animation: sonic-jump steps(7) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
 }
 

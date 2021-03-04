@@ -122,6 +122,8 @@ export class PointActor extends View
 		this.args.xSpeedMax = 512;
 		this.args.ySpeedMax = 512;
 
+		this.args.jumping = false;
+
 		this.maxStep   = 4;
 		this.backStep  = 0;
 		this.frontStep = 0;
@@ -163,7 +165,8 @@ export class PointActor extends View
 		this.impulseMag = null;
 		this.impulseDir = null;
 
-		this.args.gSpeedMax = WALKING_SPEED;
+		this.args.gSpeedMax    = WALKING_SPEED;
+		this.args.rollSpeedMax = 35;
 
 		this.args.jumpForce = 14;
 		this.args.stopped   = 0;
@@ -351,7 +354,7 @@ export class PointActor extends View
 				return;
 			}
 
-			this.viewport.nextControl = Bindable.make(this);
+			this.viewport.nextControl = Bindable.ref(this);
 
 			for(const option of this.viewport.tags.currentActor.options)
 			{
@@ -490,6 +493,10 @@ export class PointActor extends View
 			this.standingOn  = null;
 			this.args.landed = false;
 			this.lastAngles  = [];
+		}
+		else
+		{
+			this.args.jumping = false;
 		}
 
 		this.region = this.viewport.regionAtPoint(this.x, this.y);
@@ -987,11 +994,11 @@ export class PointActor extends View
 			{
 				if(slopeFactor < 0)
 				{
-					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.015);
+					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.005);
 				}
 				else if(slopeFactor > 0)
 				{
-					this.args.gSpeed *= 1.0000 * (1+(slopeFactor/2) * 0.150);
+					this.args.gSpeed *= 1.0000 * (1+(slopeFactor/2) * 0.050);
 				}
 
 				if(Math.sign(this.public.gSpeed) !== Math.sign(this.xAxis) && Math.abs(this.public.gSpeed) < 1)
@@ -1056,11 +1063,23 @@ export class PointActor extends View
 
 		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
 		{
-			if(Math.abs(this.public.gSpeed) > gSpeedMax
-				&& gSpeedMax !== Infinity
-				&& gSpeedMax !== -Infinity
-			){
-				this.args.gSpeed = gSpeedMax * Math.sign(this.public.gSpeed);
+			if(this.public.rolling)
+			{
+				if(Math.abs(this.public.gSpeed) > this.public.rollSpeedMax
+					&& gSpeedMax !== Infinity
+					&& gSpeedMax !== -Infinity
+				){
+					this.args.gSpeed = this.public.rollSpeedMax * Math.sign(this.public.gSpeed);
+				}
+			}
+			else
+			{
+				if(Math.abs(this.public.gSpeed) > gSpeedMax
+					&& gSpeedMax !== Infinity
+					&& gSpeedMax !== -Infinity
+				){
+					this.args.gSpeed = gSpeedMax * Math.sign(this.public.gSpeed);
+				}
 			}
 		}
 		else
@@ -2030,6 +2049,8 @@ export class PointActor extends View
 			this.args.ySpeed = 0;
 		}
 
+		this.args.jumping = true;
+
 		this.args.mode  = DEFAULT_GRAVITY;
 	}
 
@@ -2453,6 +2474,14 @@ export class PointActor extends View
 		}
 	}
 
+	release_0()
+	{
+		if(this.args.jumping && this.args.ySpeed < 0)
+		{
+			this.args.ySpeed *= 0.5;
+		}
+	}
+
 	distanceFrom({x,y})
 	{
 		const aSquared = (this.x - x)**2;
@@ -2493,33 +2522,59 @@ export class PointActor extends View
 		this.twister.args.scale = warp;
 	}
 
-	pinch(warp)
+	pinch(warpBg = 0, warpFg = 0)
 	{
-		if(!this.pincher)
+		if(!this.pincherBg)
+		{
+			const filterContainer = this.viewport.tags.bgFilters;
+
+			const type = this.args.type.split(' ').shift();
+			const html = `<div class = "point-actor-filter pinch-filter">`;
+
+			this.pinchFilterBg = new Tag(html);
+
+			filterContainer.appendChild(this.pinchFilterBg.node);
+
+			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
+				this.pinchFilterBg.style({
+					[`--${k}`]: v, filter: `url(#pinch-${this.args.id})`
+				});
+			});
+
+			this.pincherBg = new Pinch({id: 'pinch-' + this.args.id, scale: 60});
+
+			this.args.yOff = 16;
+
+			this.pincherBg.render(this.sprite);
+		}
+
+		this.pincherBg.args.scale = warpBg;
+
+		if(!this.pincherFg)
 		{
 			const filterContainer = this.viewport.tags.fgFilters;
 
 			const type = this.args.type.split(' ').shift();
 			const html = `<div class = "point-actor-filter pinch-filter">`;
 
-			this.pinchFilter = new Tag(html);
+			this.pinchFilterFg = new Tag(html);
 
-			filterContainer.appendChild(this.pinchFilter.node);
+			filterContainer.appendChild(this.pinchFilterFg.node);
 
 			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
-				this.pinchFilter.style({
-					[`--${k}`]: v, filter: `url(#pinch-${this.args.id})`
+				this.pinchFilterFg.style({
+					[`--${k}`]: v, filter: `url(#pinch-fg-${this.args.id})`
 				});
 			});
 
-			this.pincher = new Pinch({id: 'pinch-' + this.args.id, scale: 60});
+			this.pincherFg = new Pinch({id: 'pinch-fg-' + this.args.id, scale: 60});
 
 			this.args.yOff = 16;
 
-			this.pincher.render(this.sprite);
+			this.pincherFg.render(this.sprite);
 		}
 
-		this.pincher.args.scale = warp;
+		this.pincherFg.args.scale = warpFg;
 	}
 
 	urlWrap(url)

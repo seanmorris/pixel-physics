@@ -11,7 +11,8 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url(/Sonic/eggman.png);
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
 	width: 64px;

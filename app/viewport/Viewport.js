@@ -8,6 +8,8 @@ import { Keyboard } from 'curvature/input/Keyboard';
 // import { Actor   } from '../actor/Actor';
 import { TileMap } from '../tileMap/TileMap';
 
+import { Backdrop } from './Backdrop';
+
 import { QuestionBlock } from '../actor/QuestionBlock';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 import { MarbleBlock } from '../actor/MarbleBlock';
@@ -103,6 +105,8 @@ export class Viewport extends View
 	constructor(args,parent)
 	{
 		super(args,parent);
+
+		this.args.screenFilter = 'runners';
 
 		// this.hud = new Hud
 		this.sprites = new Bag;
@@ -263,20 +267,6 @@ export class Viewport extends View
 		this.args.blocks = this.blocks.list;
 		this.args.actors = this.actors.list;
 
-		this.args.bindTo('willStick', v => {
-			if(v)
-			{
-				this.args.stayStuck = true;
-			}
-		});
-
-		this.args.bindTo('stayStuck', v => {
-			if(!v)
-			{
-				this.args.willStick = false;
-			}
-		});
-
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 		this.listen(window, 'gamepaddisconnected', event => this.padRemoved(event));
 
@@ -312,6 +302,147 @@ export class Viewport extends View
 		this.args.isReplaying = false;
 
 		this.replayInputs = [];
+
+		this.args.backdrop = new Backdrop({strips: [
+			{
+				autoscroll:  -1
+				, parallax:  0
+				, url:       '/Sonic/backdrop/marble-garden/1.png'
+				, height:    24
+			}
+			, {
+				autoscroll: -0.9
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/2.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.8
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/3.png'
+				, height:   24
+			}
+			, {
+				autoscroll: -0.7
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/4.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.6
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/5.png'
+				, height:   24
+			}
+			, {
+				autoscroll: -0.5
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/6.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.45
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/7.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.45
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/8.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.4
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/9.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.35
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/10.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.3
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/11.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.25
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/12.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.2
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/13.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.15
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/14.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.1
+				, parallax: 0
+				, url:      '/Sonic/backdrop/marble-garden/15.png'
+				, height:   5
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.1
+				, url:      '/Sonic/backdrop/marble-garden/16.png'
+				, height:   43
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.125
+				, url:      '/Sonic/backdrop/marble-garden/17.png'
+				, height:   12
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.15
+				, url:      '/Sonic/backdrop/marble-garden/18.png'
+				, height:   6
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.175
+				, url:      '/Sonic/backdrop/marble-garden/19.png'
+				, height:   6
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.2
+				, url:      '/Sonic/backdrop/marble-garden/20.png'
+				, height:   8
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.225
+				, url:      '/Sonic/backdrop/marble-garden/21.png'
+				, height:   8
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.25
+				, url:      '/Sonic/backdrop/marble-garden/22.png'
+				, height:   24
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.35
+				, url:      '/Sonic/backdrop/marble-garden/23.png'
+				, height:   344
+			}
+		]});
 		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
 	}
 
@@ -454,6 +585,10 @@ export class Viewport extends View
 			if(next.value)
 			{
 				this.nextControl = next.value[0];
+
+				controller.update();
+
+				return;
 			}
 		}
 
@@ -630,7 +765,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(0 && controlActor && this.tags.blur)
+		if(controlActor && this.tags.blur)
 		{
 			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
 			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
@@ -688,10 +823,21 @@ export class Viewport extends View
 			this.args.layers[i].update(this.tileMap, xDir, yDir);
 		}
 
-		this.tags.content.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+		const xMax = -(this.tileMap.mapData.width * 32);
+		const yMax = -(this.tileMap.mapData.height * 32);
 
 		this.tags.bgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 		this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+
+		this.tags.content.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+
+		Object.assign(this.args.backdrop.args, ({
+			'x': Math.round(this.args.x)
+			, 'y': Math.round(this.args.y)
+			, 'xMax': xMax
+			, 'yMax': yMax
+			, 'frame': this.args.frameId
+		}));
 
 		const xMod = this.args.x < 0
 			? Math.round(this.args.x % (this.args.blockSize))
@@ -1414,8 +1560,6 @@ export class Viewport extends View
 
 	change(event)
 	{
-		console.log(event.target.value);
-
 		if(!event.target.value)
 		{
 			return;
@@ -1431,6 +1575,11 @@ export class Viewport extends View
 		this.nextControl = actor;
 
 		this.tags.viewport.focus();
+	}
+
+	screenFilter(filterName)
+	{
+		this.args.screenFilter = filterName;
 	}
 
 	reset()
@@ -1489,8 +1638,6 @@ export class Viewport extends View
 		if(this.args.isRecording)
 		{
 			const replay = JSON.stringify([...this.replayInputs]);
-
-			console.log(replay);
 
 			localStorage.setItem('replay', replay);
 		}

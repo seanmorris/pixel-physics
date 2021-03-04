@@ -9,18 +9,35 @@ export class Eggman extends PointActor
 
 		this.args.type      = 'actor-item actor-eggman';
 
+		this.accelNormal = 0.15;
+		this.accelSuper  = 0.30;
+
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 
 		this.args.normalHeight = 40;
 		this.args.rollingHeight = 23;
 
-		this.args.gSpeedMax = 15;
+		this.gSpeedMaxNormal = 20;
+		this.gSpeedMaxSuper  = 30;
+
+		this.args.gSpeedMax = this.gSpeedMaxNormal;
+
+		this.args.normalHeight = 57;
+		this.args.rollingHeight = 32;
+
+		this.jumpForceNormal = 20;
+		this.jumpForceSuper  = 25;
+
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
 
 		this.args.width  = 32;
 		this.args.height = 57;
+
+		this.args.spriteSheet = this.spriteSheet = '/Sonic/eggman.png';
+
+		this.superSpriteSheet = '/Sonic/eggman-super.png';
 	}
 
 	onAttached()
@@ -104,6 +121,43 @@ export class Eggman extends PointActor
 
 		super.update();
 	}
+
+	command_3()
+	{
+		this.isSuper = !this.isSuper;
+
+		this.onTimeout(150, () =>{
+			if(this.args.rings === 0)
+			{
+				// this.isSuper = false;
+				this.setProfile();
+			};
+		});
+
+
+		this.setProfile();
+	}
+
+	setProfile()
+	{
+		if(this.isSuper)
+		{
+			this.args.spriteSheet = this.superSpriteSheet;
+
+			this.args.gSpeedMax = this.gSpeedMaxSuper;
+			this.args.jumpForce = this.jumpForceSuper;
+			this.args.accel     = this.accelSuper;
+		}
+		else
+		{
+			this.args.spriteSheet = this.spriteSheet;
+
+			this.args.gSpeedMax = this.gSpeedMaxNormal;
+			this.args.jumpForce = this.jumpForceNormal;
+			this.args.accel     = this.accelNormal;
+		}
+	}
+
 
 	get solid() { return false; }
 	get canRoll() { return true; }

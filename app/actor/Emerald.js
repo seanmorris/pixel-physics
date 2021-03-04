@@ -63,6 +63,6 @@ export class Emerald extends PointActor
 		this.args.gone = true;
 	}
 
-	get solid() { return true; }
+	get solid() { return false; }
 	get effect() { return true; }
 }

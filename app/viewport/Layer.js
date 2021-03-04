@@ -107,13 +107,18 @@ export class Layer extends View
 
 				if(existingOffset !== blockOffset)
 				{
-					block.style({'background-position': blockOffset});
+					if(blockId !== false && blockId !== 0)
+					{
+						block.style({display: 'initial', 'background-position': blockOffset});
+					}
+					else
+					{
+						block.style({display: 'none'});
+					}
 				}
-
 
 				offsets.set(block, blockOffset);
 			}
 		}
-
 	}
 }

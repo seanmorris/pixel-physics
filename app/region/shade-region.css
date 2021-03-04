@@ -52,6 +52,13 @@
 	height:  calc(var(--viewportHeight) + 128px);*/
 }
 
+.region.region-shade.studio .sprite {
+	/*opacity: 0.99999997019;*/
+	/*opacity: 1;*/
+	/*background-blend-mode: darken;*/
+	backdrop-filter: blur(10px);
+}
+
 .region.region-shade.studio .region-color-wrapper {
 	opacity: 0.5;
 	background-color: rgba(255,255,255,1);
@@ -60,7 +67,6 @@
 
 .region.region-shade.studio .region-filter-wrapper {
 }
-
 
 .region.region-shade.runners .region-color-wrapper {
 	mix-blend-mode: darken;
@@ -76,6 +82,31 @@
 	;
 }
 
+
+/*.filters-screen.runners::before {
+	content: ' ';
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	backdrop-filter:
+		drop-shadow(1px 1px 0.125px black)
+		drop-shadow(-1px 1px 0.125px black)
+		drop-shadow(1px -1px 0.125px black)
+		drop-shadow(-1px -1px 0.125px black)
+	;
+}
+
+.filters-screen.runners::after {
+	content: ' ';
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	mix-blend-mode: darken;
+	opacity: 0;
+}
+*/
 
 .region.region-shade.western .region-filter {
 	backdrop-filter: sepia(0.85) brightness(0.75) contrast(1.5);

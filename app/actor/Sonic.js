@@ -31,11 +31,11 @@ export class Sonic extends PointActor
 
 		this.args.skidTraction = 1.75;
 
-		this.gSpeedMaxNormal = 15;
+		this.gSpeedMaxNormal = 20;
 		this.gSpeedMaxSuper  = 30;
 
-		this.jumpForceNormal = 20;
-		this.jumpForceSuper  = 25;
+		this.jumpForceNormal = 18;
+		this.jumpForceSuper  = 22;
 
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
 		this.args.jumpForce = this.jumpForceNormal;
@@ -77,7 +77,7 @@ export class Sonic extends PointActor
 					'202080': 'a0a000'
 				});
 
-				this.superSpriteSheet = newPng.toUrl();
+				 this.superSpriteSheet = newPng.toUrl();
 
 				console.log(this.args.spriteSheet);
 			});
@@ -227,18 +227,20 @@ export class Sonic extends PointActor
 			this.twister && (this.twister.args.scale = 0);
 		}
 
-		if(this.pincher)
+		if(this.pincherBg || this.pincherFg)
 		{
-			this.pincher.args.scale *= 0.8;
+			this.pincherBg.args.scale *= 0.875;
+			this.pincherFg.args.scale *= 0.875;
 
-			if(Math.abs(this.pincher.args.scale) < 0.001)
+			if(Math.abs(this.pincherBg.args.scale) < 0.001)
 			{
-				this.pincher.args.scale = 0;
+				this.pincherBg.args.scale = 0;
+				this.pincherFg.args.scale = 0;
 			}
 		}
 		else
 		{
-			this.pinch(0);
+			this.pinch(0, 0);
 		}
 
 		if(!this.twister)
@@ -301,7 +303,7 @@ export class Sonic extends PointActor
 	{
 		if(this.public.falling && !this.dashed && !this.doubleSpin)
 		{
-			this.pinch(-300);
+			this.pinch(-300, 50);
 			this.args.xOff = 0;
 			this.args.yOff = 32;
 			this.doubleSpin = true;

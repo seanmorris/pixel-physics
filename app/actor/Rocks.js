@@ -20,7 +20,7 @@ export class Rocks extends PointActor
 	{
 		super.update();
 
-		if(this.viewport.args.audio && !this.sample)
+		if(this.viewport && this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/rock-smash.wav');
 			this.sample.volume = 0.3 + (Math.random() * -0.2);
@@ -31,12 +31,17 @@ export class Rocks extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(this.args.falling || other.occupant || other.rolling)
+		if(!other.controllable || other.isVehicle)
 		{
-			this.pop(other);
-
-			return false;
+			return;
 		}
+
+		// if(this.args.falling || other.occupant || other.rolling)
+		// {
+		// 	this.pop(other);
+
+		// 	return false;
+		// }
 
 		if(
 			type !== 2

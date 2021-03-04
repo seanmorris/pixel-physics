@@ -13,7 +13,7 @@ export class Knuckles extends PointActor
 		this.args.decel     = 0.7;
 
 		this.args.gSpeedMax = 12;
-		this.args.jumpForce = 16.5;
+		this.args.jumpForce = 16;
 		this.args.gravity   = 1;
 
 

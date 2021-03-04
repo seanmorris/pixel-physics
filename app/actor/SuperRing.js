@@ -297,12 +297,25 @@ export class SuperRing extends PointActor
 		if(this.caught)
 		{
 			const caught = this.caught;
-			this.leaving.add(caught);
 
-			caught.args.float = 0;
+			this.pinchFilterBg.classList.add('grabbing-start');
+			this.pinch(-50, 15);
 
-			this.onTimeout(100, () => {
-				this.caught = null;
+			this.onTimeout(150, () => {
+				this.pinchFilterBg.classList.add('grabbing');
+				this.leaving.add(caught);
+
+				caught.args.float = 0;
+
+				this.onTimeout(650, () => {
+					this.pinchFilterBg.classList.remove('grabbing-start');
+					this.pinchFilterBg.classList.remove('grabbing');
+					this.pinch(0, 0);
+				});
+
+				this.onTimeout(100, () => {
+					this.caught = null;
+				});
 			});
 
 			this.onTimeout(750, () => {
@@ -313,18 +326,19 @@ export class SuperRing extends PointActor
 
 	grab()
 	{
-		if(this.pinchFilter)
+		if(this.pinchFilterFg)
 		{
-			this.pinchFilter.classList.add('grabbing-start');
+			this.pinchFilterFg.classList.add('grabbing-start');
 			this.onTimeout(150, () => {
-				this.pinchFilter.classList.add('grabbing');
+				this.pinchFilterFg.classList.add('grabbing');
 
-				this.pinch(75);
+				this.pinch(0, 100);
 
 				this.onTimeout(650, () => {
-					this.pinch(0);
-					this.pinchFilter.classList.remove('grabbing-start');
-					this.pinchFilter.classList.remove('grabbing');
+					this.pinch(0, 0);
+
+					this.pinchFilterFg.classList.remove('grabbing-start');
+					this.pinchFilterFg.classList.remove('grabbing');
 				});
 			});
 		}

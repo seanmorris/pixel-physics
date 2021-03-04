@@ -154,30 +154,16 @@
 		<div class = "viewport-double-zoom">
 
 			<div class = "hud hud-dark hud-bottom-right">
-				<table>
-
-					<tr>
-						<td>[[labelFps]]</td>
-						<td>[[fpsSprite]]</td>
-					</tr>
-
-				<!-- 	<tr>
-						<td colspan="2">[[xPos]] [[yPos]]</td>
-					</tr> -->
-
-				</table>
+				<table><tr>
+					<td>[[labelFps]]</td>
+					<td>[[fpsSprite]]</td>
+				</tr></table>
 			</div>
 
 			<span class = "hud hud-top-left">
-				<div cv-if = "hasRings">
-					[[rings]]
-				</div>
-				<div cv-if = "hasCoins">
-					[[coins]]
-				</div>
-				<div cv-if = "hasEmeralds">
-					[[emeralds]]
-				</div>
+				<div cv-if = "hasRings">[[rings]]</div>
+				<div cv-if = "hasCoins">[[coins]]</div>
+				<div cv-if = "hasEmeralds">[[emeralds]]</div>
 				<!-- <div class = "timer">[[timer]]</div> -->
 			</span>
 
@@ -187,10 +173,11 @@
 					<div class = "char-icon [[charName]]"></div>
 				</div>
 			</div>
-
 		</div>
 
 		<div class = "viewport-zoom">
+
+			[[backdrop]]
 
 			<div class = "blurAngle" cv-ref = "blurAngle">
 			<div class = "blurDistance" cv-ref = "blurDistance">
@@ -206,14 +193,11 @@
 
 			<div class = "filters filters-background" cv-ref = "bgFilters"></div>
 
-			<div  cv-ref = "content" class = "viewport-content">
+			<div cv-ref = "content" class = "viewport-content">
 
-				<div cv-ref = "actors" class = "viewport-actors" cv-each = "actors:actor:a">	[[actor]]
-				</div>
+				<div cv-ref = "actors" class = "viewport-actors" cv-each = "actors:actor:a">[[actor]]</div>
 
-				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">
-					[[particle]]
-				</div>
+				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">[[particle]]</div>
 
  			</div>
 
@@ -294,6 +278,8 @@
 
 			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
 
+			<div class = "filters filters-screen [[screenFilter]]" cv-ref = "screenFilters"></div>
+
 			<div class = "titlecard [[animation]]">
 
 				<div class = "titlecard-field"></div>
@@ -322,7 +308,6 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 
 	</div>

@@ -10,6 +10,9 @@ export class TileMap
 		this.heightMaskCache = {};
 		this.solidCache = {};
 
+		this.collisionLayers = [];
+		this.destructibleLayers = [];
+
 		this.tileLayers  = [];
 		this.objectLayers = [];
 
@@ -24,6 +27,26 @@ export class TileMap
 
 				this.objectLayers = layers.filter(l => l.type === 'objectLayers');
 				this.tileLayers   = layers.filter(l => l.type === 'tilelayer');
+
+				this.collisionLayers = this.tileLayers.filter(l => {
+
+					if(!l.name.match(/^Collision\s\d+/))
+					{
+						return false;
+					}
+
+					return true;
+				})
+
+				this.destructibleLayers = this.tileLayers.filter(l => {
+
+					if(!l.name.match(/^Destructable\s\d+/))
+					{
+						return false;
+					}
+
+					return true;
+				})
 
 				const image = new Image();
 
@@ -150,11 +173,31 @@ export class TileMap
 
 		const blockSize = mapData.tilewidth;
 
-		if(layerInput !== 0)
+		if(layerInput === 1 || layerInput ===  2)
 		{
 			if(this.getSolid(xInput, yInput, 0))
 			{
 				return solidCache[solidCacheKey] = true;
+			}
+
+			for(let i = 3; i < this.tileLayers.length; i++)
+			{
+				const layer = this.tileLayers[i];
+
+				if(layer.name.substring(0, 12) === 'Destructible')
+				{
+					console.log(layer);
+
+					if(layer.destroyed)
+					{
+						continue;
+					}
+				}
+
+				if(this.getSolid(xInput, yInput, i))
+				{
+					return true;
+				}
 			}
 		}
 
