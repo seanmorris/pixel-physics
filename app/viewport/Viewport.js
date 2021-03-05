@@ -517,7 +517,7 @@ export class Viewport extends View
 
 		this.args.animation = 'start';
 
-		this.onTimeout(250, () => {
+		this.onTimeout(5000, () => {
 
 			this.args.animation = '';
 

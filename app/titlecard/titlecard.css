@@ -142,7 +142,14 @@
 	font-size: 18pt;
 }
 
+.titlecard-field {
+}
+
 .titlecard.start .titlecard-field {
+	background-image: url(/Sonic/title-screen-emblem.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
 	background-color: rgba(0,0,0,1);
 }
 
