@@ -206,6 +206,12 @@
         ]
     },
     {
+        "color": "#ff9f0000",
+        "name": "tornado",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ff3e98dd",
         "name": "water-fall",
         "properties": [

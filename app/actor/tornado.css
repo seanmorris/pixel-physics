@@ -1,0 +1,24 @@
+.actor-item.actor-tornado .sprite::before {
+	content: ' ';
+	background-image: url(/Sonic/tornado.png);
+	position: absolute;
+	top: -16px;
+	left: -32px;
+	width: 128px;
+	height: 64px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -0px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	transform: rotate(calc(1rad * var(--fly-angle)));
+}
+.actor-item.actor-tornado[data-falling="true"] .sprite::before {
+	--sprite-offset-y: -128px;
+}
+
+.actor-item.actor-tornado {
+	z-index: 10;
+	/*--animation-steps: 2;
+	--animation-width: 100px;*/
+	/*animation: drill-car-animate steps(2) infinite 140ms;*/
+}
+

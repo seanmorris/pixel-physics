@@ -31,6 +31,7 @@ export class PointActor extends View
 			--bg-filter:[[bgFilter]];
 			--sprite-sheet:[[spriteSheet|urlWrap]];
 			--angle:[[angle]];
+			--fly-angle:[[flyAngle]];
 			--ground-angle:[[groundAngle]];
 			--air-angle:[[airAngle]];
 			--height:[[height]];
@@ -153,6 +154,8 @@ export class PointActor extends View
 		this.args.float  = this.args.float  || 0;
 
 		this.colliding = false;
+
+		this.args.flyAngle = 0;
 
 		this.args.bindTo(['xSpeed'], v => {
 			this.args.airAngle = Math.atan2(this.args.ySpeed, v);
@@ -1606,11 +1609,11 @@ export class PointActor extends View
 
 			if(!vehicle.args.falling)
 			{
-				this.args.groundAngle = vehicle.args.groundAngle;
+				this.args.groundAngle = vehicle.args.groundAngle || 0;
 			}
 			else
 			{
-				this.args.groundAngle = 0;
+				this.args.groundAngle = (vehicle.args.flyAngle || 0) * -this.public.direction;
 			}
 
 			this.args.cameraMode = vehicle.args.cameraMode;

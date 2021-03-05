@@ -37,6 +37,7 @@ import { TextActor } from '../actor/TextActor';
 
 import { EggMobile } from '../actor/EggMobile';
 import { DrillCar } from '../actor/DrillCar';
+import { Tornado } from '../actor/Tornado';
 
 import { NuclearSuperball } from '../actor/NuclearSuperball';
 
@@ -74,6 +75,7 @@ const objectPalette = {
 	, 'projectile':   Projectile
 	, 'marble-block': MarbleBlock
 	, 'drill-car':    DrillCar
+	, 'tornado':      Tornado
 	, 'egg-mobile':   EggMobile
 	, 'rocks-tall':   Rocks
 	, 'rocks-med':    Rocks
@@ -1207,9 +1209,6 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-
-			this.moveCamera();
-
 			this.rings.args.value = this.controlActor.args.rings;
 			this.coins.args.value = this.controlActor.args.coins;
 			this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
@@ -1364,6 +1363,11 @@ export class Viewport extends View
 		else
 		{
 			this.args.controlCard = this.controlCard;
+		}
+
+		if(this.controlActor)
+		{
+			this.moveCamera();
 		}
 
 		this.args.moveCard = this.moveCard;
