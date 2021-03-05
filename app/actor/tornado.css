@@ -21,6 +21,12 @@
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	z-index: 100;
 }
+
+.actor-item.actor-tornado[data-facing="left"] .sprite .fuselage {
+	--sprite-offset-y: -192px;
+	transform: scaleX(-1);
+}
+
 .actor-item.actor-tornado[data-falling="true"] .sprite .plane {
 	--sprite-offset-y: -128px;
 }
@@ -41,7 +47,18 @@
 	height: 16px;
 }
 
+.actor-item.actor-tornado .propeller {
+	transition: transform 0.1s ease-in;
+	background-image: url(/Sonic/tornado-propeller.png);
+	position: absolute;
+	top: 24px;
+	right: 0px;
+	width: 16px;
+	height: 24px;
+	z-index: 200;
+	animation: tornado-propel steps(4) infinite 128ms;
 
+}
 
 .actor-item.actor-tornado .thruster {
 	transition: transform 0.1s ease-in;
@@ -55,11 +72,11 @@
 
 .actor-item.actor-tornado .plane[data-thrusting="true"] .thruster {
 	animation: tornado-thrust steps(8) infinite 96ms;
-	transition: transform 0.5s ease-out;
+	transition: transform 0.125s ease-in;
 }
 
 .actor-item.actor-tornado .plane[data-thrusting="false"] .thruster {
-	transition: transform 0.25s ease-out;
+	transition: transform 0.25s ease-in;
 	transform: translateY(-120%);
 }
 
@@ -82,6 +99,16 @@
 	width: 6px;
 	height: 7px;
 }
+
+@-webkit-keyframes tornado-propel {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 64px 0px;
+	}
+}
+
 
 @-webkit-keyframes tornado-thrust {
 	from{
