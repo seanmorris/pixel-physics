@@ -931,7 +931,7 @@ export class PointActor extends View
 								break;
 						}
 
-						this.args.groundAngle += Math.PI / 2;
+						this.args.groundAngle = Number(this.args.groundAngle) + Math.PI / 2;
 					}
 				}
 			}
@@ -1389,6 +1389,11 @@ export class PointActor extends View
 
 	callCollideHandler(other)
 	{
+		if(this.isGhost)
+		{
+			return;
+		}
+
 		this.colliding = true;
 
 		let type;
@@ -2232,7 +2237,7 @@ export class PointActor extends View
 			return Math.PI;
 		}
 
-		const groundAngle = this.public.groundAngle;
+		const groundAngle = Number(this.public.groundAngle);
 
 		let trajectory;
 
@@ -2406,6 +2411,7 @@ export class PointActor extends View
 	get canStick() { return false; }
 	get canSpindash() { return false; }
 	get isEffect() { return false; }
+	get isGhost() { return false; }
 	get isVehicle() { return false; }
 	get solid() { return false; }
 

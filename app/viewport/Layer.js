@@ -32,6 +32,21 @@ export class Layer extends View
 
 	update(tileMap, xDir, yDir)
 	{
+		if(this.args.destroyed && this.tags.background)
+		{
+			const viewport = this.args.viewport;
+			const tileMap  = viewport.tileMap;
+			const layerId  = this.args.layerId;
+			const layers   = tileMap.tileLayers;
+			const layerDef = layers[layerId];
+
+			layerDef.destroyed = true;
+
+			this.tags.background.style({display: 'none'});
+
+			return;
+		}
+
 		const blockSize  = this.args.blockSize;
 		const blocksWide = Math.ceil((this.args.width  / blockSize));
 		const blocksHigh = Math.ceil((this.args.height / blockSize));

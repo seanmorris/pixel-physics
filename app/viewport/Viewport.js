@@ -24,6 +24,9 @@ import { Spring } from '../actor/Spring';
 import { Ring } from '../actor/Ring';
 import { Coin } from '../actor/Coin';
 
+import { WaterJet } from '../actor/WaterJet';
+import { WaterFall } from '../actor/WaterFall';
+
 import { PowerupGlow } from '../actor/PowerupGlow';
 import { SuperRing } from '../actor/SuperRing';
 
@@ -93,6 +96,8 @@ const objectPalette = {
 	, 'powerup-glow': PowerupGlow
 	, 'explosion':    Explosion
 	, 'text-actor':   TextActor
+	, 'water-jet':    WaterJet
+	, 'water-fall':   WaterFall
 };
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -808,10 +813,14 @@ export class Viewport extends View
 		{
 			if(!this.args.layers[i])
 			{
-				this.args.layers[i] = new Layer({layerId: i, name: layers[i].name});
+				this.args.layers[i] = new Layer({
+					layerId: i
+					, viewport: this
+					, name: layers[i].name
+				});
 
-				this.args.layers[i].args.height = this.args.height * 2;
-				this.args.layers[i].args.width  = this.args.width * 2;
+				this.args.layers[i].args.height = this.args.height;
+				this.args.layers[i].args.width  = this.args.width;
 			}
 
 			const xDir = Math.sign(this.args.layers[i].x - this.args.x);

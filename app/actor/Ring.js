@@ -34,6 +34,26 @@ export class Ring extends PointActor
 
 		super.collideA(other);
 
+		this.args.gone = true;
+
+		if(other.args.owner)
+		{
+			other.args.owner.args.rings += 1;
+		}
+		else if(other.occupant)
+		{
+			other.occupant.args.rings += 1;
+		}
+		else
+		{
+			other.args.rings += 1;
+		}
+
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		this.args.type = 'actor-item actor-ring collected';
 
 		if(this.viewport.args.audio && this.sample)
@@ -60,21 +80,6 @@ export class Ring extends PointActor
 			this.onNextFrame(()=> {
 				other.collect(this);
 			});
-		}
-
-		this.args.gone = true;
-
-		if(other.args.owner)
-		{
-			other.args.owner.args.rings += 1;
-		}
-		else if(other.occupant)
-		{
-			other.occupant.args.rings += 1;
-		}
-		else
-		{
-			other.args.rings += 1;
 		}
 
 		// this.onTimeout(120, () => {

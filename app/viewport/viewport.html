@@ -153,28 +153,9 @@
 
 		<div class = "viewport-double-zoom">
 
-			<div class = "hud hud-dark hud-bottom-right">
-				<table><tr>
-					<td>[[labelFps]]</td>
-					<td>[[fpsSprite]]</td>
-				</tr></table>
-			</div>
 
-			<span class = "hud hud-top-left">
-				<div cv-if = "hasRings">[[rings]]</div>
-				<div cv-if = "hasCoins">[[coins]]</div>
-				<div cv-if = "hasEmeralds">[[emeralds]]</div>
-				<!-- <div class = "timer">[[timer]]</div> -->
-			</span>
 
-			<div class = "hud hud-dark hud-top-right">
-				<div class = "char-hud">
-					<span>[[char]]</span>
-					<div class = "char-icon [[charName]]"></div>
-				</div>
-			</div>
 		</div>
-
 		<div class = "viewport-zoom">
 
 			[[backdrop]]
@@ -275,6 +256,27 @@
 			</div>
 
 			<div class = "status-message">[[status]]</div>
+
+			<span class = "hud hud-top-left">
+				<div cv-if = "hasRings">[[rings]]</div>
+				<div cv-if = "hasCoins">[[coins]]</div>
+				<div cv-if = "hasEmeralds">[[emeralds]]</div>
+				<!-- <div class = "timer">[[timer]]</div> -->
+			</span>
+
+			<div class = "hud hud-dark hud-top-right">
+				<div class = "char-hud">
+					<span>[[char]]</span>
+					<div class = "char-icon [[charName]]"></div>
+				</div>
+			</div>
+
+			<div class = "hud hud-dark hud-bottom-right">
+				<table><tr>
+					<td>[[labelFps]]</td>
+					<td>[[fpsSprite]]</td>
+				</tr></table>
+			</div>
 
 			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
 

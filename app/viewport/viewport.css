@@ -8,6 +8,8 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+
+	image-rendering: pixelated;
 }
 
 .viewport-frame {

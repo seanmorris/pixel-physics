@@ -1,0 +1,16 @@
+.actor-water-fall .sprite {
+	background-image: url(/Sonic/water-fall.png);
+	background-repeat: repeat-y;
+	animation: water-fall-animate steps(4) infinite 256ms reverse;
+	opacity: 0.75;
+	z-index: 100;
+}
+
+@keyframes water-fall-animate {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: -256px 0px;
+	}
+}

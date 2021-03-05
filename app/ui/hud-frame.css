@@ -1,3 +1,7 @@
+.hud {
+	transform: scale(0.5);
+}
+
 .hud-top-left {
 	position: absolute;
 	top: 5px;
@@ -15,8 +19,8 @@
 	right: 5px;
 	display: flex;
 	flex-direction: column;
-	/*transform: scale(calc(var(--scale) / 2));*/
-	transform-origin: top left;
+	/*transform: scale(calc(var(--scale) / 4));*/
+	transform-origin: top right;
 	justify-content: flex-start;
 }
 
@@ -26,7 +30,7 @@
 	right: 5px;
 	display: flex;
 	flex-direction: column;
-	transform-origin: top left;
+	transform-origin: bottom right;
 	justify-content: flex-start;
 }
 

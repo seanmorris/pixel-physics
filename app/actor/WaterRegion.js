@@ -44,7 +44,7 @@ export class WaterRegion extends Region
 			this.switch.args.bindTo('active', v => {
 				if(!v && this.draining > 0)
 				{
-					this.draining = -1;
+					// this.draining = -1;
 				}
 
 				if(v)
@@ -61,22 +61,27 @@ export class WaterRegion extends Region
 
 		if(this.draining)
 		{
-			if(this.public.height <= 0)
-			{
-				this.args.display = 'none';
-			}
-			else
-			{
-				this.args.display = 'initial';
-			}
-
-			if(this.draining > 0 && this.public.height > 0)
+			if(this.draining > 0 && this.public.height >= 128)
 			{
 				this.args.height -= 3.5;
 			}
 			else if(this.draining < 0 && this.public.height < this.originalHeight)
 			{
 				this.args.height += 0.5;
+			}
+
+			if(this.public.height <= 0)
+			{
+				this.args.display = 'none';
+
+				if(this.draining > 0)
+				{
+					this.draining = 0;
+				}
+			}
+			else
+			{
+				this.args.display = 'initial';
 			}
 		}
 

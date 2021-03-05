@@ -11,7 +11,7 @@ export class Switch extends PointActor
 		this.args.width  = 32;
 		this.args.height = 10;
 
-		this.args.float  = -1;
+		// this.args.float  = -1;
 
 		this.removeTimer = null;
 
@@ -28,6 +28,8 @@ export class Switch extends PointActor
 
 	update()
 	{
+		super.update();
+
 		if(this.ignore > 0)
 		{
 			this.ignore--;
@@ -72,7 +74,7 @@ export class Switch extends PointActor
 		{
 			if(!this.public.active)
 			{
-				this.beep();
+				this.activate();
 			}
 
 			this.args.active = true;
@@ -105,7 +107,7 @@ export class Switch extends PointActor
 		{
 			if(!this.public.active)
 			{
-				this.beep();
+				this.activate();
 			}
 
 			this.ignore = 8;
@@ -115,6 +117,19 @@ export class Switch extends PointActor
 			this.activator = other;
 
 			return true;
+		}
+	}
+
+	activate()
+	{
+		this.beep();
+
+		if(this.args.destroyLayer)
+		{
+			const layerId = this.args.destroyLayer;
+			const layer   = this.viewport.args.layers[ layerId ];
+
+			layer.args.destroyed = true;
 		}
 	}
 

@@ -1,0 +1,14 @@
+.actor-water-jet .sprite {
+	background-image: url(/Sonic/water-jet.png);
+	background-repeat: repeat-x;
+	animation: water-jet-animate steps(4) infinite 256ms;
+}
+
+@keyframes water-jet-animate {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 0px -256px;
+	}
+}

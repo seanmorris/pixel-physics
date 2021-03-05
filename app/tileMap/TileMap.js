@@ -40,7 +40,7 @@ export class TileMap
 
 				this.destructibleLayers = this.tileLayers.filter(l => {
 
-					if(!l.name.match(/^Destructable\s\d+/))
+					if(!l.name.match(/^Destructible\s\d+/))
 					{
 						return false;
 					}
@@ -186,8 +186,6 @@ export class TileMap
 
 				if(layer.name.substring(0, 12) === 'Destructible')
 				{
-					console.log(layer);
-
 					if(layer.destroyed)
 					{
 						continue;
@@ -204,14 +202,17 @@ export class TileMap
 		const currentTile = this.coordsToTile(xInput, yInput);
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
-		if(tileNumber === 0)
+		if(layerInput <= 2)
 		{
-			solidCache[solidCacheKey] = false;
-		}
+			if(tileNumber === 0)
+			{
+				solidCache[solidCacheKey] = false;
+			}
 
-		if(tileNumber === 1)
-		{
-			solidCache[solidCacheKey] = true;
+			if(tileNumber === 1)
+			{
+				solidCache[solidCacheKey] = true;
+			}
 		}
 
 		const tilePos = this.getTile(tileNumber).map(coord => {
@@ -223,7 +224,7 @@ export class TileMap
 
 		const heightMaskKey = [xInput, yInput, tileNumber].join('::');
 
-		if(heightMaskKey in heightMaskCache)
+		if(layerInput <= 2 && heightMaskKey in heightMaskCache)
 		{
 			return solidCache[solidCacheKey] = heightMaskCache[heightMaskKey];
 		}
@@ -242,7 +243,12 @@ export class TileMap
 			heightMaskCache[heightMaskKey] = true;
 		}
 
-		return solidCache[solidCacheKey] = heightMaskCache[heightMaskKey];
+		if(layerInput <= 2)
+		{
+			solidCache[solidCacheKey] = heightMaskCache[heightMaskKey];
+		}
+
+		return heightMaskCache[heightMaskKey];
 	}
 
 	get blockSize()

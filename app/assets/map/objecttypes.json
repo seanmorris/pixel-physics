@@ -1,11 +1,5 @@
 [
     {
-        "color": "#ffa0a0a4",
-        "name": "rocks-tall",
-        "properties": [
-        ]
-    },
-    {
         "color": "#ffffff00",
         "name": "coin",
         "properties": [
@@ -82,6 +76,12 @@
         ]
     },
     {
+        "color": "#ffa0a0a4",
+        "name": "powerup-glow",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ffa40003",
         "name": "projectile",
         "properties": [
@@ -121,8 +121,20 @@
         ]
     },
     {
+        "color": "#ffa0a0a4",
+        "name": "rocks-tall",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ffa49f00",
         "name": "seymour",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "shade-region",
         "properties": [
         ]
     },
@@ -161,8 +173,19 @@
     },
     {
         "color": "#ffa0a0a4",
+        "name": "super-ring",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
         "name": "switch",
         "properties": [
+            {
+                "name": "destroyLayer",
+                "type": "int",
+                "value": 0
+            }
         ]
     },
     {
@@ -173,7 +196,24 @@
     },
     {
         "color": "#ffa0a0a4",
-        "name": "window",
+        "name": "text-actor",
+        "properties": [
+            {
+                "name": "content",
+                "type": "string",
+                "value": "content"
+            }
+        ]
+    },
+    {
+        "color": "#ff3e98dd",
+        "name": "water-fall",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff3e98dd",
+        "name": "water-jet",
         "properties": [
         ]
     }

@@ -30,10 +30,11 @@
 }
 
 .region.region-water .region-color {
-	bottom: 0px;
-	z-index: 10001;
-	background-color: rgba(0,128,255,0.5);
-	opacity: 0.75;
+	background-color: rgba(0,128,255,0.25);
+}
+
+.region.region-water .region-filter-wrapper {
+	overflow: hidden;
 }
 
 .region.region-water .region-filter {
@@ -49,9 +50,9 @@
 	width: calc(1px * var(--width));
 	height: calc(calc(1px * var(--height)) + 128px);
 
-	backdrop-filter: saturate(0.25);
+	backdrop-filter: blur(0.25px);
 	filter: url(#waves) blur(0.3px);
-	background-blend-mode: darken;
+	/*background-blend-mode: darken;*/
 	z-index: -10000;
 	/*animation: water-distort infinite 3s alternate ease-in-out;*/
 
@@ -64,20 +65,19 @@
 	background-image: url(Sonic/water-surface-wave.png);
 	position: absolute;
 	transform: translateY(-16px);
-	opacity: 1;
 	width: 100%;
-	opacity: 0.75;
+	opacity: min(var(--height), 0.5);
 	height: 16px;
 
 	background-position: 0px 0px;
 
-	/*animation: water-waves 10000ms steps(1,end) infinite;*/
-	/*background-position-x: 0px;*/
-	/*background-position-y: 32px;*/
-	animation-name: water-waves-frames;
-	animation-timing-function: steps(3);
-	animation-iteration-count: infinite;
-	animation-duration: 0.5s;
+	/*animation:  100ms steps(1,end) infinite;
+	background-position-x: 0px;
+	background-position-y: 32px;*/
+	animation-name: water-waves-frames, water-waves-flow;
+	animation-timing-function: steps(3), linear;
+	animation-iteration-count: infinite, infinite;
+	animation-duration: 0.75s, 1.5s;
 }
 
 @keyframes water-waves-frames {
@@ -97,7 +97,7 @@
 		/*transform: rotate(0deg);*/
 	}
 	100% {
-		background-position-x: 100%;
+		background-position-x: 32px;
 		/*transform: rotate(180deg);*/
 	}
 }

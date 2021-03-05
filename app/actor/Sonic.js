@@ -293,10 +293,9 @@ export class Sonic extends PointActor
 
 		if(this.public.ySpeed > 0)
 		{
-			this.public.ySpeed = 0;
+			this.args.ySpeed = 0;
 		}
 
-		this.public.ySpeed = 0;
 		this.args.xSpeed = direction * 16;
 
 		this.dashTimer = 0;
