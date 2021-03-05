@@ -1,24 +1,93 @@
-.actor-item.actor-tornado .sprite::before {
-	content: ' ';
-	background-image: url(/Sonic/tornado.png);
+.actor-item.actor-tornado {
+	z-index: 100;
+}
+
+.actor-item.actor-tornado .sprite .plane {
 	position: absolute;
 	top: -5px;
 	left: -32px;
 	width: 128px;
 	height: 64px;
+	transform: rotate(calc(1rad * var(--fly-angle)));
+}
+
+.actor-item.actor-tornado .sprite .fuselage {
+	position: absolute;
+	background-image: url(/Sonic/tornado.png);
+	width: 100%;
+	height: 100%;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	transform: rotate(calc(1rad * var(--fly-angle)));
+	z-index: 100;
 }
-.actor-item.actor-tornado[data-falling="true"] .sprite::before {
+.actor-item.actor-tornado[data-falling="true"] .sprite .plane {
 	--sprite-offset-y: -128px;
 }
 
 .actor-item.actor-tornado {
-	z-index: 10;
 	/*--animation-steps: 2;
 	--animation-width: 100px;*/
 	/*animation: drill-car-animate steps(2) infinite 140ms;*/
 }
 
+.actor-item.actor-tornado .front-landing-gear {
+	transition: transform 0.1s ease-in;
+	background-image: url(/Sonic/tornado-front-landing-gear.png);
+	position: absolute;
+	top: 48px;
+	left: 96px;
+	width: 16px;
+	height: 16px;
+}
+
+
+
+.actor-item.actor-tornado .thruster {
+	transition: transform 0.1s ease-in;
+	background-image: url(/Sonic/tornado-thruster.png);
+	position: absolute;
+	top: 48px;
+	left: 26px;
+	width: 88px;
+	height: 16px;
+}
+
+.actor-item.actor-tornado .plane[data-thrusting="true"] .thruster {
+	animation: tornado-thrust steps(8) infinite 96ms;
+	transition: transform 0.5s ease-out;
+}
+
+.actor-item.actor-tornado .plane[data-thrusting="false"] .thruster {
+	transition: transform 0.25s ease-out;
+	transform: translateY(-120%);
+}
+
+.actor-item.actor-tornado .plane[data-landing-gear="false"] .front-landing-gear {
+	transition: transform 0.5s ease-out;
+	transform: translateY(-100%);
+}
+
+.actor-item.actor-tornado .plane[data-landing-gear="false"] .rear-landing-gear {
+	transition: transform 0.5s ease-out;
+	transform: translate(100%,-100%);
+}
+
+.actor-item.actor-tornado .rear-landing-gear {
+	transition: transform 0.1s ease-in;
+	background-image: url(/Sonic/tornado-rear-landing-gear.png);
+	position: absolute;
+	top: 33px;
+	left: 10px;
+	width: 6px;
+	height: 7px;
+}
+
+@-webkit-keyframes tornado-thrust {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 0px 128px;
+	}
+}

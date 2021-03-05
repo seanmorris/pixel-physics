@@ -2455,18 +2455,40 @@ export class PointActor extends View
 			const press   = `command_${i}`;
 			const hold    = `hold_${i}`;
 
-			if(button.delta === 1)
+			if(this.standingOn && this.standingOn.isVehicle)
 			{
-				this[press] && this[press]( button );
+				const vehicle = this.standingOn;
+
+				if(button.delta === 1)
+				{
+					vehicle[press] && vehicle[press]( button );
+				}
+				else if(button.delta === -1)
+				{
+					vehicle[release] && vehicle[release]( button );
+				}
+				else if(button.active)
+				{
+					vehicle[hold] && vehicle[hold]( button );
+				}
 			}
-			else if(button.delta === -1)
+
+			if(!this.standingOn || !this.standingOn.isVehicle || i === 0)
 			{
-				this[release] && this[release]( button );
+				if(button.delta === 1)
+				{
+					this[press] && this[press]( button );
+				}
+				else if(button.delta === -1)
+				{
+					this[release] && this[release]( button );
+				}
+				else if(button.active)
+				{
+					this[hold] && this[hold]( button );
+				}
 			}
-			else if(button.active)
-			{
-				this[hold] && this[hold]( button );
-			}
+
 		}
 	}
 

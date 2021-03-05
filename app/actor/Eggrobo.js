@@ -47,12 +47,15 @@ export class Eggrobo extends PointActor
 			this.thrusterSound.loop = true;
 		}
 
-		if(this.thrusterSound.currentTime > 0.4 + (Math.random() / 10))
+		if(this.thrusterSound)
 		{
-			this.thrusterSound.currentTime = 0.05;
-		}
+			if(this.thrusterSound.currentTime > 0.4 + (Math.random() / 10))
+			{
+				this.thrusterSound.currentTime = 0.05;
+			}
 
-		this.thrusterSound.volume = 0.2 + (Math.random() * -0.05);
+			this.thrusterSound.volume = 0.2 + (Math.random() * -0.05);
+		}
 
 		if(!this.box)
 		{

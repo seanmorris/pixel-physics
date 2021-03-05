@@ -1122,8 +1122,6 @@ export class Viewport extends View
 
 		this.args.displaceWater = this.args.frameId % 128;
 
-		const actorThree = this.actorsById[3];
-
 		if(this.controlActor)
 		{
 			if(this.args.isReplaying)
@@ -1165,7 +1163,7 @@ export class Viewport extends View
 				}
 			}
 
-			if(!this.args.isReplaying || this.controlActor !== actorThree)
+			if(!this.args.isReplaying)
 			{
 				this.args.focusMe.args.hide = '';
 
