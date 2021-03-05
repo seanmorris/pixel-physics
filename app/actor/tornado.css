@@ -2,12 +2,12 @@
 	content: ' ';
 	background-image: url(/Sonic/tornado.png);
 	position: absolute;
-	top: -16px;
+	top: -5px;
 	left: -32px;
 	width: 128px;
 	height: 64px;
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: -0px;
+	--sprite-offset-y: -128px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	transform: rotate(calc(1rad * var(--fly-angle)));
 }

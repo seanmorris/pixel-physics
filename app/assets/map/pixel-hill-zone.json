@@ -2240,7 +2240,7 @@
                  "visible":true,
                  "width":32,
                  "x":1456,
-                 "y":1760
+                 "y":1768
                 }, 
                 {
                  "gid":2,
@@ -2252,11 +2252,11 @@
                  "visible":true,
                  "width":32,
                  "x":1520,
-                 "y":1760
+                 "y":1768
                 }, 
                 {
                  "gid":90,
-                 "height":160,
+                 "height":152,
                  "id":2777,
                  "name":"shade-region",
                  "properties":[
@@ -2270,7 +2270,7 @@
                  "visible":true,
                  "width":480,
                  "x":1216,
-                 "y":1848
+                 "y":1888
                 }, 
                 {
                  "gid":2,
@@ -2294,7 +2294,7 @@
                  "visible":true,
                  "width":32,
                  "x":1488,
-                 "y":1760
+                 "y":1768
                 }, 
                 {
                  "gid":2,
@@ -3270,7 +3270,7 @@
                  "visible":true,
                  "width":224,
                  "x":1328,
-                 "y":1792
+                 "y":1800
                 }, 
                 {
                  "gid":2,

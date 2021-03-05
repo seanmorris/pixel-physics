@@ -131,6 +131,8 @@ export class Viewport extends View
 
 		this.args.currentActor = '';
 
+		this.args.xOffsetTarget = 0.5;
+		this.args.xOffset = 0.5;
 		this.args.yOffsetTarget = 0.75;
 		this.args.yOffset = 0.5;
 
@@ -166,6 +168,9 @@ export class Viewport extends View
 		this.args.angle  = new CharacterString({value:0});
 
 		this.args.airAngle  = new CharacterString({value:0});
+
+		this.args.nowPlaying = new CharacterString({value:'Now playing'});
+		this.args.trackName  = new CharacterString({value:'Ice cap zone act 1 theme'});
 
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
@@ -685,14 +690,35 @@ export class Viewport extends View
 
 		let cameraSpeed = 15;
 
-		if(this.controlActor.args.falling)
+		// if(this.controlActor.args.cameraMode == 'airplane')
+		// {
+
+		// }
+		// else if(this.controlActor.args.cameraMode == 'aerial')
+		// {
+
+		// }
+		// else if(this.controlActor.args.cameraMode == 'normal')
+		// {
+
+		// }
+
+		if(this.controlActor.args.cameraMode == 'airplane')
 		{
 			this.args.yOffsetTarget = 0.5;
+			this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
+			cameraSpeed = 25;
+		}
+		else if(this.controlActor.args.falling)
+		{
+			this.args.yOffsetTarget = 0.5;
+			this.args.xOffsetTarget = 0.5;
 			cameraSpeed = 25;
 
 		}
 		else if(this.controlActor.args.mode === 2)
 		{
+			this.args.xOffsetTarget = 0.5;
 			this.args.yOffsetTarget = 0.25;
 			cameraSpeed = 10;
 			// if(this.controlActor.args.cameraMode == 'normal')
@@ -712,16 +738,18 @@ export class Viewport extends View
 		}
 		else if(this.controlActor.args.cameraMode == 'normal')
 		{
+			this.args.xOffsetTarget = 0.5;
 			this.args.yOffsetTarget = 0.75;
 			cameraSpeed = 10;
 		}
 		else
 		{
+			this.args.xOffsetTarget = 0.5;
 			this.args.yOffsetTarget = 0.5;
 			cameraSpeed = 20;
 		}
 
-		const xNext = -this.controlActor.x + this.args.width  * 0.5;
+		const xNext = -this.controlActor.x + this.args.width  * this.args.xOffset;
 		const yNext = -this.controlActor.y + this.args.height * this.args.yOffset;
 
 		this.args.x = xNext;
@@ -734,6 +762,15 @@ export class Viewport extends View
 		else
 		{
 			this.args.yOffset += ((this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed);
+		}
+
+		if(Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.01)
+		{
+			this.args.xOffset = this.args.xOffsetTarget
+		}
+		else
+		{
+			this.args.xOffset += ((this.args.xOffsetTarget - this.args.xOffset) / cameraSpeed);
 		}
 
 		if(this.args.x > 96)

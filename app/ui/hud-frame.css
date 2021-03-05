@@ -1,5 +1,6 @@
 .hud {
 	transform: scale(0.5);
+	image-rendering: pixelated;
 }
 
 .hud-top-left {
@@ -32,6 +33,54 @@
 	flex-direction: column;
 	transform-origin: bottom right;
 	justify-content: flex-start;
+}
+
+.hud-bottom-left {
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+	height: 28px;
+	overflow: hidden;
+	transform-origin: bottom left;
+	justify-content: flex-start;
+	padding-left: 48px !important;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	filter: brightness(0);
+	border-top-left-radius: 19px !important;
+	border-bottom-left-radius: 18px !important;
+	transform: scale(0.5, 0.5) translateX(-120%);
+	transition: transform 0.5s ease-in, filter 0.75s 0.25s ease-in;
+	transition: transform 0.75s ease-in, filter 0.5s ease-in;
+}
+
+.hud-bottom-left {
+	transform: scale(0.5, 0.5) translateX(-120%);
+	transition: transform 0.5s ease-out, filter 0.75s ease-in;
+	/*filter: brightness(1);
+	transform: scale(0.5, 0.5);*/
+}
+
+.hud-bottom-left > .hud-character-string {
+	flex-shrink: 0;
+	flex-grow: 0;
+}
+
+.hud-bottom-left::before {
+	content: ' ';
+	position: absolute;
+	left: -0px;
+	top: 0px;
+	background-image: url(/Sonic/headphones.png);
+	background-color: rgba(255,255,255,0.5);
+	background-repeat: no-repeat;
+	background-position: center;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	padding: 2px;
+	margin: 2px;
 }
 
 .hud-top-left > :empty {

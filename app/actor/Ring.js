@@ -49,7 +49,7 @@ export class Ring extends PointActor
 			other.args.rings += 1;
 		}
 
-		if(!other.controllable)
+		if(!other.controllable && !other.occupant && !other.owner)
 		{
 			return;
 		}
