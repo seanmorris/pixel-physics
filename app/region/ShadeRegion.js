@@ -11,7 +11,7 @@ export class ShadeRegion extends Region
 	currentFilter = -1;
 
 	filters = [
-		'studio', 'runners', 'western', 'hydro', 'heat', 'frost', 'eight-bit', 'corruption', 'black-hole', 'normal'
+		'studio', 'runners', 'western', 'hydro', 'heat', 'frost', 'eight-bit', 'corruption', /*'black-hole,'*/ 'normal'
 	];
 
 	constructor(...args)
@@ -53,13 +53,15 @@ export class ShadeRegion extends Region
 			id:'shade-pinch'
 			, width: this.args.width
 			, height: this.args.height
+			// , scale: 150
 		});
 
 		this.pinch.render(this.tags.sprite);
-		this.args.bindTo('scale', v => {
-			this.pinch.args.scale = v;
-			this.cylinder.args.scale = v;
-		});
+
+		// this.args.bindTo('scale', v => {
+		// 	this.pinch.args.scale = v;
+		// 	this.cylinder.args.scale = v;
+		// });
 
 		this.rotateFilter();
 
