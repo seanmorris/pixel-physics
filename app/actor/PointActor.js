@@ -2455,7 +2455,22 @@ export class PointActor extends View
 			const press   = `command_${i}`;
 			const hold    = `hold_${i}`;
 
-			if(this.standingOn && this.standingOn.isVehicle)
+			if(!this.standingOn || !this.standingOn.isVehicle || i == 0)
+			{
+				if(button.delta === 1)
+				{
+					this[press] && this[press]( button );
+				}
+				else if(button.delta === -1)
+				{
+					this[release] && this[release]( button );
+				}
+				else if(button.active)
+				{
+					this[hold] && this[hold]( button );
+				}
+			}
+			else if(this.standingOn && this.standingOn.isVehicle)
 			{
 				const vehicle = this.standingOn;
 
@@ -2472,29 +2487,12 @@ export class PointActor extends View
 					vehicle[hold] && vehicle[hold]( button );
 				}
 			}
-
-			if(!this.standingOn || !this.standingOn.isVehicle || i === 0)
-			{
-				if(button.delta === 1)
-				{
-					this[press] && this[press]( button );
-				}
-				else if(button.delta === -1)
-				{
-					this[release] && this[release]( button );
-				}
-				else if(button.active)
-				{
-					this[hold] && this[hold]( button );
-				}
-			}
-
 		}
 	}
 
 	command_0() // jump
 	{
-		if(this.args.falling || this.willJump)
+		if(this.public.falling || this.willJump)
 		{
 			return;
 		}

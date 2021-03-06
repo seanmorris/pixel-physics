@@ -1,31 +1,34 @@
 .hud {
-	transform: scale(0.5);
 	image-rendering: pixelated;
 }
 
 .hud-top-left {
+	display: none;
+	display: block;
 	position: absolute;
 	top: 5px;
+	bottom: 0;
 	left: 5px;
+	right: 0;
 	display: flex;
-	flex-direction: column;
-	/*transform: scale(calc(var(--scale) / 2));*/
 	transform-origin: top left;
+	flex-direction: column;
 	justify-content: flex-start;
 }
 
 .hud-top-right {
+	display: block;
 	position: absolute;
 	top: 5px;
 	right: 5px;
 	display: flex;
 	flex-direction: column;
-	/*transform: scale(calc(var(--scale) / 4));*/
 	transform-origin: top right;
 	justify-content: flex-start;
 }
 
 .hud-bottom-right {
+	display: block;
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
@@ -36,6 +39,7 @@
 }
 
 .hud-bottom-left {
+	display: none;
 	position: absolute;
 	bottom: 5px;
 	left: 5px;

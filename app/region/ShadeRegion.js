@@ -56,13 +56,10 @@ export class ShadeRegion extends Region
 		});
 
 		this.pinch.render(this.tags.sprite);
-
 		this.args.bindTo('scale', v => {
 			this.pinch.args.scale = v;
 			this.cylinder.args.scale = v;
 		});
-
-		this.onFrame(() => this.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25));
 
 		this.rotateFilter();
 
@@ -87,6 +84,7 @@ export class ShadeRegion extends Region
 	{
 		super.update();
 
+		this.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25)
 	}
 
 	rotateFilter()

@@ -1,6 +1,6 @@
 <section class = "filters" cv-each = "effects:effect">[[effect]]</section>
 
-<div class = "viewport-frame" cv-ref = "frame">
+<div class = "viewport-frame [[secret]]" cv-ref = "frame">
 	<div class = "viewport-header">
 		<span class = "sean-icon"></span>
 		<h1>Pixel Physics</h1>
@@ -151,11 +151,7 @@
 		</defs>
 		</svg>
 
-		<div class = "viewport-double-zoom">
-
-
-
-		</div>
+		<!-- <div class = "viewport-double-zoom"></div> -->
 		<div class = "viewport-zoom">
 
 			[[backdrop]]
@@ -181,7 +177,9 @@
 				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">[[particle]]</div>
 
  			</div>
+ 		</div>
 
+ 		<div class = "viewport-overlay">
 			<div class = "hud">
 				<table>
 
@@ -257,12 +255,12 @@
 
 			<div class = "status-message">[[status]]</div>
 
-			<span class = "hud hud-top-left">
+			<div class = "hud hud-top-left">
 				<div cv-if = "hasRings">[[rings]]</div>
 				<div cv-if = "hasCoins">[[coins]]</div>
 				<div cv-if = "hasEmeralds">[[emeralds]]</div>
-				<!-- <div class = "timer">[[timer]]</div> -->
-			</span>
+				<div class = "timer">[[timer]]</div>
+			</div>
 
 			<div class = "hud hud-dark hud-top-right">
 				<div class = "char-hud">
@@ -284,8 +282,6 @@
 			</div>
 
 			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
-
-			<div class = "filters filters-screen [[screenFilter]]" cv-ref = "screenFilters"></div>
 
 			<div class = "titlecard [[animation]]">
 

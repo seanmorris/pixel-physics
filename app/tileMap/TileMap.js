@@ -7,8 +7,8 @@ export class TileMap
 		this.heightMask = null;
 
 		this.tileNumberCache = new Map;
-		this.heightMaskCache = {};
-		this.solidCache = {};
+		this.heightMaskCache = new Map;
+		this.solidCache = new Map;
 
 		this.collisionLayers = [];
 		this.destructibleLayers = [];
@@ -83,33 +83,33 @@ export class TileMap
 
 	getTileNumber(x, y, layer = 0)
 	{
-		const cacheKey = [x, y, layer].join('::');
+		// const cacheKey = [x, y, layer].join('::');
 
-		const tileNumberCache = this.tileNumberCache;
+		// const tileNumberCache = this.tileNumberCache;
 		const tileLayers      = this.tileLayers;
 		const mapData         = this.mapData;
 
-		if(tileNumberCache.has(cacheKey))
-		{
-			return tileNumberCache.get(cacheKey);
-		}
+		// if(tileNumberCache.has(cacheKey))
+		// {
+		// 	return tileNumberCache.get(cacheKey);
+		// }
 
-		if(!tileLayers[layer])
-		{
-			return tileNumberCache.set(cacheKey, false);
-		}
+		// if(!tileLayers[layer])
+		// {
+		// 	return tileNumberCache.set(cacheKey, false);
+		// }
 
 		if(x >= mapData.width || y >= mapData.height
 			|| x < 0 || y < 0
 		){
 			if(layer !== 0)
 			{
-				tileNumberCache.set(cacheKey, false);
+				// tileNumberCache.set(cacheKey, false);
 
 				return false;
 			}
 
-			tileNumberCache.set(cacheKey, 1);
+			// tileNumberCache.set(cacheKey, 1);
 
 			return 1;
 		}
@@ -120,13 +120,13 @@ export class TileMap
 		{
 			if(tileLayers[layer].data[tileIndex] !== 0)
 			{
-				tileNumberCache.set(cacheKey, tileLayers[layer].data[tileIndex] - 1);
+				// tileNumberCache.set(cacheKey, tileLayers[layer].data[tileIndex] - 1);
 
 				return tileLayers[layer].data[tileIndex] - 1;
 			}
 		}
 
-		tileNumberCache[cacheKey] = false;
+		// tileNumberCache.set(cacheKey, false);
 
 		return false;
 	}
@@ -162,14 +162,14 @@ export class TileMap
 		const heightMaskCache = this.heightMaskCache;
 		const heightMask      = this.heightMask;
 
-		const solidCacheKey   = [xInput, yInput, layerInput].join('::');
-		const solidCache      = this.solidCache;
+		// const solidCacheKey   = [xInput, yInput, layerInput].join('::');
+		// const solidCache      = this.solidCache;
 		const mapData         = this.mapData;
 
-		if(solidCacheKey in solidCache)
-		{
-			return solidCache[solidCacheKey];
-		}
+		// if(solidCache.has(solidCacheKey))
+		// {
+		// 	return solidCache.get(solidCacheKey);
+		// }
 
 		const blockSize = mapData.tilewidth;
 
@@ -177,7 +177,9 @@ export class TileMap
 		{
 			if(this.getSolid(xInput, yInput, 0))
 			{
-				return solidCache[solidCacheKey] = true;
+				// solidCache.set(solidCacheKey, true);
+
+				return true;
 			}
 
 			for(let i = 3; i < this.tileLayers.length; i++)
@@ -206,12 +208,16 @@ export class TileMap
 		{
 			if(tileNumber === 0)
 			{
-				solidCache[solidCacheKey] = false;
+				// solidCache.set(solidCacheKey, false);
+
+				return false;
 			}
 
 			if(tileNumber === 1)
 			{
-				solidCache[solidCacheKey] = true;
+				// solidCache.set(solidCacheKey, true);
+
+				return true;
 			}
 		}
 
@@ -222,17 +228,23 @@ export class TileMap
 		const x = Math.floor(Number(xInput) % blockSize);
 		const y = Math.floor(Number(yInput) % blockSize);
 
-		const heightMaskKey = [xInput, yInput, tileNumber].join('::');
-
-		if(layerInput <= 2 && heightMaskKey in heightMaskCache)
-		{
-			return solidCache[solidCacheKey] = heightMaskCache[heightMaskKey];
-		}
-
 		const xPixel = tilePos[0] + x;
 		const yPixel = tilePos[1] + y;
 
-		heightMaskCache[heightMaskKey] = false;
+		const heightMaskKey = [xPixel, yPixel, tileNumber].join('::');
+
+		if(heightMaskCache.has(heightMaskKey))
+		{
+			// if(layerInput <= 2)
+			// {
+			// 	solidCache.set(solidCacheKey, heightMaskCache[heightMaskKey]);
+			// }
+
+			return heightMaskCache.get(heightMaskKey);
+		}
+
+
+		heightMaskCache.set(heightMaskKey, false);
 
 		const pixel = heightMask.getContext('2d').getImageData(
 			xPixel, yPixel, 1, 1
@@ -240,15 +252,15 @@ export class TileMap
 
 		if(pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
 		{
-			heightMaskCache[heightMaskKey] = true;
+			heightMaskCache.set(heightMaskKey, true);
 		}
 
-		if(layerInput <= 2)
-		{
-			solidCache[solidCacheKey] = heightMaskCache[heightMaskKey];
-		}
+		// if(layerInput <= 2)
+		// {
+		// 	solidCache.set(solidCacheKey, heightMaskCache.get(heightMaskKey));
+		// }
 
-		return heightMaskCache[heightMaskKey];
+		return heightMaskCache.get(heightMaskKey);
 	}
 
 	get blockSize()

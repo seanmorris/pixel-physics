@@ -31,17 +31,12 @@ export class Rocks extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(!other.controllable || other.isVehicle)
+		if(other.occupant || other.rolling)
 		{
-			return;
+			this.pop(other);
+
+			return false;
 		}
-
-		// if(this.args.falling || other.occupant || other.rolling)
-		// {
-		// 	this.pop(other);
-
-		// 	return false;
-		// }
 
 		if(
 			type !== 2
@@ -65,8 +60,8 @@ export class Rocks extends PointActor
 
 		if(
 			(type === 1 || type === 3)
-			&& ((Math.abs(other.args.xSpeed) > 15
-				|| (Math.abs(other.args.gSpeed) > 15))
+			&& ((Math.abs(other.args.xSpeed) > 10
+				|| (Math.abs(other.args.gSpeed) > 10))
 				|| (other instanceof Projectile)
 			)
 			&& this.viewport

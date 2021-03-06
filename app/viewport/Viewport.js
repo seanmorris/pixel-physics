@@ -109,6 +109,10 @@ export class Viewport extends View
 {
 	template  = require('./viewport.html');
 
+	secretSample = new Audio('/doom/dssecret.wav');
+
+	secretsFound = new Set;
+
 	constructor(args,parent)
 	{
 		super(args,parent);
@@ -246,7 +250,6 @@ export class Viewport extends View
 				if(i.controllable)
 				{
 					this.playable.add(i);
-					// this.auras.add(i);
 				}
 
 				this.actorsById[i.args.id] = i;
@@ -1307,61 +1310,62 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-			if(this.visibilityTimer)
+			// if(this.visibilityTimer)
+			// {
+			// 	clearTimeout(this.visibilityTimer);
+			// 	this.visibilityTimer = false;
+			// }
+
+			// this.visibilityTimer = setTimeout(()=>{
+
+
+			// }, 0);
+			this.visibilityTimer = false;
+
+			for(const i in this.actors.list)
 			{
-				clearTimeout(this.visibilityTimer);
-				this.visibilityTimer = false;
-			}
+				const actor = this.actors.list[i];
 
-			this.visibilityTimer = setTimeout(()=>{
-
-				this.visibilityTimer = false;
-
-				for(const i in this.actors.list)
+				if(!this.auras.has(actor))
 				{
-					const actor = this.actors.list[i];
+					const actorBottom = actor.y + 64;
+					const actorTop    = actor.y - actor.public.height - 64;
+					const actorRight  = actor.x + actor.public.width  + 64;
+					const actorLeft   = actor.x - actor.public.width  - 64;
 
-					if(!this.auras.has(actor))
+					if(inAuras.has(actor))
 					{
-						const actorBottom = actor.y + 64;
-						const actorTop    = actor.y - actor.public.height - 64;
-						const actorRight  = actor.x + actor.public.width  + 64;
-						const actorLeft   = actor.x - actor.public.width  - 64;
+						continue;
+					}
 
-						if(inAuras.has(actor))
+					if(camLeft < actorRight
+						&& camRight > actorLeft
+						&& camBottom > actorTop
+						&& camTop < actorBottom
+						&& !(actor instanceof LayerSwitch)
+					){
+						actor.args.display = 'initial';
+
+						if(!actor.vizi)
 						{
-							continue;
+							actor.nodes.map(n => this.tags.actors.append(n));
+
+							actor.vizi = true;
 						}
 
-						if(camLeft < actorRight
-							&& camRight > actorLeft
-							&& camBottom > actorTop
-							&& camTop < actorBottom
-							&& !(actor instanceof LayerSwitch)
-						){
-							actor.args.display = 'initial';
+						inAuras.add(actor);
+					}
+					else
+					{
+						// actor.args.display = 'none';
 
-							if(!actor.vizi)
-							{
-								actor.nodes.map(n => this.tags.actors.append(n));
+						actor.nodes.map(n => n.remove());
 
-								actor.vizi = true;
-							}
+						actor.vizi = false;
 
-							inAuras.add(actor);
-						}
-						else
-						{
-							// actor.args.display = 'none';
-
-							actor.nodes.map(n => n.remove());
-
-							actor.vizi = false;
-
-						}
 					}
 				}
-			}, 0);
+			}
 		}
 
 		this.spawnActors();
@@ -1403,6 +1407,31 @@ export class Viewport extends View
 		if(this.controlActor)
 		{
 			this.moveCamera();
+
+			if(this.controlActor.args.name === 'seymour'
+				&& this.controlActor.y < 2048
+				&& this.controlActor.x > 38400
+				&& this.controlActor.standingOn
+				&& this.controlActor.standingOn.isVehicle
+			){
+				this.args.secret = 'seymour-aurora';
+
+				if(!this.secretsFound.has('seymour-aurora'))
+				{
+					if(this.args.audio && this.secretSample)
+					{
+						this.secretSample.currentTime = 0;
+						this.secretSample.volume = 0.25;
+						this.secretSample.play();
+					}
+
+					this.secretsFound.add('seymour-aurora');
+				}
+			}
+			else
+			{
+				this.args.secret = '';
+			}
 		}
 
 		this.args.moveCard = this.moveCard;

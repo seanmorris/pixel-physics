@@ -4,8 +4,8 @@ const layers = [];
 
 export class Backdrop extends View
 {
-	template = `<div cv-ref = "backdrop" class = "backdrop">
-		[[strip.url]]<br />
+	template = `<div class = "backdrop">
+		<div cv-ref = "backdrop" class = "parallax"></div>
 	</div>`;
 	layers   = [];
 
