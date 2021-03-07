@@ -1,0 +1,64 @@
+.screen-card {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background-color: black;
+	color: white;
+
+	transition: opacity 500ms 250ms linear, filter 500ms linear;
+}
+
+.screen-card-boot-card {
+	color: white;
+	background-color: black
+}
+
+.screen-card.opening {
+	opacity: 0;
+}
+
+.screen-card-loading-card {
+	opacity: 1 !important;
+	font-family: '8-bit-pusab';
+	color: rgba(255,255,255,0.125);
+}
+
+.screen-card.opened {
+	opacity: 1;
+}
+
+.screen-card-title-screen-card.closing {
+	filter: brightness(0) saturate(0);
+}
+
+.screen-card-title-screen-card.opening,
+.screen-card-title-screen-card.closed {
+	opacity: 0;
+}
+
+.screen-card-boot-card span {
+	white-space: pre;
+	text-align: center;
+	font-family: '8-bit-pusab';
+}
+
+/*.screen-card-sean-card {
+	background-image: url(/sean-morris.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}*/
+
+.screen-card-title-screen-card {
+	background-image: url(/Sonic/title-screen-emblem.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: rgba(0,0,0,1);
+}

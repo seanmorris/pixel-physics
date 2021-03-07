@@ -78,8 +78,6 @@ export class Sonic extends PointActor
 				});
 
 				 this.superSpriteSheet = newPng.toUrl();
-
-				console.log(this.args.spriteSheet);
 			});
 		}
 	}

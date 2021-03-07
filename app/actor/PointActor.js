@@ -1381,12 +1381,12 @@ export class PointActor extends View
 
 		if(Math.abs(this.public.xSpeed) > this.public.xSpeedMax)
 		{
-			this.args.xSpeed = this.public.xSpeedMax * Math.sign(this.public.xSpeed);
+			this.args.xSpeed -= Math.sign(this.public.xSpeed) * 0.1;
 		}
 
 		if(Math.abs(this.public.ySpeed) > this.public.ySpeedMax)
 		{
-			this.args.ySpeed = this.public.ySpeedMax * Math.sign(this.public.ySpeed);
+			this.args.ySpeed -= Math.sign(this.public.ySpeed) * 0.1;
 		}
 	}
 
@@ -1733,7 +1733,7 @@ export class PointActor extends View
 				}
 			}
 		}
-		else if(this.public.falling && this.xAxis)
+		else if(this.public.falling && this.xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
 		{
 			this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
 		}

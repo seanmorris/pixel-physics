@@ -1,9 +1,9 @@
 import { PointActor } from './PointActor';
-import { Explosion } from '../actor/Explosion';
-import { Tag } from 'curvature/base/Tag';
+import { Explosion }  from '../actor/Explosion';
+import { Tag }        from 'curvature/base/Tag';
 
+import { Region } from '../region/Region';
 import { Spring } from './Spring';
-import { Region } from './Region';
 
 export class Projectile extends PointActor
 {

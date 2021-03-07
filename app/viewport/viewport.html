@@ -245,26 +245,9 @@
 				</table>
 			</div>
 
-			<div class = "topLine">
-				<div class = "status-message">[[topLine]]</div>
-			</div>
-
-			<div class = "focus-me">
-				<div class = "status-message">[[focusMe]]</div>
-			</div>
-
-			<div class = "status-message">[[status]]</div>
-
-			<div class = "hud hud-top-left">
-				<div cv-if = "hasRings">[[rings]]</div>
-				<div cv-if = "hasCoins">[[coins]]</div>
-				<div cv-if = "hasEmeralds">[[emeralds]]</div>
-				<div class = "timer">[[timer]]</div>
-			</div>
-
 			<div class = "hud hud-dark hud-top-right">
 				<div class = "char-hud">
-					<span>[[char]]</span>
+					[[char]]
 					<div class = "char-icon [[charName]]"></div>
 				</div>
 			</div>
@@ -283,34 +266,26 @@
 
 			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
 
-			<div class = "titlecard [[animation]]">
-
-				<div class = "titlecard-field"></div>
-
-				<div class = "titlecard-bottom-border">
-					<div class = "titlecard-border-text">SEAN MORRIS</div>
-				</div>
-
-				<div class = "titlecard-left-border">
-					<div class = "titlecard-border-shadow"></div>
-					<div class = "titlecard-border-color"></div>
-				</div>
-
-				<div class = "titlecard-title">
-
-					<div class = "titlecard-title-box">
-						<div class = "titlecard-title-line-1">
-							PIXEL HILL
-						</div>
-
-						<div class = "titlecard-title-line-2">
-							ZONE<div class = "titlecard-title-number">
-								1
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class = "hud hud-top-left">
+				<div class = "timer">[[timer]]</div>
+				<div cv-if = "hasRings">[[rings]]</div>
+				<div cv-if = "hasCoins">[[coins]]</div>
+				<div cv-if = "hasEmeralds">[[emeralds]]</div>
 			</div>
+
+			[[titlecard]]
+
+			<div class = "topLine">
+				<div class = "status-message">[[topLine]]</div>
+			</div>
+
+			<div class = "focus-me">
+				<div class = "status-message">[[focusMe]]</div>
+			</div>
+
+			<div class = "status-message">[[status]]</div>
+
+
 		</div>
 
 	</div>

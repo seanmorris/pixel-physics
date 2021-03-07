@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	// const replay = fetch(replayUrl);
 
 	Promise.all([viewportA.tileMap.ready]).then(([tileMap,replayResult])=>{
+
+		viewportA.startLevel();
+
 	}).then (replay => {
 
 		viewportA.replayInputs = replay;

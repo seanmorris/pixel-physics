@@ -1,8 +1,8 @@
-import { Region } from "../actor/Region";
 import { CharacterString } from '../ui/CharacterString';
-
 import { Cylinder } from '../effects/Cylinder';
-import { Pinch    } from '../effects/Pinch';
+import { Pinch } from '../effects/Pinch';
+
+import { Region } from "./Region";
 
 import { Tag } from 'curvature/base/Tag';
 

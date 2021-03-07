@@ -1,4 +1,4 @@
-import { PointActor } from './PointActor';
+import { PointActor } from '../actor/PointActor';
 
 export class Region extends PointActor
 {

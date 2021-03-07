@@ -1,5 +1,5 @@
 import { PointActor } from './PointActor';
-import { Region } from './Region';
+import { Region }     from '../region/Region';
 
 export class Spring extends PointActor
 {

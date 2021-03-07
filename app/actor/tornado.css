@@ -63,17 +63,28 @@
 .actor-item.actor-tornado .thruster {
 	transition: transform 0.1s ease-in;
 	background-image: url(/Sonic/tornado-thruster.png);
+	background-position: right top;
 	position: absolute;
 	top: 48px;
-	left: 26px;
+	right: 16px;
 	width: 88px;
 	height: 16px;
+}
+
+.actor-item.actor-tornado .thruster .fuel-meter {
+	position: absolute;
+	top: 9px;
+	left: 46px;
+	height: 3px;
+	width: calc(32px * var(--fuelLevel));
+	background: red;
 }
 
 .actor-item.actor-tornado .plane[data-thrusting="true"] .thruster {
 	animation: tornado-thrust steps(8) infinite 96ms;
 	transition: transform 0.125s ease-in;
 }
+
 
 .actor-item.actor-tornado .plane[data-thrusting="false"] .thruster {
 	transition: transform 0.25s ease-in;
@@ -112,9 +123,9 @@
 
 @-webkit-keyframes tornado-thrust {
 	from{
-		background-position: 0px 0px;
+		background-position: right 0px;
 	}
 	to{
-		background-position: 0px 128px;
+		background-position: right 128px;
 	}
 }

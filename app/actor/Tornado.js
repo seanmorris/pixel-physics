@@ -15,13 +15,15 @@ export class Tornado extends Vehicle
 
 		this.removeTimer = null;
 
-		this.args.gSpeedMax = 14;
-		this.args.decel     = 0.30;
-		this.args.accel     = 0.75;
+		this.args.xSpeedMaxThrusting = 48;
+		this.args.xSpeedMaxOriginal  = 24;
+
+		this.args.xSpeedMax = this.args.xSpeedMaxOriginal;
+
+		this.args.decel     = 0.15;
+		this.args.accel     = 0.25;
 
 		this.args.seatHeight = 14;
-
-		this.args.flySpeed = 0;
 
 		this.args.skidTraction = 0.95;
 
@@ -35,6 +37,11 @@ export class Tornado extends Vehicle
 
 		this.args.thrusting   = false;
 		this.args.landingGear = true;
+
+		this.args.jumpForce = 8;
+
+		this.args.fuelLevel = 100;
+		this.args.thrusterFill = 0;
 	}
 
 	onAttached()
@@ -46,10 +53,13 @@ export class Tornado extends Vehicle
 		this.fuselage  = new Tag('<div class = "fuselage">');
 		this.propeller = new Tag('<div class = "propeller">');
 		this.thruster  = new Tag('<div class = "thruster">');
+		this.fuelMeter = new Tag('<div class = "fuel-meter">');
 		this.frontGear = new Tag('<div class = "front-landing-gear">');
 		this.rearGear  = new Tag('<div class = "rear-landing-gear">');
 
 		this.sprite.appendChild(this.plane.node);
+
+		this.thruster.appendChild(this.fuelMeter.node);
 
 		this.plane.appendChild(this.thruster.node);
 		this.plane.appendChild(this.propeller.node);
@@ -102,6 +112,34 @@ export class Tornado extends Vehicle
 
 		const maxAirSpeed = 48;
 
+		if(this.args.thrusting && this.args.fuelLevel <= 0)
+		{
+			this.args.thrusting = false;
+
+			this.args.thrusterFill = Date.now() + 500;
+		}
+
+		if(this.public.thrusting)
+		{
+			this.args.xSpeedMax = this.public.xSpeedMaxThrusting;
+
+			if(this.args.fuelLevel > 0)
+			{
+				this.args.fuelLevel -= 0.1;
+			}
+		}
+		else
+		{
+			this.args.xSpeedMax = this.public.xSpeedMaxOriginal;
+
+			if(this.args.thrusterFill < Date.now() && this.args.fuelLevel < 100)
+			{
+				this.args.fuelLevel += 0.25;
+			}
+		}
+
+		this.fuelMeter.style({'--fuelLevel': this.args.fuelLevel / 100});
+
 		if(!this.public.thrusting && Math.abs(this.public.xSpeed) > maxAirSpeed)
 		{
 			this.args.xSpeed -= Math.sign(this.public.xSpeed) * 0.2;
@@ -115,9 +153,17 @@ export class Tornado extends Vehicle
 				this.args.xSpeed += Math.sign(this.public.direction) * 4;
 			}
 		}
-		else if(Math.abs(this.public.xSpeed) > 10 && !this.public.thrusting)
+
+		if(Math.abs(this.public.xSpeed) > this.args.xSpeedMax / 2
+			&& !this.public.thrusting
+			&& !this.xAxis
+		){
+			this.args.xSpeed *= 0.95;
+		}
+
+		if(Math.abs(this.public.xSpeed) > maxAirSpeed)
 		{
-			this.args.xSpeed *= 0.99;
+			this.public.xSpeed = maxAirSpeed * Math.sign(this.public.direction);
 		}
 
 		if(this.public.flying)
@@ -129,7 +175,14 @@ export class Tornado extends Vehicle
 
 			if(this.public.landingGear)
 			{
-				this.args.flyAngle += 0.005;
+				if(!this.public.thrusting && this.args.flyAngle < Math.PI / 4)
+				{
+					this.args.flyAngle += 0.005;
+				}
+				else if(this.public.thrusting && this.args.flyAngle > -Math.PI / 4)
+				{
+					this.args.flyAngle -= 0.005;
+				}
 			}
 			else
 			{
@@ -171,16 +224,31 @@ export class Tornado extends Vehicle
 
 				this.args.ySpeed = Math.sin(this.public.flyAngle) * speed * this.public.direction * 2;
 			}
+
+			if(this.public.xSpeed)
+			{
+				this.args.airAngle = newAngle;
+			}
 		}
 		else
 		{
+			if(!this.public.thrusting && this.args.flyAngle < Math.PI / 2 && this.args.ySpeed > 0)
+			{
+				this.args.flyAngle += 0.025;
+			}
+		}
+
+		if(!this.public.falling)
+		{
 			this.args.landingGear = true;
-			this.args.flySpeed    = 0;
 		}
 
 		super.update();
 
-		this.args.cameraMode = 'airplane';
+		if(this.public.flying)
+		{
+			this.args.cameraMode = 'airplane';
+		}
 	}
 
 	command_1()
@@ -193,11 +261,18 @@ export class Tornado extends Vehicle
 
 	hold_2()
 	{
-		if(this.args.falling)
+		if(!this.args.thrusting && this.args.fuelLevel <= 10)
 		{
-			this.args.thrusting = true;
-			this.args.flying = true;
+			return;
 		}
+
+		if(this.args.fuelLevel <= 0)
+		{
+			return;
+		}
+
+		this.args.thrusting = true;
+		this.args.falling = true;
 	}
 
 	release_2()

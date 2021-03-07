@@ -21,6 +21,11 @@ export class Knuckles extends PointActor
 		this.args.height = 41;
 
 		this.args.skidTraction = 1.7;
+
+		this.punching = 0;
+		this.punched  = false;
+
+		this.beforePunch = 'standing';
 	}
 
 	onAttached()
@@ -36,6 +41,21 @@ export class Knuckles extends PointActor
 		{
 			super.update();
 			return;
+		}
+
+		if(this.throwing && Date.now() - this.throwing > 256 + 128)
+		{
+			this.throwing = false;
+		}
+
+		if(this.punching && Date.now() - this.punching > 256)
+		{
+			this.punching = false;
+		}
+
+		if(this.punching && Date.now() - this.punching > 128)
+		{
+			this.punched = false;
 		}
 
 		if(!falling)
@@ -60,6 +80,14 @@ export class Knuckles extends PointActor
 				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 				{
 					this.box.setAttribute('data-animation', 'skidding');
+				}
+				else if(this.throwing)
+				{
+					this.box.setAttribute('data-animation', 'throw-bomb');
+				}
+				else if(this.punching)
+				{
+					this.box.setAttribute('data-animation', 'punching');
 				}
 				else if(speed > maxSpeed * 0.75)
 				{
@@ -185,6 +213,36 @@ export class Knuckles extends PointActor
 
 		this.args.flying = true;
 		this.args.willJump = false;
+	}
+
+	command_1()
+	{
+		if(this.punching || this.throwing)
+		{
+			return;
+		}
+
+		this.beforePunch = this.box.getAttribute('data-animation');
+		this.punching    = Date.now();
+		this.punched     = true;
+	}
+
+	release_1()
+	{
+		if(!this.punched)
+		{
+			this.box.setAttribute('data-animation', this.beforePunch);
+		}
+	}
+
+	command_2()
+	{
+		if(this.punching || this.throwing)
+		{
+			return;
+		}
+
+		this.throwing = Date.now();
 	}
 
 	get solid() { return false; }

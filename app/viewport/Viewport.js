@@ -1,63 +1,21 @@
 import { Bindable } from 'curvature/base/Bindable';
-import { Bag  } from 'curvature/base/Bag';
-import { Tag  } from 'curvature/base/Tag';
-import { View } from 'curvature/base/View';
-
+import { Bag  }     from 'curvature/base/Bag';
+import { Tag  }     from 'curvature/base/Tag';
+import { View }     from 'curvature/base/View';
 import { Keyboard } from 'curvature/input/Keyboard';
 
-// import { Actor   } from '../actor/Actor';
-import { TileMap } from '../tileMap/TileMap';
+import { TileMap }  from '../tileMap/TileMap';
 
-import { Backdrop } from './Backdrop';
+import { Titlecard } from '../titlecard/Titlecard';
 
-import { QuestionBlock } from '../actor/QuestionBlock';
-import { BrokenMonitor } from '../actor/BrokenMonitor';
-import { MarbleBlock } from '../actor/MarbleBlock';
+import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
+
+import { SeanCard } from '../intro/SeanCard';
+import { Series }   from '../intro/Series';
+import { Card }     from '../intro/Card';
+
 import { LayerSwitch } from '../actor/LayerSwitch';
-
-import { Explosion } from '../actor/Explosion';
-import { StarPost } from '../actor/StarPost';
-import { Emerald } from '../actor/Emerald';
-import { Window } from '../actor/Window';
-import { Monitor } from '../actor/Monitor';
-import { Spring } from '../actor/Spring';
-import { Ring } from '../actor/Ring';
-import { Coin } from '../actor/Coin';
-
-import { WaterJet } from '../actor/WaterJet';
-import { WaterFall } from '../actor/WaterFall';
-
-import { PowerupGlow } from '../actor/PowerupGlow';
-import { SuperRing } from '../actor/SuperRing';
-
-import { PointActor } from '../actor/PointActor';
-
-import { Projectile } from '../actor/Projectile';
-import { TextActor } from '../actor/TextActor';
-
-import { EggMobile } from '../actor/EggMobile';
-import { DrillCar } from '../actor/DrillCar';
-import { Tornado } from '../actor/Tornado';
-
-import { NuclearSuperball } from '../actor/NuclearSuperball';
-
-import { Eggman     } from '../actor/Eggman';
-import { Eggrobo     } from '../actor/Eggrobo';
-import { MechaSonic } from '../actor/MechaSonic';
-
-import { Sonic }      from '../actor/Sonic';
-import { Tails }      from '../actor/Tails';
-import { Knuckles }   from '../actor/Knuckles';
-
-import { Seymour }   from '../actor/Seymour';
-
-import { Rocks }   from '../actor/Rocks';
-import { Switch }   from '../actor/Switch';
-
-import { Region }   from '../actor/Region';
-
-import { WaterRegion }   from '../actor/WaterRegion';
-import { ShadeRegion }   from '../region/ShadeRegion';
+import { Region } from '../region/Region';
 
 import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
@@ -66,52 +24,16 @@ import { Layer } from './Layer';
 
 import { Controller } from '../controller/Controller';
 
-const objectPalette = {
-	player:           NuclearSuperball
-	, spring:         Spring
-	, 'layer-switch': LayerSwitch
-	, 'star-post':    StarPost
-	, 'q-block':      QuestionBlock
-	, 'projectile':   Projectile
-	, 'marble-block': MarbleBlock
-	, 'drill-car':    DrillCar
-	, 'tornado':      Tornado
-	, 'egg-mobile':   EggMobile
-	, 'rocks-tall':   Rocks
-	, 'rocks-med':    Rocks
-	, 'rocks-short':  Rocks
-	, 'mecha-sonic':  MechaSonic
-	, 'sonic':        Sonic
-	, 'tails':        Tails
-	, 'knuckles':     Knuckles
-	, 'eggman':       Eggman
-	, 'eggrobo':      Eggrobo
-	, 'seymour':      Seymour
-	, 'switch':       Switch
-	, 'window':       Window
-	, 'emerald':      Emerald
-	, 'region':       WaterRegion
-	, 'shade-region': ShadeRegion
-	, 'ring':         Ring
-	, 'super-ring':   SuperRing
-	, 'coin':         Coin
-	, 'powerup-glow': PowerupGlow
-	, 'explosion':    Explosion
-	, 'text-actor':   TextActor
-	, 'water-jet':    WaterJet
-	, 'water-fall':   WaterFall
-};
+import { ObjectPalette } from '../ObjectPalette';
 
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
 export class Viewport extends View
 {
-	template  = require('./viewport.html');
-
 	secretSample = new Audio('/doom/dssecret.wav');
-
 	secretsFound = new Set;
+	template     = require('./viewport.html');
 
 	constructor(args,parent)
 	{
@@ -119,9 +41,10 @@ export class Viewport extends View
 
 		this.args.screenFilter = 'runners';
 
-		// this.hud = new Hud
 		this.sprites = new Bag;
 		this.world   = null;
+
+		this.args.titlecard = new Series;
 
 		Object.defineProperty(this, 'tileMap', {value: new TileMap});
 
@@ -135,10 +58,11 @@ export class Viewport extends View
 
 		this.args.currentActor = '';
 
-		this.args.xOffsetTarget = 0.5;
 		this.args.xOffset = 0.5;
-		this.args.yOffsetTarget = 0.75;
 		this.args.yOffset = 0.5;
+
+		this.args.xOffsetTarget = 0.5;
+		this.args.yOffsetTarget = 0.75;
 
 		this.args.topLine = new CharacterString({value:'', scale: 2});
 		this.args.status  = new CharacterString({value:'', scale: 2});
@@ -171,7 +95,7 @@ export class Viewport extends View
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
 
-		this.args.airAngle  = new CharacterString({value:0});
+		this.args.airAngle   = new CharacterString({value:0});
 
 		this.args.nowPlaying = new CharacterString({value:'Now playing'});
 		this.args.trackName  = new CharacterString({value:'Ice cap zone act 1 theme'});
@@ -189,7 +113,7 @@ export class Viewport extends View
 		this.emeralds = new CharacterString({value:'0/7'});
 
 		this.args.emeralds = new HudFrame({value:this.emeralds, type: 'emerald-frame'});
-		// this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
+		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
 
@@ -210,14 +134,6 @@ export class Viewport extends View
 		this.args.height = 32 * 8;
 		this.args.scale  = 2;
 
-		// this.args.width  = 32 * 7;
-		// this.args.height = 32 * 4;
-		// this.args.scale  = 2;
-
-		// this.args.width  = 32 * 14 * 2;
-		// this.args.height = 32 * 8 * 2;
-		// this.args.scale  = 1;
-
 		this.collisions = new WeakMap;
 
 		this.args.x = this.args.x || 0;
@@ -227,8 +143,8 @@ export class Viewport extends View
 
 		this.args.animation = '';
 
-		this.spawn   = new Set;
 		this.regions = new Set;
+		this.spawn   = new Set;
 		this.auras   = new Set;
 
 		this.actorsById = {};
@@ -318,146 +234,7 @@ export class Viewport extends View
 
 		this.replayInputs = [];
 
-		this.args.backdrop = new Backdrop({strips: [
-			{
-				autoscroll:  -1
-				, parallax:  0
-				, url:       '/Sonic/backdrop/marble-garden/1.png'
-				, height:    24
-			}
-			, {
-				autoscroll: -0.9
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/2.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.8
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/3.png'
-				, height:   24
-			}
-			, {
-				autoscroll: -0.7
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/4.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.6
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/5.png'
-				, height:   24
-			}
-			, {
-				autoscroll: -0.5
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/6.png'
-				, height:   16
-			}
-			, {
-				autoscroll: -0.45
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/7.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.45
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/8.png'
-				, height:   16
-			}
-			, {
-				autoscroll: -0.4
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/9.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.35
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/10.png'
-				, height:   16
-			}
-			, {
-				autoscroll: -0.3
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/11.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.25
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/12.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.2
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/13.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.15
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/14.png'
-				, height:   8
-			}
-			, {
-				autoscroll: -0.1
-				, parallax: 0
-				, url:      '/Sonic/backdrop/marble-garden/15.png'
-				, height:   5
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.1
-				, url:      '/Sonic/backdrop/marble-garden/16.png'
-				, height:   43
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.125
-				, url:      '/Sonic/backdrop/marble-garden/17.png'
-				, height:   12
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.15
-				, url:      '/Sonic/backdrop/marble-garden/18.png'
-				, height:   6
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.175
-				, url:      '/Sonic/backdrop/marble-garden/19.png'
-				, height:   6
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.2
-				, url:      '/Sonic/backdrop/marble-garden/20.png'
-				, height:   8
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.225
-				, url:      '/Sonic/backdrop/marble-garden/21.png'
-				, height:   8
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.25
-				, url:      '/Sonic/backdrop/marble-garden/22.png'
-				, height:   24
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.35
-				, url:      '/Sonic/backdrop/marble-garden/23.png'
-				, height:   344
-			}
-		]});
+		this.args.backdrop = new Backdrop;
 		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
 	}
 
@@ -476,16 +253,17 @@ export class Viewport extends View
 				this.args.scale = hScale > vScale ? hScale : vScale;
 				this.args.fullscreen = 'fullscreen';
 
-				this.args.status.args.value = ' hit escape to revert. ';
-
-				this.args.status.args.hide  = '';
-
-				this.onTimeout(2500, ()=>{
-					this.args.focusMe.args.hide = '';
-					this.args.status.args.hide  = 'hide';
-					this.tags.viewport.focus();
-				});
+				this.showStatus(2500, ' hit escape to revert. ');
 			});
+		});
+	}
+
+	showStatus(timeout, text)
+	{
+		this.args.status.args.value = text;
+		this.args.status.args.hide  = '';
+		this.onTimeout(timeout, ()=>{
+			this.args.status.args.hide = 'hide';
 		});
 	}
 
@@ -514,55 +292,16 @@ export class Viewport extends View
 			this.startTime = Date.now() + 4.75 * 1000;
 		}
 
-		this.args.paused = true;
+		this.args.paused  = true;
+		this.args.started = false;
 
 		this.args.status.args.hide = 'hide';
 
-		this.args.animation = 'start';
-
-		this.onTimeout(5000, () => {
-
-			this.args.animation = '';
-
-			this.onTimeout(750, () => {
-				this.args.animation = 'opening';
-				this.tags.viewport.focus();
-
-				this.onTimeout(750, () => {
-					this.args.animation = 'opening2';
-					this.tags.viewport.focus();
-
-					this.update();
-
-					this.onTimeout(1500, () => {
-						this.args.animation = 'closing';
-						this.tags.viewport.focus();
-
-						this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
-						this.args.status.args.hide = '';
-
-						this.onTimeout(750, () => {
-							this.args.animation = 'closed';
-							this.tags.viewport.focus();
-						});
-
-						this.onTimeout(500, () => {
-							this.args.paused = false;
-							this.tags.viewport.focus();
-							this.startTime = Date.now();
-						});
-					});
-				});
-			});
-		});
-
 		this.listen(document.body, 'click', event => {
-
 			if(event.target !== document.body)
 			{
 				return;
 			}
-
 			this.tags.viewport.focus()
 		});
 
@@ -573,6 +312,19 @@ export class Viewport extends View
 		keyboard.listening = true
 
 		keyboard.focusElement = this.tags.viewport.node;
+	}
+
+	startLevel()
+	{
+		this.args.titlecard.play().then((done) => {
+			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
+			this.args.status.args.hide = '';
+			this.args.paused  = false;
+			this.args.started = true;
+			this.startTime    = Date.now();
+
+			// Promise.all(done).then(() => this.args.titlecard = '');
+		});
 	}
 
 	takeInput(controller)
@@ -607,7 +359,7 @@ export class Viewport extends View
 			}
 		}
 
-		if(controller && controller.buttons[9] && controller.buttons[9].time === 2)
+		if(controller && this.args.started && controller.buttons[9] && controller.buttons[9].time === 2)
 		{
 			this.args.paused = !this.args.paused;
 
@@ -923,12 +675,12 @@ export class Viewport extends View
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
 
-			if(!objectPalette[objType])
+			if(!ObjectPalette[objType])
 			{
 				continue;
 			}
 
-			const objClass = objectPalette[objType];
+			const objClass = ObjectPalette[objType];
 
 			const actor = Bindable.make(objClass.fromDef(objDef));
 
@@ -1100,7 +852,7 @@ export class Viewport extends View
 			this.populateMap();
 		}
 
-		// this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
+		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		this.args.rippleFrame = this.args.frameId % 128;
 
@@ -1168,7 +920,14 @@ export class Viewport extends View
 
 			if(!this.args.isReplaying)
 			{
-				this.args.focusMe.args.hide = '';
+				if(this.gamepad)
+				{
+					this.args.focusMe.args.hide = 'hide';
+				}
+				else
+				{
+					this.args.focusMe.args.hide = '';
+				}
 
 				this.takeInput(this.controlActor.controller);
 				this.controlActor.readInput();
@@ -1424,6 +1183,8 @@ export class Viewport extends View
 						this.secretSample.volume = 0.25;
 						this.secretSample.play();
 					}
+
+					this.showStatus(10000, ' A secret is revealed ');
 
 					this.secretsFound.add('seymour-aurora');
 				}

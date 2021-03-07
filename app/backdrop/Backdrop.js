@@ -11,9 +11,16 @@ export class Backdrop extends View
 
 	onAttached(event)
 	{
+		if(this.alreadyAttached)
+		{
+			return;
+		}
+
+		this.alreadyAttached = true;
+
 		const backdrop = this.tags.backdrop;
 
-		const strips = this.args.strips;
+		const strips = this.args.strips.reverse();
 
 		const yPositions = [];
 		const xPositions = [];
@@ -25,16 +32,21 @@ export class Backdrop extends View
 		{
 			const strip = strips[i];
 
-			yPositions.push(`calc(calc(1px * ${stacked}))`);
+			yPositions.push(`calc(100% - calc(1px * ${stacked}))`);
+
+			let xFormula = `0px`;
 
 			if(strip.parallax)
 			{
-				xPositions.push(`calc(1px * calc(${strip.parallax} * var(--x)))`);
+				xFormula = `calc(${xFormula} + calc(1px * calc(${strip.parallax} * var(--x))))`;
 			}
-			else if(strip.autoscroll)
+
+			if(strip.autoscroll)
 			{
-				xPositions.push(`calc(1px * calc(${strip.autoscroll} * var(--frame) ))`);
+				xFormula = `calc(${xFormula} + calc(1px * calc(${strip.autoscroll} * var(--frame) )) )`;
 			}
+
+			xPositions.push(xFormula);
 
 			urls.push(strips[i].url);
 

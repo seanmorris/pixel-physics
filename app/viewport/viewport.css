@@ -176,10 +176,17 @@ section.filters {
 	top: 0px;
 	left: 0px;
 	transition: transform var(--scale-transition);
-	transform: scale(var(--scale));
 	transform-origin: top left;
+
+	transform: scale(var(--scale));
 	width: calc(100% / var(--scale));
 	height: calc(100% / var(--scale));
+
+	/*--halfScale: calc(max(var(--scale), 2) / 2);
+
+	transform: scale(var(--halfScale));
+	width: calc(100% / var(--halfScale));
+	height: calc(100% / var(--halfScale));*/
 }
 
 .viewport-double-zoom {
@@ -473,7 +480,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .viewport-frame.seymour-aurora .backdrop::before {
-	opacity: 1;
+	opacity: 0.75;
 }
 
 .viewport-frame .backdrop::before {
@@ -481,6 +488,7 @@ input[type=number]::-webkit-outer-spin-button {
 	background-image: url(/custom/aurora.png);
 	background-size: 100% 55%;
 	background-repeat: no-repeat;
+	mix-blend-mode: lighten;
 }
 
 .viewport-frame.seymour-aurora .backdrop {
