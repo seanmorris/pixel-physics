@@ -7,8 +7,10 @@ const viewportA = new Viewport;
 
 document.addEventListener('DOMContentLoaded', function() {
 
-	navigator.serviceWorker.register('/worker-cache.js');
-
+	if(navigator.serviceWorker)
+	{
+		navigator.serviceWorker.register('/worker-cache.js');
+	}
 
 	let lastTime = 0;
 
