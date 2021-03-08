@@ -2,6 +2,7 @@
 	background-color: #fcc203;
 }
 
+.viewport.standalone,
 .viewport.fullscreen,
 body {
 	background-image:

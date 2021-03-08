@@ -23,6 +23,11 @@ export class Card extends View
 
 			let timeAcc = this.args.timeout;
 
+			if(timeAcc < 0)
+			{
+				return;
+			}
+
 			this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
 
 			this.onTimeout(timeAcc, () => {

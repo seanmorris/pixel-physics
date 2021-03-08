@@ -1,0 +1,34 @@
+.screen-card-main-menu :focus,
+.screen-card-main-menu .focused{
+	/*outline: 1px solid rgba(255,255,255,0.2);
+	outline-offset: 0.6em;*/
+	outline: none;
+	color: white;
+	text-decoration: underline;
+}
+
+.screen-card-main-menu li {
+	color: #999;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+
+.screen-card-main-menu .unavailable {
+	color: #666;
+	position: relative;
+}
+
+.screen-card-main-menu .unavailable.focused {
+	color: #999;
+}
+
+.screen-card-main-menu .unavailable.focused::after,
+.screen-card-main-menu .unavailable:focus::after {
+	content: 'not yet implemented';
+	font-size: 0.2em;
+
+	position: absolute;
+	left: 0;
+	top: 100%;
+}

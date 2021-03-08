@@ -44,7 +44,7 @@ export class Viewport extends View
 		this.sprites = new Bag;
 		this.world   = null;
 
-		this.args.titlecard = new Series;
+		this.args.titlecard = new Series({}, this);
 
 		Object.defineProperty(this, 'tileMap', {value: new TileMap});
 
@@ -212,7 +212,7 @@ export class Viewport extends View
 
 		this.startTime = null;
 
-		this.args.audio = true;
+		this.args.audio = !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0);
 
 		this.nextControl = false;
 
@@ -236,26 +236,55 @@ export class Viewport extends View
 
 		this.args.backdrop = new Backdrop;
 		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
+
+		this.args.standalone = '';
+		this.args.fullscreen = '';
+		this.args.initializing = 'initializing';
+
+		this.args.bindTo('audio', (v) => {
+			localStorage.setItem('sonic-3000-audio-enabled', v);
+		});
 	}
 
 	fullscreen()
 	{
+		if(document.fullscreenElement)
+		{
+			document.exitFullscreen();
+			this.args.focusMe.args.hide = '';
+			this.args.fullscreen = '';
+			return;
+		}
+
 		this.args.focusMe.args.hide = 'hide';
 
 		this.initScale = this.args.scale;
 
-		this.tags.viewport.requestFullscreen().then(res=>{
+		this.tags.viewport.node.requestFullscreen().then(res=>{
 			this.onTimeout(100, ()=>{
 
-				const hScale = window.innerHeight / this.args.height;
-				const vScale = window.innerWidth / this.args.width;
+				this.fitScale();
 
-				this.args.scale = hScale > vScale ? hScale : vScale;
 				this.args.fullscreen = 'fullscreen';
 
 				this.showStatus(2500, ' hit escape to revert. ');
 			});
-		});
+		}).catch(e =>console.error(e));
+	}
+
+	fitScale(fill = true)
+	{
+		const hScale = window.innerHeight / this.args.height;
+		const vScale = window.innerWidth / this.args.width;
+
+		if(fill)
+		{
+			this.args.scale = hScale > vScale ? hScale : vScale;
+		}
+		else
+		{
+			this.args.scale = hScale > vScale ? vScale : hScale;
+		}
 	}
 
 	showStatus(timeout, text)
@@ -271,11 +300,20 @@ export class Viewport extends View
 	{
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 
+		this.listen(this.tags.frame, 'click', (event) => {
+			if(event.target === this.tags.frame.node)
+			{
+				this.tags.viewport.focus();
+			}
+		});
+
 		this.listen(document, 'fullscreenchange', (event) => {
 			if (!document.fullscreenElement)
 			{
 				this.args.scale = this.initScale;
-				this.args.fullscreen = ''
+				this.args.fullscreen = '';
+
+				return;
 			}
 		});
 
@@ -302,7 +340,7 @@ export class Viewport extends View
 			{
 				return;
 			}
-			this.tags.viewport.focus()
+			this.tags.viewport.focus();
 		});
 
 		this.args.scale = this.args.scale || 1;
@@ -312,6 +350,18 @@ export class Viewport extends View
 		keyboard.listening = true
 
 		keyboard.focusElement = this.tags.viewport.node;
+
+		if(window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches)
+		{
+			this.args.standalone = 'standalone';
+
+			document.title = 'Sonic 3000'
+
+			this.listen(window, 'resize', () => this.fitScale(false));
+			this.onTimeout(100, () => this.fitScale(false));
+		}
+
+		this.onTimeout(100, () => this.args.initializing = '');
 	}
 
 	startLevel()
@@ -323,7 +373,7 @@ export class Viewport extends View
 			this.args.started = true;
 			this.startTime    = Date.now();
 
-			// Promise.all(done).then(() => this.args.titlecard = '');
+			Promise.all(done).then(() => this.args.titlecard = '');
 		});
 	}
 
@@ -333,25 +383,42 @@ export class Viewport extends View
 
 		keyboard.update();
 
-		if(controller && controller.buttons[16] && controller.buttons[16].time === 2)
+		if(controller)
 		{
-			this.playableIterator = this.playableIterator || this.playable.entries();
-
-			let next = this.playableIterator.next();
-
-			if(next.done)
+			if(controller.buttons[1011] && controller.buttons[1011].time === 2)
 			{
-				this.playableIterator = false;
-
-				this.playableIterator = this.playable.entries();
-
-				next = this.playableIterator.next();
-
+				this.fullscreen();
 			}
 
-			if(next.value)
+			if(controller.buttons[16] && controller.buttons[16].time === 2)
 			{
-				this.nextControl = next.value[0];
+				this.playableIterator = this.playableIterator || this.playable.entries();
+
+				let next = this.playableIterator.next();
+
+				if(next.done)
+				{
+					this.playableIterator = false;
+
+					this.playableIterator = this.playable.entries();
+
+					next = this.playableIterator.next();
+
+				}
+
+				if(next.value)
+				{
+					this.nextControl = next.value[0];
+
+					controller.update();
+
+					return;
+				}
+			}
+
+			if(this.args.started && controller.buttons[9] && controller.buttons[9].time === 2)
+			{
+				this.args.paused = !this.args.paused;
 
 				controller.update();
 
@@ -359,14 +426,6 @@ export class Viewport extends View
 			}
 		}
 
-		if(controller && this.args.started && controller.buttons[9] && controller.buttons[9].time === 2)
-		{
-			this.args.paused = !this.args.paused;
-
-			controller.update();
-
-			return;
-		}
 
 		if(controller && !this.gamepad)
 		{
@@ -1486,5 +1545,10 @@ export class Viewport extends View
 		this.args.isRecording = false;
 
 		this.controlActor && this.controlActor.controller.zero();
+	}
+
+	focus()
+	{
+		this.tags.viewport && this.tags.viewport.focus();
 	}
 }

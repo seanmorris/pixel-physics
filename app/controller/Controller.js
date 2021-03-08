@@ -2,7 +2,8 @@ import { Axis } from './Axis';
 import { Button } from './Button';
 
 const keys = {
-	' ':   0
+	' ': 0
+	, 'Enter':   0
 	, 'Control': 1
 	, 'Shift':   2
 	, 'z': 3
@@ -16,12 +17,15 @@ const keys = {
 	, 'd': 15
 
 	, 'p': 9
+	, 'Pause': 9
 
 	, 'ArrowUp':    12
-	, 'ArrowLeft':  14
 	, 'ArrowDown':  13
+	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
 };
+
+[...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 1000 + fn);
 
 const axisMap = {
 	12:   -1

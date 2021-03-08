@@ -9,6 +9,6 @@ export class SeanCard extends Card
 		super(args, parent);
 
 		this.args.cardName = 'sean-card';
-		this.args.text     = new LogoSplash;
+		this.args.text     = new LogoSplash({}, parent);
 	}
 }

@@ -33,7 +33,7 @@ export class TitleScreenCard extends Card
 
 		this.bgm = new Audio('/Sonic/carnival-night-zone-act-2-beta.mp3');
 
-		this.onRemove(()=>this.bgm.paused = true);
+		this.onRemove(() => this.bgm.pause());
 
 		const keyBinding = Keyboard.get().codes.bindTo('Enter', v => {
 			if(!this.started || Date.now() - this.started < 2000)
@@ -41,9 +41,9 @@ export class TitleScreenCard extends Card
 				return;
 			}
 
-			this.onTimeout(500, () => this.startPressed = true);
+			this.onTimeout(200, () => this.startPressed = true);
 
-			this.args.animation = 'closing'
+			this.args.animation = 'closing';
 		});
 
 		this.onRemove(keyBinding);
@@ -83,21 +83,28 @@ export class TitleScreenCard extends Card
 
 		if(controller.buttons[9] && controller.buttons[9].time === 1)
 		{
-			this.onTimeout(500, () => this.startPressed = true);
+			this.onTimeout(200, () => this.startPressed = true);
 
-			this.args.animation = 'closing'
+			this.args.animation = 'closing';
 		}
 	}
 
 	play()
 	{
-		this.onTimeout(1000, () => this.bgm.play());
+		this.onTimeout(1000, () => {
+			const debind = this.parent.args.bindTo('audio', (v) => {
+				v ? this.bgm.play() : this.bgm.pause();
+			});
+
+			this.onRemove(debind);
+		});
+
 		this.onTimeout(1300, () => this.args.aurora = 'aurora');
 
 		this.started = Date.now();
 
 		const play = super.play();
 
-		return Promise.any([this.start, play]);
+		return Promise.race([this.start, play]);
 	}
 }

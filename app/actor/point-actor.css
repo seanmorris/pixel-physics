@@ -119,22 +119,6 @@
 	filter: brightness(5);
 }
 
-.actor-item.actor-monitor .sprite {
-	background-image: url(/Sonic/ringMonitor.png);
-	--sprite-offset-x: -18px;
-	--sprite-offset-y: -13px;
-	animation: monitor-flicker steps(4) infinite;
-	animation-duration: calc(1ms * 480);
-}
-
-.actor-item.actor-monitor.actor-monitor-broken .sprite {
-	background-image: url(/Sonic/brokenMonitor.png);
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
- 	--sprite-offset-x: -18px;
-	--sprite-offset-y: -12px;
-	animation: none;
-}
-
 .actor-item.actor-question-block .sprite {
 	background-image: url(/Sonic/question-block.png);
 	--sprite-offset-x: -16px;
@@ -283,17 +267,6 @@
 .actor-item.collision-right:before {
 	border-right: 4px solid var(--collColor);
 }
-
-@-webkit-keyframes monitor-flicker{
-	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	}
-	to{
-		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
-	}
-}
-
-
 
 @-webkit-keyframes ringSpin{
 	from{

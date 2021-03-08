@@ -15,8 +15,12 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	--scale-transition: 0.2s ease-in;
+	--scale-transition: 0.1s ease-in;
 	--scale: 1;
+}
+
+.viewport-frame.standalone {
+	--scale-transition: 0s linear;
 }
 
 section.filters {
@@ -37,7 +41,6 @@ section.filters {
 	color: red;
 	font-size: 0.7rem;
 }
-
 .viewport-caption button {
 	background: black;
 	border: none;
@@ -175,7 +178,7 @@ section.filters {
 	pointer-events: none;
 	top: 0px;
 	left: 0px;
-	transition: transform var(--scale-transition);
+	/*transition: transform var(--scale-transition);*/
 	transform-origin: top left;
 
 	transform: scale(var(--scale));
@@ -195,8 +198,7 @@ section.filters {
 	left: 0px;
 	height: 100%;
 	width: 100%;
-	transition: transform var(--scale-transition) 0.25s, width var(--scale-transition) 0.25s, height var(--scale-transition) 0.25s;
-	transition-duration: 0.0s;
+	/*transition: transform var(--scale-transition) 0.25s, width var(--scale-transition) 0.25s, height var(--scale-transition) 0.25s;*/
 	transform-origin: top left;
 	pointer-events: none;
 }
@@ -363,6 +365,10 @@ span.arrow-west {
 	text-align: right !important;
 }
 
+.standalone .viewport-caption {
+	display: none;
+}
+
 .viewport-caption i {
 	margin-bottom: 0.5em;
 }
@@ -526,4 +532,21 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 100%;
 	height: 632px;
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
+}
+
+.viewport.standalone {
+	position: fixed;
+	z-index: 10000;
+	background-color: black;
+	border: none;
+	outline: none;
+}
+
+.viewport-frame.standalone {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	background-color: black;
 }

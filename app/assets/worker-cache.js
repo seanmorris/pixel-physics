@@ -13,38 +13,54 @@ self.addEventListener('install', (event) => {
 });
 
 const resourceMatch = /\.(js|css|svg|png|dae)$/;
+const forceRefresh  = true;
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', (event) => {
+
 	const eventResponse = caches.open('static').then((cache) => {
 
-		return cache.match(event.request).then((response) => {
+		return cache.match(event.request).then((cacehedResponse) => {
 
-			const respUrl = new URL(event.request.url);
-
-			if(response && respUrl.pathname.match(resourceMatch))
-			{
-				event.waitUntil(fetch(event.request).then((response) => {
-
-					cache.put(event.request, response.clone());
-
-				}).catch(e=>console.error(e)));
-			}
-
-			return response || fetch(event.request).then((response) => {
+			const refreshFetch = fetch(event.request).then((refreshReponse) => {
 
 				const reqUrl = new URL(event.request.url);
 
-				if(reqUrl.pathname.match(resourceMatch))
-				{
-					cache.put(event.request, response.clone());
-				}
+				// if(reqUrl.pathname.match(resourceMatch))
+				// {
+				// 	cache.put(event.request, refreshReponse.clone());
+				// }
 
-				return response;
-			}).catch(e=>console.error(e));
+				return refreshReponse;
+			});
+
+			refreshFetch.catch( error => console.error(error) );
+
+			const respUrl = new URL(event.request.url);
+
+			if(forceRefresh || !cacehedResponse)
+			{
+				event.waitUntil(refreshFetch);
+
+				if(forceRefresh)
+				{
+					return refreshFetch;
+				}
+			}
+
+			return cacehedResponse || refreshFetch;
 
 		});
-
 	});
 
 	event.respondWith(eventResponse);
+});
+
+self.addEventListener('activate', (event) => {
+	event.waitUntil(
+		caches.keys().then((cacheNames) => {
+			cacheNames.map((cacheName) => {
+	          return caches.delete(cacheName);
+	        });
+		})
+	);
 });

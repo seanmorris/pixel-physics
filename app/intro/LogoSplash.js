@@ -2,9 +2,9 @@ import { View } from 'curvature/base/View';
 
 export class LogoSplash extends View
 {
-	constructor(args = {})
+	constructor(args = {}, parent)
 	{
-		super(args);
+		super(args, parent);
 
 		this.ringSample = new Audio('/Sonic/ring-collect.wav');
 
@@ -22,6 +22,13 @@ export class LogoSplash extends View
 
 	onAttached()
 	{
+		if(this.alreadyAttached)
+		{
+			return;
+		}
+
+		this.alreadyAttached = true;
+
 		this.args.left  = 0;
 		this.args.right = 0;
 		this.args.fade  = 1;
@@ -33,10 +40,10 @@ export class LogoSplash extends View
 
 		this.args.animation = 'hide';
 
-		this.onTimeout(500, ()=> this.args.animation = 'slide');
+		this.onTimeout(500,  ()=> this.args.animation = 'slide');
 		this.onTimeout(1250, ()=> this.args.animation = 'show');
 		this.onTimeout(5000, ()=> this.args.animation = 'done');
 
-		this.onTimeout(1250, ()=> this.ringSample.play());
+		this.onTimeout(1250, ()=> this.parent.args.audio && this.ringSample.play());
 	}
 }

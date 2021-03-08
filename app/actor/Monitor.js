@@ -76,13 +76,13 @@ export class Monitor extends PointActor
 			return;
 		}
 
-		const particle = new Tag('<div class = "particle-explosion">');
+		const explosion = new Tag('<div class = "particle-explosion">');
 
-		particle.style({'--x': this.x, '--y': this.y});
+		explosion.style({'--x': this.x, '--y': this.y});
 
-		viewport.particles.add(particle);
+		viewport.particles.add(explosion);
 
-		setTimeout(() => viewport.particles.remove(particle), 350);
+		setTimeout(() => viewport.particles.remove(explosion), 350);
 
 		const corpse = new BrokenMonitor({x:this.x, y:this.y});
 

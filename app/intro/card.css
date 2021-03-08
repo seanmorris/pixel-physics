@@ -13,6 +13,8 @@
 	color: white;
 
 	transition: opacity 500ms 250ms linear, filter 500ms linear;
+
+	pointer-events: initial;
 }
 
 .screen-card-boot-card {
@@ -42,8 +44,7 @@
 	filter: brightness(0);
 }
 
-.screen-card-title-screen-card.opening,
-.screen-card-title-screen-card.closed {
+.screen-card-title-screen-card.opening {
 	opacity: 0;
 }
 
