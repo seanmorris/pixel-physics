@@ -24,8 +24,13 @@
 			"src": "/icons/app-192.png",
 			"sizes": "192x192",
 			"type": "image/png"
+		}, {
+			"src": "/icons/app-256.png",
+			"sizes": "256x256",
+			"type": "image/png"
 		}
 	],
+	"display":"minimal-ui",
 	"name": "Sonic The Hedgehog 3000",
 	"orientation": "landscape",
 	"theme_color": "black",

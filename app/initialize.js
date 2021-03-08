@@ -6,6 +6,10 @@ import { Viewport } from './viewport/Viewport';
 const viewportA = new Viewport;
 
 document.addEventListener('DOMContentLoaded', function() {
+
+	navigator.serviceWorker.register('/worker-cache.js');
+
+
 	let lastTime = 0;
 
 	// const replayUrl = '/debug/replay-updated.json';
