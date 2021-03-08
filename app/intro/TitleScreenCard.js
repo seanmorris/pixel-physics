@@ -31,6 +31,10 @@ export class TitleScreenCard extends Card
 
 		this.started = 0;
 
+		this.bgm = new Audio('/Sonic/carnival-night-zone-act-2-beta.mp3');
+
+		this.onRemove(()=>this.bgm.paused = true);
+
 		const keyBinding = Keyboard.get().codes.bindTo('Enter', v => {
 			if(!this.started || Date.now() - this.started < 2000)
 			{
@@ -87,6 +91,7 @@ export class TitleScreenCard extends Card
 
 	play()
 	{
+		this.onTimeout(1000, () => this.bgm.play());
 		this.onTimeout(1300, () => this.args.aurora = 'aurora');
 
 		this.started = Date.now();
