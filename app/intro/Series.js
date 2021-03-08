@@ -28,7 +28,7 @@ export class Series extends View
 
 			, new SeanCard({timeout: 5000})
 
-			, new TitleScreenCard({timeout: 5000})
+			, new TitleScreenCard({timeout: 50000})
 
 			, new Titlecard({
 				firstLine:    'PIXEL HILL'
@@ -59,5 +59,15 @@ export class Series extends View
 				return play;
 			}
 		});
+	}
+
+	input(controller)
+	{
+		const card = this.args.cards[ this.args.cards.length - 1 ];
+
+		if(card.input)
+		{
+			card.input(controller);
+		}
 	}
 }

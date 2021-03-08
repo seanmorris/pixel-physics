@@ -6,6 +6,10 @@ export class LogoSplash extends View
 	{
 		super(args);
 
+		this.ringSample = new Audio('/Sonic/ring-collect.wav');
+
+		this.ringSample.volume = 0.50;
+
 		this.template   = `<div class = "splash [[animation]]" style = "
 			pointer-events: [[pointerEvents]]
 		">
@@ -33,8 +37,6 @@ export class LogoSplash extends View
 		this.onTimeout(1250, ()=> this.args.animation = 'show');
 		this.onTimeout(5000, ()=> this.args.animation = 'done');
 
-		// this.onTimeout(2750, ()=>{
-		// 	this.remove()
-		// });
+		this.onTimeout(1250, ()=> this.ringSample.play());
 	}
 }

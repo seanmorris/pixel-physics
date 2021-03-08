@@ -479,23 +479,22 @@ input[type=number]::-webkit-outer-spin-button {
 	top: 0em;
 }
 
-.viewport-frame.seymour-aurora .backdrop::before {
-	opacity: 0.75;
+.aurora .backdrop::before {
+	opacity: 0.65;
 }
 
-.viewport-frame .backdrop::before {
+.backdrop::before {
 	opacity: 0;
 	background-image: url(/custom/aurora.png);
 	background-size: 100% 55%;
 	background-repeat: no-repeat;
-	mix-blend-mode: lighten;
 }
 
-.viewport-frame.seymour-aurora .backdrop {
+.aurora .backdrop {
 	background-color: #323292;
 }
 
-.viewport-frame .backdrop::before {
+.backdrop::before {
 	content: ' ';
 	display: block;
 	position: absolute;
@@ -503,12 +502,12 @@ input[type=number]::-webkit-outer-spin-button {
 	top: 0;
 	width: 100%;
 	height: 100%;
-	transition: opacity 3s ease-out;
+	transition: opacity 0.5s ease-out;
 	/*opacity: 0;*/
 }
 
 .backdrop {
-	transition: background-color 1s 3s ease-out;
+	transition: background-color 0.5s ease-out;
 	position: absolute;
 	left: 0;
 	top: 0;

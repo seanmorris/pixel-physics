@@ -94,7 +94,8 @@ div.splash.slide div.center {
 		, 110% 93%
 	);
 	opacity: 0.25;
-	transition: clip-path 0.5s;
+	transition: clip-path 0.75s;
+	filter: brightness(5) saturate(0.5) contrast(2);
 }
 
 div.splash div.center {
@@ -128,14 +129,14 @@ div.splash.done div.center span.min {
 div.splash.show div.center div.sm,
 div.splash.done div.center div.sm {
 	opacity: 1;
-	transition: opacity 0.25s;
+	transition: opacity 0.5s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;
 }
 
 div.splash.done {
 	background-color: black;
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.25s ease-in,  background-color 0.25s ease-in;
+	transition: opacity 0.5s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;
 }
 
 span.min {

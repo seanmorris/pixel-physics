@@ -411,9 +411,12 @@ export class Viewport extends View
 
 					this.args.inputType = '';
 				}
-
 			}
+		}
 
+		if(this.args.titlecard)
+		{
+			this.args.titlecard.input(controller);
 		}
 
 		if(this.args.isRecording)
@@ -1168,12 +1171,12 @@ export class Viewport extends View
 			this.moveCamera();
 
 			if(this.controlActor.args.name === 'seymour'
-				&& this.controlActor.y < 2048
+				&& this.controlActor.y < 3840
 				&& this.controlActor.x > 38400
 				&& this.controlActor.standingOn
 				&& this.controlActor.standingOn.isVehicle
 			){
-				this.args.secret = 'seymour-aurora';
+				this.args.secret = 'aurora';
 
 				if(!this.secretsFound.has('seymour-aurora'))
 				{

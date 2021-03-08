@@ -264,8 +264,8 @@ export class PointActor extends View
 			if(this.controllable && groundObject.isVehicle)
 			{
 				bindable.debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
-					const x = 0;
-					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
+					const x = groundObject.args.direction * groundObject.args.seatForward || 0;
+					const y = groundObject.args.seatHeight  || groundObject.args.height || 0;
 
 					const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
 					const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
@@ -275,7 +275,7 @@ export class PointActor extends View
 				});
 
 				bindable.debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-					const x = 0; //groundObject.x;
+					const x = groundObject.args.direction * groundObject.args.seatForward || 0;
 					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
 
 					const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
@@ -1137,8 +1137,9 @@ export class PointActor extends View
 			if(foreDistance !== false)
 			{
 				this.args.x += foreDistance * Math.sign(this.public.xSpeed);
-				this.args.xSpeed = 0;
-				this.args.ignore = 6;
+				this.args.flySpeed = 0;
+				this.args.xSpeed   = 0;
+				this.args.ignore   = 6;
 
 				return;
 			}
