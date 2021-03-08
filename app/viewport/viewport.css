@@ -8,6 +8,9 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+
+	min-height: 512px;
+	min-width: 908px;
 }
 
 .viewport-frame {
