@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			requestAnimationFrame(update);
 
-			// if(frameAgeMin > frameTime)
-			// {
-			// 	return;
-			// }
+			if(viewportA.args.maxFps < 60 && frameAgeMin > frameTime)
+			{
+				return;
+			}
 
 			viewportA.update();
 

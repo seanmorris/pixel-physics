@@ -79,14 +79,17 @@ export class DrillCar extends Vehicle
 			this.flyingSound.loop   = true;
 		}
 
-		if(!this.flyingSound.paused)
+		if(this.flyingSound)
 		{
-			this.flyingSound.volume = 0.25 + (Math.random() * -0.2);
-		}
+			if(!this.flyingSound.paused)
+			{
+				this.flyingSound.volume = 0.25 + (Math.random() * -0.2);
+			}
 
-		if(this.flyingSound.currentTime > 0.2)
-		{
-			this.flyingSound.currentTime = 0.0;
+			if(this.flyingSound.currentTime > 0.2)
+			{
+				this.flyingSound.currentTime = 0.0;
+			}
 		}
 
 		if(!this.box)
@@ -97,7 +100,7 @@ export class DrillCar extends Vehicle
 
 		if(!falling)
 		{
-			this.flyingSound.pause();
+			this.flyingSound && this.flyingSound.pause();
 
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
@@ -164,7 +167,7 @@ export class DrillCar extends Vehicle
 		}
 		else if(this.args.falling)
 		{
-			this.flyingSound.pause();
+			this.flyingSound && this.flyingSound.pause();
 			this.box.setAttribute('data-animation', 'jumping');
 		}
 
@@ -172,7 +175,7 @@ export class DrillCar extends Vehicle
 		{
 			if(this.args.ySpeed > 5)
 			{
-				this.flyingSound.pause();
+				this.flyingSound && this.flyingSound.pause();
 		 		this.args.flying = false;
 			}
 		}
@@ -204,7 +207,7 @@ export class DrillCar extends Vehicle
 		{
 			if(!this.args.flying)
 			{
-				this.flyingSound.play();
+				this.flyingSound && this.flyingSound.play();
 			}
 
 			this.args.flying = true;
