@@ -1,3 +1,17 @@
+.screen-card.screen-card-main-menu .menu-container {
+	display: flex;
+	align-items: center;
+	filter:
+		drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(0px 0px 1px rgba(0,0,0,0.75));
+}
+
+.screen-card.screen-card-main-menu {
+	/*background-color: transparent;*/
+	z-index: 1;
+}
+
 .screen-card-main-menu :focus,
 .screen-card-main-menu .focused{
 	/*outline: 1px solid rgba(255,255,255,0.2);
@@ -31,4 +45,44 @@
 	position: absolute;
 	left: 0;
 	top: 100%;
+}
+
+.screen-card-main-menu {
+	position: relative;
+	background-color: black;
+}
+
+.screen-card-main-menu::before {
+	content: ' ';
+	animation: menu-bg-scroll 12000ms linear infinite forwards;
+
+	z-index: -1;
+
+	filter: url(#menu-warp) blur(0.2px);
+
+	background-color: #0024d8;
+
+	background-image: url(/custom/checker-blue.png);
+}
+
+.screen-card-main-menu svg {
+	pointer-events: none;
+}
+
+.screen-card-main-menu svg {
+	position: absolute;
+	height: 128px;
+	width:  128px;
+}
+
+.screen-card-main-menu::before {
+	transform: scale(4);
+	position: absolute;
+	height: 128px;
+	width:  128px;
+}
+
+@keyframes menu-bg-scroll {
+	0%   { background-position-x: 0px; }
+	100% { background-position-x: 96px; }
 }

@@ -1,3 +1,17 @@
+.screen-card.screen-card-main-menu .menu-container {
+	display: flex;
+	align-items: center;
+	filter:
+		drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(0px 0px 1px rgba(0,0,0,0.75));
+}
+
+.screen-card.screen-card-main-menu {
+	/*background-color: transparent;*/
+	z-index: 1;
+}
+
 .screen-card-main-menu :focus,
 .screen-card-main-menu .focused{
 	/*outline: 1px solid rgba(255,255,255,0.2);
@@ -31,6 +45,46 @@
 	position: absolute;
 	left: 0;
 	top: 100%;
+}
+
+.screen-card-main-menu {
+	position: relative;
+	background-color: black;
+}
+
+.screen-card-main-menu::before {
+	content: ' ';
+	animation: menu-bg-scroll 12000ms linear infinite forwards;
+
+	z-index: -1;
+
+	filter: url(#menu-warp) blur(0.2px);
+
+	background-color: #0024d8;
+
+	background-image: url(/custom/checker-blue.png);
+}
+
+.screen-card-main-menu svg {
+	pointer-events: none;
+}
+
+.screen-card-main-menu svg {
+	position: absolute;
+	height: 128px;
+	width:  128px;
+}
+
+.screen-card-main-menu::before {
+	transform: scale(4);
+	position: absolute;
+	height: 128px;
+	width:  128px;
+}
+
+@keyframes menu-bg-scroll {
+	0%   { background-position-x: 0px; }
+	100% { background-position-x: 96px; }
 }
 
 .actor-eggmobile {
@@ -2379,7 +2433,7 @@ h1 {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100%;
+	height: calc(100% + 1px);
 
 	display: flex;
 	align-items: center;
@@ -2399,7 +2453,7 @@ h1 {
 }
 
 .screen-card.opening {
-	opacity: 0;
+	filter: brightness(0) saturate(0);
 }
 
 .screen-card-loading-card {
@@ -2412,16 +2466,16 @@ h1 {
 	opacity: 1;
 }
 
-.screen-card-title-screen-card.closing {
+.screen-card-title-screen-card.closing,
+.screen-card-title-screen-card.closed {
 	filter: brightness(0) saturate(0);
 }
 
-.screen-card-boot-card.closing {
+.screen-card-boot-card.closed {
 	filter: brightness(0);
 }
 
 .screen-card-title-screen-card.opening {
-	opacity: 0;
 }
 
 .screen-card-boot-card span {
@@ -3407,6 +3461,7 @@ iframe {
 	background-position: -32px -64px;
 }
 
+
 .hud-character-string {
 	--scale: 1;
 	--xyz: calc(-14px * var(--scale));
@@ -3659,6 +3714,94 @@ iframe {
 	25% {transform: translateY( calc(-1 * var(--distance)) );}
 	50% {transform: translateY( var(--distance) );}
 	75% {transform: translateY( calc(-1 * var(--distance)) );}
+}
+
+.quick-controls {
+	z-index: 1000000;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.5;
+	filter: drop-shadow(0px 0.5px 0.25px black) drop-shadow(0.5px 1px 0.25px black);
+	background: rgba(0,0,0,0.25);
+	user-select: none;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.quick-controls:hover {
+	opacity: 1;
+}
+
+.quick-controls .switch {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.quick-controls .switch .slide {
+	height: 1em;
+	width: 1.5em;
+	font-size: 0.75em;
+	border: 1px white solid;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	background-color: black;
+}
+
+.quick-controls .switch .label {
+	color: white;
+	height: 2em;
+	line-height: 200%;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-size: 0.85rem;
+	display: flex;
+	align-items: center;
+}
+
+.quick-controls .button {
+	display: flex;
+	align-items: center;
+	padding-left: 5px;
+	padding-right: 5px;
+	cursor: pointer;
+}
+
+.quick-controls img {
+	width: 1em;
+	height: 1em;
+}
+
+.quick-controls .switch .label img {
+	width: 0.75em;
+	height: 0.85em;
+}
+
+.quick-controls .switch .slide .head {
+	transform: translateX(0%);
+	background-color: white;
+	border: 1px solid black;
+	height: 100%;
+	width: 50%;
+	box-sizing: border-box;
+	transition: transform 0.125s ease-in-out;
+}
+
+.quick-controls .switch:not([data-active="false"]) .slide .head {
+	transform: translateX(100%);
+}
+
+.quick-controls .switch:not([data-active="false"]) .labelOff {
+	opacity: 0.25;
+}
+
+.quick-controls .switch:not([data-active="true"]) .labelOn {
+	opacity: 0.25;
 }
 
 html, body {
@@ -4045,15 +4188,23 @@ span.arrow-west {
 
 .focus-me {
 	font-size: 2em;
-	z-index: 1000;
+	z-index: 1000000;
 	background-color: white;
-	color: red;
+	color: white;
 	pointer-events: none;
-	transition: opacity 0.25s ease-in;
 }
 
-.viewport:focus .focus-me {
-	transition: opacity 0.2s ease-out;
+.viewport .status-message,
+.focus-me .status-message {
+	transition: transform 0.5s ease-out, opacity 0.25s 0.25s ease-out;
+	transform: scaleX(1);
+	opacity: 1;
+}
+
+.viewport .status-message.hide,
+.viewport:focus-within .focus-me .status-message {
+	transition: transform 0.5s ease-out, opacity 0.25s ease-in;
+	transform: scaleX(0);
 	opacity: 0;
 }
 
@@ -4068,7 +4219,7 @@ span.arrow-west {
 	justify-content: center;
 	--distance: 4px;
 	--time: 30ms;
-	z-index: 1000;
+	z-index: 100000;
 	pointer-events: none;
 }
 

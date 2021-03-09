@@ -14,6 +14,9 @@ export class Twist extends View
 
 		this.args.width  = this.args.width  || 64;
 		this.args.height = this.args.height || 64;
+
+		this.args.dx = 0;
+		this.args.dy = 0;
 	}
 
 	onAttached()

@@ -7,25 +7,48 @@
 		<filter
 			cv-ref = "filter"
 			color-interpolation-filters="sRGB"
+			height = "100%"
+			width  = "100%"
 			id     = "[[id]]"
-			x      ="0%"
-			y      ="0%"
-			height ="100%"
-			width  ="100%"
+			x      = "0%"
+			y      = "0%"
 
 		>
+			<feFlood
+				flood-color="#808000"
+				height = "100%"
+				width  = "100%"
+				result = "OffsetNeutral"
+				x="0"
+				y="0"
+			/>
+
 			<feImage
 				xlink:href="[[blob]]"
-				result    ="DisplacementSource"
-				height    ="100%"
-				width     ="100%"
+				result = "DisplacementSource"
+				height = "100%"
+				width  = "100%"
+			/>
+
+			<feOffset
+				in  = "DisplacementSource"
+				result = "OffsetSource"
+				dx     = "[[dx]]"
+				dy     = "[[dy]]"
+			/>
+
+			<feComposite
+				operator="over"
+				in2    = "OffsetNeutral"
+				in     = "OffsetSource"
+				result = "DisplacementResult"
 			/>
 
 			<feDisplacementMap
 				xChannelSelector = "R"
 				yChannelSelector = "G"
-				in2    = "DisplacementSource"
 				in     = "SourceGraphic"
+				in2    = "DisplacementResult"
 				cv-ref = "displace"
 				scale  = "[[scale]]"
 			/>

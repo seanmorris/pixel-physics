@@ -26,6 +26,8 @@ import { Controller } from '../controller/Controller';
 
 import { ObjectPalette } from '../ObjectPalette';
 
+import { ClickSwitch } from '../ui/ClickSwitch';
+
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
@@ -212,7 +214,7 @@ export class Viewport extends View
 
 		this.startTime = null;
 
-		this.args.audio = !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0);
+		this.args.audio = true;
 
 		this.nextControl = false;
 
@@ -241,6 +243,12 @@ export class Viewport extends View
 		this.args.fullscreen = '';
 		this.args.initializing = 'initializing';
 
+		this.args.muteSwitch = new ClickSwitch;
+
+		this.args.muteSwitch.args.active = !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0)
+
+		this.args.muteSwitch.args.bindTo('active', v => this.args.audio = v);
+
 		this.args.bindTo('audio', (v) => {
 			localStorage.setItem('sonic-3000-audio-enabled', v);
 		});
@@ -251,6 +259,8 @@ export class Viewport extends View
 		if(document.fullscreenElement)
 		{
 			document.exitFullscreen();
+			this.showStatus(3000, ' hit escape to revert. ');
+			this.showStatus(0, '');
 			this.args.focusMe.args.hide = '';
 			this.args.fullscreen = '';
 			return;
@@ -260,6 +270,8 @@ export class Viewport extends View
 
 		this.initScale = this.args.scale;
 
+		this.showStatus(5000, ' hit escape to revert. ');
+
 		this.tags.viewport.node.requestFullscreen().then(res=>{
 			this.onTimeout(100, ()=>{
 
@@ -267,7 +279,6 @@ export class Viewport extends View
 
 				this.args.fullscreen = 'fullscreen';
 
-				this.showStatus(2500, ' hit escape to revert. ');
 			});
 		}).catch(e =>console.error(e));
 	}
@@ -289,15 +300,24 @@ export class Viewport extends View
 
 	showStatus(timeout, text)
 	{
-		this.args.status.args.value = text;
 		this.args.status.args.hide  = '';
-		this.onTimeout(timeout, ()=>{
-			this.args.status.args.hide = 'hide';
-		});
+		this.args.status.args.value = text;
+
+		console.log(timeout);
+
+		if(timeout >= 0)
+		{
+			this.onTimeout(timeout, ()=>{
+				this.args.status.args.hide = 'hide';
+			});
+		}
+
 	}
 
 	onAttached(event)
 	{
+		this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
+
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 
 		this.listen(this.tags.frame, 'click', (event) => {
@@ -333,8 +353,6 @@ export class Viewport extends View
 		this.args.paused  = true;
 		this.args.started = false;
 
-		this.args.status.args.hide = 'hide';
-
 		this.listen(document.body, 'click', event => {
 			if(event.target !== document.body)
 			{
@@ -367,8 +385,6 @@ export class Viewport extends View
 	startLevel()
 	{
 		this.args.titlecard.play().then((done) => {
-			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
-			this.args.status.args.hide = '';
 			this.args.paused  = false;
 			this.args.started = true;
 			this.startTime    = Date.now();
@@ -382,50 +398,6 @@ export class Viewport extends View
 		const keyboard = Keyboard.get();
 
 		keyboard.update();
-
-		if(controller)
-		{
-			if(controller.buttons[1011] && controller.buttons[1011].time === 2)
-			{
-				this.fullscreen();
-			}
-
-			if(controller.buttons[16] && controller.buttons[16].time === 2)
-			{
-				this.playableIterator = this.playableIterator || this.playable.entries();
-
-				let next = this.playableIterator.next();
-
-				if(next.done)
-				{
-					this.playableIterator = false;
-
-					this.playableIterator = this.playable.entries();
-
-					next = this.playableIterator.next();
-
-				}
-
-				if(next.value)
-				{
-					this.nextControl = next.value[0];
-
-					controller.update();
-
-					return;
-				}
-			}
-
-			if(this.args.started && controller.buttons[9] && controller.buttons[9].time === 2)
-			{
-				this.args.paused = !this.args.paused;
-
-				controller.update();
-
-				return;
-			}
-		}
-
 
 		if(controller && !this.gamepad)
 		{
@@ -470,6 +442,42 @@ export class Viewport extends View
 
 					this.args.inputType = '';
 				}
+			}
+		}
+
+		if(controller)
+		{
+			if(controller.buttons[1011] && controller.buttons[1011].time === 1)
+			{
+				this.fullscreen();
+			}
+
+			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
+			{
+				this.playableIterator = this.playableIterator || this.playable.entries();
+
+				let next = this.playableIterator.next();
+
+				if(next.done)
+				{
+					this.playableIterator = false;
+
+					this.playableIterator = this.playable.entries();
+
+					next = this.playableIterator.next();
+				}
+
+				if(next.value)
+				{
+					this.nextControl = next.value[0];
+
+					this.dontSwitch = 15;
+				}
+			}
+
+			if(this.args.started && controller.buttons[9] && controller.buttons[9].time === 1)
+			{
+				this.args.paused = !this.args.paused;
 			}
 		}
 
@@ -914,6 +922,16 @@ export class Viewport extends View
 			this.populateMap();
 		}
 
+		if(this.dontSwitch > 0)
+		{
+			this.dontSwitch--;
+		}
+
+		if(this.dontSwitch < 0)
+		{
+			this.dontSwitch = 0;
+		}
+
 		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		this.args.rippleFrame = this.args.frameId % 128;
@@ -941,6 +959,8 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
+			console.log(this.args.isReplaying);
+
 			if(this.args.isReplaying)
 			{
 				this.args.focusMe.args.hide = 'hide';
@@ -975,7 +995,6 @@ export class Viewport extends View
 				}
 				else
 				{
-					this.args.status.args.hide = 'hide';
 					this.args.isReplaying = false;
 				}
 			}
@@ -988,7 +1007,7 @@ export class Viewport extends View
 				}
 				else
 				{
-					this.args.focusMe.args.hide = '';
+					// this.args.focusMe.args.hide = '';
 				}
 
 				this.takeInput(this.controlActor.controller);
@@ -1264,9 +1283,6 @@ export class Viewport extends View
 
 	click(event)
 	{
-		this.args.topLine.args.hide = 'hide';
-		this.args.status.args.hide  = 'hide';
-
 		if(this.args.isReplaying)
 		{
 			this.controlActor.controller.zero();

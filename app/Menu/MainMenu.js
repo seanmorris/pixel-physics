@@ -1,5 +1,10 @@
 import { Card } from '../intro/Card';
 
+import { Cylinder } from '../effects/Cylinder';
+import { Pinch } from '../effects/Pinch';
+
+// import { ElasticOut } from 'curvature/animate/ease/ElasticOut';
+
 export class MainMenu extends Card
 {
 	template = require('./main-menu.html');
@@ -19,10 +24,22 @@ export class MainMenu extends Card
 		this.selector = 'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])';
 
 		this.onRemove(() => parent.focus());
+
+		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
+
+		this.onRemove(() => this.bgm.pause());
+
+		this.bgm.loop = true;
 	}
 
 	onRendered()
 	{
+		const debind = this.parent.args.bindTo('audio', (v) => {
+			v ? this.onTimeout(500, () => this.bgm.play()) : this.bgm.pause();
+		});
+
+		this.onRemove(debind);
+
 		if(!this.tags.bound)
 		{
 			return;
@@ -35,6 +52,23 @@ export class MainMenu extends Card
 		this.listen(elements, 'focus', event => this.currentItem = event.target);
 
 		this.listen(elements, 'blur', event => event.target.classList.remove('focused'));
+
+		this.args.warp = new Pinch({
+			id:'menu-warp'
+			, width:  128
+			, height: 128
+			, scale:  32
+		});
+	}
+
+	onAttached()
+	{
+		const next = this.findNext(this.currentItem, this.tags.bound.node);
+
+		if(next)
+		{
+			this.focus(next);
+		}
 	}
 
 	findNext(current, bounds, reverse = false)
@@ -111,6 +145,9 @@ export class MainMenu extends Card
 		{
 			return;
 		}
+
+		this.args.warp.args.dx = (controller.axes[2] ? controller.axes[2].magnitude : 0) * 64;
+		this.args.warp.args.dy = (controller.axes[3] ? controller.axes[3].magnitude : 0) * 64;
 
 		let next;
 

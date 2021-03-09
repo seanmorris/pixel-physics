@@ -3,7 +3,7 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100%;
+	height: calc(100% + 1px);
 
 	display: flex;
 	align-items: center;
@@ -23,7 +23,7 @@
 }
 
 .screen-card.opening {
-	opacity: 0;
+	filter: brightness(0) saturate(0);
 }
 
 .screen-card-loading-card {
@@ -36,16 +36,16 @@
 	opacity: 1;
 }
 
-.screen-card-title-screen-card.closing {
+.screen-card-title-screen-card.closing,
+.screen-card-title-screen-card.closed {
 	filter: brightness(0) saturate(0);
 }
 
-.screen-card-boot-card.closing {
+.screen-card-boot-card.closed {
 	filter: brightness(0);
 }
 
 .screen-card-title-screen-card.opening {
-	opacity: 0;
 }
 
 .screen-card-boot-card span {

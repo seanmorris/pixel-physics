@@ -1,0 +1,87 @@
+.quick-controls {
+	z-index: 1000000;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.5;
+	filter: drop-shadow(0px 0.5px 0.25px black) drop-shadow(0.5px 1px 0.25px black);
+	background: rgba(0,0,0,0.25);
+	user-select: none;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.quick-controls:hover {
+	opacity: 1;
+}
+
+.quick-controls .switch {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.quick-controls .switch .slide {
+	height: 1em;
+	width: 1.5em;
+	font-size: 0.75em;
+	border: 1px white solid;
+	margin-top: 1px;
+	margin-bottom: 1px;
+	background-color: black;
+}
+
+.quick-controls .switch .label {
+	color: white;
+	height: 2em;
+	line-height: 200%;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-size: 0.85rem;
+	display: flex;
+	align-items: center;
+}
+
+.quick-controls .button {
+	display: flex;
+	align-items: center;
+	padding-left: 5px;
+	padding-right: 5px;
+	cursor: pointer;
+}
+
+.quick-controls img {
+	width: 1em;
+	height: 1em;
+}
+
+.quick-controls .switch .label img {
+	width: 0.75em;
+	height: 0.85em;
+}
+
+.quick-controls .switch .slide .head {
+	transform: translateX(0%);
+	background-color: white;
+	border: 1px solid black;
+	height: 100%;
+	width: 50%;
+	box-sizing: border-box;
+	transition: transform 0.125s ease-in-out;
+}
+
+.quick-controls .switch:not([data-active="false"]) .slide .head {
+	transform: translateX(100%);
+}
+
+.quick-controls .switch:not([data-active="false"]) .labelOff {
+	opacity: 0.25;
+}
+
+.quick-controls .switch:not([data-active="true"]) .labelOn {
+	opacity: 0.25;
+}

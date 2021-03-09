@@ -44,6 +44,8 @@ export class TitleScreenCard extends Card
 			this.onTimeout(200, () => this.startPressed = true);
 
 			this.args.animation = 'closing';
+
+			this.audioDebind();
 		});
 
 		this.onRemove(keyBinding);
@@ -86,24 +88,29 @@ export class TitleScreenCard extends Card
 			this.onTimeout(200, () => this.startPressed = true);
 
 			this.args.animation = 'closing';
+
+			this.audioDebind();
 		}
 	}
 
 	play()
 	{
 		this.onTimeout(1000, () => {
-			const debind = this.parent.args.bindTo('audio', (v) => {
+			this.audioDebind = this.parent.args.bindTo('audio', (v) => {
 				v ? this.bgm.play() : this.bgm.pause();
 			});
 
-			this.onRemove(debind);
+			this.onRemove(this.audioDebind);
 		});
+
 
 		this.onTimeout(1300, () => this.args.aurora = 'aurora');
 
 		this.started = Date.now();
 
 		const play = super.play();
+
+		play.then(()=>{ this.bgm.pause(); this.audioDebind(); });
 
 		return Promise.race([this.start, play]);
 	}

@@ -19,6 +19,8 @@ const keys = {
 	, 'p': 9
 	, 'Pause': 9
 
+	, 'Tab': 11
+
 	, 'ArrowUp':    12
 	, 'ArrowDown':  13
 	, 'ArrowLeft':  14
