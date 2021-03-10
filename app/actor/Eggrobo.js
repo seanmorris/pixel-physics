@@ -81,12 +81,12 @@ export class Eggrobo extends PointActor
 
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
-				this.thrusterSound.pause();
+				this.thrusterSound && this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'skidding');
 			}
 			else if(speed > maxSpeed / 2)
 			{
-				this.thrusterSound.pause();
+				this.thrusterSound && this.thrusterSound.pause();
 				this.box.setAttribute('data-animation', 'running');
 			}
 			else if(this.args.moving && gSpeed)
@@ -129,7 +129,7 @@ export class Eggrobo extends PointActor
 
 		if(this.args.rocketCoolDown == 0)
 		{
-			this.thrusterSound.pause();
+			this.thrusterSound && this.thrusterSound.pause();
 		}
 
 		if(this.args.rocketCoolDown > 0)
@@ -163,7 +163,7 @@ export class Eggrobo extends PointActor
 
 			if(this.args.rocketCoolDown <= 1)
 			{
-				this.thrusterSound.play();
+				this.thrusterSound && this.thrusterSound.play();
 				this.args.rocketCoolDown = 3;
 			}
 

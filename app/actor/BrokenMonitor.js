@@ -17,11 +17,11 @@ export class BrokenMonitor extends PointActor
 
 	collideA(other)
 	{
-		if(other instanceof Monitor)
-		{
-			this.viewport && this.viewport.actors.remove(this);
-			return false;
-		}
+		// if(other instanceof Monitor)
+		// {
+		// 	this.viewport && this.viewport.actors.remove(this);
+		// 	return false;
+		// }
 
 		super.collideA(other);
 

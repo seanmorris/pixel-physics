@@ -25,9 +25,13 @@
 	--sprite-offset-y: 0px;
 }
 
+.actor-item.actor-knuckles[data-animation="hold-bomb"] .sprite:after {
+	--sprite-offset-y: -416px;
+}
+
 .actor-item.actor-knuckles[data-animation="throw-bomb"] .sprite:after {
 	--sprite-offset-y: -416px;
-	animation: knuckles-jump steps(5) 1 256ms 128ms;
+	animation: knuckles-jump steps(5) 1 160ms;
 }
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
@@ -126,7 +130,7 @@
 	}
 }
 
-.actor-item.actor-knuckles .knuckles-knuckles {
+/*.actor-item.actor-knuckles .knuckles-knuckles {
 	position: absolute;
 	top: 32px;
 	left: -6px;
@@ -145,7 +149,7 @@
 	z-index: -1;
 
 	animation: knuckles-animate steps(var(--animation-steps)) infinite 350ms;
-}
+}*/
 
 .actor-item.actor-knuckles[data-animation="walking"] .knuckles-knuckles,
 .actor-item.actor-knuckles[data-animation="running"] .knuckles-knuckles {
@@ -160,4 +164,21 @@
 	left: -10px;
 	transform-origin: 42px 16px;
 	transform: rotate(calc(0deg + calc(1rad * var(--display-angle))));
+}
+
+.actor-knux-bomb .sprite {
+	background-image: url(/Sonic/knuckles-bomb.png);
+	height: 20px !important;
+	width:  14px !important;
+	background-position: 0px 0;
+	animation: knuckles-bomb steps(2) infinite 50ms;
+}
+
+@keyframes knuckles-bomb {
+	from{
+		background-position: 0px 0;
+	}
+	to{
+		background-position: -28px 0;
+	}
 }

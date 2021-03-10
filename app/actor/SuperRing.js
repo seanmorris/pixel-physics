@@ -44,6 +44,7 @@ export class SuperRing extends PointActor
 
 		const specular   = 0xBBBBBB;
 		const color      = 0xBBBB00;
+		const outline    = 0x000000;
 
 		// const finalX     = qTurn / 8 * 7;
 
@@ -67,7 +68,7 @@ export class SuperRing extends PointActor
 
 			const edgeGeometry = new THREE.EdgesGeometry(geometry);
 
-			const material = new THREE.MeshPhongMaterial({
+			const goldMaterial = new THREE.MeshPhongMaterial({
 				side:          THREE.FrontSide
 				, transparent: true
 				, skinning:    true
@@ -76,11 +77,20 @@ export class SuperRing extends PointActor
 				, color
 			});
 
-			this.mesh = new THREE.Mesh(geometry, material);
+			const blackMaterial = new THREE.MeshBasicMaterial({
+				color: outline
+				, side: THREE.BackSide
+			});
+
+			this.mainMesh = new THREE.Mesh(geometry, goldMaterial);
+			this.outlineMesh = new THREE.Mesh(geometry, blackMaterial);
+			this.inlineMesh = new THREE.Mesh(geometry, blackMaterial);
+
+			this.outlineMesh.scale.multiplyScalar(1.075);
+			this.inlineMesh.scale.multiplyScalar(0.925);
 
 			this.wireMaterial = new THREE.LineBasicMaterial({
-				wireframe:     true
-				, depthTest:   true
+				depthTest:   true
 				, linewidth:   1.25
 				, color:       lineColor
 				, transparent: true
@@ -99,7 +109,9 @@ export class SuperRing extends PointActor
 
 			light.target = this.wireframe;
 
-			this.scene.add(this.mesh);
+			this.scene.add(this.mainMesh);
+			this.scene.add(this.outlineMesh);
+			this.scene.add(this.inlineMesh);
 		 	this.scene.add(this.wireframe);
 
 			this.scene.add(light);
@@ -237,9 +249,24 @@ export class SuperRing extends PointActor
 			}
 		}
 
-		// this.wireframe.rotation.x = this.mesh.rotation.x = this.args.xRot / 200;
-		this.wireframe.rotation.y = this.mesh.rotation.y = yRot;
-		this.wireframe.rotation.z = this.mesh.rotation.z = this.args.zRot / 60;
+		// this.wireframe.rotation.x
+		//	= this.mainMesh.rotation.x
+		//	= this.outlineMesh.rotation.x
+		//	= this.inlineMesh.rotation.x
+		//	= this.args.xRot / 200;
+
+
+		this.wireframe.rotation.y
+			= this.mainMesh.rotation.y
+			= this.outlineMesh.rotation.y
+			= this.inlineMesh.rotation.y
+			= yRot;
+
+		this.wireframe.rotation.z
+			= this.mainMesh.rotation.z
+			= this.outlineMesh.rotation.z
+			= this.inlineMesh.rotation.z
+			= this.args.zRot / 60;
 
 		this.args.yRot += this.args.speed;
 		// this.args.xRot++;
@@ -255,6 +282,10 @@ export class SuperRing extends PointActor
 
 		if(!other.controllable || other.public.flying)
 		{
+			if(this.leaving.delete(other))
+			{
+				return;
+			}
 			return;
 		}
 
@@ -266,12 +297,18 @@ export class SuperRing extends PointActor
 		if(this.caught)
 		{
 			this.caught.args.xSpeed = (Math.sign(other.public.xSpeed) * 3) || 3;
-			this.caught.args.ignore = 30;
+
+			this.leaving.add(this.caught);
 		}
 
 		if(this.caught !== other)
 		{
 			this.drop();
+
+			if(this.leaving.has(other))
+			{
+				return;
+			}
 
 			this.onTimeout(500, () => {
 
@@ -301,25 +338,36 @@ export class SuperRing extends PointActor
 			this.pinchFilterBg.classList.add('grabbing-start');
 			this.pinch(-50, 15);
 
-			this.onTimeout(150, () => {
+			this.leaving.add(caught);
+
+			if(this.startGrab)
+			{
+				clearTimeout(this.startDrop);
+				this.startDrop = false;
+			}
+
+			this.startDrop = this.onTimeout(150, () => {
 				this.pinchFilterBg.classList.add('grabbing');
-				this.leaving.add(caught);
 
 				caught.args.float = 0;
 
-				this.onTimeout(650, () => {
+				if(this.dropDone)
+				{
+					clearTimeout(this.dropDone);
+					this.dropDone = false;
+				}
+
+				this.dropDone = this.onTimeout(650, () => {
 					this.pinchFilterBg.classList.remove('grabbing-start');
 					this.pinchFilterBg.classList.remove('grabbing');
 					this.pinch(0, 0);
 				});
 
-				this.onTimeout(100, () => {
-					this.caught = null;
-				});
+				this.caught = null;
 			});
 
-			this.onTimeout(750, () => {
-				this.leaving.delete(caught)
+			this.onTimeout(500, () => {
+				this.leaving.delete(caught);
 			});
 		}
 	}

@@ -151,7 +151,6 @@
 		</defs>
 		</svg>
 
-		<!-- <div class = "viewport-double-zoom"></div> -->
 		<div class = "viewport-zoom">
 
 			[[backdrop]]
@@ -172,7 +171,7 @@
 
 			<div cv-ref = "content" class = "viewport-content">
 
-				<div cv-ref = "actors" class = "viewport-actors" cv-each = "actors:actor:a">[[actor]]</div>
+				<div cv-ref = "actors" class = "viewport-actors">[[actor]]</div>
 
 				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">[[particle]]</div>
 
@@ -288,19 +287,26 @@
 		</div>
 
 		<div class = "quick-controls">
+
 			[[muteSwitch]]
+
 			<div class = "button" cv-on = "click:fullscreen()">
 				<image src = "/ui/fullscreen.svg" />
 			</div>
+
 		</div>
 
 
 	</div>
 
 	<div class = "viewport-caption [[inputType]]">
+
 		<div class = "top-bar">
+
 			<div class = "buttons">
+
 				<button cv-on = "click:fullscreen(event)">fullscreen</button>
+
 				<span cv-if = "!isRecording">
 					<span cv-if = "!isReplaying">
 						<button cv-on = "click:reset(event)">reset</button>
@@ -310,12 +316,15 @@
 						</span>
 					</span>
 				</span>
+
 				<span cv-if = "isReplaying">
 					<button cv-on = "click:stop(event)">stop</button>
 				</span>
+
 				<span cv-if = "isRecording">
 					<button cv-on = "click:stop(event)">stop</button>
 				</span>
+
 			</div>
 
 			<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
@@ -324,25 +333,29 @@
 			</a>
 
 			<label class = "change-character">
+
 				change character:
+
 				<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
 					<option value = "[[name]]">[[name]]</option>
 				</select>
+
 			</label>
+
 		</div>
 
 		<div>
+
 			<div>
-				<b>controls: [[inputName]]</b>
-				[[controlCard]]
+				<b>controls: [[inputName]]</b> [[controlCard]]
 			</div>
 
 			<div>
-				<b>moves:</b>
-				[[moveCard]]
+				<b>moves:</b> [[moveCard]]
 			</div>
 
 			<div class = "right">
+
 				<b>options:</b>
 
 				<label>
@@ -354,26 +367,6 @@
 					<span>max fps</span>
 					<input type = "number" cv-bind = "maxFps" value = "100" />
 				</label>
-
-			<!-- 	<label>
-					<span>player can stop on walls</span>
-					<input type = "checkbox" cv-bind = "stayStuck" value = "1" />
-				</label>
-
-				<label>
-					<span>jumps can stick to walls</span>
-					<input type = "checkbox" cv-bind = "willStick" value = "1" />
-					<br />
-				</label>
-
-				<small><small>(requires "stop on walls")</small></small> -->
-
-				<!-- <label>
-					<span>speed limit:</span>
-					<form>
-						<input type = "number" cv-bind = "maxSpeed" min = "1" />
-					</form>
-				</label> -->
 
 				<label>
 					<span>scale:</span>

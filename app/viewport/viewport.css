@@ -229,6 +229,17 @@ section.filters {
 	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
 }
 
+/*.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet) canvas,*/
+.viewport-particles > *,
+.viewport .point-actor.actor-drill-car .sprite,
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car) {
+	filter:
+		drop-shadow(1px 1px 0px black)
+		drop-shadow(-1px 1px 0px black)
+		drop-shadow(-1px -1px 0px black)
+		drop-shadow(1px -1px 0px black);
+}
+
 .viewport-background {
 	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
 	transform: translate3d(0,0,0);
@@ -390,15 +401,15 @@ span.arrow-west {
 
 .viewport .status-message,
 .focus-me .status-message {
-	transition: transform 0.5s ease-out, opacity 0.25s 0.25s ease-out;
-	transform: scaleX(1);
+	transition: transform 0.5s ease-out, opacity 0.3s 0.2s ease-out;
+	transform: scale(1,1);
 	opacity: 1;
 }
 
 .viewport .status-message.hide,
 .viewport:focus-within .focus-me .status-message {
-	transition: transform 0.5s ease-out, opacity 0.25s ease-in;
-	transform: scaleX(0);
+	transition: transform 0.5s ease-out, opacity 0.2s ease-in;
+	transform: scale(0,0);
 	opacity: 0;
 }
 

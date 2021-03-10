@@ -33,6 +33,8 @@ export class TitleScreenCard extends Card
 
 		this.bgm = new Audio('/Sonic/carnival-night-zone-act-2-beta.mp3');
 
+		this.bgm.volume = 0.5;
+
 		this.onRemove(() => this.bgm.pause());
 
 		const keyBinding = Keyboard.get().codes.bindTo('Enter', v => {

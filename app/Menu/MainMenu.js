@@ -27,6 +27,8 @@ export class MainMenu extends Card
 
 		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
 
+		this.bgm.volume = 0.5;
+
 		this.onRemove(() => this.bgm.pause());
 
 		this.bgm.loop = true;
@@ -55,9 +57,7 @@ export class MainMenu extends Card
 
 		this.args.warp = new Pinch({
 			id:'menu-warp'
-			, width:  128
-			, height: 128
-			, scale:  32
+			, scale:  64
 		});
 	}
 
@@ -146,8 +146,8 @@ export class MainMenu extends Card
 			return;
 		}
 
-		this.args.warp.args.dx = (controller.axes[2] ? controller.axes[2].magnitude : 0) * 64;
-		this.args.warp.args.dy = (controller.axes[3] ? controller.axes[3].magnitude : 0) * 64;
+		this.args.warp.args.dx = (controller.axes[2] ? controller.axes[2].magnitude : 0) * 32;
+		this.args.warp.args.dy = (controller.axes[3] ? controller.axes[3].magnitude : 0) * 32;
 
 		let next;
 

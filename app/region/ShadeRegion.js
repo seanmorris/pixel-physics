@@ -11,7 +11,15 @@ export class ShadeRegion extends Region
 	currentFilter = -1;
 
 	filters = [
-		'studio', 'runners', 'western', 'hydro', 'heat', 'frost', 'eight-bit', 'corruption', /*'black-hole,'*/ 'normal'
+		'studio'
+		, 'western'
+		, 'hydro'
+		, 'heat'
+		, 'frost'
+		, 'eight-bit'
+		, 'corruption'
+		// , 'black-hole'
+		, 'normal'
 	];
 
 	constructor(...args)
@@ -53,7 +61,7 @@ export class ShadeRegion extends Region
 			id:'shade-pinch'
 			, width: this.args.width
 			, height: this.args.height
-			// , scale: 150
+			, scale: 150
 		});
 
 		this.pinch.render(this.tags.sprite);
@@ -64,22 +72,6 @@ export class ShadeRegion extends Region
 		// });
 
 		this.rotateFilter();
-
-		if(!this.switch && this.public.switch)
-		{
-			this.switch = this.viewport.actorsById[ this.public.switch ]
-
-			this.switch.args.bindTo('active', v => {
-				if(!v)
-				{
-				}
-
-				if(v)
-				{
-					this.rotateFilter();
-				}
-			});
-		}
 	}
 
 	update()
@@ -87,6 +79,22 @@ export class ShadeRegion extends Region
 		super.update();
 
 		this.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25)
+
+		if(!this.switch && this.public.switch)
+		{
+			this.switch = this.viewport.actorsById[ this.public.switch ]
+
+			if(this.switch)
+			{
+				this.switch.args.bindTo('active', v => {
+					if(v)
+					{
+						this.rotateFilter();
+					}
+				});
+			}
+		}
+
 	}
 
 	rotateFilter()

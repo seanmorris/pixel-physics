@@ -104,7 +104,7 @@ export class MechaSonic extends PointActor
 				if(!this.public.takeoffPlayed)
 				{
 					this.args.takeoffPlayed = true;
-					this.takeoffSound.play();
+					this.takeoffSound && this.takeoffSound.play();
 				}
 
 				this.args.accel = 0.75;
@@ -116,7 +116,7 @@ export class MechaSonic extends PointActor
 			}
 			else if(speed >= minRun)
 			{
-				this.scrapeSound.play();
+				this.scrapeSound && this.scrapeSound.play();
 				this.box.setAttribute('data-animation', 'running');
 			}
 			else if(this.args.moving && gSpeed)

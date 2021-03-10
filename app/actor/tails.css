@@ -134,7 +134,7 @@
 	--animation-steps: 5;
 	top: 32px;
 	left: -10px;
-	transform-origin: 42px 16px;
+	transform-origin: 42px 18px;
 	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 

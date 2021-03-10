@@ -10,11 +10,7 @@
 	z-index: 10;
 
 	animation: explosion steps(4) 1 forwards;
-	animation-duration: 240ms;
-
-	filter: blur(0.5px) !important;
-
-	/*opacity: 0;*/
+	animation-duration: 512ms;
 }
 
 @-webkit-keyframes explosion{

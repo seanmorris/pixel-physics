@@ -169,7 +169,7 @@ export class PointActor extends View
 		this.impulseDir = null;
 
 		this.args.gSpeedMax    = WALKING_SPEED;
-		this.args.rollSpeedMax = 35;
+		this.args.rollSpeedMax = 37;
 
 		this.args.jumpForce = 14;
 		this.args.stopped   = 0;
@@ -382,6 +382,16 @@ export class PointActor extends View
 
 	update()
 	{
+		if(this.args.dontJump > 0)
+		{
+			this.args.dontJump--;
+		}
+
+		if(this.args.dontJump < 0)
+		{
+			this.args.dontJump = 0;
+		}
+
 		if(!this.viewport || this.removed)
 		{
 			return;
@@ -499,7 +509,11 @@ export class PointActor extends View
 		}
 		else
 		{
-			this.args.jumping = false;
+			if(this.public.jumping)
+			{
+				this.args.jumping  = false;
+				this.args.dontJump = 5;
+			}
 		}
 
 		this.region = this.viewport.regionAtPoint(this.x, this.y);
@@ -514,6 +528,11 @@ export class PointActor extends View
 			this.updateGroundPosition();
 
 			this.args.animationBias = Math.abs(this.args.gSpeed / this.args.gSpeedMax).toFixed(1);
+
+			if(this.args.animationBias > 1)
+			{
+				this.args.animationBias = 1;
+			}
 		}
 
 		if(!this.viewport || this.removed)
@@ -555,7 +574,7 @@ export class PointActor extends View
 						}
 						else if(mode === MODE_CEILING)
 						{
-							this.args.y += Math.floor(this.public.height);
+							// this.args.y += Math.floor(this.public.height);
 
 							if(this.public.direction == -1)
 							{
@@ -709,6 +728,42 @@ export class PointActor extends View
 		}
 
 		this.args.colliding = this.colliding;
+
+		if(this.twister)
+		{
+			this.twister.args.x = this.public.x;
+			this.twister.args.y = this.public.y;
+
+			this.twister.args.xOff = this.public.xOff;
+			this.twister.args.yOff = this.public.yOff;
+
+			this.twister.args.width  = this.public.width;
+			this.twister.args.height = this.public.height;
+		}
+
+		if(this.pincherBg)
+		{
+			this.pincherBg.args.x = this.public.x;
+			this.pincherBg.args.y = this.public.y;
+
+			this.pincherBg.args.xOff = this.public.xOff;
+			this.pincherBg.args.yOff = this.public.yOff;
+
+			this.pincherBg.args.width  = this.public.width;
+			this.pincherBg.args.height = this.public.height;
+		}
+
+		if(this.pincherFg)
+		{
+			this.pincherFg.args.x = this.public.x;
+			this.pincherFg.args.y = this.public.y;
+
+			this.pincherFg.args.xOff = this.public.xOff;
+			this.pincherFg.args.yOff = this.public.yOff;
+
+			this.pincherFg.args.width  = this.public.width;
+			this.pincherFg.args.height = this.public.height;
+		}
 	}
 
 	updateGroundPosition()
@@ -1009,22 +1064,26 @@ export class PointActor extends View
 					// this.public.gSpeed = 10 * Math.sign(this.xAxis);
 				}
 			}
-			else if(!this.stayStuck && Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.333))
+			else if(!this.stayStuck)
 			{
-				if(slopeFactor > 0)
+				let speedFactor = 1;
+
+				if(slopeFactor < 0 && Math.abs(this.public.gSpeed) < 10)
 				{
-					this.args.gSpeed *= 1.0005 * (1+(slopeFactor/2));
+					speedFactor = 0.99990 * (1 - (slopeFactor**2/4) / 2);
 				}
-				else if(slopeFactor < 0)
+				else if(slopeFactor > 0 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
 				{
-					this.args.gSpeed *= (1/1.00025) * (0-(slopeFactor/2));
+					speedFactor = 1.00005 * (1 + (slopeFactor**2/4) / 2);
 				}
 
-				if(Math.abs(this.public.gSpeed) < (this.public.gSpeedMax * 0.1))
+				this.args.gSpeed *= speedFactor;
+
+				if(Math.abs(this.public.gSpeed) < 1)
 				{
 					if(slopeFactor < -1)
 					{
-						this.args.gSpeed *= -1;
+						this.args.gSpeed *= -0.5;
 						this.args.ignore = 8;
 						this.xAxis = 0;
 					}
@@ -1066,14 +1125,14 @@ export class PointActor extends View
 
 		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
 		{
+			if(Math.abs(this.public.gSpeed) > this.public.rollSpeedMax
+				&& this.public.rollSpeedMax !== Infinity
+				&& this.public.rollSpeedMax !== -Infinity
+			){
+				this.args.gSpeed = this.public.rollSpeedMax * Math.sign(this.public.gSpeed);
+			}
 			if(this.public.rolling)
 			{
-				if(Math.abs(this.public.gSpeed) > this.public.rollSpeedMax
-					&& gSpeedMax !== Infinity
-					&& gSpeedMax !== -Infinity
-				){
-					this.args.gSpeed = this.public.rollSpeedMax * Math.sign(this.public.gSpeed);
-				}
 			}
 			else
 			{
@@ -1081,7 +1140,7 @@ export class PointActor extends View
 					&& gSpeedMax !== Infinity
 					&& gSpeedMax !== -Infinity
 				){
-					this.args.gSpeed = gSpeedMax * Math.sign(this.public.gSpeed);
+					// this.args.gSpeed = gSpeedMax * Math.sign(this.public.gSpeed);
 				}
 			}
 		}
@@ -1092,7 +1151,7 @@ export class PointActor extends View
 			this.args.gSpeed = 0;
 		}
 
-		if(this.willJump)
+		if(!this.public.dontJump && this.willJump)
 		{
 			this.willJump = false;
 
@@ -1139,7 +1198,11 @@ export class PointActor extends View
 				this.args.x += foreDistance * Math.sign(this.public.xSpeed);
 				this.args.flySpeed = 0;
 				this.args.xSpeed   = 0;
-				this.args.ignore   = 6;
+
+				if(!this.args.flying && !this.args.float)
+				{
+					this.args.ignore = -2;
+				}
 
 				return;
 			}
@@ -1333,7 +1396,7 @@ export class PointActor extends View
 
 						const slopeDir = -Math.sign(this.args.groundAngle);
 
-						if(slopeDir > 0.25)
+						if(Math.abs(slopeDir) > 0)
 						{
 							this.args.gSpeed = ySpeedOriginal * slopeDir;
 						}
@@ -1496,7 +1559,7 @@ export class PointActor extends View
 				}
 
 				testX += Math.cos(backAngle);
-				testY += Math.sin(backAngle);
+				testY -= Math.sin(backAngle);
 
 				iterations++;
 
@@ -1547,9 +1610,9 @@ export class PointActor extends View
 					this.lastAngles.unshift(newAngle);
 					this.lastAngles.splice(this.angleAvg);
 
-					const slopeDir = -Math.sign(this.args.groundAngle);
+					const slopeDir = -Math.sign(this.public.groundAngle);
 
-					this.args.gSpeed = (1 + this.args.ySpeed) * slopeDir;
+					this.args.gSpeed = (1 + this.public.ySpeed) * slopeDir;
 				}
 				else if(!below)
 				{
@@ -1696,8 +1759,10 @@ export class PointActor extends View
 
 				if(!Math.sign(this.public.gSpeed) || Math.sign(this.public.gSpeed) === Math.sign(gSpeed))
 				{
-
-					this.args.gSpeed = gSpeed;
+					if(Math.abs(gSpeed) < gSpeedMax || Math.sign(gSpeed) !== this.xAxis)
+					{
+						this.args.gSpeed = gSpeed;
+					}
 				}
 				else
 				{
@@ -1973,9 +2038,9 @@ export class PointActor extends View
 			return;
 		}
 
-		const backPosition = this.findNextStep(-this.public.width / 2);
-		const forePosition = this.findNextStep(this.public.width / 2);
-		const sensorSpread = this.public.width;
+		const backPosition = this.findNextStep(-this.public.width / 4);
+		const forePosition = this.findNextStep(this.public.width / 4);
+		const sensorSpread = 8;
 
 		const jumpAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
 
@@ -2032,7 +2097,7 @@ export class PointActor extends View
 
 		if(xJump && Math.sign(this.public.xSpeed) !== Math.sign(xJump))
 		{
-			this.args.xSpeed = xJump;
+			this.args.xSpeed += xJump;
 		}
 		else
 		{
@@ -2041,7 +2106,7 @@ export class PointActor extends View
 
 		if(yJump && Math.sign(this.public.ySpeed) !== Math.sign(yJump))
 		{
-			this.args.ySpeed = yJump;
+			this.args.ySpeed += yJump;
 		}
 		else
 		{
@@ -2424,7 +2489,7 @@ export class PointActor extends View
 	get point() { return [this.public.x, this.public.y] }
 	get rotateLock() { return false; }
 	get controllable() { return false; }
-	get skidding() { return Math.abs(this.args.gSpeed) && Math.sign(this.args.gSpeed) !== this.args.direction }
+	get skidding() { return Math.abs(this.public.gSpeed) && Math.sign(this.public.gSpeed) !== this.public.direction }
 
 	readInput()
 	{
@@ -2538,13 +2603,13 @@ export class PointActor extends View
 
 			filterContainer.appendChild(this.twistFilter.node);
 
-			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
+			this.twister = new Twist({id: 'twist-' + this.args.id, scale: 60});
+
+			this.twister.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
 				this.twistFilter.style({
 					[`--${k}`]: v, filter: `url(#twist-${this.args.id})`
 				});
 			});
-
-			this.twister = new Twist({id: 'twist-' + this.args.id, scale: 60});
 
 			this.twister.render(this.sprite);
 		}
@@ -2565,13 +2630,13 @@ export class PointActor extends View
 
 			filterContainer.appendChild(this.pinchFilterBg.node);
 
-			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
+			this.pincherBg = new Pinch({id: 'pinch-' + this.args.id, scale: 60});
+
+			this.pincherBg.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
 				this.pinchFilterBg.style({
 					[`--${k}`]: v, filter: `url(#pinch-${this.args.id})`
 				});
 			});
-
-			this.pincherBg = new Pinch({id: 'pinch-' + this.args.id, scale: 60});
 
 			this.args.yOff = 16;
 
@@ -2591,13 +2656,13 @@ export class PointActor extends View
 
 			filterContainer.appendChild(this.pinchFilterFg.node);
 
-			this.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
+			this.pincherFg = new Pinch({id: 'pinch-fg-' + this.args.id, scale: 60});
+
+			this.pincherFg.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
 				this.pinchFilterFg.style({
 					[`--${k}`]: v, filter: `url(#pinch-fg-${this.args.id})`
 				});
 			});
-
-			this.pincherFg = new Pinch({id: 'pinch-fg-' + this.args.id, scale: 60});
 
 			this.args.yOff = 16;
 

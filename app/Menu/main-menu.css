@@ -52,13 +52,13 @@
 	background-color: black;
 }
 
-.screen-card-main-menu::before {
+.screen-card-main-menu .menu-scroller {
 	content: ' ';
 	animation: menu-bg-scroll 12000ms linear infinite forwards;
 
 	z-index: -1;
 
-	filter: url(#menu-warp) blur(0.2px);
+	filter: url(#menu-warp);
 
 	background-color: #0024d8;
 
@@ -69,17 +69,15 @@
 	pointer-events: none;
 }
 
-.screen-card-main-menu svg {
+.screen-card-main-menu svg,
+.screen-card-main-menu .menu-scroller {
 	position: absolute;
-	height: 128px;
-	width:  128px;
+	transform: scale(3);
+	height: 45%;
+	width:  45%;
 }
 
-.screen-card-main-menu::before {
-	transform: scale(4);
-	position: absolute;
-	height: 128px;
-	width:  128px;
+.screen-card-main-menu .menu-scroller {
 }
 
 @keyframes menu-bg-scroll {

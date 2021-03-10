@@ -74,7 +74,7 @@ export class StarPost extends PointActor
 				, y:       this.y - 48
 			});
 
-			this.onNextFrame(()=> this.viewport.actors.add(monitor));
+			this.viewport.spawn.add({object:monitor});
 
 			this.args.active = true;
 

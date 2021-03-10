@@ -176,6 +176,8 @@ export class Viewport extends View
 			{
 				i.viewport = null;
 
+				i.remove();
+
 				if(i[ColCell])
 				{
 					this.playable.delete(i);
@@ -302,8 +304,6 @@ export class Viewport extends View
 	{
 		this.args.status.args.hide  = '';
 		this.args.status.args.value = text;
-
-		console.log(timeout);
 
 		if(timeout >= 0)
 		{
@@ -761,6 +761,8 @@ export class Viewport extends View
 
 			this.actors.add( actor );
 
+			actor.render(this.tags.actors);
+
 			const width  = this.args.width;
 			const height = this.args.height;
 			const margin = 32;
@@ -800,11 +802,24 @@ export class Viewport extends View
 	{
 		for(const spawn of this.spawn.values())
 		{
-			if(spawn.frame <= this.args.frameId)
+			if(spawn.frame)
+			{
+				if(spawn.frame <= this.args.frameId)
+				{
+					this.spawn.delete(spawn);
+
+					this.actors.add(Bindable.make(spawn.object));
+
+					spawn.object.render(this.tags.actors);
+				}
+			}
+			else
 			{
 				this.spawn.delete(spawn);
 
 				this.actors.add(Bindable.make(spawn.object));
+
+				spawn.object.render(this.tags.actors);
 			}
 		}
 	}
@@ -959,8 +974,6 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-			console.log(this.args.isReplaying);
-
 			if(this.args.isReplaying)
 			{
 				this.args.focusMe.args.hide = 'hide';
@@ -1030,6 +1043,14 @@ export class Viewport extends View
 		else
 		{
 			const actors = this.actors.list;
+
+			if(!this.playableIterator)
+			{
+				this.playableIterator = this.playable.entries();
+
+				this.playableIterator.next();
+			}
+
 
 			this.nextControl = this.nextControl || actors[0];
 		}
@@ -1138,13 +1159,13 @@ export class Viewport extends View
 
 		const width  = this.args.width;
 		const height = this.args.height;
-		const margin = 32;
+		const margin = 16;
 
 		const camLeft   = -this.args.x + -16 + -margin;
 		const camRight  = -this.args.x + width + -16 + margin;
 
-		const camTop    = -this.args.y;
-		const camBottom = -this.args.y + height;
+		const camTop    = -this.args.y - margin;
+		const camBottom = -this.args.y + height + margin;
 
 		const inAuras = new WeakSet;
 

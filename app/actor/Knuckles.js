@@ -1,6 +1,8 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
+import { KnuxBomb } from './KnuxBomb';
+
 export class Knuckles extends PointActor
 {
 	constructor(...args)
@@ -43,9 +45,20 @@ export class Knuckles extends PointActor
 			return;
 		}
 
-		if(this.throwing && Date.now() - this.throwing > 256 + 128)
+		if(this.throwing && Date.now() - this.throwing > 160)
 		{
 			this.throwing = false;
+			this.holdBomb = false;
+
+			const bomb = new KnuxBomb({
+				x: this.public.x
+				, y: this.public.y - 16
+				, owner: this
+				, xSpeed: this.public.direction * 10 + (-1 + (Math.random() * 2))
+				, ySpeed: Math.random() * -2
+			});
+
+			this.viewport.spawn.add({object: bomb});
 		}
 
 		if(this.punching && Date.now() - this.punching > 256)
@@ -80,6 +93,10 @@ export class Knuckles extends PointActor
 				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 				{
 					this.box.setAttribute('data-animation', 'skidding');
+				}
+				else if(this.holdBomb)
+				{
+					this.box.setAttribute('data-animation', 'hold-bomb');
 				}
 				else if(this.throwing)
 				{
@@ -197,6 +214,24 @@ export class Knuckles extends PointActor
 		super.update();
 	}
 
+	dropBomb()
+	{
+		if(this.public.falling)
+		{
+			this.args.ySpeed = -10;
+		}
+
+		const bomb = new KnuxBomb({
+			x: this.public.x
+			, y: this.public.y - 16
+			, owner: this
+			, xSpeed: 0
+			, ySpeed: Math.random() * -2
+		});;
+
+		this.viewport.spawn.add({object: bomb});
+	}
+
 	release_0()
 	{
 
@@ -237,10 +272,53 @@ export class Knuckles extends PointActor
 
 	command_2()
 	{
+		if(!this.args.ignore && this.public.falling && !this.public.flying)
+		{
+			this.dropBomb();
+
+			this.args.ignore = -2;
+
+			return;
+		}
+
+		if(this.public.falling)
+		{
+			return;
+		}
+
+		if(Math.abs(this.args.gSpeed) > 3)
+		{
+			return;
+		}
+
 		if(this.punching || this.throwing)
 		{
 			return;
 		}
+
+		this.holdBomb = Date.now();
+	}
+
+	release_2()
+	{
+		if(this.public.falling)
+		{
+			return;
+		}
+
+		if(Math.abs(this.args.gSpeed) > 3)
+		{
+			return;
+		}
+
+		if(!this.holdBomb)
+		{
+			return;
+		}
+
+		this.args.ignore = 4;
+
+		this.holdBomb = false;
 
 		this.throwing = Date.now();
 	}
