@@ -1211,6 +1211,8 @@ export class Viewport extends View
 						{
 							actor.nodes.map(n => this.tags.actors.append(n));
 
+							actor.wakeUp();
+
 							actor.vizi = true;
 						}
 
@@ -1218,7 +1220,7 @@ export class Viewport extends View
 					}
 					else
 					{
-						// actor.args.display = 'none';
+						actor.sleep();
 
 						actor.nodes.map(n => n.remove());
 
@@ -1235,7 +1237,11 @@ export class Viewport extends View
 		{
 			this.auras.delete(this.controlActor);
 
+			this.controlActor && this.controlActor.sprite.parentNode.classList.remove('actor-selected');
+
 			this.controlActor = this.nextControl;
+
+			this.controlActor.sprite.parentNode.classList.add('actor-selected');
 
 			this.auras.add(this.controlActor);
 

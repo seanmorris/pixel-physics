@@ -5,6 +5,50 @@
 	top: calc(1px * var(--y));
 }
 
+.point-actor .labels {
+	z-index: 1000000;
+	opacity: 0.75;
+	width: 100%;
+	position: absolute;
+	bottom: calc(1px * var(--height));
+	transform: rotateY(0deg);
+	transition: transform 0.125s ease-out;
+}
+
+.point-actor[data-facing="left"] .labels {
+	transform: rotateY(180deg);
+}
+
+.point-actor[data-mode="1"] .labels {
+	transform: rotateZ(-90deg);
+}
+
+.point-actor[data-mode="1"][data-facing="left"] .labels {
+	transform: rotateZ(-90deg) rotateX(180deg);
+}
+
+
+.point-actor[data-mode="2"] .labels {
+	transform: rotateX(180deg) rotateY(180deg);
+}
+
+.point-actor[data-mode="2"][data-facing="left"] .labels {
+	transform: rotateX(180deg);
+}
+
+
+.point-actor[data-mode="3"] .labels {
+	transform: rotateZ(90deg);
+}
+
+.point-actor[data-mode="3"][data-facing="left"] .labels {
+	transform: rotateZ(-90deg) rotateY(180deg);
+}
+
+.actor-generic .labels > * {
+	display: none;
+}
+
 .point-actor-filter {
 	--width: 64 !important;
 	--height: 64 !important;
@@ -327,4 +371,8 @@
 .actor-layer-switch .sprite {
 	background-color: yellow;
 	opacity: 0.5;
+}
+
+.actor-selected .labels {
+	display: none;
 }

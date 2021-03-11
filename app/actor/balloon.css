@@ -1,0 +1,10 @@
+.actor-balloon .sprite::before {
+
+	display: block;
+	content: ' ';
+	width: 32px;
+	height: 32px;
+	background-image: url(/Sonic/balloon.png);
+	transform: rotate(calc(180deg + calc(1rad * var(--air-angle))));
+	transform-origin: center bottom;
+}

@@ -42,8 +42,10 @@ import { Seymour } from './actor/Seymour';
 
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
+import { Balloon } from './actor/Balloon';
 
 import { Region } from './region/Region';
+
 
 import { WaterRegion } from './region/WaterRegion';
 import { ShadeRegion } from './region/ShadeRegion';
@@ -82,6 +84,7 @@ export const ObjectPalette = {
 	, 'text-actor':   TextActor
 	, 'water-jet':    WaterJet
 	, 'water-fall':   WaterFall
+	, 'balloon':      Balloon
 };
 
 

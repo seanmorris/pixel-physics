@@ -233,11 +233,22 @@ section.filters {
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car) {
+	--outlineColor: black;
 	filter:
-		drop-shadow(1px 1px 0px black)
-		drop-shadow(-1px 1px 0px black)
-		drop-shadow(-1px -1px 0px black)
-		drop-shadow(1px -1px 0px black);
+		drop-shadow(1px 1px 0px var(--outlineColor))
+		drop-shadow(-1px 1px 0px var(--outlineColor))
+		drop-shadow(-1px -1px 0px var(--outlineColor))
+		drop-shadow(1px -1px 0px var(--outlineColor));
+}
+
+.controllable.actor-generic:hover:not(.actor-selected),
+.controllable:not(.actor-generic):hover:not(.actor-selected) .sprite {
+	--outlineColor: white !important;
+	filter:
+		drop-shadow(1px 1px 0px var(--outlineColor))
+		drop-shadow(-1px 1px 0px var(--outlineColor))
+		drop-shadow(-1px -1px 0px var(--outlineColor))
+		drop-shadow(1px -1px 0px var(--outlineColor));
 }
 
 .viewport-background {

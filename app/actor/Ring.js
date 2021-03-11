@@ -34,8 +34,6 @@ export class Ring extends PointActor
 
 		super.collideA(other);
 
-		this.args.gone = true;
-
 		if(other.args.owner)
 		{
 			other.args.owner.args.rings += 1;
@@ -49,10 +47,12 @@ export class Ring extends PointActor
 			other.args.rings += 1;
 		}
 
-		if(!other.controllable && !other.occupant && !other.owner)
+		if(!other.controllable && !other.occupant && !other.args.owner)
 		{
 			return;
 		}
+
+		this.args.gone = true;
 
 		this.args.type = 'actor-item actor-ring collected';
 

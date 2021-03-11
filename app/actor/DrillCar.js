@@ -222,5 +222,10 @@ export class DrillCar extends Vehicle
 		}
 	}
 
+	sleep()
+	{
+		this.flyingSound && this.flyingSound.pause();
+	}
+
 	get solid() { return true; }
 }

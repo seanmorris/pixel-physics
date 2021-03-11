@@ -20,6 +20,13 @@ export class MechaSonic extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 63;
+
+		this.args.bindTo('falling', v => {
+			if(!v)
+			{
+				this.landSound();
+			}
+		})
 	}
 
 	onAttached()
@@ -85,7 +92,7 @@ export class MechaSonic extends PointActor
 			}
 		}
 
-		if(!falling)
+		if(!this.public.rolling && !falling)
 		{
 			if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 			{
@@ -136,36 +143,83 @@ export class MechaSonic extends PointActor
 
 			if(speed < minRun2)
 			{
-				if(this.args.takeoffPlayed)
-				{
-					this.thrusterCloseSound && this.thrusterCloseSound.play();
-				}
+				this.closeThruster()
+			}
+		}
+		else if(this.public.rolling)
+		{
+			if(this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping')
+			{
+				this.box.setAttribute('data-animation', 'curling');
 
-				this.args.takeoffPlayed = false;
-				this.thrusterSound && this.thrusterSound.pause();
+				this.onTimeout(128, ()=>{
+					if(this.public.rolling)
+					{
+						this.box.setAttribute('data-animation', 'rolling');
+
+						this.closeThruster();
+					}
+				});
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'rolling');
+
+				this.closeThruster();
 			}
 		}
 		else
 		{
 			this.scrapeSound && this.scrapeSound.pause();
 
-			if(this.box.getAttribute('data-animation') !== 'jumping')
+			if(this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping')
 			{
 				this.box.setAttribute('data-animation', 'curling');
 
 				this.onTimeout(128, ()=>{
-					if(this.args.falling)
+					if(this.public.falling)
 					{
 						this.box.setAttribute('data-animation', 'jumping');
+
+						this.closeThruster();
 					}
 				});
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+
+				this.closeThruster();
 			}
 		}
 
 		super.update();
 	}
 
+	closeThruster()
+	{
+		if(this.args.takeoffPlayed)
+		{
+			this.landSound();
+		}
+
+		this.args.takeoffPlayed = false;
+		this.thrusterSound && this.thrusterSound.pause();
+	}
+
+	landSound()
+	{
+		this.thrusterCloseSound && this.thrusterCloseSound.play();
+	}
+
+	sleep()
+	{
+		this.thrusterSound && this.thrusterSound.pause();
+		this.scrapeSound && this.scrapeSound.pause();
+	}
+
 	get solid() { return false; }
 	get isEffect() { return false; }
+	get canRoll() { return true; }
 	get controllable() { return true; }
 }

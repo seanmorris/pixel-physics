@@ -12,6 +12,8 @@ export class Tails extends PointActor
 		this.args.accel     = 0.32;
 		this.args.decel     = 0.7;
 
+		this.args.flySpeedMax = 25;
+
 		this.args.gSpeedMax = 14;
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
@@ -189,6 +191,11 @@ export class Tails extends PointActor
 		{
 			this.args.flying = true;
 		}
+	}
+
+	sleep()
+	{
+		this.flyingSound && this.flyingSound.pause();
 	}
 
 	get solid() { return false; }

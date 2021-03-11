@@ -36,7 +36,7 @@
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
 	--sprite-offset-y: -352px;
-	animation: knuckles-punch steps(3) 1 96ms forwards;
+	animation: knuckles-punch steps(3) 1 128ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="walking"] .sprite:after {
@@ -62,6 +62,23 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -320px;
 	animation: knuckles-spindash steps(5) infinite 96ms;
+}
+
+.actor-item.actor-knuckles[data-animation="climbing"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -480px;
+}
+
+.actor-item.actor-knuckles[data-animation="climbing-up"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -480px;
+	animation: knuckles-climbing steps(3) infinite 256ms;
+}
+
+.actor-item.actor-knuckles[data-animation="climbing-down"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -480px;
+	animation: knuckles-climbing steps(3) infinite 256ms reverse;
 }
 
 .actor-item.actor-knuckles[data-animation="rolling"] .sprite:after {
@@ -127,6 +144,15 @@
 	}
 	to{
 		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-climbing {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

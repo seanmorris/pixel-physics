@@ -350,6 +350,7 @@ export class SuperRing extends PointActor
 				this.pinchFilterBg.classList.add('grabbing');
 
 				caught.args.float = 0;
+				caught.args.ySpeed = 10;
 
 				if(this.dropDone)
 				{
@@ -366,7 +367,7 @@ export class SuperRing extends PointActor
 				this.caught = null;
 			});
 
-			this.onTimeout(500, () => {
+			this.onTimeout(1500, () => {
 				this.leaving.delete(caught);
 			});
 		}

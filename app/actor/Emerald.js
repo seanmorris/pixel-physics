@@ -16,7 +16,14 @@ export class Emerald extends PointActor
 	{
 		super.update();
 
-		if(this.viewport.args.audio && !this.sample)
+		const viewport = this.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		if(viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/S3K_9C.wav');
 			this.sample.volume = 0.25 + (Math.random() * 0.5);

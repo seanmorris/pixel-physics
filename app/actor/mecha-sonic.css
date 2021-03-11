@@ -62,7 +62,15 @@
 .actor-item.actor-mecha-sonic[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
-	animation: mecha-sonic-jump steps(3) infinite 96ms;
+	transform: translateY(14px);
+	animation: mecha-sonic-jump steps(3) infinite 80ms;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="rolling"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	transform: translateY(14px);
+	animation: mecha-sonic-jump steps(3) infinite  calc(calc(calc(1 - var(--animation-bias)) * 64ms) + 64ms) reverse;
 }
 
 .actor-item.actor-mecha-sonic .mecha-sonic-flame {

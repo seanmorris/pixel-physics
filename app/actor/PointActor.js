@@ -5,6 +5,8 @@ import { Tag  } from 'curvature/base/Tag';
 import { Twist } from '../effects/Twist';
 import { Pinch } from '../effects/Pinch';
 
+import { CharacterString } from '../ui/CharacterString';
+
 import { Controller } from '../controller/Controller';
 
 const MODE_FLOOR   = 0;
@@ -47,7 +49,11 @@ export class PointActor extends View
 		data-angle       = "[[angle|rad2deg]]"
 		data-layer       = "[[layer]]"
 		data-mode        = "[[mode]]"
-	><div class = "sprite" cv-ref = "sprite"></div></div>`;
+	>
+		<div class = "sprite" cv-ref = "sprite">
+			<div class = "labels" cv-ref = "labels" cv-each = "charStrings:charString:c">[[charString]]</div>
+		</div>
+	</div>`;
 
 	static fromDef(objDef)
 	{
@@ -85,6 +91,8 @@ export class PointActor extends View
 
 		this.args.type = 'actor-generic'
 
+		this.args.charStrings = [];
+
 		this.args.display = this.args.display || 'initial';
 
 		this.args.emeralds = 0;
@@ -97,6 +105,8 @@ export class PointActor extends View
 
 		this.args.layer = 1;
 		this.args.moving = false;
+
+		this.args.flySpeedMax = 40;
 
 		this.args.x = this.args.x || 1024 + 256;
 		this.args.y = this.args.y || 32;
@@ -139,6 +149,7 @@ export class PointActor extends View
 		this.args.falling  = true;
 		this.args.running  = false;
 		this.args.crawling = false;
+		this.args.climbing = false;
 
 		this.args.rotateFixed = false;
 
@@ -189,9 +200,12 @@ export class PointActor extends View
 		{
 			this.controller = new Controller({deadZone: 0.2});
 
+			this.args.charStrings = [
+				new CharacterString({value: this.public.name})
+			];
+
 			this.controller.zero();
 		}
-
 
 		bindable.bindTo('region', (region,key,target) => {
 
@@ -349,6 +363,11 @@ export class PointActor extends View
 	{
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
+
+		if(this.controllable)
+		{
+			this.sprite.parentNode.classList.add('controllable');
+		}
 
 		this.listen('click', ()=>{
 
@@ -544,7 +563,7 @@ export class PointActor extends View
 
 		if(this.public.gSpeed === 0 && !this.public.falling)
 		{
-			if(!this.stayStuck)
+			if(!this.stayStuck && !this.public.climbing)
 			{
 				const half = Math.floor(this.public.width / 2) || 0;
 
@@ -996,109 +1015,112 @@ export class PointActor extends View
 
 			let slopeFactor = 0;
 
-			switch(this.args.mode)
+			if(!this.args.climbing)
 			{
-				case MODE_FLOOR:
-
-					slopeFactor = this.public.groundAngle / (Math.PI/4);
-
-					if(direction > 0)
-					{
-						slopeFactor *= -1;
-					}
-					break;
-
-				case MODE_CEILING:
-
-					slopeFactor = 0;
-
-					break;
-
-				case MODE_RIGHT:
-
-					if(direction > 0)
-					{
-						slopeFactor = -2;
-
-						slopeFactor -= this.public.groundAngle / (Math.PI/4);
-					}
-					else
-					{
-						slopeFactor = 2;
-
-						slopeFactor += this.public.groundAngle / (Math.PI/4) ;
-					}
-					break;
-
-				case MODE_LEFT:
-
-					if(direction > 0)
-					{
-						slopeFactor = 2;
-
-						slopeFactor -= this.public.groundAngle / (Math.PI/4);
-					}
-					else
-					{
-						slopeFactor = -2;
-
-						slopeFactor += this.public.groundAngle / (Math.PI/4) ;
-					}
-
-					break;
-			}
-
-			if(this.public.rolling)
-			{
-				if(slopeFactor < 0)
+				switch(this.args.mode)
 				{
-					this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.005);
-				}
-				else if(slopeFactor > 0)
-				{
-					this.args.gSpeed *= 1.0000 * (1+(slopeFactor/2) * 0.050);
+					case MODE_FLOOR:
+
+						slopeFactor = this.public.groundAngle / (Math.PI/4);
+
+						if(direction > 0)
+						{
+							slopeFactor *= -1;
+						}
+						break;
+
+					case MODE_CEILING:
+
+						slopeFactor = 0;
+
+						break;
+
+					case MODE_RIGHT:
+
+						if(direction > 0)
+						{
+							slopeFactor = -2;
+
+							slopeFactor -= this.public.groundAngle / (Math.PI/4);
+						}
+						else
+						{
+							slopeFactor = 2;
+
+							slopeFactor += this.public.groundAngle / (Math.PI/4) ;
+						}
+						break;
+
+					case MODE_LEFT:
+
+						if(direction > 0)
+						{
+							slopeFactor = 2;
+
+							slopeFactor -= this.public.groundAngle / (Math.PI/4);
+						}
+						else
+						{
+							slopeFactor = -2;
+
+							slopeFactor += this.public.groundAngle / (Math.PI/4) ;
+						}
+
+						break;
 				}
 
-				if(Math.sign(this.public.gSpeed) !== Math.sign(this.xAxis) && Math.abs(this.public.gSpeed) < 1)
+				if(this.public.rolling)
 				{
-					// this.public.gSpeed = 10 * Math.sign(this.xAxis);
-				}
-			}
-			else if(!this.stayStuck)
-			{
-				let speedFactor = 1;
-
-				if(slopeFactor < 0 && Math.abs(this.public.gSpeed) < 10)
-				{
-					speedFactor = 0.99990 * (1 - (slopeFactor**2/4) / 2);
-				}
-				else if(slopeFactor > 0 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
-				{
-					speedFactor = 1.00005 * (1 + (slopeFactor**2/4) / 2);
-				}
-
-				this.args.gSpeed *= speedFactor;
-
-				if(Math.abs(this.public.gSpeed) < 1)
-				{
-					if(slopeFactor < -1)
+					if(slopeFactor < 0)
 					{
-						this.args.gSpeed *= -0.5;
-						this.args.ignore = 8;
-						this.xAxis = 0;
+						this.args.gSpeed *= 1.0000 - (0-(slopeFactor/2) * 0.005);
+					}
+					else if(slopeFactor > 0)
+					{
+						this.args.gSpeed *= 1.0000 * (1+(slopeFactor/2) * 0.035);
+					}
+
+					if(Math.sign(this.public.gSpeed) !== Math.sign(this.xAxis) && Math.abs(this.public.gSpeed) < 1)
+					{
+						// this.public.gSpeed = 10 * Math.sign(this.xAxis);
 					}
 				}
-			}
+				else if(!this.stayStuck)
+				{
+					let speedFactor = 1;
 
-			if(!this.stayStuck && slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
-			{
-				if(this.args.mode === 1)
-				{
-					this.args.gSpeed = 1;
+					if(slopeFactor < 0 && Math.abs(this.public.gSpeed) < 10)
+					{
+						speedFactor = 0.99990 * (1 - (slopeFactor**2/4) / 2);
+					}
+					else if(slopeFactor > 0 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
+					{
+						speedFactor = 1.00005 * (1 + (slopeFactor**2/4) / 2);
+					}
+
+					this.args.gSpeed *= speedFactor;
+
+					if(Math.abs(this.public.gSpeed) < 1)
+					{
+						if(slopeFactor < -1)
+						{
+							this.args.gSpeed *= -0.5;
+							this.args.ignore = 8;
+							this.xAxis = 0;
+						}
+					}
 				}
-				else if(this.args.mode === 3)
+
+				if(!this.stayStuck && slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
 				{
-					this.args.gSpeed = -1;
+					if(this.args.mode === 1)
+					{
+						this.args.gSpeed = 1;
+					}
+					else if(this.args.mode === 3)
+					{
+						this.args.gSpeed = -1;
+					}
 				}
 			}
 		}
@@ -1411,8 +1433,6 @@ export class PointActor extends View
 			{
 				if(this.willStick)
 				{
-					this.args.falling = false;
-
 					if(direction < 0)
 					{
 						this.args.gSpeed = Math.floor(airSpeed) * Math.sign(ySpeedOriginal);
@@ -1425,6 +1445,8 @@ export class PointActor extends View
 						// this.args.gSpeed = 1;
 						this.args.mode = MODE_RIGHT;
 					}
+
+					this.args.falling = false;
 				}
 			}
 		}
@@ -1532,6 +1554,10 @@ export class PointActor extends View
 
 			let blockers, b;
 
+			const maxIterations = this.public.height > this.public.width
+				? this.public.height
+				: this.public.witdth;
+
 			while(true)
 			{
 				if(!this.viewport)
@@ -1563,7 +1589,7 @@ export class PointActor extends View
 
 				iterations++;
 
-				if(iterations > 100 * 1000)
+				if(iterations > maxIterations)
 				{
 					break;
 				}
@@ -1801,18 +1827,27 @@ export class PointActor extends View
 		}
 		else if(this.public.falling && this.xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
 		{
-			this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
+			if(this.args.flying && Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
+			{
+				this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
+			}
 		}
 
 		if(this.xAxis < 0)
 		{
-			this.args.facing = 'left';
+			if(!this.public.climbing)
+			{
+				this.args.facing = 'left';
+			}
 			this.args.direction = -1;
 		}
 
 		if(this.xAxis > 0)
 		{
-			this.args.facing = 'right';
+			if(!this.public.climbing)
+			{
+				this.args.facing = 'right';
+			}
 			this.args.direction = 1;
 		}
 	}
@@ -2671,6 +2706,13 @@ export class PointActor extends View
 
 		this.pincherFg.args.scale = warpFg;
 	}
+
+	sleep()
+	{}
+
+
+	wakeUp()
+	{}
 
 	urlWrap(url)
 	{

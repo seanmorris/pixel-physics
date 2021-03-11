@@ -1,5 +1,11 @@
 [
     {
+        "color": "#ffa0a0a4",
+        "name": "balloon",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ffffff00",
         "name": "coin",
         "properties": [
