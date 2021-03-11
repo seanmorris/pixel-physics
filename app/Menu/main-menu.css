@@ -12,6 +12,11 @@
 	z-index: 1;
 }
 
+.screen-card.screen-card-main-menu.closed,
+.screen-card.screen-card-main-menu.closing {
+	opacity: 0;
+}
+
 .screen-card-main-menu :focus,
 .screen-card-main-menu .focused{
 	/*outline: 1px solid rgba(255,255,255,0.2);

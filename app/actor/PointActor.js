@@ -2073,13 +2073,13 @@ export class PointActor extends View
 			return;
 		}
 
-		const backPosition = this.findNextStep(-this.public.width / 4);
-		const forePosition = this.findNextStep(this.public.width / 4);
-		const sensorSpread = 8;
+		const backPosition = this.findNextStep(-this.public.width / 2);
+		const forePosition = this.findNextStep(this.public.width / 2);
+		const sensorSpread = this.public.width;
 
 		const jumpAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
 
-		this.args.ignore  = 4;
+		this.args.ignore  = 6;
 		this.args.landed  = false;
 		this.args.falling = true;
 

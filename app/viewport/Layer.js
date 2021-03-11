@@ -23,18 +23,20 @@ export class Layer extends View
 
 		this.args.layerId = 0 || this.args.layerId;
 
-		Object.defineProperty(this, 'blocksXY', {value: {}});
-		Object.defineProperty(this, 'blocks', {value: new Bag});
-		Object.defineProperty(this, 'offsets', {value: new Map});
+		Object.defineProperty(this, 'blocksXY',  {value: {}});
+		Object.defineProperty(this, 'blocks',    {value: new Bag});
+		Object.defineProperty(this, 'offsets',   {value: new Map});
+		Object.defineProperty(this, 'blockSrcs', {value: new Map});
 
 		this.args.blocks = this.blocks.list;
 	}
 
 	update(tileMap, xDir, yDir)
 	{
+		const viewport = this.args.viewport;
+
 		if(this.args.destroyed && this.tags.background)
 		{
-			const viewport = this.args.viewport;
 			const tileMap  = viewport.tileMap;
 			const layerId  = this.args.layerId;
 			const layers   = tileMap.tileLayers;
@@ -53,6 +55,7 @@ export class Layer extends View
 		const blocksXY   = this.blocksXY;
 		const blocks     = this.blocks;
 		const offsets    = this.offsets;
+		const blockSrcs  = this.blockSrcs;
 		const offsetX    = this.args.offsetX;
 		const offsetY    = this.args.offsetY;
 
@@ -69,6 +72,10 @@ export class Layer extends View
 			{
 				const xy = [i,j].join('::');
 
+				const tileY = j - Math.ceil(this.y / blockSize);
+
+				const blockId = tileMap.getTileNumber(tileX, tileY, layerId);
+
 				let block;
 
 				if(!blocksXY[xy])
@@ -82,9 +89,11 @@ export class Layer extends View
 					const transX = blockSize * i;
 					const transY = blockSize * j;
 
+					const src = block[2];
+
 					block.style({
 						transform: `translate(${transX}px, ${transY}px)`
-						, 'background-image': 'url(/map/shapes.png)'
+						, 'background-image': `url(/map/${src})`
 						, position: 'absolute'
 						, left: 0
 						, top: 0
@@ -96,10 +105,6 @@ export class Layer extends View
 				{
 					block = blocksXY[xy];
 				}
-
-				const tileY = j - Math.ceil(this.y / blockSize);
-
-				const blockId = tileMap.getTileNumber(tileX, tileY, layerId);
 
 				let tileXY = [];
 
@@ -114,17 +119,23 @@ export class Layer extends View
 				}
 
 				const existingOffset = offsets.get(block);
+				const existingSrc    = blockSrcs.get(block);
 
 				const blockOffset = -1 * (tileXY[0] * blockSize)
 					+ 'px '
 					+ -1 * (tileXY[1] * blockSize)
 					+ 'px';
 
-				if(existingOffset !== blockOffset)
+				const blockSrc = tileXY[2];
+
+				if(existingOffset !== blockOffset || existingSrc !== blockSrc)
 				{
 					if(blockId !== false && blockId !== 0)
 					{
-						block.style({display: 'initial', 'background-position': blockOffset});
+						block.style({
+							display: 'initial', 'background-position': blockOffset
+							, 'background-image': `url(/map/${blockSrc})`
+						});
 					}
 					else
 					{
@@ -133,6 +144,7 @@ export class Layer extends View
 				}
 
 				offsets.set(block, blockOffset);
+				blockSrcs.set(block, blockSrc);
 			}
 		}
 	}
