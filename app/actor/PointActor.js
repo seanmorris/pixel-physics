@@ -1827,7 +1827,7 @@ export class PointActor extends View
 		}
 		else if(this.public.falling && this.xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
 		{
-			if(this.args.flying && Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
+			if(Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
 			{
 				this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
 			}

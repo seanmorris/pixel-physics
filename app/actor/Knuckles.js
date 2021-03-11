@@ -84,7 +84,7 @@ export class Knuckles extends PointActor
 			this.viewport.spawn.add({object: bomb});
 		}
 
-		if(this.punching && Date.now() - this.punching > 128)
+		if(this.punching && Date.now() - this.punching > 256)
 		{
 			this.punching = false;
 
@@ -92,7 +92,7 @@ export class Knuckles extends PointActor
 			this.punchMomentum = 0;
 		}
 
-		if(this.punching && Date.now() - this.punching > 64)
+		if(this.punching && Date.now() - this.punching > 128)
 		{
 			this.punchMomentum = this.public.gSpeed;
 			this.args.gSpeed = 2 * Math.sign(this.public.gSpeed);
@@ -122,29 +122,29 @@ export class Knuckles extends PointActor
 			{
 				if(this.public.climbing)
 				{
-						if(this.yAxis < 0)
-						{
-							this.box.setAttribute('data-animation', 'climbing-up');
+					if(this.yAxis < 0)
+					{
+						this.box.setAttribute('data-animation', 'climbing-up');
 
-							if(Math.abs(this.args.gSpeed) < 4)
-							{
-								this.args.gSpeed -= this.public.mode === 1 ? 1 : -1;
-							}
-						}
-						else if(this.yAxis > 0)
+						if(Math.abs(this.args.gSpeed) < 4)
 						{
-							this.box.setAttribute('data-animation', 'climbing-down');
+							this.args.gSpeed -= this.public.mode === 1 ? 1 : -1;
+						}
+					}
+					else if(this.yAxis > 0)
+					{
+						this.box.setAttribute('data-animation', 'climbing-down');
 
-							if(Math.abs(this.args.gSpeed) < 4)
-							{
-								this.args.gSpeed += this.public.mode === 1 ? 1 : -1;
-							}
-						}
-						else
+						if(Math.abs(this.args.gSpeed) < 4)
 						{
-							this.box.setAttribute('data-animation', 'climbing');
-							this.args.gSpeed = 0;
+							this.args.gSpeed += this.public.mode === 1 ? 1 : -1;
 						}
+					}
+					else
+					{
+						this.box.setAttribute('data-animation', 'climbing');
+						this.args.gSpeed = 0;
+					}
 				}
 				else if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 				{
@@ -303,7 +303,7 @@ export class Knuckles extends PointActor
 		}
 
 		this.args.flying = true;
-		this.args.xSpeed = this.public.xSpeed || 5 * this.public.direction;
+		this.args.xSpeed = 9 * this.public.direction;
 		this.args.willJump = false;
 	}
 

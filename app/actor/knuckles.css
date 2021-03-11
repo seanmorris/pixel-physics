@@ -35,8 +35,9 @@
 }
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
+	--sprite-offset-y: 0px;
 	--sprite-offset-y: -352px;
-	animation: knuckles-punch steps(3) 1 128ms forwards;
+	animation: knuckles-punch steps(4) 1 192ms;
 }
 
 .actor-item.actor-knuckles[data-animation="walking"] .sprite:after {
@@ -125,7 +126,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 
