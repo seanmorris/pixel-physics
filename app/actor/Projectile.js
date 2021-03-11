@@ -48,10 +48,10 @@ export class Projectile extends PointActor
 			return false;
 		}
 
-		this.args.x += Math.cos(this.public.angle) * other.args.width / 2 * Math.sign(this.public.xSpeed);
-		this.args.y += Math.sin(this.public.angle) * other.args.width / 2 * Math.sign(this.public.xSpeed);
+		this.args.x += Math.cos(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
+		this.args.y += Math.sin(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
 
-		this.explode();
+		this.onNextFrame(this.explode());
 
 		return false;
 	}

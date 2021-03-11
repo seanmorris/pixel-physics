@@ -219,12 +219,12 @@ export class Eggrobo extends PointActor
 			, owner: this
 		});
 
-		projectile.impulse(45, trajectory + (direction < 0 ? Math.PI : 0), true);
+		projectile.impulse(16, trajectory + (direction < 0 ? Math.PI : 0), true);
 
 		projectile.update();
 
 		this.viewport.auras.add(projectile);
-		this.viewport.actors.add(projectile);
+		this.viewport.spawn.add({object:projectile});
 
 		this.box.setAttribute('data-shooting', 'true');
 
