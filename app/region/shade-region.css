@@ -1,7 +1,7 @@
 .region.region-shade .hud-character-string {
 	position: absolute;
 	left: 50%;
-	bottom: -1.25em;
+	bottom: 1.25em;
 
 	transform: translateX(-50%);
 

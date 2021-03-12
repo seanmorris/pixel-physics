@@ -168,13 +168,10 @@ export class PointActor extends View
 
 		this.args.flyAngle = 0;
 
-		this.args.bindTo(['xSpeed'], v => {
-			this.args.airAngle = Math.atan2(this.args.ySpeed, v);
-		});
+		this.args.bindTo('xSpeed', v => this.args.airAngle = Math.atan2(this.args.ySpeed, v));
+		this.args.bindTo('ySpeed', v => this.args.airAngle = Math.atan2(v, this.args.xSpeed));
 
-		this.args.bindTo(['ySpeed'], v => {
-			this.args.airAngle = Math.atan2(v, this.args.xSpeed);
-		});
+		// this.args.bindTo('falling', v => console.trace(v));
 
 		this.impulseMag = null;
 		this.impulseDir = null;
@@ -541,8 +538,7 @@ export class PointActor extends View
 		{
 			this.updateAirPosition();
 		}
-
-		if(!this.isEffect && !this.public.falling)
+		else if(!this.isEffect && !this.public.falling)
 		{
 			this.updateGroundPosition();
 
@@ -787,6 +783,28 @@ export class PointActor extends View
 
 	updateGroundPosition()
 	{
+		if(!this.public.dontJump && this.willJump)
+		{
+			this.willJump = false;
+
+			const drag = this.region ? this.region.public.drag : 1;
+
+			let force = this.args.jumpForce * drag;
+
+			if(this.running)
+			{
+				force = force * 1.5;
+			}
+			else if(this.crawling)
+			{
+				force = force * 0.5;
+			}
+
+			this.doJump(force);
+
+			return;
+		}
+
 		let gSpeedMax = this.args.gSpeedMax;
 
 		if(this.running)
@@ -1095,7 +1113,7 @@ export class PointActor extends View
 					}
 					else if(slopeFactor > 0 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
 					{
-						speedFactor = 1.00005 * (1 + (slopeFactor**2/4) / 2);
+						speedFactor = 1.05000 * (1 + (slopeFactor**2/4) / 2);
 					}
 
 					this.args.gSpeed *= speedFactor;
@@ -1171,26 +1189,6 @@ export class PointActor extends View
 			this.args.ignore = this.public.ignore || 1;
 
 			this.args.gSpeed = 0;
-		}
-
-		if(!this.public.dontJump && this.willJump)
-		{
-			this.willJump = false;
-
-			const drag = this.region ? this.region.public.drag : 1;
-
-			let force = this.args.jumpForce * drag;
-
-			if(this.running)
-			{
-				force = force * 1.5;
-			}
-			else if(this.crawling)
-			{
-				force = force * 0.5;
-			}
-
-			this.doJump(force);
 		}
 	}
 
@@ -1427,6 +1425,11 @@ export class PointActor extends View
 							this.args.gSpeed = xSpeedOriginal;
 						}
 					}
+
+					if(Math.abs(this.args.gSpeed) < 1)
+					{
+						this.args.gSpeed = Math.sign(this.args.gSpeed);
+					}
 				}
 			}
 			else if(blockers)
@@ -1613,7 +1616,7 @@ export class PointActor extends View
 			}
 			else if(blockers)
 			{
-				if(this.willStick || below)
+				if(this.willStick || (below && this.args.ySpeed >= 0))
 				{
 					this.args.falling = false;
 
@@ -2114,8 +2117,10 @@ export class PointActor extends View
 				break;
 		}
 
-		this.args.xSpeed = this.public.gSpeed * Math.cos(angle + Math.PI / 2);
-		this.args.ySpeed = -this.public.gSpeed * Math.sin(angle + Math.PI / 2) * yDir;
+		const groundAngle = angle + Math.PI / 2;
+
+		this.args.xSpeed = this.public.gSpeed * Math.cos(groundAngle);
+		this.args.ySpeed = -this.public.gSpeed * Math.sin(groundAngle) * yDir;
 
 		let xJump = -force * Math.cos(angle);
 		let yJump = force * Math.sin(angle) * yDir;
@@ -2130,23 +2135,8 @@ export class PointActor extends View
 			yJump = 0;
 		}
 
-		if(xJump && Math.sign(this.public.xSpeed) !== Math.sign(xJump))
-		{
-			this.args.xSpeed += xJump;
-		}
-		else
-		{
-			this.args.xSpeed += xJump;
-		}
-
-		if(yJump && Math.sign(this.public.ySpeed) !== Math.sign(yJump))
-		{
-			this.args.ySpeed += yJump;
-		}
-		else
-		{
-			this.args.ySpeed += yJump;
-		}
+		this.args.xSpeed += xJump;
+		this.args.ySpeed += yJump;
 
 		if(Math.abs(this.args.xSpeed) < 0.001)
 		{

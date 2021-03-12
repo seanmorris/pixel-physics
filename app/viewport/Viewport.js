@@ -119,8 +119,8 @@ export class Viewport extends View
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
 
-		this.controlCard = View.from(require('../cards/basic-controls.html'));
-		this.moveCard    = View.from(require('../cards/basic-moves.html'));
+		// this.controlCard = View.from(require('../cards/basic-controls.html'));
+		// this.moveCard    = View.from(require('../cards/basic-moves.html'));
 
 		this.args.blockSize = 32;
 
@@ -210,7 +210,7 @@ export class Viewport extends View
 		 	? this.args.width * 0.75
 		 	: this.args.height * 0.75;
 
-		this.colCells   = {};
+		this.colCells = new Set;
 
 		this.actorPointCache = new Map;
 
@@ -229,8 +229,8 @@ export class Viewport extends View
 		this.args.xBlur = 0;
 		this.args.yBlur = 0;
 
+		// this.args.controlCard = View.from(require('../cards/sonic-controls.html'));
 		this.args.controlCard = View.from(require('../cards/basic-controls.html'));
-		this.args.controlCard = View.from(require('../cards/sonic-controls.html'));
 		this.args.moveCard    = View.from(require('../cards/basic-moves.html'));
 
 		this.args.isRecording = false;
@@ -1255,21 +1255,21 @@ export class Viewport extends View
 			this.nextControl   = null;
 		}
 
-		if(this.controlActor && this.controlActor.controlCard)
-		{
-			if(this.controlActor.public.falling)
-			{
-				this.args.controlCard = this.controlActor.airControlCard;
-			}
-			else
-			{
-				this.args.controlCard = this.controlActor.controlCard;
-			}
-		}
-		else
-		{
-			this.args.controlCard = this.controlCard;
-		}
+		// if(this.controlActor && this.controlActor.controlCard)
+		// {
+		// 	if(this.controlActor.public.falling)
+		// 	{
+		// 		this.args.controlCard = this.controlActor.airControlCard;
+		// 	}
+		// 	else
+		// 	{
+		// 		this.args.controlCard = this.controlActor.controlCard;
+		// 	}
+		// }
+		// else
+		// {
+		// 	this.args.controlCard = this.controlCard;
+		// }
 
 		if(this.controlActor)
 		{
@@ -1466,8 +1466,8 @@ export class Viewport extends View
 
 	getNearbyColCells(actor)
 	{
-		const actorX = actor.public ? actor.public.x : actor.x;
-		const actorY = actor.public ? actor.public.y : actor.y;
+		const actorX = actor.x;
+		const actorY = actor.y;
 
 		const colCellDiv = this.colCellDiv
 		const cellX = Math.floor( actorX / colCellDiv );
@@ -1484,18 +1484,26 @@ export class Viewport extends View
 
 		const space = colCellDiv;
 
+		const colA = actorX - space;
+		const colB = actorX;
+		const colC = actorX + space;
+
+		const rowA = actorY - space;
+		const rowB = actorY;
+		const rowC = actorY + space;
+
 		this.colCellCache[name] = cache = [
-			  this.getColCell({x:actorX - space, y:actorY - space})
-			, this.getColCell({x:actorX - space, y:actorY})
-			, this.getColCell({x:actorX - space, y:actorY + space})
+			  this.getColCell({x:colA, y:rowA})
+			, this.getColCell({x:colA, y:rowB})
+			, this.getColCell({x:colA, y:rowC})
 
-			, this.getColCell({x:actorX, y:actorY - space})
-			, this.getColCell({x:actorX, y:actorY})
-			, this.getColCell({x:actorX, y:actorY + space})
+			, this.getColCell({x:colB, y:rowA})
+			, this.getColCell({x:colB, y:rowB})
+			, this.getColCell({x:colB, y:rowC})
 
-			, this.getColCell({x:actorX + space, y:actorY - space})
-			, this.getColCell({x:actorX + space, y:actorY})
-			, this.getColCell({x:actorX + space, y:actorY + space})
+			, this.getColCell({x:colC, y:rowA})
+			, this.getColCell({x:colC, y:rowB})
+			, this.getColCell({x:colC, y:rowC})
 		]
 
 		return cache.filter(set=>set.size);

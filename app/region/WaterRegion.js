@@ -88,6 +88,16 @@ export class WaterRegion extends Region
 		super.update();
 	}
 
+	collideA(other, type)
+	{
+		super.collideA(other, type);
+	}
+
+	collideB(other, type)
+	{
+		super.collideA(other, type);
+	}
+
 	get solid() { return false; }
 	get isEffect() { return true; }
 }
