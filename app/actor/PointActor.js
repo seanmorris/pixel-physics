@@ -55,6 +55,22 @@ export class PointActor extends View
 		</div>
 	</div>`;
 
+	profiles = {
+
+		normal: {
+			height:  1
+			, width: 1
+			, decel: 0.85
+			, accel: 0.2
+			, gravity: 0.65
+			, airAccel: 0.3
+			, jumpForce: 14
+			, gSpeedMax: 100
+		}
+
+			// , rollSpeedMax = 37;
+	};
+
 	static fromDef(objDef)
 	{
 		const instance = new this();
@@ -82,6 +98,8 @@ export class PointActor extends View
 		super(...args);
 
 		this.region = null;
+
+		this.powerups = new Set;
 
 		Object.defineProperty(this, 'public', {value: {}});
 
@@ -128,10 +146,17 @@ export class PointActor extends View
 		this.args.airAngle    = 0;
 
 		this.lastAngles = [0,0];
-		this.angleAvg   = 12;
+		this.angleAvg   = 4;
 
 		this.args.xSpeedMax = 512;
 		this.args.ySpeedMax = 512;
+		this.args.gSpeedMax    = WALKING_SPEED;
+		this.args.rollSpeedMax = 37;
+		this.args.gravity   = 0.65;
+		this.args.decel     = 0.85;
+		this.args.accel     = 0.2;
+		this.args.airAccel  = 0.3;
+		this.args.jumpForce = 14;
 
 		this.args.jumping = false;
 
@@ -176,16 +201,8 @@ export class PointActor extends View
 		this.impulseMag = null;
 		this.impulseDir = null;
 
-		this.args.gSpeedMax    = WALKING_SPEED;
-		this.args.rollSpeedMax = 37;
 
-		this.args.jumpForce = 14;
 		this.args.stopped   = 0;
-		this.args.gravity   = 0.65;
-
-		this.args.decel     = 0.85;
-		this.args.accel     = 0.2;
-		this.args.airAccel  = 0.3;
 
 		this.args.particleScale = 1;
 
@@ -2699,7 +2716,6 @@ export class PointActor extends View
 
 	sleep()
 	{}
-
 
 	wakeUp()
 	{}

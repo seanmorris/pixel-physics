@@ -236,10 +236,10 @@ section.filters {
 .viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car) {
 	--outlineColor: rgba(0,0,0,1);
 	filter:
-		drop-shadow(1px 0.5px 0px var(--outlineColor))
-		drop-shadow(-1px 1px 0px var(--outlineColor))
+		drop-shadow( 1px  1px 0px var(--outlineColor))
+		drop-shadow(-1px  1px 0px var(--outlineColor))
 		drop-shadow(-1px -1px 0px var(--outlineColor))
-		drop-shadow(1px -1px 0px var(--outlineColor));
+		drop-shadow( 1px -1px 0px var(--outlineColor));
 }
 
 .controllable.actor-generic:hover:not(.actor-selected),

@@ -10,6 +10,8 @@ import { Png } from '../sprite/Png';
 
 import { Ring } from './Ring';
 
+import { BubbleSheild } from '../powerups/BubbleSheild';
+
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
@@ -63,7 +65,7 @@ export class Sonic extends PointActor
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
 	}
 
-	onAttached()
+	onAttached(event)
 	{
 		if(!Sonic.png)
 		{
@@ -79,6 +81,15 @@ export class Sonic extends PointActor
 
 				 this.superSpriteSheet = newPng.toUrl();
 			});
+		}
+
+		if(this.powerups.size === 0)
+		{
+			const sheild = new BubbleSheild;
+
+			this.powerups.add(sheild);
+
+			sheild.render(this.sprite);
 		}
 	}
 
@@ -164,21 +175,21 @@ export class Sonic extends PointActor
 
 					const viewport = this.viewport;
 
-					const particleA = new Tag('<div class = "particle-dust">');
+					const dustParticle = new Tag('<div class = "particle-dust">');
 
-					const pointA = this.rotatePoint(this.args.gSpeed, 0);
+					const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
 
-					particleA.style({
-						'--x': pointA[0] + this.x
-						, '--y': pointA[1] + this.y
+					dustParticle.style({
+						'--x': dustPoint[0] + this.x
+						, '--y': dustPoint[1] + this.y
 						, 'z-index': 0
 						, opacity: Math.random() * 2
 					});
 
-					viewport.particles.add(particleA);
+					viewport.particles.add(dustParticle);
 
 					setTimeout(() => {
-						viewport.particles.remove(particleA);
+						viewport.particles.remove(dustParticle);
 					}, 350);
 				}
 				else if(speed > maxSpeed / 2)
@@ -343,6 +354,13 @@ export class Sonic extends PointActor
 		}
 
 		this.spindashCharge = 0;
+
+		if(this.dashDust)
+		{
+			this.dashDust.remove();
+
+			this.dashDust = null;
+		}
 	}
 
 	hold_1(button) // spindash
@@ -351,6 +369,26 @@ export class Sonic extends PointActor
 		{
 			this.spindashCharge = 0;
 			return;
+		}
+
+		if(this.spindashCharge === 0)
+		{
+			const viewport = this.viewport;
+
+			const dustParticle = new Tag('<div class = "particle-spindash-dust">');
+
+			const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
+
+			dustParticle.style({
+				'--x': dustPoint[0] + this.x
+				, '--y': dustPoint[1] + this.y
+				, 'z-index': 0
+				, opacity: Math.random() * 2
+			});
+
+			viewport.particles.add(dustParticle);
+
+			this.dashDust = dustParticle;
 		}
 
 		this.spindashCharge++;
