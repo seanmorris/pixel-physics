@@ -1,5 +1,4 @@
 .actor-balloon .sprite::before {
-
 	display: block;
 	content: ' ';
 	width: 32px;

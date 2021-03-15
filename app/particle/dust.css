@@ -12,3 +12,18 @@
 
 	opacity: 0.75;
 }
+
+.particle-spindash-dust {
+	background-image: url(/Sonic/spindash-dust.png);
+	width: 33px;
+	height: 23px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 7;
+	--animation-width: 33px;
+
+	animation: particle-animate steps(var(--animation-steps)) infinite 256ms;
+
+	opacity: 0.75;
+}m
