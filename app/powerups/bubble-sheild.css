@@ -1,0 +1,43 @@
+.bubble-sheild {
+	position: absolute;
+	z-index: 100;
+	left: -5px;
+	top: 18px;
+	width: 72px;
+	height: 48px;
+	background-image: url(/Sonic/sheild-bubble.png);
+	background-position: 0 0;
+	/*animation: bubble-sheild-flicker 0.3s steps(2) infinite;*/
+	/*animation: bubble-sheild-bounce 0.6s steps(4) infinite;*/
+	filter: none;
+}
+
+[data-animation=rolling] .bubble-sheild,
+[data-animation=jumping] .bubble-sheild {
+	left: -4px;
+	top: 24px;
+}
+
+[data-animation=airdash] .bubble-sheild {
+	left: -6px;
+	top: 10px;
+}
+
+@keyframes bubble-sheild-flicker {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -144px 0;
+	}
+}
+
+
+@keyframes bubble-sheild-bounce {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -288px 0;
+	}
+}
