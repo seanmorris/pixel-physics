@@ -20,6 +20,15 @@ export class Monitor extends PointActor
 		this.args.gone = false;
 	}
 
+	attached()
+	{
+		console.log('Monitor %d!', this.args.id);
+
+		this.screen = new Tag(`<div class = "monitor-screen">`);
+
+		this.sprite.appendChild(this.screen.node)
+	}
+
 	update()
 	{
 		super.update();
@@ -90,22 +99,17 @@ export class Monitor extends PointActor
 
 		viewport.spawn.add({object:corpse});
 
-		// setTimeout(()=>{
-		// 	viewport.actors.remove(corpse);
-		// 	corpse.remove();
-		// }, 5000);
-
 		if(other.args.owner)
 		{
-			other.args.owner.args.rings += 10;
+			this.effect(other.args.owner);
 		}
 		else if(other.occupant)
 		{
-			other.occupant.args.rings += 10;
+			this.effect(other.occupant);
 		}
-		else
+		else(other.isControllable)
 		{
-			other.args.rings += 10;
+			this.effect(other);
 		}
 
 		if(viewport.args.audio && this.sample)
@@ -113,21 +117,22 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
-		const otherSpeed = other.args.ySpeed;
-
 		if(this.public.gone)
 		{
 			if(other.args.falling)
 			{
-				this.onNextFrame(() => other.args.ySpeed = -otherSpeed );
+				this.onNextFrame(() => other.args.ySpeed = -other.args.ySpeed );
 			}
 
 			if(this.args.falling && other.args.falling)
 			{
-				this.onNextFrame(() => other.args.xSpeed = -otherSpeed );
+				this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed );
 			}
 		}
 	}
+
+	effect()
+	{}
 
 	get canStick() { return false; }
 	get solid() { return false; }

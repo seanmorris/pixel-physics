@@ -1,0 +1,114 @@
+.console {
+	flex-direction: column;
+	min-height: 25%;
+	max-height: 75%;
+	overflow-y: auto;
+	pointer-events: initial;
+	transition: transform 1s ease-in;
+	/*transform: translateY(-100%);*/
+}
+
+.console::-webkit-scrollbar {
+  display: none;
+}
+
+.console:focus-within {
+	transform: translateY(-0%);
+}
+
+.console [name="file-input"] {
+	display: none;
+}
+
+.terminal {
+	width: 100%;
+	min-height: 100%;
+	max-height: 100%;
+	position: relative;
+	box-sizing: border-box;
+	/*font-family: '8-bit-pusab';*/
+	font-family: 'courer-new', system, terminal, monospace;
+	font-size: 4pt;
+	color: white;
+	background-color: rgba(0,0,35,0.75);
+	text-shadow: 1px 1px 0px rgba(0,0,0,1);
+	box-shadow: 0px 2px 2px rgba(0,0,0,0.75);
+}
+
+.terminal .output p {
+	display: flex;
+	margin: 0px;
+	white-space: pre-wrap;
+	min-width: 0px;
+	flex-wrap: nowrap;
+}
+
+.terminal .output p > span {
+	display: block;
+}
+
+.terminal .bottom {
+	display: flex;
+	flex-direction: row;
+	position: relative;
+	max-height: 6pt;
+}
+
+.terminal .bottom div:last-child {
+	flex-grow: 1;
+}
+
+.terminal input,
+.terminal textarea {
+	width:       100%;
+	padding:     0px;
+	border:      none;
+	color:       inherit;
+	background:  inherit;
+	font-family: inherit;
+	font-size:   inherit;
+	resize:      none;
+	overflow:    hidden;
+
+	pointer-events: none;
+}
+
+.terminal input:focus,
+.terminal textarea:focus {
+	outline: none;
+}
+
+.terminal .submit {
+	font-family: inherit;
+	position: fixed;
+	right: 1em;
+	bottom: 1em;
+	padding: 1em;
+	padding-left: 2em;
+	padding-right: 2em;
+	user-select: none;
+	cursor: pointer;
+}
+
+.terminal .submit:active {
+	right: 0.8em;
+	bottom: 0.8em;
+}
+
+.terminal.inverted {
+	transition: filter 0.2s ease-out, text-shadow 0s;
+	filter: invert(100%);
+}
+
+.terminal.inverted span,
+.terminal.inverted input {
+	transition: filter 0.2s ease-out, text-shadow 0s;
+}
+
+.terminal .byte {
+	word-break: keep-all;
+}
+
+.terminal.inverted .byte {
+	filter: saturate(250%) brightness(200%);
+}

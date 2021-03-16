@@ -23,7 +23,20 @@
 	--animation-steps: 7;
 	--animation-width: 33px;
 
-	animation: particle-animate steps(var(--animation-steps)) infinite 256ms;
+	animation:
+		particle-animate
+		steps(var(--animation-steps))
+		infinite
+		calc(calc( 256 / var(--dashCharge) ) * 1ms);
 
-	opacity: 0.75;
-}m
+	transform: translate(-125%, -100%) scaleX(var(--direction)) !important;
+
+	opacity: calc(0 + calc( 0.5 * var(--dashCharge) ));
+
+	z-index: -1;
+}
+
+
+.particle-spindash-dust[data-facing=left] {
+	transform: translate(25%, -100%) scaleX(var(--direction)) !important;
+}

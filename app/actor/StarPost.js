@@ -1,7 +1,14 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
-import { Monitor } from './Monitor';
 import { Projectile } from '../actor/Projectile';
+
+import { Monitor } from './Monitor';
+
+import { RingMonitor } from './monitor/RingMonitor';
+
+import { SheildFireMonitor } from './monitor/SheildFireMonitor';
+import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
+import { SheildElectricMonitor } from './monitor/SheildElectricMonitor';
 
 export class StarPost extends PointActor
 {
@@ -66,7 +73,16 @@ export class StarPost extends PointActor
 				throwSpeed = 5 * Math.sign(throwSpeed);
 			}
 
-			const monitor = new Monitor({
+			const monitorClasses = [
+				RingMonitor
+				, SheildFireMonitor
+				, SheildWaterMonitor
+				, SheildElectricMonitor
+			];
+
+			const monitorClass = monitorClasses[Math.floor( Math.random() * monitorClasses.length )];
+
+			const monitor = new monitorClass({
 				direction: other.args.direction
 				, xSpeed:  throwSpeed
 				, ySpeed:  -5
