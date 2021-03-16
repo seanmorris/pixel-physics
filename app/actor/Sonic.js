@@ -10,7 +10,9 @@ import { Png } from '../sprite/Png';
 
 import { Ring } from './Ring';
 
-import { BubbleSheild } from '../powerups/BubbleSheild';
+import { FireSheild }     from '../powerups/FireSheild';
+import { BubbleSheild }   from '../powerups/BubbleSheild';
+import { ElectricSheild } from '../powerups/ElectricSheild';
 
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
@@ -81,15 +83,6 @@ export class Sonic extends PointActor
 
 				 this.superSpriteSheet = newPng.toUrl();
 			});
-		}
-
-		if(this.powerups.size === 0)
-		{
-			const sheild = new BubbleSheild;
-
-			this.powerups.add(sheild);
-
-			sheild.render(this.sprite);
 		}
 	}
 
@@ -210,6 +203,12 @@ export class Sonic extends PointActor
 				this.box.setAttribute('data-animation', 'rolling');
 			}
 
+			if(!this.spindashCharge && this.dashDust)
+			{
+				this.dashDust.remove();
+
+				this.dashDust = null;
+			}
 		}
 		else if(!this.dashed)
 		{
@@ -358,8 +357,6 @@ export class Sonic extends PointActor
 		if(this.dashDust)
 		{
 			this.dashDust.remove();
-
-			this.dashDust = null;
 		}
 	}
 
@@ -371,8 +368,19 @@ export class Sonic extends PointActor
 			return;
 		}
 
+		this.args.ignore = 1;
+
+		let dashCharge = this.spindashCharge / 20;
+
+		if(dashCharge > 1)
+		{
+			dashCharge = 1;
+		}
+
 		if(this.spindashCharge === 0)
 		{
+			this.spindashCharge = 1;
+
 			const viewport = this.viewport;
 
 			const dustParticle = new Tag('<div class = "particle-spindash-dust">');
@@ -382,22 +390,31 @@ export class Sonic extends PointActor
 			dustParticle.style({
 				'--x': dustPoint[0] + this.x
 				, '--y': dustPoint[1] + this.y
-				, 'z-index': 0
-				, opacity: Math.random() * 2
+				, '--direction': this.public.direction
+				, '--dashCharge': 0
 			});
 
-			viewport.particles.add(dustParticle);
+			if(this.public.direction < 0)
+			{
+				dustParticle.setAttribute('data-facing', 'left');
+			}
+			else if(this.public.direction > 0)
+			{
+				dustParticle.setAttribute('data-facing', 'right');
+			}
+
+			viewport.particles.add(dustParticle.node);
 
 			this.dashDust = dustParticle;
 		}
-
-		this.spindashCharge++;
-
-		let dashCharge = this.spindashCharge / 20;
-
-		if(dashCharge > 1)
+		else if(this.dashDust)
 		{
-			dashCharge = 1;
+			this.dashDust.style({'--dashCharge': dashCharge});
+		}
+
+		if(this.viewport.args.frameId % 3 === 0)
+		{
+			this.spindashCharge++;
 		}
 
 		this.args.xOff = 5 * -this.args.direction;
@@ -411,8 +428,7 @@ export class Sonic extends PointActor
 		{
 			this.args.facing = 'left';
 		}
-
-		if(this.public.direction > 0)
+		else if(this.public.direction > 0)
 		{
 			this.args.facing = 'right';
 		}

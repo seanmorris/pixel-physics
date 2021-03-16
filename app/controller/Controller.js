@@ -25,6 +25,8 @@ const keys = {
 	, 'ArrowDown':  13
 	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
+
+	, 'Backquote': 5000
 };
 
 [...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 1000 + fn);

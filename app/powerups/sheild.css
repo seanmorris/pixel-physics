@@ -1,0 +1,175 @@
+.bubble-sheild {
+	position: absolute;
+	z-index: 100;
+	left: -5px;
+	top: 18px;
+	width: 72px;
+	height: 48px;
+	background-image: url(/Sonic/sheild-bubble.png);
+	background-position: 0 0;
+	animation: bubble-sheild-flicker 0.5s steps(2) infinite;
+}
+
+.bubble-sheild-shine {
+	background-image: url(/Sonic/bubble-sheild-shine.png);
+	position: absolute;
+	top: 0;
+	left: 12px;
+	width: 48px;
+	height: 48px;
+	background-position: -48px 0;
+	animation: water-sheild-rotate 0.5s steps(9) infinite;
+}
+
+.electric-sheild {
+	position: absolute;
+	z-index: 100;
+	left: 6px;
+	top: 18px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/sheild-electric.png);
+	background-position: calc(-48px * 3) 0;
+	animation: electric-sheild-rotate 0.3s steps(8) infinite forwards,
+		 electric-sheild-flip calc(0.2s * 2) infinite;
+}
+
+.fire-sheild {
+	position: absolute;
+	z-index: 100;
+	left: 7px;
+	top: 18px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/sheild-fire.png);
+	background-position: calc(-48px * 0) 0;
+	animation: fire-sheild-rotate 0.5s steps(19) infinite;
+}
+
+.actor-knuckles[data-animation=climbing] .fire-sheild,
+.actor-knuckles[data-animation=climbing-up] .fire-sheild,
+.actor-knuckles[data-animation=climbing-down] .fire-sheild,
+.actor-knuckles[data-animation=flying] .fire-sheild {
+	top: 26px;
+	left: 10px;
+}
+
+[data-animation=rolling] .fire-sheild,
+[data-animation=jumping] .fire-sheild {
+	left: 8px;
+	top: 24px;
+}
+
+[data-animation=rolling] .electric-sheild,
+[data-animation=jumping] .electric-sheild {
+	left: 7px;
+	top: 24px;
+}
+
+[data-animation=lightdash] .fire-sheild,
+[data-animation=lightdash] .electric-sheild,
+[data-animation=lightdash-back] .fire-sheild,
+[data-animation=lightdash-back] .electric-sheild ,
+[data-animation=airdash] .fire-sheild,
+[data-animation=airdash] .electric-sheild {
+	left: 6px;
+	top: 10px;
+}
+
+.actor-knuckles[data-animation=climbing] .bubble-sheild,
+.actor-knuckles[data-animation=climbing-up] .bubble-sheild,
+.actor-knuckles[data-animation=climbing-down] .bubble-sheild,
+.actor-knuckles[data-animation=flying] .bubble-sheild {
+	left: -2px;
+	top: 26px;
+}
+
+.actor-knuckles[data-animation=climbing] .electric-sheild,
+.actor-knuckles[data-animation=climbing-up] .electric-sheild,
+.actor-knuckles[data-animation=climbing-down] .electric-sheild,
+.actor-knuckles[data-animation=flying] .electric-sheild {
+	left: 10px;
+	top: 26px;
+}
+
+[data-animation=rolling] .bubble-sheild,
+[data-animation=jumping] .bubble-sheild {
+	left: -4px;
+	top: 24px;
+}
+
+[data-animation=lightdash-back] .bubble-sheild,
+[data-animation=lightdash] .bubble-sheild,
+[data-animation=airdash] .bubble-sheild {
+	left: -6px;
+	top: 10px;
+}
+
+.actor-mecha-sonic .electric-sheild,
+.actor-mecha-sonic .bubble-sheild,
+.actor-mecha-sonic .fire-sheild {
+	transform: scale(1.35) translate(4px, 0px);
+}
+.actor-mecha-sonic:not([data-animation="rolling"]) {
+	transform-origin: bottom;
+	transform: scale(1.35) translate(0px, 0px);
+}
+
+@keyframes electric-sheild-rotate {
+	from{
+		background-position: calc(-48px * 3) 0;
+	}
+	to{
+		background-position: calc(-48px * 11) 0;
+	}
+}
+
+@keyframes electric-sheild-flip {
+	from{
+		z-index: -0;
+	}
+	to{
+		z-index: 2;
+	}
+}
+
+@keyframes fire-sheild-rotate {
+	from{
+		z-index: -100;
+		background-position: calc(-48px * 0) 0;
+	}
+	to{
+		z-index: 100;
+		background-position: calc(-48px * 19) 0;
+	}
+}
+
+@keyframes water-sheild-rotate {
+	from{
+		z-index: -100;
+		background-position: calc(-48px * 0) 0;
+	}
+	to{
+		z-index: 100;
+		background-position: calc(-48px * 9) 0;
+	}
+}
+
+@keyframes bubble-sheild-flicker {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -144px 0;
+	}
+}
+
+
+@keyframes bubble-sheild-bounce {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -288px 0;
+	}
+}

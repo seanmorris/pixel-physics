@@ -28,6 +28,12 @@ import { ObjectPalette } from '../ObjectPalette';
 
 import { ClickSwitch } from '../ui/ClickSwitch';
 
+import { Console as Terminal } from 'subspace-console/Console';
+
+import { Input as InputTask } from '../console/task/Input';
+import { Pos as PosTask } from '../console/task/Pos';
+import { Move as MoveTask } from '../console/task/Move';
+
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
@@ -311,11 +317,23 @@ export class Viewport extends View
 				this.args.status.args.hide = 'hide';
 			});
 		}
-
 	}
 
 	onAttached(event)
 	{
+		InputTask.viewport = this;
+		MoveTask.viewport  = this;
+		PosTask.viewport   = this;
+
+		this.args.subspace = new Terminal({
+			scroller: this.tags.subspace
+			, path:{
+				'input': InputTask
+				, 'move': MoveTask
+				, 'pos': PosTask
+			}
+		});
+
 		this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
@@ -450,6 +468,11 @@ export class Viewport extends View
 			if(controller.buttons[1011] && controller.buttons[1011].time === 1)
 			{
 				this.fullscreen();
+			}
+
+			if(controller.buttons[1010] && controller.buttons[1010].time === 1)
+			{
+				this.onNextFrame(()=>this.args.subspace.focus());
 			}
 
 			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)

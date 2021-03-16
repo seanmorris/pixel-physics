@@ -1,9 +1,14 @@
 .actor-item.actor-monitor .sprite {
-	background-image: url(/Sonic/ringMonitor.png);
+	background-image: url(/Sonic/monitor.png);
 	--sprite-offset-x: -18px;
 	--sprite-offset-y: -13px;
-	animation: monitor-flicker steps(4) infinite;
-	animation-duration: calc(1ms * 480);
+
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
+	/*background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);*/
+
+	animation: monitor-static steps(2) infinite;
+	animation-duration: calc(1ms * 360);
 }
 
 .actor-item.actor-monitor.actor-monitor-broken .sprite {
@@ -14,11 +19,118 @@
 	animation: none;
 }
 
+.monitor-screen {
+	animation: monitor-flicker steps(1) infinite 768ms forwards;
+	/*background-color: black;*/
+	background-image: url(/Sonic/monitor-screens.png);
+	position: absolute;
+	top: 3px;
+	left: 6px;
+	right: 10px;
+	bottom: 14px;
+	z-index: 100;
+}
+
+.monitor-screen {
+	--screen-x: 0;
+	--screen-y: 6;
+
+	--sprite-offset-x: calc(-16px * var(--screen-x));
+	--sprite-offset-y: calc(-16px * var(--screen-y));
+
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+[data-monitor="ring"] .monitor-screen {
+	--screen-x: 0;
+	--screen-y: 0;
+}
+
+[data-monitor="speed-shoes"] .monitor-screen {
+	--screen-x: 1;
+	--screen-y: 0;
+}
+
+[data-monitor="life-sonic"] .monitor-screen {
+	--screen-x: 0;
+	--screen-y: 1;
+}
+
+[data-monitor="life-tails"] .monitor-screen {
+	--screen-x: 1;
+	--screen-y: 1;
+}
+
+[data-monitor="life-knuckles"] .monitor-screen {
+	--screen-x: 2;
+	--screen-y: 1;
+}
+
+[data-monitor="life-eggman"] .monitor-screen {
+	--screen-x: 3;
+	--screen-y: 1;
+
+	--screen-x: 0;
+	--screen-y: 5;
+}
+
+[data-monitor="sheild-electric"] .monitor-screen {
+	--screen-x: 0;
+	--screen-y: 2;
+}
+
+[data-monitor="sheild-fire"] .monitor-screen {
+	--screen-x: 1;
+	--screen-y: 2;
+}
+
+[data-monitor="sheild-water"] .monitor-screen {
+	--screen-x: 2;
+	--screen-y: 2;
+}
+
+[data-monitor="super"] .monitor-screen {
+	--screen-x: 3;
+	--screen-y: 2;
+}
+
+[data-monitor="shield-stars"] .monitor-screen {
+	--screen-x: 0;
+	--screen-y: 3;
+}
+
+[data-monitor="life-mecha-sonic"] .monitor-screen {
+	--screen-x: 1;
+	--screen-y: 4;
+}
+
+[data-monitor="life-seymour"] .monitor-screen {
+	--screen-x: 2;
+	--screen-y: 4;
+}
+
+[data-monitor="life-atomic-superball"] .monitor-screen {
+	--screen-x: 3;
+	--screen-y: 4;
+}
+
 @-webkit-keyframes monitor-flicker{
+	from{
+		opacity: 0;
+	}
+	50%{
+		opacity: 1;
+	}
+	to{
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes monitor-static{
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
