@@ -5,7 +5,7 @@
 	overflow-y: auto;
 	pointer-events: initial;
 	transition: transform 1s ease-in;
-	/*transform: translateY(-100%);*/
+	transform: translateY(-100%);
 }
 
 .console::-webkit-scrollbar {
