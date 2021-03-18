@@ -1,6 +1,12 @@
 [
     {
         "color": "#ffa0a0a4",
+        "name": "block",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
         "name": "balloon",
         "properties": [
         ]

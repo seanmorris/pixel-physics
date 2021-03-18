@@ -1,6 +1,7 @@
-import { View } from 'curvature/base/View';
+import { Sheild } from './Sheild';
 
-export class BubbleSheild extends View
+export class BubbleSheild extends Sheild
 {
 	template = `<div class = "sheild bubble-sheild"><div class = "bubble-sheild-shine"></div></div>`;
+	type = 'water';
 }

@@ -25,13 +25,13 @@ export class Sonic extends PointActor
 	{
 		super(...args);
 
-		this.args.type      = 'actor-sonic actor-item';
+		this.args.type = 'actor-sonic actor-item';
 
 		this.accelNormal = 0.35;
 		this.accelSuper  = 0.70;
 
 		this.args.accel     = 0.35;
-		this.args.decel     = 0.7;
+		this.args.decel     = 0.4;
 
 		this.args.skidTraction = 1.75;
 
@@ -53,6 +53,7 @@ export class Sonic extends PointActor
 		this.args.height = 40;
 
 		this.spindashCharge = 0;
+		this.dropDashCharge = 0;
 
 		this.willStick = false;
 		this.stayStuck = false;
@@ -65,6 +66,23 @@ export class Sonic extends PointActor
 		this.moveCard = View.from(require('../cards/basic-moves.html'));
 
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
+
+		this.args.bindTo('falling', v => {
+
+			if(v)
+			{
+				return;
+			}
+
+			if(this.public.mode === 1 || this.public.mode === 3)
+			{
+				this.args.wallSticking = true;
+
+				this.args.gSpeed = 0;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
+			}
+		});
 	}
 
 	onAttached(event)
@@ -104,9 +122,21 @@ export class Sonic extends PointActor
 			}
 		}
 
-		if(!this.public.falling)
+		if(this.public.falling)
+		{
+			this.args.wallSticking = false;
+		}
+		else
 		{
 			this.doubleSpin = this.dashed = false;
+
+			if(this.public.mode % 2 === 0)
+			{
+				this.args.wallSticking = false;
+			}
+
+			this.willStick = false;
+			this.stayStuck = false;
 		}
 
 		if(this.lightDashingCoolDown > 0)
@@ -127,7 +157,52 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(this.lightDashing)
+		if(this.public.wallSticking)
+		{
+			this.box.setAttribute('data-animation', 'wall-stick');
+
+			let slip = 2;
+
+			if(this.yAxis > 0)
+			{
+				slip = 6;
+			}
+			else if(this.yAxis < 0)
+			{
+				this.stayStuck = true;
+				slip = 0;
+			}
+
+			if(this.public.mode === 1)
+			{
+				this.args.facing = 'left';
+				this.args.direction = 1;
+
+				if(Math.abs(this.args.gSpeed) < slip)
+				{
+					this.args.gSpeed += 1;
+				}
+				else
+				{
+					this.args.gSpeed = slip;
+				}
+			}
+			else if(this.public.mode === 3)
+			{
+				this.args.facing = 'right';
+				this.args.direction = -1;
+
+				if(Math.abs(this.args.gSpeed) < slip)
+				{
+					this.args.gSpeed -= 1;
+				}
+				else
+				{
+					this.args.gSpeed = -slip;
+				}
+			}
+		}
+		else if(this.lightDashing)
 		{
 			const direction = Math.sign(this.public.xSpeed) || Math.sign(this.public.gSpeed);
 
@@ -313,15 +388,38 @@ export class Sonic extends PointActor
 
 	command_0()
 	{
+		this.dropDashCharge = 0;
+
 		if(this.public.falling && !this.dashed && !this.doubleSpin)
 		{
-			this.pinch(-300, 50);
-			this.args.xOff = 0;
-			this.args.yOff = 32;
 			this.doubleSpin = true;
+			this.args.xOff  = 0;
+			this.args.yOff  = 32;
+
+			this.pinch(-300, 50);
 		}
 
 		super.command_0();
+	}
+
+	hold_0()
+	{
+		if(this.yAxis > 0 && this.public.jumping)
+		{
+			if(this.dropDashCharge < 22)
+			{
+				this.dropDashCharge++;
+			}
+
+			this.willStick = false;
+		}
+		else if(this.public.jumping || this.dashed)
+		{
+			this.dropDashCharge = 0;
+
+			this.willStick = true;
+			this.stayStuck = true;
+		}
 	}
 
 	release_1() // spindash
@@ -357,6 +455,18 @@ export class Sonic extends PointActor
 		if(this.dashDust)
 		{
 			this.dashDust.remove();
+		}
+	}
+
+	release_0()
+	{
+		this.willStick = false;
+		this.stayStuck = false;
+
+		if(this.public.wallSticking)
+		{
+			this.args.falling = true;
+			this.airDash(this.public.mode === 1 ? 1 : -1);
 		}
 	}
 

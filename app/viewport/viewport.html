@@ -14,6 +14,14 @@
 				<feGaussianBlur in="SourceGraphic" stdDeviation="0" cv-ref = "blur" />
 			</filter>
 
+			<filter id="dilate">
+				<feMorphology operator="dilate" radius="0.25" result = "expanded"/>
+				<feMerge>
+					<feMergeNode in="expanded" />
+					<feMergeNode in="SourceGraphic" />
+				</feMerge>
+			</filter>
+
 			<filter
 				color-interpolation-filters="sRGB"
 				id = "waves"
@@ -244,18 +252,31 @@
 				</table>
 			</div>
 
-			<div class = "hud hud-dark hud-top-right">
+			<div class = "hud hud-top-right">
+
 				<div class = "char-hud">
 					[[char]]
 					<div class = "char-icon [[charName]]"></div>
 				</div>
+
 			</div>
 
-			<div class = "hud hud-dark hud-bottom-right">
-				<table><tr>
-					<td>[[labelFps]]</td>
-					<td>[[fpsSprite]]</td>
-				</tr></table>
+			<div class = "hud hud-bottom-right">
+
+				<div class ="sheild-hud [[currentSheild]] [[hasElectric]] [[hasFire]] [[hasWater]]">
+					<div class = "sheild-icon sheild-electric"></div>
+					<div class = "sheild-icon spacer"></div>
+					<div class = "sheild-icon sheild-fire"></div>
+					<div class = "sheild-icon sheild-water"></div>
+				</div>
+
+				<table>
+					<tr>
+						<td>[[labelFps]]</td>
+						<td>[[fpsSprite]]</td>
+					</tr>
+				</table>
+
 			</div>
 
 			<div class = "hud hud-dark hud-bottom-left">

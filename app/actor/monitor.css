@@ -11,6 +11,7 @@
 	animation-duration: calc(1ms * 360);
 }
 
+.actor-item.actor-monitor[data-animation=broken] .sprite,
 .actor-item.actor-monitor.actor-monitor-broken .sprite {
 	background-image: url(/Sonic/brokenMonitor.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
@@ -39,6 +40,12 @@
 	--sprite-offset-y: calc(-16px * var(--screen-y));
 
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+.actor-item.actor-monitor[data-animation=broken] .monitor-screen {
+	transition: transform 0.25s ease-out;
+	transform: translateY(-32px);
+	animation: none;
 }
 
 [data-monitor="ring"] .monitor-screen {
@@ -118,7 +125,10 @@
 	from{
 		opacity: 0;
 	}
-	50%{
+	25%{
+		opacity: 1;
+	}
+	85%{
 		opacity: 1;
 	}
 	to{

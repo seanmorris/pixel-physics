@@ -22,8 +22,6 @@ export class Monitor extends PointActor
 
 	attached()
 	{
-		console.log('Monitor %d!', this.args.id);
-
 		this.screen = new Tag(`<div class = "monitor-screen">`);
 
 		this.sprite.appendChild(this.screen.node)
@@ -59,8 +57,6 @@ export class Monitor extends PointActor
 			&& this.viewport
 			&& !this.public.gone
 		){
-			this.args.gone = true;
-
 			this.pop(other);
 		}
 		else if(
@@ -80,7 +76,7 @@ export class Monitor extends PointActor
 	{
 		const viewport = this.viewport;
 
-		if(!viewport)
+		if(!viewport || this.public.gone)
 		{
 			return;
 		}
@@ -93,21 +89,23 @@ export class Monitor extends PointActor
 
 		setTimeout(() => viewport.particles.remove(explosion), 512);
 
-		const corpse = new BrokenMonitor({x:this.x, y:this.y});
+		setTimeout(() => this.screen.remove(), 1024);
 
-		viewport.actors.remove( this );
+		this.args.gone = true;
 
-		viewport.spawn.add({object:corpse});
+		this.box.setAttribute('data-animation', 'broken');
+
+		if(other.occupant)
+		{
+			other = other.occupant;
+		}
 
 		if(other.args.owner)
 		{
-			this.effect(other.args.owner);
+			other = other.args.owner;
 		}
-		else if(other.occupant)
-		{
-			this.effect(other.occupant);
-		}
-		else(other.isControllable)
+
+		if(other.controllable)
 		{
 			this.effect(other);
 		}
@@ -117,17 +115,14 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
-		if(this.public.gone)
+		if(other.args.falling)
 		{
-			if(other.args.falling)
-			{
-				this.onNextFrame(() => other.args.ySpeed = -other.args.ySpeed );
-			}
+			this.onNextFrame(() => other.args.ySpeed = -other.args.ySpeed );
+		}
 
-			if(this.args.falling && other.args.falling)
-			{
-				this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed );
-			}
+		if(this.args.falling && other.args.falling)
+		{
+			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed );
 		}
 	}
 

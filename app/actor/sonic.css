@@ -97,6 +97,20 @@
 	transform: rotate(calc(1rad * var(--air-angle)));
 }
 
+.actor-item.actor-sonic[data-animation="wall-stick"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -448px;
+
+	transform: translateY(32px) rotate(calc(1rad * var(--air-angle)));
+
+	animation: sonic-wall-stick steps(2) 1 384ms forwards;
+}
+
+.actor-item.actor-sonic[data-animation="wall-stick"][data-facing="right"][data-mode="1"] .sprite:after,
+.actor-item.actor-sonic[data-animation="wall-stick"][data-facing="left"][data-mode="3"] .sprite:after {
+	transform: translateY(32px) rotate(calc(1rad * var(--air-angle))) scaleX(-1);
+}
+
 .actor-item.actor-sonic[data-facing="left"][data-animation="airdash"] .sprite:after {
 	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
 }
@@ -202,6 +216,15 @@
 	}
 	to{
 		background-position: calc(-448px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes sonic-wall-stick {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

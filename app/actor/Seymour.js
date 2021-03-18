@@ -51,7 +51,11 @@ export class Seymour extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			if(this.public.rolling)
+			{
+				this.box.setAttribute('data-animation', 'rolling');
+			}
+			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.box.setAttribute('data-animation', 'standing');
 			}
@@ -81,6 +85,7 @@ export class Seymour extends PointActor
 	}
 
 	get solid() { return false; }
+	get canRoll() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }

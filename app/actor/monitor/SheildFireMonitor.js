@@ -13,10 +13,14 @@ export class SheildFireMonitor extends Monitor
 
 	effect(other)
 	{
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		const sheild = new FireSheild;
 
 		other.powerups.add(sheild);
-
-		sheild.render(other.sprite);
+		other.inventory.add(sheild);
 	}
 }

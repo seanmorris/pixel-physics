@@ -47,6 +47,8 @@ export class Viewport extends View
 	{
 		super(args,parent);
 
+		this.vizi = true;
+
 		this.args.screenFilter = 'runners';
 
 		this.sprites = new Bag;
@@ -498,6 +500,10 @@ export class Viewport extends View
 				}
 			}
 
+			this.args.currentSheild = this.controlActor.public.currentSheild
+				? this.controlActor.public.currentSheild.type
+				: '';
+
 			if(this.args.started && controller.buttons[9] && controller.buttons[9].time === 1)
 			{
 				this.args.paused = !this.args.paused;
@@ -657,7 +663,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(controlActor && this.tags.blur)
+		if(0 && controlActor && this.tags.blur)
 		{
 			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
 			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
@@ -1222,6 +1228,27 @@ export class Viewport extends View
 						continue;
 					}
 
+					let offscreenX = 0;
+					let offscreenY = 0;
+
+					if(camLeft < actorRight)
+					{
+						offscreenX = actorRight - camLeft;
+					}
+					else if(camRight > actorLeft)
+					{
+						offscreenX = camRight - actorLeft;
+					}
+
+					if(camBottom > actorTop)
+					{
+						offscreenY = camBottom - actorTop;
+					}
+					else if(camTop < actorBottom)
+					{
+						offscreenY = actorBottom - camTop;
+					}
+
 					if(camLeft < actorRight
 						&& camRight > actorLeft
 						&& camBottom > actorTop
@@ -1241,14 +1268,13 @@ export class Viewport extends View
 
 						inAuras.add(actor);
 					}
-					else
+					else if(actor.vizi && offscreenX > 800 || offscreenY > 800)
 					{
 						actor.sleep();
 
-						actor.nodes.map(n => n.remove());
+						actor.detach();
 
 						actor.vizi = false;
-
 					}
 				}
 			}

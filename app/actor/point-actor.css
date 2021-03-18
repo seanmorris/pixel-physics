@@ -3,6 +3,11 @@
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
+
+	--outlineWidth:    1px;
+	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
+	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
+	--outlineColor:    rgba(0,0,0,1);
 }
 
 .point-actor .labels {
@@ -98,6 +103,11 @@
 }
 
 .actor-item.actor-block-marble .sprite {
+	--hoverWidth: -1px;
+}
+
+.actor-item.actor-block .sprite,
+.actor-item.actor-block-marble .sprite {
 	background-image: url(/Sonic/marble-zone-block.png);
 	width: 32px;
 	height: 32px;
@@ -188,7 +198,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="0"] .sprite {
-	transform: translate(-50%, calc(-100%)) rotate(calc(-1rad * var(--ground-angle)));
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle)));
 }
 
 .actor-item[data-falling="false"][data-mode="1"] .sprite {
@@ -204,7 +214,7 @@
 }
 
 .actor-item[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100%)) rotate(calc(-1rad * var(--ground-angle))) scale(-1,1);
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle))) scale(-1,1);
 }
 
 .actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
