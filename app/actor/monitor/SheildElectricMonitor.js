@@ -13,10 +13,14 @@ export class SheildElectricMonitor extends Monitor
 
 	effect(other)
 	{
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		const sheild = new ElectricSheild;
 
 		other.powerups.add(sheild);
-
-		sheild.render(other.sprite);
+		other.inventory.add(sheild);
 	}
 }

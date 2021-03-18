@@ -1,3 +1,4 @@
+import { Block }         from './actor/Block';
 import { QuestionBlock } from './actor/QuestionBlock';
 import { BrokenMonitor } from './actor/BrokenMonitor';
 import { MarbleBlock }   from './actor/MarbleBlock';
@@ -57,6 +58,7 @@ export const ObjectPalette = {
 	, 'star-post':    StarPost
 	, 'q-block':      QuestionBlock
 	, 'projectile':   Projectile
+	, 'block':        Block
 	, 'marble-block': MarbleBlock
 	, 'drill-car':    DrillCar
 	, 'tornado':      Tornado

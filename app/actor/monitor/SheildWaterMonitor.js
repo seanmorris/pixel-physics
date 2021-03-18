@@ -13,10 +13,14 @@ export class SheildWaterMonitor extends Monitor
 
 	effect(other)
 	{
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		const sheild = new BubbleSheild;
 
 		other.powerups.add(sheild);
-
-		sheild.render(other.sprite);
+		other.inventory.add(sheild);
 	}
 }

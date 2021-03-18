@@ -85,3 +85,7 @@
 .quick-controls .switch:not([data-active="true"]) .labelOn {
 	opacity: 0.25;
 }
+
+.quick-controls img {
+	filter: drop-shadow(1px 1px 0px black);
+}

@@ -17,7 +17,7 @@ export class Vehicle extends PointActor
 	{
 		if(other.controllable)
 		{
-			if([0,-1].includes(type) && other.args.ySpeed >= 0)
+			if(other.args.ySpeed > 0)
 			{
 				return true;
 			}
@@ -50,24 +50,22 @@ export class Vehicle extends PointActor
 
 	standBelow(other)
 	{
-		this.onTimeout(0, ()=>{
-			if(!other.controllable)
+		if(!other.controllable)
+		{
+			other.args.ySpeed  = -other.args.ySpeed;
+			other.args.xSpeed  = other.args.xSpeed || (other.args.direction * 5);
+
+			if(other.args.ySpeed > -5)
 			{
-				other.args.ySpeed  = -other.args.ySpeed;
-				other.args.xSpeed  = other.args.xSpeed || (other.args.direction * 5);
-
-				if(other.args.ySpeed > -5)
-				{
-					other.args.ySpeed = -5;
-				}
-
-				other.args.falling = true;
-
-				other.standingOn = null;
-
-				console.log(other);
+				other.args.ySpeed = -5;
 			}
-		});
+
+			other.args.falling = true;
+
+			other.standingOn = null;
+
+			console.log(other);
+		}
 	}
 
 	get isVehicle() { return true; }

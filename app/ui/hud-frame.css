@@ -5,8 +5,8 @@
 .hud-top-left {
 	display: block;
 	position: absolute;
-	top: 5px;
-	left: 5px;
+	top: 3px;
+	left: 3px;
 	right: 0;
 	display: flex;
 	flex-direction: row;
@@ -18,8 +18,8 @@
 .hud-top-right {
 	display: block;
 	position: absolute;
-	top: 5px;
-	right: 5px;
+	top: 3px;
+	right: 3px;
 	display: flex;
 	flex-direction: column;
 	transform-origin: top right;
@@ -29,8 +29,8 @@
 .hud-bottom-right {
 	display: block;
 	position: absolute;
-	bottom: 5px;
-	right: 5px;
+	bottom: 15px;
+	right: 2px;
 	display: flex;
 	flex-direction: column;
 	transform-origin: bottom right;
@@ -173,6 +173,15 @@
 .viewport .hud tr > td:nth-child(2) {
 	margin: 0;
 	text-align: right;
+}
+
+.hud .hud-character-string {
+	filter:
+		drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.5))
+		drop-shadow(-1px -1px 0px rgba(0, 0, 0, 0.5))
+		drop-shadow(-1px 1px 0px rgba(0, 0, 0, 0.5))
+		drop-shadow(1px -1px 0px rgba(0, 0, 0, 0.5))
+	;
 }
 
 .status-message .hud-character {

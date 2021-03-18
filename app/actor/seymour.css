@@ -32,19 +32,17 @@
 	animation: seymour-run steps(5) infinite 192ms;
 }
 
-/*.actor-item.actor-seymour[data-animation="jumping"] .sprite:after {
+.actor-item.actor-seymour[data-animation="rolling"] .sprite:after,
+.actor-item.actor-seymour[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
-	--sprite-offset-y: -128px;
+	--sprite-offset-y: -192px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: seymour-jump steps(4) infinite 160ms;
 }
-*/
-@-webkit-keyframes seymour-animate {
-	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	}
-	to{
-		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
-	}
+
+.actor-item.actor-seymour[data-animation="rolling"] .sprite:after {
+	transform: translateY(22px);
+	animation: seymour-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
 }
 
 @-webkit-keyframes seymour-walk {
@@ -56,12 +54,20 @@
 	}
 }
 
-
 @-webkit-keyframes seymour-run {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes seymour-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

@@ -7,12 +7,14 @@
 	height: 48px;
 	background-image: url(/Sonic/sheild-bubble.png);
 	background-position: 0 0;
-	animation: bubble-sheild-flicker 0.5s steps(2) infinite;
+	animation: bubble-sheild-flicker 0.5s steps(2) infinite,
+		sheild-flip calc(0.5s * 2) infinite;
 }
 
 .bubble-sheild-shine {
 	background-image: url(/Sonic/bubble-sheild-shine.png);
 	position: absolute;
+	z-index: 100;
 	top: 0;
 	left: 12px;
 	width: 48px;
@@ -31,7 +33,7 @@
 	background-image: url(/Sonic/sheild-electric.png);
 	background-position: calc(-48px * 3) 0;
 	animation: electric-sheild-rotate 0.3s steps(8) infinite forwards,
-		 electric-sheild-flip calc(0.2s * 2) infinite;
+		 sheild-flip calc(0.2s * 2) infinite;
 }
 
 .fire-sheild {
@@ -44,6 +46,17 @@
 	background-image: url(/Sonic/sheild-fire.png);
 	background-position: calc(-48px * 0) 0;
 	animation: fire-sheild-rotate 0.5s steps(19) infinite;
+}
+
+.actor-sonic[data-animation=wall-stick] .bubble-sheild {
+	top: 32px;
+	left: -1px;
+}
+
+.actor-sonic[data-animation=wall-stick] .electric-sheild,
+.actor-sonic[data-animation=wall-stick] .fire-sheild {
+	top: 32px;
+	left: 10px;
 }
 
 .actor-knuckles[data-animation=climbing] .fire-sheild,
@@ -105,14 +118,25 @@
 	top: 10px;
 }
 
+.actor-eggrobo .electric-sheild,
+.actor-eggrobo .bubble-sheild,
+.actor-eggrobo .fire-sheild,
+.actor-eggman .electric-sheild,
+.actor-eggman .bubble-sheild,
+.actor-eggman .fire-sheild,
 .actor-mecha-sonic .electric-sheild,
 .actor-mecha-sonic .bubble-sheild,
 .actor-mecha-sonic .fire-sheild {
-	transform: scale(1.35) translate(4px, 0px);
+	transform: scale(1.5) translate(4px, -4px);
 }
-.actor-mecha-sonic:not([data-animation="rolling"]) {
-	transform-origin: bottom;
-	transform: scale(1.35) translate(0px, 0px);
+
+.actor-mecha-sonic[data-animation=jumping] .electric-sheild,
+.actor-mecha-sonic[data-animation=jumping] .bubble-sheild,
+.actor-mecha-sonic[data-animation=jumping] .fire-sheild,
+.actor-mecha-sonic[data-animation=rolling] .electric-sheild,
+.actor-mecha-sonic[data-animation=rolling] .bubble-sheild,
+.actor-mecha-sonic[data-animation=rolling] .fire-sheild {
+	transform: scale(1.5) translate(-0px, -2px);
 }
 
 @keyframes electric-sheild-rotate {
@@ -124,7 +148,7 @@
 	}
 }
 
-@keyframes electric-sheild-flip {
+@keyframes sheild-flip {
 	from{
 		z-index: -0;
 	}

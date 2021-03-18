@@ -15,11 +15,11 @@ export class DrillCar extends Vehicle
 
 		this.removeTimer = null;
 
-		this.args.gSpeedMax = 22;
+		this.args.gSpeedMax = 20;
 		this.args.decel     = 0.30;
 		this.args.accel     = 0.75;
 
-		this.args.seatHeight = 30;
+		this.args.seatHeight = 34;
 
 		this.args.skidTraction = 0.95;
 

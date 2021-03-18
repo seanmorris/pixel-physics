@@ -255,7 +255,6 @@ export class SuperRing extends PointActor
 		//	= this.inlineMesh.rotation.x
 		//	= this.args.xRot / 200;
 
-
 		this.wireframe.rotation.y
 			= this.mainMesh.rotation.y
 			= this.outlineMesh.rotation.y
@@ -272,8 +271,10 @@ export class SuperRing extends PointActor
 		// this.args.xRot++;
 		this.args.zRot++;
 
-		this.rendererRear.render(this.scene, this.cameraRear);
-		this.rendererFore.render(this.scene, this.cameraFore);
+		this.onTimeout(0, () => {
+			this.rendererRear.render(this.scene, this.cameraRear);
+			this.rendererFore.render(this.scene, this.cameraFore);
+		});
 	}
 
 	collideA(other)

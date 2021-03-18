@@ -30,6 +30,11 @@ export class MarbleBlock extends PointActor
 
 		const otherSpeed = other.args.gSpeed || other.args.xSpeed;
 
+		if(Math.abs(other.public.ySpeed) > Math.abs(other.public.xSpeed))
+		{
+			return true;
+		}
+
 		if(type === 1 && otherSpeed <= 0)
 		{
 			return false;
