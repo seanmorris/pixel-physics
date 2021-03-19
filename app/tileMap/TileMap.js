@@ -101,33 +101,16 @@ export class TileMap
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		// const cacheKey = [x, y, layerId].join('::');
-
-		// const tileNumberCache = this.tileNumberCache;
 		const tileLayers      = this.tileLayers;
 		const mapData         = this.mapData;
-
-		// if(tileNumberCache.has(cacheKey))
-		// {
-		// 	return tileNumberCache.get(cacheKey);
-		// }
-
-		// if(!tileLayers[layerId])
-		// {
-		// 	return tileNumberCache.set(cacheKey, false);
-		// }
 
 		if(x >= mapData.width || y >= mapData.height
 			|| x < 0 || y < 0
 		){
 			if(layerId !== 0)
 			{
-				// tileNumberCache.set(cacheKey, false);
-
 				return false;
 			}
-
-			// tileNumberCache.set(cacheKey, 1);
 
 			return 1;
 		}
@@ -136,15 +119,11 @@ export class TileMap
 
 		if(tileIndex in tileLayers[layerId].data)
 		{
-			// tileNumberCache.set(cacheKey, tileLayers[layerId].data[tileIndex] - 1);
-
 			const layer = tileLayers[layerId];
 			const tile  = layer.data[tileIndex];
 
 			return tile > 0 ? tile - 1 : 0;
 		}
-
-		// tileNumberCache.set(cacheKey, false);
 
 		return false;
 	}
@@ -187,15 +166,6 @@ export class TileMap
 		const currentTile = this.coordsToTile(xInput, yInput);
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
-		const tileSet = this.getTileset(tileNumber);
-
-		const heightMask      = this.heightMasks.get(tileSet);
-		const heightMaskCache = this.heightMaskCache;
-
-		const mapData         = this.mapData;
-
-		const blockSize = mapData.tilewidth;
-
 		if(layerInput === 1 || layerInput ===  2)
 		{
 			if(this.getSolid(xInput, yInput, 0))
@@ -235,6 +205,11 @@ export class TileMap
 			}
 		}
 
+		const tileSet = this.getTileset(tileNumber);
+
+		const mapData   = this.mapData;
+		const blockSize = mapData.tilewidth;
+
 		const tilePos = this.getTile(tileNumber).map(coord => {
 			return coord * blockSize
 		});
@@ -245,27 +220,31 @@ export class TileMap
 		const xPixel = tilePos[0] + x;
 		const yPixel = tilePos[1] + y;
 
-		const heightMaskKey = [xPixel, yPixel, tileNumber].join('::');
+		const heightMaskKey   = [xPixel, yPixel, tileNumber].join('::');
+		const heightMaskCache = this.heightMaskCache;
 
 		if(heightMaskCache.has(heightMaskKey))
 		{
 			return heightMaskCache.get(heightMaskKey);
 		}
 
+		const heightMask = this.heightMasks.get(tileSet);
 
-		heightMaskCache.set(heightMaskKey, false);
-
-		const pixel = heightMask.getContext('2d').getImageData(
-			xPixel, yPixel, 1, 1
-		).data;
+		const pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data;
 
 		// if(pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
 		if(pixel[3] === 255)
 		{
 			heightMaskCache.set(heightMaskKey, true);
-		}
 
-		return heightMaskCache.get(heightMaskKey);
+			return true;
+		}
+		else
+		{
+			heightMaskCache.set(heightMaskKey, false);
+
+			return false;
+		}
 	}
 
 	getTileset(tileNumber)
