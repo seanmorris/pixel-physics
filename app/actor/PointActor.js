@@ -884,17 +884,10 @@ export class PointActor extends View
 			const direction = Math.sign(this.public.gSpeed || this.public.direction);
 
 			const max  = Math.abs(this.public.gSpeed);
-			const step = Math.floor(max / 256) || 1;
+			const step = Math.min(4, max);
 
 			for(let s = 0; s < max; s += step)
 			{
-				nextPosition = this.findNextStep(step * direction);
-
-				if(!nextPosition)
-				{
-					break;
-				}
-
 				if(this.public.width > 1)
 				{
 					const scanForward = this.scanForward(step * direction);
@@ -905,6 +898,13 @@ export class PointActor extends View
 
 						continue;
 					}
+				}
+
+				nextPosition = this.findNextStep(step * direction);
+
+				if(!nextPosition)
+				{
+					break;
 				}
 
 				if(nextPosition[3])
@@ -1262,39 +1262,37 @@ export class PointActor extends View
 		}
 		else
 		{
-			// const isSolid = (i, point) => {
-			// 	if(tileMap.getSolid(...point, this.public.layer))
-			// 	{
-			// 		return i;
-			// 	}
-			// };
+		}
+		const isSolid = (i, point) => {
+			if(tileMap.getSolid(...point, this.public.layer))
+			{
+				return i;
+			}
+		};
 
-			// const radius = Math.floor(this.public.width / 2);
+		const backDistance = this.castRay(
+			radius
+			, Math.PI
+			, isSolid
+		);
 
-			// const backDistance = this.castRay(
-			// 	radius
-			// 	, Math.PI
-			// 	, isSolid
-			// );
+		const foreDistance = this.castRay(
+			radius
+			, 0
+			, isSolid
+		);
 
-			// const foreDistance = this.castRay(
-			// 	radius
-			// 	, 0
-			// 	, isSolid
-			// );
-
-			// if(backDistance && foreDistance)
-			// {
-			// 	// crush instakill?
-			// }
-			// else if(foreDistance)
-			// {
-			// 	this.args.x -= 0 + (radius - foreDistance);
-			// }
-			// else if(backDistance)
-			// {
-			// 	this.args.x += 0 + (radius - backDistance);
-			// }
+		if(backDistance && foreDistance)
+		{
+			// crush instakill?
+		}
+		else if(foreDistance)
+		{
+			this.args.x -= 0 + (radius - foreDistance);
+		}
+		else if(backDistance)
+		{
+			this.args.x += 0 + (radius - backDistance);
 		}
 
 		const airPoint = this.castRay(
@@ -2001,6 +1999,10 @@ export class PointActor extends View
 				, this.downAngle
 				, offsetPoint
 				, (i, point) => {
+					if(tileMap.getSolid(...point, this.public.layer))
+					{
+						return i;
+					}
 
 					const actors = viewport.actorsAtPoint(...point)
 						.filter(a => a.args !== this.args)
@@ -2008,11 +2010,6 @@ export class PointActor extends View
 						.filter(a => a.solid);
 
 					if(actors.length > 0)
-					{
-						return i;
-					}
-
-					if(tileMap.getSolid(...point, this.public.layer))
 					{
 						return i;
 					}
