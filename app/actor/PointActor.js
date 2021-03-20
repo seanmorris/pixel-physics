@@ -185,7 +185,7 @@ export class PointActor extends View
 		this.args.airAngle    = 0;
 
 		this.lastAngles = [0,0];
-		this.angleAvg   = 4;
+		this.angleAvg   = 8;
 
 		this.args.xSpeedMax = 512;
 		this.args.ySpeedMax = 512;
@@ -734,7 +734,7 @@ export class PointActor extends View
 
 					leftGroundPoint[0] -= half;
 
-					const standingOnLeft = this.getMapSolidAt(...leftGroundPoint);
+					const standingOnLeft = this.getMapSolidAt(leftGroundPoint[0], leftGroundPoint[1]);
 
 					if(Array.isArray(standingOnLeft) && standingOnLeft.length)
 					{
@@ -751,7 +751,7 @@ export class PointActor extends View
 
 						rightGroundPoint[0] += half;
 
-						const standingOnRight = this.getMapSolidAt(...rightGroundPoint);
+						const standingOnRight = this.getMapSolidAt(rightGroundPoint[0], rightGroundPoint[1]);
 
 						if(Array.isArray(standingOnRight) && standingOnRight.length)
 						{
@@ -841,11 +841,11 @@ export class PointActor extends View
 
 	updateGroundPosition()
 	{
+		const drag = this.region ? this.region.public.drag : 1;
+
 		if(!this.public.dontJump && this.willJump)
 		{
 			this.willJump = false;
-
-			const drag = this.region ? this.region.public.drag : 1;
 
 			let force = this.args.jumpForce * drag;
 
@@ -884,10 +884,19 @@ export class PointActor extends View
 			const direction = Math.sign(this.public.gSpeed || this.public.direction);
 
 			const max  = Math.abs(this.public.gSpeed);
-			const step = Math.min(4, max);
+			const step = 1;
+
+			this.pause(true);
 
 			for(let s = 0; s < max; s += step)
 			{
+				nextPosition = this.findNextStep(step * direction);
+
+				if(!nextPosition)
+				{
+					break;
+				}
+
 				if(this.public.width > 1)
 				{
 					const scanForward = this.scanForward(step * direction);
@@ -896,15 +905,8 @@ export class PointActor extends View
 					{
 						this.args.gSpeed = scanForward;
 
-						continue;
+						break;
 					}
-				}
-
-				nextPosition = this.findNextStep(step * direction);
-
-				if(!nextPosition)
-				{
-					break;
 				}
 
 				if(nextPosition[3])
@@ -944,11 +946,11 @@ export class PointActor extends View
 							break;
 
 						case MODE_LEFT:
-							if(Math.abs(this.public.gSpeed) < 20)
+							if(Math.abs(this.public.gSpeed) < 8)
 							{
 								this.args.mode = MODE_FLOOR;
 								this.args.y--;
-								this.args.x += this.public.direction;
+								this.args.x += this.public.direction * this.public.width / 2;
 							}
 							else
 							{
@@ -960,11 +962,11 @@ export class PointActor extends View
 							break;
 
 						case MODE_RIGHT:
-							if(Math.abs(this.public.gSpeed) < 20)
+							if(Math.abs(this.public.gSpeed) < 8)
 							{
 								this.args.mode = MODE_FLOOR;
 								this.args.y--;
-								this.args.x += this.public.direction;
+								this.args.x += this.public.direction * this.public.width / 2;
 							}
 							else
 							{
@@ -1090,6 +1092,8 @@ export class PointActor extends View
 				}
 			}
 
+			this.pause(false);
+
 			let slopeFactor = 0;
 
 			if(!this.args.climbing)
@@ -1200,6 +1204,34 @@ export class PointActor extends View
 					}
 				}
 			}
+
+			if(!this.xAxis && this.public.gSpeed > 0)
+			{
+				if(this.public.rolling)
+				{
+					this.args.gSpeed -= this.public.decel * 1/drag * 0.125;
+				}
+				else
+				{
+					this.args.gSpeed -= this.public.decel * 1/drag
+				}
+			}
+			else if(!this.xAxis && this.public.gSpeed < 0)
+			{
+				if(this.public.rolling)
+				{
+					this.args.gSpeed += this.public.decel * 1/drag * 0.125;
+				}
+				else
+				{
+					this.args.gSpeed += this.public.decel * 1/drag
+				}
+			}
+
+			if(!this.xAxis && Math.abs(this.public.gSpeed) < this.public.decel * 1/drag)
+			{
+				this.args.gSpeed = 0;
+			}
 		}
 
 		if(nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false))
@@ -1241,65 +1273,60 @@ export class PointActor extends View
 			return;
 		}
 
-		if(!this.willStick)
+		if(!this.willStick && this.args.xSpeed)
 		{
-			if(this.args.xSpeed)
+			const foreDistance = this.scanForward(this.public.xSpeed, false);
+
+			if(foreDistance !== false)
 			{
-				const foreDistance = this.scanForward(this.public.xSpeed + 1, false);
+				this.args.x += foreDistance * Math.sign(this.public.xSpeed);
+				this.args.flySpeed = 0;
+				this.args.xSpeed   = 0;
 
-				if(foreDistance !== false)
+				if(!this.args.flying && !this.args.float)
 				{
-					this.args.x += foreDistance * Math.sign(this.public.xSpeed);
-					this.args.flySpeed = 0;
-					this.args.xSpeed   = 0;
-
-					if(!this.args.flying && !this.args.float)
-					{
-						this.args.ignore = -2;
-					}
+					this.args.ignore = -2;
 				}
 			}
 		}
-		else
-		{
-		}
-		const isSolid = (i, point) => {
-			if(tileMap.getSolid(...point, this.public.layer))
-			{
-				return i;
-			}
-		};
 
-		const backDistance = this.castRay(
-			radius
-			, Math.PI
-			, isSolid
-		);
+		// const isSolid = (i, point) => {
+		// 	if(tileMap.getSolid(...point, this.public.layer))
+		// 	{
+		// 		return i;
+		// 	}
+		// };
 
-		const foreDistance = this.castRay(
-			radius
-			, 0
-			, isSolid
-		);
+		// const backDistance = this.castRay(
+		// 	radius
+		// 	, Math.PI
+		// 	, isSolid
+		// );
 
-		if(backDistance && foreDistance)
-		{
-			// crush instakill?
-		}
-		else if(foreDistance)
-		{
-			this.args.x -= 0 + (radius - foreDistance);
-		}
-		else if(backDistance)
-		{
-			this.args.x += 0 + (radius - backDistance);
-		}
+		// const foreDistance = this.castRay(
+		// 	radius
+		// 	, 0
+		// 	, isSolid
+		// );
+
+		// if(backDistance && foreDistance)
+		// {
+		// 	// crush instakill?
+		// }
+		// else if(foreDistance)
+		// {
+		// 	this.args.x -= 0 + (radius - foreDistance);
+		// }
+		// else if(backDistance)
+		// {
+		// 	this.args.x += 0 + (radius - backDistance);
+		// }
 
 		const airPoint = this.castRay(
 			airSpeed + radius
 			, this.public.airAngle
 			, (i, point) => {
-				const actors = viewport.actorsAtPoint(...point)
+				const actors = viewport.actorsAtPoint(point[0], point[1])
 					.filter(x => x.args !== this.args)
 					.filter(x => x.callCollideHandler(this))
 					.filter(x => x.solid);
@@ -1309,7 +1336,7 @@ export class PointActor extends View
 					return point;
 				}
 
-				if(tileMap.getSolid(...point, this.public.layer))
+				if(tileMap.getSolid(point[0], point[1], this.public.layer))
 				{
 					return lastPoint;
 				}
@@ -1336,7 +1363,7 @@ export class PointActor extends View
 					return false;
 				}
 
-				const actors = this.viewport.actorsAtPoint(...point)
+				const actors = this.viewport.actorsAtPoint(point[0], point[1])
 					.filter(x => x.args !== this.args)
 					.filter(x => x.callCollideHandler(this))
 					.filter(a => a.solid);
@@ -1346,7 +1373,7 @@ export class PointActor extends View
 					return i;
 				}
 
-				if(tileMap.getSolid(...point, this.args.layer))
+				if(tileMap.getSolid(point[0], point[1], this.args.layer))
 				{
 					return i;
 				}
@@ -1486,6 +1513,25 @@ export class PointActor extends View
 				console.log('Drop boost %f', dropBoost);
 
 				this.args.gSpeed += dropBoost;
+
+				const viewport = this.viewport;
+
+				const dustParticle = new Tag('<div class = "particle-dust">');
+
+				const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
+
+				dustParticle.style({
+					'--x': dustPoint[0] + this.x
+					, '--y': dustPoint[1] + this.y
+					, 'z-index': 0
+					, opacity: Math.random() * 2
+				});
+
+				viewport.particles.add(dustParticle);
+
+				setTimeout(() => {
+					viewport.particles.remove(dustParticle);
+				}, 350);
 			}
 
 			if(this.yAxis > 0 && this.canRoll && this.public.gSpeed)
@@ -1517,8 +1563,6 @@ export class PointActor extends View
 
 			this.args.falling = true;
 		}
-
-
 	}
 
 	callCollideHandler(other)
@@ -1581,17 +1625,12 @@ export class PointActor extends View
 
 	resolveIntersection()
 	{
-		if(!this.public.gSpeed && !this.public.xSpeed && !this.public.ySpeed)
+		if(!this.args.falling || (!this.public.xSpeed && !this.public.ySpeed))
 		{
 			return;
 		}
 
 		let backAngle = this.args.airAngle + Math.PI;
-
-		if(!this.args.falling)
-		{
-			backAngle = this.args.groundAngle - Math.PI;
-		}
 
 		let iterations = 0;
 
@@ -1663,7 +1702,7 @@ export class PointActor extends View
 			}
 			else if(blockers)
 			{
-				if(this.willStick || (below && this.args.ySpeed >= 0))
+				if((this.willStick || below) && this.args.ySpeed > 0)
 				{
 					this.args.falling = false;
 
@@ -1764,7 +1803,7 @@ export class PointActor extends View
 			// this.args.x = vehicle.args.x + seatX;
 			// this.args.y = vehicle.args.y + vehicle.args.height + seatY;
 		}
-		else
+		else if(this.controllable)
 		{
 			this.processInputDirect();
 		}
@@ -1772,9 +1811,13 @@ export class PointActor extends View
 
 	processInputDirect()
 	{
+		let xAxis = this.xAxis;
+		let yAxis = this.yAxis;
+
 		if(this.public.ignore !== 0)
 		{
-			return
+			xAxis = 0;
+			yAxis = 0;
 		}
 
 		let gSpeedMax = this.public.gSpeedMax;
@@ -1787,8 +1830,6 @@ export class PointActor extends View
 		{
 			gSpeedMax = CRAWLING_SPEED;
 		}
-
-		const drag = this.region ? this.region.public.drag : 1;
 
 		if(!this.public.falling)
 		{
@@ -1808,23 +1849,26 @@ export class PointActor extends View
 			this.args.rolling = false;
 		}
 
+		const drag = this.region ? this.region.public.drag : 1;
+
 		if(!this.public.falling)
 		{
-			if(this.xAxis && !this.public.rolling)
+			if(xAxis && !this.public.rolling)
 			{
 				let gSpeed = this.public.gSpeed
-				const axisSign = Math.sign(this.xAxis);
+				const axisSign = Math.sign(xAxis);
 				const sign     = Math.sign(this.public.gSpeed);
+
 
 				if(!this.public.rolling)
 				{
 					if(axisSign === sign || !sign)
 					{
-						gSpeed += this.xAxis * this.public.accel * drag;
+						gSpeed += xAxis * this.public.accel * drag;
 					}
 					else
 					{
-						gSpeed += this.xAxis  * this.public.accel * drag * this.public.skidTraction;
+						gSpeed += xAxis  * this.public.accel * drag * this.public.skidTraction;
 					}
 				}
 
@@ -1835,7 +1879,7 @@ export class PointActor extends View
 
 				if(!Math.sign(this.public.gSpeed) || Math.sign(this.public.gSpeed) === Math.sign(gSpeed))
 				{
-					if(Math.abs(gSpeed) < gSpeedMax || Math.sign(gSpeed) !== this.xAxis)
+					if(Math.abs(gSpeed) < gSpeedMax || Math.sign(gSpeed) !== xAxis)
 					{
 						this.args.gSpeed = gSpeed;
 					}
@@ -1847,43 +1891,16 @@ export class PointActor extends View
 					return;
 				}
 			}
-			else if(Math.abs(this.public.gSpeed) < this.public.decel * 1/drag)
-			{
-				this.args.gSpeed = 0;
-			}
-			else if(this.public.gSpeed > 0)
-			{
-				if(this.public.rolling)
-				{
-					this.args.gSpeed -= this.public.decel * 1/drag * 0.125;
-				}
-				else
-				{
-					this.args.gSpeed -= this.public.decel * 1/drag
-				}
-
-			}
-			else if(this.public.gSpeed < 0)
-			{
-				if(this.public.rolling)
-				{
-					this.args.gSpeed += this.public.decel * 1/drag * 0.125;
-				}
-				else
-				{
-					this.args.gSpeed += this.public.decel * 1/drag
-				}
-			}
 		}
-		else if(this.public.falling && this.xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
+		else if(this.public.falling && xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
 		{
 			if(Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
 			{
-				this.args.xSpeed += this.xAxis * this.public.airAccel * drag;
+				this.args.xSpeed += xAxis * this.public.airAccel * drag;
 			}
 		}
 
-		if(this.xAxis < 0)
+		if(xAxis < 0)
 		{
 			if(!this.public.climbing)
 			{
@@ -1893,7 +1910,7 @@ export class PointActor extends View
 			this.args.direction = -1;
 		}
 
-		if(this.xAxis > 0)
+		if(xAxis > 0)
 		{
 			if(!this.public.climbing)
 			{
@@ -1999,12 +2016,12 @@ export class PointActor extends View
 				, this.downAngle
 				, offsetPoint
 				, (i, point) => {
-					if(tileMap.getSolid(...point, this.public.layer))
+					if(tileMap.getSolid(point[0], point[1], this.public.layer))
 					{
 						return i;
 					}
 
-					const actors = viewport.actorsAtPoint(...point)
+					const actors = viewport.actorsAtPoint(point[0], point[1])
 						.filter(a => a.args !== this.args)
 						.filter(a => (i <= 1 || this.public.gSpeed) && a.callCollideHandler(this))
 						.filter(a => a.solid);
@@ -2058,14 +2075,14 @@ export class PointActor extends View
 					, this.upAngle
 					, offsetPoint
 					, (i, point) => {
-						const actors = viewport.actorsAtPoint(...point)
+						const actors = viewport.actorsAtPoint(point[0], point[1])
 							.filter(x => x.args !== this.args)
 							.filter(a => (i <= 1 || this.public.gSpeed) && a.callCollideHandler(this))
 							.filter(x => x.solid);
 
 						if(actors.length === 0)
 						{
-							if(!tileMap.getSolid(...point, this.public.layer))
+							if(!tileMap.getSolid(point[0], point[1], this.public.layer))
 							{
 								return i;
 							}
@@ -2340,7 +2357,7 @@ export class PointActor extends View
 
 				if(scanActors)
 				{
-					const actors = viewport.actorsAtPoint(...point)
+					const actors = viewport.actorsAtPoint(point[0], point[1])
 						.filter(x => x.args !== this.args)
 						.filter(x => (i <= radius) && x.callCollideHandler(this))
 						.filter(x => x.solid);
@@ -2352,7 +2369,7 @@ export class PointActor extends View
 				}
 
 
-				if(tileMap.getSolid(...point, this.public.layer))
+				if(tileMap.getSolid(point[0], point[1], this.public.layer))
 				{
 					return i;
 				}
@@ -2392,10 +2409,10 @@ export class PointActor extends View
 			, (i,point) => {
 
 				const actors = this.viewport
-					.actorsAtPoint(...point)
+					.actorsAtPoint(point[0], point[1])
 					.filter(a => a.args !== this.args);
 
-				if(actors.length || tileMap.getSolid(...point, this.public.layer))
+				if(actors.length || tileMap.getSolid(point[0], point[1], this.public.layer))
 				{
 					return i;
 				}
@@ -2553,7 +2570,6 @@ export class PointActor extends View
 
 	standBelow(other)
 	{
-
 	}
 
 	getMapSolidAt(x, y, actors = true)

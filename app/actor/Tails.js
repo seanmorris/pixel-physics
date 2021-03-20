@@ -14,7 +14,7 @@ export class Tails extends PointActor
 
 		this.args.flySpeedMax = 25;
 
-		this.args.gSpeedMax = 20;
+		this.args.gSpeedMax = 16;
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
 

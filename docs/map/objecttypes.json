@@ -1,13 +1,19 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "block",
+        "name": "companion-block",
         "properties": [
         ]
     },
     {
         "color": "#ffa0a0a4",
         "name": "balloon",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "block",
         "properties": [
         ]
     },

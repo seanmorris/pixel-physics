@@ -41,18 +41,25 @@ export class LayerSwitch extends PointActor
 
 		if(back && other.public.falling)
 		{
-			back  = !back;
 			speed = other.args.xSpeed;
+			back  = !back;
 		}
+
+		let toLayer = other.public.layer;
 
 		if(speed > 0)
 		{
-			other.args.layer = back ? 1 : 2;
+			toLayer = back ? 1 : 2;
 		}
 
 		if(speed < 0)
 		{
-			other.args.layer = back ? 2 : 1;
+			toLayer = back ? 2 : 1;
+		}
+
+		if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
+		{
+			other.args.layer = toLayer;
 		}
 	}
 

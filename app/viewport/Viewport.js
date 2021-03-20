@@ -34,6 +34,8 @@ import { Input as InputTask } from '../console/task/Input';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Move as MoveTask } from '../console/task/Move';
 
+import { Classifier } from '../Classifier';
+
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
@@ -144,6 +146,10 @@ export class Viewport extends View
 		this.args.height = 32 * 8;
 		this.args.scale  = 2;
 
+		// this.args.width  = 32 * 14 * 2;
+		// this.args.height = 32 * 8  * 2;
+		// this.args.scale  = 1;
+
 		this.collisions = new WeakMap;
 
 		this.args.x = this.args.x || 0;
@@ -205,6 +211,13 @@ export class Viewport extends View
 			}
 		});
 
+		const critiera = [
+			/^Art\s+$/, /^Collision\s+$/, /^Destructible\s+$/
+		];
+		const comparator = () => {};
+
+		this.layerDb = new Classifier(critiera, comparator);
+
 		this.blocks = new Bag;
 
 		this.args.blocks = this.blocks.list;
@@ -213,10 +226,10 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 		this.listen(window, 'gamepaddisconnected', event => this.padRemoved(event));
 
-		this.colCellCache = {};
+		this.colCellCache = new Map;
 		this.colCellDiv = this.args.width > this.args.height
-		 	? this.args.width * 0.75
-		 	: this.args.height * 0.75;
+		 	? this.args.width * 0.5
+		 	: this.args.height * 0.5;
 
 		this.colCells = new Set;
 
@@ -600,7 +613,7 @@ export class Viewport extends View
 		{
 			this.args.xOffsetTarget = 0.5;
 			this.args.yOffsetTarget = 0.5;
-			cameraSpeed = 20;
+			cameraSpeed = 5;
 		}
 
 		const xNext = -this.controlActor.x + this.args.width  * this.args.xOffset;
@@ -663,7 +676,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(0 && controlActor && this.tags.blur)
+		if(controlActor && this.tags.blur)
 		{
 			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
 			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
@@ -1524,7 +1537,7 @@ export class Viewport extends View
 
 		const name = `${cellX}::${cellY}`;
 
-		let cache = this.colCellCache[name];
+		let cache = this.colCellCache.get(name);
 
 		if(cache)
 		{
@@ -1541,7 +1554,7 @@ export class Viewport extends View
 		const rowB = actorY;
 		const rowC = actorY + space;
 
-		this.colCellCache[name] = cache = [
+		this.colCellCache.set(name, cache = [
 			  this.getColCell({x:colA, y:rowA})
 			, this.getColCell({x:colA, y:rowB})
 			, this.getColCell({x:colA, y:rowC})
@@ -1553,7 +1566,7 @@ export class Viewport extends View
 			, this.getColCell({x:colC, y:rowA})
 			, this.getColCell({x:colC, y:rowB})
 			, this.getColCell({x:colC, y:rowC})
-		]
+		]);
 
 		return cache.filter(set=>set.size);
 	}

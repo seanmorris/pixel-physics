@@ -53,14 +53,9 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
-		if(this.ignore > 0)
+		if(this.public.active && other.y < this.y)
 		{
-			if(this.public.active)
-			{
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
 		other.onRemove(()=>{
@@ -103,7 +98,7 @@ export class Switch extends PointActor
 			return true;
 		}
 
-		if([0,-1].includes(type) && other.args.ySpeed >= 0)
+		if(other.y < this.y)
 		{
 			if(!this.public.active)
 			{
@@ -118,6 +113,8 @@ export class Switch extends PointActor
 
 			return true;
 		}
+
+		return false;
 	}
 
 	activate()

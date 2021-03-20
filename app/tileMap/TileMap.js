@@ -58,7 +58,6 @@ export class TileMap
 					const tileset = this.mapData.tilesets[i];
 
 					const image = new Image;
-					// console.log(image);
 
 					this.tileImages.set(tileset, image);
 
@@ -176,6 +175,11 @@ export class TileMap
 			for(let i = 3; i < this.tileLayers.length; i++)
 			{
 				const layer = this.tileLayers[i];
+
+				if(layer.name.substring(0, 3) === 'Art')
+				{
+					continue;
+				}
 
 				if(layer.name.substring(0, 12) === 'Destructible')
 				{

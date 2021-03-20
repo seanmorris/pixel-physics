@@ -35,8 +35,8 @@ export class Sonic extends PointActor
 
 		this.args.skidTraction = 1.75;
 
-		this.gSpeedMaxNormal = 20;
-		this.gSpeedMaxSuper  = 30;
+		this.gSpeedMaxNormal = 16;
+		this.gSpeedMaxSuper  = 28;
 
 		this.jumpForceNormal = 18;
 		this.jumpForceSuper  = 22;
@@ -406,7 +406,7 @@ export class Sonic extends PointActor
 	{
 		if(this.yAxis > 0 && this.public.jumping)
 		{
-			if(this.dropDashCharge < 22)
+			if(this.dropDashCharge < 20)
 			{
 				this.dropDashCharge++;
 			}
@@ -460,6 +460,8 @@ export class Sonic extends PointActor
 
 	release_0()
 	{
+		super.release_0();
+
 		this.willStick = false;
 		this.stayStuck = false;
 
@@ -805,7 +807,7 @@ export class Sonic extends PointActor
 	{
 		if(this.clearLightDash)
 		{
-			clearTimeout(this.clearLightDash);
+			this.clearTimeout(this.clearLightDash);
 
 			this.clearLightDash = false;
 		}
