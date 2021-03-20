@@ -14,7 +14,7 @@ export class Eggrobo extends PointActor
 		this.args.accel     = 0.125;
 		this.args.decel     = 0.3;
 
-		this.args.gSpeedMax = 10;
+		this.args.gSpeedMax = 12;
 		this.args.jumpForce = 18;
 		this.args.gravity   = 1;
 

@@ -14,7 +14,7 @@ export class Knuckles extends PointActor
 		this.args.accel     = 0.35;
 		this.args.decel     = 0.4;
 
-		this.args.gSpeedMax = 20;
+		this.args.gSpeedMax = 16;
 		this.args.jumpForce = 16;
 		this.args.gravity   = 1;
 
@@ -128,7 +128,8 @@ export class Knuckles extends PointActor
 
 						if(Math.abs(this.args.gSpeed) < 4)
 						{
-							this.args.gSpeed -= this.public.mode === 1 ? 1 : -1;
+							this.args.direction = this.public.mode === 1 ? 1 : -1;
+							this.args.gSpeed -= this.public.direction;
 						}
 					}
 					else if(this.yAxis > 0)
@@ -137,7 +138,8 @@ export class Knuckles extends PointActor
 
 						if(Math.abs(this.args.gSpeed) < 4)
 						{
-							this.args.gSpeed += this.public.mode === 1 ? 1 : -1;
+							this.args.direction = this.public.mode === 1 ? 1 : -1;
+							this.args.gSpeed += this.public.direction;
 						}
 					}
 					else
@@ -290,7 +292,7 @@ export class Knuckles extends PointActor
 
 	release_0()
 	{
-
+		super.release_0();
 	}
 
 	command_0()

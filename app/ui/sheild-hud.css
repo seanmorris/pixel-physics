@@ -1,0 +1,72 @@
+.sheild-hud {
+	display: flex;
+	flex-direction: row;
+	width: 48px;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	transform: scaleY(-1);
+	margin-left: auto;
+	margin-bottom: 2px;
+}
+
+.sheild-hud .sheild-icon {
+	width: 16px;
+	height: 15px;
+	background-image: url(/Sonic/monitor-screens.png);
+
+	--sprite-offset-x: calc(calc(-16px * var(--screen-x)));
+	--sprite-offset-y: calc(calc(-16px * var(--screen-y)));
+
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
+	transform: scaleY(-1);
+
+	transition: transform 0.2s ease-out, filter 0.1s ease-in, opacity 0.1s ease-in;
+
+	filter: saturate(0.25);
+	opacity: 0.25;
+}
+
+.sheild-hud .sheild-icon:not(.spacer) {
+	/*box-shadow: 1px 1px 0px #000000;*/
+}
+
+.sheild-hud .sheild-icon.sheild-fire {
+	--screen-x: 1;
+	--screen-y: 2;
+}
+
+.sheild-hud .sheild-icon.sheild-water {
+	--screen-x: 2;
+	--screen-y: 2;
+}
+
+.sheild-hud .sheild-icon.sheild-electric {
+	--screen-x: 0;
+	--screen-y: 2;
+}
+
+.sheild-hud .sheild-icon.spacer {
+	background-image: none;
+}
+
+.sheild-hud.fire .sheild-icon.sheild-fire {
+	transition: transform 0.2s 0.1s ease-out, filter 0.1s ease-in, opacity 0.1s ease-in;
+	transform: scaleY(-1) translateX(-100%);
+	filter: none;
+	opacity: 1;
+}
+
+.sheild-hud.electric .sheild-icon.sheild-electric {
+	transition: transform 0.2s 0.1s ease-out, filter 0.1s ease-in, opacity 0.1s ease-in;
+	transform: scaleY(-1) translateX(100%);
+	filter: none;
+	opacity: 1;
+}
+
+.sheild-hud.water .sheild-icon.sheild-water {
+	transition: transform 0.2s 0.1s ease-out, filter 0.1s ease-in, opacity 0.1s ease-in;
+	transform: scaleY(-1) translateY(100%);
+	filter: none;
+	opacity: 1;
+}

@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			frameTimes.push(frameTime);
 
-			if(frameTimes.length > 5)
+			if(frameTimes.length > 25)
 			{
 				frameTimes.shift();
 			}

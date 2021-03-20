@@ -63,8 +63,6 @@ export class Vehicle extends PointActor
 			other.args.falling = true;
 
 			other.standingOn = null;
-
-			console.log(other);
 		}
 	}
 

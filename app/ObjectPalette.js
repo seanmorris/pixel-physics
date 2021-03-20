@@ -2,6 +2,7 @@ import { Block }         from './actor/Block';
 import { QuestionBlock } from './actor/QuestionBlock';
 import { BrokenMonitor } from './actor/BrokenMonitor';
 import { MarbleBlock }   from './actor/MarbleBlock';
+import { CompanionBlock }   from './actor/CompanionBlock';
 import { LayerSwitch }   from './actor/LayerSwitch';
 
 import { Explosion } from './actor/Explosion';
@@ -56,10 +57,11 @@ export const ObjectPalette = {
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
 	, 'star-post':    StarPost
-	, 'q-block':      QuestionBlock
 	, 'projectile':   Projectile
-	, 'block':        Block
-	, 'marble-block': MarbleBlock
+	, 'block':           Block
+	, 'q-block':         QuestionBlock
+	, 'marble-block':    MarbleBlock
+	, 'companion-block': CompanionBlock
 	, 'drill-car':    DrillCar
 	, 'tornado':      Tornado
 	, 'egg-mobile':   EggMobile

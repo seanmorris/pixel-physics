@@ -271,7 +271,7 @@ section.filters {
 }
 
 .viewport-background[data-layer="2"] {
-	z-index: 1000;
+	/*z-index: 1000;*/
 }
 
 .viewport-background[data-layer="0"] > div {
