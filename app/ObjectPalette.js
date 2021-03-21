@@ -19,7 +19,7 @@ import { WaterFall } from './actor/WaterFall';
 import { WaterJet }  from './actor/WaterJet';
 
 import { PowerupGlow } from './actor/PowerupGlow';
-import { SuperRing }   from './actor/SuperRing';
+// import { SuperRing }   from './actor/SuperRing';
 
 import { PointActor } from './actor/PointActor';
 
@@ -81,7 +81,7 @@ export const ObjectPalette = {
 	, 'region':       WaterRegion
 	, 'shade-region': ShadeRegion
 	, 'ring':         Ring
-	, 'super-ring':   SuperRing
+	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
 	, 'powerup-glow': PowerupGlow
 	, 'explosion':    Explosion
