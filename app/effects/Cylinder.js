@@ -16,7 +16,7 @@ export class Cylinder extends View
 		this.args.height = this.args.height || 64;
 	}
 
-	onAttached()
+	onRendered()
 	{
 		const displacer = new Tag(`<canvas width = "${this.args.width}" height = "${this.args.height}">`);
 

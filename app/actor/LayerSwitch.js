@@ -31,18 +31,13 @@ export class LayerSwitch extends PointActor
 
 	collideA(other, type)
 	{
-		if(type !== -1)
-		{
-			return;
-		}
-
 		let speed = other.args.gSpeed;
 		let back  = !!Number(this.args.back);
 
 		if(back && other.public.falling)
 		{
 			speed = other.args.xSpeed;
-			back  = !back;
+			// back  = !!back;
 		}
 
 		let toLayer = other.public.layer;
@@ -60,6 +55,15 @@ export class LayerSwitch extends PointActor
 		if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
 		{
 			other.args.layer = toLayer;
+		}
+		else
+		{
+			this.onNextFrame(()=>{
+				if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
+				{
+					other.args.layer = toLayer;
+				}
+			});
 		}
 	}
 

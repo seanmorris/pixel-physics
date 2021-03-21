@@ -1,16 +1,22 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
+import { SkidDust } from '../behavior/SkidDust';
+
 export class MechaSonic extends PointActor
 {
 	constructor(...args)
 	{
 		super(...args);
 
+		this.behaviors.add(new SkidDust('particle-sparks'));
+
 		this.args.type = 'actor-item actor-mecha-sonic';
 
-		this.args.accel = 0.3;
-		this.args.decel = 0.3;
+		this.args.accel     = 0.35;
+		this.args.decel     = 0.4;
+
+		this.args.skidTraction = 1.75;
 
 		this.args.gSpeedMax = 16;
 		this.args.jumpForce = 16;

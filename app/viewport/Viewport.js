@@ -275,6 +275,51 @@ export class Viewport extends View
 		this.args.bindTo('audio', (v) => {
 			localStorage.setItem('sonic-3000-audio-enabled', v);
 		});
+
+		this.args.showConsole = false;
+
+		this.listen(document, 'keydown', (event) => {
+
+			if(event.key === 'F10')
+			{
+				if(!this.args.subspace)
+				{
+					this.args.subspace = new Terminal({
+						scroller: this.tags.subspace
+						, path:{
+							'input': InputTask
+							, 'move': MoveTask
+							, 'pos': PosTask
+						}
+					});
+				}
+
+				this.args.showConsole = !this.args.showConsole;
+				event.preventDefault();
+			}
+
+		});
+
+		this.args.bindTo('showConsole', v => {
+
+			if(!this.args.subspace)
+			{
+				return;
+			}
+
+			if(v)
+			{
+				this.onNextFrame(()=>this.args.subspace.focus());
+				this.args.showConsole = true;
+			}
+			else
+			{
+				this.onNextFrame(()=>this.tags.viewport.focus());
+				this.args.showConsole = false;
+			}
+		});
+
+
 	}
 
 	fullscreen()
@@ -339,15 +384,6 @@ export class Viewport extends View
 		InputTask.viewport = this;
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
-
-		this.args.subspace = new Terminal({
-			scroller: this.tags.subspace
-			, path:{
-				'input': InputTask
-				, 'move': MoveTask
-				, 'pos': PosTask
-			}
-		});
 
 		this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 
@@ -483,11 +519,6 @@ export class Viewport extends View
 			if(controller.buttons[1011] && controller.buttons[1011].time === 1)
 			{
 				this.fullscreen();
-			}
-
-			if(controller.buttons[1010] && controller.buttons[1010].time === 1)
-			{
-				this.onNextFrame(()=>this.args.subspace.focus());
 			}
 
 			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
@@ -827,6 +858,8 @@ export class Viewport extends View
 			else
 			{
 				actor.args.display = 'none';
+
+				actor.detach();
 			}
 
 			if(actor.controllable)
@@ -1278,10 +1311,8 @@ export class Viewport extends View
 
 							actor.vizi = true;
 						}
-
-						inAuras.add(actor);
 					}
-					else if(actor.vizi && offscreenX > 800 || offscreenY > 800)
+					else if(actor.vizi && (offscreenX > 800 || offscreenY > 800))
 					{
 						actor.sleep();
 
@@ -1289,6 +1320,8 @@ export class Viewport extends View
 
 						actor.vizi = false;
 					}
+
+					inAuras.add(actor);
 				}
 			}
 		}

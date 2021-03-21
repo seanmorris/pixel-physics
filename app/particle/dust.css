@@ -1,5 +1,6 @@
 .particle-dust {
 	background-image: url(/Sonic/dust.png);
+
 	width: 14px;
 	height: 14px;
 
@@ -11,6 +12,28 @@
 	animation: particle-animate steps(var(--animation-steps)) infinite 110ms;
 
 	opacity: 0.75;
+}
+
+.particle-sparks {
+
+	background-image: url(/Sonic/mecha-sparks.png);
+
+	width: 14px;
+	height: 14px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 4;
+	--animation-width: 14px;
+
+	animation:
+		particle-animate steps(var(--animation-steps)) infinite 256ms,
+		particle-stretch steps(var(--animation-steps)) infinite 256ms
+	;
+
+	opacity: 1;
+
+	transform-origin: center 1em;
 }
 
 .particle-spindash-dust {
@@ -35,7 +58,6 @@
 
 	z-index: -1;
 }
-
 
 .particle-spindash-dust[data-facing=left] {
 	transform: translate(25%, -100%) scaleX(var(--direction)) !important;

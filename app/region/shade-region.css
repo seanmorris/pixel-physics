@@ -1,11 +1,20 @@
 .region.region-shade .hud-character-string {
 	position: absolute;
 	left: 50%;
-	bottom: 1.25em;
+	bottom: 8.75em;
 
 	transform: translateX(-50%);
 
 	--scale: 0.75 !important;
+
+	filter: drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
+		drop-shadow(1px -1px 1px rgba(0,0,0,0.75))
+		drop-shadow(-1px -1px 1px rgba(0,0,0,0.75));
+}
+
+.region.region-shade.studio .hud-character-string {
+	filter: none;
 }
 
 .region.region-shade .hud-character-string:not(:empty) {

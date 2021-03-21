@@ -1,11 +1,15 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
+import { SkidDust } from '../behavior/SkidDust';
+
 export class Tails extends PointActor
 {
 	constructor(...args)
 	{
 		super(...args);
+
+		this.behaviors.add(new SkidDust);
 
 		this.args.type      = 'actor-item actor-tails';
 

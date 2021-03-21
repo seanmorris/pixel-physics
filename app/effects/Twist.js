@@ -19,7 +19,7 @@ export class Twist extends View
 		this.args.dy = 0;
 	}
 
-	onAttached()
+	onRendered()
 	{
 		const displacer = new Tag('<canvas width = "64" height = "64">');
 
