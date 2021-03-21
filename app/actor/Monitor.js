@@ -115,9 +115,11 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
+		const ySpeed = other.args.ySpeed;
+
 		if(other.args.falling)
 		{
-			this.onNextFrame(() => other.args.ySpeed = -other.args.ySpeed );
+			this.onNextFrame(() => other.args.ySpeed = -ySpeed);
 		}
 
 		if(this.args.falling && other.args.falling)

@@ -15,6 +15,16 @@
 	}
 }
 
+
+@keyframes particle-stretch {
+	from{
+		transform: scale(1) translateY(-0.5em);
+	}
+	to{
+		transform: scale(1.25) translateY(-1em);
+	}
+}
+
 @keyframes particle-x-fall {
 	from{
 		transform: translate(0px, 0);

@@ -14,6 +14,8 @@ import { FireSheild }     from '../powerups/FireSheild';
 import { BubbleSheild }   from '../powerups/BubbleSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
 
+import { SkidDust } from '../behavior/SkidDust';
+
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
@@ -24,6 +26,8 @@ export class Sonic extends PointActor
 	constructor(...args)
 	{
 		super(...args);
+
+		this.behaviors.add(new SkidDust);
 
 		this.args.type = 'actor-sonic actor-item';
 
@@ -241,24 +245,24 @@ export class Sonic extends PointActor
 				{
 					this.box.setAttribute('data-animation', 'skidding');
 
-					const viewport = this.viewport;
+					// const viewport = this.viewport;
 
-					const dustParticle = new Tag('<div class = "particle-dust">');
+					// const dustParticle = new Tag('<div class = "particle-dust">');
 
-					const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
+					// const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
 
-					dustParticle.style({
-						'--x': dustPoint[0] + this.x
-						, '--y': dustPoint[1] + this.y
-						, 'z-index': 0
-						, opacity: Math.random() * 2
-					});
+					// dustParticle.style({
+					// 	'--x': dustPoint[0] + this.x
+					// 	, '--y': dustPoint[1] + this.y
+					// 	, 'z-index': 0
+					// 	, opacity: Math.random() * 2
+					// });
 
-					viewport.particles.add(dustParticle);
+					// viewport.particles.add(dustParticle);
 
-					setTimeout(() => {
-						viewport.particles.remove(dustParticle);
-					}, 350);
+					// setTimeout(() => {
+					// 	viewport.particles.remove(dustParticle);
+					// }, 350);
 				}
 				else if(speed > maxSpeed / 2)
 				{

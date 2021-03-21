@@ -106,8 +106,8 @@ export class PointActor extends View
 
 		this.region = null;
 
-		this.powerups = new Set;
-
+		this.powerups  = new Set;
+		this.behaviors = new Set;
 		this.inventory = new Classifier([
 			Sheild
 			, FireSheild
@@ -802,6 +802,11 @@ export class PointActor extends View
 
 		this.args.colliding = this.colliding;
 
+		for(const behavior of this.behaviors)
+		{
+			behavior.update(this);
+		}
+
 		if(this.twister)
 		{
 			this.twister.args.x = this.public.x;
@@ -1290,37 +1295,43 @@ export class PointActor extends View
 			}
 		}
 
-		// const isSolid = (i, point) => {
-		// 	if(tileMap.getSolid(...point, this.public.layer))
-		// 	{
-		// 		return i;
-		// 	}
-		// };
+		if(this.public.xSpeed)
+		{
+			const backDistance = this.castRay(
+				radius
+				, Math.PI
+				, (i, point) => {
+					if(tileMap.getSolid(...point, this.public.layer))
+					{
+						return i;
+					}
+				}
+			);
 
-		// const backDistance = this.castRay(
-		// 	radius
-		// 	, Math.PI
-		// 	, isSolid
-		// );
+			const foreDistance = this.castRay(
+				radius
+				, 0
+				, (i, point) => {
+					if(tileMap.getSolid(...point, this.public.layer))
+					{
+						return i;
+					}
+				}
+			);
 
-		// const foreDistance = this.castRay(
-		// 	radius
-		// 	, 0
-		// 	, isSolid
-		// );
-
-		// if(backDistance && foreDistance)
-		// {
-		// 	// crush instakill?
-		// }
-		// else if(foreDistance)
-		// {
-		// 	this.args.x -= 0 + (radius - foreDistance);
-		// }
-		// else if(backDistance)
-		// {
-		// 	this.args.x += 0 + (radius - backDistance);
-		// }
+			if(backDistance && foreDistance)
+			{
+				// crush instakill?
+			}
+			else if(foreDistance)
+			{
+				this.args.x -= 0 + (radius - foreDistance);
+			}
+			else if(backDistance)
+			{
+				this.args.x += 0 + (radius - backDistance);
+			}
+		}
 
 		const airPoint = this.castRay(
 			airSpeed + radius
@@ -2803,7 +2814,8 @@ export class PointActor extends View
 	}
 
 	sleep()
-	{}
+	{
+	}
 
 	wakeUp()
 	{}
