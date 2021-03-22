@@ -19,8 +19,8 @@ export class MechaSonic extends PointActor
 		this.args.skidTraction = 1.75;
 
 		this.args.gSpeedMax = 16;
-		this.args.jumpForce = 16;
-		this.args.gravity   = 1;
+		this.args.jumpForce = 11;
+		this.args.gravity   = 0.5;
 
 		this.args.takeoffPlayed = false;
 

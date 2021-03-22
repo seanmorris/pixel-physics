@@ -37,7 +37,7 @@ export class LayerSwitch extends PointActor
 		if(back && other.public.falling)
 		{
 			speed = other.args.xSpeed;
-			// back  = !!back;
+			back  = !back;
 		}
 
 		let toLayer = other.public.layer;

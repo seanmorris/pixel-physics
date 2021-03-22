@@ -9,61 +9,61 @@ export class MarbleGarden extends Backdrop
 		this.args.strips = [
 			{
 				autoscroll:  -1.25
-				, parallax:  0.03
+				, parallax:  0.015
 				, url:       '/Sonic/backdrop/marble-garden/0.png'
 				, height:    32
 			}
 			, {
 				autoscroll:  -1
-				, parallax:  0.03
+				, parallax:  0.015
 				, url:       '/Sonic/backdrop/marble-garden/1.png'
 				, height:    24
 			}
 			, {
 				autoscroll: -0.9
-				, parallax:  0.03
+				, parallax:  0.015
 				, url:      '/Sonic/backdrop/marble-garden/2.png'
 				, height:   8
 			}
 			, {
 				autoscroll: -0.8
-				, parallax:  0.03
+				, parallax:  0.015
 				, url:      '/Sonic/backdrop/marble-garden/3.png'
 				, height:   24
 			}
 			, {
 				autoscroll: -0.7
-				, parallax:  0.03
+				, parallax:  0.015
 				, url:      '/Sonic/backdrop/marble-garden/4.png'
 				, height:   8
 			}
 			, {
 				autoscroll: -0.6
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/5.png'
 				, height:   24
 			}
 			, {
 				autoscroll: -0.5
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/6.png'
 				, height:   16
 			}
 			, {
 				autoscroll: -0.45
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/7.png'
 				, height:   8
 			}
 			, {
 				autoscroll: -0.45
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/8.png'
 				, height:   16
 			}
 			, {
 				autoscroll: -0.4
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/9.png'
 				, height:   8
 			}
@@ -75,19 +75,19 @@ export class MarbleGarden extends Backdrop
 			}
 			, {
 				autoscroll: -0.3
-				, parallax:  0.02
+				, parallax:  0.01
 				, url:      '/Sonic/backdrop/marble-garden/11.png'
 				, height:   8
 			}
 			, {
 				autoscroll: -0.25
-				, parallax:  0.015
+				, parallax:  0.0075
 				, url:      '/Sonic/backdrop/marble-garden/12.png'
 				, height:   8
 			}
 			, {
 				autoscroll: -0.2
-				, parallax:  0.015
+				, parallax:  0.0075
 				, url:      '/Sonic/backdrop/marble-garden/13.png'
 				, height:   8
 			}

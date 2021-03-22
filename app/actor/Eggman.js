@@ -30,11 +30,11 @@ export class Eggman extends PointActor
 		this.args.normalHeight = 57;
 		this.args.rollingHeight = 32;
 
-		this.jumpForceNormal = 20;
-		this.jumpForceSuper  = 25;
+		this.jumpForceNormal = 11;
+		this.jumpForceSuper  = 18;
 
-		this.args.jumpForce = 18;
-		this.args.gravity   = 1;
+		this.args.jumpForce = this.jumpForceNormal;
+		this.args.gravity   = 0.5;
 
 		this.args.width  = 32;
 		this.args.height = 57;

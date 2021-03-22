@@ -42,12 +42,12 @@ export class Sonic extends PointActor
 		this.gSpeedMaxNormal = 16;
 		this.gSpeedMaxSuper  = 28;
 
-		this.jumpForceNormal = 18;
-		this.jumpForceSuper  = 22;
+		this.jumpForceNormal = 11;
+		this.jumpForceSuper  = 16;
 
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
 		this.args.jumpForce = this.jumpForceNormal;
-		this.args.gravity   = 1;
+		this.args.gravity   = 0.5;
 
 		this.args.width = 32;
 

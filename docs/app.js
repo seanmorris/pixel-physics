@@ -8753,10 +8753,10 @@ var Eggman = /*#__PURE__*/function (_PointActor) {
     _this.args.gSpeedMax = _this.gSpeedMaxNormal;
     _this.args.normalHeight = 57;
     _this.args.rollingHeight = 32;
-    _this.jumpForceNormal = 20;
-    _this.jumpForceSuper = 25;
-    _this.args.jumpForce = 18;
-    _this.args.gravity = 1;
+    _this.jumpForceNormal = 11;
+    _this.jumpForceSuper = 18;
+    _this.args.jumpForce = _this.jumpForceNormal;
+    _this.args.gravity = 0.5;
     _this.args.width = 32;
     _this.args.height = 57;
     _this.args.spriteSheet = _this.spriteSheet = '/Sonic/eggman.png';
@@ -8947,8 +8947,8 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
     _this.args.accel = 0.125;
     _this.args.decel = 0.3;
     _this.args.gSpeedMax = 12;
-    _this.args.jumpForce = 18;
-    _this.args.gravity = 1;
+    _this.args.jumpForce = 11;
+    _this.args.gravity = 0.5;
     _this.args.width = 32;
     _this.args.height = 57;
     return _this;
@@ -9431,8 +9431,8 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
     _this.args.accel = 0.35;
     _this.args.decel = 0.4;
     _this.args.gSpeedMax = 16;
-    _this.args.jumpForce = 16;
-    _this.args.gravity = 1;
+    _this.args.jumpForce = 11;
+    _this.args.gravity = 0.5;
     _this.args.width = 32;
     _this.args.height = 41;
     _this.args.skidTraction = 1.7;
@@ -9972,7 +9972,8 @@ var LayerSwitch = /*#__PURE__*/function (_PointActor) {
       var back = !!Number(this.args.back);
 
       if (back && other["public"].falling) {
-        speed = other.args.xSpeed; // back  = !!back;
+        speed = other.args.xSpeed;
+        back = !back;
       }
 
       var toLayer = other["public"].layer;
@@ -10220,8 +10221,8 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
     _this.args.decel = 0.4;
     _this.args.skidTraction = 1.75;
     _this.args.gSpeedMax = 16;
-    _this.args.jumpForce = 16;
-    _this.args.gravity = 1;
+    _this.args.jumpForce = 11;
+    _this.args.gravity = 0.5;
     _this.args.takeoffPlayed = false;
     _this.args.width = 32;
     _this.args.height = 63;
@@ -10865,13 +10866,16 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.args.xSpeedMax = 512;
     _this.args.ySpeedMax = 512;
     _this.args.gSpeedMax = WALKING_SPEED;
-    _this.args.rollSpeedMax = 37;
+    _this.args.rollSpeedMax = 34;
     _this.args.gravity = 0.65;
     _this.args.decel = 0.85;
     _this.args.accel = 0.2;
     _this.args.airAccel = 0.3;
     _this.args.jumpForce = 14;
     _this.args.jumping = false;
+    _this.args.jumpedAt = null;
+    _this.args.deepJump = false;
+    _this.args.highJump = false;
     _this.maxStep = 4;
     _this.backStep = 0;
     _this.frontStep = 0;
@@ -11196,9 +11200,20 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.standingOn = null;
         this.args.landed = false;
         this.lastAngles = [];
+
+        if (this["public"].jumping && this["public"].jumpedAt < this.y) {
+          this.args.deepJump = true;
+        } else if (this["public"].jumping && this["public"].jumpedAt > this.y + 160) {
+          this.args.highJump = true;
+        } else {
+          this.args.deepJump = false;
+        }
       } else {
         if (this["public"].jumping) {
           this.args.jumping = false;
+          this.args.deepJump = false;
+          this.args.highJump = false;
+          this.args.jumpedAt = null;
           this.args.dontJump = 5;
         }
       }
@@ -11222,7 +11237,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       var tileMap = this.viewport.tileMap;
 
-      if (this["public"].gSpeed === 0 && !this["public"].falling) {
+      if (this["public"].gSpeed === 0 && !this["public"].falling && this["public"].dontJump === 0) {
         if (!this.stayStuck && !this["public"].climbing) {
           var half = Math.floor(this["public"].width / 2) || 0;
 
@@ -11350,10 +11365,16 @@ var PointActor = /*#__PURE__*/function (_View) {
       } else {
         if (this.getMapSolidAt(this.x, this.y + 48, false)) {
           this.args.cameraMode = 'normal';
-        } else {
-          if (!this.getMapSolidAt(this.x, this.y + 48, false)) {
-            this.args.cameraMode = 'aerial';
-          }
+        } else if (this["public"].falling && !this.getMapSolidAt(this.x, this.y + 48, false)) {
+          this.onTimeout(750, function () {
+            if (_this3.args.cameraMode === 'airplane') {
+              return;
+            }
+
+            if (_this3["public"].falling && !_this3.getMapSolidAt(_this3.x, _this3.y + 48, false)) {
+              _this3.args.cameraMode = 'aerial';
+            }
+          });
         }
       }
 
@@ -11723,6 +11744,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       var _this4 = this;
 
       var lastPoint = [this.x, this.y];
+      var lastPointB = [this.x, this.y];
       var lastForePoint = [this.x, this.y];
       this.lastAngles.splice(0);
       this.args.groundAngle = 0;
@@ -11791,6 +11813,25 @@ var PointActor = /*#__PURE__*/function (_View) {
 
         lastPoint = point.map(Math.floor);
       });
+      var airPointB = this.castRay(airSpeed + radius, this["public"].airAngle, [3, 3], function (i, point) {
+        var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
+          return x.args !== _this4.args;
+        }).filter(function (x) {
+          return x.callCollideHandler(_this4);
+        }).filter(function (x) {
+          return x.solid;
+        });
+
+        if (actors.length > 0) {
+          return point;
+        }
+
+        if (tileMap.getSolid(point[0], point[1], _this4["public"].layer)) {
+          return lastPointB;
+        }
+
+        lastPointB = point.map(Math.floor);
+      });
       this.willJump = false;
       var blockers = false;
       var upMargin = (this["public"].flying ? this["public"].height + this["public"].yMargin : this["public"].height) || 1;
@@ -11847,7 +11888,10 @@ var PointActor = /*#__PURE__*/function (_View) {
             this.args.falling = false;
           }
         }
-      } else if (airPoint !== false) {
+      } else if (airPoint !== false && airPointB !== false) {
+        var collisionAngle = Math.atan2(airPointB[0] - airPoint[0], airPointB[1] - airPoint[1]);
+        var isLeft = Math.abs(collisionAngle) < Math.PI / 2 && this["public"].xSpeed < 0;
+        var isRight = Math.abs(collisionAngle) < Math.PI / 2 && this["public"].xSpeed > 0;
         this.args.ignore = 6;
         var _xSpeedOriginal = this.args.xSpeed;
         var _ySpeedOriginal = this.args.ySpeed;
@@ -11868,49 +11912,49 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
         }
 
-        if (this.willStick && !this.getMapSolidAt(this.x, this.y + 1)) {
-          if (direction < 0) {
+        if (this.willStick && !this.getMapSolidAt(this.x, this.y)) {
+          if (isLeft) {
             this.args.gSpeed = Math.floor(airSpeed) * Math.sign(_ySpeedOriginal);
             this.args.gSpeed = 0.1;
             this.args.mode = MODE_LEFT;
-          } else if (direction > 0) {
+          } else if (isRight) {
             this.args.gSpeed = Math.floor(airSpeed) * -Math.sign(_ySpeedOriginal);
             this.args.gSpeed = 0.1;
             this.args.mode = MODE_RIGHT;
+          } else {
+            this.args.mode = MODE_FLOOR;
           }
-        } else {
-          var halfWidth = Math.floor(this["public"].width / 2);
-          var backPosition = this.findNextStep(-halfWidth);
-          var forePosition = this.findNextStep(halfWidth);
-          var sensorSpread = this["public"].width;
+        }
 
-          if (forePosition && backPosition) {
-            var newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread + 1).toFixed(1);
+        var halfWidth = Math.floor(this["public"].width / 2);
+        var backPosition = this.findNextStep(-halfWidth);
+        var forePosition = this.findNextStep(halfWidth);
+        var sensorSpread = this["public"].width;
 
-            if (isNaN(newAngle)) {
-              console.log(newAngle);
-              throw new Error('angle is NAN!');
-            }
+        if (forePosition && backPosition) {
+          var newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread + 1).toFixed(1);
 
-            if (forePosition[0] !== false || backPosition[0] !== false) {
-              this.args.angle = this.args.groundAngle = newAngle;
-              this.lastAngles.unshift(newAngle);
-              this.lastAngles.splice(this.angleAvg);
-              var slopeDir = -Math.sign(this.args.groundAngle);
+          if (isNaN(newAngle)) {
+            console.log(newAngle);
+            throw new Error('angle is NAN!');
+          }
 
-              if (Math.abs(slopeDir) > 0) {
-                this.args.gSpeed = _ySpeedOriginal * slopeDir;
-              } else if (_xSpeedOriginal) {
-                this.args.gSpeed = _xSpeedOriginal;
-              }
-            }
+          if (forePosition[0] !== false || backPosition[0] !== false) {
+            this.args.angle = this.args.groundAngle = newAngle;
+            this.lastAngles.unshift(newAngle);
+            this.lastAngles.splice(this.angleAvg);
+            var slopeDir = -Math.sign(this.args.groundAngle);
 
-            if (Math.abs(this.args.gSpeed) < 1) {
-              this.args.gSpeed = Math.sign(this.args.gSpeed);
+            if (Math.abs(slopeDir) > 0) {
+              this.args.gSpeed = _ySpeedOriginal * slopeDir;
+            } else if (_xSpeedOriginal) {
+              this.args.gSpeed = _xSpeedOriginal;
             }
           }
 
-          this.args.mode = MODE_FLOOR;
+          if (Math.abs(this.args.gSpeed) < 1) {
+            this.args.gSpeed = Math.sign(this.args.gSpeed);
+          }
         }
 
         this.args.falling = false;
@@ -12504,6 +12548,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.args.ySpeed = 0;
       }
 
+      this.args.jumpedAt = this.y;
       this.args.jumping = true;
       this.args.mode = DEFAULT_GRAVITY;
     }
@@ -12746,7 +12791,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     key: "command_0",
     value: function command_0() // jump
     {
-      if (this["public"].falling || this.willJump) {
+      if (this["public"].falling || this.willJump || this["public"].dontJump) {
         return;
       }
 
@@ -14106,11 +14151,11 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     _this.args.skidTraction = 1.75;
     _this.gSpeedMaxNormal = 16;
     _this.gSpeedMaxSuper = 28;
-    _this.jumpForceNormal = 18;
-    _this.jumpForceSuper = 22;
+    _this.jumpForceNormal = 11;
+    _this.jumpForceSuper = 16;
     _this.args.gSpeedMax = _this.gSpeedMaxNormal;
     _this.args.jumpForce = _this.jumpForceNormal;
-    _this.args.gravity = 1;
+    _this.args.gravity = 0.5;
     _this.args.width = 32;
     _this.args.normalHeight = 40;
     _this.args.rollingHeight = 23;
@@ -15602,8 +15647,8 @@ var Tails = /*#__PURE__*/function (_PointActor) {
     _this.args.decel = 0.4;
     _this.args.flySpeedMax = 25;
     _this.args.gSpeedMax = 16;
-    _this.args.jumpForce = 18;
-    _this.args.gravity = 1;
+    _this.args.jumpForce = 11;
+    _this.args.gravity = 0.5;
     _this.args.skidTraction = 1.75;
     _this.args.width = 28;
     _this.args.height = 32;
@@ -17006,52 +17051,52 @@ var MarbleGarden = /*#__PURE__*/function (_Backdrop) {
     _this = _super.call(this, args, parent);
     _this.args.strips = [{
       autoscroll: -1.25,
-      parallax: 0.03,
+      parallax: 0.015,
       url: '/Sonic/backdrop/marble-garden/0.png',
       height: 32
     }, {
       autoscroll: -1,
-      parallax: 0.03,
+      parallax: 0.015,
       url: '/Sonic/backdrop/marble-garden/1.png',
       height: 24
     }, {
       autoscroll: -0.9,
-      parallax: 0.03,
+      parallax: 0.015,
       url: '/Sonic/backdrop/marble-garden/2.png',
       height: 8
     }, {
       autoscroll: -0.8,
-      parallax: 0.03,
+      parallax: 0.015,
       url: '/Sonic/backdrop/marble-garden/3.png',
       height: 24
     }, {
       autoscroll: -0.7,
-      parallax: 0.03,
+      parallax: 0.015,
       url: '/Sonic/backdrop/marble-garden/4.png',
       height: 8
     }, {
       autoscroll: -0.6,
-      parallax: 0.025,
+      parallax: 0.0125,
       url: '/Sonic/backdrop/marble-garden/5.png',
       height: 24
     }, {
       autoscroll: -0.5,
-      parallax: 0.025,
+      parallax: 0.0125,
       url: '/Sonic/backdrop/marble-garden/6.png',
       height: 16
     }, {
       autoscroll: -0.45,
-      parallax: 0.025,
+      parallax: 0.0125,
       url: '/Sonic/backdrop/marble-garden/7.png',
       height: 8
     }, {
       autoscroll: -0.45,
-      parallax: 0.025,
+      parallax: 0.0125,
       url: '/Sonic/backdrop/marble-garden/8.png',
       height: 16
     }, {
       autoscroll: -0.4,
-      parallax: 0.025,
+      parallax: 0.0125,
       url: '/Sonic/backdrop/marble-garden/9.png',
       height: 8
     }, {
@@ -17061,17 +17106,17 @@ var MarbleGarden = /*#__PURE__*/function (_Backdrop) {
       height: 16
     }, {
       autoscroll: -0.3,
-      parallax: 0.02,
+      parallax: 0.01,
       url: '/Sonic/backdrop/marble-garden/11.png',
       height: 8
     }, {
       autoscroll: -0.25,
-      parallax: 0.015,
+      parallax: 0.0075,
       url: '/Sonic/backdrop/marble-garden/12.png',
       height: 8
     }, {
       autoscroll: -0.2,
-      parallax: 0.015,
+      parallax: 0.0075,
       url: '/Sonic/backdrop/marble-garden/13.png',
       height: 8
     }, {
@@ -18930,7 +18975,7 @@ var Series = /*#__PURE__*/function (_View) {
     _this.args.card = null;
     _this.args.cards = [];
     _this.cards = [new _LoadingCard.LoadingCard({
-      timeout: 3500,
+      timeout: 350,
       text: 'loading'
     }, parent) // , new BootCard({timeout: 2500})
     , new _SeanCard.SeanCard({
@@ -20950,15 +20995,23 @@ var TileMap = /*#__PURE__*/function () {
       }
 
       var heightMask = this.heightMasks.get(tileSet);
-      var pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data; // if(pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
+      var pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data;
+      var result = false; // if(pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
+      // {
+      // 	// result = 0xFF0000;
+      // 	result = true;
+      // }
+      // else
 
       if (pixel[3] === 255) {
-        heightMaskCache.set(heightMaskKey, true);
-        return true;
+        // result = 0xFFFFFF;
+        result = true;
       } else {
-        heightMaskCache.set(heightMaskKey, false);
-        return false;
+        result = false;
       }
+
+      heightMaskCache.set(heightMaskKey, result);
+      return result;
     }
   }, {
     key: "getTileset",
@@ -22206,53 +22259,102 @@ var Viewport = /*#__PURE__*/function (_View) {
         return;
       }
 
-      var cameraSpeed = 15; // if(this.controlActor.args.cameraMode == 'airplane')
-      // {
-      // }
-      // else if(this.controlActor.args.cameraMode == 'aerial')
-      // {
-      // }
-      // else if(this.controlActor.args.cameraMode == 'normal')
-      // {
-      // }
+      var cameraSpeed = 15;
+      var highJump = this.controlActor["public"].highJump;
+      var deepJump = this.controlActor["public"].deepJump;
+      var falling = this.controlActor["public"].falling;
+      var fallSpeed = this.controlActor["public"].ySpeed;
 
       if (this.controlActor.args.cameraMode == 'airplane') {
         this.args.yOffsetTarget = 0.5;
         this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
-        cameraSpeed = 25;
-      } else if (this.controlActor.args.falling) {
-        this.args.yOffsetTarget = 0.5;
-        this.args.xOffsetTarget = 0.5;
-        cameraSpeed = 25;
       } else if (this.controlActor.args.mode === 2) {
         this.args.xOffsetTarget = 0.5;
         this.args.yOffsetTarget = 0.25;
-        cameraSpeed = 10; // if(this.controlActor.args.cameraMode == 'normal')
-        // {
-        // 	this.args.yOffsetTarget = 0.25;
-        // 	cameraSpeed = 10;
-        // }
-        // else
-        // {
-        // 	this.args.yOffsetTarget = 0.5;
-        // 	cameraSpeed = 10;
-        // }
-      } else if (this.controlActor.args.mode) {
+      } else if (!falling && this.controlActor.args.mode) {
         this.args.yOffsetTarget = 0.5;
       } else if (this.controlActor.args.cameraMode == 'normal') {
         this.args.xOffsetTarget = 0.5;
         this.args.yOffsetTarget = 0.75;
-        cameraSpeed = 10;
+
+        if (!falling) {
+          cameraSpeed = 10;
+        }
+      } else if ((deepJump || highJump) && fallSpeed > 0) {
+        this.args.xOffsetTarget = 0.5;
+        this.args.yOffsetTarget = 0.25;
+      } else if ((deepJump || highJump) && fallSpeed < 0) {
+        this.args.xOffsetTarget = 0.5;
+        this.args.yOffsetTarget = 0.75;
       } else {
         this.args.xOffsetTarget = 0.5;
-        this.args.yOffsetTarget = 0.5;
-        cameraSpeed = 5;
+        this.args.yOffsetTarget = 0.75;
+        cameraSpeed = 25;
       }
 
       var xNext = -this.controlActor.x + this.args.width * this.args.xOffset;
       var yNext = -this.controlActor.y + this.args.height * this.args.yOffset;
-      this.args.x = xNext;
-      this.args.y = yNext;
+      var jumping = this.controlActor["public"].jumping;
+      var dragSpeedX = 2;
+      var dragSpeedY = jumping ? 1.25 : 5;
+      var maxDragX = 48;
+      var maxDragYDown = 48;
+      var maxDragY = 16;
+      this.args.x = xNext; // if(!jumping)
+      // {
+      // }
+      // else
+      // {
+      // 	if(this.args.x !== xNext)
+      // 	{
+      // 		const drag = this.args.x - xNext;
+      // 		const abs  = Math.abs(drag);
+      // 		if(abs > maxDragX)
+      // 		{
+      // 			this.args.x = xNext + maxDragX * Math.sign(drag);
+      // 		}
+      // 		else if(abs > dragSpeedX)
+      // 		{
+      // 			this.args.x -= Math.sign(drag) * dragSpeedX;
+      // 		}
+      // 		else
+      // 		{
+      // 			this.args.x = xNext;
+      // 		}
+      // 	}
+      // }
+
+      if (this.args.y < yNext) {
+        var drag = this.args.y - yNext;
+        var abs = Math.abs(drag);
+        var step = drag / 128;
+
+        if (abs > maxDragYDown) {
+          this.args.y = yNext + maxDragYDown * Math.sign(drag);
+        } else if (Math.abs(step) < 1) {
+          this.args.y -= step * dragSpeedY;
+        } else {
+          this.args.y = yNext;
+        }
+      }
+
+      if (this.args.y > yNext) {
+        this.args.y = yNext;
+
+        var _drag = this.args.y - yNext;
+
+        var _abs = Math.abs(_drag);
+
+        var _step = _drag / 128;
+
+        if (_abs > maxDragY) {
+          this.args.y = yNext + maxDragY * Math.sign(_drag);
+        } else if (Math.abs(_step) > 1) {
+          this.args.y -= _step * dragSpeedY;
+        } else {
+          this.args.y = yNext;
+        }
+      }
 
       if (Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01) {
         this.args.yOffset = this.args.yOffsetTarget;
@@ -22432,11 +22534,11 @@ var Viewport = /*#__PURE__*/function (_View) {
     key: "spawnActors",
     value: function spawnActors() {
       var _iterator = _createForOfIteratorHelper(this.spawn.values()),
-          _step;
+          _step2;
 
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var spawn = _step.value;
+        for (_iterator.s(); !(_step2 = _iterator.n()).done;) {
+          var spawn = _step2.value;
 
           if (spawn.frame) {
             if (spawn.frame <= this.args.frameId) {
@@ -22464,11 +22566,11 @@ var Viewport = /*#__PURE__*/function (_View) {
         var actors = cell.values();
 
         var _iterator2 = _createForOfIteratorHelper(actors),
-            _step2;
+            _step3;
 
         try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var actor = _step2.value;
+          for (_iterator2.s(); !(_step3 = _iterator2.n()).done;) {
+            var actor = _step3.value;
 
             if (this.updateStarted.has(actor)) {
               continue;
@@ -22492,11 +22594,11 @@ var Viewport = /*#__PURE__*/function (_View) {
         var actors = cell.values();
 
         var _iterator3 = _createForOfIteratorHelper(actors),
-            _step3;
+            _step4;
 
         try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var actor = _step3.value;
+          for (_iterator3.s(); !(_step4 = _iterator3.n()).done;) {
+            var actor = _step4.value;
 
             if (this.updated.has(actor)) {
               continue;
@@ -22526,11 +22628,11 @@ var Viewport = /*#__PURE__*/function (_View) {
         var actors = cell.values();
 
         var _iterator4 = _createForOfIteratorHelper(actors),
-            _step4;
+            _step5;
 
         try {
-          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-            var actor = _step4.value;
+          for (_iterator4.s(); !(_step5 = _iterator4.n()).done;) {
+            var actor = _step5.value;
 
             if (this.updateEnded.has(actor)) {
               continue;
@@ -22561,11 +22663,11 @@ var Viewport = /*#__PURE__*/function (_View) {
         var actors = cell.values();
 
         var _iterator5 = _createForOfIteratorHelper(actors),
-            _step5;
+            _step6;
 
         try {
-          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-            var _actor = _step5.value;
+          for (_iterator5.s(); !(_step6 = _iterator5.n()).done;) {
+            var _actor = _step6.value;
             result.add(_actor);
           }
         } catch (err) {
@@ -22689,11 +22791,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.updateBackground();
 
       var _iterator6 = _createForOfIteratorHelper(this.regions.values()),
-          _step6;
+          _step7;
 
       try {
-        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-          var region = _step6.value;
+        for (_iterator6.s(); !(_step7 = _iterator6.n()).done;) {
+          var region = _step7.value;
           region.updateStart();
           this.updateStarted.add(region);
           region.update();
@@ -22708,11 +22810,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       var actorCells = new WeakMap();
 
       var _iterator7 = _createForOfIteratorHelper(this.auras.values()),
-          _step7;
+          _step8;
 
       try {
-        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-          var _actor3 = _step7.value;
+        for (_iterator7.s(); !(_step8 = _iterator7.n()).done;) {
+          var _actor3 = _step8.value;
           var nearbyCells = this.getNearbyColCells(_actor3);
           actorCells.set(_actor3, nearbyCells);
 
@@ -22732,11 +22834,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       var _iterator8 = _createForOfIteratorHelper(this.auras.values()),
-          _step8;
+          _step9;
 
       try {
-        for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-          var _actor4 = _step8.value;
+        for (_iterator8.s(); !(_step9 = _iterator8.n()).done;) {
+          var _actor4 = _step9.value;
 
           var _nearbyCells = actorCells.get(_actor4);
 
@@ -22777,11 +22879,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       var _iterator9 = _createForOfIteratorHelper(this.auras.values()),
-          _step9;
+          _step10;
 
       try {
-        for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
-          var _actor5 = _step9.value;
+        for (_iterator9.s(); !(_step10 = _iterator9.n()).done;) {
+          var _actor5 = _step10.value;
 
           var _nearbyCells2 = actorCells.get(_actor5);
 
@@ -22799,11 +22901,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       var _iterator10 = _createForOfIteratorHelper(this.regions.values()),
-          _step10;
+          _step11;
 
       try {
-        for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
-          var _region = _step10.value;
+        for (_iterator10.s(); !(_step11 = _iterator10.n()).done;) {
+          var _region = _step11.value;
 
           if (!this.updateEnded.has(_region)) {
             _region.updateEnd();
@@ -22957,11 +23059,11 @@ var Viewport = /*#__PURE__*/function (_View) {
     key: "regionAtPoint",
     value: function regionAtPoint(x, y) {
       var _iterator11 = _createForOfIteratorHelper(this.regions.values()),
-          _step11;
+          _step12;
 
       try {
-        for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
-          var region = _step11.value;
+        for (_iterator11.s(); !(_step12 = _iterator11.n()).done;) {
+          var region = _step12.value;
           var regionArgs = region["public"];
           var regionX = regionArgs.x;
           var regionY = regionArgs.y;
@@ -23001,11 +23103,11 @@ var Viewport = /*#__PURE__*/function (_View) {
         y: y
       }).map(function (cell) {
         var _iterator12 = _createForOfIteratorHelper(cell.values()),
-            _step12;
+            _step13;
 
         try {
-          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
-            var actor = _step12.value;
+          for (_iterator12.s(); !(_step13 = _iterator12.n()).done;) {
+            var actor = _step13.value;
 
             if (actor.removed) {
               // cell.delete(actor);

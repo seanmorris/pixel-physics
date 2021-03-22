@@ -12,7 +12,7 @@ self.addEventListener('install', (event) => {
 	);
 });
 
-const resourceMatch = /\.(js|css|svg|png|dae)$/;
+// const resourceMatch = /\.(js|css|svg|png|dae|wav|json)$/;
 const forceRefresh  = true;
 
 self.addEventListener('fetch', (event) => {
@@ -25,21 +25,29 @@ self.addEventListener('fetch', (event) => {
 
 				const reqUrl = new URL(event.request.url);
 
-				// if(reqUrl.pathname.match(resourceMatch))
-				// {
-				// 	cache.put(event.request, refreshReponse.clone());
-				// }
+				if(refreshReponse.status === 200)
+				{
+					cache.put(event.request, refreshReponse.clone());
+				}
 
 				return refreshReponse;
 			});
 
-			refreshFetch.catch( error => console.error(error) );
+			refreshFetch.catch(error => {
+				console.error(error);
+
+				event.respondWith(eventResponse);
+			});
 
 			const respUrl = new URL(event.request.url);
 
-			if(forceRefresh || !cacehedResponse)
+			if(cacehedResponse && !navigator.onLine)
 			{
-				event.waitUntil(refreshFetch);
+				return cacehedResponse;
+			}
+			else if(!cacehedResponse || forceRefresh)
+			{
+				// event.waitUntil(refreshFetch);
 
 				if(forceRefresh)
 				{
@@ -48,11 +56,12 @@ self.addEventListener('fetch', (event) => {
 			}
 
 			return cacehedResponse || refreshFetch;
-
 		});
+
+		event.respondWith(eventResponse);
 	});
 
-	event.respondWith(eventResponse);
+	// event.respondWith(eventResponse);
 });
 
 self.addEventListener('activate', (event) => {
