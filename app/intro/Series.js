@@ -12,7 +12,7 @@ import { TitleScreenCard } from './TitleScreenCard';
 
 export class Series extends View
 {
-	template = `<span cv-each = "cards:card:c">[[card]]</div>`
+	template = `<div class = "intro-cards" cv-each = "cards:card:c">[[card]]</div>`
 
 	constructor(args = {}, parent)
 	{

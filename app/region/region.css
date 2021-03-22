@@ -8,9 +8,6 @@
 	/*pointer-events: none;*/
 }
 
-.region.region-water .region-color,
-.region.region-water .region-color-wrapper,
-.region.region-water .region-filter-wrapper,
 .region.region-water .sprite {
 	position: absolute;
 	width: calc(1px * var(--width));
@@ -19,14 +16,33 @@
 }
 
 .region.region-water .sprite {
-	top: calc(1px + calc(-1px * var(--height)));
-	left: -16px;
+
+	--bottomBoundary: -1px;
+
+	top: calc(-1px * var(--height));
+	bottom: var(--bottomBoundary);
+
+
+	left: calc(max(0px, var(--leftBoundry)) + 16px);
+
+	width:  calc(var(--viewportWidth));
+	height: auto;
+
+
 	background-attachment: fixed;
 	z-index: 1001;
 }
 
 .region.region-water .region-color-wrapper {
 	/*filter: hue-rotate(90deg);*/
+	overflow: hidden;
+
+	position: absolute;
+
+	left:    0;
+	right: 0;
+	top:     0;
+	bottom: 64px;
 }
 
 .region.region-water .region-color {
@@ -35,21 +51,35 @@
 
 .region.region-water .region-filter-wrapper {
 	overflow: hidden;
-}
 
-.region.region-water .region-filter {
-	transform: translateY(-2px);
+
 	position: absolute;
+
+	left:    0;
+	right: 0;
+	top:     0;
+	bottom: 64px;
+
+	/*position: absolute;
 	left:    calc(var(--leftBoundry) + 32px);
 	top:     calc(var(--topBoundry) - 0px);
 	width:   calc(var(--viewportWidth));
-	height:  calc(var(--viewportHeight) + 128px);
+	height:  calc(var(--viewportHeight) + 128px);*/
+
+	/*overflow: hidden;*/
+}
+
+.region.region-water .region-color,
+.region.region-water .region-filter {
+	position: absolute;
 
 	left:    0;
+	right: 0;
 	top:     0;
-	width: calc(1px * var(--width));
-	height: calc(calc(1px * var(--height)) + 128px);
+	bottom: -64px;
+}
 
+.region.region-water .region-filter {
 	backdrop-filter: blur(0.25px);
 	filter: url(#waves) blur(0.3px);
 	/*background-blend-mode: darken;*/

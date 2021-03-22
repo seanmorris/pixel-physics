@@ -49,6 +49,11 @@ export class Viewport extends View
 	{
 		super(args,parent);
 
+		this.settings = {
+			blur: true
+			, displace: true
+		};
+
 		this.vizi = true;
 
 		this.args.screenFilter = 'runners';
@@ -338,7 +343,7 @@ export class Viewport extends View
 
 		this.initScale = this.args.scale;
 
-		this.showStatus(5000, ' hit escape to revert. ');
+		this.showStatus(3500, ' hit escape to revert. ');
 
 		this.tags.viewport.node.requestFullscreen().then(res=>{
 			this.onTimeout(100, ()=>{
@@ -707,7 +712,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		if(controlActor && this.tags.blur)
+		if(this.settings.blur && controlActor && this.tags.blur)
 		{
 			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
 			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
