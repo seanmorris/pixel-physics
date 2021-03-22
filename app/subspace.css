@@ -1,23 +1,29 @@
 .console {
 	position: absolute;
-	width: 100%;
-	max-height: 30%;
+	position: absolute;
+
+	transform-origin: left top;
+	width: 200%;
+	min-height: 28pt;
+	max-height: 100%;
+
 	flex-direction: column;
 	overflow: auto;
 	transition: transform 0.25s ease-in;
 	background-color: rgba(0,0,25,0.95);
 
 	z-index: 200000;
-	transform: translateY(-100%);
+
+	transform: scale( calc( 1 / var(--scale) ) ) translateY(-100%) !important;
 }
 
 .console::-webkit-scrollbar {
   display: none;
 }
 
-.console:focus-within {
+.console.showConsole {
 	box-shadow: 0px 2px 2px rgba(0,0,0,0.85);
-	transform: translateY(-0%);
+	transform: scale( calc( 1 / var(--scale) ) ) translateY(-0%) !important;
 }
 
 .console [name="file-input"] {
@@ -27,10 +33,9 @@
 .terminal {
 	pointer-events: initial;
 	box-sizing: border-box;
-	/*font-family: '8-bit-pusab';*/
-	font-family: 'courer-new', system, terminal, monospace;
+	font-family: monospace;
 	font-weight: bold;
-	font-size: 4pt;
+	font-size: 22pt;
 	color: white;
 	text-shadow: 1px 1px 0px rgba(0,0,0,1);
 }
@@ -51,7 +56,7 @@
 	display: flex;
 	flex-direction: row;
 	position: relative;
-	max-height: 6pt;
+	max-height: 13pt;
 }
 
 .terminal .bottom div:last-child {

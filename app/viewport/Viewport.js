@@ -34,6 +34,9 @@ import { Input as InputTask } from '../console/task/Input';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Move as MoveTask } from '../console/task/Move';
 
+import { RtcClient } from '../network/RtcClient';
+import { RtcServer } from '../network/RtcServer';
+
 import { Classifier } from '../Classifier';
 
 const ColCellsNear = Symbol('collision-cells-near');
@@ -281,7 +284,7 @@ export class Viewport extends View
 			localStorage.setItem('sonic-3000-audio-enabled', v);
 		});
 
-		this.args.showConsole = false;
+		this.args.showConsole = null;;
 
 		this.listen(document, 'keydown', (event) => {
 
@@ -295,11 +298,13 @@ export class Viewport extends View
 							'input': InputTask
 							, 'move': MoveTask
 							, 'pos': PosTask
+							, 'client': RtcClient
+							, 'server': RtcServer
 						}
 					});
 				}
 
-				this.args.showConsole = !this.args.showConsole;
+				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
 				event.preventDefault();
 			}
 
@@ -315,12 +320,12 @@ export class Viewport extends View
 			if(v)
 			{
 				this.onNextFrame(()=>this.args.subspace.focus());
-				this.args.showConsole = true;
+				this.args.showConsole = 'showConsole';
 			}
 			else
 			{
 				this.onNextFrame(()=>this.tags.viewport.focus());
-				this.args.showConsole = false;
+				this.args.showConsole = null;
 			}
 		});
 

@@ -35,8 +35,6 @@ self.addEventListener('fetch', (event) => {
 
 			refreshFetch.catch(error => {
 				console.error(error);
-
-				event.respondWith(eventResponse);
 			});
 
 			const respUrl = new URL(event.request.url);
