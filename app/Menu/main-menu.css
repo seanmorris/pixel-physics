@@ -77,9 +77,9 @@
 .screen-card-main-menu svg,
 .screen-card-main-menu .menu-scroller {
 	position: absolute;
-	transform: scale(3);
-	height: 45%;
-	width:  45%;
+	transform: scale(2);
+	height: 50%;
+	width:  50%;
 }
 
 .screen-card-main-menu .menu-scroller {

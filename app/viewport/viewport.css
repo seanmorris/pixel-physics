@@ -19,7 +19,6 @@ html, body {
 	justify-content: center;
 	align-items: center;
 	--scale-transition: 0.1s ease-in;
-	--scale: 1;
 }
 
 .viewport-frame.standalone {
@@ -89,7 +88,6 @@ section.filters {
 	width: calc(1px * calc(var(--width)  * var(--scale) ));
 	min-width: 550px;
 	max-width: 100vw;
-	transition: width var(--scale-transition);
 	line-height: 1.25em;
 	display: flex;
 }
@@ -169,11 +167,11 @@ section.filters {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	transition: transform var(--scale-transition);
-	transform: scale(var(--scale));
 	transform-origin: top left;
+	transform: scale(var(--scale));
 	width: calc(100% / var(--scale));
 	height: calc(100% / var(--scale));
+	transition: transform var(--scale-transition), width var(--scale-transition), height var(--scale-transition);
 }
 
 .viewport-overlay {
@@ -181,18 +179,29 @@ section.filters {
 	pointer-events: none;
 	top: 0px;
 	left: 0px;
+
+	width: 100%;
+	height: 100%;
+
 	/*transition: transform var(--scale-transition);*/
 	transform-origin: top left;
 
-	transform: scale(var(--scale));
+	/*transform: scale(var(--scale));
 	width: calc(100% / var(--scale));
-	height: calc(100% / var(--scale));
+	height: calc(100% / var(--scale));*/
+
+
 
 	/*--halfScale: calc(max(var(--scale), 2) / 2);
 
 	transform: scale(var(--halfScale));
 	width: calc(100% / var(--halfScale));
 	height: calc(100% / var(--halfScale));*/
+}
+
+.viewport-overlay > * {
+	transform: scale(var(--scale));
+	transition: transform var(--scale-transition);
 }
 
 .viewport-double-zoom {
@@ -407,24 +416,29 @@ span.arrow-west {
 }
 
 .focus-me {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: top left;
+	width: calc(100%);
+	bottom: 0;
+	/*transform: scale(var(--scale));*/
+	transform: scale(1);
 	font-size: 2em;
 	z-index: 1000000;
-	background-color: white;
 	color: white;
 	pointer-events: none;
 }
 
 .viewport .status-message,
 .focus-me .status-message {
-	transition: transform 0.5s ease-out, opacity 0.3s 0.2s ease-out;
-	transform: scale(1,1);
+	transition: opacity 0.3s 0.2s ease-out, transform var(--scale-transition), width var(--scale-transition), height var(--scale-transition);
 	opacity: 1;
 }
 
 .viewport .status-message.hide,
 .viewport:focus-within .focus-me .status-message {
-	transition: transform 0.5s ease-out, opacity 0.2s ease-in;
-	transform: scale(0,0);
+	transition: opacity 0.2s ease-in;
 	opacity: 0;
 }
 
@@ -432,8 +446,10 @@ span.arrow-west {
 	position: absolute;
 	top: 0;
 	left: 0;
-	bottom: 1em;
-	width: 100%;
+	width: calc(100% / var(--scale));
+	height: calc(90% / var(--scale));
+	transform: scale(var(--scale));
+	transform-origin: top left;
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
@@ -579,11 +595,21 @@ input[type=number]::-webkit-outer-spin-button {
 	outline: none;
 }
 
+.intro-cards {
+	position: absolute;
+	transform-origin: left top;
+	transform: scale(var(--scale));
+
+	width: calc(100% / var(--scale) );
+	height: calc(100% / var(--scale) );
+}
+
 .viewport-frame.standalone {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	bottom: 0px;
 	right: 0px;
+	bottom: 0px;
 	background-color: black;
 }
+

@@ -61,7 +61,7 @@ export class WaterRegion extends Region
 
 		if(this.draining)
 		{
-			if(this.draining > 0 && this.public.height >= 128)
+			if(this.draining > 0 && this.public.height >= 32)
 			{
 				this.args.height -= 3.5;
 			}
