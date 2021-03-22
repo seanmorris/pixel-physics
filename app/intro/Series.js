@@ -23,7 +23,7 @@ export class Series extends View
 
 		this.cards = [
 
-			new LoadingCard({timeout: 3500, text: 'loading'}, parent)
+			new LoadingCard({timeout: 350, text: 'loading'}, parent)
 
 			// , new BootCard({timeout: 2500})
 

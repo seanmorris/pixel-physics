@@ -236,19 +236,27 @@ export class TileMap
 
 		const pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data;
 
-		// if(pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
+		let result = false;
+
+		// if(pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
+		// {
+		// 	// result = 0xFF0000;
+		// 	result = true;
+		// }
+		// else
 		if(pixel[3] === 255)
 		{
-			heightMaskCache.set(heightMaskKey, true);
-
-			return true;
+			// result = 0xFFFFFF;
+			result = true;
 		}
 		else
 		{
-			heightMaskCache.set(heightMaskKey, false);
-
-			return false;
+			result = false;
 		}
+
+		heightMaskCache.set(heightMaskKey, result);
+
+		return result;
 	}
 
 	getTileset(tileNumber)
