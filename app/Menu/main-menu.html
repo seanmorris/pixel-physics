@@ -2,12 +2,9 @@
 	<div class = "menu-scroller"></div>
 	<div class = "menu-container">
 		<div>Sonic 3000</div>
-		<ul cv-ref = "bound">
-			<li cv-on = "click:remove()" tabindex="0">Single Player</li>
-			<li class = "unavailable" tabindex="0">Connnect to Server</li>
-			<li class = "unavailable" tabindex="0">Direct Connect</li>
-			<li class = "unavailable" tabindex="0">Options</li>
-			<!-- <li tabindex="0">Exit</li> -->
+		<ul cv-ref = "bound" cv-each = "items:item:title">
+			<li class = "[[item.available]]" cv-on = "click:run(item)" tabindex="0">[[title]]</
+				elementsli>
 		</ul>
 	</div>
 	[[warp]]
