@@ -34,8 +34,8 @@ import { Input as InputTask } from '../console/task/Input';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Move as MoveTask } from '../console/task/Move';
 
-import { RtcClient } from '../network/RtcClient';
-import { RtcServer } from '../network/RtcServer';
+import { RtcClientTask } from '../network/RtcClientTask';
+import { RtcServerTask } from '../network/RtcServerTask';
 
 import { Classifier } from '../Classifier';
 
@@ -284,7 +284,7 @@ export class Viewport extends View
 			localStorage.setItem('sonic-3000-audio-enabled', v);
 		});
 
-		this.args.showConsole = null;;
+		this.args.showConsole = null;
 
 		this.listen(document, 'keydown', (event) => {
 
@@ -298,16 +298,20 @@ export class Viewport extends View
 							'input': InputTask
 							, 'move': MoveTask
 							, 'pos': PosTask
-							, 'client': RtcClient
-							, 'server': RtcServer
+							, 'client': RtcClientTask
+							, 'server': RtcServerTask
 						}
+					});
+
+					this.args.subspace.tasks.bindTo((v,k) => {
+						console.log(k,v);
 					});
 				}
 
 				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
+
 				event.preventDefault();
 			}
-
 		});
 
 		this.args.bindTo('showConsole', v => {
@@ -328,8 +332,6 @@ export class Viewport extends View
 				this.args.showConsole = null;
 			}
 		});
-
-
 	}
 
 	fullscreen()
@@ -1384,7 +1386,7 @@ export class Viewport extends View
 							actor.vizi = true;
 						}
 					}
-					else if(actor.vizi && (offscreenX > 800 || offscreenY > 800))
+					else if(actor.vizi && (offscreenX > 0 || offscreenY > 0))
 					{
 						actor.sleep();
 

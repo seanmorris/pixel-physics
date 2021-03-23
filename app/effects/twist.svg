@@ -31,10 +31,9 @@
 			/>
 
 			<feOffset
-				in  = "DisplacementSource"
-				result = "OffsetSource"
-				dx     = "[[dx]]"
-				dy     = "[[dy]]"
+				in      = "DisplacementSource"
+				result  = "OffsetSource"
+				cv-attr =  "dx:dx,dy:dy"
 			/>
 
 			<feComposite
@@ -47,10 +46,10 @@
 			<feDisplacementMap
 				xChannelSelector = "R"
 				yChannelSelector = "G"
-				in     = "SourceGraphic"
-				in2    = "DisplacementResult"
-				cv-ref = "displace"
-				scale  = "[[scale]]"
+				in      = "SourceGraphic"
+				in2     = "DisplacementResult"
+				cv-ref  = "displace"
+				cv-attr = "scale:scale"
 			/>
 
 		</filter>

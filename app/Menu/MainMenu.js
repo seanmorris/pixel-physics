@@ -15,9 +15,29 @@ export class MainMenu extends Card
 
 		this.args.cardName = 'main-menu';
 
-		this.args.items = [
-			'item 1', 'item 2'
-		];
+		const unavailable = 'unavailable';
+
+		this.args.items = {
+			'Single Player': {
+				available: 'available'
+				, callback: () => this.remove()
+			}
+			, 'Direct Connect': {
+				available: 'unavailable'
+				, children: {
+
+					'Generate Request Token': {
+
+						available: 'unavailable'
+						, children: {a: {}, b: {}, c: {}}
+
+					}
+
+					, 'Input Request Token': { available: 'unavailable' }
+				}
+			}
+			, 'Connect To Server': { available: 'unavailable' }
+		};
 
 		this.currentItem = null;
 
@@ -74,6 +94,11 @@ export class MainMenu extends Card
 	findNext(current, bounds, reverse = false)
 	{
 		const elements = bounds.querySelectorAll(this.selector);
+
+		if(!elements.length)
+		{
+			return;
+		}
 
 		let found = false;
 		let first = null;
@@ -183,5 +208,20 @@ export class MainMenu extends Card
 		}
 
 		next && this.onNextFrame(()=> this.focus(next));
+	}
+
+	run(item)
+	{
+		item.callback && item.callback();
+
+		if(item.children)
+		{
+			const prev = this.args.items;
+			const back = {callback: () => this.args.items = prev};
+
+			this.args.items = item.children;
+
+			this.args.items['back'] = this.args.items['back'] || back;
+		}
 	}
 }

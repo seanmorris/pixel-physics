@@ -3,18 +3,22 @@
 	position: absolute;
 
 	transform-origin: left top;
-	width: 200%;
-	min-height: 28pt;
-	max-height: 100%;
+	width: calc( 100% * var(--scale) );
+	min-height: calc( 28pt  * var(--scale) );
+	max-height: calc( 50% * var(--scale) );
 
 	flex-direction: column;
 	overflow: auto;
 	transition: transform 0.25s ease-in;
-	background-color: rgba(0,0,25,0.95);
+	background-color: rgba(0,0,25,0.85);
 
 	z-index: 200000;
 
 	transform: scale( calc( 1 / var(--scale) ) ) translateY(-100%) !important;
+
+	overflow: scroll;
+
+	pointer-events: initial;
 }
 
 .console::-webkit-scrollbar {
@@ -25,6 +29,10 @@
 	box-shadow: 0px 2px 2px rgba(0,0,0,0.85);
 	transform: scale( calc( 1 / var(--scale) ) ) translateY(-0%) !important;
 }
+.console.hideConsole {
+	box-shadow: none;
+	display: none;
+}
 
 .console [name="file-input"] {
 	display: none;
@@ -33,11 +41,11 @@
 .terminal {
 	pointer-events: initial;
 	box-sizing: border-box;
-	font-family: monospace;
+	font-family: courier;
 	font-weight: bold;
-	font-size: 22pt;
+	font-size: calc( 1.75vw * var(--scale) );
 	color: white;
-	text-shadow: 1px 1px 0px rgba(0,0,0,1);
+	text-shadow: 2px 2px 1px rgba(0,0,0,1), -2px -2px 1px rgba(0,0,0,1), -2px 2px 1px rgba(0,0,0,1), 2px -2px 1px rgba(0,0,0,1);
 }
 
 .terminal .output p {
@@ -56,7 +64,6 @@
 	display: flex;
 	flex-direction: row;
 	position: relative;
-	max-height: 13pt;
 }
 
 .terminal .bottom div:last-child {
@@ -76,6 +83,8 @@
 	overflow:    hidden;
 
 	pointer-events: none;
+
+	font-weight: bold;
 }
 
 .terminal input:focus,

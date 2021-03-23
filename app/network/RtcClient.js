@@ -1,120 +1,80 @@
-import { Task } from 'subspace-console/Task';
-import { Tag } from 'curvature/base/Tag';
+import { Mixin } from 'curvature/base/Mixin';
+import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 
-const Accept = Symbol('accept');
-
-export class RtcClient extends Task
+export class RtcClient extends Mixin.with(EventTargetMixin)
 {
-	static helpText = 'RTC Client.';
-	static useText  = '';
-
-	title     = 'RTC Client Task';
-	connected = false;
-
-	init()
+	constructor(rtcConfig)
 	{
-		const rtcConfig = {
-			iceServers: [
-			// 	{urls: 'stun:stun1.l.google.com:19302'},
-			// 	{urls: 'stun:stun2.l.google.com:19302'}
-			]
-		};
+		super();
 
 		this.peerClient = new RTCPeerConnection(rtcConfig);
 
-		this.peerClient.addEventListener('icecandidate', event => {
-			if(!event.candidate)
-			{
-				return;
-			}
-
-			let localDescription = JSON.stringify(this.peerClient.localDescription);
-
-			this.print('Client Offer');
-
-			this.print(localDescription);
-
-			const offerTag = new Tag('<textarea style = "display:none">');
-
-			offerTag.innerText = localDescription;
-
-			document.body.append(offerTag.node);
-
-			offerTag.select();
-
-			document.execCommand("copy");
-
-			offerTag.node.remove();
+		this.offerToken = new Promise(accept => {
+			this.peerClient.addEventListener('icecandidate', event => {
+				accept(this.peerClient.localDescription);
+			});
 		});
 
 		this.peerClient.addEventListener('iceconnectionstatechange', () => {
 			let state = this.peerClient.iceConnectionState;
 
-			this.print(`RTC state: ${state}`);
+			console.log(`RTC state: ${state}`);
 		});
 
 		this.peerClientChannel = this.peerClient.createDataChannel("chat")
 
 		this.peerClientChannel.addEventListener('open', () => {
-			this.print('Remote peer server accepted!');
+			console.log('Remote peer server accepted!');
 
 			this.connected = true;
+
+			const messageEvent = new CustomEvent('open', {detail: event.data });
+
+			messageEvent.originalEvent = event;
+
+			this.dispatchEvent(messageEvent);
 		});
 
 		this.peerClientChannel.addEventListener('close', () => {
-			this.print('Peer reset connection.');
+			console.log('Peer reset connection.');
 
-			this[Accept]();
-		});
+			const messageEvent = new CustomEvent('close', {detail: event.data });
 
-		this.finally(()=>{
-			this.print('Terminating connection...');
-			this.peerClientChannel.close()
+			messageEvent.originalEvent = event;
+
+			this.dispatchEvent(messageEvent);
 		});
 
 		this.peerClientChannel.addEventListener('message', event => {
-			this.print(`> ${event.data}`);
 			console.log(event);
+			console.log(`> ${event.data}`);
+
+			const messageEvent = new CustomEvent('message', {detail: event.data });
+
+			messageEvent.originalEvent = event;
+
+			this.dispatchEvent(messageEvent);
 		});
 
 		this.peerClient.createOffer().then(offer => {
 			this.peerClient.setLocalDescription(offer);
 		});
-
-		return new Promise(accept => {
-			this[Accept] = accept;
-		});
 	}
 
-	main(input)
+	accept(answer)
 	{
-		if(!input)
-		{
-			return;
-		}
-
-		if(!this.connected)
-		{
-			this.accept(input);
-			return;
-		}
-
-		this.print(`< ${input}`);
-		this.peerClientChannel.send(input);
-	}
-
-	accept(answerString)
-	{
-		if (!answerString)
-		{
-			this.print(`Please supply SDP answer string.`);
-			return;
-		}
-
-		const answer = JSON.parse(answerString);
-
 		const session = new RTCSessionDescription(answer);
 
 		this.peerClient.setRemoteDescription(session);
+	}
+
+	send(input)
+	{
+		this.peerClientChannel.send(input);
+	}
+
+	close()
+	{
+		this.peerClientChannel.close()
 	}
 }
