@@ -4,7 +4,7 @@ export class Pos extends Task
 {
 	static viewport = null;
 
-	static helpText = 'Move the current actor to a position in space.';
+	static helpText = 'Check the current actor\'s position in space.';
 
 	init(x, y)
 	{
