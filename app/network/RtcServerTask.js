@@ -40,27 +40,21 @@ export class RtcServerTask extends Task
 		});
 
 		this.server.answerToken.then(token => {
-			this.print('Server Answer');
 
 			const tokenString  = JSON.stringify(token);
 			const encodedToken = `s3ktp://accept/${btoa(tokenString)}`;
 
-			this.print(encodedToken);
+			this.print(`Server accept code: ${encodedToken}`);
 
 			const answerTag = new Tag('<textarea style = "display:none">');
-
 			answerTag.innerText = encodedToken;
-
 			document.body.append(answerTag.node);
-
 			answerTag.select();
-
 			document.execCommand("copy");
-
 			answerTag.node.remove();
 		});
 
-		this.printErr(`Please supply SDP offer string.`);
+		this.printErr(`Please supply client's request code.`);
 
 		return new Promise(accept => {
 			this[Accept] = accept;

@@ -5,7 +5,7 @@ export class Input extends Task
 	static viewport = null;
 
 	static helpText = 'Press a button x for y milliseconds.';
-	static useText  = 'input x [y = 500]';
+	static useText  = 'input x y';
 
 	title  = 'Input task';
 	prompt = '..';
