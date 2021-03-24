@@ -20,28 +20,41 @@ export class Titlecard extends View
 	{
 		return new Promise(accept => {
 
-			let timeAcc = 500;
+			const finishPlaying = (event) => {
+				let timeAcc = 500;
 
-			this.onTimeout(timeAcc, () => this.args.animation = '');
+				this.onTimeout(timeAcc, () => this.args.animation = '');
 
-			timeAcc += 750;
+				timeAcc += 750;
 
-			this.onTimeout(timeAcc, () => this.args.animation = 'opening');
+				this.onTimeout(timeAcc, () => this.args.animation = 'opening');
 
-			timeAcc += 750;
+				timeAcc += 750;
 
-			this.onTimeout(timeAcc, () => this.args.animation = 'opening2');
+				this.onTimeout(timeAcc, () => this.args.animation = 'opening2');
 
-			timeAcc += 1500;
+				this.onTimeout(timeAcc + 500, () => {
+					accept([ new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone)) ]);
+				});
 
-			this.onTimeout(timeAcc, () => {
-				this.args.animation = 'closing';
-				accept([ new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone)) ]);
-			});
+				timeAcc += 1000;
 
-			timeAcc += 750;
+				this.onTimeout(timeAcc, () => this.args.animation = 'closing');
 
-			this.onTimeout(timeAcc, () => this.args.animation = 'closed');
+				timeAcc += 250;
+
+				this.onTimeout(timeAcc, () => this.args.animation = 'closed');
+			}
+
+			if(!this.args.waitFor)
+			{
+				finishPlaying();
+			}
+			else
+			{
+				this.args.waitFor.finally(finishPlaying);
+			}
 		});
 	}
 }
+

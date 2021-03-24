@@ -14,68 +14,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	let lastTime = 0;
 
-	// const replayUrl = '/debug/replay-updated.json';
-	// const replay = fetch(replayUrl);
+	viewportA.render(document.body);
 
-	Promise.all([viewportA.tileMap.ready]).then(([tileMap,replayResult])=>{
+	const body = new Tag(document.body);
 
-		viewportA.startLevel();
+	let skyShift = 100;
 
-	}).then (replay => {
+	const frameTimes = [];
 
-		viewportA.replayInputs = replay;
+	const update = ()=>{
+		const now         = performance.now();
+		const frameTime   = (now - lastTime);
+		const frameAgeMin = (1000 / (viewportA.args.maxFps || 60));
 
-		if(replay && replay.length)
+		requestAnimationFrame(update);
+
+		if(viewportA.args.maxFps < 60 && frameAgeMin > frameTime)
 		{
-			// viewportA.args.hasRecording = true;
-			// viewportA.args.isReplaying  = true;
+			return;
 		}
 
-		viewportA.render(document.body);
+		viewportA.update();
 
-		const body = new Tag(document.body);
+		lastTime = now;
 
-		let skyShift = 100;
+		frameTimes.push(frameTime);
 
-		const frameTimes = [];
+		if(frameTimes.length > 5)
+		{
+			frameTimes.shift();
+		}
 
-		const update = ()=>{
+		if(frameTimes.length > 1)
+		{
+			const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
+			const frameTimeAvg = frameTimeSum / frameTimes.length;
 
-			const now         = performance.now();
-			const frameTime   = (now - lastTime);
-			const frameAgeMin = (1000 / (viewportA.args.maxFps || 60));
+			viewportA.args.fps = (1000 / frameTimeAvg);
+		}
+		else
+		{
+			viewportA.args.fps = '...';
+		}
+	};
 
-			requestAnimationFrame(update);
-
-			if(viewportA.args.maxFps < 60 && frameAgeMin > frameTime)
-			{
-				return;
-			}
-
-			viewportA.update();
-
-			lastTime = now;
-
-			frameTimes.push(frameTime);
-
-			if(frameTimes.length > 5)
-			{
-				frameTimes.shift();
-			}
-
-			if(frameTimes.length > 1)
-			{
-				const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
-				const frameTimeAvg = frameTimeSum / frameTimes.length;
-
-				viewportA.args.fps = (1000 / frameTimeAvg);
-			}
-			else
-			{
-				viewportA.args.fps = '...';
-			}
-		};
-
-		update();
-	});
+	update();
 });

@@ -1,3 +1,7 @@
+.screen-card.screen-card-main-menu *::-webkit-scrollbar {
+  display: none;
+}
+
 .screen-card.screen-card-main-menu .menu-container {
 	display: flex;
 	align-items: center;
@@ -22,10 +26,12 @@
 	/*outline: 1px solid rgba(255,255,255,0.2);
 	outline-offset: 0.6em;*/
 	text-decoration: underline;
-	outline: none;
 	color: white;
 }
-
+.screen-card-main-menu :focus,
+.screen-card-main-menu .focused {
+	outline: none;
+}
 
 .screen-card-main-menu li {
 	color: #CCC;
@@ -110,10 +116,12 @@
 }
 
 .screen-card-main-menu .token-exchange label {
+	position: relative;
 	display: block;
 	margin:auto;
 	margin-left: 0.125em;
 	margin-right: 0.125em;
+	width: 170px;
 	height: 50%;
 	padding: 0.5em;
 	display: flex;
@@ -123,6 +131,7 @@
 	border: 1px solid black;
 	border-radius: 0.5em;
 	color: black;
+	text-shadow: 1em 1em 1em black;
 }
 
 .screen-card-main-menu .token-exchange label p {
@@ -152,7 +161,7 @@
 	font-size: 0.25rem;
 	box-sizing: content-box;
 	border-radius: 5px;
-	color: black !important
+	color: black !important;
 	display: inline-block;
 	flex: 1;
 	min-height: 45px;
@@ -160,62 +169,31 @@
 	border-bottom-right-radius: 0;
 	border-bottom-left-radius: 0;
 	margin: 0;
+	background-color: transparent;
 }
 
-
-.screen-card-main-menu .chat-output::-webkit-scrollbar,
-.screen-card-main-menu textarea::-webkit-scrollbar {
-  display: none;
-}
-
-.screen-card-main-menu .chatbox {
-	border: 1px solid #333;
-	border-radius: 5px;
-	background-color: white;
-	color: black;
+.screen-card-main-menu .close {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image:  url(/ui/close.svg);
+	background-size:   0.5em 0.5rem;
+	background-color:  black;
+	box-shadow: 0em 0.25em 0.25em rgba(0,0,0,0.333);
+	color: white;
 	position: absolute;
-	padding: 0.25rem;
-	font-size: 0.5rem;
-}
-
-.screen-card-main-menu .chatbox input,
-.screen-card-main-menu .chatbox button {
-	font-size: 0.5rem;
-	color: black;
-}
-
-.screen-card-main-menu .chatbox input {
-	flex: 1;
-	border: 1px solid #333;
-	border-radius: 3px;
-
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-.screen-card-main-menu .chatbox button {
-	border: 1px solid #333;
-	border-radius: 3px;
-	border-left: 0;
-
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-}
-
-.screen-card-main-menu .chatbox .chat-output {
-	height: 120px;
-	overflow-y: scroll;
-	width: 160px;
-}
-.screen-card-main-menu .chatbox .chat-output p {
-	white-space: initial;
-}
-
-.screen-card-main-menu .chatbox .chat-input {
+	top: -0.75em;
+	right: -0.75em;
+	border-radius: 50%;
+	width: 1rem;
+	height: 1rem;
 	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.75rem;
+	font-weight: bold;
 }
 
-.screen-card-main-menu .chatbox p {
-	margin: 0;
-	margin-bottom: 0.5em;
+.screen-card-main-menu .close:hover {
+	background-color: #999;
+	color: #333;
 }

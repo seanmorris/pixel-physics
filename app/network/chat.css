@@ -1,0 +1,66 @@
+.chatbox .chat-output::-webkit-scrollbar,
+.chatbox textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.chatbox {
+	transform: scale(2);
+	transform-origin: bottom left;
+	border: 1px solid #333;
+	background-color: rgba(255,255,255,0.75);
+	color: black;
+	position: absolute;
+	bottom: 0;
+	padding: 0.25rem;
+	font-size: 0.5rem;
+	box-shadow: 0em 0.5em 1em rgba(0,0,0,0.75);
+	pointer-events: initial;
+	width: 20%;
+	max-height: 10%;
+	display: flex;
+	flex-direction: column;
+}
+
+.chatbox input,
+.chatbox button {
+	font-size: 0.5rem;
+	color: black;
+}
+
+.chatbox input {
+	flex: 1;
+	border: 1px solid #333;
+	border-radius: 3px;
+
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.chatbox button {
+	border: 1px solid #333;
+	border-radius: 3px;
+	border-left: 0;
+
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.chatbox .chat-output {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	overflow-y: scroll;
+	flex: 1;
+}
+.chatbox .chat-output p {
+	white-space: initial;
+}
+
+.chatbox .chat-input {
+	display: flex;
+}
+
+.chatbox p {
+	margin: 0;
+	margin-bottom: 0.5em;
+}

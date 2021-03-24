@@ -16,10 +16,10 @@ export class RtcServerTask extends Task
 	init()
 	{
 		this.server = new RtcServer({
-			// iceServers: [
-			// 	{urls: 'stun:stun1.l.google.com:19302'},
-			// 	{urls: 'stun:stun2.l.google.com:19302'}
-			// ]
+			iceServers: [
+				{urls: 'stun:stun1.l.google.com:19302'},
+				{urls: 'stun:stun2.l.google.com:19302'},
+			]
 		});
 
 		this.finally(()=>{

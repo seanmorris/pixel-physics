@@ -10,9 +10,14 @@ import { Titlecard } from '../titlecard/Titlecard';
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 
-import { SeanCard } from '../intro/SeanCard';
 import { Series }   from '../intro/Series';
 import { Card }     from '../intro/Card';
+
+import { TitleScreenCard } from '../intro/TitleScreenCard';
+import { LoadingCard } from '../intro/LoadingCard';
+import { BootCard } from    '../intro/BootCard';
+import { SeanCard } from    '../intro/SeanCard';
+import { MainMenu } from    '../Menu/MainMenu.js';
 
 import { LayerSwitch } from '../actor/LayerSwitch';
 import { Region } from '../region/Region';
@@ -31,13 +36,18 @@ import { ClickSwitch } from '../ui/ClickSwitch';
 import { Console as Terminal } from 'subspace-console/Console';
 
 import { Input as InputTask } from '../console/task/Input';
-import { Pos as PosTask } from '../console/task/Pos';
 import { Move as MoveTask } from '../console/task/Move';
+import { Pos as PosTask } from '../console/task/Pos';
 
 import { RtcClientTask } from '../network/RtcClientTask';
 import { RtcServerTask } from '../network/RtcServerTask';
 
+import { RtcClient } from '../network/RtcClient';
+import { RtcServer } from '../network/RtcServer';
+
 import { Classifier } from '../Classifier';
+
+import { ChatBox } from '../network/ChatBox';
 
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
@@ -52,6 +62,11 @@ export class Viewport extends View
 	{
 		super(args,parent);
 
+		this.server = null;
+		this.client = null;
+
+		this.args.networked = false;
+
 		this.settings = {
 			blur: true
 			, displace: true
@@ -59,14 +74,34 @@ export class Viewport extends View
 
 		this.vizi = true;
 
-		this.args.screenFilter = 'runners';
+		this.args.level = '';
+
+		Object.defineProperty(this, 'tileMap', {value: new TileMap});
 
 		this.sprites = new Bag;
 		this.world   = null;
 
-		this.args.titlecard = new Series({}, this);
+		const ready = this.tileMap.ready;
 
-		Object.defineProperty(this, 'tileMap', {value: new TileMap});
+		this.args.titlecard = new Series({cards: [
+
+			new LoadingCard({timeout: 350, text: 'loading'}, this)
+
+			// , new BootCard({timeout: 2500})
+
+			, new SeanCard({timeout: 5000}, this)
+
+			, new TitleScreenCard({timeout: 50000, waitFor: ready}, this)
+
+			, new MainMenu({timeout: -1}, this)
+
+			, new Titlecard({
+				firstLine:    'PIXEL HILL'
+				, secondLine: 'ZONE'
+				, creditLine: 'Sean Morris'
+			}, this)
+
+		]});
 
 		this.particles = new Bag;
 		this.effects   = new Bag;
@@ -74,7 +109,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps    = 60;
+		this.args.maxFps = 60;
 
 		this.args.currentActor = '';
 
@@ -123,11 +158,6 @@ export class Viewport extends View
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
 
-		// this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
-		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
-
-		this.args.frameId = -1;
-
 		this.rings = new CharacterString({value:0});
 		this.coins = new CharacterString({value:0});
 		this.emeralds = new CharacterString({value:'0/7'});
@@ -136,6 +166,13 @@ export class Viewport extends View
 		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
+
+
+		// this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
+		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
+
+		this.args.frameId = -1;
+
 
 		// this.controlCard = View.from(require('../cards/basic-controls.html'));
 		// this.moveCard    = View.from(require('../cards/basic-moves.html'));
@@ -267,7 +304,6 @@ export class Viewport extends View
 
 		this.replayInputs = [];
 
-		this.args.backdrop = new Backdrop;
 		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
 
 		this.args.standalone = '';
@@ -332,6 +368,10 @@ export class Viewport extends View
 				this.args.showConsole = null;
 			}
 		});
+
+		this.controller = new Controller({deadZone: 0.2});
+
+		this.controller.zero();
 	}
 
 	fullscreen()
@@ -376,6 +416,12 @@ export class Viewport extends View
 		{
 			this.args.scale = hScale > vScale ? vScale : hScale;
 		}
+
+		this.tags.frame && this.tags.frame.style({
+			'--width': this.args.width
+			, '--height': this.args.height
+			, '--scale': this.args.scale
+		});
 	}
 
 	showStatus(timeout, text)
@@ -397,7 +443,9 @@ export class Viewport extends View
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 
-		this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
+		this.onTimeout(8800, () => {
+			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
+		});
 
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 
@@ -418,6 +466,8 @@ export class Viewport extends View
 			}
 		});
 
+		this.args.titlecard.play().then((done) => this.onNextFrame(() => this.startLevel()));
+
 		this.tags.frame.style({
 			'--width': this.args.width
 			, '--height': this.args.height
@@ -428,11 +478,11 @@ export class Viewport extends View
 
 		if(!this.startTime)
 		{
-			this.startTime = Date.now() + 4.75 * 1000;
+			this.startTime = 0;
 		}
 
-		this.args.paused  = true;
 		this.args.started = false;
+		this.args.paused  = true;
 
 		this.listen(document.body, 'click', event => {
 			if(event.target !== document.body)
@@ -465,13 +515,21 @@ export class Viewport extends View
 
 	startLevel()
 	{
-		this.args.titlecard.play().then((done) => {
-			this.args.paused  = false;
-			this.args.started = true;
-			this.startTime    = Date.now();
+		this.args.started = true;
+		this.args.paused  = false;
+		this.startTime    = Date.now();
 
-			Promise.all(done).then(() => this.args.titlecard = '');
+		this.args.level = 'level';
+
+		this.args.backdrop = new Backdrop;
+
+		this.tileMap.ready.then(() => {
+			if(!this.args.populated && !this.args.networked)
+			{
+				this.populateMap();
+			}
 		});
+
 	}
 
 	takeInput(controller)
@@ -480,7 +538,7 @@ export class Viewport extends View
 
 		keyboard.update();
 
-		if(controller && !this.gamepad)
+		if(!this.gamepad)
 		{
 			controller.readInput({keyboard});
 		}
@@ -497,7 +555,7 @@ export class Viewport extends View
 					continue;
 				}
 
-				controller && controller.readInput({keyboard, gamepad});
+				controller.readInput({keyboard, gamepad});
 
 				if(gamepad)
 				{
@@ -526,52 +584,47 @@ export class Viewport extends View
 			}
 		}
 
-		if(controller)
+		if(controller.buttons[1011] && controller.buttons[1011].time === 1)
 		{
-			if(controller.buttons[1011] && controller.buttons[1011].time === 1)
+			this.fullscreen();
+		}
+
+		if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
+		{
+			this.playableIterator = this.playableIterator || this.playable.entries();
+
+			let next = this.playableIterator.next();
+
+			if(next.done)
 			{
-				this.fullscreen();
+				this.playableIterator = false;
+
+				this.playableIterator = this.playable.entries();
+
+				next = this.playableIterator.next();
 			}
 
-			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
+			if(next.value)
 			{
-				this.playableIterator = this.playableIterator || this.playable.entries();
+				this.nextControl = next.value[0];
 
-				let next = this.playableIterator.next();
-
-				if(next.done)
-				{
-					this.playableIterator = false;
-
-					this.playableIterator = this.playable.entries();
-
-					next = this.playableIterator.next();
-				}
-
-				if(next.value)
-				{
-					this.nextControl = next.value[0];
-
-					this.dontSwitch = 15;
-				}
+				this.dontSwitch = 3;
 			}
+		}
 
+		if(this.args.started)
+		{
 			this.args.currentSheild = this.controlActor.public.currentSheild
 				? this.controlActor.public.currentSheild.type
 				: '';
 
-			if(this.args.started && controller.buttons[9] && controller.buttons[9].time === 1)
+			if(controller.buttons[9] && controller.buttons[9].time === 1)
 			{
 				this.args.paused = !this.args.paused;
 			}
 		}
 
-		if(this.args.titlecard)
-		{
-			this.args.titlecard.input(controller);
-		}
-
-		if(this.args.isRecording)
+		if(this.controlActor && this.args.isRecording)
 		{
 			const frame = this.args.frameId;
 			const input = controller.serialize();
@@ -588,7 +641,7 @@ export class Viewport extends View
 			this.replayInputs.push({frame, input, args});
 		}
 
-		controller && controller.update();
+		controller.update();
 	}
 
 	moveCamera()
@@ -1081,9 +1134,16 @@ export class Viewport extends View
 			minutes = Number(minutes);
 		}
 
-		if(!this.args.populated)
+		if(!this.args.started)
 		{
-			this.populateMap();
+			if(this.args.titlecard)
+			{
+				this.args.titlecard.input(this.controller);
+			}
+
+			this.takeInput(this.controller);
+
+			return;
 		}
 
 		if(this.dontSwitch > 0)
@@ -1101,21 +1161,6 @@ export class Viewport extends View
 		this.args.rippleFrame = this.args.frameId % 128;
 
 		this.actorPointCache.clear();
-
-		if(this.args.paused)
-		{
-			this.tags.frame.style({
-				'--scale':   this.args.scale
-				, '--width': this.args.width
-			});
-
-			if(this.controlActor && this.controlActor.controller)
-			{
-				this.takeInput(this.controlActor.controller);
-			}
-
-			return;
-		}
 
 		this.args.frameId++;
 
@@ -1725,7 +1770,10 @@ export class Viewport extends View
 		this.controlActor   = null;
 		this.args.frameId   = -1;
 
-		this.populateMap();
+		if(!this.args.networked)
+		{
+			this.populateMap();
+		}
 
 		this.nextControl = Object.values(this.args.actors)[0];
 
@@ -1770,5 +1818,43 @@ export class Viewport extends View
 	focus()
 	{
 		this.tags.viewport && this.tags.viewport.focus();
+	}
+
+	getServer(refresh = false)
+	{
+		const rtcConfig = {
+			iceServers: [
+				// {urls: 'stun:stun1.l.google.com:19302'},
+				// {urls: 'stun:stun2.l.google.com:19302'}
+			]
+		};
+
+		const server = (!refresh && server) || new RtcServer(rtcConfig);
+		const onOpen = event => this.args.chatBox = new ChatBox({pipe: server});
+
+		this.listen(server, 'open', onOpen, {once:true});
+
+		this.server = server;
+
+		return server;
+	}
+
+	getClient(refresh = false)
+	{
+		const rtcConfig = {
+			iceServers: [
+				// {urls: 'stun:stun1.l.google.com:19302'},
+				// {urls: 'stun:stun2.l.google.com:19302'}
+			]
+		};
+
+		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
+		const onOpen = event => this.args.chatBox = new ChatBox({pipe: client});
+
+		this.listen(client, 'open', onOpen, {once:true});
+
+		this.client = client;
+
+		return client;
 	}
 }

@@ -20,8 +20,7 @@ export class Card extends View
 		this.onTimeout(50, () => this.args.animation = 'opened');
 
 		return new Promise(accept => {
-
-			let timeAcc = this.args.timeout;
+			const timeAcc = this.args.timeout;
 
 			if(timeAcc < 0)
 			{
@@ -31,17 +30,10 @@ export class Card extends View
 			this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
 
 			this.onTimeout(timeAcc, () => {
-
 				this.args.animation = 'closed';
-
 				const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
-
 				accept([done]);
-
 			});
-
-
 		});
-
 	}
 }
