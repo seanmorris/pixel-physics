@@ -9,7 +9,52 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 		this.peerServer = new RTCPeerConnection(rtcConfig);
 
-		this.answerToken = new Promise(accept => {
+		this.peerServer.addEventListener('datachannel', event => {
+
+			this.peerServerChannel = event.channel;
+
+			this.peerServerChannel.addEventListener('open', () => {
+				const openEvent = new CustomEvent('open', {detail: event.data });
+				openEvent.originalEvent = event;
+				this.dispatchEvent(openEvent);
+				this.connected = true;
+			});
+
+			this.peerServerChannel.addEventListener('close', () => {
+				const closeEvent = new CustomEvent('close', {detail: event.data });
+				closeEvent.originalEvent = event;
+				this.dispatchEvent(closeEvent);
+				this.connected = false;
+			});
+
+			this.peerServerChannel.addEventListener('message', event => {
+				const messageEvent = new CustomEvent('message', {detail: event.data });
+				messageEvent.originalEvent = event;
+				this.dispatchEvent(messageEvent);
+			});
+		});
+	}
+
+	send(input)
+	{
+		this.peerServerChannel && this.peerServerChannel.send(input);
+	}
+
+	close()
+	{
+		this.peerServerChannel && this.peerServerChannel.close()
+	}
+
+	answer(offer)
+	{
+		return new Promise(accept => {
+			this.peerServer.setRemoteDescription(offer);
+
+			this.peerServer.createAnswer(
+				answer => this.peerServer.setLocalDescription(answer)
+				, error => console.error(error)
+			);
+
 			this.peerServer.addEventListener('icecandidate', event => {
 				if(!event.candidate)
 				{
@@ -18,65 +63,6 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 				accept(this.peerServer.localDescription);
 			});
-		})
-
-		this.peerServer.addEventListener('iceconnectionstatechange', () => {
-			let state = this.peerServer.iceConnectionState;
-
-			console.log(`RTC state: ${state}`);
 		});
-
-		this.peerServer.addEventListener('datachannel', event => {
-
-			this.peerServerChannel = event.channel;
-
-			this.peerServerChannel.addEventListener('open', () => {
-				this.connected = true;
-
-				const openEvent = new CustomEvent('open', {detail: event.data });
-
-				openEvent.originalEvent = event;
-
-				this.dispatchEvent(openEvent);
-
-			});
-
-			this.peerServerChannel.addEventListener('close', () => {
-				const closeEvent = new CustomEvent('close', {detail: event.data });
-
-				closeEvent.originalEvent = event;
-
-				this.dispatchEvent(closeEvent);
-			});
-
-			this.peerServerChannel.addEventListener('message', event => {
-				const messageEvent = new CustomEvent('message', {detail: event.data });
-
-				messageEvent.originalEvent = event;
-
-				this.dispatchEvent(messageEvent);
-			});
-
-		});
-	}
-
-	send(input)
-	{
-		this.peerServerChannel.send(input);
-	}
-
-	close()
-	{
-		this.peerServerChannel.close()
-	}
-
-	answer(offer)
-	{
-		this.peerServer.setRemoteDescription(offer);
-
-		this.peerServer.createAnswer(
-			answer => this.peerServer.setLocalDescription(answer)
-			, error => console.error(error)
-		);
 	}
 }

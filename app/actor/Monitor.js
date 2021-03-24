@@ -47,28 +47,23 @@ export class Monitor extends PointActor
 	{
 		super.collideA(other, type);
 
-		if(
-			type !== 2
+		if(type !== 2
+			&& ((other.public.ySpeed > 0 && other.y < this.y) || other.public.rolling)
 			&& (!this.public.falling || this.public.float === -1)
-			&& (
-				(other.public.ySpeed > 0 && other.y < this.y)
-				|| other.public.rolling
-			)
-			&& this.viewport
 			&& !this.public.gone
+			&& this.viewport
 		){
 			this.pop(other);
+			return;
 		}
-		else if(
-			(type === 1 || type === 3)
-			&& ((Math.abs(other.args.xSpeed) > 15
-				|| (Math.abs(other.args.gSpeed) > 15))
-				|| (other instanceof Projectile)
-			)
-			&& this.viewport
+
+		if((type === 1 || type === 3)
+			&& (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof Projectile)
 			&& !this.public.gone
+			&& this.viewport
 		){
 			this.pop(other)
+			return;
 		}
 	}
 

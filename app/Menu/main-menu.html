@@ -1,78 +1,58 @@
 <div class = "screen-card screen-card-[[cardName]] [[animation]]">
+
 	<div class = "menu-scroller"></div>
-	<div class = "menu-container">
-		<div>Sonic 3000</div>
-		<ul cv-ref = "bound" cv-each = "items:item:title">
-			<li class = "[[item.available]]" cv-on = "click:run(item)" tabindex="0">[[title]]</
-				elementsli>
-		</ul>
-	</div>
+
 	[[warp]]
+
+	<section class = "contents" cv-if = "!connected">
+		<div class = "menu-container">
+			<div>Sonic 3000</div>
+			<ul cv-ref = "bound" cv-each = "items:item:title">
+				<li class = "[[item.available]]" cv-on = "click:run(item)" tabindex="0">[[title]]</li>
+			</ul>
+		</div>
+	</section>
 
 	<section class = "contents" cv-if = "!connected">
 
 		<section class = "contents" cv-if = "hostGame">
+			<div class = "token-exchange" data-have-token = "[[haveToken]]">
 
-			<div class = "token-exchange">
-
-				<label cv-if = "!haveToken">
+				<label>
 					<p>Input the token from your friend here.</p>
-					<textarea cv-bind = "input"></textarea>
+					<textarea cv-bind = "input" cv-on = "click:paste(event)"></textarea>
 					<button cv-on = "click:answer">go!</button>
 				</label>
 
-				<label cv-if = "haveToken">
+				<label>
 					<p>Send this token to your friend to get started.</p>
-					<textarea cv-on = "click:select" cv-ref = "hostOutput" cv-bind = "hostOutput" readonly = "true"></textarea>
-					<button cv-on = "click:copy">copy</button>
+					<textarea cv-on = "click:copy" cv-ref = "hostOutput" cv-bind = "hostOutput" readonly = "true"></textarea>
+					<button cv-on = "click:copy">[[copy]]</button>
+
+					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
 
 			</div>
-
 		</section>
 
 		<section class = "contents" cv-if = "joinGame">
-
 			<div class = "token-exchange">
 
 				<label cv-if = "haveToken">
 					<p>Send this token to your friend to get started.</p>
-					<textarea cv-on = "click:select" cv-ref = "joinOutput" cv-bind = "joinOutput" readonly = "true"></textarea>
-					<button cv-on = "click:copy">copy</button>
+					<textarea cv-on = "click:copy" cv-ref = "joinOutput" cv-bind = "joinOutput" readonly = "true"></textarea>
+					<button cv-on = "click:copy">[[copy]]</button>
 				</label>
 
 				<label cv-if = "haveToken">
 					<p>Input the token they send back here.</p>
-					<textarea cv-bind = "input"></textarea>
+					<textarea cv-bind = "input" cv-on = "click:paste(event)"></textarea>
 					<button cv-on = "click:accept">go!</button>
+					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
 
 			</div>
-
 		</section>
 
 	</section>
-
-	<section class = "contents" cv-if = "connected">
-
-		<div class = "chatbox">
-
-			<b>Chat</b>
-
-			<div class = "chat-output" cv-each = "outputLines:line" cv-ref = "chatOutput">
-				<p>[[line]]</p>
-			</div>
-
-			<div class = "chat-input">
-				<input cv-bind = "chatInput" cv-ref = "chatInput" cv-on = "keydown:send(event)">
-				<button cv-on = "click:send">send</button>
-			</div>
-
-		</div>
-
-	</section>
-
-
 </div>
-
-

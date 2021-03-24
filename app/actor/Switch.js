@@ -53,6 +53,16 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
+		if(other.public.ySpeed < 0)
+		{
+			if(other.public.ySpeed === 0 && other.y > this.y )
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		if(this.public.active && other.y < this.y)
 		{
 			return true;
@@ -72,17 +82,15 @@ export class Switch extends PointActor
 				this.activate();
 			}
 
-			this.args.active = true;
-
 			this.activator = other;
 
 			this.ignore = 16;
 
 			const top = this.y - this.public.height;
 
-			if(other.args.y > top && !other.public.falling)
+			if(other.y > top && !other.public.falling)
 			{
-				other.args.y = top;
+				other.y = top;
 			}
 
 			if(type === 1 || type === 3)
@@ -127,7 +135,10 @@ export class Switch extends PointActor
 			const layer   = this.viewport.args.layers[ layerId ];
 
 			layer.args.destroyed = true;
+
 		}
+
+		this.args.active = true;
 	}
 
 	beep()

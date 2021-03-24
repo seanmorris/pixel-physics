@@ -3,8 +3,8 @@ import { Card } from '../intro/Card';
 import { Cylinder } from '../effects/Cylinder';
 import { Pinch } from '../effects/Pinch';
 
-import { RtcClient } from '../network/RtcClient';
-import { RtcServer } from '../network/RtcServer';
+// import { RtcClient } from '../network/RtcClient';
+// import { RtcServer } from '../network/RtcServer';
 
 // import { ElasticOut } from 'curvature/animate/ease/ElasticOut';
 
@@ -16,99 +16,48 @@ export class MainMenu extends Card
 	{
 		super(args,parent);
 
-		this.args.haveToken = false;
-		this.args.joinGame  = false;
-		this.args.hostGame  = false;
-
-		this.args.outputLines = [];
-
 		this.args.cardName = 'main-menu';
 
-		const unavailable = 'unavailable';
+		this.args.haveToken = false;
+
+		this.args.joinGame  = false;
+		this.args.hostGame  = false;
+		this.args.copy      = 'copy';
+
+		this.refreshConnection();
 
 		this.args.items = {
-			'Single Player': {
-				available: 'available'
-				, callback: () => this.remove()
-			}
+
+			'Single Player': { available: 'available', callback: () => this.remove() }
+
 			, 'Direct Connect': {
-
 				children: {
-
 					'Host a game': {
-
 						callback: () => {
-
-							this.server = new RtcServer;
-
-							this.server.addEventListener('open', () => {
-								this.args.connected = true;
-							});
-
-							this.server.addEventListener('close', () => {
-								this.args.connected = false;
-							});
-
-							this.server.addEventListener('message', event => {
-								this.args.outputLines.push(`> ${event.detail}`);
-
-								this.onNextFrame(() => {
-									this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
-								});
-							});
-
-							this.args.hostGame = true;
-
-							this.server.answerToken.then(token => {
-
-								const tokenString    = JSON.stringify(token);
-								const encodedToken   = `s3ktp://accept/${btoa(tokenString)}`;
-								this.args.haveToken  = true;
-								this.args.hostOutput = encodedToken;
-
-								console.log(`Server Anwser code: ${encodedToken}`);
-							});
+							this.args.hostOutput = '';
+							this.args.hostGame   = true;
+							this.args.copy       = 'copy';
 						}
-
 					}
 
 					, 'Join a game': {
-
 						callback: () => {
+							this.args.joinOutput = '';
+							this.args.joinGame   = true;
+							this.args.copy       = 'copy';
 
-							this.client = new RtcClient;
-
-							this.client.addEventListener('open', () => {
-								this.args.connected = true;
-							});
-
-							this.client.addEventListener('close', () => {
-								this.args.connected = false;
-							});
-
-							this.client.addEventListener('message', event => {
-								this.args.outputLines.push(`> ${event.detail}`);
-
-								this.onNextFrame(() => {
-									this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
-								});
-							});
-
-							this.client.offerToken.then(token => {
-
+							this.client.offer().then(token => {
 								const tokenString    = JSON.stringify(token);
 								const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
 								this.args.joinOutput = encodedToken;
-								this.args.joinGame   = true;
 								this.args.haveToken  = true;
 
-								console.log(`Client request code: ${encodedToken}`);
 							});
 						}
-
 					}
 				}
 			}
+
 			, 'Connect To Server': { available: 'unavailable' }
 		};
 
@@ -127,6 +76,33 @@ export class MainMenu extends Card
 		this.bgm.loop = true;
 	}
 
+	clear()
+	{
+		this.args.input      = '';
+		this.args.joinOutput = '';
+		this.args.hostOutput = '';
+	}
+
+	disconnect()
+	{
+		this.clear();
+
+		if(this.args.hostGame)
+		{
+			this.server.close();
+		}
+		else if(this.args.joinGame)
+		{
+			this.client.close();
+		}
+
+		this.args.connected = false;
+		this.args.hostGame  = false;
+		this.args.joinGame  = false;
+
+		this.refreshConnection();
+	}
+
 	onRendered()
 	{
 		const debind = this.parent.args.bindTo('audio', (v) => {
@@ -142,26 +118,27 @@ export class MainMenu extends Card
 
 		const bounds = this.tags.bound;
 
-		const elements = [...bounds.querySelectorAll(this.selector)];
+		this.args.bindTo('items', v => {
 
-		this.listen(elements, 'focus', event => this.currentItem = event.target);
+			if(!v || !Object.keys(v).length)
+			{
+				return;
+			}
 
-		this.listen(elements, 'blur', event => event.target.classList.remove('focused'));
+			const next = this.findNext(this.currentItem, this.tags.bound.node);
 
-		this.args.warp = new Pinch({
-			id:'menu-warp'
-			, scale:  64
-		});
-	}
+			if(next)
+			{
+				this.focus(next);
+			}
 
-	onAttached()
-	{
-		const next = this.findNext(this.currentItem, this.tags.bound.node);
+		}, {frame: 1});
 
-		if(next)
-		{
-			this.focus(next);
-		}
+		this.listen(bounds, 'focus', event => this.currentItem = event.target);
+
+		this.listen(bounds, 'blur', event => event.target.classList.remove('focused'));
+
+		this.args.warp = new Pinch({id:'menu-warp', scale:  64});
 	}
 
 	findNext(current, bounds, reverse = false)
@@ -277,6 +254,8 @@ export class MainMenu extends Card
 		}
 		else if(controller.buttons[1] && controller.buttons[1].time === 1)
 		{
+			this.back();
+
 			this.args.last = 'B';
 		}
 
@@ -298,13 +277,21 @@ export class MainMenu extends Card
 		}
 	}
 
+	back()
+	{
+		if(this.args.items['back'])
+		{
+			this.args.items['back'].callback();
+		}
+
+		this.disconnect();
+	}
+
 	answer()
 	{
 		let offerString = this.args.input;
 
 		const isEncoded = /^s3ktp:\/\/request\/(.+)/.exec(offerString);
-
-		console.log(isEncoded);
 
 		if(isEncoded)
 		{
@@ -313,7 +300,16 @@ export class MainMenu extends Card
 
 		const offer = JSON.parse(offerString);
 
-		this.server.answer(offer);
+		const answer = this.server.answer(offer);
+
+		answer.then(token => {
+			const tokenString    = JSON.stringify(token);
+			const encodedToken   = `s3ktp://accept/${btoa(tokenString)}`;
+			this.args.hostOutput = encodedToken;
+			this.args.haveToken  = true;
+		});
+
+		return answer;
 	}
 
 	accept()
@@ -348,46 +344,66 @@ export class MainMenu extends Card
 	{
 		if(this.args.hostGame)
 		{
+			if(!this.args.input)
+			{
+				return;
+			}
+
 			this.tags.hostOutput.select();
 		}
 		else if(this.args.joinGame)
 		{
+			if(!this.args.joinOutput)
+			{
+				return;
+			}
+
 			this.tags.joinOutput.select();
 		}
 
 		document.execCommand("copy");
+
+		this.args.copy = 'copied!';
 	}
 
-	send(event)
+	paste(event)
 	{
-		if(event && event.key !== 'Enter')
-		{
-			return;
-		}
+		navigator.clipboard.readText().then(copied => {
+			if(this.args.hostGame && copied.match(/^s3ktp:\/\/request\//))
+			{
+				this.args.input = copied;
 
-		const message = this.args.chatInput;
+				this.answer().then(token => {
+					this.copy();
+				});
+			}
 
-		if(!message || !this.args.connected)
-		{
-			return;
-		}
-
-		this.args.outputLines.push(`< ${message}`);
-
-		this.args.chatInput = '';
-
-		this.onNextFrame(() => {
-			this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
-			this.tags.chatInput.focus();
+			if(this.args.joinGame && copied.match(/^s3ktp:\/\/accept\//))
+			{
+				this.args.input = copied;
+				this.accept();
+			}
 		});
+	}
 
-		if(this.args.hostGame)
-		{
-			this.server.send(message);
-		}
-		else if(this.args.joinGame)
-		{
-			this.client.send(message);
-		}
+	refreshConnection()
+	{
+		this.server = this.parent.getServer(true);
+		this.client = this.parent.getClient(true);
+
+		const server = this.server;
+		const client = this.client;
+
+		const onOpen  = event => {
+			this.parent.args.networked = true;
+			this.remove();
+		};
+		const onClose = event => this.disconnect();
+
+		this.listen(server, 'open', onOpen);
+		this.listen(server, 'close', onClose);
+
+		this.listen(client, 'open', onOpen);
+		this.listen(client, 'close', onClose);
 	}
 }

@@ -32,7 +32,7 @@ export class Button
 		this.delta    = Number(pressure - this.pressure).toFixed(3) - 0;
 		this.pressure = Number(pressure).toFixed(3) - 0;
 		this.active   = true;
-		this.time     = this.time > 0 ? this.time : 1;
+		this.time     = this.time > 0 ? this.time : 0;
 	}
 
 	release()

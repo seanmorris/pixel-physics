@@ -1,0 +1,12 @@
+<div class = "chatbox">
+
+	<div class = "chat-output" cv-each = "outputLines:line" cv-ref = "chatOutput">
+		<p>[[line]]</p>
+	</div>
+
+	<div class = "chat-input">
+		<input cv-bind = "chatInput" cv-ref = "chatInput" cv-on = "keydown:send(event)">
+		<button cv-on = "click:send">send</button>
+	</div>
+
+</div>
