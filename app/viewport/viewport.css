@@ -13,6 +13,10 @@ html, body {
 	min-width: 908px;
 }
 
+.contents {
+	display: contents;
+}
+
 .viewport-frame {
 	display: flex;
 	flex-direction: column;

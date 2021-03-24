@@ -24,8 +24,6 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		this.peerClientChannel = this.peerClient.createDataChannel("chat")
 
 		this.peerClientChannel.addEventListener('open', () => {
-			console.log('Remote peer server accepted!');
-
 			this.connected = true;
 
 			const messageEvent = new CustomEvent('open', {detail: event.data });
@@ -36,8 +34,6 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		});
 
 		this.peerClientChannel.addEventListener('close', () => {
-			console.log('Peer reset connection.');
-
 			const messageEvent = new CustomEvent('close', {detail: event.data });
 
 			messageEvent.originalEvent = event;
@@ -46,9 +42,6 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		});
 
 		this.peerClientChannel.addEventListener('message', event => {
-			console.log(event);
-			console.log(`> ${event.data}`);
-
 			const messageEvent = new CustomEvent('message', {detail: event.data });
 
 			messageEvent.originalEvent = event;

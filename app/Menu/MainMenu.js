@@ -3,6 +3,9 @@ import { Card } from '../intro/Card';
 import { Cylinder } from '../effects/Cylinder';
 import { Pinch } from '../effects/Pinch';
 
+import { RtcClient } from '../network/RtcClient';
+import { RtcServer } from '../network/RtcServer';
+
 // import { ElasticOut } from 'curvature/animate/ease/ElasticOut';
 
 export class MainMenu extends Card
@@ -12,6 +15,12 @@ export class MainMenu extends Card
 	constructor(args,parent)
 	{
 		super(args,parent);
+
+		this.args.haveToken = false;
+		this.args.joinGame  = false;
+		this.args.hostGame  = false;
+
+		this.args.outputLines = [];
 
 		this.args.cardName = 'main-menu';
 
@@ -23,17 +32,81 @@ export class MainMenu extends Card
 				, callback: () => this.remove()
 			}
 			, 'Direct Connect': {
-				available: 'unavailable'
-				, children: {
 
-					'Generate Request Token': {
+				children: {
 
-						available: 'unavailable'
-						, children: {a: {}, b: {}, c: {}}
+					'Host a game': {
+
+						callback: () => {
+
+							this.server = new RtcServer;
+
+							this.server.addEventListener('open', () => {
+								this.args.connected = true;
+							});
+
+							this.server.addEventListener('close', () => {
+								this.args.connected = false;
+							});
+
+							this.server.addEventListener('message', event => {
+								this.args.outputLines.push(`> ${event.detail}`);
+
+								this.onNextFrame(() => {
+									this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
+								});
+							});
+
+							this.args.hostGame = true;
+
+							this.server.answerToken.then(token => {
+
+								const tokenString    = JSON.stringify(token);
+								const encodedToken   = `s3ktp://accept/${btoa(tokenString)}`;
+								this.args.haveToken  = true;
+								this.args.hostOutput = encodedToken;
+
+								console.log(`Server Anwser code: ${encodedToken}`);
+							});
+						}
 
 					}
 
-					, 'Input Request Token': { available: 'unavailable' }
+					, 'Join a game': {
+
+						callback: () => {
+
+							this.client = new RtcClient;
+
+							this.client.addEventListener('open', () => {
+								this.args.connected = true;
+							});
+
+							this.client.addEventListener('close', () => {
+								this.args.connected = false;
+							});
+
+							this.client.addEventListener('message', event => {
+								this.args.outputLines.push(`> ${event.detail}`);
+
+								this.onNextFrame(() => {
+									this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
+								});
+							});
+
+							this.client.offerToken.then(token => {
+
+								const tokenString    = JSON.stringify(token);
+								const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
+								this.args.joinOutput = encodedToken;
+								this.args.joinGame   = true;
+								this.args.haveToken  = true;
+
+								console.log(`Client request code: ${encodedToken}`);
+							});
+						}
+
+					}
 				}
 			}
 			, 'Connect To Server': { available: 'unavailable' }
@@ -222,6 +295,99 @@ export class MainMenu extends Card
 			this.args.items = item.children;
 
 			this.args.items['back'] = this.args.items['back'] || back;
+		}
+	}
+
+	answer()
+	{
+		let offerString = this.args.input;
+
+		const isEncoded = /^s3ktp:\/\/request\/(.+)/.exec(offerString);
+
+		console.log(isEncoded);
+
+		if(isEncoded)
+		{
+			offerString = atob(isEncoded[1]);
+		}
+
+		const offer = JSON.parse(offerString);
+
+		this.server.answer(offer);
+	}
+
+	accept()
+	{
+		let answerString = this.args.input;
+
+		const isEncoded = /^s3ktp:\/\/accept\/(.+)/.exec(answerString);
+
+		if(isEncoded)
+		{
+			answerString = atob(isEncoded[1]);
+		}
+
+		const answer = JSON.parse(answerString);
+
+		this.client.accept(answer);
+	}
+
+	select()
+	{
+		if(this.args.hostGame)
+		{
+			this.tags.hostOutput.select();
+		}
+		else if(this.args.joinGame)
+		{
+			this.tags.joinOutput.select();
+		}
+	}
+
+	copy()
+	{
+		if(this.args.hostGame)
+		{
+			this.tags.hostOutput.select();
+		}
+		else if(this.args.joinGame)
+		{
+			this.tags.joinOutput.select();
+		}
+
+		document.execCommand("copy");
+	}
+
+	send(event)
+	{
+		if(event && event.key !== 'Enter')
+		{
+			return;
+		}
+
+		const message = this.args.chatInput;
+
+		if(!message || !this.args.connected)
+		{
+			return;
+		}
+
+		this.args.outputLines.push(`< ${message}`);
+
+		this.args.chatInput = '';
+
+		this.onNextFrame(() => {
+			this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
+			this.tags.chatInput.focus();
+		});
+
+		if(this.args.hostGame)
+		{
+			this.server.send(message);
+		}
+		else if(this.args.joinGame)
+		{
+			this.client.send(message);
 		}
 	}
 }
