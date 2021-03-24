@@ -8,6 +8,71 @@
 		</ul>
 	</div>
 	[[warp]]
+
+	<section class = "contents" cv-if = "!connected">
+
+		<section class = "contents" cv-if = "hostGame">
+
+			<div class = "token-exchange">
+
+				<label cv-if = "!haveToken">
+					<p>Input the token from your friend here.</p>
+					<textarea cv-bind = "input"></textarea>
+					<button cv-on = "click:answer">go!</button>
+				</label>
+
+				<label cv-if = "haveToken">
+					<p>Send this token to your friend to get started.</p>
+					<textarea cv-on = "click:select" cv-ref = "hostOutput" cv-bind = "hostOutput" readonly = "true"></textarea>
+					<button cv-on = "click:copy">copy</button>
+				</label>
+
+			</div>
+
+		</section>
+
+		<section class = "contents" cv-if = "joinGame">
+
+			<div class = "token-exchange">
+
+				<label cv-if = "haveToken">
+					<p>Send this token to your friend to get started.</p>
+					<textarea cv-on = "click:select" cv-ref = "joinOutput" cv-bind = "joinOutput" readonly = "true"></textarea>
+					<button cv-on = "click:copy">copy</button>
+				</label>
+
+				<label cv-if = "haveToken">
+					<p>Input the token they send back here.</p>
+					<textarea cv-bind = "input"></textarea>
+					<button cv-on = "click:accept">go!</button>
+				</label>
+
+			</div>
+
+		</section>
+
+	</section>
+
+	<section class = "contents" cv-if = "connected">
+
+		<div class = "chatbox">
+
+			<b>Chat</b>
+
+			<div class = "chat-output" cv-each = "outputLines:line" cv-ref = "chatOutput">
+				<p>[[line]]</p>
+			</div>
+
+			<div class = "chat-input">
+				<input cv-bind = "chatInput" cv-ref = "chatInput" cv-on = "keydown:send(event)">
+				<button cv-on = "click:send">send</button>
+			</div>
+
+		</div>
+
+	</section>
+
+
 </div>
 
 
