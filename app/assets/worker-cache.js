@@ -1,6 +1,6 @@
 self.addEventListener('install', (event) => {
 	event.waitUntil(
-		caches.open('static').then((cache) => {
+		caches.open('sonic-3k-static').then((cache) => {
 			return cache.addAll(
 				[
 					'/app.css'
@@ -17,13 +17,20 @@ const forceRefresh  = true;
 
 self.addEventListener('fetch', (event) => {
 
+	const request = event.request;
+
+	if(request.cache === 'only-if-cached' && request.mode !== 'same-origin')
+	{
+		return;
+	}
+
 	const eventResponse = caches.open('static').then((cache) => {
 
-		return cache.match(event.request).then((cacehedResponse) => {
+		return cache.match(request).then((cacehedResponse) => {
 
-			const refreshFetch = fetch(event.request).then((refreshReponse) => {
+			const refreshFetch = fetch(request).then((refreshReponse) => {
 
-				const reqUrl = new URL(event.request.url);
+				const reqUrl = new URL(request.url);
 
 				if(refreshReponse.status === 200)
 				{
@@ -55,11 +62,9 @@ self.addEventListener('fetch', (event) => {
 
 			return cacehedResponse || refreshFetch;
 		});
-
-		event.respondWith(eventResponse);
 	});
 
-	// event.respondWith(eventResponse);
+	event.respondWith(eventResponse);
 });
 
 self.addEventListener('activate', (event) => {

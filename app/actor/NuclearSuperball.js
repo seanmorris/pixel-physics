@@ -11,7 +11,6 @@ export class NuclearSuperball extends PointActor
 		this.args.accel     = 2;
 		this.args.jumpForce = 20;
 
-
 		this.willStick = true;
 		this.stayStuck = true;
 	}

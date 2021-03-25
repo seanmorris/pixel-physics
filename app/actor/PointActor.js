@@ -1583,8 +1583,6 @@ export class PointActor extends View
 			{
 				const dropBoost = this.dropDashCharge * Math.sign(this.public.xSpeed || this.public.direction);
 
-				console.log('Drop boost %f', dropBoost);
-
 				this.args.gSpeed += dropBoost;
 
 				const viewport = this.viewport;

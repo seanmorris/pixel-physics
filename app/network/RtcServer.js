@@ -55,13 +55,21 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 				, error => console.error(error)
 			);
 
+			const candidates = new Set;
+
 			this.peerServer.addEventListener('icecandidate', event => {
+
 				if(!event.candidate)
 				{
 					return;
 				}
+				else
+				{
+					candidates.add(event.candidate);
+				}
 
 				accept(this.peerServer.localDescription);
+
 			});
 		});
 	}

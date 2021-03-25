@@ -18,7 +18,7 @@ export class PauseMenu extends Menu
 
 		this.args.items = {
 			'Continue': { callback: () => parent.args.paused = false }
-			, 'Quit': { available: 'unavailable' }
+			, 'Quit': { callback: () => parent.quit() }
 		};
 	}
 }
