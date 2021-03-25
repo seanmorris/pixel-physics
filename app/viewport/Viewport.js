@@ -1157,7 +1157,7 @@ export class Viewport extends View
 			minutes = Number(minutes);
 		}
 
-		if(!this.args.started)
+		if(!this.args.started || (this.args.paused && !this.args.networked))
 		{
 			if(this.args.titlecard)
 			{
