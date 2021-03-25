@@ -428,6 +428,10 @@ export class PointActor extends View
 		}
 
 		this.listen('click', ()=>{
+			if(!this.viewoirt.args.networked)
+			{
+				return;
+			}
 
 			if(!this.controllable)
 			{

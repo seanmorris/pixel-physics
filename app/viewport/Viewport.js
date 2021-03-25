@@ -49,6 +49,9 @@ import { Classifier } from '../Classifier';
 
 import { ChatBox } from '../network/ChatBox';
 
+import { Sonic } from '../actor/Sonic';
+import { Tails } from '../actor/Tails';
+
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
@@ -524,9 +527,26 @@ export class Viewport extends View
 		this.args.backdrop = new Backdrop;
 
 		this.tileMap.ready.then(() => {
-			if(!this.args.populated && !this.args.networked)
+
+			if(this.args.populated)
+			{
+				return;
+			}
+
+			if(!this.args.networked)
 			{
 				this.populateMap();
+			}
+			else
+			{
+				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1800});
+				const tails = new Tails({name:'Player 2', x: 1400, y: 1800});
+
+				sonic.render(this.tags.actors);
+				tails.render(this.tags.actors);
+
+				this.actors.add(sonic);
+				this.actors.add(tails);
 			}
 		});
 
@@ -589,26 +609,29 @@ export class Viewport extends View
 			this.fullscreen();
 		}
 
-		if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
+		if(!this.args.networked)
 		{
-			this.playableIterator = this.playableIterator || this.playable.entries();
-
-			let next = this.playableIterator.next();
-
-			if(next.done)
+			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
 			{
-				this.playableIterator = false;
+				this.playableIterator = this.playableIterator || this.playable.entries();
 
-				this.playableIterator = this.playable.entries();
+				let next = this.playableIterator.next();
 
-				next = this.playableIterator.next();
-			}
+				if(next.done)
+				{
+					this.playableIterator = false;
 
-			if(next.value)
-			{
-				this.nextControl = next.value[0];
+					this.playableIterator = this.playable.entries();
 
-				this.dontSwitch = 3;
+					next = this.playableIterator.next();
+				}
+
+				if(next.value)
+				{
+					this.nextControl = next.value[0];
+
+					this.dontSwitch = 3;
+				}
 			}
 		}
 
@@ -1234,7 +1257,7 @@ export class Viewport extends View
 			this.controlActor.crawling = false;
 			this.controlActor.running  = false;
 		}
-		else
+		else if(!this.args.networked)
 		{
 			const actors = this.actors.list;
 
@@ -1245,8 +1268,13 @@ export class Viewport extends View
 				this.playableIterator.next();
 			}
 
-
 			this.nextControl = this.nextControl || actors[0];
+		}
+		else if(this.args.networked)
+		{
+			const actors = this.actors.list;
+
+			this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
 		}
 
 		this.updateStarted.clear();
@@ -1520,6 +1548,20 @@ export class Viewport extends View
 		this.args.moveCard = this.moveCard;
 
 		this.collisions = new WeakMap;
+
+		if(this.args.networked)
+		{
+			const netState = this.serializePlayer();
+
+			if(this.args.playerId === 1)
+			{
+				this.server.send(JSON.stringify(netState));
+			}
+			else if(this.args.playerId === 2)
+			{
+				this.client.send(JSON.stringify(netState));
+			}
+		}
 	}
 
 	click(event)
@@ -1830,9 +1872,42 @@ export class Viewport extends View
 		};
 
 		const server = (!refresh && server) || new RtcServer(rtcConfig);
-		const onOpen = event => this.args.chatBox = new ChatBox({pipe: server});
+
+		const onOpen = event => {
+			// this.args.chatBox  = new ChatBox({pipe: server});
+			// const actors = this.actors.list;
+
+			// if(actors[1])
+			// {
+			// 	actors[1].args.name = 'Player 2';
+			// }
+
+			this.args.playerId = 1;
+		};
+
+		const onMessage = event => {
+			const actors = this.actors.list;
+
+			if(actors[1])
+			{
+				const frame = JSON.parse(event.detail);
+				const actor = actors[1];
+
+				if(frame.input)
+				{
+					actor.controller.replay(frame.input);
+					actor.readInput();
+				}
+
+				if(frame.args)
+				{
+					Object.assign(actor.args, frame.args);
+				}
+			}
+		};
 
 		this.listen(server, 'open', onOpen, {once:true});
+		this.listen(server, 'message', onMessage);
 
 		this.server = server;
 
@@ -1849,12 +1924,74 @@ export class Viewport extends View
 		};
 
 		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
-		const onOpen = event => this.args.chatBox = new ChatBox({pipe: client});
+
+		const onOpen = event => {
+			// const actors = this.actors.list;
+			// this.args.chatBox = new ChatBox({pipe: client});
+			// if(actors[0])
+			// {
+			// 	actors[0].args.name = 'Player 1';
+			// }
+
+			this.args.playerId = 2;
+
+		};
+
+		const onMessage = event => {
+			const actors = this.actors.list;
+
+			if(actors[0])
+			{
+				const frame = JSON.parse(event.detail);
+				const actor = actors[0];
+
+				if(frame.input)
+				{
+					actor.controller.replay(frame.input);
+					actor.readInput();
+				}
+
+				if(frame.args)
+				{
+					Object.assign(actor.args, frame.args);
+				}
+			}
+		};
+
 
 		this.listen(client, 'open', onOpen, {once:true});
+		this.listen(client, 'message', onMessage);
 
 		this.client = client;
 
 		return client;
+	}
+
+	serializePlayer()
+	{
+		const frame = this.args.frameId;
+		const input = this.controlActor.controller.serialize();
+		const args  = {
+
+			x: this.controlActor.public.x
+			, y: this.controlActor.public.y
+
+			, gSpeed: this.controlActor.public.gSpeed
+			, xSpeed: this.controlActor.public.xSpeed
+			, ySpeed: this.controlActor.public.ySpeed
+
+			, direction: this.controlActor.public.direction
+			, facing: this.controlActor.public.facing
+
+			, falling: this.controlActor.public.falling
+			, jumping: this.controlActor.public.jumping
+			, flying:  this.controlActor.public.flying
+			, float:   this.controlActor.public.float
+			, mode:    this.controlActor.public.mode
+
+			, groundAngle: this.controlActor.public.groundAngle
+		};
+
+		return {frame, input, args};
 	}
 }
