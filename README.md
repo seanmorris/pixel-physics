@@ -22,7 +22,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 ** The controls below are specifically for gamepads. You can translate them to keyboard controls with the following table: **
 
 * A/✕ - space
-* B/◯ - shift
+* B/○ - shift
 * X/□ - ctrl
 * Y/△ - z
 * L1 - q
@@ -32,7 +32,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 * A/✕ - Jump
 * A/✕ - stick/kick wall (hold/release while airborne)
-* B/◯  - spindash
+* B/○  - spindash
 * ↓ - roll (while moving)
 * X/□/□ - light dash (while airborne)
 * Y/△ - super transform
@@ -52,7 +52,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * ↓ - roll (while moving)
 * A/✕ - glide (while airborne)
 * ↓ - glide cancel (while airborne)
-* B/◯  - punch
+* B/○  - punch
 * X/□ - throw bomb
 
 ### Robotnik
@@ -79,7 +79,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 Tail's rocket plane is fully functional here. Make sure you pull up the landing gear or it will be tough to control.
 
 * A/✕ - Jump
-* B/◯  - toggle landing gear
+* B/○  - toggle landing gear
 * X/□ - fire rocket
 
 ### Egg Mobile
