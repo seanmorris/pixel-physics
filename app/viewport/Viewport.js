@@ -17,6 +17,7 @@ import { TitleScreenCard } from '../intro/TitleScreenCard';
 import { LoadingCard } from '../intro/LoadingCard';
 import { BootCard } from    '../intro/BootCard';
 import { SeanCard } from    '../intro/SeanCard';
+import { PauseMenu } from   '../Menu/PauseMenu.js';
 import { MainMenu } from    '../Menu/MainMenu.js';
 
 import { LayerSwitch } from '../actor/LayerSwitch';
@@ -90,7 +91,7 @@ export class Viewport extends View
 
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
 
-			// , new BootCard({timeout: 2500})
+			, new BootCard({timeout: 2500})
 
 			, new SeanCard({timeout: 5000}, this)
 
@@ -102,9 +103,12 @@ export class Viewport extends View
 				firstLine:    'PIXEL HILL'
 				, secondLine: 'ZONE'
 				, creditLine: 'Sean Morris'
+				, waitFor:    this.tileMap.ready
 			}, this)
 
 		]});
+
+		this.args.pauseMenu = new PauseMenu({}, this);
 
 		this.particles = new Bag;
 		this.effects   = new Bag;
@@ -166,7 +170,7 @@ export class Viewport extends View
 		this.emeralds = new CharacterString({value:'0/7'});
 
 		this.args.emeralds = new HudFrame({value:this.emeralds, type: 'emerald-frame'});
-		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.000'})});
+		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.00'})});
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
 
@@ -469,7 +473,10 @@ export class Viewport extends View
 			}
 		});
 
-		this.args.titlecard.play().then((done) => this.onNextFrame(() => this.startLevel()));
+		this.args.titlecard.play().then((done) => {
+			this.startLevel()
+			this.update();
+		});
 
 		this.tags.frame.style({
 			'--width': this.args.width
@@ -520,7 +527,6 @@ export class Viewport extends View
 	{
 		this.args.started = true;
 		this.args.paused  = false;
-		this.startTime    = Date.now();
 
 		this.args.level = 'level';
 
@@ -539,15 +545,20 @@ export class Viewport extends View
 			}
 			else
 			{
-				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1800});
-				const tails = new Tails({name:'Player 2', x: 1400, y: 1800});
+				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
+				const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
 
 				sonic.render(this.tags.actors);
 				tails.render(this.tags.actors);
 
+				this.auras.add(sonic);
+				this.auras.add(tails);
+
 				this.actors.add(sonic);
 				this.actors.add(tails);
 			}
+
+			this.startTime = Date.now();
 		});
 
 	}
@@ -609,7 +620,7 @@ export class Viewport extends View
 			this.fullscreen();
 		}
 
-		if(!this.args.networked)
+		if(!this.args.networked && !this.args.paused)
 		{
 			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
 			{
@@ -637,31 +648,36 @@ export class Viewport extends View
 
 		if(this.args.started)
 		{
-			this.args.currentSheild = this.controlActor.public.currentSheild
-				? this.controlActor.public.currentSheild.type
-				: '';
-
-			if(controller.buttons[9] && controller.buttons[9].time === 1)
+			if(this.controlActor)
 			{
+				this.args.currentSheild = this.controlActor.public.currentSheild
+					? this.controlActor.public.currentSheild.type
+					: '';
+			}
+
+			if(controller.buttons[9]
+				&& controller.buttons[9].active
+				&& controller.buttons[9].time === 1
+			){
 				this.args.paused = !this.args.paused;
 			}
-		}
 
-		if(this.controlActor && this.args.isRecording)
-		{
-			const frame = this.args.frameId;
-			const input = controller.serialize();
-			const args  = {
-				[this.controlActor.public.id]: {
-					x: this.controlActor.public.x
-					, y: this.controlActor.public.y
-					, gSpeed: this.controlActor.public.gSpeed
-					, xSpeed: this.controlActor.public.xSpeed
-					, ySpeed: this.controlActor.public.ySpeed
-				}
-			};
+			if(this.controlActor && this.args.isRecording)
+			{
+				const frame = this.args.frameId;
+				const input = controller.serialize();
+				const args  = {
+					[this.controlActor.public.id]: {
+						x: this.controlActor.public.x
+						, y: this.controlActor.public.y
+						, gSpeed: this.controlActor.public.gSpeed
+						, xSpeed: this.controlActor.public.xSpeed
+						, ySpeed: this.controlActor.public.ySpeed
+					}
+				};
 
-			this.replayInputs.push({frame, input, args});
+				this.replayInputs.push({frame, input, args});
+			}
 		}
 
 		controller.update();
@@ -728,37 +744,32 @@ export class Viewport extends View
 		const jumping = this.controlActor.public.jumping;
 
 		const dragSpeedX   = 2;
-		const dragSpeedY   = jumping ? 1.25 : 5;
-		const maxDragX     = 48;
+		const dragSpeedY   = this.args.jumping ? 1: 3;
+		const maxDragX     = 128;
 		const maxDragYDown = 48;
-		const maxDragY     = 16;
+		const maxDragY     = 24;
 
 		this.args.x = xNext;
 
-		// if(!jumping)
-		// {
-		// }
-		// else
-		// {
-		// 	if(this.args.x !== xNext)
-		// 	{
-		// 		const drag = this.args.x - xNext;
-		// 		const abs  = Math.abs(drag);
+		if(this.args.x !== xNext)
+		{
+			const drag = this.args.x - xNext;
+			const abs  = Math.abs(drag);
+			const step = drag / 64;
 
-		// 		if(abs > maxDragX)
-		// 		{
-		// 			this.args.x = xNext + maxDragX * Math.sign(drag);
-		// 		}
-		// 		else if(abs > dragSpeedX)
-		// 		{
-		// 			this.args.x -= Math.sign(drag) * dragSpeedX;
-		// 		}
-		// 		else
-		// 		{
-		// 			this.args.x = xNext;
-		// 		}
-		// 	}
-		// }
+			if(abs > maxDragX)
+			{
+				this.args.x -= Math.sign(drag) * maxDragX;
+			}
+			else if(Math.abs(step) < 1)
+			{
+				this.args.x = step * dragSpeedX;
+			}
+			else
+			{
+				this.args.x = xNext;
+			}
+		}
 
 		if(this.args.y < yNext)
 		{
@@ -1157,17 +1168,33 @@ export class Viewport extends View
 			minutes = Number(minutes);
 		}
 
-		if(!this.args.started || (this.args.paused && !this.args.networked))
+		const controller = this.controlActor
+			? this.controlActor.controller
+			: this.controller;
+
+		if(!this.args.started)
 		{
+			this.takeInput(controller);
+
+			this.startTime = Date.now();
+
 			if(this.args.titlecard)
 			{
-				this.args.titlecard.input(this.controller);
+				this.args.titlecard.input(controller);
 			}
-
-			this.takeInput(this.controller);
 
 			return;
 		}
+		else if(this.args.paused && !this.args.networked)
+		{
+			this.takeInput(controller);
+
+			this.args.pauseMenu.input(controller);
+
+			return;
+		}
+
+		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		if(this.dontSwitch > 0)
 		{
@@ -1178,8 +1205,6 @@ export class Viewport extends View
 		{
 			this.dontSwitch = 0;
 		}
-
-		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
 
 		this.args.rippleFrame = this.args.frameId % 128;
 
@@ -1820,8 +1845,6 @@ export class Viewport extends View
 		this.nextControl = Object.values(this.args.actors)[0];
 
 		this.tags.viewport.focus();
-
-		this.startTime = Date.now();
 	}
 
 	record()
@@ -1992,9 +2015,11 @@ export class Viewport extends View
 			, facing: this.controlActor.public.facing
 
 			, falling: this.controlActor.public.falling
+			, rolling: this.controlActor.public.rolling
 			, jumping: this.controlActor.public.jumping
 			, flying:  this.controlActor.public.flying
 			, float:   this.controlActor.public.float
+			, angle:   this.controlActor.public.angle
 			, mode:    this.controlActor.public.mode
 
 			, groundAngle: this.controlActor.public.groundAngle

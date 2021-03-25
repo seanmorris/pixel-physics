@@ -385,7 +385,6 @@
 	}
 }
 
-
 .actor-layer-switch .sprite {
 	background-color: yellow;
 	opacity: 0.5;
@@ -393,4 +392,8 @@
 
 .actor-selected .labels {
 	display: none;
+}
+
+.actor-generic .sheild {
+	transform: translate(-66%, -100%);
 }
