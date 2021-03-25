@@ -87,26 +87,7 @@ export class Viewport extends View
 
 		const ready = this.tileMap.ready;
 
-		this.args.titlecard = new Series({cards: [
-
-			new LoadingCard({timeout: 350, text: 'loading'}, this)
-
-			, new BootCard({timeout: 2500})
-
-			, new SeanCard({timeout: 5000}, this)
-
-			, new TitleScreenCard({timeout: 50000, waitFor: ready}, this)
-
-			, new MainMenu({timeout: -1}, this)
-
-			, new Titlecard({
-				firstLine:    'PIXEL HILL'
-				, secondLine: 'ZONE'
-				, creditLine: 'Sean Morris'
-				, waitFor:    this.tileMap.ready
-			}, this)
-
-		]});
+		this.args.titlecard = new Series({cards: this.introCards()});
 
 		this.args.pauseMenu = new PauseMenu({}, this);
 
@@ -558,9 +539,28 @@ export class Viewport extends View
 				this.actors.add(tails);
 			}
 
+			if(!this.args.networked)
+			{
+				const actors = this.actors.list;
+
+				if(!this.playableIterator)
+				{
+					this.playableIterator = this.playable.entries();
+
+					this.playableIterator.next();
+				}
+
+				this.nextControl = this.nextControl || actors[0];
+			}
+			else if(this.args.networked)
+			{
+				const actors = this.actors.list;
+
+				this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
+			}
+
 			this.startTime = Date.now();
 		});
-
 	}
 
 	takeInput(controller)
@@ -940,7 +940,7 @@ export class Viewport extends View
 
 		this.tags.content.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 
-		Object.assign(this.args.backdrop.args, ({
+		this.args.backdrop && Object.assign(this.args.backdrop.args, ({
 			'x': Math.round(this.args.x)
 			, 'y': Math.round(this.args.y)
 			, 'xMax': xMax
@@ -1284,25 +1284,6 @@ export class Viewport extends View
 			this.controlActor.crawling = false;
 			this.controlActor.running  = false;
 		}
-		else if(!this.args.networked)
-		{
-			const actors = this.actors.list;
-
-			if(!this.playableIterator)
-			{
-				this.playableIterator = this.playable.entries();
-
-				this.playableIterator.next();
-			}
-
-			this.nextControl = this.nextControl || actors[0];
-		}
-		else if(this.args.networked)
-		{
-			const actors = this.actors.list;
-
-			this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
-		}
 
 		this.updateStarted.clear();
 		this.updated.clear();
@@ -1576,7 +1557,7 @@ export class Viewport extends View
 
 		this.collisions = new WeakMap;
 
-		if(this.args.networked)
+		if(this.args.networked && this.controlActor)
 		{
 			const netState = {frame:this.serializePlayer()};
 
@@ -1847,6 +1828,118 @@ export class Viewport extends View
 		this.nextControl = Object.values(this.args.actors)[0];
 
 		this.tags.viewport.focus();
+	}
+
+	quit()
+	{
+		for(const i in this.actors.list)
+		{
+			const actor = this.actors.list[i];
+
+			this.actors.remove(actor);
+		}
+
+		this.args.isRecording = false;
+		this.args.isReplaying = false;
+
+		this.playableIterator = false;
+
+		this.args.populated = false;
+		this.args.paused    = false;
+		this.args.started   = false;
+		this.controlActor   = null;
+		this.args.frameId   = -1;
+
+		this.emeralds.args.value = 0;
+		this.rings.args.value    = 0;
+		this.coins.args.value    = 0;
+
+		this.args.hasRings    = false;
+		this.args.hasCoins    = false;
+		this.args.hasEmeralds = false;
+
+		this.args.char.args.value = '';
+		this.args.charName        = '';
+
+		const layers = this.args.layers;
+		const layerCount = layers.length;
+
+		for(let i = 0; i < layerCount; i++)
+		{
+			if(!layers[i])
+			{
+				continue;
+			}
+
+			const layer = layers[i];
+
+			layer.remove();
+		}
+
+		this.args.layers = [];
+
+		// this.args.backdrop = null;
+
+		this.args.titlecard = new Series({cards: this.homeCards()});
+
+		this.args.titlecard.play().then((done) => {
+			if(!this.args.networked)
+			{
+				this.populateMap();
+
+				const actors = this.actors.list;
+
+				if(!this.playableIterator)
+				{
+					this.playableIterator = this.playable.entries();
+
+					const item = this.playableIterator.next();
+
+					this.nextControl = item.value[0];
+				}
+
+			}
+			else if(this.args.networked)
+			{
+				const actors = this.actors.list;
+
+				this.nextControl = actors[-1 + this.args.playerId];
+			}
+
+			this.auras.clear();
+
+			this.auras.add(this.nextControl);
+
+			this.nextControl.args.display = 'initial';
+
+			this.startLevel();
+
+			this.update();
+		});
+	}
+
+	introCards()
+	{
+		return [
+			new LoadingCard({timeout: 350, text: 'loading'}, this)
+			, new BootCard({timeout: 3500})
+			, new SeanCard({timeout: 5000}, this)
+			, ...this.homeCards()
+		]
+	}
+
+	homeCards()
+	{
+		return  [
+			new TitleScreenCard({timeout: 50000, waitFor: this.tileMap.ready}, this)
+			, new MainMenu({timeout: -1}, this)
+			, new Titlecard({
+				firstLine:    'PIXEL HILL'
+				, secondLine: 'ZONE'
+				, creditLine: 'Sean Morris'
+				, waitFor:    this.tileMap.ready
+			}, this)
+		];
 	}
 
 	record()

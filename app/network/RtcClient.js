@@ -48,10 +48,23 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 			this.peerClient.setLocalDescription(offer);
 		});
 
+		const candidates = new Set;
+
 		return new Promise(accept => {
 			this.peerClient.addEventListener('icecandidate', event => {
+
+				if(!event.candidate)
+				{
+					return;
+				}
+				else
+				{
+					candidates.add(event.candidate);
+				}
+
 				accept(this.peerClient.localDescription);
-			}, {once: true});
+
+			});
 		});
 	}
 

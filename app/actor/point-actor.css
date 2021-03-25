@@ -12,7 +12,6 @@
 
 .point-actor .labels:not(:empty) {
 	z-index: 1000000;
-	background-color: rgba(0,0,0,0.05);
 	min-width: 100%;
 	padding: 2px;
 	position: absolute;
@@ -395,5 +394,8 @@
 }
 
 .actor-generic .sheild {
-	transform: translate(-66%, -100%);
+	transform: translate(-64%, -100%);
+}
+.actor-generic .bubble-sheild {
+	transform: translate(-42%, -100%);
 }
