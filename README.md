@@ -25,8 +25,8 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅑/ⵔ - shift
 * 🅧/▢ - ctrl
 * 🅨/△ - z
-* L1 - q
-* L2 - e
+* <kbd>L1</kbd> - q
+* <kbd>R1</kbd> - e
 
 ### Sonic
 
@@ -36,8 +36,8 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * ↓ - roll (while moving)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
-* L1 - air dash (while airborne)
-* R1 - air dash (while airborne)
+* <kbd>L1</kbd> - air dash (while airborne)
+* <kbd>R1</kbd> - air dash (while airborne)
 
 ### Tails
 
