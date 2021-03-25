@@ -9,7 +9,7 @@ https://pixel-physics.seanmorr.is/
 
 Use the dpad or the left stick to move around. The right stick allows you to store/switch sheilds.
 
-Press 🅐+<kbd>↑</kbd> to disengage a vehicle.
+Press 🅐+⭡ to disengage a vehicle.
 
 Press TAB or click the right stick to change characters in single player mode.
 
@@ -33,7 +33,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅐/✕ - Jump
 * 🅐/✕ - stick/kick wall (hold/release while airborne)
 * 🅑/ⵔ  - spindash
-* <kbd>↓</kbd> - roll (while moving)
+* ⭣ - roll (while moving)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
 * <kbd>L1</kbd> - air dash (while airborne)
@@ -42,23 +42,23 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 ### Tails
 
 * 🅐/✕ - Jump
-* <kbd>↓</kbd> - roll (while moving)
+* ⭣ - roll (while moving)
 * 🅐/✕ - fly (while airborne)
-* <kbd>↓</kbd> - fly cancel (while airborne)
+* ⭣ - fly cancel (while airborne)
 
 ### Knuckles
 
 * 🅐/✕ - Jump
-* <kbd>↓</kbd> - roll (while moving)
+* ⭣ - roll (while moving)
 * 🅐/✕ - glide (while airborne)
-* <kbd>↓</kbd> - glide cancel (while airborne)
+* ⭣ - glide cancel (while airborne)
 * 🅑/ⵔ  - punch
 * 🅧/▢ - throw bomb
 
 ### Robotnik
 
 * 🅐/✕ - Jump
-* <kbd>↓</kbd> - roll (while moving)
+* ⭣ - roll (while moving)
 * 🅨/△ - super transform
 
 ### Egg Robo
@@ -70,7 +70,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 ### Mecha Sonic
 
 * 🅐/✕ - Jump
-* <kbd>↓</kbd> - roll (while moving)
+* ⭣ - roll (while moving)
 
 ## Vehicles
 
@@ -86,7 +86,7 @@ Tail's rocket plane is fully functional here. Make sure you pull up the landing 
 
 The egg mobile is always hovering. Use it to get up high to areas you wouldn't otherwise be able to access.
 
-* <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> - move
+* ⭠ ⭡ ⭢ ⭣ - move
 
 ### Drill Car
 
