@@ -164,7 +164,7 @@ export class Tails extends PointActor
 
 		this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
 
-		if(this.flyingSound.paused)
+		if(this.viewport.args.audio && this.flyingSound.paused)
 		{
 			this.flyingSound.play();
 		}
