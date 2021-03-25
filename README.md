@@ -7,7 +7,9 @@ https://pixel-physics.seanmorr.is/
 
 ## Basics
 
-Use the dpad or the left stick to move around. The right stick allows you to store/switch sheilds. Press a+↑ to disengage a vehicle.
+Use the dpad or the left stick to move around. The right stick allows you to store/switch sheilds.
+
+Press a+↑ to disengage a vehicle.
 
 Press TAB or click the right stick to change characters in single player mode.
 
