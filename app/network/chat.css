@@ -7,6 +7,8 @@
 	transform: scale(2);
 	transform-origin: bottom left;
 	border: 1px solid #333;
+	border-bottom: none;
+	border-left: none;
 	background-color: rgba(255,255,255,0.75);
 	color: black;
 	position: absolute;

@@ -1551,7 +1551,7 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-			const netState = this.serializePlayer();
+			const netState = {frame:this.serializePlayer()};
 
 			if(this.args.playerId === 1)
 			{
@@ -1874,7 +1874,7 @@ export class Viewport extends View
 		const server = (!refresh && server) || new RtcServer(rtcConfig);
 
 		const onOpen = event => {
-			// this.args.chatBox  = new ChatBox({pipe: server});
+			this.args.chatBox  = new ChatBox({pipe: server});
 			// const actors = this.actors.list;
 
 			// if(actors[1])
@@ -1890,19 +1890,23 @@ export class Viewport extends View
 
 			if(actors[1])
 			{
-				const frame = JSON.parse(event.detail);
+				const packet = JSON.parse(event.detail);
 				const actor = actors[1];
 
-				if(frame.input)
+				if(packet.frame)
 				{
-					actor.controller.replay(frame.input);
-					actor.readInput();
+					if(packet.frame.input)
+					{
+						actor.controller.replay(packet.frame.input);
+						actor.readInput();
+					}
+
+					if(packet.frame.args)
+					{
+						Object.assign(actor.args, packet.frame.args);
+					}
 				}
 
-				if(frame.args)
-				{
-					Object.assign(actor.args, frame.args);
-				}
 			}
 		};
 
@@ -1927,7 +1931,7 @@ export class Viewport extends View
 
 		const onOpen = event => {
 			// const actors = this.actors.list;
-			// this.args.chatBox = new ChatBox({pipe: client});
+			this.args.chatBox = new ChatBox({pipe: client});
 			// if(actors[0])
 			// {
 			// 	actors[0].args.name = 'Player 1';
@@ -1942,19 +1946,23 @@ export class Viewport extends View
 
 			if(actors[0])
 			{
-				const frame = JSON.parse(event.detail);
+				const packet = JSON.parse(event.detail);
 				const actor = actors[0];
 
-				if(frame.input)
+				if(packet.frame)
 				{
-					actor.controller.replay(frame.input);
-					actor.readInput();
+					if(packet.frame.input)
+					{
+						actor.controller.replay(packet.frame.input);
+						actor.readInput();
+					}
+
+					if(packet.frame.args)
+					{
+						Object.assign(actor.args, packet.frame.args);
+					}
 				}
 
-				if(frame.args)
-				{
-					Object.assign(actor.args, frame.args);
-				}
 			}
 		};
 

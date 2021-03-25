@@ -13,14 +13,22 @@ export class ChatBox extends View
 		const onOpen = event => this.args.outputLines = ['You joined the chat.'];
 
 		const onMessage = event => {
-			this.args.outputLines.push(`> ${event.detail}`);
 
-			this.onNextFrame(() => {
-				this.tags.chatOutput && this.tags.chatOutput.scrollTo(0, this.tags.chatOutput.scrollHeight);
-			});
+			const packet = JSON.parse(event.detail);
+
+			if(packet.message)
+			{
+				this.args.outputLines.push(`> ${packet.message}`);
+
+				this.onNextFrame(() => {
+					const chatOutput = this.tags.chatOutput;
+
+					chatOutput && chatOutput.scrollTo(0, chatOutput.scrollHeight);
+				});
+			}
 		};
 
-		this.listen(args.pipe, 'open',    onOpen);
+		this.listen(args.pipe, 'open', onOpen);
 		this.listen(args.pipe, 'message', onMessage);
 	}
 
@@ -48,6 +56,6 @@ export class ChatBox extends View
 			tag.focus();
 		});
 
-		this.args.pipe.send(message);
+		this.args.pipe.send(JSON.stringify({ message }));
 	}
 }
