@@ -87,15 +87,15 @@ export class Spring extends PointActor
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
+		other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+		other.args.direction = Math.sign(this.public.gSpeed);
+		this.onTimeout(64,()=>{
+			this.active = false;
+		});
 
 		this.active = true;
-		this.onTimeout(64,()=>{
-			other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
-			other.args.direction = Math.sign(this.public.gSpeed);
-			this.onTimeout(64,()=>{
-				this.active = false;
-			});
-		});
+
+		other.args.ignore = 5;
 	}
 
 	get canStick() { return false; }

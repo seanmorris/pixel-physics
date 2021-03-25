@@ -428,7 +428,8 @@ export class PointActor extends View
 		}
 
 		this.listen('click', ()=>{
-			if(!this.viewoirt.args.networked)
+
+			if(this.viewport.args.networked)
 			{
 				return;
 			}

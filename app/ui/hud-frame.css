@@ -5,6 +5,7 @@
 
 .viewport-frame.level .hud {
 	opacity: 1;
+	z-index: 1000;
 }
 
 .hud-top-left {
