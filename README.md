@@ -74,6 +74,8 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 ## Vehicles
 
+Press 🅐+🠉 to disengage a vehicle.
+
 ### Tornado
 
 Tail's rocket plane is fully functional here. Make sure you pull up the landing gear or it will be tough to control.
