@@ -660,6 +660,8 @@ export class Viewport extends View
 				&& controller.buttons[9].time === 1
 			){
 				this.args.paused = !this.args.paused;
+
+				this.focus();
 			}
 
 			if(this.controlActor && this.args.isRecording)
