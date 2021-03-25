@@ -9,7 +9,7 @@ https://pixel-physics.seanmorr.is/
 
 Use the dpad or the left stick to move around. The right stick allows you to store/switch sheilds.
 
-Press a+↑ to disengage a vehicle.
+Press 🅐+↑ to disengage a vehicle.
 
 Press TAB or click the right stick to change characters in single player mode.
 
@@ -21,55 +21,55 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 ** The controls below are specifically for gamepads. You can translate them to keyboard controls with the following table: **
 
-* A/✕ - space
-* B/○ - shift
-* X/□ - ctrl
-* Y/△ - z
+* 🅐/✕ - space
+* 🅑/ⵔ - shift
+* 🅧/▢ - ctrl
+* 🅨/△ - z
 * L1 - q
 * L2 - e
 
 ### Sonic
 
-* A/✕ - Jump
-* A/✕ - stick/kick wall (hold/release while airborne)
-* B/○  - spindash
+* 🅐/✕ - Jump
+* 🅐/✕ - stick/kick wall (hold/release while airborne)
+* 🅑/ⵔ  - spindash
 * ↓ - roll (while moving)
-* X/□/□ - light dash (while airborne)
-* Y/△ - super transform
+* 🅧/▢ - light dash (while airborne)
+* 🅨/△ - super transform
 * L1 - air dash (while airborne)
 * R1 - air dash (while airborne)
 
 ### Tails
 
-* A/✕ - Jump
+* 🅐/✕ - Jump
 * ↓ - roll (while moving)
-* A/✕ - fly (while airborne)
+* 🅐/✕ - fly (while airborne)
 * ↓ - fly cancel (while airborne)
 
 ### Knuckles
 
-* A/✕ - Jump
+* 🅐/✕ - Jump
 * ↓ - roll (while moving)
-* A/✕ - glide (while airborne)
+* 🅐/✕ - glide (while airborne)
 * ↓ - glide cancel (while airborne)
-* B/○  - punch
-* X/□ - throw bomb
+* 🅑/ⵔ  - punch
+* 🅧/▢ - throw bomb
 
 ### Robotnik
 
-* A/✕ - Jump
+* 🅐/✕ - Jump
 * ↓ - roll (while moving)
-* Y/△ - super transform
+* 🅨/△ - super transform
 
 ### Egg Robo
 
-* A/✕ - Jump
-* A/✕ - fly (while airborne)
-* X/□ - fire projectile
+* 🅐/✕ - Jump
+* 🅐/✕ - fly (while airborne)
+* 🅧/▢ - fire projectile
 
 ### Mecha Sonic
 
-* A/✕ - Jump
+* 🅐/✕ - Jump
 * ↓ - roll (while moving)
 
 ## Vehicles
@@ -78,9 +78,9 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 Tail's rocket plane is fully functional here. Make sure you pull up the landing gear or it will be tough to control.
 
-* A/✕ - Jump
-* B/○  - toggle landing gear
-* X/□ - fire rocket
+* 🅐/✕ - Jump
+* 🅑/ⵔ  - toggle landing gear
+* 🅧/▢ - fire rocket
 
 ### Egg Mobile
 
@@ -90,5 +90,5 @@ The egg mobile is always hovering. Use it to get up high to areas you wouldn't o
 
 ### Drill Car
 
-* A/✕ - Jump
-* A/✕ - fly (while airborne)
+* 🅐/✕ - Jump
+* 🅐/✕ - fly (while airborne)
