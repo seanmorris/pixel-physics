@@ -37,6 +37,7 @@ import { ClickSwitch } from '../ui/ClickSwitch';
 import { Console as Terminal } from 'subspace-console/Console';
 
 import { Input as InputTask } from '../console/task/Input';
+import { Impulse as ImpulseTask } from '../console/task/Impulse';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
 
@@ -321,15 +322,16 @@ export class Viewport extends View
 						, path:{
 							'input': InputTask
 							, 'move': MoveTask
+							, 'impulse': ImpulseTask
 							, 'pos': PosTask
 							, 'client': RtcClientTask
 							, 'server': RtcServerTask
 						}
 					});
 
-					this.args.subspace.tasks.bindTo((v,k) => {
-						console.log(k,v);
-					});
+					// this.args.subspace.tasks.bindTo((v,k) => {
+					// 	console.log(k,v);
+					// });
 				}
 
 				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
@@ -427,6 +429,7 @@ export class Viewport extends View
 
 	onAttached(event)
 	{
+		ImpulseTask.viewport = this;
 		InputTask.viewport = this;
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;

@@ -24,17 +24,19 @@ self.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	const eventResponse = caches.open('static').then((cache) => {
+	const eventResponse = caches.open('sonic-3000').then((cache) => {
 
 		return cache.match(request).then((cacehedResponse) => {
 
-			const refreshFetch = fetch(request).then((refreshReponse) => {
+			const refreshFetch = fetch(request);
+
+			refreshFetch.then((refreshReponse) => {
 
 				const reqUrl = new URL(request.url);
 
 				if(refreshReponse.status === 200)
 				{
-					cache.put(event.request, refreshReponse.clone());
+					// cache.put(event.request, refreshReponse.clone());
 				}
 
 				return refreshReponse;

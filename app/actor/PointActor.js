@@ -1323,7 +1323,7 @@ export class PointActor extends View
 
 				if(!this.args.flying && !this.args.float)
 				{
-					this.args.ignore = -2;
+					// this.args.ignore = -2;
 				}
 			}
 		}
@@ -1392,7 +1392,7 @@ export class PointActor extends View
 		const airPointB = this.castRay(
 			airSpeed + radius
 			, this.public.airAngle
-			, [3, 3]
+			, [0, 3]
 			, (i, point) => {
 				const actors = viewport.actorsAtPoint(point[0], point[1])
 					.filter(x => x.args !== this.args)
@@ -1491,7 +1491,7 @@ export class PointActor extends View
 			const isLeft    = Math.abs(collisionAngle) < Math.PI / 2 && this.public.xSpeed < 0;
 			const isRight   = Math.abs(collisionAngle) < Math.PI / 2 && this.public.xSpeed > 0;
 
-			this.args.ignore = 6;
+			// this.args.ignore = 0;
 
 			const xSpeedOriginal = this.args.xSpeed;
 			const ySpeedOriginal = this.args.ySpeed;
@@ -1744,7 +1744,7 @@ export class PointActor extends View
 					}
 				}
 
-				testX += Math.cos(backAngle);
+				testX -= Math.cos(backAngle);
 				testY -= Math.sin(backAngle);
 
 				iterations++;
@@ -2123,23 +2123,23 @@ export class PointActor extends View
 				switch(this.public.mode)
 				{
 					case MODE_FLOOR:
-						offsetPoint = [columnNumber, 0]
+						offsetPoint = [columnNumber, downFirstSolid]
 						break;
 
 					case MODE_RIGHT:
-						offsetPoint = [0, -columnNumber]
+						offsetPoint = [downFirstSolid, -columnNumber]
 						break;
 
 					case MODE_CEILING:
-						offsetPoint = [-columnNumber, 0]
+						offsetPoint = [-columnNumber, -downFirstSolid]
 						break;
 
 					case MODE_LEFT:
-						offsetPoint = [0, columnNumber]
+						offsetPoint = [-downFirstSolid, columnNumber]
 						break;
 				}
 
-				const upLength = +1 + maxStep * (1 + col);
+				const upLength = +1 + maxStep * (1 + col) + downFirstSolid;
 
 				upFirstSpace = this.castRay(
 					upLength
