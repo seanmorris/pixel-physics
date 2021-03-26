@@ -34,6 +34,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅐/✕ - stick/kick wall (hold/release while airborne)
 * 🅑/ⵔ  - spindash
 * 🠋 - roll (while moving)
+* 🅐/🠋 - dropdash (hold while airborne, release to cancel)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
 * <kbd>L1</kbd> - air dash (while airborne)

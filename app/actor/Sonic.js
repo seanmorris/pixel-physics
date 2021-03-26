@@ -86,6 +86,10 @@ export class Sonic extends PointActor
 				this.args.xSpeed = 0;
 				this.args.ySpeed = 0;
 			}
+			else
+			{
+				this.args.wallSticking = false;
+			}
 		});
 	}
 
@@ -336,6 +340,7 @@ export class Sonic extends PointActor
 		}
 
 		super.update();
+
 	}
 
 	readInput()
@@ -366,8 +371,19 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
-		if(this.dashed)
+		if(this.dashed || this.public.ignore)
 		{
+			return;
+		}
+
+		const dashSpeed = direction * 16;
+
+		const foreDistance = this.scanForward(dashSpeed, false);
+
+		if(foreDistance === 0)
+		{
+			this.dashed = true;
+			this.box.setAttribute('data-animation', 'airdash');
 			return;
 		}
 
@@ -375,7 +391,7 @@ export class Sonic extends PointActor
 
 		if(Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
-			this.public.xSpeed = 0;
+			this.args.xSpeed = 0;
 		}
 
 		if(this.public.ySpeed > 0)
@@ -383,7 +399,7 @@ export class Sonic extends PointActor
 			this.args.ySpeed = 0;
 		}
 
-		this.args.xSpeed = direction * 16;
+		this.args.xSpeed += dashSpeed;
 
 		this.dashTimer = 0;
 
@@ -417,7 +433,7 @@ export class Sonic extends PointActor
 
 			this.willStick = false;
 		}
-		else if(this.public.jumping || this.dashed)
+		else if(!this.public.ignore && (this.public.jumping || this.dashed))
 		{
 			this.dropDashCharge = 0;
 
