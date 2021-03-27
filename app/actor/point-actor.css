@@ -116,8 +116,9 @@
 .actor-item.actor-block .sprite,
 .actor-item.actor-block-marble .sprite {
 	background-image: url(/Sonic/marble-zone-block.png);
-	width: 32px;
-	height: 32px;
+	background-repeat: repeat;
+	/*width: 32px;
+	height: 32px;*/
 }
 
 .actor-item.actor-explosion .sprite {

@@ -37,7 +37,7 @@ export class Switch extends PointActor
 			return;
 		}
 
-		if(!this.activator || this.activator.standingOn !== this)
+		if(!this.activator || this.activator.args.standingOn !== this)
 		{
 			this.args.active = false;
 			this.activator   = null;
@@ -90,7 +90,7 @@ export class Switch extends PointActor
 
 			if(other.y > top && !other.public.falling)
 			{
-				other.y = top;
+				other.args.y = top;
 			}
 
 			if(type === 1 || type === 3)
@@ -149,5 +149,5 @@ export class Switch extends PointActor
 		}
 	}
 
-	get solid() { return true; }
+	get solid() { return this.public.active; }
 }

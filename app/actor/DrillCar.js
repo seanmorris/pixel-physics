@@ -227,5 +227,5 @@ export class DrillCar extends Vehicle
 		this.flyingSound && this.flyingSound.pause();
 	}
 
-	get solid() { return true; }
+	get solid() { return !this.occupant; }
 }

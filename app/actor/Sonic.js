@@ -49,7 +49,7 @@ export class Sonic extends PointActor
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
 
-		this.args.width = 32;
+		this.args.width = 28;
 
 		this.args.normalHeight = 40;
 		this.args.rollingHeight = 23;
@@ -376,9 +376,9 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		const dashSpeed = direction * 16;
+		const dashSpeed = direction * 12;
 
-		const foreDistance = this.scanForward(dashSpeed, false);
+		const foreDistance = this.scanForward(dashSpeed, 0.5);
 
 		if(foreDistance === 0)
 		{
@@ -433,7 +433,7 @@ export class Sonic extends PointActor
 
 			this.willStick = false;
 		}
-		else if(!this.public.ignore && (this.public.jumping || this.dashed))
+		else if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
 
@@ -488,7 +488,9 @@ export class Sonic extends PointActor
 		if(this.public.wallSticking)
 		{
 			this.args.falling = true;
+			this.args.ySpeed  = 0;
 			this.airDash(this.public.mode === 1 ? 1 : -1);
+			this.args.ignore  = -2;
 		}
 	}
 
@@ -756,7 +758,7 @@ export class Sonic extends PointActor
 			dashSpeed = maxDash;
 		}
 
-		const space = this.scanForward(dashSpeed, false);
+		const space = this.scanForward(dashSpeed, 0.5, false);
 
 		if(space && dashSpeed > space)
 		{

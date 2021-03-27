@@ -43,6 +43,11 @@ export class SkidDust extends Behavior
 		const direction = host.public.direction;
 		const viewport  = host.viewport;
 
+		if(viewport.args.frameId % 3 !== 0)
+		{
+			return;
+		}
+
 		const dustParticle = new Tag(`<div class = "${this.dustType}">`);
 
 		const dustPoint = host.rotatePoint(host.public.gSpeed, 0);

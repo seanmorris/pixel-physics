@@ -1,0 +1,21 @@
+<div class = "screen-card screen-card-[[cardName]] [[animation]]">
+
+	<div class = "menu-scroller"></div>
+
+	[[warp]]
+
+	<section class = "contents" cv-if = "!connected">
+
+		<div class = "menu-container">
+
+			<div>Sonic 3000</div>
+
+			<ul cv-ref = "bound" cv-each = "items:item:title">
+				<li class = "[[item.available]]" cv-on = "click:run(item)" tabindex="0">[[title]]</li>
+			</ul>
+
+		</div>
+
+	</section>
+
+</div>

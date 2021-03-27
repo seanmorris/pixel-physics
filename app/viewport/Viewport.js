@@ -219,6 +219,8 @@ export class Viewport extends View
 				}
 
 				this.actorsById[i.args.id] = i;
+
+				this.objectDb.add(i);
 			}
 			else if(a == Bag.ITEM_REMOVED)
 			{
@@ -242,6 +244,8 @@ export class Viewport extends View
 				delete i.controllable[i.args.name];
 				delete this.actorsById[i.args.id];
 				delete i[ColCell];
+
+				this.objectDb.remove(i);
 			}
 		});
 
@@ -251,6 +255,8 @@ export class Viewport extends View
 		const comparator = () => {};
 
 		this.layerDb = new Classifier(critiera, comparator);
+
+		this.objectDb = new Classifier(Object.values(ObjectPalette));
 
 		this.blocks = new Bag;
 
@@ -523,11 +529,7 @@ export class Viewport extends View
 				return;
 			}
 
-			if(!this.args.networked)
-			{
-				this.populateMap();
-			}
-			else
+			if(this.args.networked)
 			{
 				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
 				const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
@@ -541,6 +543,8 @@ export class Viewport extends View
 				this.actors.add(sonic);
 				this.actors.add(tails);
 			}
+
+			this.populateMap();
 
 			if(!this.args.networked)
 			{
@@ -749,10 +753,10 @@ export class Viewport extends View
 		const jumping = this.controlActor.public.jumping;
 
 		const dragSpeedX   = 2;
-		const dragSpeedY   = this.args.jumping ? 1: 3;
+		const dragSpeedY   = (this.args.jumping && this.args.ySpeed < 0) ? 0.25: 3;
 		const maxDragX     = 128;
-		const maxDragYDown = 48;
-		const maxDragY     = 24;
+		const maxDragYDown = 64;
+		const maxDragY     = 16;
 
 		this.args.x = xNext;
 
@@ -987,6 +991,14 @@ export class Viewport extends View
 			if(!ObjectPalette[objType])
 			{
 				continue;
+			}
+
+			if(this.args.networked)
+			{
+				if(!['layer-switch', 'ring', 'companion-block', 'water-region'].includes(objType))
+				{
+					continue;
+				}
 			}
 
 			const objClass = ObjectPalette[objType];
@@ -1614,7 +1626,7 @@ export class Viewport extends View
 		}
 	}
 
-	actorsAtPoint(x, y)
+	actorsAtPoint(x, y, w = 0, h = 0)
 	{
 		const cacheKey = [x,y].join('::');
 		const actorPointCache = this.actorPointCache;
@@ -1644,17 +1656,23 @@ export class Viewport extends View
 				const width  = actorArgs.width;
 				const height = actorArgs.height;
 
+				const myRadius = Math.max(Math.floor(w / 2)-1, 0);
+
+				const myLeft   = x - myRadius;
+				const myRight  = x + myRadius;
+				const myTop    = y - h;
+				const myBottom = y;
+
 				const offset = Math.floor(width / 2);
 
-				const left   = -offset + actorX;
-				const right  = -offset + actorX + width;
+				const otherLeft   = -offset + actorX;
+				const otherRight  = -offset + actorX + width;
+				const otherTop    = actorY - height;
+				const otherBottom = actorY;
 
-				const top    = actorY - height;
-				const bottom = actorY;
-
-				if(x >= left && right > x)
+				if(myRight >= otherLeft && otherRight > myLeft)
 				{
-					if(bottom >= y && y > top)
+					if(otherBottom >= myTop && myBottom > otherTop)
 					{
 						actors.push( actor );
 					}
@@ -1823,10 +1841,7 @@ export class Viewport extends View
 		this.controlActor   = null;
 		this.args.frameId   = -1;
 
-		if(!this.args.networked)
-		{
-			this.populateMap();
-		}
+		this.populateMap();
 
 		this.nextControl = Object.values(this.args.actors)[0];
 
@@ -1886,10 +1901,10 @@ export class Viewport extends View
 		this.args.titlecard = new Series({cards: this.homeCards()});
 
 		this.args.titlecard.play().then((done) => {
+			this.populateMap();
+
 			if(!this.args.networked)
 			{
-				this.populateMap();
-
 				const actors = this.actors.list;
 
 				if(!this.playableIterator)
@@ -1925,9 +1940,9 @@ export class Viewport extends View
 	{
 		return [
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
-			, new BootCard({timeout: 3500})
-			, new SeanCard({timeout: 5000}, this)
-			, ...this.homeCards()
+			// , new BootCard({timeout: 3500})
+			// , new SeanCard({timeout: 5000}, this)
+			// , ...this.homeCards()
 		]
 	}
 

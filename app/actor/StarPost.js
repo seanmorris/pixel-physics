@@ -53,6 +53,11 @@ export class StarPost extends PointActor
 	{
 		super.collideA(other);
 
+		if(!other.controllable && !other.args.owner && !other.occupant)
+		{
+			return;
+		}
+
 		if(!this.box)
 		{
 			return;
