@@ -268,8 +268,8 @@ export class Viewport extends View
 
 		this.colCellCache = new Map;
 		this.colCellDiv = this.args.width > this.args.height
-		 	? this.args.width * 0.5
-		 	: this.args.height * 0.5;
+			? this.args.width * 0.6
+			: this.args.height * 0.6;
 
 		this.colCells = new Set;
 
@@ -1940,9 +1940,9 @@ export class Viewport extends View
 	{
 		return [
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
-			// , new BootCard({timeout: 3500})
-			// , new SeanCard({timeout: 5000}, this)
-			// , ...this.homeCards()
+			, new BootCard({timeout: 3500})
+			, new SeanCard({timeout: 5000}, this)
+			, ...this.homeCards()
 		]
 	}
 
