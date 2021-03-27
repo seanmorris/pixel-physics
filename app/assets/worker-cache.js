@@ -24,49 +24,46 @@ self.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	const eventResponse = caches.open('sonic-3000').then((cache) => {
+	caches.open('sonic-3000').then((cache) => {
 
-		return cache.match(request).then((cacehedResponse) => {
+		return cache.match(request);
 
-			const refreshFetch = fetch(request);
+	}).then((cacehedResponse) => {
 
-			refreshFetch.then((refreshReponse) => {
+		// const refreshFetch = fetch(request);
 
-				const reqUrl = new URL(request.url);
+		// refreshFetch.then((refreshReponse) => {
 
-				if(refreshReponse.status === 200)
-				{
-					// cache.put(event.request, refreshReponse.clone());
-				}
+		// 	const reqUrl = new URL(request.url);
 
-				return refreshReponse;
-			});
+		// 	if(refreshReponse.status === 200)
+		// 	{
+		// 		// cache.put(event.request, refreshReponse.clone());
+		// 	}
 
-			refreshFetch.catch(error => {
-				console.error(error);
-			});
+		// 	return refreshReponse;
+		// });
 
-			const respUrl = new URL(event.request.url);
+		// refreshFetch.catch(error => {
+		// 	console.error(error);
+		// });
 
-			if(cacehedResponse && !navigator.onLine)
-			{
-				return cacehedResponse;
-			}
-			else if(!cacehedResponse || forceRefresh)
-			{
-				// event.waitUntil(refreshFetch);
+		// const respUrl = new URL(event.request.url);
 
-				if(forceRefresh)
-				{
-					return refreshFetch;
-				}
-			}
+		if(cacehedResponse && !navigator.onLine)
+		{
+			event.respondWith(cacehedResponse);
+		}
+		else if(!cacehedResponse || forceRefresh)
+		{
+			// event.waitUntil(refreshFetch);
 
-			return cacehedResponse || refreshFetch;
-		});
+			// if(forceRefresh)
+			// {
+			// 	return refreshFetch;
+			// }
+		};
 	});
-
-	event.respondWith(eventResponse);
 });
 
 self.addEventListener('activate', (event) => {

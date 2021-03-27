@@ -26,6 +26,12 @@ export class Tails extends PointActor
 
 		this.args.width  = 28;
 		this.args.height = 32;
+
+		this.args.normalHeight  = 32;
+		this.args.rollingHeight = 23;
+
+		this.willStick = false;
+		this.stayStuck = false;
 	}
 
 	onAttached()

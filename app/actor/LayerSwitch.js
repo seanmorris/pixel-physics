@@ -32,7 +32,14 @@ export class LayerSwitch extends PointActor
 	collideA(other, type)
 	{
 		let speed = other.args.gSpeed;
-		let back  = !!Number(this.args.back);
+		let back  = !!Number(this.public.back);
+		let roll  = !!Number(this.public.roll);
+
+		if(roll && !other.public.rolling)
+		{
+			other.args.layer = toLayer === 1 ? 2 : 1;
+			return false;
+		}
 
 		if(back && other.public.falling)
 		{
