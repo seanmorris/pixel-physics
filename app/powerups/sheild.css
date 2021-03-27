@@ -11,7 +11,13 @@
 		sheild-flip calc(0.5s * 2) infinite;
 }
 
-.bubble-sheild-shine {
+
+[data-animation=jumping] .bubble-sheild.bouncing {
+	background-position: -216px 0;
+	animation: bubble-sheild-bounce 50ms steps(3) 1;
+}
+
+.bubble-sheild:not(.bouncing) .bubble-sheild-shine {
 	background-image: url(/Sonic/bubble-sheild-shine.png);
 	position: absolute;
 	z-index: 100;
@@ -32,8 +38,15 @@
 	height: 48px;
 	background-image: url(/Sonic/sheild-electric.png);
 	background-position: calc(-48px * 3) 0;
-	animation: electric-sheild-rotate 0.3s steps(8) infinite forwards,
-		 sheild-flip calc(0.2s * 2) infinite;
+	animation:
+		electric-sheild-rotate 0.3s steps(4) infinite forwards,
+		sheild-flip calc(0.2s * 2) infinite;
+}
+
+.electric-sheild.boosted {
+	animation:
+		electric-sheild-flash 0.2s steps(3) infinite forwards,
+		sheild-flip 0.1s infinite;
 }
 
 .fire-sheild {
@@ -148,6 +161,15 @@
 	}
 }
 
+@keyframes electric-sheild-flash {
+	from{
+		background-position: calc(-48px * 0) 0;
+	}
+	to{
+		background-position: calc(-48px * 3) 0;
+	}
+}
+
 @keyframes sheild-flip {
 	from{
 		z-index: -0;
@@ -194,6 +216,6 @@
 		background-position: 0 0;
 	}
 	to{
-		background-position: -288px 0;
+		background-position: -216px 0;
 	}
 }

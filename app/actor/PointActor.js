@@ -503,6 +503,11 @@ export class PointActor extends View
 
 	update()
 	{
+		if(this.args.currentSheild && 'update' in this.args.currentSheild)
+		{
+			this.args.currentSheild.update(this);
+		}
+
 		if(this.public.rolling)
 		{
 			this.args.height = this.public.rollingHeight || this.args.height;
@@ -1004,18 +1009,16 @@ export class PointActor extends View
 
 				if(this.public.width > 1)
 				{
-					if(this.public.rolling)
+					const scanForwardHead = this.scanForward(step * direction, 1);
+
+					if(scanForwardHead !== false)
 					{
-						const scanForwardHead = this.scanForward(step * direction, 1);
+						this.args.gSpeed = scanForwardHead;
 
-						if(scanForwardHead !== false)
-						{
-							this.args.gSpeed = scanForwardHead;
-
-							break;
-						}
+						break;
 					}
-					else
+
+					if(!this.public.rolling)
 					{
 						const scanForwardWaist = this.scanForward(step * direction, 0.5);
 
@@ -2802,14 +2805,29 @@ export class PointActor extends View
 			{
 				if(button.delta === 1)
 				{
+					if(this.args.currentSheild && press in this.args.currentSheild)
+					{
+						this.args.currentSheild[press](this, button);
+					}
+
 					this[press] && this[press]( button );
 				}
 				else if(button.delta === -1)
 				{
+					if(this.args.currentSheild && release in this.args.currentSheild)
+					{
+						this.args.currentSheild[release](this, button);
+					}
+
 					this[release] && this[release]( button );
 				}
 				else if(button.active)
 				{
+					if(this.args.currentSheild && hold in this.args.currentSheild)
+					{
+						this.args.currentSheild[hold](this, button);
+					}
+
 					this[hold] && this[hold]( button );
 				}
 			}

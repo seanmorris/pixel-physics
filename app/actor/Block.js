@@ -1,8 +1,7 @@
 import { PointActor } from './PointActor';
 
-import { QuintIn } from 'curvature/animate/ease/QuintIn';
-import { QuintOut } from 'curvature/animate/ease/QuintOut';
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
+import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
 
 export class Block extends PointActor
 {
@@ -46,10 +45,10 @@ export class Block extends PointActor
 
 	collideA(other, type)
 	{
-		// if(other instanceof this.constructor)
-		// {
-		// 	return false;
-		// }
+		if(other instanceof this.constructor)
+		{
+			return false;
+		}
 
 		if(!other.controllable && !other.isVehicle)
 		{
@@ -63,26 +62,60 @@ export class Block extends PointActor
 
 		if(this.public.collapse && type === 0)
 		{
-			this.args.float = 5;
+			if(other.public.ySpeed > 15)
+			{
+				this.args.float = 1;
+
+				this.args.goBack = false;
+
+				const ySpeed = other.public.ySpeed;
+
+				this.onNextFrame(()=>{
+					if(this.public.falling || this.public.float)
+					{
+						this.args.ySpeed = ySpeed;
+						this.args.float  = 1;
+					}
+					else
+					{
+						this.args.ySpeed = -1;
+						this.args.float  = 1;
+					}
+
+					this.public.falling = true;
+
+				});
+			}
+			else if(other.public.ySpeed > 0 || other.public.gSpeed)
+			{
+				this.args.float = 5;
+			}
 		}
 
 		return true;
+	}
+
+	onAttached()
+	{
+		this.public.collapse && this.tags.sprite.classList.add('collapse');
 	}
 
 	update()
 	{
 		super.update();
 
+		const current = this.ease.current();
+
 		if(this.public.float && this.public.oscillateX)
 		{
-			const moveX = Math.round(this.ease.current() * this.public.oscillateX);
+			const moveX = Math.round(current * this.public.oscillateX);
 
 			this.args.x = this.originalX - moveX;
 		}
 
 		if(this.public.float && this.public.oscillateY)
 		{
-			const moveY = Math.round(this.ease.current() * this.public.oscillateY);
+			const moveY = Math.round(current * this.public.oscillateY);
 
 			this.args.y = this.originalY - moveY;
 		}
@@ -93,7 +126,7 @@ export class Block extends PointActor
 
 			const Ease = QuintInOut;
 
-			this.nextEase = new Ease(this.public.period, {reverse: !reverse});;
+			this.nextEase = new Ease(this.public.period, {reverse: !reverse});
 		}
 
 		if(this.nextEase)
@@ -101,20 +134,17 @@ export class Block extends PointActor
 			this.ease = this.nextEase;
 			this.nextEase = false;
 
-			this.onTimeout(1000, ()=>{
+			this.onTimeout(1500, ()=>{
 				this.ease.start();
 			});
 		}
 
 		if(!this.public.float && this.public.ySpeed === 0 && !this.reset)
 		{
-			this.reset = this.onTimeout(5000, () => {
+			this.reset = this.onTimeout(2500, () => {
 				this.args.falling = true;
-				this.args.float   = -1;
-
 				this.args.goBack = true;
-
-
+				this.args.float = -1;
 				this.reset = false;
 			});
 		}
@@ -123,12 +153,16 @@ export class Block extends PointActor
 		{
 			this.args.float = -1;
 
-			const distX = this.originalX - this.args.x;
-			const distY = this.originalY - this.args.y;
+			const distX = this.originalX - this.public.x;
+			const distY = this.originalY - this.public.y;
+
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+			this.args.gSpeed = 0;
 
 			if(Math.abs(distX) > 3)
 			{
-				this.args.x += Math.sign(distX) * 1;
+				this.args.x += Math.sign(distX) * 3;
 			}
 			else
 			{

@@ -1,5 +1,6 @@
 import { PointActor } from './PointActor';
-import { Monitor } from './Monitor';
+import { RingMonitor } from './monitor/RingMonitor';
+import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
 
 export class QuestionBlock extends PointActor
 {
@@ -23,7 +24,18 @@ export class QuestionBlock extends PointActor
 		data-angle     = "[[angle|rad2deg]]"
 		data-mode      = "[[mode]]"
 		data-empty     = "[[empty]]"
-	><div class = "sprite"></div></div>`;
+		cv-ref = "box"
+	><div cv-ref = "sprite" class = "sprite"></div></div>`;
+
+	static fromDef(objDef)
+	{
+		const obj = super.fromDef(objDef);
+
+		obj.args.x = obj.originalX = Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
+		obj.args.y = obj.originalY = Math.floor(objDef.y / 32) * 32;
+
+		return obj;
+	}
 
 	constructor(...args)
 	{
@@ -100,13 +112,9 @@ export class QuestionBlock extends PointActor
 		{
 			if(!this.args.empty)
 			{
-				const monitor = new Monitor({x: this.x + 2, y: this.y - 128});
+				const monitor = new SheildWaterMonitor({x: this.x, y: this.y - 128});
 
-				this.onNextFrame(()=>{
-
-					this.viewport.actors.add(monitor);
-
-				});
+				this.viewport.spawn.add({object:monitor});
 
 				monitor.onRemove(() => this.args.empty = false);
 
