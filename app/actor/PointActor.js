@@ -211,6 +211,7 @@ export class PointActor extends View
 		this.args.rolling = false;
 
 		this.args.skidTraction = 5;
+		this.args.skidTraction = 2.25;
 
 		this.args.fgFilter = 'none';
 		this.args.bgFilter = 'none';
@@ -1003,16 +1004,18 @@ export class PointActor extends View
 
 				if(this.public.width > 1)
 				{
-					const scanForwardHead = this.scanForward(step * direction, 1);
-
-					if(scanForwardHead !== false)
+					if(this.public.rolling)
 					{
-						this.args.gSpeed = scanForwardHead;
+						const scanForwardHead = this.scanForward(step * direction, 1);
 
-						break;
+						if(scanForwardHead !== false)
+						{
+							this.args.gSpeed = scanForwardHead;
+
+							break;
+						}
 					}
-
-					if(!this.public.rolling)
+					else
 					{
 						const scanForwardWaist = this.scanForward(step * direction, 0.5);
 

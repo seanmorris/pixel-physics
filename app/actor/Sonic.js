@@ -37,8 +37,6 @@ export class Sonic extends PointActor
 		this.args.accel     = 0.35;
 		this.args.decel     = 0.4;
 
-		this.args.skidTraction = 1.75;
-
 		this.gSpeedMaxNormal = 16;
 		this.gSpeedMaxSuper  = 28;
 

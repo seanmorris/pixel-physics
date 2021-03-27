@@ -43,7 +43,7 @@ export class SkidDust extends Behavior
 		const direction = host.public.direction;
 		const viewport  = host.viewport;
 
-		if(viewport.args.frameId % 3 !== 0)
+		if(viewport.args.frameId % 2 !== 0)
 		{
 			return;
 		}

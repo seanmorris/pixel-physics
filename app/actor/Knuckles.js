@@ -28,8 +28,6 @@ export class Knuckles extends PointActor
 		this.args.normalHeight = 41;
 		this.args.rollingHeight = 23;
 
-		this.args.skidTraction = 1.7;
-
 		this.punching = 0;
 		this.punched  = false;
 
