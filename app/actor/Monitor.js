@@ -121,6 +121,8 @@ export class Monitor extends PointActor
 		{
 			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed );
 		}
+
+		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
 	}
 
 	effect()
