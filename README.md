@@ -144,3 +144,35 @@ The egg mobile is always hovering. Use it to get up high to areas you wouldn't o
 
 * 🅐/✕ - Jump
 * 🅐/✕ - fly (while airborne)
+
+### Items
+
+#### Rings
+
+These are your health bar. One point of damage will cause you to lose your rings. You'll have a chance to pick them up before they disappear however, so carry a lot.
+
+#### Monitors
+
+Monitors contain powerups like shields, or extra rings. Jump to break them open.
+
+#### Chaos Emeralds
+
+Chaos Emeralds (will) power Super Transforms. In the current version, this restriction is not in place. Press 🅨/△ to access the super-state.
+
+#### Blocks
+
+Some blocks some can be pushed, some are structural and make up floors, walls or ceilings. Some will break off fall when tread on, even lightly. Keep an eye out.
+
+Try a bounce attack on falling blocks.
+
+#### Starposts
+
+Starposts (will) record start/end times in the courses of Zones. They'll also store your checkpoint times, and distribute powerups.
+
+#### Switches
+
+Switches can be activated by jumping, or depressing them with blocks. They'll activate various objects or environmental effects in all different places.
+
+#### Springs
+
+Springs will shoot the character in whatever direction they're pointing, which includes straight up. Red ones are stronger.
