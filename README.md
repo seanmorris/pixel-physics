@@ -95,9 +95,9 @@ Gives Sonic a boosted air dash (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving 
 
 ### Electric Shield
 
-Press R🠈 to use a stored water shield.
-
 Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
+
+Press R🠈 to use a stored water shield.
 
 ### Insta Shield
 
