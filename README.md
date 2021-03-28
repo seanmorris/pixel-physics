@@ -75,7 +75,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 ## Shields
 
-The right stick allows you to store/switch sheilds.
+The right stick allows you to store/switch sheilds. The current shield will be automatically stored if a new one is picked up of a different element.
 
 Press R🠋 to store a shield.
 
