@@ -102,8 +102,6 @@ Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
 Press 🅐/✕ to use a Sonic's insta-sheild.
 
-Gives Sonic a bounce attack (Press 🅐/✕ after leaving the ground).
-
 ## Vehicles
 
 Press 🅐+🠉 to disengage a vehicle.
