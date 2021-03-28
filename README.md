@@ -19,7 +19,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 ## Characters
 
-** The controls below are specifically for gamepads. You can translate them to keyboard controls with the following table: **
+**The controls below are specifically for gamepads. You can translate them to keyboard controls with the following table:**
 
 * 🅐/✕ - <kbd>space</kbd>
 * 🅑/ⵔ - <kbd>shift</kbd>
