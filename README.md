@@ -21,13 +21,13 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 **The controls below are specifically for gamepads. You can translate them to keyboard controls with the following table:**
 
-* 🅐/✕ - <kbd>space</kbd>
-* 🅑/ⵔ - <kbd>shift</kbd>
-* 🅧/▢ - <kbd>ctrl</kbd>
-* 🅨/△ - <kbd>z</kbd>
+* 🅐/✕ - space
+* 🅑/ⵔ - shift
+* 🅧/▢ - ctrl
+* 🅨/△ - z
 * 🠈 🠉 🠊 🠋 - WASD / Arrow Keys
-* <kbd>L1</kbd> - <kbd>q</kbd>
-* <kbd>R1</kbd> - <kbd>e</kbd>
+* <kbd>L1</kbd> - q
+* <kbd>R1</kbd> - e
 
 ### Sonic
 
