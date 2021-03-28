@@ -45,8 +45,8 @@
 
 .electric-sheild.boosted {
 	animation:
-		electric-sheild-flash 0.2s steps(3) infinite forwards,
-		sheild-flip 0.1s infinite;
+		electric-sheild-flash 0.15s steps(3) infinite forwards,
+		sheild-flip 0.35s infinite;
 }
 
 .fire-sheild {
