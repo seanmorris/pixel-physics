@@ -91,13 +91,13 @@ Press R🠉 to use a stored water shield.
 
 Gives Sonic a boosted air dash (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving the ground).
 
-Press R🠊 to use a stored water shield.
+Press R🠊 to use a stored fire shield.
 
 ### Electric Shield
 
 Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
-Press R🠈 to use a stored water shield.
+Press R🠈 to use a stored electric shield.
 
 ### Insta Shield
 
