@@ -26,7 +26,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅧/▢ - <kbd>ctrl</kbd>
 * 🅨/△ - <kbd>z</kbd>
 * <kbd>L1</kbd> - <kbd>q</kbd>
-* <kbd>L2</kbd> - <kbd>e</kbd>
+* <kbd>R1</kbd> - <kbd>e</kbd>
 
 ### Sonic
 
@@ -72,6 +72,20 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 * 🅐/✕ - Jump
 * 🠋 - roll (while moving)
+
+## Shields
+
+### Water Shield
+
+Gives Sonic a bounce attack (Press 🅐/✕ after leaving the ground).
+
+### Fire Shield
+
+Gives Sonic a boosted air dash jump (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving the ground).
+
+### Electric Shield
+
+Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
 ## Vehicles
 
