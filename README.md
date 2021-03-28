@@ -31,6 +31,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 ### Sonic
 
 * 🅐/✕ - Jump
+* 🅐/✕ - Insta-shield (while airborne)
 * 🅐/✕ - stick/kick wall (hold/release while airborne)
 * 🅑/ⵔ  - spindash
 * 🠋 - roll (while moving)
@@ -96,6 +97,12 @@ Gives Sonic a boosted air dash (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving 
 Press R🠈 to use a stored water shield.
 
 Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
+
+### Insta Shield
+
+Press 🅐/✕ to use a Sonic's insta-sheild.
+
+Gives Sonic a bounce attack (Press 🅐/✕ after leaving the ground).
 
 ## Vehicles
 
