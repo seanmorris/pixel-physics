@@ -13,9 +13,25 @@ Press 🅐+🠉 to disengage a vehicle.
 
 Press TAB or click the right stick to change characters in single player mode.
 
-## Network Play
+## Modes
 
-Basic netplay is implemented for 2 player P2P games. Code is in the works for server-based n-player games.
+### Single player
+
+Self explanatory...
+
+### 2-Player P2P Network Play
+
+Serverless P2P network play is provided via WebRTC, so you'll need to exchange some tokens before you can start a game.
+
+Select "direct connect" from the main menu, have one player select "Host Game" and the other select "Join Game".
+
+Using the messaging service of choice, the joining user must first send the request token to the hosting user, must reply with an accept token. Once the users have exchanged and input their tokens, the game clients will connect.
+
+Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
+
+### n-Player Server Play
+
+*Coming soon.*
 
 ## Characters
 
