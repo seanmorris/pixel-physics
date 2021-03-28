@@ -75,15 +75,25 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 ## Shields
 
+The right stick allows you to store/switch sheilds.
+
+Press R🠋 to store a shield.
+
 ### Water Shield
+
+Press R🠉 to use a stored water shield.
 
 Gives Sonic a bounce attack (Press 🅐/✕ after leaving the ground).
 
 ### Fire Shield
 
-Gives Sonic a boosted air dash jump (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving the ground).
+Press R🠊 to use a stored water shield.
+
+Gives Sonic a boosted air dash (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving the ground).
 
 ### Electric Shield
+
+Press R🠈 to use a stored water shield.
 
 Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
