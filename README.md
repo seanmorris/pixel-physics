@@ -35,7 +35,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅐/✕ - wall stick/kick (hold while airborne/release to jump)
 * 🅑/ⵔ  - spindash
 * 🠋 - roll (while moving)
-* 🅐/🠋 - dropdash (hold while airborne, release to cancel)
+* 🠋🅐/✕ - dropdash (hold while airborne, release to cancel)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
 * <kbd>L1</kbd> - air dash (while airborne)
@@ -54,8 +54,9 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🠋 - roll (while moving)
 * 🅐/✕ - glide (while airborne)
 * 🠋 - glide cancel (while airborne)
-* 🅑/ⵔ  - punch
+* 🅑/ⵔ - punch
 * 🅧/▢ - throw bomb
+* 🅧/▢ - bomb jump (while airborne)
 
 ### Robotnik
 
@@ -100,11 +101,11 @@ Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
 ### Insta Shield
 
-Press 🅐/✕ to use a Sonic's insta-sheild.
+Press  to use a Sonic's insta-sheild.
 
 ## Vehicles
 
-Press 🅐+🠉 to disengage a vehicle.
+Press 🠉🅐/✕ to disengage a vehicle.
 
 ### Tornado
 
