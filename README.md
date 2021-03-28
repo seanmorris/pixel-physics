@@ -32,7 +32,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 
 * 🅐/✕ - Jump
 * 🅐/✕ - Insta-shield (while airborne)
-* 🅐/✕ - stick/kick wall (hold/release while airborne)
+* 🅐/✕ - wall stick/kick (hold while airborne/release to jump)
 * 🅑/ⵔ  - spindash
 * 🠋 - roll (while moving)
 * 🅐/🠋 - dropdash (hold while airborne, release to cancel)
