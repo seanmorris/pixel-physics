@@ -25,6 +25,7 @@ Basic netplay is implemented for 2 player P2P games. Code is in the works for se
 * 🅑/ⵔ - <kbd>shift</kbd>
 * 🅧/▢ - <kbd>ctrl</kbd>
 * 🅨/△ - <kbd>z</kbd>
+* 🠈 🠉 🠊 🠋 - WASD / Arrow Keys
 * <kbd>L1</kbd> - <kbd>q</kbd>
 * <kbd>R1</kbd> - <kbd>e</kbd>
 
