@@ -83,15 +83,15 @@ Press R🠋 to store a shield.
 
 ### Water Shield
 
-Press R🠉 to use a stored water shield.
-
 Gives Sonic a bounce attack (Press 🅐/✕ after leaving the ground).
+
+Press R🠉 to use a stored water shield.
 
 ### Fire Shield
 
-Press R🠊 to use a stored water shield.
-
 Gives Sonic a boosted air dash (Press <kbd>L1</kbd>/<kbd>R1</kbd> after leaving the ground).
+
+Press R🠊 to use a stored water shield.
 
 ### Electric Shield
 
