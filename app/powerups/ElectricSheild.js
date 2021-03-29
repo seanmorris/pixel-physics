@@ -8,6 +8,11 @@ export class ElectricSheild extends Sheild
 
 	command_0(host, button)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if(this.jumps > 0 && host.args.jumping)
 		{
 			host.args.ySpeed = 0;
@@ -22,6 +27,11 @@ export class ElectricSheild extends Sheild
 
 	update(host)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if(!host.public.falling)
 		{
 			this.jumps = 3;

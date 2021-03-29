@@ -43,7 +43,8 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 * 🅑/ⵔ - shift
 * 🅧/▢ - ctrl
 * 🅨/△ - z
-* 🠈 🠉 🠊 🠋 - WASD / Arrow Keys
+* LS 🠈 🠉 🠋 🠊 - WASD / Arrow Keys
+* RS 🠈 🠉 🠋 🠊 - HJKL / Numpad
 * <kbd>L1</kbd> - q
 * <kbd>R1</kbd> - e
 
@@ -57,8 +58,8 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 * 🠋🅐/✕ - dropdash (hold while airborne, release to cancel)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
-* <kbd>L1</kbd> - air dash (while airborne)
-* <kbd>R1</kbd> - air dash (while airborne)
+* <kbd>**L1**</kbd> - air dash (while airborne)
+* <kbd>**R1**</kbd> - air dash (while airborne)
 
 ### Tails
 

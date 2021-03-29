@@ -76,19 +76,13 @@ export class Sonic extends PointActor
 				return;
 			}
 
-			if(this.public.mode === 1 || this.public.mode === 3)
+			if(this.willStick && (this.public.mode === 1 || this.public.mode === 3))
 			{
 				this.args.wallSticking = true;
-
-				this.args.gSpeed = 0;
-				this.args.xSpeed = 0;
-				this.args.ySpeed = 0;
 			}
 			else
 			{
 				this.args.wallSticking = false;
-				this.willStick = false;
-				this.stayStuck = false;
 			}
 		});
 	}

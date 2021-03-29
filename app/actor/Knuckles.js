@@ -392,6 +392,7 @@ export class Knuckles extends PointActor
 
 	get solid() { return false; }
 	get canRoll() { return !this.public.climbing; }
+	get canFly() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }

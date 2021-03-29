@@ -349,7 +349,12 @@ export class Viewport extends View
 
 		this.listen(document, 'keydown', (event) => {
 
-			if(event.key === 'F10')
+			if(event.key === 'Escape')
+			{
+				this.args.showConsole = false
+			}
+
+			if(event.key === 'F10' || event.key === '`')
 			{
 				if(!this.args.subspace)
 				{

@@ -7,6 +7,11 @@ export class BubbleSheild extends Sheild
 
 	command_0(host, button)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if(host.args.jumping)
 		{
 			host.impulse(14, Math.PI / 2);
@@ -17,6 +22,11 @@ export class BubbleSheild extends Sheild
 
 	update(host)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if(!host.public.falling)
 		{
 			if(this.args.bouncing)

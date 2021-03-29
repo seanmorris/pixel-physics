@@ -705,7 +705,7 @@ export class PointActor extends View
 
 		const tileMap = this.viewport.tileMap;
 
-		if(this.public.gSpeed === 0 && !this.public.falling && this.public.dontJump === 0)
+		if(this.public.gSpeed === 0 && !this.public.falling)
 		{
 			if(!this.stayStuck && !this.public.climbing)
 			{
@@ -721,23 +721,25 @@ export class PointActor extends View
 					{
 						if(mode === MODE_LEFT && this.public.groundAngle <= 0)
 						{
-							this.doJump(1);
+							// this.doJump(1);
 
 							this.args.x += Math.floor(this.public.width / 2);
 							this.args.facing    = 'right'
+							this.args.falling   = true;
 							this.args.direction = 1;
 						}
 						else if(mode === MODE_RIGHT && this.public.groundAngle >= 0)
 						{
-							this.doJump(1);
+							// this.doJump(1);
 
 							this.args.x -= Math.floor(this.public.width / 2);
 							this.args.facing    = 'left'
+							this.args.falling   = true;
 							this.args.direction = -1;
 						}
 						else if(mode === MODE_CEILING)
 						{
-							this.args.y += Math.floor(this.public.height);
+							// this.args.y += Math.floor(this.public.height / 1.5);
 
 							if(this.public.direction == -1)
 							{
@@ -2751,6 +2753,7 @@ export class PointActor extends View
 	}
 
 	get canRoll() { return false; }
+	get canFly() { return false; }
 	get canStick() { return false; }
 	get canSpindash() { return false; }
 	get isEffect() { return false; }

@@ -35,7 +35,7 @@ export class LayerSwitch extends PointActor
 		let back  = !!Number(this.public.back);
 		let roll  = !!Number(this.public.roll);
 
-		if(roll && !other.public.rolling)
+		if(roll && (!other.public.rolling || other.public.height > 32))
 		{
 			other.args.layer = toLayer === 1 ? 2 : 1;
 			return false;
