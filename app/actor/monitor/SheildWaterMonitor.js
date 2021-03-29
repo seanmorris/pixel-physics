@@ -4,9 +4,9 @@ import { BubbleSheild } from '../../powerups/BubbleSheild';
 
 export class SheildWaterMonitor extends Monitor
 {
-	attached(event)
+	onRendered(event)
 	{
-		super.attached(event);
+		super.onRendered(event);
 
 		this.box.attr({'data-monitor':'sheild-water'});
 	}

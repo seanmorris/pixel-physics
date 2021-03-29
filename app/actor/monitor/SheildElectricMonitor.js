@@ -4,9 +4,9 @@ import { ElectricSheild } from '../../powerups/ElectricSheild';
 
 export class SheildElectricMonitor extends Monitor
 {
-	attached(event)
+	onRendered(event)
 	{
-		super.attached(event);
+		super.onRendered(event);
 
 		this.box.attr({'data-monitor':'sheild-electric'});
 	}

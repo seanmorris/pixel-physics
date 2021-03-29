@@ -4,7 +4,7 @@
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
 
-	--outlineWidth:    1px;
+	/*--outlineWidth:    var(--outlineWidth, 0px);*/
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);

@@ -4,11 +4,28 @@
 
 .screen-card.screen-card-main-menu .menu-container {
 	display: flex;
+	width: 100%;
 	align-items: center;
 	filter:
 		drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
 		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
 		drop-shadow(0px 0px 1px rgba(0,0,0,0.75));
+}
+
+.screen-card.screen-card-main-menu .menu-container > * {
+	display: flex;
+	justify-content: center;
+}
+
+.screen-card.screen-card-main-menu .menu-container > *:first-child {
+	justify-content: flex-end;
+	font-size: 1.25rem;
+	width: 40%;
+}
+
+.screen-card.screen-card-main-menu .menu-container > *:last-child {
+	justify-content: flex-start;
+	width: 60%;
 }
 
 .screen-card.screen-card-main-menu {
@@ -21,8 +38,11 @@
 	opacity: 0;
 }
 
-.screen-card-main-menu :not(textarea):not(input):not(button):focus,
-.screen-card-main-menu .focused {
+/*:not(textarea):not(input):not(button):not(select):focus*/
+
+.screen-card-main-menu :focus .title,
+.screen-card-main-menu li:focus-within .title,
+.screen-card-main-menu .focused .title {
 	/*outline: 1px solid rgba(255,255,255,0.2);
 	outline-offset: 0.6em;*/
 	text-decoration: underline;
@@ -34,14 +54,20 @@
 }
 
 .screen-card-main-menu li {
-	color: #CCC;
-	margin-top: 1em;
+	display: flex;
 	margin-bottom: 1em;
+	user-select: none;
+	margin-top: 1em;
 	cursor: pointer;
+	color: #CCC;
 }
 
 .screen-card-main-menu .unavailable {
 	color: #666;
+}
+
+.screen-card-pause-menu li,
+.screen-card-main-menu li {
 	position: relative;
 }
 
@@ -49,14 +75,44 @@
 	color: #999;
 }
 
+.screen-card-pause-menu .subtext,
+.screen-card-main-menu .subtext {
+	display: none;
+}
+
+.screen-card-pause-menu .subtext {
+	margin-top: 1em;
+}
+
+.screen-card-pause-menu li:not(.unavailable):focus .subtext,
+.screen-card-pause-menu li:not(.unavailable):focus-within .subtext,
+.screen-card-pause-menu li:not(.unavailable).focused .subtext,
+.screen-card-pause-menu .unavailable.focused::after,
+.screen-card-pause-menu .unavailable:focus-within::after,
+.screen-card-pause-menu .unavailable:focus::after,
+
+.screen-card-main-menu li:not(.unavailable):focus .subtext,
+.screen-card-main-menu li:not(.unavailable):focus-within .subtext,
+.screen-card-main-menu li:not(.unavailable).focused .subtext,
 .screen-card-main-menu .unavailable.focused::after,
+.screen-card-main-menu .unavailable:focus-within::after,
 .screen-card-main-menu .unavailable:focus::after {
-	content: 'not yet implemented';
+	display: initial;
+
 	font-size: 0.2em;
 
 	position: absolute;
 	left: 0;
 	top: 100%;
+}
+
+.screen-card-pause-menu .unavailable.focused::after,
+.screen-card-pause-menu .unavailable:focus-within::after,
+.screen-card-pause-menu .unavailable:focus::after,
+.screen-card-main-menu .unavailable.focused::after,
+.screen-card-main-menu .unavailable:focus-within::after,
+.screen-card-main-menu .unavailable:focus::after {
+	content: 'not yet implemented';
 }
 
 .screen-card-main-menu {
@@ -196,4 +252,37 @@
 .screen-card-main-menu .close:hover {
 	background-color: #999;
 	color: #333;
+}
+
+.screen-card-pause-menu input,
+.screen-card-pause-menu select,
+.screen-card-main-menu input,
+.screen-card-main-menu select {
+	background: none;
+	appearance: none;
+	border: none;
+	color: white;
+}
+
+.screen-card-pause-menu input,
+.screen-card-pause-menu select {
+	padding: 0.25em;
+}
+
+.screen-card-pause-menu input,
+.screen-card-main-menu input {
+	text-decoration: underline;
+	display: inline;
+	width: 8em;
+}
+
+.screen-card-main-menu li {
+	position: relative;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	/*-webkit-appearance: inner-spin-button !important;*/
+	-webkit-appearance: none;
+	margin: 0;
 }

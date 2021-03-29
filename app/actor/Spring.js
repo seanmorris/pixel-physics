@@ -66,6 +66,11 @@ export class Spring extends PointActor
 
 	collideA(other)
 	{
+		if(other instanceof this.constructor)
+		{
+			return false;
+		}
+
 		super.collideA(other);
 
 		if(this.active)
@@ -75,7 +80,7 @@ export class Spring extends PointActor
 
 		if(other instanceof Region)
 		{
-			return;
+			return false;
 		}
 
 		if(this.viewport.args.audio && this.sample)
@@ -87,9 +92,14 @@ export class Spring extends PointActor
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+		this.viewport.onFrameOut(3,()=>{
+			this.active = false;
+			other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+		});
+
 		other.args.direction = Math.sign(this.public.gSpeed);
-		this.onTimeout(64,()=>{
+
+		this.viewport.onFrameOut(4,()=>{
 			this.active = false;
 		});
 

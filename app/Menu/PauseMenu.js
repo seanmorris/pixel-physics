@@ -4,6 +4,7 @@ import { Cylinder } from '../effects/Cylinder';
 import { Pinch } from '../effects/Pinch';
 
 import { Menu } from './Menu';
+import { SettingsMenu } from './SettingsMenu';
 
 export class PauseMenu extends Menu
 {
@@ -17,7 +18,8 @@ export class PauseMenu extends Menu
 		this.args.animation = '';
 
 		this.args.items = {
-			'Continue': { callback: () => parent.args.paused = false }
+			'Continue': { callback: () => parent.unpauseGame() }
+			, Settings: SettingsMenu(parent)
 			, 'Quit': { callback: () => parent.quit() }
 		};
 	}

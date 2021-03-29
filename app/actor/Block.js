@@ -134,14 +134,16 @@ export class Block extends PointActor
 			this.ease = this.nextEase;
 			this.nextEase = false;
 
-			this.onTimeout(1500, ()=>{
+			this.viewport.onFrameOut(60, () => {
 				this.ease.start();
 			});
 		}
 
-		if(!this.public.float && this.public.ySpeed === 0 && !this.reset)
+		if(!this.public.float && !this.reset)
 		{
-			this.reset = this.onTimeout(2500, () => {
+			this.reset = true;
+
+			this.viewport.onFrameOut(300, () => {
 				this.args.falling = true;
 				this.args.goBack = true;
 				this.args.float = -1;

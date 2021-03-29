@@ -125,7 +125,7 @@
 	background-color: rgba(0,128,255,0.25);
 }
 
-.region.region-shade.hydro .region-filter {
+.viewport:not(.displacement-off) .region.region-shade.hydro .region-filter {
 	backdrop-filter: blur(0.5px);
 	filter: url(#waves);
 }
@@ -185,6 +185,22 @@
 		opacity(0.4);
 }
 
+.viewport.displacement-off .region.region-shade.heat .region-filter {
+	filter: brightness(4) blur(1px) contrast(1.25);
+
+	animation-name: heat-flicker;
+	animation-timing-function: linear;
+	animation-direction: alternate;
+	animation-iteration-count: infinite;
+	animation-duration: .5s;
+
+	backdrop-filter:
+		drop-shadow(0px -0.25px  0.5px rgba(255, 255,  32, 0.333))
+		drop-shadow(0px -0.50px  0.5px  rgba(255, 64,  32, 0.25))
+		drop-shadow(0px -1.25px  1.00px rgba(128, 0,   0,  0.5))
+		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5))
+		opacity(0.6);
+}
 
 .region.region-shade.frost .region-filter-wrapper {
 	/*background-color: rgba(255,255,255,0.0);*/
@@ -237,7 +253,7 @@
 
 .region.region-shade.corruption .region-filter {
 
-	opacity: 0.85;
+	opacity: 1;
 
 	filter:
 		brightness(1.25)
@@ -249,7 +265,6 @@
 	backdrop-filter:
 		drop-shadow(1px 1px 1px rgba(255,255,255,0.5))
 		drop-shadow(0px 0px 2px rgba(0,0,0,0.75));
-
 }
 
 .region.region-shade.black-hole .region-filter-wrapper {
@@ -266,5 +281,25 @@
 	}
 	100% {
 		opacity: 1;
+	}
+}
+
+
+@keyframes heat-flicker {
+	0% {
+		backdrop-filter:
+		drop-shadow(0px -0.25px  0.5px rgba(255, 255,  32, 0.333))
+		drop-shadow(0px -0.50px  0.5px  rgba(255, 64,  32, 0.25))
+		drop-shadow(0px -1.25px  1.00px rgba(128, 0,   0,  0.5))
+		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5))
+		opacity(0.75);
+	}
+	100% {
+		backdrop-filter:
+		drop-shadow(0px -1.25px  0.5px rgba(255, 255,  32, 0.333))
+		drop-shadow(0px -1.50px  0.5px  rgba(255, 64,  32, 0.25))
+		drop-shadow(0px -2.25px  1.00px rgba(128, 0,   0,  0.5))
+		drop-shadow(0px -3.50px  1.50px rgba(0,   0,   0,  0.5))
+		opacity(0.85);
 	}
 }

@@ -61,7 +61,7 @@ export class Ring extends PointActor
 			this.sample.play();
 		}
 
-		this.onTimeout(60, () => {
+		this.viewport.onFrameOut(5, () => {
 			this.args.type = 'actor-item actor-ring collected gone'
 		});
 
@@ -70,7 +70,7 @@ export class Ring extends PointActor
 
 		const viewport = this.viewport;
 
-		this.onTimeout(3500, () => {
+		this.viewport.onFrameOut(220, () => {
 			this.args.gone = false;
 			this.args.type = 'actor-item actor-ring'
 		});

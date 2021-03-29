@@ -1,7 +1,7 @@
-import { Tag } from 'curvature/base/Tag';
-
-import { TileMap } from './tileMap/TileMap';
 import { Viewport } from './viewport/Viewport';
+
+import { Tag } from 'curvature/base/Tag';
+import { TileMap } from './tileMap/TileMap';
 
 const viewportA = new Viewport;
 

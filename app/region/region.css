@@ -4,8 +4,7 @@
 
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
-
-	/*pointer-events: none;*/
+		/*pointer-events: none;*/
 }
 
 .region.region-water .sprite {
@@ -28,14 +27,13 @@
 	width:  calc(var(--viewportWidth));
 	height: auto;
 
-
 	background-attachment: fixed;
 	z-index: 1001;
 }
 
 .region.region-water .region-color-wrapper {
-	/*filter: hue-rotate(90deg);*/
 	overflow: hidden;
+
 
 	position: absolute;
 
@@ -51,22 +49,11 @@
 
 .region.region-water .region-filter-wrapper {
 	overflow: hidden;
-
-
 	position: absolute;
-
 	left:    0;
 	right: 0;
 	top:     0;
 	bottom: 64px;
-
-	/*position: absolute;
-	left:    calc(var(--leftBoundry) + 32px);
-	top:     calc(var(--topBoundry) - 0px);
-	width:   calc(var(--viewportWidth));
-	height:  calc(var(--viewportHeight) + 128px);*/
-
-	/*overflow: hidden;*/
 }
 
 .region.region-water .region-color,
@@ -79,13 +66,10 @@
 	bottom: -64px;
 }
 
-.region.region-water .region-filter {
-	backdrop-filter: blur(0.25px);
-	filter: url(#waves) blur(0.3px);
-	/*background-blend-mode: darken;*/
+.viewport:not(.displacement-off) .region.region-water .region-filter {
+	backdrop-filter: invert(0);
+	filter: url(#waves);
 	z-index: -10000;
-	/*animation: water-distort infinite 3s alternate ease-in-out;*/
-
 	transform: translate3d(0, 0, 0);
 }
 
@@ -94,12 +78,14 @@
 	color: transparent;
 	background-image: url(Sonic/water-surface-wave.png);
 	position: absolute;
-	transform: translateY(-16px);
+
 	width: 100%;
 	opacity: min(var(--height), 0.5);
 	height: 16px;
 
 	background-position: 0px 0px;
+
+	transform: translateY(-16px);
 
 	/*animation:  100ms steps(1,end) infinite;
 	background-position-x: 0px;
@@ -108,26 +94,23 @@
 	animation-timing-function: steps(3), linear;
 	animation-iteration-count: infinite, infinite;
 	animation-duration: 0.75s, 1.5s;
+
 }
 
 @keyframes water-waves-frames {
 	0% {
 		background-position-y: 0px;
-		/*transform: rotate(0deg);*/
 	}
 	100% {
 		background-position-y: 48px;
-		/*transform: rotate(180deg);*/
 	}
 }
 
 @keyframes water-waves-flow {
 	0% {
 		background-position-x: 0px;
-		/*transform: rotate(0deg);*/
 	}
 	100% {
 		background-position-x: 32px;
-		/*transform: rotate(180deg);*/
 	}
 }

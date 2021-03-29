@@ -53,6 +53,8 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
+		this.ignore = 8;
+
 		if(other.public.ySpeed < 0)
 		{
 			if(other.public.ySpeed === 0 && other.y > this.y )
@@ -149,5 +151,5 @@ export class Switch extends PointActor
 		}
 	}
 
-	get solid() { return this.public.active; }
+	get solid() { return true; }
 }

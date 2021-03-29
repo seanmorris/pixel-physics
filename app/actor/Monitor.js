@@ -20,11 +20,13 @@ export class Monitor extends PointActor
 		this.args.gone = false;
 	}
 
-	attached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.screen = new Tag(`<div class = "monitor-screen">`);
 
-		this.sprite.appendChild(this.screen.node)
+		this.sprite.appendChild(this.screen.node);
 	}
 
 	update()
@@ -84,7 +86,7 @@ export class Monitor extends PointActor
 
 		setTimeout(() => viewport.particles.remove(explosion), 512);
 
-		setTimeout(() => this.screen.remove(), 1024);
+		setTimeout(() => this.screen && this.screen.remove(), 1024);
 
 		this.args.gone = true;
 

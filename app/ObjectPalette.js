@@ -1,9 +1,15 @@
-import { Block }         from './actor/Block';
-import { QuestionBlock } from './actor/QuestionBlock';
-import { BrokenMonitor } from './actor/BrokenMonitor';
-import { MarbleBlock }   from './actor/MarbleBlock';
-import { CompanionBlock }   from './actor/CompanionBlock';
-import { LayerSwitch }   from './actor/LayerSwitch';
+import { PointActor } from './actor/PointActor';
+
+import { LayerSwitch }    from './actor/LayerSwitch';
+
+import { Region }      from './region/Region';
+import { ShadeRegion } from './region/ShadeRegion';
+import { WaterRegion } from './region/WaterRegion';
+
+import { CompanionBlock } from './actor/CompanionBlock';
+import { QuestionBlock }  from './actor/QuestionBlock';
+import { MarbleBlock }    from './actor/MarbleBlock';
+import { Block }          from './actor/Block';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -11,6 +17,8 @@ import { Emerald }   from './actor/Emerald';
 import { Window }    from './actor/Window';
 import { Monitor }   from './actor/Monitor';
 import { Spring }    from './actor/Spring';
+
+import { BrokenMonitor }  from './actor/BrokenMonitor';
 
 import { Ring } from './actor/Ring';
 import { Coin } from './actor/Coin';
@@ -20,8 +28,6 @@ import { WaterJet }  from './actor/WaterJet';
 
 import { PowerupGlow } from './actor/PowerupGlow';
 // import { SuperRing }   from './actor/SuperRing';
-
-import { PointActor } from './actor/PointActor';
 
 import { Projectile } from './actor/Projectile';
 import { TextActor }  from './actor/TextActor';
@@ -45,12 +51,6 @@ import { Seymour } from './actor/Seymour';
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
 import { Balloon } from './actor/Balloon';
-
-import { Region } from './region/Region';
-
-
-import { WaterRegion } from './region/WaterRegion';
-import { ShadeRegion } from './region/ShadeRegion';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -78,6 +78,7 @@ export const ObjectPalette = {
 	, 'switch':       Switch
 	, 'window':       Window
 	, 'emerald':      Emerald
+	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'shade-region': ShadeRegion
 	, 'ring':         Ring

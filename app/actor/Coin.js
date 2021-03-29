@@ -43,11 +43,11 @@ export class Coin extends PointActor
 				this.sample.play();
 			}
 
-			this.onTimeout(240, () => {
+			this.viewport.onFrameOut(40, () => {
 				this.args.type = 'actor-item actor-coin collected gone'
 			});
 
-			this.onTimeout(480, () => {
+			this.viewport.onFrameOut(80, () => {
 				this.viewport.actors.remove( this );
 				this.remove();
 			});
