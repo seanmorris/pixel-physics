@@ -20,7 +20,12 @@ export class PauseMenu extends Menu
 		this.args.items = {
 			'Continue': { callback: () => parent.unpauseGame() }
 			, Settings: SettingsMenu(parent)
-			, 'Quit': { callback: () => parent.quit() }
+			, 'Quit': {
+				children: {
+					'No': { callback: () => this.args.items.back.callback() }
+					, 'Yes': { callback: () => parent.quit() }
+				}
+			}
 		};
 	}
 }

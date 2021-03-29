@@ -38,9 +38,9 @@ const keys = {
 	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
 
-	, 'Numpad8': 113
-	, 'Numpad2': 114
 	, 'Numpad4': 112
+	, 'Numpad2': 113
+	, 'Numpad8': 114
 	, 'Numpad6': 115
 
 	, 'Backquote': 1010

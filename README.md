@@ -43,10 +43,10 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 * 🅑/ⵔ - shift
 * 🅧/▢ - ctrl
 * 🅨/△ - z
-* LS 🠈 🠉 🠋 🠊 - WASD / Arrow Keys
-* RS 🠈 🠉 🠋 🠊 - HJKL / Numpad
-* <kbd>L1</kbd> - q
-* <kbd>R1</kbd> - e
+* 🠈 🠉 🠋 🠊 - WASD / Arrow Keys
+* R 🠈 🠉 🠋 🠊 - HJKL / Numpad
+* <kbd>**L1**</kbd> - q
+* <kbd>**R1**</kbd> - e
 
 ### Sonic
 
