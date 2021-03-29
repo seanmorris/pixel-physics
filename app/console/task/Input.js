@@ -19,6 +19,15 @@ export class Input extends Task
 
 		const controller = actor.controller;
 
+		const intervalId = setInterval(() => {
+
+			frame.buttons[buttonId] = 1;
+
+			controller.replay(frame);
+			actor.readInput();
+
+		}, 16);
+
 		controller.replay(frame);
 		actor.readInput();
 
@@ -29,6 +38,8 @@ export class Input extends Task
 
 				controller.replay(frame);
 				actor.readInput();
+
+				clearInterval(intervalId);
 
 				accept();
 

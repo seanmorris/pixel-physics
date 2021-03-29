@@ -35,9 +35,9 @@ section.filters {
 }
 
 .viewport {
-	image-rendering: pixelated;
 	image-rendering: high-quality;
 	image-rendering: crisp-edges;
+	image-rendering: pixelated;
 	width: calc(1px * calc(var(--width)  * var(--scale) ));
 	height: calc(1px * calc(var(--height)  * var(--scale) ));
 	transition: width var(--scale-transition), height var(--scale-transition);

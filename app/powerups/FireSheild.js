@@ -7,6 +7,11 @@ export class FireSheild extends Sheild
 
 	command_0(host, button)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if(host.args.jumping)
 		{
 			host.impulse(6, host.args.direction < 0 ? Math.PI : 0);
@@ -16,6 +21,11 @@ export class FireSheild extends Sheild
 
 	hold_4(host, button)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if((host.args.jumping || host.args.dashing) && host.args.falling)
 		{
 			host.impulse(1, Math.PI);
@@ -24,6 +34,11 @@ export class FireSheild extends Sheild
 
 	hold_5(host, button)
 	{
+		if(host.canFly)
+		{
+			return;
+		}
+
 		if((host.args.jumping || host.args.dashing) && host.args.falling)
 		{
 			host.impulse(1, 0);

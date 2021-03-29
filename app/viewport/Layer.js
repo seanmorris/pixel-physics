@@ -92,7 +92,7 @@ export class Layer extends View
 					const src = block[2];
 
 					block.style({
-						transform: `translate(${transX}px, ${transY}px)`
+						transform: `translate(${transX}px, ${transY}px) scale(1.01, 1.01)`
 						, 'background-image': `url(/map/${src})`
 						, position: 'absolute'
 						, left: 0

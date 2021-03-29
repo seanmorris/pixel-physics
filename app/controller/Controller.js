@@ -2,21 +2,33 @@ import { Axis } from './Axis';
 import { Button } from './Button';
 
 const keys = {
-	' ': 0
+	'Space': 0
+
 	, 'Enter':   0
-	, 'Control': 1
-	, 'Shift':   2
-	, 'z': 3
-	, 'q': 4
-	, 'e': 5
+	, 'NumpadEnter': 0
+
+	, 'ControlLeft': 1
+	, 'ControlRight': 1
+
+	, 'ShiftLeft':   2
+	, 'ShiftRight':   2
+
+	, 'KeyZ': 3
+	, 'KeyQ': 4
+	, 'KeyE': 5
 
 
-	, 'w': 12
-	, 'a': 14
-	, 's': 13
-	, 'd': 15
+	, 'KeyW': 12
+	, 'KeyA': 14
+	, 'KeyS': 13
+	, 'KeyD': 15
 
-	, 'p': 9
+	, 'KeyH': 112
+	, 'KeyJ': 113
+	, 'KeyK': 114
+	, 'KeyL': 115
+
+	, 'KeyP': 9
 	, 'Pause': 9
 
 	, 'Tab': 11
@@ -26,7 +38,12 @@ const keys = {
 	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
 
-	, 'Backquote': 5000
+	, 'Numpad8': 113
+	, 'Numpad2': 114
+	, 'Numpad4': 112
+	, 'Numpad6': 115
+
+	, 'Backquote': 1010
 };
 
 [...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 1000 + fn);
@@ -36,6 +53,11 @@ const axisMap = {
 	, 13: +1
 	, 14: -0
 	, 15: +0
+
+	, 112: -2
+	, 113: +3
+	, 114: -3
+	, 115: +2
 };
 
 export class Controller
@@ -91,7 +113,7 @@ export class Controller
 					continue;
 				}
 
-				if(keyboard.getKey(i) > 0)
+				if(keyboard.getKeyCode(i) > 0)
 				{
 					this.press(i, 1);
 
@@ -108,7 +130,7 @@ export class Controller
 
 				const buttonId = keys[keycode];
 
-				if(keyboard.getKey(keycode) > 0)
+				if(keyboard.getKeyCode(keycode) > 0)
 				{
 					this.press(buttonId, 1);
 
@@ -151,7 +173,7 @@ export class Controller
 					continue;
 				}
 
-				if(keyboard.getKey(i) < 0)
+				if(keyboard.getKeyCode(i) < 0)
 				{
 					this.release(i);
 
@@ -173,7 +195,7 @@ export class Controller
 					continue;
 				}
 
-				if(keyboard.getKey(keycode) < 0)
+				if(keyboard.getKeyCode(keycode) < 0)
 				{
 					this.release(buttonId);
 

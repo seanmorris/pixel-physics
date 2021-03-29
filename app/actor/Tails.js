@@ -125,7 +125,9 @@ export class Tails extends PointActor
 			if(this.yAxis > 0)
 			{
 				this.box.setAttribute('data-animation', 'jumping');
-				this.args.ySpeed = this.args.jumpForce;
+				this.args.ySpeed = this.args.ySpeed > this.args.jumpForce
+					? this.args.ySpeed
+					: this.args.jumpForce;
 			}
 			else
 			{
@@ -161,6 +163,8 @@ export class Tails extends PointActor
 		{
 			this.args.ySpeed = 0;
 		}
+
+		console.log(this.public.xSpeed, this.public.ySpeed);
 
 		this.args.tailFlyCoolDown = 80;
 
@@ -207,6 +211,7 @@ export class Tails extends PointActor
 
 	get solid() { return false; }
 	get canRoll() { return true; }
+	get canFly() { return true; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 }
