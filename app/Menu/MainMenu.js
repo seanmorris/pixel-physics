@@ -5,6 +5,8 @@ import { Pinch } from '../effects/Pinch';
 
 import { Menu } from './Menu';
 
+import { SettingsMenu } from './SettingsMenu';
+
 export class MainMenu extends Menu
 {
 	template = require('./main-menu.html');
@@ -25,10 +27,17 @@ export class MainMenu extends Menu
 
 		this.args.items = {
 
-			'Single Player': { available: 'available', callback: () => this.remove() }
+			'Single Player': { available: 'available', callback: () => {
+				this.parent.args.networked = false;
+				this.remove()
+			} }
+
+			, Settings: SettingsMenu(parent)
 
 			, 'Direct Connect': {
+
 				children: {
+
 					'Host a game': {
 						callback: () => {
 							this.args.hostOutput = '';
@@ -48,14 +57,16 @@ export class MainMenu extends Menu
 								const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
 								this.args.joinOutput = encodedToken;
 								this.args.haveToken  = true;
-
 							});
 						}
 					}
+
 				}
 			}
+			, 'Connect To Server': {
 
-			, 'Connect To Server': { available: 'unavailable' }
+				available: 'unavailable'
+			}
 		};
 
 

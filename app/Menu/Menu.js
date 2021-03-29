@@ -17,24 +17,26 @@ export class Menu extends Card
 
 		this.currentItem = null;
 
-		this.selector = 'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])';
+		this.include = 'a, button, input, textarea, select, details,[tabindex]';
+		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
 	}
 
 	onRendered(event)
 	{
-		this.focusFirst();
-	}
+		this.args.bindTo('items', v => {
 
-	focusFirst()
-	{
-		if(!this.tags.bound)
-		{
-			return;
-		}
+			for(const i in v)
+			{
+				const item = v[i];
 
-		const bounds = this.tags.bound;
+				if(item.get)
+				{
+					item.setting = item.get();
+				}
+			}
+		});
 
 		this.args.bindTo('items', v => {
 
@@ -50,12 +52,24 @@ export class Menu extends Card
 				this.focus(next);
 			}
 
-		}, {frame: 1});
+		}, {wait: 10});
+
+		this.focusFirst();
+	}
+
+	focusFirst()
+	{
+		if(!this.tags.bound)
+		{
+			return;
+		}
+
+		const bounds = this.tags.bound;
 	}
 
 	findNext(current, bounds, reverse = false)
 	{
-		const elements = bounds.querySelectorAll(this.selector);
+		const elements = bounds.querySelectorAll(this.include);
 
 		if(!elements.length)
 		{
@@ -68,6 +82,11 @@ export class Menu extends Card
 
 		for(const element of elements)
 		{
+			if(element.matches(this.exclude))
+			{
+				continue;
+			}
+
 			if(!first)
 			{
 				if(!current && !reverse)
@@ -106,15 +125,15 @@ export class Menu extends Card
 
 	focus(element)
 	{
+		if(this.currentItem && this.currentItem !== element)
+		{
+			this.blur(this.currentItem);
+		}
+
 		if(element)
 		{
 			element.classList.add('focused');
 			element.focus();
-		}
-
-		if(this.currentItem && this.currentItem !== element)
-		{
-			this.blur(this.currentItem);
 		}
 
 		this.currentItem = element;
@@ -138,7 +157,6 @@ export class Menu extends Card
 		if(controller.buttons[12] && controller.buttons[12].time === 1)
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node, true);
-
 		}
 		else if(controller.buttons[13] && controller.buttons[13].time === 1)
 		{
@@ -148,16 +166,16 @@ export class Menu extends Card
 		}
 		else if(controller.buttons[14] && controller.buttons[14].time === 1)
 		{
-			this.args.last = 'LEFT';
+			this.contract(this.currentItem);
 		}
 		else if(controller.buttons[15] && controller.buttons[15].time === 1)
 		{
-			this.args.last = 'RIGHT';
+			this.expand(this.currentItem);
 		}
 
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
 		{
-			this.currentItem && this.currentItem.click()
+			this.currentItem && this.currentItem.click();
 
 			this.args.last = 'A';
 		}
@@ -183,6 +201,8 @@ export class Menu extends Card
 			this.args.items = item.children;
 
 			this.args.items['back'] = this.args.items['back'] || back;
+
+			this.onNextFrame(()=>this.focusFirst());
 		}
 	}
 
@@ -192,5 +212,101 @@ export class Menu extends Card
 		{
 			this.args.items['back'].callback();
 		}
+	}
+
+	expand(element)
+	{
+		const input = element.querySelector('input');
+		const title = element.getAttribute('data-title');
+		const item  = this.args.items[ title ];
+
+		if(item.input === 'number')
+		{
+			item.setting = Number(item.setting) + 1;
+
+			if(item.setting > item.max)
+			{
+				item.setting = item.max;
+			}
+
+			item.set(item.setting);
+		}
+		else if(item.input === 'boolean')
+		{
+			item.setting = !item.setting;
+			item.set(item.setting);
+		}
+		else if(input)
+		{
+			input.focus();
+		}
+	}
+
+	contract(element)
+	{
+		const title = element.getAttribute('data-title');
+		const item  = this.args.items[ title ];
+
+		if(item.input === 'number')
+		{
+			item.setting = Number(item.setting) - 1;
+
+			if(item.setting < item.min)
+			{
+				item.setting = item.min;
+			}
+
+			item.set(item.setting);
+		}
+		else if(item.input === 'boolean')
+		{
+			item.setting = !item.setting;
+			item.set(item.setting);
+		}
+		else
+		{
+			this.focus(element);
+		}
+	}
+
+	keyup(event)
+	{
+		if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
+		{
+			event.preventDefault();
+			event.stopPropagation();
+
+			const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
+
+			if(next)
+			{
+				this.focus(next);
+				return;
+			}
+		}
+	}
+
+	change(event)
+	{
+		if(!this.currentItem)
+		{
+			return;
+		}
+
+		const title  = this.currentItem.getAttribute('data-title');
+		const item   = this.args.items[ title ];
+
+		item.setting = event.target.value;
+
+		item.set(item.setting);
+	}
+
+	toggle(event, item)
+	{
+		event.preventDefault();
+
+		item.setting = !item.setting;
+
+		item.set(item.setting);
 	}
 }

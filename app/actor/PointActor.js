@@ -685,18 +685,22 @@ export class PointActor extends View
 			}
 		}
 
-		if(this.viewport && !(this instanceof LayerSwitch))
-		{
-			this.viewport.actorsAtPoint(this.x, this.y, this.public.width, this.public.height)
-				.filter(x => x.args !== this.args)
-				.filter(x => !(x instanceof LayerSwitch || x.isPushable))
-				.filter(x => x.callCollideHandler(this));
-		}
-
-
 		if(!this.viewport || this.removed)
 		{
 			return;
+		}
+
+		const layerSwitch = this.viewport.objectPalette['layer-switch'];
+		const region      = this.viewport.objectPalette['base-region'];
+
+		const skipChecking = [layerSwitch, region];
+
+		if(!(skipChecking.some(x => this instanceof x)))
+		{
+			this.viewport.actorsAtPoint(this.x, this.y, this.public.width, this.public.height)
+				.filter(x => x.args !== this.args)
+				.filter(x => !(skipChecking.some(y => x instanceof y) || x.isPushable))
+				.filter(x => x.callCollideHandler(this));
 		}
 
 		const tileMap = this.viewport.tileMap;
@@ -890,7 +894,7 @@ export class PointActor extends View
 			}
 			else if(this.public.falling && !this.getMapSolidAt(this.x, this.y + 48, false))
 			{
-				this.onTimeout(750, () => {
+				this.viewport.onFrameOut(45, () => {
 
 					if(this.args.cameraMode === 'airplane')
 					{
@@ -899,9 +903,10 @@ export class PointActor extends View
 
 					if(this.public.falling && !this.getMapSolidAt(this.x, this.y + 48, false))
 					{
-						this.args.cameraMode = 'aerial';
 					}
 				});
+
+				this.args.cameraMode = 'aerial';
 			}
 		}
 

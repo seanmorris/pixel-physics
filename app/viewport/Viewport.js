@@ -38,11 +38,12 @@ import { Console as Terminal } from 'subspace-console/Console';
 
 import { Input as InputTask } from '../console/task/Input';
 import { Impulse as ImpulseTask } from '../console/task/Impulse';
+import { Settings as SettingsTask } from '../console/task/Settings';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
 
-import { RtcClientTask } from '../network/RtcClientTask';
-import { RtcServerTask } from '../network/RtcServerTask';
+// import { RtcClientTask } from '../network/RtcClientTask';
+// import { RtcServerTask } from '../network/RtcServerTask';
 
 import { RtcClient } from '../network/RtcClient';
 import { RtcServer } from '../network/RtcServer';
@@ -67,14 +68,22 @@ export class Viewport extends View
 	{
 		super(args,parent);
 
+		this.objectPalette = ObjectPalette;
+
+		this.callFrames = new Map;
+
 		this.server = null;
 		this.client = null;
 
 		this.args.networked = false;
 
 		this.settings = {
-			blur: true
-			, displace: true
+			blur: false
+			, displace: false
+			, outline: 1
+			, musicVol: 100
+			, sfxVol: 100
+			, username: 'player'
 		};
 
 		this.vizi = true;
@@ -158,9 +167,30 @@ export class Viewport extends View
 
 
 		// this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
-		this.args.bindTo('fps', v => this.args.fpsSprite.args.value = Number(v).toFixed(2) );
-
 		this.args.frameId = -1;
+
+		this.settings.bindTo('displace', v => this.args.displacement = v ? 'on' : 'off');
+		this.settings.bindTo('outline',  v => this.args.outline  = v);
+
+		for(const setting in this.settings)
+		{
+			const val = localStorage.getItem('sonic-3000-setting=' + setting);
+
+			try
+			{
+				this.settings[setting] = JSON.parse(val);
+			}
+			catch(e)
+			{
+				console.warn(e);
+			}
+		}
+
+		this.settings.bindTo((v,k)=>{
+
+			localStorage.setItem('sonic-3000-setting=' + k, JSON.stringify(v));
+
+		});
 
 
 		// this.controlCard = View.from(require('../cards/basic-controls.html'));
@@ -268,8 +298,8 @@ export class Viewport extends View
 
 		this.colCellCache = new Map;
 		this.colCellDiv = this.args.width > this.args.height
-			? this.args.width * 0.6
-			: this.args.height * 0.6;
+			? this.args.width * 0.5
+			: this.args.height * 0.5;
 
 		this.colCells = new Set;
 
@@ -330,8 +360,7 @@ export class Viewport extends View
 							, 'move': MoveTask
 							, 'impulse': ImpulseTask
 							, 'pos': PosTask
-							, 'client': RtcClientTask
-							, 'server': RtcServerTask
+							, 'set': SettingsTask
 						}
 					});
 
@@ -435,6 +464,7 @@ export class Viewport extends View
 
 	onAttached(event)
 	{
+		SettingsTask.viewport = this;
 		ImpulseTask.viewport = this;
 		InputTask.viewport = this;
 		MoveTask.viewport  = this;
@@ -535,7 +565,12 @@ export class Viewport extends View
 				const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
 
 				sonic.render(this.tags.actors);
+				sonic.onRendered();
+				sonic.onAttached && sonic.onAttached();
+
 				tails.render(this.tags.actors);
+				tails.onRendered();
+				tails.onAttached && tails.onAttached();
 
 				this.auras.add(sonic);
 				this.auras.add(tails);
@@ -666,9 +701,23 @@ export class Viewport extends View
 				&& controller.buttons[9].active
 				&& controller.buttons[9].time === 1
 			){
-				this.args.paused = !this.args.paused;
+				if(this.args.paused)
+				{
+					this.unpauseGame();
+				}
+				else
+				{
+					this.pauseGame();
+				}
 
-				this.focus();
+				// if(this.args.paused)
+				// {
+				// 	return;
+				// }
+				// else
+				// {
+				// }
+
 			}
 
 			if(this.controlActor && this.args.isRecording)
@@ -904,16 +953,19 @@ export class Viewport extends View
 			}
 			else
 			{
-				blurAngle = 0;
-				blur = 0;
-
-				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
-				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
+				this.tags.blurAngle.setAttribute('style', `transform:none;`);
+				this.tags.blurAngleCancel.setAttribute('style', `transform:none;`);
+				this.tags.blur.removeAttribute('stdDeviation');
 			}
 
 			this.xPrev = controlActor.x;
 			this.yPrev = controlActor.y;
+		}
+		else
+		{
+			this.tags.blurAngle.setAttribute('style', `transform:none;`);
+			this.tags.blurAngleCancel.setAttribute('style', `transform:none;`);
+			this.tags.blur.removeAttribute('stdDeviation');
 		}
 
 		for(let i = 0; i < layerCount; i++)
@@ -945,7 +997,11 @@ export class Viewport extends View
 		this.tags.bgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 		this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 
-		this.tags.content.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+		this.tags.content.style({
+			'--x': Math.round(this.args.x)
+			, '--y': Math.round(this.args.y)
+			, '--outlineWidth': Math.round(this.settings.outline) + 'px'
+		});
 
 		this.args.backdrop && Object.assign(this.args.backdrop.args, ({
 			'x': Math.round(this.args.x)
@@ -1014,6 +1070,9 @@ export class Viewport extends View
 
 			actor.render(this.tags.actors);
 
+			actor.onRendered();
+			// actor.onAttached && actor.onAttached();
+
 			const width  = this.args.width;
 			const height = this.args.height;
 			const margin = 32;
@@ -1053,6 +1112,10 @@ export class Viewport extends View
 
 	spawnActors()
 	{
+		const spawnDoc = new DocumentFragment;
+
+		let spawned = false;
+
 		for(const spawn of this.spawn.values())
 		{
 			if(spawn.frame)
@@ -1063,7 +1126,12 @@ export class Viewport extends View
 
 					this.actors.add(Bindable.make(spawn.object));
 
-					spawn.object.render(this.tags.actors);
+					spawn.object.render(spawnDoc);
+
+					spawn.object.onRendered();
+					spawn.object.onAttached && spawn.object.onAttached();
+
+					spawned = true;
 				}
 			}
 			else
@@ -1072,8 +1140,18 @@ export class Viewport extends View
 
 				this.actors.add(Bindable.make(spawn.object));
 
-				spawn.object.render(this.tags.actors);
+				spawn.object.render(spawnDoc);
+
+				spawn.object.onRendered();
+				spawn.object.onAttached && spawn.object.onAttached();
+
+				spawned = true;
 			}
+		}
+
+		if(spawned)
+		{
+			this.tags.actors.append(spawnDoc);
 		}
 	}
 
@@ -1174,6 +1252,10 @@ export class Viewport extends View
 
 	update()
 	{
+		this.callFrameOuts();
+
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
+
 		const time  = (Date.now() - this.startTime) / 1000;
 		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
 		let seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5,'0');
@@ -1270,8 +1352,7 @@ export class Viewport extends View
 					this.args.isReplaying = false;
 				}
 			}
-
-			if(!this.args.isReplaying)
+			else
 			{
 				if(this.gamepad)
 				{
@@ -1306,7 +1387,7 @@ export class Viewport extends View
 
 		this.updateBackground();
 
-		for(const region of this.regions.values())
+		for(const region of this.regions)
 		{
 			region.updateStart();
 			this.updateStarted.add(region);
@@ -1317,7 +1398,7 @@ export class Viewport extends View
 
 		const actorCells = new WeakMap;
 
-		for(const actor of this.auras.values())
+		for(const actor of this.auras)
 		{
 			const nearbyCells = this.getNearbyColCells(actor);
 
@@ -1335,7 +1416,7 @@ export class Viewport extends View
 			this.actorUpdateStart(nearbyCells);
 		}
 
-		for(const actor of this.auras.values())
+		for(const actor of this.auras)
 		{
 			const nearbyCells = actorCells.get(actor);
 
@@ -1379,7 +1460,7 @@ export class Viewport extends View
 			this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
 		}
 
-		for(const actor of this.auras.values())
+		for(const actor of this.auras)
 		{
 			const nearbyCells = actorCells.get(actor);
 
@@ -1393,7 +1474,7 @@ export class Viewport extends View
 			}
 		}
 
-		for(const region of this.regions.values())
+		for(const region of this.regions)
 		{
 			if(!this.updateEnded.has(region))
 			{
@@ -1427,6 +1508,10 @@ export class Viewport extends View
 
 			// }, 0);
 			this.visibilityTimer = false;
+
+			const wakeDoc = new DocumentFragment;
+
+			let wakeActors = false;
 
 			for(const i in this.actors.list)
 			{
@@ -1475,7 +1560,9 @@ export class Viewport extends View
 
 						if(!actor.vizi)
 						{
-							actor.nodes.map(n => this.tags.actors.append(n));
+							actor.nodes.map(n => wakeDoc.append(n));
+
+							wakeActors = true;
 
 							actor.wakeUp();
 
@@ -1493,6 +1580,11 @@ export class Viewport extends View
 
 					inAuras.add(actor);
 				}
+			}
+
+			if(wakeActors)
+			{
+				this.tags.actors.append(wakeDoc);
 			}
 		}
 
@@ -1926,9 +2018,12 @@ export class Viewport extends View
 
 			this.auras.clear();
 
-			this.auras.add(this.nextControl);
 
-			this.nextControl.args.display = 'initial';
+			if(this.nextControl)
+			{
+				this.auras.add(this.nextControl);
+				this.nextControl.args.display = 'initial';
+			}
 
 			this.startLevel();
 
@@ -2139,5 +2234,84 @@ export class Viewport extends View
 		};
 
 		return {frame, input, args};
+	}
+
+	onFrameOut(frames, callback)
+	{
+		if(frames <= 0)
+		{
+			return;
+		}
+
+		const callFrame = this.args.frameId + frames;
+
+		if(!this.callFrames.has(callFrame))
+		{
+			this.callFrames.set(callFrame, new Set);
+		}
+
+		this.callFrames.get(callFrame).add(callback);
+	}
+
+	// onFrameInterval(frames, callback)
+	// {
+	// 	if(frames <= 0)
+	// 	{
+	// 		return;
+	// 	}
+
+	// 	const callFrame = this.args.frameId + frames;
+
+	// 	if(!this.callFrames.has(callFrame))
+	// 	{
+	// 		this.callFrames.set(callFrame, new Set);
+	// 	}
+
+	// 	this.callFrames.get(callFrame).add(callback);
+	// }
+
+	callFrameOuts()
+	{
+		if(!this.callFrames.has(this.args.frameId))
+		{
+			return;
+		}
+
+		const callbacks = this.callFrames.get(this.args.frameId);
+
+		for(const callback of callbacks)
+		{
+			callback();
+		}
+
+		this.callFrames.delete(this.args.frameId);
+	}
+
+	pauseGame()
+	{
+		this.focus();
+
+		this.args.paused = true;
+
+		this.args.pauseMenu.focusFirst();
+
+		this.onTimeout(6, ()=>{
+			this.controller && this.controller.zero();
+		});
+	}
+
+	unpauseGame()
+	{
+		this.onTimeout(15, ()=>{
+			this.controller && this.controller.zero();
+		});
+
+		this.onTimeout(30, ()=>{
+			this.focus();
+		});
+
+		this.onTimeout(60, ()=>{
+			this.args.paused = false;
+		});
 	}
 }

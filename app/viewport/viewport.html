@@ -5,7 +5,7 @@
 		<span class = "sean-icon"></span>
 		<h1>Pixel Physics</h1>
 	</div>
-	<div class = "viewport [[standalone]] [[fullscreen]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event)">
+	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event)">
 
 		<svg>
 		<defs>
@@ -29,30 +29,29 @@
 				height ="100%"
 				width  ="100%"
 			>
-				<feFlood flood-color="#408000" result = "DisplacementGreen" />
+				<feFlood
+					flood-color="#408000"
+					result = "DisplacementGreen"
+				></feFlood>
 
 				<feImage
 					xlink:href="/effects/wave.png"
 					result="DisplacementSource"
 					height="64"
-					width="64"
-				/>
+					width="16"
+				></feImage>
 
 				<feTile
 					in="DisplacementSource"
 					result="DisplacementTile"
-				>
-
-				</feTile>
+				></feTile>
 
 				<feComposite
 					in  = "DisplacementTile"
 					in2 = "DisplacementGreen"
 					result ="DisplacementField"
 					operator ="over"
-				>
-
-				</feComposite>
+				></feComposite>
 
 				<feOffset
 					in  = "DisplacementField"
@@ -67,7 +66,6 @@
 
 				</feOffset>
 
-
 				<feDisplacementMap
 					in="SourceGraphic"
 					in2="DisplacementOffset"
@@ -75,86 +73,15 @@
 					xChannelSelector="R"
 					yChannelSelector="G"
 					scale="4"
-				/>
+				></feDisplacementMap>
 
 				<feGaussianBlur
 					in="Displaced"
 					stdDeviation="0.35"
-				/>
+				></feGaussianBlur>
 
 			</filter>
 
-			<!-- <filter
-				color-interpolation-filters="sRGB"
-				id = "twist"
-				x      ="-0%"
-				y      ="0%"
-				height ="100%"
-				width  ="100%"
-			>
-				<feImage
-					xlink:href="/effects/twist.png"
-					result="DisplacementSource"
-					height="64"
-					width="64"
-				/>
-				<feDisplacementMap
-					in="SourceGraphic"
-					in2="DisplacementSource"
-					xChannelSelector="R"
-					yChannelSelector="G"
-					scale="10"
-				/>
-
-			</filter> -->
-
-			<!-- <filter
-				color-interpolation-filters="sRGB"
-				id = "pinch"
-				x      ="-0%"
-				y      ="0%"
-				height ="100%"
-				width  ="100%"
-			>
-				<feImage
-					xlink:href="/effects/pinch.png"
-					result="DisplacementSource"
-					height="64"
-					width="64"
-				/>
-				<feDisplacementMap
-					in="SourceGraphic"
-					in2="DisplacementSource"
-					xChannelSelector="R"
-					yChannelSelector="G"
-					scale="30"
-				/>
-
-			</filter>
-
-			<filter
-				color-interpolation-filters="sRGB"
-				id = "unpinch"
-				x      ="-0%"
-				y      ="0%"
-				height ="100%"
-				width  ="100%"
-			>
-				<feImage
-					xlink:href="/effects/pinch.png"
-					result="DisplacementSource"
-					height="64"
-					width="64"
-				/>
-				<feDisplacementMap
-					in="SourceGraphic"
-					in2="DisplacementSource"
-					xChannelSelector="R"
-					yChannelSelector="G"
-					scale="-30"
-				/>
-
-			</filter> -->
 		</defs>
 		</svg>
 
@@ -260,7 +187,7 @@
 
 			</div>
 
-			<div class = "hud hud-bottom-right" cv-if = "fps">
+			<div class = "hud hud-bottom-right">
 
 				<div class ="sheild-hud [[currentSheild]] [[hasElectric]] [[hasFire]] [[hasWater]]">
 					<div class = "sheild-icon sheild-electric"></div>

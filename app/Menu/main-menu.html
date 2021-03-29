@@ -6,11 +6,36 @@
 
 	<section class = "contents" cv-if = "!connected">
 		<div class = "menu-container">
+
 			<div>Sonic 3000</div>
-			<ul cv-ref = "bound" cv-each = "items:item:title">
-				<li class = "[[item.available]]" cv-on = "click:run(item)" tabindex="0">[[title]]</li>
-			</ul>
+
+			<div>
+
+				<ul cv-ref = "bound" cv-each = "items:item:title">
+
+					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item);" tabindex="0">
+						<span class = "title">[[title]]</span>
+						<span class = "subtext">[[item.subtext]]</span>
+						<span cv-if = "item.input" cv-is = "string">
+							: <input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" />
+						</span>
+						<span cv-if = "item.input" cv-is = "number">
+							: <input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" />
+						</span>
+						<span cv-if = "item.input" cv-is = "boolean">
+							: <select cv-on = "mousedown:toggle(event, item);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
+								<option value = "1">on</option>
+								<option value = "0">off</option>
+							</select>
+						</span>
+					</li>
+
+				</ul>
+
+			</div>
+
 		</div>
+
 	</section>
 
 	<section class = "contents" cv-if = "!connected">

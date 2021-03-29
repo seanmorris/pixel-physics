@@ -87,6 +87,8 @@ export class Sonic extends PointActor
 			else
 			{
 				this.args.wallSticking = false;
+				this.willStick = false;
+				this.stayStuck = false;
 			}
 		});
 	}

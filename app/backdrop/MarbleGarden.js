@@ -69,7 +69,7 @@ export class MarbleGarden extends Backdrop
 			}
 			, {
 				autoscroll: -0.35
-				, parallax:  0.025
+				, parallax:  0.0125
 				, url:      '/Sonic/backdrop/marble-garden/10.png'
 				, height:   16
 			}

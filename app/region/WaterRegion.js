@@ -14,7 +14,7 @@ export class WaterRegion extends Region
 
 		this.entryParticle = '<div class = "particle-splash">';
 
-		this.args.gravity = 0.25;
+		this.args.gravity = 0.50;
 		this.args.drag    = 0.85;
 
 		this.draining = 0;
