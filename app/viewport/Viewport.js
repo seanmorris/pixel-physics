@@ -178,7 +178,7 @@ export class Viewport extends View
 
 			try
 			{
-				this.settings[setting] = JSON.parse(val);
+				this.settings[setting] = JSON.parse(val) ?? this.settings[setting];
 			}
 			catch(e)
 			{
