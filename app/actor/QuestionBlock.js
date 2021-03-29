@@ -112,7 +112,7 @@ export class QuestionBlock extends PointActor
 		{
 			if(!this.args.empty)
 			{
-				const monitor = new SheildWaterMonitor({x: this.x, y: this.y - 128});
+				const monitor = new SheildWaterMonitor({x: this.x, y: this.y - 96});
 
 				this.viewport.spawn.add({object:monitor});
 
