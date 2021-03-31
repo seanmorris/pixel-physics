@@ -675,15 +675,11 @@ export class PointActor extends View
 
 			if(region.public.density && this.public.density && this.public.density < region.public.density)
 			{
-				this.args.y = this.public.height + (region.y - region.public.height) + ((Math.sin(Date.now() / 500) - 1) / 2) * 4;
+				this.args.y = this.public.height + (region.y - region.public.height);
 				this.args.float  = -1;
 				this.args.ySpeed = 0;
-				// if(this.y > this.public.height + (region.y - region.public.height) + Math.sin(Date.now() / 500) * 8)
-				// {
-				// }
 			}
 		}
-
 
 		if(!this.isEffect && this.public.falling && this.viewport)
 		{
