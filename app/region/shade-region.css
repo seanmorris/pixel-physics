@@ -181,9 +181,69 @@
 		drop-shadow(0px -0.25px  0.5px rgba(255, 255,  32, 0.333))
 		drop-shadow(0px -0.50px  0.5px  rgba(255, 64,  32, 0.25))
 		drop-shadow(0px -1.25px  1.00px rgba(128, 0,   0,  0.5))
-		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5))
-		opacity(0.4);
+		drop-shadow(0px -1.50px  1.50px rgba(0,   0,   0,  0.5));
 }
+
+.region.region-lava,
+.region.region-shade.lava {
+	/*mix-blend-mode: screen;*/
+	z-index: 10000;
+	opacity: 0.85;
+	mix-blend-mode: hard-light;
+}
+
+.region.region-lava .region-color-wrapper,
+.region.region-shade.lava .region-color-wrapper {
+}
+
+.region.region-lava .region-filter {
+	background-clip: content-box;
+	padding-top: 16px;
+	/*opacity: 0.25;*/
+}
+
+.region.region-lava .region-color,
+.region.region-shade.lava .region-color {
+	/*background-blend-mode: hard-light;*/
+	animation: lava-ripple steps(1) infinite 1.5s, lava-flow ease-in-out infinite alternate 4.5s;
+	background-image: url(Sonic/lava-1.png);
+	background-color: rgba(255,192,0,1);
+	opacity: 0.75;
+}
+
+.region.region-lava .region-filter,
+.region.region-shade.lava .region-filter {
+/*	filter: contrast(4);
+	backdrop-filter:
+		drop-shadow(0px -0.25px  0.5px  rgba(0, 0, 0, 1))
+		drop-shadow(0px -0.50px  0.5px  rgba(0, 0, 0, 1))
+		drop-shadow(0px -1.25px  1.00px rgba(0, 0, 0, 1))
+		drop-shadow(0px -1.50px  1.5px  rgba(0, 0, 0, 1));*/
+}
+
+.region.region-lava .region-color-wrapper:after,
+.region.region-shade.lava .region-color-wrapper:after {
+	content: ' ';
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	background-image: url(Sonic/lava-surface-1.png);
+
+	transform: translateY(0px);
+
+	height: 16px;
+	width: 100%;
+
+	opacity: 0.75;
+
+	z-index: 10000;
+
+	animation: lava-waves steps(1) infinite 1.5s, lava-flow ease-in-out infinite alternate 4.5s;
+}
+
 
 .viewport.displacement-off .region.region-shade.heat .region-filter {
 	filter: brightness(4) blur(1px) contrast(1.25);
@@ -301,5 +361,45 @@
 		drop-shadow(0px -2.25px  1.00px rgba(128, 0,   0,  0.5))
 		drop-shadow(0px -3.50px  1.50px rgba(0,   0,   0,  0.5))
 		opacity(0.85);
+	}
+}
+
+@keyframes lava-waves {
+	0% {
+		background-image: url(Sonic/lava-surface-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/lava-surface-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/lava-surface-3.png);
+	}
+	100% {
+		background-image: url(Sonic/lava-surface-1.png);
+	}
+}
+
+@keyframes lava-ripple {
+	/*0% {
+		background-image: url(Sonic/lava-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/lava-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/lava-3.png);
+	}
+	100% {
+		background-image: url(Sonic/lava-1.png);
+	}*/
+}
+
+
+@keyframes lava-flow {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 128px 0;
 	}
 }

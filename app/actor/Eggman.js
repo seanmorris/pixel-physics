@@ -20,7 +20,7 @@ export class Eggman extends PointActor
 		this.args.decel     = 0.3;
 
 		this.args.normalHeight = 40;
-		this.args.rollingHeight = 23;
+		this.args.rollingHeight = 32;
 
 		this.gSpeedMaxNormal = 16;
 		this.gSpeedMaxSuper  = 28;
@@ -28,7 +28,7 @@ export class Eggman extends PointActor
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
 
 		this.args.normalHeight = 57;
-		this.args.rollingHeight = 32;
+		this.args.rollingHeight = 29;
 
 		this.jumpForceNormal = 11;
 		this.jumpForceSuper  = 18;

@@ -77,6 +77,8 @@ export class Viewport extends View
 
 		this.args.networked = false;
 
+		this.args.mouse = 'moved';
+
 		this.settings = {
 			blur: false
 			, displace: false
@@ -1000,7 +1002,7 @@ export class Viewport extends View
 		const yMax = -(this.tileMap.mapData.height * 32);
 
 		this.tags.bgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
-		this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+		// this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 
 		this.tags.content.style({
 			'--x': Math.round(this.args.x)
@@ -1044,10 +1046,14 @@ export class Viewport extends View
 
 		const objDefs = this.tileMap.getObjectDefs();
 
+		this.objDefs = new Map;
+
 		for(let i in objDefs)
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
+
+			this.objDefs.set(objDef.id, objDef);
 
 			if(!ObjectPalette[objType])
 			{
@@ -2317,6 +2323,15 @@ export class Viewport extends View
 
 		this.onTimeout(60, ()=>{
 			this.args.paused = false;
+		});
+	}
+
+	mousemove(event)
+	{
+		this.args.mouse = 'moved';
+
+		this.onTimeout(5000, () => {
+			this.args.mouse = 'hide';
 		});
 	}
 }

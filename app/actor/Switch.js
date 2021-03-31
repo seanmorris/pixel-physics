@@ -137,7 +137,14 @@ export class Switch extends PointActor
 			const layer   = this.viewport.args.layers[ layerId ];
 
 			layer.args.destroyed = true;
+		}
 
+		const spawnPoint = this.viewport.objDefs.get(this.args.point);
+		const spawnType  = this.viewport.objectPalette[ this.args.spawn ];
+
+		if(spawnType && spawnPoint)
+		{
+			this.viewport.spawn.add({object: new spawnType({x:spawnPoint.x,y:spawnPoint.y})});
 		}
 
 		this.args.active = true;

@@ -1,0 +1,856 @@
+<svg
+	width       = "704"
+	height      = "5120"
+	version     = "1.1"
+	xmlns       = "http://www.w3.org/2000/svg"
+	xmlns:xlink = "http://www.w3.org/1999/xlink"
+	style = "image-rendering: pixelated;">
+
+	<defs>
+
+		<filter id = "negative">
+
+			<feColorMatrix
+				in     = "SourceGraphic"
+				type   = "matrix"
+				values =
+					"-1 0 0 0 1
+					0 -1 0 0 1
+					0 0 -1 0 1
+					0 0 0 1 0"
+			/>
+
+		</filter>
+
+		<pattern id = "ground-solid" width="704" height="128" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href="./ground-mask.png" />
+		</pattern>
+
+
+		<mask id = "ground-mask">
+			<rect width="100%" height="100%" fill="url(#ground-solid)" />
+		</mask>
+
+
+		<pattern id="ghz-texture-0" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/green-hill/0.png" />
+		</pattern>
+
+
+		<pattern id="mz-texture-0" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "0"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-1" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "0"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-2" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "0"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-3" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "0"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-4" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "0"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-5" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-32"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-6" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-32"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-7" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-32"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-8" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-32"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-9" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-32"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-10" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-0" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-11" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-12" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-13" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-14" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-15" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-64"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-16" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-96"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-17" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-96"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-18" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-96"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-19" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-96"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-20" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-160"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-21" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-160"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-22" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-160"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-23" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-160"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-24" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-96"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-25" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-26" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-27" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-28" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-29" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-30" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-31" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-32" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-33" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-34" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-192"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-35" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "0" y = "-224"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-36" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-32" y = "-224"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-37" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-64" y = "-224"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-38" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-96" y = "-224"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+		<pattern id="mz-texture-39" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image
+				x = "-128" y = "-224"
+				width = "160" height = "256"
+				preserveAspectRatio = "none"
+				xlink:href = "../Sonic/tiles/marble/bricks.png"
+			/>
+		</pattern>
+
+
+<!-- 		<pattern id="lz-texture-0" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/0.png" />
+		</pattern>
+
+		<pattern id="lz-texture-1" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/1.png" />
+		</pattern>
+
+		<pattern id="lz-texture-2" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/2.png" />
+		</pattern>
+
+		<pattern id="lz-texture-3" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/3.png" />
+		</pattern>
+
+		<pattern id="lz-texture-4" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/4.png" />
+		</pattern>
+
+		<pattern id="lz-texture-5" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/5.png" />
+		</pattern>
+
+		<pattern id="lz-texture-6" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/6.png" />
+		</pattern>
+
+		<pattern id="lz-texture-7" width = "32" height = "32" patternUnits="userSpaceOnUse">
+			<image preserveAspectRatio="none" xlink:href = "../Sonic/tiles/labrynth/7.png" />
+		</pattern> -->
+
+	</defs>
+
+	<!-- <g>
+		<rect
+			x = "0" y = "0"
+			width = "704" height = "128"
+			filter = "url(#negative)"
+			fill = "url(#ground-solid)"
+		/>
+	</g> -->
+
+<!-- 	<g>
+		<rect
+			x = "0" y = "0"
+			width = "704" height = "128"
+
+			fill = "url(#ghz-texture-0)"
+			mask = "url(#ground-mask)"
+		/>
+	</g> -->
+
+	<g>
+		<rect
+			x = "0" y = "0"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-0)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "128"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-1)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "256"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-2)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "384"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-3)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "512"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-4)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "640"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-5)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "768"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-6)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "896"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-7)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1024"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-8)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1152"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-9)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1280"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-10)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1408"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-11)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1536"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-12)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1664"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-13)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1792"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-14)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "1920"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-15)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2048"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-16)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2176"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-17)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2304"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-18)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2432"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-19)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2560"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-20)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2688"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-21)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2816"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-22)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "2944"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-23)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3072"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-24)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3200"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-25)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3328"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-26)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3456"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-27)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3584"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-28)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3712"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-29)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3840"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-30)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "3968"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-31)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4096"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-32)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4224"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-33)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4352"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-34)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4480"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-35)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4608"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-36)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4736"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-37)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4864"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-38)"
+			mask = "url(#ground-mask)"
+		/>
+
+		<rect
+			x = "0" y = "4992"
+			width = "704" height = "128"
+
+			fill = "url(#mz-texture-39)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+<!-- 	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "256"
+
+			fill = "url(#lz-texture-0)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "384"
+
+			fill = "url(#lz-texture-1)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "512"
+
+			fill = "url(#lz-texture-2)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "512"
+
+			fill = "url(#lz-texture-3)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "640"
+
+			fill = "url(#lz-texture-4)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "768"
+
+			fill = "url(#lz-texture-5)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "896"
+
+			fill = "url(#lz-texture-6)"
+			mask = "url(#ground-mask)"
+		/>
+	</g>
+
+	<g>
+		<rect
+			width = "704" height = "128"
+			x = "0" y = "1024"
+
+			fill = "url(#lz-texture-7)"
+			mask = "url(#ground-mask)"
+		/>
+	</g> -->
+
+</svg>

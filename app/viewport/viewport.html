@@ -5,7 +5,7 @@
 		<span class = "sean-icon"></span>
 		<h1>Pixel Physics</h1>
 	</div>
-	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event)">
+	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
 
 		<svg>
 		<defs>
@@ -38,7 +38,7 @@
 					xlink:href="/effects/wave.png"
 					result="DisplacementSource"
 					height="64"
-					width="16"
+					width="64"
 				></feImage>
 
 				<feTile
@@ -79,6 +79,71 @@
 					in="Displaced"
 					stdDeviation="0.35"
 				></feGaussianBlur>
+
+			</filter>
+
+			<filter id = "ntsc"
+				color-interpolation-filters="sRGB"
+				x      = "0%"
+				y      = "0%"
+				width  = "100%"
+				height = "200%"
+			>
+				<feFlood
+					flood-color="#808000"
+					result = "DisplacementGreen"
+				></feFlood>
+
+				<feImage
+					xlink:href="/effects/ntsc-static.png"
+					result ="DisplacementSource"
+					width  = "128"
+					height = "128"
+				></feImage>
+
+				<feTile
+					in="DisplacementSource"
+					result="DisplacementTile"
+				></feTile>
+
+				<feComposite
+					in  = "DisplacementTile"
+					in2 = "DisplacementGreen"
+					result ="DisplacementField"
+					operator ="over"
+				></feComposite>
+
+				<feOffset
+					in  = "DisplacementField"
+					out = "DisplacementOffset"
+					dx  = "0"
+					dy  = "0"
+				>
+					<animate
+						attributeName="dy"
+						values = "-128;0"
+						dur="2000ms"
+						repeatCount="8"
+					></animate>
+
+				</feOffset>
+
+				<feDisplacementMap
+					in="SourceGraphic"
+					in2="DisplacementOffset"
+					result="Displaced"
+					xChannelSelector="R"
+					yChannelSelector="G"
+					scale = "0"
+				>
+					<animate
+						attributeName="scale"
+						values = "512;192;0"
+						dur="2000ms"
+						repeatCount="1"
+					></animate>
+
+				</feDisplacementMap>
 
 			</filter>
 
@@ -210,8 +275,6 @@
 				[[trackName]]
 			</div> -->
 
-			<div class = "filters filters-foreground" cv-ref = "fgFilters"></div>
-
 			<div class = "hud hud-top-left">
 				<div class = "timer">[[timer]]</div>
 				<div cv-if = "hasRings">[[rings]]</div>
@@ -235,8 +298,9 @@
 
 			<section class = "contents" cv-if = "networked">[[chatBox]]</section>
 
-			<div class = "console [[showConsole]]" cv-ref = "subspace" tab-index = "0">[[subspace]]</div>
+			<!-- <div class = "filters filters-foreground" cv-ref = "fgFilters"></div> -->
 
+			<div class = "console [[showConsole]]" cv-ref = "subspace" tab-index = "0">[[subspace]]</div>
 
 		</div>
 

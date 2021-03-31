@@ -31,7 +31,7 @@ export class QuestionBlock extends PointActor
 	{
 		const obj = super.fromDef(objDef);
 
-		obj.args.x = obj.originalX = Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
+		obj.args.x = obj.originalX = 16 + Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
 		obj.args.y = obj.originalY = Math.floor(objDef.y / 32) * 32;
 
 		return obj;

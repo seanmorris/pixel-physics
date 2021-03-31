@@ -5,17 +5,23 @@ import { LayerSwitch }    from './actor/LayerSwitch';
 import { Region }      from './region/Region';
 import { ShadeRegion } from './region/ShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
+import { LavaRegion } from './region/LavaRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
 import { MarbleBlock }    from './actor/MarbleBlock';
 import { Block }          from './actor/Block';
 
+import { Monitor }   from './actor/Monitor';
+import { RingMonitor } from './actor/monitor/RingMonitor';
+import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
+import { SheildWaterMonitor } from './actor/monitor/SheildWaterMonitor';
+import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
+
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
 import { Emerald }   from './actor/Emerald';
 import { Window }    from './actor/Window';
-import { Monitor }   from './actor/Monitor';
 import { Spring }    from './actor/Spring';
 
 import { BrokenMonitor }  from './actor/BrokenMonitor';
@@ -80,6 +86,7 @@ export const ObjectPalette = {
 	, 'emerald':      Emerald
 	, 'base-region':  Region
 	, 'region':       WaterRegion
+	, 'lava-region':  LavaRegion
 	, 'shade-region': ShadeRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
@@ -90,6 +97,10 @@ export const ObjectPalette = {
 	, 'water-jet':    WaterJet
 	, 'water-fall':   WaterFall
 	, 'balloon':      Balloon
+	, 'ring-monitor': RingMonitor
+	, 'sheild-fire-monitor': SheildFireMonitor
+	, 'sheild-water-monitor': SheildFireMonitor
+	, 'sheild-electric-monitor': SheildFireMonitor
 };
 
 

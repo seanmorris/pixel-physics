@@ -12,7 +12,7 @@ export class Block extends PointActor
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
 
-		obj.args.x = obj.originalX = Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
+		obj.args.x = obj.originalX = 16 + Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
 		obj.args.y = obj.originalY = Math.floor(objDef.y / 32) * 32;
 
 		return obj;
@@ -102,6 +102,11 @@ export class Block extends PointActor
 
 	update()
 	{
+		if(this.public.collapse)
+		{
+			this.args.gSpeed = 0;
+		}
+
 		super.update();
 
 		const current = this.ease.current();
