@@ -22,11 +22,11 @@
 
 	--bottomBoundary: -1px;
 
-	top: calc( calc(-1px * var(--height)) + max(0px, var(--topBoundry)) );
+	top: calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry)));
 	bottom: calc( var(--bottomBoundary) + 1px);
 
 
-	left: max(0px, var(--leftBoundry) + 16px);
+	left: max(0.00001px, var(--leftBoundry) + 16px);
 
 	width: min(var(--viewportWidth), calc(calc(var(--widthPx) - var(--leftBoundry)) - 16px));
 
