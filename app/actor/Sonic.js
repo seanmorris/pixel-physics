@@ -312,15 +312,15 @@ export class Sonic extends PointActor
 			this.twister && (this.twister.args.scale = 0);
 		}
 
-		if(this.pincherBg || this.pincherFg)
+		if(this.pincherBg)
 		{
 			this.pincherBg.args.scale *= 0.875;
-			this.pincherFg.args.scale *= 0.875;
+			// this.pincherFg.args.scale *= 0.875;
 
 			if(Math.abs(this.pincherBg.args.scale) < 0.001)
 			{
 				this.pincherBg.args.scale = 0;
-				this.pincherFg.args.scale = 0;
+				// this.pincherFg.args.scale = 0;
 			}
 		}
 		else
@@ -334,7 +334,6 @@ export class Sonic extends PointActor
 		}
 
 		super.update();
-
 	}
 
 	readInput()

@@ -1,3 +1,11 @@
+.viewport {
+	background: black;
+}
+
+.viewport-overlay {
+	filter: url(#ntsc);
+}
+
 .screen-card {
 	position: absolute;
 	top: 0;
@@ -15,6 +23,7 @@
 	transition: opacity 500ms 250ms linear, filter 500ms linear;
 
 	pointer-events: initial;
+
 }
 
 .screen-card-boot-card {

@@ -13,8 +13,9 @@ export class ShadeRegion extends Region
 	filters = [
 		'studio'
 		, 'western'
-		, 'hydro'
 		, 'heat'
+		, 'hydro'
+		, 'lava'
 		, 'frost'
 		, 'eight-bit'
 		, 'corruption'

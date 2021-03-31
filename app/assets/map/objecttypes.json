@@ -1,12 +1,6 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "companion-block",
-        "properties": [
-        ]
-    },
-    {
-        "color": "#ffa0a0a4",
         "name": "balloon",
         "properties": [
         ]
@@ -20,6 +14,12 @@
     {
         "color": "#ffffff00",
         "name": "coin",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "companion-block",
         "properties": [
         ]
     },
@@ -61,6 +61,12 @@
     {
         "color": "#ff70191a",
         "name": "knuckles",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffff9d00",
+        "name": "lava-region",
         "properties": [
         ]
     },

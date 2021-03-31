@@ -669,6 +669,22 @@ export class PointActor extends View
 
 		this.region = this.viewport.regionAtPoint(this.x, this.y);
 
+		if(this.region)
+		{
+			const region = this.region;
+
+			if(region.public.density && this.public.density && this.public.density < region.public.density)
+			{
+				this.args.y = this.public.height + (region.y - region.public.height) + ((Math.sin(Date.now() / 500) - 1) / 2) * 4;
+				this.args.float  = -1;
+				this.args.ySpeed = 0;
+				// if(this.y > this.public.height + (region.y - region.public.height) + Math.sin(Date.now() / 500) * 8)
+				// {
+				// }
+			}
+		}
+
+
 		if(!this.isEffect && this.public.falling && this.viewport)
 		{
 			this.updateAirPosition();
@@ -804,7 +820,9 @@ export class PointActor extends View
 
 			const standingOn = this.getMapSolidAt(...this.groundPoint);
 
-			const half = Math.floor(this.args.width / 2);
+			const half = Math.floor((this.args.width - 1) / 2);
+
+			const region = this.viewport.regionAtPoint(...this.groundPoint);
 
 			if(Array.isArray(standingOn) && standingOn.length)
 			{
@@ -821,8 +839,10 @@ export class PointActor extends View
 			{
 				this.args.standingOn = null;
 			}
-			else
-			{
+			else if(!region
+				|| this.groundPoint[1] !== 1 + region.y - region.public.height
+				|| Math.abs(this.args.gSpeed) <= region.skimSpeed
+			){
 				if(half)
 				{
 					const leftGroundPoint  = [...this.groundPoint];
@@ -995,9 +1015,8 @@ export class PointActor extends View
 
 		if(this.public.gSpeed)
 		{
-			const radius   = Math.floor(this.public.width / 2);
-			const scanDist = radius + Math.abs(this.public.gSpeed);
-
+			const radius    = Math.floor(this.public.width / 2);
+			const scanDist  = radius + Math.abs(this.public.gSpeed);
 			const direction = Math.sign(this.public.gSpeed || this.public.direction);
 
 			const max  = Math.abs(this.public.gSpeed);
@@ -1078,8 +1097,17 @@ export class PointActor extends View
 							if(Math.abs(this.public.gSpeed) < 8)
 							{
 								this.args.mode = MODE_FLOOR;
-								this.args.y--;
-								this.args.x += this.public.direction * this.public.width / 2;
+
+								if(this.public.gSpeed < 0)
+								{
+									this.args.x -= this.public.direction * this.public.width / 2;
+									this.args.y--;
+								}
+								else
+								{
+									this.args.x += this.public.direction * this.public.width / 2;
+									this.args.y++;
+								}
 							}
 							else
 							{
@@ -1088,14 +1116,24 @@ export class PointActor extends View
 								this.args.ignore = 8;
 								this.args.falling = true;
 							}
+
 							break;
 
 						case MODE_RIGHT:
 							if(Math.abs(this.public.gSpeed) < 8)
 							{
 								this.args.mode = MODE_FLOOR;
-								this.args.y--;
-								this.args.x += this.public.direction * this.public.width / 2;
+
+								if(this.public.gSpeed > 0)
+								{
+									this.args.x -= this.public.direction * this.public.width / 2;
+									this.args.y--;
+								}
+								else
+								{
+									this.args.x += this.public.direction * this.public.width / 2;
+									this.args.y++;
+								}
 							}
 							else
 							{
@@ -1104,6 +1142,7 @@ export class PointActor extends View
 								this.args.ignore = 8;
 								this.args.falling = true;
 							}
+
 							break;
 					}
 
@@ -2185,6 +2224,16 @@ export class PointActor extends View
 				, this.downAngle
 				, offsetPoint
 				, (i, point) => {
+
+					const region = this.viewport.regionAtPoint(point[0], point[1]);
+
+					if(region
+						&& point[1] === 1 + region.y - region.public.height
+						&& Math.abs(this.public.gSpeed) >= region.skimSpeed
+					){
+						return i;
+					}
+
 					if(tileMap.getSolid(point[0], point[1], this.public.layer))
 					{
 						return i;
@@ -2244,19 +2293,26 @@ export class PointActor extends View
 					, this.upAngle
 					, offsetPoint
 					, (i, point) => {
-						const actors = viewport.actorsAtPoint(point[0], point[1])
-							.filter(x => x.args !== this.args)
-							.filter(a => (i <= 1 || this.public.gSpeed) && a.callCollideHandler(this))
-							.filter(x => x.solid);
 
-						if(actors.length === 0)
-						{
-							if(!tileMap.getSolid(point[0], point[1], this.public.layer))
+						const region = this.viewport.regionAtPoint(point[0], point[1]);
+
+						if(!region
+							|| point[1] !== 1 + region.y - region.public.height
+							|| Math.abs(this.public.gSpeed) < region.skimSpeed
+						){
+							const actors = viewport.actorsAtPoint(point[0], point[1])
+								.filter(x => x.args !== this.args)
+								.filter(a => (i <= 1 || this.public.gSpeed) && a.callCollideHandler(this))
+								.filter(x => x.solid);
+
+							if(actors.length === 0)
 							{
-								return i;
+								if(!tileMap.getSolid(point[0], point[1], this.public.layer))
+								{
+									return i;
+								}
 							}
 						}
-
 					}
 				);
 
@@ -2948,31 +3004,31 @@ export class PointActor extends View
 
 		this.pincherBg.args.scale = warpBg;
 
-		if(!this.pincherFg)
-		{
-			const filterContainer = this.viewport.tags.fgFilters;
+		// if(!this.pincherFg)
+		// {
+		// 	const filterContainer = this.viewport.tags.fgFilters;
 
-			const type = this.args.type.split(' ').shift();
-			const html = `<div class = "point-actor-filter pinch-filter">`;
+		// 	const type = this.args.type.split(' ').shift();
+		// 	const html = `<div class = "point-actor-filter pinch-filter">`;
 
-			this.pinchFilterFg = new Tag(html);
+		// 	this.pinchFilterFg = new Tag(html);
 
-			filterContainer.appendChild(this.pinchFilterFg.node);
+		// 	filterContainer.appendChild(this.pinchFilterFg.node);
 
-			this.pincherFg = new Pinch({id: 'pinch-fg-' + this.args.id, scale: 60});
+		// 	this.pincherFg = new Pinch({id: 'pinch-fg-' + this.args.id, scale: 60});
 
-			this.pincherFg.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
-				this.pinchFilterFg.style({
-					[`--${k}`]: v, filter: `url(#pinch-fg-${this.args.id})`
-				});
-			});
+		// 	this.pincherFg.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], (v,k) => {
+		// 		this.pinchFilterFg.style({
+		// 			[`--${k}`]: v, filter: `url(#pinch-fg-${this.args.id})`
+		// 		});
+		// 	});
 
-			this.args.yOff = 16;
+		// 	this.args.yOff = 16;
 
-			this.pincherFg.render(this.sprite);
-		}
+		// 	this.pincherFg.render(this.sprite);
+		// }
 
-		this.pincherFg.args.scale = warpFg;
+		// this.pincherFg.args.scale = warpFg;
 	}
 
 	sleep()

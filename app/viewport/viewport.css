@@ -47,6 +47,15 @@ section.filters {
 	color: red;
 	font-size: 0.7rem;
 }
+
+.viewport.mouse-moved {
+	cursor: initial;
+}
+
+.viewport.mouse-hide {
+	cursor: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7), auto;
+}
+
 .viewport-caption button {
 	background: black;
 	border: none;

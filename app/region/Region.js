@@ -9,6 +9,9 @@ export class Region extends PointActor
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
 
+		obj.args.x = obj.originalX = -0 + Math.floor(objDef.x / 32) * 32;
+		obj.args.y = obj.originalY = -0 + Math.floor(objDef.y / 32) * 32;
+
 		return obj;
 	}
 
@@ -21,8 +24,11 @@ export class Region extends PointActor
 		this.args.width  = this.public.width  || 32;
 		this.args.height = this.public.height || 32;
 
+		this.args.density = 1;
 		this.args.gravity = 1;
 		this.args.drag    = 1;
+
+		this.skimSpeed = Infinity;
 	}
 
 	update()

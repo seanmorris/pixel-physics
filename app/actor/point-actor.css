@@ -113,6 +113,10 @@
 	height: 32px;
 }
 
+.actor-item.actor-block {
+	z-index: calc(10010 - var(--x));
+}
+
 .actor-item.actor-block .sprite.collapse {
 	filter: grayscale(85%) brightness(1.125);
 }

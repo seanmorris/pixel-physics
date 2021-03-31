@@ -2,11 +2,14 @@
 	--widthPx: calc(1px * var(--width));
 	--heightPx: calc(1px * var(--height));
 
+	width: calc( var(--widthPx));
+
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
-		/*pointer-events: none;*/
+	/*pointer-events: none;*/
 }
 
+.region.region-lava .sprite,
 .region.region-water .sprite {
 	position: absolute;
 	width: calc(1px * var(--width));
@@ -14,17 +17,19 @@
 	/*pointer-events: none;*/
 }
 
+.region.region-lava .sprite,
 .region.region-water .sprite {
 
 	--bottomBoundary: -1px;
 
-	top: calc(-1px * var(--height));
-	bottom: var(--bottomBoundary);
+	top: calc( calc(-1px * var(--height)) + max(0px, var(--topBoundry)) );
+	bottom: calc( var(--bottomBoundary) + 1px);
 
 
-	left: calc(max(0px, var(--leftBoundry)) + 16px);
+	left: max(0px, var(--leftBoundry) + 16px);
 
-	width:  calc(var(--viewportWidth));
+	width: min(var(--viewportWidth), calc(calc(var(--widthPx) - var(--leftBoundry)) - 16px));
+
 	height: auto;
 
 	background-attachment: fixed;
@@ -33,20 +38,29 @@
 
 .region.region-water .region-color-wrapper {
 	overflow: hidden;
-
-
 	position: absolute;
-
 	left:    0;
 	right: 0;
 	top:     0;
 	bottom: 64px;
 }
 
-.region.region-water .region-color {
-	background-color: rgba(0,128,255,0.25);
+.region.region-lava .region-color-wrapper {
+	overflow: hidden;
+	position: absolute;
+	left:    0;
+	right:   0;
+	top:     0px;
+	bottom:  64px;
 }
 
+.region.region-lava .region-color,
+.region.region-water .region-color {
+	background-color: rgba(0,128,255,0.25);
+
+}
+
+.region.region-lava .region-filter-wrapper,
 .region.region-water .region-filter-wrapper {
 	overflow: hidden;
 	position: absolute;
@@ -56,14 +70,19 @@
 	bottom: 64px;
 }
 
+.region.region-lava .region-color,
+.region.region-lava .region-filter,
 .region.region-water .region-color,
 .region.region-water .region-filter {
 	position: absolute;
-
 	left:    0;
-	right: 0;
+	right:   0;
 	top:     0;
 	bottom: -64px;
+}
+
+.region.region-lava .region-color {
+	top: 16px;
 }
 
 .viewport:not(.displacement-off) .region.region-water .region-filter {
