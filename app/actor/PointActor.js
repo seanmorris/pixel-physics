@@ -675,48 +675,53 @@ export class PointActor extends View
 			this.args.jumpedAt = null;
 		}
 
-		const region = this.viewport.regionAtPoint(this.x, 2 + this.y - this.public.height);
+		const regionClass = this.viewport.objectPalette['base-region'];
 
-		if(region)
+		if(!(this instanceof regionClass))
 		{
-			if(region.public.density
-				&& this.public.density
-				&& this.public.density < region.public.density
-				&& this.y - this.public.height > region.y - region.public.height
-			){
-				if(!this.region && !this.public.falling)
-				{
-					this.args.ySpeed = 0;
-				}
+			const region = this.viewport.regionAtPoint(this.x, 2 + this.y - this.public.height);
 
-				const densityRatio = region.public.density / this.public.density;
+			if(region)
+			{
+				if(region.public.density
+					&& this.public.density
+					&& this.public.density < region.public.density
+					&& this.y - this.public.height > region.y - region.public.height
+				){
+					if(!this.region && !this.public.falling)
+					{
+						this.args.ySpeed = 0;
+					}
 
-				const myTop     = this.y - this.public.height;
-				const regionTop = region.y - region.public.height;
+					const densityRatio = region.public.density / this.public.density;
 
-				const depth = myTop - regionTop;
+					const myTop     = this.y - this.public.height;
+					const regionTop = region.y - region.public.height;
 
-				this.args.falling = true;
-				this.args.float   = -1;
+					const depth = myTop - regionTop;
 
-				if(depth < this.public.height && this.args.ySpeed < -depth)
-				{
-					this.args.ySpeed = -depth;
+					this.args.falling = true;
+					this.args.float   = -1;
 
-					this.onNextFrame(() => this.args.ySpeed = 0);
-				}
-				else
-				{
-					this.args.ySpeed -= densityRatio * region.public.drag;
+					if(depth < this.public.height && this.args.ySpeed < -depth)
+					{
+						this.args.ySpeed = -depth;
+
+						this.onNextFrame(() => this.args.ySpeed = 0);
+					}
+					else
+					{
+						this.args.ySpeed -= densityRatio * region.public.drag;
+					}
 				}
 			}
-		}
-		else if(this.region && this.def)
-		{
-			this.args.float = this.def.get('float') ?? this.float ?? 0;
-		}
+			else if(this.region && this.def)
+			{
+				this.args.float = this.def.get('float') ?? this.float ?? 0;
+			}
 
-		this.region = region;
+			this.region = region;
+		}
 
 		if(!this.isEffect && this.public.falling && this.viewport)
 		{
@@ -740,7 +745,6 @@ export class PointActor extends View
 		}
 
 		const layerSwitch = this.viewport.objectPalette['layer-switch'];
-		const regionClass = this.viewport.objectPalette['base-region'];
 
 		const skipChecking = [layerSwitch, regionClass];
 

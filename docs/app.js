@@ -8647,6 +8647,8 @@ var _WaterRegion = require("./region/WaterRegion");
 
 var _LavaRegion = require("./region/LavaRegion");
 
+var _RollingRegion = require("./region/RollingRegion");
+
 var _CompanionBlock = require("./actor/CompanionBlock");
 
 var _QuestionBlock = require("./actor/QuestionBlock");
@@ -9454,14 +9456,10 @@ var CompanionBlock = /*#__PURE__*/function (_MarbleBlock) {
   _createClass(CompanionBlock, [{
     key: "update",
     value: function update() {
-      if (this.args["float"]) {
-        var tileMap = this.viewport.tileMap;
+      var tileMap = this.viewport.tileMap;
 
-        if (!tileMap.getSolid(this.x + this["public"].width / 2 * (this["public"].pushed || 0), this.y)) {
-          this.args.xSpeed = this["public"].pushed;
-        } else {
-          this.args.xSpeed = 0;
-        }
+      if (!tileMap.getSolid(this.x + this["public"].width / 2 * (this["public"].pushed || 0), this.y)) {
+        this.args.xSpeed = this["public"].pushed;
       }
 
       _get(_getPrototypeOf(CompanionBlock.prototype), "update", this).call(this);
@@ -12491,37 +12489,41 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.args.jumpedAt = null;
       }
 
-      var region = this.viewport.regionAtPoint(this.x, 2 + this.y - this["public"].height);
+      var regionClass = this.viewport.objectPalette['base-region'];
 
-      if (region) {
-        if (region["public"].density && this["public"].density && this["public"].density < region["public"].density && this.y - this["public"].height > region.y - region["public"].height) {
-          if (!this.region && !this["public"].falling) {
-            this.args.ySpeed = 0;
+      if (!(this instanceof regionClass)) {
+        var region = this.viewport.regionAtPoint(this.x, 2 + this.y - this["public"].height);
+
+        if (region) {
+          if (region["public"].density && this["public"].density && this["public"].density < region["public"].density && this.y - this["public"].height > region.y - region["public"].height) {
+            if (!this.region && !this["public"].falling) {
+              this.args.ySpeed = 0;
+            }
+
+            var densityRatio = region["public"].density / this["public"].density;
+            var myTop = this.y - this["public"].height;
+            var regionTop = region.y - region["public"].height;
+            var depth = myTop - regionTop;
+            this.args.falling = true;
+            this.args["float"] = -1;
+
+            if (depth < this["public"].height && this.args.ySpeed < -depth) {
+              this.args.ySpeed = -depth;
+              this.onNextFrame(function () {
+                return _this3.args.ySpeed = 0;
+              });
+            } else {
+              this.args.ySpeed -= densityRatio * region["public"].drag;
+            }
           }
+        } else if (this.region && this.def) {
+          var _ref, _this$def$get;
 
-          var densityRatio = region["public"].density / this["public"].density;
-          var myTop = this.y - this["public"].height;
-          var regionTop = region.y - region["public"].height;
-          var depth = myTop - regionTop;
-          this.args.falling = true;
-          this.args["float"] = -1;
-
-          if (depth < this["public"].height && this.args.ySpeed < -depth) {
-            this.args.ySpeed = -depth;
-            this.onNextFrame(function () {
-              return _this3.args.ySpeed = 0;
-            });
-          } else {
-            this.args.ySpeed -= densityRatio * region["public"].drag;
-          }
+          this.args["float"] = (_ref = (_this$def$get = this.def.get('float')) !== null && _this$def$get !== void 0 ? _this$def$get : this["float"]) !== null && _ref !== void 0 ? _ref : 0;
         }
-      } else if (this.region && this.def) {
-        var _ref, _this$def$get;
 
-        this.args["float"] = (_ref = (_this$def$get = this.def.get('float')) !== null && _this$def$get !== void 0 ? _this$def$get : this["float"]) !== null && _ref !== void 0 ? _ref : 0;
+        this.region = region;
       }
-
-      this.region = region;
 
       if (!this.isEffect && this["public"].falling && this.viewport) {
         this.updateAirPosition();
@@ -12539,7 +12541,6 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       var layerSwitch = this.viewport.objectPalette['layer-switch'];
-      var regionClass = this.viewport.objectPalette['base-region'];
       var skipChecking = [layerSwitch, regionClass];
 
       if (!skipChecking.some(function (x) {
@@ -15760,21 +15761,6 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
     }
   }, {
-    key: "command_4",
-    value: function command_4() {
-      if (this["public"].falling) {
-        this.airDash(-1);
-        this.args.facing = 'left';
-      }
-    }
-  }, {
-    key: "command_5",
-    value: function command_5() {
-      if (this["public"].falling) {
-        this.airDash(1);
-      }
-    }
-  }, {
     key: "airDash",
     value: function airDash(direction) {
       if (this.dashed || this["public"].ignore) {
@@ -15827,7 +15813,62 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         }
 
         this.willStick = false;
-      } else if (this["public"].jumping || this.dashed) {
+      }
+    }
+  }, {
+    key: "command_4",
+    value: function command_4() {
+      if (this["public"].falling) {
+        this.airDash(-1);
+        this.args.facing = 'left';
+      }
+    }
+  }, {
+    key: "hold_4",
+    value: function hold_4() {
+      if (this["public"].jumping || this.dashed) {
+        this.dropDashCharge = 0;
+        this.willStick = true;
+        this.stayStuck = true;
+      }
+    }
+  }, {
+    key: "release_4",
+    value: function release_4() {
+      this.willStick = false;
+      this.stayStuck = false;
+
+      if (this["public"].wallSticking) {
+        this.args.falling = true;
+        this.args.ySpeed = 0;
+        this.airDash(this["public"].mode === 1 ? 1 : -1);
+        this.args.ignore = -2;
+      }
+    }
+  }, {
+    key: "command_5",
+    value: function command_5() {
+      if (this["public"].falling) {
+        this.airDash(1);
+      }
+    }
+  }, {
+    key: "release_5",
+    value: function release_5() {
+      this.willStick = false;
+      this.stayStuck = false;
+
+      if (this["public"].wallSticking) {
+        this.args.falling = true;
+        this.args.ySpeed = 0;
+        this.airDash(this["public"].mode === 1 ? 1 : -1);
+        this.args.ignore = -2;
+      }
+    }
+  }, {
+    key: "hold_5",
+    value: function hold_5() {
+      if (this["public"].jumping || this.dashed) {
         this.dropDashCharge = 0;
         this.willStick = true;
         this.stayStuck = true;
@@ -15861,21 +15902,6 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
 
       if (this.dashDust) {
         this.dashDust.remove();
-      }
-    }
-  }, {
-    key: "release_0",
-    value: function release_0() {
-      _get(_getPrototypeOf(Sonic.prototype), "release_0", this).call(this);
-
-      this.willStick = false;
-      this.stayStuck = false;
-
-      if (this["public"].wallSticking) {
-        this.args.falling = true;
-        this.args.ySpeed = 0;
-        this.airDash(this["public"].mode === 1 ? 1 : -1);
-        this.args.ignore = -2;
       }
     }
   }, {
@@ -22661,6 +22687,121 @@ var Region = /*#__PURE__*/function (_PointActor) {
 }(_PointActor2.PointActor);
 
 exports.Region = Region;
+});
+
+;require.register("region/RollingRegion.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RollingRegion = void 0;
+
+var _Region2 = require("./Region");
+
+var _Tag = require("curvature/base/Tag");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var RollingRegion = /*#__PURE__*/function (_Region) {
+  _inherits(RollingRegion, _Region);
+
+  var _super = _createSuper(RollingRegion);
+
+  function RollingRegion() {
+    var _this;
+
+    _classCallCheck(this, RollingRegion);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "isWater", true);
+
+    _this.args.type = 'region rolling'; // this.entryParticle = '<div class = "particle-splash">';
+    // this.args.gravity = 0.5;
+    // this.args.drag    = 0.85;
+    // this.args.density = 10;
+    // this.skimSpeed = 10;
+
+    return _this;
+  }
+
+  _createClass(RollingRegion, [{
+    key: "update",
+    value: function update() {
+      // if(!this.filterWrapper && this.tags.sprite)
+      // {
+      // 	this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
+      // 	this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
+      // 	this.filter = new Tag('<div class = "region-filter">');
+      // 	this.color  = new Tag('<div class = "region-color">');
+      // 	this.filterWrapper.appendChild(this.filter.node);
+      // 	this.colorWrapper.appendChild(this.color.node);
+      // 	this.tags.sprite.appendChild(this.filterWrapper.node);
+      // 	this.tags.sprite.appendChild(this.colorWrapper.node);
+      // }
+      if (!this.originalHeight) {
+        this.originalHeight = this["public"].height;
+      }
+
+      _get(_getPrototypeOf(RollingRegion.prototype), "update", this).call(this);
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      _get(_getPrototypeOf(RollingRegion.prototype), "collideA", this).call(this, other, type);
+    }
+  }, {
+    key: "collideB",
+    value: function collideB(other, type) {
+      _get(_getPrototypeOf(RollingRegion.prototype), "collideA", this).call(this, other, type);
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: "isEffect",
+    get: function get() {
+      return true;
+    }
+  }]);
+
+  return RollingRegion;
+}(_Region2.Region);
+
+exports.RollingRegion = RollingRegion;
 });
 
 ;require.register("region/ShadeRegion.js", function(exports, require, module) {

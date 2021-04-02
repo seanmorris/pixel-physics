@@ -157,6 +157,12 @@
         ]
     },
     {
+        "color": "#ff000000",
+        "name": "rolling-region",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ffa49f00",
         "name": "seymour",
         "properties": [
