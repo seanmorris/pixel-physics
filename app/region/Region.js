@@ -44,6 +44,10 @@ export class Region extends PointActor
 			, '--leftBoundry':    leftBoundry + 'px'
 			, '--topBoundry':     topBoundry + 'px'
 		});
+	}
+
+	updateActor(other)
+	{
 
 	}
 

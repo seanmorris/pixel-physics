@@ -69,14 +69,10 @@ export class MarbleBlock extends PointActor
 			if(this.args.falling && moveBy > 0 && scan === 0)
 			{
 				this.args.falling = true;
-
-				this.args.pushed = 0;
 			}
 			else if(this.args.falling && moveBy < 0 && scan === 0)
 			{
 				this.args.falling = true;
-
-				this.args.pushed = 0;
 			}
 			else if(!this.args.falling || scan > 0)
 			{

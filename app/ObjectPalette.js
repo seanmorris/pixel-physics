@@ -19,6 +19,8 @@ import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
 import { SheildWaterMonitor } from './actor/monitor/SheildWaterMonitor';
 import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
 
+import { Bumper } from './actor/Bumper';
+
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
 import { Emerald }   from './actor/Emerald';
@@ -69,6 +71,7 @@ export const ObjectPalette = {
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock
+	, 'bumper':       Bumper
 	, 'drill-car':    DrillCar
 	, 'tornado':      Tornado
 	, 'egg-mobile':   EggMobile
@@ -89,6 +92,7 @@ export const ObjectPalette = {
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
 	, 'shade-region': ShadeRegion
+	, 'rolling-region': RollingRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin

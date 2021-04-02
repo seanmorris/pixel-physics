@@ -39,8 +39,8 @@
 	background-image: url(/Sonic/sheild-electric.png);
 	background-position: calc(-48px * 3) 0;
 	animation:
-		electric-sheild-rotate 0.3s steps(4) infinite forwards,
-		sheild-flip calc(0.2s * 2) infinite;
+		electric-sheild-rotate 300ms steps(8) infinite alternate forwards,
+		sheild-flip calc(600ms) infinite;
 }
 
 .electric-sheild.boosted {
@@ -59,6 +59,23 @@
 	background-image: url(/Sonic/sheild-fire.png);
 	background-position: calc(-48px * 0) 0;
 	animation: fire-sheild-rotate 0.5s steps(19) infinite;
+}
+
+.fire-sheild.boosted {
+	position: absolute;
+	z-index: 100;
+	left: -16px;
+	top: 18px;
+	width: 64px;
+	height: 48px;
+	background-image: url(/Sonic/shield-fire-boost.png);
+	background-position: calc(-48px * 0) 0;
+	animation: fire-sheild-flash 50ms steps(3) infinite, sheild-flip 0.1s infinite;
+	transform: scale(-1, -1) rotate(calc(calc(1rad * var(--air-angle)) + 180deg));
+}
+
+[data-facing=left] .fire-sheild.boosted {
+	transform: rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
 }
 
 .actor-sonic[data-animation=wall-stick] .bubble-sheild {
@@ -86,19 +103,28 @@
 	top: 24px;
 }
 
+[data-animation=rolling] .fire-sheild.boosted,
+[data-animation=jumping] .fire-sheild.boosted {
+	left: -16px;
+	top: 24px;
+}
+
 [data-animation=rolling] .electric-sheild,
 [data-animation=jumping] .electric-sheild {
 	left: 7px;
 	top: 24px;
 }
 
-[data-animation=lightdash] .fire-sheild,
 [data-animation=lightdash] .electric-sheild,
-[data-animation=lightdash-back] .fire-sheild,
 [data-animation=lightdash-back] .electric-sheild ,
-[data-animation=airdash] .fire-sheild,
 [data-animation=airdash] .electric-sheild {
 	left: 6px;
+	top: 10px;
+}
+[data-animation=lightdash] .fire-sheild.boosted,
+[data-animation=lightdash-back] .fire-sheild.boosted,
+[data-animation=airdash] .fire-sheild.boosted {
+	left: -12px;
 	top: 10px;
 }
 
@@ -167,6 +193,15 @@
 	}
 	to{
 		background-position: calc(-48px * 3) 0;
+	}
+}
+
+@keyframes fire-sheild-flash {
+	from{
+		background-position: calc(-48px * 0) 0;
+	}
+	to{
+		background-position: calc(-64px * 3) 0;
 	}
 }
 
