@@ -3,6 +3,8 @@ import { Region }     from '../region/Region';
 
 export class Spring extends PointActor
 {
+	float = -1;
+
 	template = `<div
 		class = "point-actor actor-item [[type]] [[collType]]"
 		style = "
@@ -49,8 +51,6 @@ export class Spring extends PointActor
 		this.args.height = this.args.height || 32;
 
 		this.args.color  = this.args.color || 0;
-
-		this.args.float  = -1;
 	}
 
 	update()

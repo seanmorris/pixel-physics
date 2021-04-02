@@ -303,7 +303,7 @@ export class Viewport extends View
 			? this.args.width * 0.5
 			: this.args.height * 0.5;
 
-		this.colCells = new Set;
+		this.colCells = new Map;
 
 		this.actorPointCache = new Map;
 
@@ -998,8 +998,18 @@ export class Viewport extends View
 			this.args.layers[i].update(this.tileMap, xDir, yDir);
 		}
 
-		const xMax = -(this.tileMap.mapData.width * 32);
-		const yMax = -(this.tileMap.mapData.height * 32);
+		this.tileMap.ready.then(()=>{
+			const xMax = -(this.tileMap.mapData.width * 32);
+			const yMax = -(this.tileMap.mapData.height * 32);
+
+			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
+				'x': Math.round(this.args.x)
+				, 'y': Math.round(this.args.y)
+				, 'xMax': xMax
+				, 'yMax': yMax
+				, 'frame': this.args.frameId
+			}));
+		});
 
 		this.tags.bgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
 		// this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
@@ -1010,13 +1020,6 @@ export class Viewport extends View
 			, '--outlineWidth': Math.round(this.settings.outline) + 'px'
 		});
 
-		this.args.backdrop && Object.assign(this.args.backdrop.args, ({
-			'x': Math.round(this.args.x)
-			, 'y': Math.round(this.args.y)
-			, 'xMax': xMax
-			, 'yMax': yMax
-			, 'frame': this.args.frameId
-		}));
 
 		const xMod = this.args.x < 0
 			? Math.round(this.args.x % (this.args.blockSize))
@@ -1071,11 +1074,6 @@ export class Viewport extends View
 			const objClass = ObjectPalette[objType];
 
 			const actor = Bindable.make(objClass.fromDef(objDef));
-
-			// if(!actor.controllable)
-			// {
-			// 	continue;
-			// }
 
 			this.actors.add( actor );
 
@@ -1825,11 +1823,35 @@ export class Viewport extends View
 		const cellX = Math.floor( actor.x / colCellDiv );
 		const cellY = Math.floor( actor.y / colCellDiv );
 
-		colCells[cellX] = colCells[cellX] || {};
+		const name = `${cellX}:${cellY}`;
 
-		colCells[cellX][cellY] = colCells[cellX][cellY] || new Set;
+		if(!colCells.has(name))
+		{
+			const cell = new Set;
 
-		return colCells[cellX][cellY];
+			colCells.set(name, cell);
+
+			cell.name = name;
+
+			return cell;
+		}
+
+		return colCells.get(name);
+
+		// const column = colCells.get(cellX) || new Map;
+
+		// if(!column.has(cellY))
+		// {
+		// 	column.set(cellY, new Map);
+		// }
+
+		// const cell = column.get(cellY) || new Set;
+
+		// colCells[cellX][cellY] = colCells[cellX][cellY] || new Set;
+
+		// return colCells[cellX][cellY];
+
+		// return cell;
 	}
 
 	setColCell(actor)
@@ -1876,22 +1898,30 @@ export class Viewport extends View
 		const colB = actorX;
 		const colC = actorX + space;
 
-		const rowA = actorY - space;
-		const rowB = actorY;
-		const rowC = actorY + space;
+		const rowA = actorY - space * 2;
+		const rowB = actorY - space;
+		const rowC = actorY;
+		const rowD = actorY + space;
+		const rowE = actorY + space * 2;
 
 		this.colCellCache.set(name, cache = [
 			  this.getColCell({x:colA, y:rowA})
 			, this.getColCell({x:colA, y:rowB})
 			, this.getColCell({x:colA, y:rowC})
+			, this.getColCell({x:colA, y:rowD})
+			, this.getColCell({x:colA, y:rowE})
 
 			, this.getColCell({x:colB, y:rowA})
 			, this.getColCell({x:colB, y:rowB})
 			, this.getColCell({x:colB, y:rowC})
+			, this.getColCell({x:colB, y:rowD})
+			, this.getColCell({x:colB, y:rowE})
 
 			, this.getColCell({x:colC, y:rowA})
 			, this.getColCell({x:colC, y:rowB})
 			, this.getColCell({x:colC, y:rowC})
+			, this.getColCell({x:colC, y:rowD})
+			, this.getColCell({x:colC, y:rowE})
 		]);
 
 		return cache.filter(set=>set.size);

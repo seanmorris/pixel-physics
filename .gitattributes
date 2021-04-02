@@ -1,3 +1,2 @@
 docs/app.* -diff
 docs/map/*.json -diff
-app/assets/map/*.json -diff

@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class WaterFall extends PointActor
 {
+	float = -1;
+
 	static fromDef(objDef)
 	{
 		const obj = super.fromDef(objDef);
@@ -23,7 +25,6 @@ export class WaterFall extends PointActor
 		this.args.width  = this.public.width  || 32;
 		this.args.height = this.public.height || 64;
 		this.args.type   = 'actor-item actor-water-fall';
-		this.args.float  = -1
 		this.args.active = false;
 	}
 

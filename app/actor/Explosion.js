@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class Explosion extends PointActor
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -10,8 +12,6 @@ export class Explosion extends PointActor
 
 		this.args.width  = 48;
 		this.args.height = 48;
-
-		this.args.float  = -1;
 
 		this.removeTimer = null;
 	}

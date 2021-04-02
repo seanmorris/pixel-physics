@@ -139,6 +139,17 @@ export class Switch extends PointActor
 			layer.args.destroyed = true;
 		}
 
+		if(this.args.water)
+		{
+			const water = this.viewport.actorsById[ this.args.water ];
+			const level = this.viewport.objDefs.get( this.args.setPoint );
+
+			water.target = Number(water.y || 0) - Number(level.y || 0);
+
+			water.args.fillSpeed  = this.args.fillSpeed  ?? water.args.fillSpeed;
+			water.args.drainSpeed = this.args.drainSpeed ?? water.args.drainSpeed;
+		}
+
 		const spawnPoint = this.viewport.objDefs.get(this.args.point);
 		const spawnType  = this.viewport.objectPalette[ this.args.spawn ];
 

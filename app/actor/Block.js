@@ -34,8 +34,6 @@ export class Block extends PointActor
 
 		this.args.gravity = 0.5;
 
-		this.args.float  = -1;
-
 		this.args.collapse = args.collapse ?? false;
 
 		this.ease = new QuintInOut(this.public.period);
@@ -60,7 +58,7 @@ export class Block extends PointActor
 			return true;
 		}
 
-		if(this.public.collapse && type === 0)
+		if(this.public.collapse && (type === 0 || type === 2))
 		{
 			if(other.public.ySpeed > 15)
 			{
@@ -144,56 +142,59 @@ export class Block extends PointActor
 			});
 		}
 
-		if(!this.public.float && !this.reset)
+		if(this.public.collapse)
 		{
-			this.reset = true;
+			if(!this.reset)
+			{
+				this.reset = true;
 
-			this.viewport.onFrameOut(300, () => {
-				this.args.falling = true;
-				this.args.goBack = true;
+				this.viewport.onFrameOut(300, () => {
+					this.args.falling = true;
+					this.args.goBack = true;
+					this.args.float = -1;
+					this.reset = false;
+				});
+			}
+
+			if(this.public.goBack)
+			{
 				this.args.float = -1;
-				this.reset = false;
-			});
-		}
 
-		if(this.public.goBack)
-		{
-			this.args.float = -1;
+				const distX = this.originalX - this.public.x;
+				const distY = this.originalY - this.public.y;
 
-			const distX = this.originalX - this.public.x;
-			const distY = this.originalY - this.public.y;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
+				this.args.gSpeed = 0;
 
-			this.args.xSpeed = 0;
-			this.args.ySpeed = 0;
-			this.args.gSpeed = 0;
+				if(Math.abs(distX) > 3)
+				{
+					this.args.x += Math.sign(distX) * 3;
+				}
+				else
+				{
+					this.args.x	= this.originalX;
+				}
 
-			if(Math.abs(distX) > 3)
-			{
-				this.args.x += Math.sign(distX) * 3;
-			}
-			else
-			{
-				this.args.x	= this.originalX;
-			}
+				if(Math.abs(distY) > 3)
+				{
+					this.args.y += Math.sign(distY) * 3;
+				}
+				else
+				{
+					this.args.y	= this.originalY;
+				}
 
-			if(Math.abs(distY) > 3)
-			{
-				this.args.y += Math.sign(distY) * 3;
-			}
-			else
-			{
-				this.args.y	= this.originalY;
-			}
-
-			if(this.public.x === this.originalX && this.args.y === this.originalY)
-			{
-				this.args.goBack = false;
+				if(this.public.x === this.originalX && this.args.y === this.originalY)
+				{
+					this.args.goBack = false;
+				}
 			}
 		}
 	}
 
 	get rotateLock() { return true; }
-	get canStick() { return false; }
+	get canStick() { return true; }
 	get solid() { return (!this.public.collapse) || (this.public.float !== 0 || !this.public.goBack); }
 }
 

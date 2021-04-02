@@ -3,13 +3,13 @@ import { CharacterString } from '../ui/CharacterString';
 
 export class TextActor extends PointActor
 {
+	float = -1;
+
 	constructor(args, parent)
 	{
 		super(args, parent);
 
 		this.args.type  = 'actor-item actor-text-actor';
-
-		this.args.float = -1;
 
 		this.text = new CharacterString({value:''});
 

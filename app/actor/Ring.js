@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class Ring extends PointActor
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -10,7 +12,6 @@ export class Ring extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
-		this.args.float  = -1;
 		this.args.gone   = false;
 	}
 

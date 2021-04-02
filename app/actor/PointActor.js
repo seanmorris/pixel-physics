@@ -65,7 +65,6 @@ export class PointActor extends View
 	</div>`;
 
 	profiles = {
-
 		normal: {
 			height:  1
 			, width: 1
@@ -75,15 +74,12 @@ export class PointActor extends View
 			, airAccel: 0.3
 			, jumpForce: 14
 			, gSpeedMax: 100
-		}
-
 			// , rollSpeedMax = 37;
+		}
 	};
 
 	static fromDef(objDef)
 	{
-		const instance = new this();
-
 		const objArgs = {
 			x:         objDef.x + 16
 			, y:       objDef.y - 1
@@ -92,14 +88,24 @@ export class PointActor extends View
 			, id:      objDef.id
 		};
 
+		const def = new Map;
+
 		for(const i in objDef.properties)
 		{
 			const property = objDef.properties[i];
 
 			objArgs[ property.name ] = property.value;
+
+			def.set(property.name, property.value);
 		}
 
-		return new this(Object.assign({}, objArgs));
+		const instance =  new this(Object.assign({}, objArgs));
+
+		instance.def = def;
+
+		instance.args.float = instance.float ?? instance.args.float;
+
+		return instance;
 	}
 
 	constructor(...args)
@@ -420,21 +426,27 @@ export class PointActor extends View
 			}
 			else if(!groundObject.isVehicle)
 			{
-				const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
-					this.args.x += vv - groundObject.args.x
-				});
+				console.log(this.y, groundObject.y - groundObject.args.height,  groundObject.y);
 
-				const debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-					this.args.y = vv - groundObject.args.height
-				});
+				if(this.y <= this.public.height + groundObject.y - groundObject.args.height)
+				{
+					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
+						this.args.x += vv - groundObject.args.x
+					});
 
-				const debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
-					this.args.layer = vv;
-				});
+					const debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
+						this.args.y = vv - groundObject.args.height
+					});
 
-				this.debindGroundX.add(debindGroundX);
-				this.debindGroundY.add(debindGroundY);
-				this.debindGroundL.add(debindGroundL);
+					const debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
+						this.args.layer = vv;
+					});
+
+					this.debindGroundX.add(debindGroundX);
+					this.debindGroundY.add(debindGroundY);
+					this.debindGroundL.add(debindGroundL);
+				}
+
 			}
 
 			if(prevGroundObject && prevGroundObject.isVehicle)
@@ -655,31 +667,56 @@ export class PointActor extends View
 				this.args.deepJump = false;
 			}
 		}
-		else
+		else if(this.public.jumping)
 		{
-			if(this.public.jumping)
-			{
-				this.args.jumping  = false;
-				this.args.deepJump = false;
-				this.args.highJump = false;
-				this.args.jumpedAt = null;
-				this.args.dontJump = 5;
-			}
+			this.args.jumping  = false;
+			this.args.deepJump = false;
+			this.args.highJump = false;
+			this.args.jumpedAt = null;
 		}
 
-		this.region = this.viewport.regionAtPoint(this.x, this.y);
+		const region = this.viewport.regionAtPoint(this.x, 2 + this.y - this.public.height);
 
-		if(this.region)
+		if(region)
 		{
-			const region = this.region;
+			if(region.public.density
+				&& this.public.density
+				&& this.public.density < region.public.density
+				&& this.y - this.public.height > region.y - region.public.height
+			){
+				if(!this.region && !this.public.falling)
+				{
+					this.args.ySpeed = 0;
+				}
 
-			if(region.public.density && this.public.density && this.public.density < region.public.density)
-			{
-				this.args.y = this.public.height + (region.y - region.public.height);
-				this.args.float  = -1;
-				this.args.ySpeed = 0;
+				const densityRatio = region.public.density / this.public.density;
+
+				const myTop     = this.y - this.public.height;
+				const regionTop = region.y - region.public.height;
+
+				const depth = myTop - regionTop;
+
+				this.args.falling = true;
+				this.args.float   = -1;
+
+				if(depth < this.public.height && this.args.ySpeed < -depth)
+				{
+					this.args.ySpeed = -depth;
+
+					this.onNextFrame(() => this.args.ySpeed = 0);
+				}
+				else
+				{
+					this.args.ySpeed -= densityRatio * region.public.drag;
+				}
 			}
 		}
+		else if(this.region && this.def)
+		{
+			this.args.float = this.def.get('float') ?? this.float ?? 0;
+		}
+
+		this.region = region;
 
 		if(!this.isEffect && this.public.falling && this.viewport)
 		{
@@ -703,9 +740,9 @@ export class PointActor extends View
 		}
 
 		const layerSwitch = this.viewport.objectPalette['layer-switch'];
-		const region      = this.viewport.objectPalette['base-region'];
+		const regionClass = this.viewport.objectPalette['base-region'];
 
-		const skipChecking = [layerSwitch, region];
+		const skipChecking = [layerSwitch, regionClass];
 
 		if(!(skipChecking.some(x => this instanceof x)))
 		{
@@ -830,6 +867,8 @@ export class PointActor extends View
 
 				this.args.groundAngle = 0;
 
+				this.args.falling = false;
+
 			}
 			else if(standingOn)
 			{
@@ -838,12 +877,14 @@ export class PointActor extends View
 			else if(!region
 				|| this.groundPoint[1] !== 1 + region.y - region.public.height
 				|| Math.abs(this.args.gSpeed) <= region.skimSpeed
+				|| this.public.mode !== MODE_FLOOR
 			){
 				if(half)
 				{
 					const leftGroundPoint  = [...this.groundPoint];
 
 					leftGroundPoint[0] -= half;
+					leftGroundPoint[1] -= 1;
 
 					const standingOnLeft = this.getMapSolidAt(leftGroundPoint[0], leftGroundPoint[1]);
 
@@ -854,7 +895,6 @@ export class PointActor extends View
 						);
 
 						this.args.standingOn = groundActors[0];
-
 					}
 					else if(standingOnLeft)
 					{
@@ -865,6 +905,7 @@ export class PointActor extends View
 						const rightGroundPoint = [...this.groundPoint];
 
 						rightGroundPoint[0] += half;
+						rightGroundPoint[1] -= 1;
 
 						const standingOnRight = this.getMapSolidAt(rightGroundPoint[0], rightGroundPoint[1]);
 
@@ -1438,21 +1479,13 @@ export class PointActor extends View
 			return;
 		}
 
-		if(!this.willStick && this.args.xSpeed)
+		const foreDistance = this.scanForward(this.public.xSpeed, 0.5);
+
+		if(!this.willStick && this.args.xSpeed && foreDistance !== false)
 		{
-			const foreDistance = this.scanForward(this.public.xSpeed, 0.5);
-
-			if(foreDistance !== false)
-			{
-				this.args.x += foreDistance * Math.sign(this.public.xSpeed);
-				this.args.flySpeed = 0;
-				this.args.xSpeed   = 0;
-
-				if(!this.args.flying && !this.args.float)
-				{
-					// this.args.ignore = -2;
-				}
-			}
+			this.args.x += foreDistance * Math.sign(this.public.xSpeed);
+			this.args.flySpeed = 0;
+			this.args.xSpeed   = 0;
 		}
 
 		if(this.public.xSpeed)
@@ -1642,24 +1675,30 @@ export class PointActor extends View
 				}
 			}
 
-			if(
-				this.willStick
+			if(this.willStick
 				&& !this.getMapSolidAt(this.x - direction, this.y)
-				&& !this.getMapSolidAt(this.x, this.y + 1)
+				&& !this.getMapSolidAt(this.x, this.y + 1, false)
 			){
-				if(isLeft)
+				let canStick = true;
+
+				if(Array.isArray(blockers))
+				{
+					canStick = blockers.filter(a => a.canStick).length;
+				}
+
+				if(canStick && isLeft)
 				{
 					this.args.gSpeed = Math.floor(airSpeed) * Math.sign(ySpeedOriginal);
 					this.args.gSpeed = 0.1;
 					this.args.mode   = MODE_LEFT;
 				}
-				else if(isRight)
+				else if(canStick && isRight)
 				{
 					this.args.gSpeed = Math.floor(airSpeed) * -Math.sign(ySpeedOriginal);
 					this.args.gSpeed = 0.1;
 					this.args.mode   = MODE_RIGHT;
 				}
-				else
+				else if(canStick)
 				{
 					this.args.mode = MODE_FLOOR;
 				}
@@ -2224,6 +2263,7 @@ export class PointActor extends View
 					const region = this.viewport.regionAtPoint(point[0], point[1]);
 
 					if(region
+						&& this.public.mode === MODE_FLOOR
 						&& point[1] === 1 + region.y - region.public.height
 						&& Math.abs(this.public.gSpeed) >= region.skimSpeed
 					){
@@ -2293,6 +2333,7 @@ export class PointActor extends View
 						const region = this.viewport.regionAtPoint(point[0], point[1]);
 
 						if(!region
+							|| this.public.mode !== MODE_FLOOR
 							|| point[1] !== 1 + region.y - region.public.height
 							|| Math.abs(this.public.gSpeed) < region.skimSpeed
 						){
@@ -2543,7 +2584,7 @@ export class PointActor extends View
 		const dir      = Math.sign(speed);
 		const radius   = Math.round(this.public.width / 2);
 		const hRadius  = Math.round(this.public.height / 2);
-		const scanDist = Math.abs(speed);
+		const scanDist = Math.ceil(Math.abs(speed));
 		const viewport = this.viewport;
 
 		if(!viewport)

@@ -7,6 +7,8 @@ import { Spring } from './Spring';
 
 export class Projectile extends PointActor
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -15,8 +17,6 @@ export class Projectile extends PointActor
 
 		this.args.width  = 8;
 		this.args.height = 8;
-
-		this.args.float  = -1;
 
 		this.removeTimer = null;
 	}
