@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class LayerSwitch extends PointActor
 {
+	float = -1;
+
 	static fromDef(objDef)
 	{
 		const obj = super.fromDef(objDef);
@@ -25,8 +27,6 @@ export class LayerSwitch extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
-
-		this.args.float  = -1;
 	}
 
 	collideA(other, type)

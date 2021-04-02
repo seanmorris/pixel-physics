@@ -1,6 +1,12 @@
 [
     {
         "color": "#ffa0a0a4",
+        "name": "sheild-fire-monitor",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
         "name": "balloon",
         "properties": [
         ]
@@ -159,6 +165,18 @@
     {
         "color": "#ffa0a0a4",
         "name": "shade-region",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "sheild-electric-monitor",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "sheild-water-monitor",
         "properties": [
         ]
     },

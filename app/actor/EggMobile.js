@@ -2,6 +2,8 @@ import { Vehicle } from './Vehicle';
 
 export class EggMobile extends Vehicle
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -20,7 +22,6 @@ export class EggMobile extends Vehicle
 
 		this.args.width  = 54;
 		this.args.height = 20;
-		this.args.float  = -1;
 
 		this.args.yMargin = 42;
 

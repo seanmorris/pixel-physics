@@ -52,6 +52,8 @@ export class MarbleBlock extends PointActor
 				return true;
 			}
 
+			this.args.pushed = Math.sign(other.public.gSpeed);
+
 			const tileMap = this.viewport.tileMap;
 			const moveBy  = (type === 1 && 1) || (type === 3 && -1);
 
@@ -64,13 +66,17 @@ export class MarbleBlock extends PointActor
 
 			const scan = this.scanBottomEdge(moveBy);
 
-			if(moveBy > 0 && scan === 0)
+			if(this.args.falling && moveBy > 0 && scan === 0)
 			{
 				this.args.falling = true;
+
+				this.args.pushed = 0;
 			}
-			else if(moveBy < 0 && scan === 0)
+			else if(this.args.falling && moveBy < 0 && scan === 0)
 			{
 				this.args.falling = true;
+
+				this.args.pushed = 0;
 			}
 			else if(!this.args.falling || scan > 0)
 			{

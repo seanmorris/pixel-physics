@@ -99,8 +99,8 @@ export const ObjectPalette = {
 	, 'balloon':      Balloon
 	, 'ring-monitor': RingMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
-	, 'sheild-water-monitor': SheildFireMonitor
-	, 'sheild-electric-monitor': SheildFireMonitor
+	, 'sheild-water-monitor': SheildWaterMonitor
+	, 'sheild-electric-monitor': SheildElectricMonitor
 };
 
 

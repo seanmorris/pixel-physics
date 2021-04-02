@@ -14,8 +14,11 @@ export class WaterRegion extends Region
 
 		this.entryParticle = '<div class = "particle-splash">';
 
-		this.args.gravity = 0.50;
+		this.args.gravity = 0.40;
 		this.args.drag    = 0.85;
+		this.args.density = 1;
+
+		this.skimSpeed = 15;
 
 		this.draining = 0;
 	}
@@ -51,6 +54,10 @@ export class WaterRegion extends Region
 				{
 					this.draining = 1;
 				}
+				else
+				{
+					this.draining = -1;
+				}
 			});
 		}
 
@@ -67,7 +74,7 @@ export class WaterRegion extends Region
 			}
 			else if(this.draining < 0 && this.public.height < this.originalHeight)
 			{
-				this.args.height += 0.5;
+				this.args.height += 3.5;
 			}
 
 			if(this.public.height <= 0)
@@ -82,6 +89,24 @@ export class WaterRegion extends Region
 			else
 			{
 				this.args.display = 'initial';
+			}
+		}
+
+		if(this.target && this.args.height !== this.target)
+		{
+			const space      = this.args.height - this.target;
+			const drainSpeed = this.args.drainSpeed ?? 1;
+			const fillSpeed  = this.args.fillSpeed  ?? 1;
+
+			const speed = space > 0 ? drainSpeed : fillSpeed;
+
+			if(Math.abs(this.args.height - this.target) > speed)
+			{
+				this.args.height -= Math.abs(speed) * Math.sign(space);
+			}
+			else
+			{
+				this.args.height = this.target;
 			}
 		}
 

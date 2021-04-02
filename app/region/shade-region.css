@@ -232,8 +232,6 @@
 
 	background-image: url(Sonic/lava-surface-1.png);
 
-	transform: translateY(0px);
-
 	height: 16px;
 	width: 100%;
 
@@ -244,6 +242,13 @@
 	animation: lava-waves steps(1) infinite 1.5s, lava-flow ease-in-out infinite alternate 4.5s;
 }
 
+.region.region-lava .region-color-wrapper:after {
+	transform: translateY(0px);
+}
+
+.region.region-shade.lava .region-color-wrapper:after {
+	transform: translateY(16px);
+}
 
 .viewport.displacement-off .region.region-shade.heat .region-filter {
 	filter: brightness(4) blur(1px) contrast(1.25);

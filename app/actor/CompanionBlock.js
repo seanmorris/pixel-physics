@@ -8,20 +8,23 @@ export class CompanionBlock extends MarbleBlock
 
 		this.args.type = 'actor-item actor-marble-companion-block';
 
-		this.args.density = 0.5;
+		this.args.density = this.args.density || 6;
 	}
 
 	update()
 	{
-		const tileMap = this.viewport.tileMap;
+		if(this.args.float)
+		{
+			const tileMap = this.viewport.tileMap;
 
-		if(this.public.float && !tileMap.getSolid(this.x + this.public.width / 2 * this.public.direction, this.y))
-		{
-			this.args.xSpeed = this.public.direction;
-		}
-		else
-		{
-			this.args.xSpeed = 0;
+			if(!tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y))
+			{
+				this.args.xSpeed = this.public.pushed;
+			}
+			else
+			{
+				this.args.xSpeed = 0;
+			}
 		}
 
 		super.update();

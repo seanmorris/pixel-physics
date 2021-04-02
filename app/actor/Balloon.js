@@ -2,13 +2,13 @@ import { PointActor } from './PointActor';
 
 export class Balloon extends PointActor
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
 
 		this.args.type = 'actor-item actor-balloon';
-
-		this.args.float  = -1;
 
 		this.args.width  = 32;
 		this.args.height = 32;

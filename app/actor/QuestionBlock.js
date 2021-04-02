@@ -5,6 +5,7 @@ import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
 export class QuestionBlock extends PointActor
 {
 	maxBounce = 4;
+	float = -1;
 
 	template = `<div
 		class = "point-actor [[type]] [[collType]]"
@@ -45,7 +46,6 @@ export class QuestionBlock extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
-		this.args.float  = -1;
 
 		this.initY = null;
 

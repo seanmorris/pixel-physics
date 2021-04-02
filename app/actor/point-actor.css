@@ -102,6 +102,8 @@
 	left: 0px;
 }
 
+.actor-item.actor-switch .sprite,
+.actor-item.actor-block .sprite,
 .actor-item.actor-marble-companion-block .sprite,
 .actor-item.actor-block-marble .sprite {
 	--hoverWidth: -1px;

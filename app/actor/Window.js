@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class Window extends PointActor
 {
+	float = -1;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -10,8 +12,6 @@ export class Window extends PointActor
 
 		this.args.width  = 64;
 		this.args.height = 160;
-
-		this.args.float  = -1;
 	}
 
 	get solid() { return false; }
