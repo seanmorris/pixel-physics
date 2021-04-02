@@ -13,11 +13,19 @@ export class CompanionBlock extends MarbleBlock
 
 	update()
 	{
-		const tileMap = this.viewport.tileMap;
 
-		if(!tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y))
+		if(this.public.pushed)
 		{
-			this.args.xSpeed = this.public.pushed;
+			const tileMap = this.viewport.tileMap;
+
+			if(!tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y))
+			{
+				this.args.xSpeed = this.public.pushed;
+			}
+			else
+			{
+				this.args.xSpeed = 0;
+			}
 		}
 
 		super.update();

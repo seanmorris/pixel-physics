@@ -426,8 +426,6 @@ export class PointActor extends View
 			}
 			else if(!groundObject.isVehicle)
 			{
-				console.log(this.y, groundObject.y - groundObject.args.height,  groundObject.y);
-
 				if(this.y <= this.public.height + groundObject.y - groundObject.args.height)
 				{
 					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
@@ -573,6 +571,11 @@ export class PointActor extends View
 			this.region = this.viewport.regionAtPoint(this.x, this.y);
 
 			return;
+		}
+
+		if(this.region)
+		{
+			this.region.updateActor(this);
 		}
 
 		let gSpeedMax = this.public.gSpeedMax;
@@ -1025,18 +1028,23 @@ export class PointActor extends View
 		{
 			this.willJump = false;
 
-			let force = this.args.jumpForce * drag;
+			const tileMap = this.viewport.tileMap;
 
-			if(this.running)
+			if(!tileMap.getSolid(this.x, this.y - this.public.height, this.public.layer))
 			{
-				force = force * 1.5;
-			}
-			else if(this.crawling)
-			{
-				force = force * 0.5;
-			}
+				let force = this.args.jumpForce * drag;
 
-			this.doJump(force);
+				if(this.running)
+				{
+					force = force * 1.5;
+				}
+				else if(this.crawling)
+				{
+					force = force * 0.5;
+				}
+
+				this.doJump(force);
+			}
 
 			return;
 		}

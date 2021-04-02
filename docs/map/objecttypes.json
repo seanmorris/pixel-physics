@@ -18,6 +18,12 @@
         ]
     },
     {
+        "color": "#ffa0a0a4",
+        "name": "bumper",
+        "properties": [
+        ]
+    },
+    {
         "color": "#ffffff00",
         "name": "coin",
         "properties": [

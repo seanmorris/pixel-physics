@@ -30,7 +30,7 @@
 
 	left: max(0.00001px, var(--leftBoundry) + 16px);
 
-	width: min(var(--viewportWidth), calc(calc(var(--widthPx) - var(--leftBoundry)) - 16px));
+	width: min(calc(var(--width) * 1px), var(--viewportWidth), calc(calc(var(--widthPx) - var(--leftBoundry)) - 16px));
 
 	height: auto;
 
