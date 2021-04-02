@@ -6,6 +6,7 @@ import { Region }      from './region/Region';
 import { ShadeRegion } from './region/ShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { LavaRegion } from './region/LavaRegion';
+import { RollingRegion } from './region/RollingRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';

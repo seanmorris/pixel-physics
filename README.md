@@ -52,14 +52,13 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 
 * 🅐/✕ - Jump
 * 🅐/✕ - Insta-shield (while airborne)
-* 🅐/✕ - wall stick/kick (hold while airborne/release to jump)
 * 🅑/ⵔ  - spindash
 * 🠋 - roll (while moving)
 * 🠋🅐/✕ - dropdash (hold while airborne, release to cancel)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
-* <kbd>**L1**</kbd> - air dash (while airborne)
-* <kbd>**R1**</kbd> - air dash (while airborne)
+* <kbd>**L1**</kbd>/<kbd>**R1**</kbd> - air dash (while airborne)
+* <kbd>**L1**</kbd>/<kbd>**R1**</kbd> - wall stick/kick (hold while airborne/release to jump)
 
 ### Tails
 

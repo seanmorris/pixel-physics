@@ -344,24 +344,6 @@ export class Sonic extends PointActor
 		}
 	}
 
-	command_4()
-	{
-		if(this.public.falling)
-		{
-			this.airDash(-1);
-
-			this.args.facing = 'left';
-		}
-	}
-
-	command_5()
-	{
-		if(this.public.falling)
-		{
-			this.airDash(1);
-		}
-	}
-
 	airDash(direction)
 	{
 		if(this.dashed || this.public.ignore)
@@ -426,7 +408,68 @@ export class Sonic extends PointActor
 
 			this.willStick = false;
 		}
-		else if(this.public.jumping || this.dashed)
+	}
+
+	command_4()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(-1);
+
+			this.args.facing = 'left';
+		}
+	}
+
+	hold_4()
+	{
+		if(this.public.jumping || this.dashed)
+		{
+			this.dropDashCharge = 0;
+
+			this.willStick = true;
+			this.stayStuck = true;
+		}
+	}
+
+	release_4()
+	{
+		this.willStick = false;
+		this.stayStuck = false;
+
+		if(this.public.wallSticking)
+		{
+			this.args.falling = true;
+			this.args.ySpeed  = 0;
+			this.airDash(this.public.mode === 1 ? 1 : -1);
+			this.args.ignore  = -2;
+		}
+	}
+
+	command_5()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(1);
+		}
+	}
+
+	release_5()
+	{
+		this.willStick = false;
+		this.stayStuck = false;
+
+		if(this.public.wallSticking)
+		{
+			this.args.falling = true;
+			this.args.ySpeed  = 0;
+			this.airDash(this.public.mode === 1 ? 1 : -1);
+			this.args.ignore  = -2;
+		}
+	}
+
+	hold_5()
+	{
+		if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
 
@@ -468,22 +511,6 @@ export class Sonic extends PointActor
 		if(this.dashDust)
 		{
 			this.dashDust.remove();
-		}
-	}
-
-	release_0()
-	{
-		super.release_0();
-
-		this.willStick = false;
-		this.stayStuck = false;
-
-		if(this.public.wallSticking)
-		{
-			this.args.falling = true;
-			this.args.ySpeed  = 0;
-			this.airDash(this.public.mode === 1 ? 1 : -1);
-			this.args.ignore  = -2;
 		}
 	}
 
