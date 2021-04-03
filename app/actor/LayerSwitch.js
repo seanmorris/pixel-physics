@@ -16,7 +16,9 @@ export class LayerSwitch extends PointActor
 
 	onAttach(event)
 	{
-		event.preventDefault(event);
+		event && event.preventDefault();
+
+		return false;
 	}
 
 	constructor(...args)

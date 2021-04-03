@@ -1076,10 +1076,14 @@ export class Viewport extends View
 			const actor = Bindable.make(objClass.fromDef(objDef));
 
 			this.actors.add( actor );
-
 			actor.render(this.tags.actors);
-
 			actor.onRendered();
+
+			if(actor.onAttach && actor.onAttach() === false)
+			{
+				actor.detach();
+			}
+
 			// actor.onAttached && actor.onAttached();
 
 			const width  = this.args.width;
@@ -1136,9 +1140,13 @@ export class Viewport extends View
 					this.actors.add(Bindable.make(spawn.object));
 
 					spawn.object.render(spawnDoc);
-
 					spawn.object.onRendered();
-					spawn.object.onAttached && spawn.object.onAttached();
+					spawn.object.onAttached && spawn.object.onAttached()
+
+					if(spawn.object.onAttach && spawn.object.onAttach() === false)
+					{
+						spawn.object.detach();
+					}
 
 					spawned = true;
 				}
@@ -1150,9 +1158,13 @@ export class Viewport extends View
 				this.actors.add(Bindable.make(spawn.object));
 
 				spawn.object.render(spawnDoc);
-
 				spawn.object.onRendered();
-				spawn.object.onAttached && spawn.object.onAttached();
+				spawn.object.onAttached && spawn.object.onAttached()
+
+				if(spawn.object.onAttach && spawn.object.onAttach() === false)
+				{
+					spawn.object.detach();
+				}
 
 				spawned = true;
 			}
@@ -1569,7 +1581,11 @@ export class Viewport extends View
 
 						if(!actor.vizi)
 						{
-							actor.nodes.map(n => wakeDoc.append(n));
+							if(!actor.public.hidden)
+							{
+								actor.nodes.map(n => wakeDoc.append(n));
+							}
+
 
 							wakeActors = true;
 
