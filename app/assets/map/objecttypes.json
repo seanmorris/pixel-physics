@@ -1,7 +1,7 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "sheild-fire-monitor",
+        "name": "ring-monitor",
         "properties": [
         ]
     },
@@ -183,6 +183,12 @@
     {
         "color": "#ffa0a0a4",
         "name": "sheild-electric-monitor",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "sheild-fire-monitor",
         "properties": [
         ]
     },

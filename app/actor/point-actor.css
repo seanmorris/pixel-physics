@@ -131,6 +131,10 @@
 	filter: grayscale(85%) brightness(1.125);
 }
 
+.actor-item.actor-block .sprite.platform {
+	filter: sepia(85%) brightness(1.125) hue-rotate(250deg);
+}
+
 .actor-item.actor-block .sprite,
 .actor-item.actor-block-marble .sprite {
 	background-image: url(/Sonic/marble-zone-block.png);

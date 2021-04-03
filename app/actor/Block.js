@@ -12,8 +12,8 @@ export class Block extends PointActor
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
 
-		obj.args.x = obj.originalX = 16 + Math.floor((objDef.x + Math.floor(objDef.width / 32) * 16) / 32) * 32;
-		obj.args.y = obj.originalY = Math.floor(objDef.y / 32) * 32;
+		obj.args.x = obj.originalX = objDef.x + Math.floor(objDef.width / 2);
+		obj.args.y = obj.originalY = objDef.y;
 
 		return obj;
 	}
@@ -45,6 +45,18 @@ export class Block extends PointActor
 	{
 		if(other instanceof this.constructor)
 		{
+			return false;
+		}
+
+		if(this.public.platform)
+		{
+			// console.log(other.y, this.y, this.public.height);
+
+			if(other.public.falling === false || (other.y <= this.y - this.public.height && other.public.ySpeed > 0))
+			{
+				return true;
+			}
+
 			return false;
 		}
 
@@ -93,9 +105,20 @@ export class Block extends PointActor
 		return true;
 	}
 
-	onAttached()
+	onAttached(event)
 	{
 		this.public.collapse && this.tags.sprite.classList.add('collapse');
+		this.public.platform && this.tags.sprite.classList.add('platform');
+	}
+
+	onAttach(event)
+	{
+		if(this.public.hidden)
+		{
+			event && event.preventDefault();
+
+			return false;
+		}
 	}
 
 	update()
