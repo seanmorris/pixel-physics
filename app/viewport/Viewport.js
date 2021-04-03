@@ -1910,9 +1910,11 @@ export class Viewport extends View
 
 		const space = colCellDiv;
 
-		const colA = actorX - space;
-		const colB = actorX;
-		const colC = actorX + space;
+		const colA = actorX - space * 2;
+		const colB = actorX - space;
+		const colC = actorX;
+		const colD = actorX + space;
+		const colE = actorX + space * 2;
 
 		const rowA = actorY - space * 2;
 		const rowB = actorY - space;
@@ -1921,11 +1923,11 @@ export class Viewport extends View
 		const rowE = actorY + space * 2;
 
 		this.colCellCache.set(name, cache = [
-			  this.getColCell({x:colA, y:rowA})
-			, this.getColCell({x:colA, y:rowB})
-			, this.getColCell({x:colA, y:rowC})
-			, this.getColCell({x:colA, y:rowD})
-			, this.getColCell({x:colA, y:rowE})
+			// this.getColCell({x:colA, y:rowA})
+			// , this.getColCell({x:colA, y:rowB})
+			// , this.getColCell({x:colA, y:rowC})
+			// , this.getColCell({x:colA, y:rowD})
+			// , this.getColCell({x:colA, y:rowE})
 
 			, this.getColCell({x:colB, y:rowA})
 			, this.getColCell({x:colB, y:rowB})
@@ -1938,6 +1940,18 @@ export class Viewport extends View
 			, this.getColCell({x:colC, y:rowC})
 			, this.getColCell({x:colC, y:rowD})
 			, this.getColCell({x:colC, y:rowE})
+
+			, this.getColCell({x:colD, y:rowA})
+			, this.getColCell({x:colD, y:rowB})
+			, this.getColCell({x:colD, y:rowC})
+			, this.getColCell({x:colD, y:rowD})
+			, this.getColCell({x:colD, y:rowE})
+
+			// , this.getColCell({x:colE, y:rowA})
+			// , this.getColCell({x:colE, y:rowB})
+			// , this.getColCell({x:colE, y:rowC})
+			// , this.getColCell({x:colE, y:rowD})
+			// , this.getColCell({x:colE, y:rowE})
 		]);
 
 		return cache.filter(set=>set.size);
