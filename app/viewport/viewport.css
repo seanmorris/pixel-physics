@@ -606,10 +606,11 @@ input[type=number]::-webkit-outer-spin-button {
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
 }
 
+.backdrop.mystic-cave .parallax,
 .backdrop.proto-labrynth .parallax {
 	height: auto;
-	top: max( calc(100% - calc(0px + calc(1px * var(--top)))),  0%);
-	bottom: max( calc(100% - calc(-0px + calc(1px * var(--bottom)))),  0%);
+	top: max( calc(100% - calc(1px * var(--top))),  0%);
+	bottom: max( calc(100% - calc(1px * var(--bottom))),  0%);
 }
 
 .viewport.standalone {
