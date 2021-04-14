@@ -19,6 +19,23 @@ export class FireSheild extends Sheild
 		}
 	}
 
+	update(host)
+	{
+		if(!this.initSample)
+		{
+			this.initSample = new Audio('/Sonic/S3K_3E.wav');
+			this.initSample.volume = 0.15 + (Math.random() * -0.05);
+
+			this.sample = new Audio('/Sonic/S3K_43.wav');
+			this.sample.volume = 0.15 + (Math.random() * -0.05);
+
+			if(host.viewport.args.audio)
+			{
+				this.initSample.play();
+			}
+		}
+	}
+
 	hold_4(host, button)
 	{
 		if(host.canFly)
@@ -33,6 +50,9 @@ export class FireSheild extends Sheild
 			if(!this.args.boosted)
 			{
 				this.args.boosted = 'boosted';
+
+				this.sample.currentTime = 0;
+				this.sample.play();
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}
@@ -57,6 +77,9 @@ export class FireSheild extends Sheild
 			if(!this.args.boosted)
 			{
 				this.args.boosted = 'boosted';
+
+				this.sample.currentTime = 0;
+				this.sample.play();
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}

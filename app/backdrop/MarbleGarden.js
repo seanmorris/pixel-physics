@@ -6,6 +6,8 @@ export class MarbleGarden extends Backdrop
 	{
 		super(args, parent);
 
+		this.args.name = 'marble-garden';
+
 		this.args.strips = [
 			{
 				autoscroll:  -1.25

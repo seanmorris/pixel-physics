@@ -52,7 +52,10 @@ export class Block extends PointActor
 		{
 			// console.log(other.y, this.y, this.public.height);
 
-			if(other.public.falling === false || (other.y <= this.y - this.public.height && other.public.ySpeed > 0))
+			const otherTop = other.y - other.public.height;
+			const blockTop = this.y - this.public.height;
+
+			if(other.public.falling === false || (other.public.ySpeed > 0 && otherTop <= blockTop))
 			{
 				return true;
 			}

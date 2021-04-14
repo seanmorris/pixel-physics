@@ -14,6 +14,8 @@ export class Bumper extends PointActor
 		this.args.height = 16;
 
 		this.ignores = new Map;
+
+		this.sample = new Audio('/Sonic/S3K_AA.wav');
 	}
 
 	update()
@@ -41,6 +43,13 @@ export class Bumper extends PointActor
 
 		if(other.args.falling)
 		{
+			if(this.viewport.args.audio)
+			{
+				this.sample.volume = 0.15 + (Math.random() * -0.05);
+				this.sample.currentTime = 0;
+				this.sample.play();
+			}
+
 			other.args.xSpeed *= -1;
 			other.args.ySpeed *= -1;
 

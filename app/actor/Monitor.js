@@ -60,7 +60,7 @@ export class Monitor extends PointActor
 		}
 
 		if((type === 1 || type === 3)
-			&& (Math.abs(other.args.xSpeed) > 15 || Math.abs(other.args.gSpeed) > 15 || other instanceof Projectile)
+			&& (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
 			&& !this.public.gone
 			&& this.viewport
 		){

@@ -13,12 +13,12 @@ export class Tails extends PointActor
 
 		this.args.type      = 'actor-item actor-tails';
 
-		this.args.accel     = 0.35;
+		this.args.accel     = 0.25;
 		this.args.decel     = 0.4;
 
 		this.args.flySpeedMax = 25;
 
-		this.args.gSpeedMax = 16;
+		this.args.gSpeedMax = 18;
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 

@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "curvature": "^0.0.66-k",
-    "subspace-client": "0.0.7-a",
-    "pokemon-parser": "0.0.5-c",
+    "subspace-client": "^0.0.7-a",
+    "pokemon-parser": "^0.0.5-c",
     "three": "^0.110.0",
-    "three-collada-loader": "0.0.1"
+    "three-collada-loader": "^0.0.1-a"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",

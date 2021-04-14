@@ -80,9 +80,7 @@ export class MarbleBlock extends PointActor
 
 				if(!nextPosition[1])
 				{
-					const realMoveBy = nextPosition[0] || moveBy;
-
-					this.args.x += realMoveBy;
+					this.args.x += nextPosition[0] || moveBy;
 
 					return scan === 0;
 				}
