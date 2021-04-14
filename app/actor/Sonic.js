@@ -346,35 +346,54 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
-		if(this.dashed || this.public.ignore)
+		if(this.dashed || (this.public.ignore && this.public.ignore !== -2))
 		{
 			return;
 		}
-
-		const dashSpeed = direction * 12;
-
-		const foreDistance = this.scanForward(dashSpeed, 0.5);
-
-		if(foreDistance === 0)
-		{
-			this.dashed = true;
-			this.box.setAttribute('data-animation', 'airdash');
-			return;
-		}
-
-		this.box.setAttribute('data-animation', 'airdash');
 
 		if(Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
 			this.args.xSpeed = 0;
 		}
 
+		let dashSpeed = direction * 12;
+
+		this.args.float = 3;
+
+		if(this.args.wallSticking)
+		{
+			dashSpeed = direction * 18;
+			this.args.float = 6;
+		}
+
+		const foreDistance = this.scanForward(this.args.xSpeed + dashSpeed, 0.5);
+
+		if(foreDistance < 3 && foreDistance !== false)
+		{
+			this.args.xSpeed = 0;
+			this.dashed = true;
+
+			this.box.setAttribute('data-animation', 'airdash');
+
+			return;
+		}
+		else if (foreDistance !== false)
+		{
+			dashSpeed = foreDistance * Math.sign(dashSpeed);
+		}
+
+		this.box.setAttribute('data-animation', 'airdash');
+
 		if(this.public.ySpeed > 0)
 		{
 			this.args.ySpeed = 0;
 		}
 
+		this.args.falling = true;
+
 		this.args.xSpeed += dashSpeed;
+
+		this.args.direction = direction;
 
 		this.dashTimer = 0;
 
@@ -422,17 +441,14 @@ export class Sonic extends PointActor
 
 	hold_4(button)
 	{
-		if(button.time < 2)
-		{
-			return;
-		}
-
 		if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
 
 			this.willStick = true;
 			this.stayStuck = true;
+
+			this.args.ignore = 4;
 		}
 	}
 
@@ -441,12 +457,16 @@ export class Sonic extends PointActor
 		this.willStick = false;
 		this.stayStuck = false;
 
-		if(this.public.wallSticking)
+		if(this.public.wallSticking && !this.dashed)
 		{
 			this.args.falling = true;
 			this.args.ySpeed  = 0;
-			this.airDash(this.public.mode === 1 ? 1 : -1);
-			this.args.ignore  = -2;
+
+			const mode = this.public.mode;
+
+			this.airDash(mode === 1 ? 1 : -1);
+			this.args.ignore = 10;
+			this.args.facing = mode === 1 ? 'left' : 'right';
 		}
 	}
 
@@ -463,28 +483,29 @@ export class Sonic extends PointActor
 		this.willStick = false;
 		this.stayStuck = false;
 
-		if(this.public.wallSticking)
+		if(this.public.wallSticking && !this.dashed)
 		{
 			this.args.falling = true;
 			this.args.ySpeed  = 0;
-			this.airDash(this.public.mode === 1 ? 1 : -1);
-			this.args.ignore  = -2;
+
+			const mode = this.public.mode;
+
+			this.airDash(mode === 1 ? 1 : -1);
+			this.args.ignore = 10;
+			this.args.facing = mode === 1 ? 'right' : 'left';
 		}
 	}
 
 	hold_5(button)
 	{
-		if(button.time < 2)
-		{
-			return;
-		}
-
 		if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
 
 			this.willStick = true;
 			this.stayStuck = true;
+
+			this.args.ignore = 4;
 		}
 	}
 

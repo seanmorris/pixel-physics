@@ -10,6 +10,7 @@ import { Titlecard } from '../titlecard/Titlecard';
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 import { ProtoLabrynth } from  '../backdrop/ProtoLabrynth';
+import { MysticCave } from  '../backdrop/MysticCave';
 
 import { Series }   from '../intro/Series';
 import { Card }     from '../intro/Card';
@@ -1006,11 +1007,30 @@ export class Viewport extends View
 
 			for(const [,backdrop] of this.backdrops)
 			{
+				let backdropType = '';
+
+				for(const property of backdrop.properties)
+				{
+					if(property.name === 'backdrop')
+					{
+						backdropType = property.value;
+					}
+				}
+
 				if(!backdrop.view)
 				{
-					backdrop.view = new ProtoLabrynth;
+					if(backdropType === 'protolabrynth')
+					{
+						backdrop.view = new ProtoLabrynth;
 
-					backdrop.view.render( this.tags.backdrops );
+						backdrop.view.render( this.tags.backdrops );
+					}
+					else if(backdropType === 'mystic-cave')
+					{
+						backdrop.view = new MysticCave;
+
+						backdrop.view.render( this.tags.backdrops );
+					}
 				}
 
 				const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;

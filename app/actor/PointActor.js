@@ -837,7 +837,7 @@ export class PointActor extends View
 
 		if(!this.public.falling)
 		{
-			if(!this.public.mode !== MODE_CEILING && !this.public.gSpeed && !this.public.xSpeed)
+			if(this.public.mode === MODE_FLOOR && !this.public.gSpeed && !this.public.xSpeed)
 			{
 				while(this.getMapSolidAt(this.x, this.y - 1, false))
 				{
@@ -1513,23 +1513,6 @@ export class PointActor extends View
 
 	updateAirPosition()
 	{
-		if(this.public.xSpeed || this.xAxis || this.args.pushed)
-		{
-			const halfWidth = Math.floor(this.args.width/2);
-			const rightWall = this.getMapSolidAt(this.x + halfWidth, this.y);
-			const leftWall  = this.getMapSolidAt(this.x + -halfWidth + -1, this.y);
-
-			if(!rightWall && leftWall)
-			{
-				this.args.x++;
-			}
-
-			if(rightWall && !leftWall)
-			{
-				this.args.x--;
-			}
-		}
-
 		let lastPoint = [this.x, this.y];
 		let lastPointB = [this.x, this.y];
 		let lastForePoint = [this.x, this.y];
@@ -1744,10 +1727,8 @@ export class PointActor extends View
 		{
 			const collisionAngle = Math.atan2(airPoint[0] - airPointB[0], airPoint[1] - airPointB[1]);
 
-			const isLeft    = Math.abs(collisionAngle) < Math.PI / 2 && this.public.xSpeed < 0;
-			const isRight   = Math.abs(collisionAngle) < Math.PI / 2 && this.public.xSpeed > 0;
-
-			// this.args.ignore = 0;
+			const isLeft  = Math.abs(collisionAngle) < Math.PI / 3 && this.public.xSpeed < 0;
+			const isRight = Math.abs(collisionAngle) < Math.PI / 3 && this.public.xSpeed > 0;
 
 			const xSpeedOriginal = this.args.xSpeed;
 			const ySpeedOriginal = this.args.ySpeed;
@@ -1936,6 +1917,37 @@ export class PointActor extends View
 
 			this.args.falling = true;
 		}
+
+		if(!this.willStick)
+		{
+			if(this.public.xSpeed || this.xAxis || this.args.pushed)
+			{
+				const halfWidth = Math.floor(this.args.width/2);
+				const rightWall = this.getMapSolidAt(this.x + halfWidth, this.y);
+				const leftWall  = this.getMapSolidAt(this.x + -halfWidth + -1, this.y);
+
+				if(!rightWall && leftWall)
+				{
+					if(this.public.xSpeed < 0)
+					{
+						this.public.xSpeed = 0;
+					}
+
+					this.args.x++;
+				}
+
+				if(rightWall && !leftWall)
+				{
+					if(this.public.xSpeed > 0)
+					{
+						this.public.xSpeed = 0;
+					}
+
+					this.args.x--;
+				}
+			}
+		}
+
 	}
 
 	callCollideHandler(other)
@@ -2280,7 +2292,7 @@ export class PointActor extends View
 
 		if(xAxis < 0)
 		{
-			if(!this.public.climbing)
+			if(!this.public.climbing && !this.args.ignore)
 			{
 				this.args.facing = 'left';
 			}
@@ -2290,7 +2302,7 @@ export class PointActor extends View
 
 		if(xAxis > 0)
 		{
-			if(!this.public.climbing)
+			if(!this.public.climbing && !this.args.ignore)
 			{
 				this.args.facing = 'right';
 			}
