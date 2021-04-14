@@ -31,13 +31,13 @@ export class Sonic extends PointActor
 
 		this.args.type = 'actor-sonic actor-item';
 
-		this.accelNormal = 0.35;
+		this.accelNormal = 0.25;
 		this.accelSuper  = 0.70;
 
 		this.args.accel     = 0.35;
 		this.args.decel     = 0.4;
 
-		this.gSpeedMaxNormal = 16;
+		this.gSpeedMaxNormal = 18;
 		this.gSpeedMaxSuper  = 28;
 
 		this.jumpForceNormal = 11;
@@ -338,7 +338,7 @@ export class Sonic extends PointActor
 
 	readInput()
 	{
-		if(!this.dashed)
+		if(!this.lightDashing)
 		{
 			super.readInput();
 		}
@@ -420,8 +420,13 @@ export class Sonic extends PointActor
 		}
 	}
 
-	hold_4()
+	hold_4(button)
 	{
+		if(button.time < 2)
+		{
+			return;
+		}
+
 		if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
@@ -467,8 +472,13 @@ export class Sonic extends PointActor
 		}
 	}
 
-	hold_5()
+	hold_5(button)
 	{
+		if(button.time < 2)
+		{
+			return;
+		}
+
 		if(this.public.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
@@ -703,14 +713,6 @@ export class Sonic extends PointActor
 		}
 
 		return ring;
-	}
-
-	readInput()
-	{
-		if(!this.lightDashing)
-		{
-			super.readInput();
-		}
 	}
 
 	lightDash(ring)

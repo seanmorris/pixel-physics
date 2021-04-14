@@ -23,7 +23,7 @@ export class Layer extends View
 
 		this.args.layerId = 0 || this.args.layerId;
 
-		Object.defineProperty(this, 'blocksXY',  {value: {}});
+		Object.defineProperty(this, 'blocksXY',  {value: new Map});
 		Object.defineProperty(this, 'blocks',    {value: new Bag});
 		Object.defineProperty(this, 'offsets',   {value: new Map});
 		Object.defineProperty(this, 'blockSrcs', {value: new Map});
@@ -70,7 +70,7 @@ export class Layer extends View
 
 			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
 			{
-				const xy = [i,j].join('::');
+				const xy = String(i) + '::' + String(j);
 
 				const tileY = j - Math.ceil(this.y / blockSize);
 
@@ -78,11 +78,11 @@ export class Layer extends View
 
 				let block;
 
-				if(!blocksXY[xy])
+				if(!blocksXY.has(xy))
 				{
-					blocksXY[xy] = new Tag('<div>');
+					block = new Tag('<div>');
 
-					block = blocksXY[xy];
+					blocksXY.set(xy, block);
 
 					block.style({width: blockSize + 'px', height: blockSize + 'px'});
 
@@ -100,7 +100,7 @@ export class Layer extends View
 				}
 				else
 				{
-					block = blocksXY[xy];
+					block = blocksXY.get(xy);
 				}
 
 				let tileXY = [];

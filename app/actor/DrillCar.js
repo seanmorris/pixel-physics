@@ -203,7 +203,7 @@ export class DrillCar extends Vehicle
 			return;
 		}
 
-		if(this.args.ySpeed > 1)
+		if(this.args.ySpeed > -16)
 		{
 			if(!this.args.flying)
 			{
@@ -218,6 +218,7 @@ export class DrillCar extends Vehicle
 			}
 
 			this.args.ySpeed = -1;
+			this.args.ySpeed = -4;
 			this.args.float  = 8;
 		}
 	}

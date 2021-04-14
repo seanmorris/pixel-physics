@@ -9,6 +9,7 @@ import { TileMap }  from '../tileMap/TileMap';
 import { Titlecard } from '../titlecard/Titlecard';
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
+import { ProtoLabrynth } from  '../backdrop/ProtoLabrynth';
 
 import { Series }   from '../intro/Series';
 import { Card }     from '../intro/Card';
@@ -71,6 +72,7 @@ export class Viewport extends View
 		this.objectPalette = ObjectPalette;
 
 		this.callFrames = new Map;
+		this.backdrops  = new Map;
 
 		this.server = null;
 		this.client = null;
@@ -566,6 +568,24 @@ export class Viewport extends View
 				return;
 			}
 
+			const layers = this.tileMap.tileLayers;
+			const layerCount = layers.length;
+
+			for(let i = 0; i < layerCount; i++)
+			{
+				if(!this.args.layers[i])
+				{
+					this.args.layers[i] = new Layer({
+						layerId: i
+						, viewport: this
+						, name: layers[i].name
+					});
+
+					this.args.layers[i].args.height = this.args.height;
+					this.args.layers[i].args.width  = this.args.width;
+				}
+			}
+
 			if(this.args.networked)
 			{
 				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
@@ -745,7 +765,7 @@ export class Viewport extends View
 			}
 		}
 
-		controller.update();
+		controller.update({gamepad:this.gamepad});
 	}
 
 	moveCamera()
@@ -808,31 +828,29 @@ export class Viewport extends View
 
 		const jumping = this.controlActor.public.jumping;
 
-		const dragSpeedX   = 2;
+		const dragSpeedX   = (this.args.jumping && this.args.ySpeed < 0) ? 1 : 2;;
 		const dragSpeedY   = (this.args.jumping && this.args.ySpeed < 0) ? 0.25: 3;
-		const maxDragX     = 128;
-		const maxDragYDown = 64;
-		const maxDragY     = 16;
-
-		this.args.x = xNext;
+		const maxDragX     = 48;
+		const maxDragYDown = 80;
+		const maxDragY     = 32;
 
 		if(this.args.x !== xNext)
 		{
 			const drag = this.args.x - xNext;
 			const abs  = Math.abs(drag);
-			const step = drag / 64;
+			const step = drag / 32;
 
 			if(abs > maxDragX)
 			{
-				this.args.x -= Math.sign(drag) * maxDragX;
+				this.args.x = xNext + maxDragX * Math.sign(drag);
 			}
 			else if(Math.abs(step) < 1)
 			{
-				this.args.x = step * dragSpeedX;
+				this.args.x += step * dragSpeedX * Math.sign(drag);
 			}
 			else
 			{
-				this.args.x = xNext;
+				// this.args.x = xNext;
 			}
 		}
 
@@ -878,7 +896,6 @@ export class Viewport extends View
 			}
 		}
 
-
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
 		{
 			this.args.yOffset = this.args.yOffsetTarget
@@ -923,9 +940,6 @@ export class Viewport extends View
 
 	updateBackground()
 	{
-		const layers = this.tileMap.tileLayers;
-		const layerCount = layers.length;
-
 		let controlActor = this.controlActor;
 
 		if(controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle)
@@ -975,39 +989,54 @@ export class Viewport extends View
 			this.tags.blur.removeAttribute('stdDeviation');
 		}
 
-		for(let i = 0; i < layerCount; i++)
+		for(const layer of this.args.layers)
 		{
-			if(!this.args.layers[i])
-			{
-				this.args.layers[i] = new Layer({
-					layerId: i
-					, viewport: this
-					, name: layers[i].name
-				});
+			const xDir = Math.sign(layer.x - this.args.x);
+			const yDir = Math.sign(layer.y - this.args.y);
 
-				this.args.layers[i].args.height = this.args.height;
-				this.args.layers[i].args.width  = this.args.width;
-			}
+			layer.x = this.args.x;
+			layer.y = this.args.y;
 
-			const xDir = Math.sign(this.args.layers[i].x - this.args.x);
-			const yDir = Math.sign(this.args.layers[i].y = this.args.y);
-
-			this.args.layers[i].x = this.args.x;
-			this.args.layers[i].y = this.args.y;
-
-			this.args.layers[i].update(this.tileMap, xDir, yDir);
+			layer.update(this.tileMap, xDir, yDir);
 		}
 
 		this.tileMap.ready.then(()=>{
 			const xMax = -(this.tileMap.mapData.width * 32);
 			const yMax = -(this.tileMap.mapData.height * 32);
 
+			for(const [,backdrop] of this.backdrops)
+			{
+				if(!backdrop.view)
+				{
+					backdrop.view = new ProtoLabrynth;
+
+					backdrop.view.render( this.tags.backdrops );
+				}
+
+				const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;
+				const rightIntersect  = -(-backdrop.width + -this.args.x + -backdrop.x);
+				const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
+				const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
+
+				backdrop.view && Object.assign(backdrop.view.args, ({
+					x: Math.round(this.args.x)
+					, xMax: xMax
+					, y: this.args.y + backdrop.y
+					, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
+					, stacked: -backdrop.view.stacked + 'px'
+					, frame: this.args.frameId
+					, top: topIntersect
+					, bottom: bottomIntersect
+				}));
+			}
+
 			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
-				'x': Math.round(this.args.x)
-				, 'y': Math.round(this.args.y)
-				, 'xMax': xMax
-				, 'yMax': yMax
-				, 'frame': this.args.frameId
+				x: Math.round(this.args.x)
+				, y: Math.round(this.args.y)
+				, xMax: xMax
+				, yMax: yMax
+				, frame: this.args.frameId
+				, stacked: -this.args.backdrop.stacked + 'px'
 			}));
 		});
 
@@ -1055,6 +1084,12 @@ export class Viewport extends View
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
+
+			if(objType === 'backdrop')
+			{
+				this.backdrops.set(objDef.id, objDef);
+				continue;
+			}
 
 			this.objDefs.set(objDef.id, objDef);
 
@@ -1275,7 +1310,7 @@ export class Viewport extends View
 	{
 		this.callFrameOuts();
 
-		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(1);
 
 		const time  = (Date.now() - this.startTime) / 1000;
 		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')

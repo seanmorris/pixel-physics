@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	viewportA.render(document.body);
 
+	viewportA.args.fps = '...';
+
 	const body = new Tag(document.body);
 
 	let skyShift = 100;
@@ -42,19 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		if(frameTimes.length > 5)
 		{
-			frameTimes.shift();
-		}
-
-		if(frameTimes.length > 1)
-		{
 			const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
 			const frameTimeAvg = frameTimeSum / frameTimes.length;
 
 			viewportA.args.fps = (1000 / frameTimeAvg);
-		}
-		else
-		{
-			viewportA.args.fps = '...';
+
+			frameTimes.splice(0)
 		}
 	};
 

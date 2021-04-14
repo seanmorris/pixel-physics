@@ -90,6 +90,16 @@ export class PointActor extends View
 
 		const def = new Map;
 
+		for(const i in objArgs)
+		{
+			if(typeof objArgs[i] === 'object')
+			{
+				continue;
+			}
+
+			def.set(i, objArgs[i]);
+		}
+
 		for(const i in objDef.properties)
 		{
 			const property = objDef.properties[i];
@@ -633,8 +643,6 @@ export class PointActor extends View
 
 		if(this.public.ignore === -2 && this.public.falling === false)
 		{
-			console.log('deignore on land');
-
 			this.public.ignore = 0;
 		}
 
@@ -825,6 +833,18 @@ export class PointActor extends View
 		if(this.public.falling && !this.isEffect)
 		{
 			this.resolveIntersection();
+		}
+
+		if(!this.public.falling)
+		{
+			if(!this.public.mode !== MODE_CEILING && !this.public.gSpeed && !this.public.xSpeed)
+			{
+				while(this.getMapSolidAt(this.x, this.y - 1, false))
+				{
+					this.args.ySpeed = 0;
+					this.args.y--;
+				}
+			}
 		}
 
 		if(this.public.falling && this.public.ySpeed < this.public.ySpeedMax)
@@ -1493,6 +1513,23 @@ export class PointActor extends View
 
 	updateAirPosition()
 	{
+		if(this.public.xSpeed || this.xAxis || this.args.pushed)
+		{
+			const halfWidth = Math.floor(this.args.width/2);
+			const rightWall = this.getMapSolidAt(this.x + halfWidth, this.y);
+			const leftWall  = this.getMapSolidAt(this.x + -halfWidth + -1, this.y);
+
+			if(!rightWall && leftWall)
+			{
+				this.args.x++;
+			}
+
+			if(rightWall && !leftWall)
+			{
+				this.args.x--;
+			}
+		}
+
 		let lastPoint = [this.x, this.y];
 		let lastPointB = [this.x, this.y];
 		let lastForePoint = [this.x, this.y];
@@ -1530,11 +1567,19 @@ export class PointActor extends View
 
 		const distances = [foreDistanceHead, foreDistanceWaist, foreDistanceFoot];
 
-		if(!this.willStick && this.args.xSpeed && distances.filter(x => x !== false).length)
+		const hits = distances.filter(x => x !== false);
+
+		if(!this.willStick && hits.length)
 		{
-			this.args.x += Math.min(...distances) * Math.sign(this.public.xSpeed || this.public.direction);
-			this.args.flySpeed = 0;
-			this.args.xSpeed   = 0;
+			const dist = Math.sign(this.public.xSpeed || this.public.direction);
+
+			this.args.x += Math.min(...distances) * dist;
+
+			if(foreDistanceWaist || foreDistanceFoot)
+			{
+				this.args.flySpeed = 0;
+				this.args.xSpeed = 0;
+			}
 		}
 
 		// if(this.public.xSpeed)
@@ -1862,6 +1907,12 @@ export class PointActor extends View
 			this.args.mode = DEFAULT_GRAVITY;
 
 			this.args.gSpeed = Math.floor(xSpeedOriginal);
+
+			if(airPoint)
+			{
+				this.args.x = Number(airPoint[0]);
+				this.args.y = Number(airPoint[1]);
+			}
 		}
 
 		if(!tileMap.getSolid(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y, this.public.layer))
@@ -1947,11 +1998,6 @@ export class PointActor extends View
 
 	resolveIntersection()
 	{
-		if(!this.args.falling || this.public.jumping)
-		{
-			return;
-		}
-
 		let backAngle = this.args.airAngle + Math.PI;
 
 		let iterations = 0;
@@ -1995,8 +2041,8 @@ export class PointActor extends View
 					}
 				}
 
-				testX -= Math.cos(backAngle);
-				testY -= Math.sin(backAngle);
+				testX += Math.cos(backAngle);
+				testY += Math.sin(backAngle);
 
 				iterations++;
 

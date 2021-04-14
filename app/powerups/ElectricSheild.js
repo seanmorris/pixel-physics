@@ -22,11 +22,31 @@ export class ElectricSheild extends Sheild
 			this.args.boosted = 'boosted';
 
 			this.onTimeout(250, () => this.args.boosted = '');
+
+			if(host.viewport.args.audio)
+			{
+				this.sample.currentTime = 0;
+				this.sample.play();
+			}
 		}
 	}
 
 	update(host)
 	{
+		if(!this.sample)
+		{
+			this.initSample = new Audio('/Sonic/S3K_41.wav');
+			this.initSample.volume = 0.15 + (Math.random() * -0.05);
+
+			this.sample = new Audio('/Sonic/S3K_45.wav');
+			this.sample.volume = 0.15 + (Math.random() * -0.05);
+
+			if(host.viewport.args.audio)
+			{
+				this.initSample.play();
+			}
+		}
+
 		if(host.canFly)
 		{
 			return;

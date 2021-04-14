@@ -74,7 +74,7 @@ export class Controller
 		});
 	}
 
-	update()
+	update({gamepad})
 	{
 		for(const i in this.buttons)
 		{
@@ -82,6 +82,30 @@ export class Controller
 
 			button.update();
 		}
+
+		if(gamepad && this.willRumble)
+		{
+			if(typeof this.willRumble !== 'object')
+			{
+				this.willRumble = {
+					duration: 1000,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
+				};
+			}
+
+			if(gamepad.vibrationActuator)
+			{
+				gamepad.vibrationActuator.playEffect("dual-rumble", this.willRumble);
+			}
+
+			this.willRumble = false;
+		}
+	}
+
+	rumble(options = true)
+	{
+		this.willRumble = options;
 	}
 
 	readInput({keyboard, gamepad})

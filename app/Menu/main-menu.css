@@ -276,6 +276,11 @@
 	width: 8em;
 }
 
+.screen-card-main-menu ul {
+	height: 7em;
+	overflow: auto;
+}
+
 .screen-card-main-menu li {
 	position: relative;
 }

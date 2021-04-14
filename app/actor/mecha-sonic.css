@@ -56,7 +56,7 @@
 .actor-item.actor-mecha-sonic[data-animation="curling"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
-	animation: mecha-sonic-curl steps(1) 1 64ms forwards;
+	animation: mecha-sonic-curl steps(1) 1 128ms;
 }
 
 .actor-item.actor-mecha-sonic[data-animation="jumping"] .sprite:after {

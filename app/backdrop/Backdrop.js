@@ -4,10 +4,13 @@ const layers = [];
 
 export class Backdrop extends View
 {
-	template = `<div class = "backdrop">
+	template = `<div class = "backdrop [[name]]">
 		<div cv-ref = "backdrop" class = "parallax"></div>
 	</div>`;
+
 	layers   = [];
+
+	stacked = 0;
 
 	onAttached(event)
 	{
@@ -53,6 +56,8 @@ export class Backdrop extends View
 			stacked += (strips[i].height - 1);
 		}
 
+		this.stacked = stacked;
+
 		const xPos = xPositions.join(', ');
 		const yPos = yPositions.join(', ');
 		const url = urls.map(u=>`url(${u})`).join(', ');
@@ -67,7 +72,7 @@ export class Backdrop extends View
 		});
 
 		this.args.bindTo(
-			['x', 'y', 'xMax', 'yMax', 'frame']
+			['x', 'y', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom']
 			, (v,k) => backdrop.style({[`--${k}`]: v})
 		);
 	}

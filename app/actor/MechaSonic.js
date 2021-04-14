@@ -18,7 +18,7 @@ export class MechaSonic extends PointActor
 
 		this.args.skidTraction = 2;
 
-		this.args.gSpeedMax = 16;
+		this.args.gSpeedMax = 21;
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
@@ -158,7 +158,7 @@ export class MechaSonic extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'curling');
 
-				this.onTimeout(128, ()=>{
+				this.onTimeout(512, ()=>{
 					if(this.public.rolling)
 					{
 						this.box.setAttribute('data-animation', 'rolling');
@@ -178,11 +178,15 @@ export class MechaSonic extends PointActor
 		{
 			this.scrapeSound && this.scrapeSound.pause();
 
-			if(this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping')
+			const animation = this.box.getAttribute('data-animation');
+
+			if(animation !== 'rolling'
+				&& animation !== 'jumping'
+				&& animation !== 'curling')
 			{
 				this.box.setAttribute('data-animation', 'curling');
 
-				this.onTimeout(128, ()=>{
+				this.onTimeout(512, ()=>{
 					if(this.public.falling)
 					{
 						this.box.setAttribute('data-animation', 'jumping');
