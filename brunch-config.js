@@ -8,6 +8,9 @@ module.exports = {
 			presets:   ['@babel/preset-env']
 			, plugins: ["@babel/plugin-proposal-class-properties"]
 		}
+		, cleancss: {
+			zeroUnits: -1
+		}
 		, raw: {
 			pattern: /\.(html|svg)$/,
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`

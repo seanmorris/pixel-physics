@@ -609,8 +609,8 @@ input[type=number]::-webkit-outer-spin-button {
 .backdrop.mystic-cave .parallax,
 .backdrop.proto-labrynth .parallax {
 	height: auto;
-	top: max( calc(100% - calc(1px * var(--top))),  0%);
-	bottom: max( calc(100% - calc(1px * var(--bottom))),  0%);
+	top: max( calc(100% - calc(1px * var(--top))), calc(1% * 0));
+	bottom: max( calc(100% - calc(1px * var(--bottom))), calc(1% * 0));
 }
 
 .viewport.standalone {

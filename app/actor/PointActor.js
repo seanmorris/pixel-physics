@@ -612,22 +612,22 @@ export class PointActor extends View
 				{
 					case MODE_FLOOR:
 						this.args.gSpeed = Math.cos(this.impulseDir) * this.impulseMag;
-						this.args.direction = 1;
+						// this.args.direction = 1;
 						break;
 
 					case MODE_CEILING:
 						this.args.gSpeed = -Math.cos(this.impulseDir) * this.impulseMag;
-						this.args.direction = -1;
+						// this.args.direction = -1;
 						break;
 
 					case MODE_LEFT:
 						this.args.gSpeed = -Math.sin(this.impulseDir) * this.impulseMag;
-						this.args.direction = 1;
+						// this.args.direction = 1;
 						break;
 
 					case MODE_RIGHT:
 						this.args.gSpeed = Math.sin(this.impulseDir) * this.impulseMag;
-						this.args.direction = -1;
+						// this.args.direction = -1;
 						break;
 				}
 			}
@@ -852,6 +852,11 @@ export class PointActor extends View
 			if(!this.public.float)
 			{
 				this.args.ySpeed += this.public.gravity * (this.region ? this.region.public.gravity : 1);
+
+				if(Math.abs(this.args.ySpeed) < 1)
+				{
+					// this.args.ySpeed = Math.sign(this.args.ySpeed);
+				}
 			}
 
 			this.args.landed = false;
@@ -1878,10 +1883,10 @@ export class PointActor extends View
 				}, 350);
 			}
 
-			if(this.yAxis > 0 && this.canRoll && this.public.gSpeed)
-			{
-				this.args.rolling = true;
-			}
+			// if(this.yAxis > 0 && this.canRoll && this.public.gSpeed)
+			// {
+			// 	this.args.rolling = true;
+			// }
 		}
 		else if(this.public.ySpeed > 0)
 		{
@@ -3121,6 +3126,14 @@ export class PointActor extends View
 		if(!this.willJump)
 		{
 			this.willJump = true;
+		}
+	}
+
+	command_1()
+	{
+		if(this.canRoll && this.public.gSpeed)
+		{
+			this.args.rolling = true;
 		}
 	}
 
