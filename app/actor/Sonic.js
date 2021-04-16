@@ -351,7 +351,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(Math.sign(this.public.xSpeed) !== Math.sign(direction))
+		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
 			this.args.xSpeed = 0;
 		}
@@ -393,8 +393,6 @@ export class Sonic extends PointActor
 
 		this.args.xSpeed += dashSpeed;
 
-		this.args.direction = direction;
-
 		this.dashTimer = 0;
 
 		this.dashed = true;
@@ -434,8 +432,6 @@ export class Sonic extends PointActor
 		if(this.public.falling)
 		{
 			this.airDash(-1);
-
-			this.args.facing = 'left';
 		}
 	}
 
@@ -465,7 +461,9 @@ export class Sonic extends PointActor
 			const mode = this.public.mode;
 
 			this.airDash(mode === 1 ? 1 : -1);
+
 			this.args.ignore = 10;
+
 			this.args.facing = mode === 1 ? 'left' : 'right';
 		}
 	}
@@ -491,7 +489,9 @@ export class Sonic extends PointActor
 			const mode = this.public.mode;
 
 			this.airDash(mode === 1 ? 1 : -1);
+
 			this.args.ignore = 10;
+
 			this.args.facing = mode === 1 ? 'right' : 'left';
 		}
 	}
