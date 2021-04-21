@@ -56,6 +56,7 @@ import { Tails }      from './actor/Tails';
 import { Knuckles }   from './actor/Knuckles';
 
 import { Seymour } from './actor/Seymour';
+import { Chalmers } from './actor/Chalmers';
 
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
@@ -85,6 +86,7 @@ export const ObjectPalette = {
 	, 'eggman':       Eggman
 	, 'eggrobo':      Eggrobo
 	, 'seymour':      Seymour
+	, 'chalmers':     Chalmers
 	, 'switch':       Switch
 	, 'window':       Window
 	, 'emerald':      Emerald

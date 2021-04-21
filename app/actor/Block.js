@@ -22,6 +22,8 @@ export class Block extends PointActor
 	{
 		super(args);
 
+		this.args.yForce = 0;
+
 		this.args.type = 'actor-item actor-block';
 
 		this.args.width  = args.width  || 32;
@@ -48,10 +50,45 @@ export class Block extends PointActor
 			return false;
 		}
 
+		if(this.public.droop && (type === 0 || type === 2))
+		{
+			const droop = Number(this.public.droop);
+			const half  = Math.floor((this.args.width - Math.abs(other.public.gSpeed)) / 2);
+			const pos   = ((this.x - other.x) / half);
+
+			this.droopPos = (this.x - other.x);
+
+			const yForceMax = Math.round(droop * (1 - Math.abs(pos)) * 4) / 4;
+
+			if(!other.public.falling)
+			{
+				this.args.yForce = Math.max(yForceMax, 0);
+
+				if(other.public.gSpeed > half)
+				{
+					this.args.yForce = 0;
+				}
+
+				this.args.y = this.originalY + this.public.yForce;
+			}
+			else
+			{
+				this.args.yForce += 1;
+
+				this.args.yForce = Math.min(yForceMax, this.public.yForce);
+
+				this.args.y = this.originalY + this.public.yForce;
+
+				if(this.public.yForce < yForceMax)
+				{
+					return false;
+				}
+			}
+		}
+
+
 		if(this.public.platform)
 		{
-			// console.log(other.y, this.y, this.public.height);
-
 			const otherTop = other.y - other.public.height;
 			const blockTop = this.y - this.public.height;
 
@@ -216,6 +253,35 @@ export class Block extends PointActor
 					this.args.goBack = false;
 				}
 			}
+		}
+		else if(this.public.droop)
+		{
+			this.snapBack = this.snapBack || false;
+
+			if(!this.args.colliding && this.args.yForce)
+			{
+				this.viewport.onFrameOut(4, () => {
+					if(!this.args.colliding)
+					{
+						this.snapBack = true;
+					}
+				});
+			}
+
+			if(!this.args.colliding && this.args.yForce && this.snapBack)
+			{
+				this.args.yForce *= 0.65;
+			}
+
+			if(Math.abs(this.public.yForce) <= 1)
+			{
+				this.args.yForce = 0;
+				this.snapBack = false;
+			}
+
+			this.args.y = this.originalY + this.public.yForce;
+
+			this.droop(-1 * this.public.yForce, this.droopPos || 0);
 		}
 	}
 
