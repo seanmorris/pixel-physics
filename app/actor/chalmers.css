@@ -1,0 +1,73 @@
+.actor-item.actor-chalmers .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-chalmers .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/secret/chalmers.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-chalmers[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 1px;
+}
+
+.actor-item.actor-chalmers[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: chalmers-walk steps(3) infinite 288ms;
+}
+
+.actor-item.actor-chalmers[data-animation="running"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -128px;
+	animation: chalmers-run steps(5) infinite 192ms;
+}
+
+.actor-item.actor-chalmers[data-animation="rolling"] .sprite:after,
+.actor-item.actor-chalmers[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: chalmers-jump steps(4) infinite 160ms;
+}
+
+.actor-item.actor-chalmers[data-animation="rolling"] .sprite:after {
+	transform: translateY(22px);
+	animation: chalmers-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
+}
+
+@-webkit-keyframes chalmers-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes chalmers-run {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes chalmers-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

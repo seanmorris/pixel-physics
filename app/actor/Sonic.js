@@ -290,7 +290,15 @@ export class Sonic extends PointActor
 		else if(!this.dashed)
 		{
 			this.args.height = this.public.rollingHeight;
-			this.box.setAttribute('data-animation', 'jumping');
+
+			if(this.public.jumping)
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+			}
+			else if(!this.public.xSpeed && !this.public.ySpeed)
+			{
+				this.box.setAttribute('data-animation', 'airdash');
+			}
 		}
 
 		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
@@ -350,6 +358,8 @@ export class Sonic extends PointActor
 		{
 			return;
 		}
+
+		this.args.mode = 0;
 
 		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
@@ -465,6 +475,8 @@ export class Sonic extends PointActor
 			this.args.ignore = 10;
 
 			this.args.facing = mode === 1 ? 'left' : 'right';
+
+			this.args.mode = 0;
 		}
 	}
 
@@ -493,6 +505,8 @@ export class Sonic extends PointActor
 			this.args.ignore = 10;
 
 			this.args.facing = mode === 1 ? 'right' : 'left';
+
+			this.args.mode = 0;
 		}
 	}
 

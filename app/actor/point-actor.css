@@ -232,35 +232,35 @@
 	transform: translate(-50%, calc(-100% + 1px));
 }
 
-.actor-item[data-falling="false"][data-mode="0"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="0"] .sprite {
 	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle)));
 }
 
-.actor-item[data-falling="false"][data-mode="1"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="1"] .sprite {
 	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
 }
 
-.actor-item[data-falling="false"][data-mode="2"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="2"] .sprite {
 	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg)));
 }
 
-.actor-item[data-falling="false"][data-mode="3"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="3"] .sprite {
 	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg)));
 }
 
-.actor-item[data-falling="false"][data-mode="0"][data-facing="left"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="0"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle))) scale(-1,1);
 }
 
-.actor-item[data-falling="false"][data-mode="1"][data-facing="left"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="1"][data-facing="left"] .sprite {
 	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
 }
 
-.actor-item[data-falling="false"][data-mode="2"][data-facing="left"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="2"][data-facing="left"] .sprite {
 	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg))) scale(-1,1);
 }
 
-.actor-item[data-falling="false"][data-mode="3"][data-facing="left"] .sprite {
+.actor-item:not([data-rolling="true"])[data-mode="3"][data-facing="left"] .sprite {
 	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
 }
 
