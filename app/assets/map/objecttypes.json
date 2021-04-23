@@ -1,7 +1,7 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "ring-monitor",
+        "name": "breakable-block",
         "properties": [
         ]
     },
@@ -153,6 +153,12 @@
     {
         "color": "#ffffff00",
         "name": "ring",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "ring-monitor",
         "properties": [
         ]
     },

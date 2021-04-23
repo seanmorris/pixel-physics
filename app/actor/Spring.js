@@ -94,7 +94,11 @@ export class Spring extends PointActor
 
 		this.viewport.onFrameOut(3,()=>{
 			this.active = false;
-			other.impulse(this.args.power, rounded, ![0, Math.PI].includes(this.args.angle));
+			other.impulse(
+				this.args.power
+				, rounded
+				, ![0, Math.PI].includes(this.args.angle)
+			);
 		});
 
 		other.args.direction = Math.sign(this.public.gSpeed);

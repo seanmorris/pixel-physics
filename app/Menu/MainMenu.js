@@ -8,6 +8,8 @@ import { Menu } from './Menu';
 
 import { SettingsMenu } from './SettingsMenu';
 
+import { TileMap }  from '../tileMap/TileMap';
+
 export class MainMenu extends Menu
 {
 	template = require('./main-menu.html');
@@ -28,10 +30,79 @@ export class MainMenu extends Menu
 
 		this.args.items = {
 
-			'Single Player': { available: 'available', callback: () => {
-				this.parent.args.networked = false;
-				this.remove()
-			} }
+			'Single Player': {
+
+				available: 'available'
+
+				, children: {
+
+					'Pixel Hill Zone': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Bendy Bridges': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/bendy-bridges.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Sonic Movement Tutorial': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Tails Movement Tutorial': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/tails-movement.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Knuckles Movement Tutorial': {available: 'unavailable'}
+					, 'locked': { available: 'unavailable' }
+					, 'locked ': { available: 'unavailable' }
+					, 'locked  ': { available: 'unavailable' }
+				}
+
+
+				// , callback: () => {
+				// 	this.parent.args.networked = false;
+				// 	this.remove()
+				// }
+
+			}
 
 			, Settings: SettingsMenu(parent)
 
@@ -69,7 +140,6 @@ export class MainMenu extends Menu
 				available: 'unavailable'
 			}
 		};
-
 
 		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
 
@@ -265,5 +335,16 @@ export class MainMenu extends Menu
 
 		this.listen(client, 'open', onOpen);
 		this.listen(client, 'close', onClose);
+	}
+
+	play()
+	{
+		super.play();
+
+		const done = this.done;
+
+		done.then(() => this.onTimeout(250, () => this.remove()));
+
+		return done;
 	}
 }

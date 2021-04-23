@@ -112,7 +112,7 @@ export class TitleScreenCard extends Card
 
 		const play = super.play();
 
-		play.then(()=>{ this.bgm.pause(); this.audioDebind(); });
+		play.then(()=>{ this.bgm.pause(); this.audioDebind(); this.remove(); });
 
 		return Promise.race([this.start, play]);
 	}

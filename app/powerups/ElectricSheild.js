@@ -28,6 +28,11 @@ export class ElectricSheild extends Sheild
 				this.sample.currentTime = 0;
 				this.sample.play();
 			}
+
+			if(host.xAxis && Math.sign(host.xAxis) !== Math.sign(host.public.xSpeed))
+			{
+				host.args.xSpeed = 1 * host.xAxis;
+			}
 		}
 	}
 

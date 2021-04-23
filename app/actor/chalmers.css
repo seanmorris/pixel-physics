@@ -37,7 +37,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: chalmers-jump steps(4) infinite 160ms;
+	animation: chalmers-jump steps(4) infinite 96ms;
 }
 
 .actor-item.actor-chalmers[data-animation="rolling"] .sprite:after {

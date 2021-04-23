@@ -1,0 +1,68 @@
+.particle-bubble {
+	position: relative;
+	width: 64px;
+	height: 64px;
+
+	transform: translateX(1%) !important;
+}
+
+.particle-bubble:after {
+	position: absolute;
+
+	width: 64px;
+	height: 64px;
+
+	content: ' ';
+	background-image: url(/Sonic/bubble.png);
+
+	--animation-steps: 4;
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: 0px;
+
+
+
+	z-index: 1000;
+
+	animation:
+		bubble-inflate steps(2) 1 forwards
+		, bubble-float ease-in 1 forwards
+		, bubble-wave ease-in-out infinite forwards alternate;
+	animation-duration: 400ms, 2500ms, 2000ms;
+	animation-delay: 0ms, 0ms, 150ms;
+}
+
+@-webkit-keyframes bubble-wave{
+	from{
+		left: 0px;
+	}
+	50% {
+		left: -6px;
+	}
+	to{
+		left: 6px;
+	}
+}
+
+@-webkit-keyframes bubble-float{
+	from{
+		transform: translateY(1px);
+		opacity: 0.5;
+	}
+	15% {
+		transform: translateY(-8px);
+		opacity: 0.75;
+	}
+	to{
+		transform: translateY(-128px);
+		opacity: 0.25;
+	}
+}
+
+@-webkit-keyframes bubble-inflate{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

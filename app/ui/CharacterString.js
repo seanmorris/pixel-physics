@@ -19,19 +19,27 @@ export class CharacterString extends View
 
 		this.args.scale = this.args.scale || 1;
 
+		const high = this.args.high;
+		const med  = this.args.med;
+		const low  = this.args.low;
+
 		this.args.bindTo('value', v => {
 
-			if(Math.abs(v) > this.args.high)
+			if(Math.abs(v) < low)
 			{
-				this.args.color = 'red';
+				this.args.color = '';
 			}
-			else if(Math.abs(v) > this.args.med)
+			else if(Math.abs(v) > low)
+			{
+				this.args.color = 'yellow';
+			}
+			else if(Math.abs(v) > med)
 			{
 				this.args.color = 'orange';
 			}
-			else if(Math.abs(v) > this.args.low)
+			else if(Math.abs(v) > high)
 			{
-				this.args.color = 'yellow';
+				this.args.color = 'red';
 			}
 			// else if(this.args.flash > 0)
 			// {
@@ -96,10 +104,12 @@ export class CharacterString extends View
 				return {pos, type, original};
 			});
 
+			if(chars.length !== this.args.chars.length)
+			{
+				this.args.chars.splice(chars.length);
+			}
+
 			Object.assign(this.args.chars, chars);
-
-			this.args.chars.splice(chars.length);
-
 		});
 	}
 }

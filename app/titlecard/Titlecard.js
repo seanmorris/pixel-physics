@@ -1,5 +1,7 @@
 import { View } from 'curvature/base/View';
 
+const Accept = Symbol('Accept');
+
 export class Titlecard extends View
 {
 	template = require('./titlecard.html');
@@ -14,49 +16,58 @@ export class Titlecard extends View
 		this.args.actNumber  = args.actNumber  || 1;
 
 		this.args.animation  = 'start';
+
+		this.played = new Promise(accept => this[Accept] = accept);
 	}
 
 	play(event)
 	{
-		return new Promise(accept => {
+		const playing = new Promise(accept => {
 
-			let timeAcc = 500;
+			const waitFor = this.args.waitFor || Promise.resolve();
 
-			this.onTimeout(timeAcc, () => this.args.animation = '');
+			let timeAcc = 750;
+
+			this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+				this.args.animation = ''
+			));
 
 			timeAcc += 750;
 
-			this.onTimeout(timeAcc, () => this.args.animation = 'opening');
+			this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+				this.args.animation = 'opening'
+			));
 
 			timeAcc += 500;
 
-			this.onTimeout(timeAcc, () => this.args.animation = 'opening2');
 
-			this.onTimeout(timeAcc + 750, () => {
-				accept([ new Promise(acceptDone => this.onTimeout(timeAcc + 500, acceptDone)) ]);
-			});
-
-			const finishPlaying = (event) => {
+			waitFor.finally(() => {
+				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+					this.args.animation = 'opening2'
+				));
 
 				timeAcc += 750;
 
-				this.onTimeout(timeAcc, () => this.args.animation = 'closing');
+				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+					this.args.animation = 'closing'
+				));
+
+				this.onTimeout(timeAcc, () => {
+					accept([ new Promise(acceptDone => this.onTimeout(timeAcc + 500, acceptDone)) ]);
+					this[Accept]();
+				});
 
 				timeAcc += 1000;
 
-				this.onTimeout(timeAcc, () => this.args.animation = 'closed');
-
-			}
-
-			if(!this.args.waitFor)
-			{
-				return finishPlaying();
-			}
-			else
-			{
-				return this.args.waitFor.finally(finishPlaying);
-			}
+				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+					this.args.animation = 'closed'
+				));
+			});
 		});
+
+		this.playing = playing;
+
+		return playing;
 	}
 }
 

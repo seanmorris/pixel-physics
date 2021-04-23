@@ -95,14 +95,13 @@ export class Viewport extends View
 
 		this.args.level = '';
 
-		Object.defineProperty(this, 'tileMap', {value: new TileMap});
-
+		this.tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
 		this.sprites = new Bag;
 		this.world   = null;
 
 		const ready = this.tileMap.ready;
 
-		this.args.titlecard = new Series({cards: this.introCards()});
+		this.args.titlecard = new Series({cards: this.introCards()}, this);
 
 		this.args.pauseMenu = new PauseMenu({}, this);
 
@@ -503,10 +502,7 @@ export class Viewport extends View
 			}
 		});
 
-		this.args.titlecard.play().then((done) => {
-			this.startLevel()
-			this.update();
-		});
+		this.args.titlecard.play();
 
 		this.tags.frame.style({
 			'--width': this.args.width
@@ -514,7 +510,7 @@ export class Viewport extends View
 			, '--scale': this.args.scale
 		});
 
-		this.update();
+		// this.update();
 
 		if(!this.startTime)
 		{
@@ -522,7 +518,8 @@ export class Viewport extends View
 		}
 
 		this.args.started = false;
-		this.args.paused  = true;
+		this.args.running = false;
+		this.args.paused  = false;
 
 		this.listen(document.body, 'click', event => {
 			if(event.target !== document.body)
@@ -555,81 +552,102 @@ export class Viewport extends View
 
 	startLevel()
 	{
-		this.args.started = true;
-		this.args.paused  = false;
-
-		this.args.level = 'level';
-
 		this.args.backdrop = new Backdrop;
 
-		this.tileMap.ready.then(() => {
-
-			if(this.args.populated)
+		if(this.tileMap.mapData.properties)
+		{
+			for(const property of this.tileMap.mapData.properties)
 			{
-				return;
+				const name = property.name.replace(/-/g, '_');
+
+				this.args[ name ] = property.value;
+			}
+		}
+
+		this.args.zonecard.args.firstLine  = this.args.titlecard_title_1;
+		this.args.zonecard.args.secondLine = this.args.titlecard_title_2;
+		this.args.zonecard.args.creditLine = this.args.titlecard_author;
+		this.args.zonecard.args.actNumber  = this.args.titlecard_number;
+
+		const layers = this.tileMap.tileLayers;
+		const layerCount = layers.length;
+
+		for(let i = 0; i < layerCount; i++)
+		{
+			if(!this.args.layers[i])
+			{
+				this.args.layers[i] = new Layer({
+					layerId: i
+					, viewport: this
+					, name: layers[i].name
+				});
+
+				this.args.layers[i].args.height = this.args.height;
+				this.args.layers[i].args.width  = this.args.width;
+			}
+		}
+
+		if(this.args.networked)
+		{
+			const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
+			const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
+
+			sonic.render(this.tags.actors);
+			sonic.onRendered();
+			sonic.onAttached && sonic.onAttached();
+
+			tails.render(this.tags.actors);
+			tails.onRendered();
+			tails.onAttached && tails.onAttached();
+
+			this.auras.add(sonic);
+			this.auras.add(tails);
+
+			this.actors.add(sonic);
+			this.actors.add(tails);
+		}
+
+		this.populateMap();
+
+		if(!this.args.networked)
+		{
+			const actors = this.actors.list;
+
+			if(!this.playableIterator)
+			{
+				this.playableIterator = this.playable.entries();
+
+				this.playableIterator.next();
 			}
 
-			const layers = this.tileMap.tileLayers;
-			const layerCount = layers.length;
+			this.nextControl = this.nextControl || actors[0];
+		}
+		else if(this.args.networked)
+		{
+			const actors = this.actors.list;
 
-			for(let i = 0; i < layerCount; i++)
-			{
-				if(!this.args.layers[i])
-				{
-					this.args.layers[i] = new Layer({
-						layerId: i
-						, viewport: this
-						, name: layers[i].name
-					});
+			this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
+		}
 
-					this.args.layers[i].args.height = this.args.height;
-					this.args.layers[i].args.width  = this.args.width;
-				}
-			}
+		this.nextControl = Object.values(this.args.actors)[0];
 
-			if(this.args.networked)
-			{
-				const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
-				const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
+		this.nextControl.controller.zero();
 
-				sonic.render(this.tags.actors);
-				sonic.onRendered();
-				sonic.onAttached && sonic.onAttached();
+		this.args.zonecard.played.then(() => {
+			this.args.started = true;
+			this.args.running = true;
 
-				tails.render(this.tags.actors);
-				tails.onRendered();
-				tails.onAttached && tails.onAttached();
+			this.update();
+			this.update();
 
-				this.auras.add(sonic);
-				this.auras.add(tails);
+			this.args.level = 'level';
 
-				this.actors.add(sonic);
-				this.actors.add(tails);
-			}
+			this.args.running = false;
 
-			this.populateMap();
-
-			if(!this.args.networked)
-			{
-				const actors = this.actors.list;
-
-				if(!this.playableIterator)
-				{
-					this.playableIterator = this.playable.entries();
-
-					this.playableIterator.next();
-				}
-
-				this.nextControl = this.nextControl || actors[0];
-			}
-			else if(this.args.networked)
-			{
-				const actors = this.actors.list;
-
-				this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
-			}
-
-			this.startTime = Date.now();
+			this.onTimeout(1000, () => {
+				this.startTime    = Date.now();
+				this.args.running = true;
+			});
 		});
 	}
 
@@ -776,52 +794,99 @@ export class Viewport extends View
 			return;
 		}
 
-		let cameraSpeed = 15;
+		let cameraSpeed = 30;
 
 		const highJump  = this.controlActor.public.highJump;
 		const deepJump  = this.controlActor.public.deepJump;
 		const falling   = this.controlActor.public.falling;
 		const fallSpeed = this.controlActor.public.ySpeed;
 
-		if(this.controlActor.args.cameraMode == 'airplane')
+		switch(this.controlActor.args.cameraMode)
 		{
-			this.args.yOffsetTarget = 0.5;
-			this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
-		}
-		else if(this.controlActor.args.mode === 2)
-		{
-			this.args.xOffsetTarget = 0.5;
-			this.args.yOffsetTarget = 0.25;
-		}
-		else if(!falling && this.controlActor.args.mode)
-		{
-			this.args.yOffsetTarget = 0.5;
-		}
-		else if(this.controlActor.args.cameraMode == 'normal')
-		{
-			this.args.xOffsetTarget = 0.5;
-			this.args.yOffsetTarget = 0.75;
+			case 'airplane':
 
-			if(!falling)
-			{
+				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
+				this.args.yOffsetTarget = 0.5;
+
+				break;
+
+			case 'aerial':
+
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.5;
+
+				if((deepJump || highJump) && fallSpeed > 0)
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.25;
+
+					cameraSpeed = 10;
+				}
+				else if((deepJump || highJump) && fallSpeed < 0)
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.75;
+
+					cameraSpeed = 15;
+				}
+				else
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.5;
+					cameraSpeed = 25;
+				}
+
+				break;
+
+			case 'cliff':
+
+				this.args.xOffsetTarget = 0.50 + -0.1 * this.controlActor.public.direction;
+				this.args.yOffsetTarget = 0.65;
+
+				cameraSpeed = 45;
+
+				break;
+
+			case 'bridge':
+
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.65;
+
+				cameraSpeed = 25;
+
+				break;
+
+			case 'normal':
+
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.75;
+
 				cameraSpeed = 10;
-			}
-		}
-		else if((deepJump || highJump) && fallSpeed > 0)
-		{
-			this.args.xOffsetTarget = 0.5;
-			this.args.yOffsetTarget = 0.25;
-		}
-		else if((deepJump || highJump) && fallSpeed < 0)
-		{
-			this.args.xOffsetTarget = 0.5;
-			this.args.yOffsetTarget = 0.75;
-		}
-		else
-		{
-			this.args.xOffsetTarget = 0.5;
-			this.args.yOffsetTarget = 0.75;
-			cameraSpeed = 25;
+
+				switch(this.controlActor.public.mode)
+				{
+					case 0:
+						this.args.xOffsetTarget = 0.5;
+						this.args.yOffsetTarget = 0.75;
+						break;
+
+					case 1:
+						this.args.xOffsetTarget = 0.25;
+						this.args.yOffsetTarget = 0.50;
+						break;
+
+					case 2:
+						this.args.xOffsetTarget = 0.5;
+						this.args.yOffsetTarget = 0.25;
+						break;
+
+					case 3:
+						this.args.xOffsetTarget = 0.75;
+						this.args.yOffsetTarget = 0.50;
+						break;
+				}
+
+				break;
 		}
 
 		const xNext = -this.controlActor.x + this.args.width  * this.args.xOffset;
@@ -829,9 +894,9 @@ export class Viewport extends View
 
 		const jumping = this.controlActor.public.jumping;
 
-		const dragSpeedX   = (this.args.jumping && this.args.ySpeed < 0) ? 1 : 2;;
-		const dragSpeedY   = (this.args.jumping && this.args.ySpeed < 0) ? 0.25: 3;
-		const maxDragX     = 48;
+		const dragSpeedX   = (this.args.jumping && this.args.ySpeed < 0) ? 1.00 : 2;
+		const dragSpeedY   = (this.args.jumping && this.args.ySpeed < 0) ? 0.25 : 3;
+		const maxDragX     = 24;
 		const maxDragYDown = 80;
 		const maxDragY     = 32;
 
@@ -839,7 +904,7 @@ export class Viewport extends View
 		{
 			const drag = this.args.x - xNext;
 			const abs  = Math.abs(drag);
-			const step = drag / 32;
+			const step = drag / 64;
 
 			if(abs > maxDragX)
 			{
@@ -847,11 +912,11 @@ export class Viewport extends View
 			}
 			else if(Math.abs(step) < 1)
 			{
-				this.args.x += step * dragSpeedX * Math.sign(drag);
+				this.args.x -= step * dragSpeedX;
 			}
 			else
 			{
-				// this.args.x = xNext;
+				this.args.x = xNext;
 			}
 		}
 
@@ -877,8 +942,6 @@ export class Viewport extends View
 
 		if(this.args.y > yNext)
 		{
-			this.args.y = yNext;
-
 			const drag = this.args.y - yNext;
 			const abs  = Math.abs(drag);
 			const step = drag / 128;
@@ -1051,8 +1114,8 @@ export class Viewport extends View
 			}
 
 			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
-				x: Math.round(this.args.x)
-				, y: Math.round(this.args.y)
+				x: this.args.x
+				, y: this.args.y
 				, xMax: xMax
 				, yMax: yMax
 				, frame: this.args.frameId
@@ -1060,23 +1123,22 @@ export class Viewport extends View
 			}));
 		});
 
-		this.tags.bgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
-		// this.tags.fgFilters.style({'--x': Math.round(this.args.x), '--y': Math.round(this.args.y)});
+		this.tags.bgFilters.style({'--x': this.args.x, '--y': this.args.y});
+		// this.tags.fgFilters.style({'--x': this.args.x, '--y': this.args.y});
 
 		this.tags.content.style({
-			'--x': Math.round(this.args.x)
-			, '--y': Math.round(this.args.y)
-			, '--outlineWidth': Math.round(this.settings.outline) + 'px'
+			'--x': this.args.x
+			, '--y': this.args.y
+			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
+		const xMod = this.args.x <= 0
+			? (this.args.x % (this.args.blockSize))
+			: (-this.args.blockSize + (this.args.x % this.args.blockSize)) % this.args.blockSize;
 
-		const xMod = this.args.x < 0
-			? Math.round(this.args.x % (this.args.blockSize))
-			: (-this.args.blockSize + Math.round(this.args.x % this.args.blockSize)) % this.args.blockSize;
-
-		const yMod = this.args.y < 0
-			? Math.round(this.args.y % (this.args.blockSize))
-			: (-this.args.blockSize + Math.round(this.args.y % this.args.blockSize)) % this.args.blockSize;
+		const yMod = this.args.y <= 0
+			? (this.args.y % (this.args.blockSize))
+			: (-this.args.blockSize + (this.args.y % this.args.blockSize)) % this.args.blockSize;
 
 		this.tags.background.style({transform: `translate( ${xMod}px, ${yMod}px )`});
 
@@ -1330,6 +1392,8 @@ export class Viewport extends View
 	{
 		this.callFrameOuts();
 
+		this.args.frameId++;
+
 		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(1);
 
 		const time  = (Date.now() - this.startTime) / 1000;
@@ -1382,12 +1446,9 @@ export class Viewport extends View
 		}
 
 		this.args.rippleFrame = this.args.frameId % 128;
+		this.args.displaceWater = this.args.frameId % 128;
 
 		this.actorPointCache.clear();
-
-		this.args.frameId++;
-
-		this.args.displaceWater = this.args.frameId % 128;
 
 		if(this.controlActor)
 		{
@@ -1461,101 +1522,101 @@ export class Viewport extends View
 		this.updated.clear();
 		this.updateEnded.clear();
 
-		this.updateBackground();
-
-		for(const region of this.regions)
+		if(this.args.running)
 		{
-			region.updateStart();
-			this.updateStarted.add(region);
-
-			region.update();
-			this.updated.add(region);
-		}
-
-		const actorCells = new WeakMap;
-
-		for(const actor of this.auras)
-		{
-			const nearbyCells = this.getNearbyColCells(actor);
-
-			actorCells.set(actor, nearbyCells);
-
-			if(this.updateStarted.has(actor))
+			for(const region of this.regions)
 			{
-				continue;
+				region.updateStart();
+				this.updateStarted.add(region);
+
+				region.update();
+				this.updated.add(region);
+			}
+			const actorCells = new WeakMap;
+
+			for(const actor of this.auras)
+			{
+				const nearbyCells = this.getNearbyColCells(actor);
+
+				actorCells.set(actor, nearbyCells);
+
+				if(this.updateStarted.has(actor))
+				{
+					continue;
+				}
+
+				actor.updateStart();
+
+				this.updateStarted.add(actor);
+
+				this.actorUpdateStart(nearbyCells);
 			}
 
-			actor.updateStart();
-
-			this.updateStarted.add(actor);
-
-			this.actorUpdateStart(nearbyCells);
-		}
-
-		for(const actor of this.auras)
-		{
-			const nearbyCells = actorCells.get(actor);
-
-			if(this.updated.has(actor))
+			for(const actor of this.auras)
 			{
-				continue;
+				const nearbyCells = actorCells.get(actor);
+
+				if(this.updated.has(actor))
+				{
+					continue;
+				}
+
+				actor.update();
+
+				this.updated.add(actor);
+
+				this.actorUpdate(nearbyCells);
 			}
 
-			actor.update();
-
-			this.updated.add(actor);
-
-			this.actorUpdate(nearbyCells);
-		}
-
-		if(this.controlActor)
-		{
-			this.rings.args.value = this.controlActor.args.rings;
-			this.coins.args.value = this.controlActor.args.coins;
-			this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
-
-			this.args.hasRings    = !!this.controlActor.args.rings;
-			this.args.hasCoins    = !!this.controlActor.args.coins;
-			this.args.hasEmeralds = !!this.controlActor.args.emeralds;
-
-			this.args.char.args.value = this.controlActor.args.name;
-			this.args.charName        = this.controlActor.args.name;
-
-			this.args.xPos.args.value     = Math.round(this.controlActor.x);
-			this.args.yPos.args.value     = Math.round(this.controlActor.y);
-
-			// this.args.ground.args.value   = this.controlActor.args.landed;
-			// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
-			// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
-			// this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
-			// this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
-			// this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
-
-			const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
-
-			this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
-		}
-
-		for(const actor of this.auras)
-		{
-			const nearbyCells = actorCells.get(actor);
-
-			if(!this.updateEnded.has(actor))
+			if(this.controlActor)
 			{
-				actor.updateEnd();
+				this.rings.args.value = this.controlActor.args.rings;
+				// this.coins.args.value = this.controlActor.args.coins;
+				this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
 
-				this.updateEnded.add(actor);
+				this.args.hasRings    = !!this.controlActor.args.rings;
+				// this.args.hasCoins    = !!this.controlActor.args.coins;
+				this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
-				this.actorUpdateEnd(nearbyCells);
+				this.args.char.args.value = this.controlActor.args.name;
+				this.args.charName        = this.controlActor.args.name;
+
+				// this.args.xPos.args.value     = Math.round(this.controlActor.x);
+				// this.args.yPos.args.value     = Math.round(this.controlActor.y);
+
+				// this.args.ground.args.value   = this.controlActor.args.landed;
+				// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+				// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
+				// this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+				// this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
+				// this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+
+				const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+
+				// this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
 			}
-		}
 
-		for(const region of this.regions)
-		{
-			if(!this.updateEnded.has(region))
+			for(const actor of this.auras)
 			{
-				region.updateEnd();
-				this.updateEnded.add(region);
+				const nearbyCells = actorCells.get(actor);
+
+				if(!this.updateEnded.has(actor))
+				{
+					actor.updateEnd();
+
+					this.updateEnded.add(actor);
+
+					this.actorUpdateEnd(nearbyCells);
+				}
+			}
+
+			for(const region of this.regions)
+			{
+				if(!this.updateEnded.has(region))
+				{
+					region.updateEnd();
+					this.updateEnded.add(region);
+				}
 			}
 		}
 
@@ -1573,32 +1634,28 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-			// if(this.visibilityTimer)
-			// {
-			// 	clearTimeout(this.visibilityTimer);
-			// 	this.visibilityTimer = false;
-			// }
-
-			// this.visibilityTimer = setTimeout(()=>{
-
-
-			// }, 0);
-			this.visibilityTimer = false;
-
 			const wakeDoc = new DocumentFragment;
 
 			let wakeActors = false;
 
-			for(const i in this.actors.list)
+			for(const actor of this.actors.list)
 			{
-				const actor = this.actors.list[i];
+				if(!actor)
+				{
+					continue;
+				}
+
+				const x = actor.x;
+				const y = actor.y;
+				const width  = actor.public.width;
+				const height = actor.public.height;
 
 				if(!this.auras.has(actor))
 				{
-					const actorBottom = actor.y + 64;
-					const actorTop    = actor.y - actor.public.height - 64;
-					const actorRight  = actor.x + actor.public.width  + 64;
-					const actorLeft   = actor.x - actor.public.width  - 64;
+					const actorBottom = y + 64;
+					const actorTop    = y - height - 64;
+					const actorRight  = x + width  + 64;
+					const actorLeft   = x - width  - 64;
 
 					if(inAuras.has(actor))
 					{
@@ -1610,20 +1667,20 @@ export class Viewport extends View
 
 					if(camLeft < actorRight)
 					{
-						offscreenX = actorRight - camLeft;
+						offscreenX = actorRight + -camLeft + -200;
 					}
 					else if(camRight > actorLeft)
 					{
-						offscreenX = camRight - actorLeft;
+						offscreenX = camRight + -actorLeft + 200;
 					}
 
 					if(camBottom > actorTop)
 					{
-						offscreenY = camBottom - actorTop;
+						offscreenY = camBottom + -actorTop + -200;
 					}
 					else if(camTop < actorBottom)
 					{
-						offscreenY = actorBottom - camTop;
+						offscreenY = actorBottom + -camTop + 200;
 					}
 
 					if(camLeft < actorRight
@@ -1640,7 +1697,6 @@ export class Viewport extends View
 							{
 								actor.nodes.map(n => wakeDoc.append(n));
 							}
-
 
 							wakeActors = true;
 
@@ -1692,24 +1748,12 @@ export class Viewport extends View
 			this.nextControl   = null;
 		}
 
-		// if(this.controlActor && this.controlActor.controlCard)
-		// {
-		// 	if(this.controlActor.public.falling)
-		// 	{
-		// 		this.args.controlCard = this.controlActor.airControlCard;
-		// 	}
-		// 	else
-		// 	{
-		// 		this.args.controlCard = this.controlActor.controlCard;
-		// 	}
-		// }
-		// else
-		// {
-		// 	this.args.controlCard = this.controlCard;
-		// }
+		this.updateBackground();
 
 		if(this.controlActor)
 		{
+			this.controlActor.setCameraMode();
+
 			this.moveCamera();
 
 			if(this.controlActor.args.name === 'seymour'
@@ -1800,7 +1844,7 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y, w = 0, h = 0)
 	{
-		const cacheKey = [x,y].join('::');
+		const cacheKey = x + '::' + y;
 		const actorPointCache = this.actorPointCache;
 
 		if(actorPointCache.has(cacheKey))
@@ -1810,13 +1854,12 @@ export class Viewport extends View
 
 		const actors = [];
 
-		this.getNearbyColCells({x,y}).map(cell => {
+		this.getNearbyColCells({x,y}).forEach(cell => {
 
 			for(const actor of cell.values())
 			{
 				if(actor.removed)
 				{
-					// cell.delete(actor);
 					continue;
 				}
 
@@ -1984,23 +2027,23 @@ export class Viewport extends View
 			// , this.getColCell({x:colA, y:rowD})
 			// , this.getColCell({x:colA, y:rowE})
 
-			, this.getColCell({x:colB, y:rowA})
+			// , this.getColCell({x:colB, y:rowA})
 			, this.getColCell({x:colB, y:rowB})
 			, this.getColCell({x:colB, y:rowC})
 			, this.getColCell({x:colB, y:rowD})
-			, this.getColCell({x:colB, y:rowE})
+			// , this.getColCell({x:colB, y:rowE})
 
-			, this.getColCell({x:colC, y:rowA})
+			// , this.getColCell({x:colC, y:rowA})
 			, this.getColCell({x:colC, y:rowB})
 			, this.getColCell({x:colC, y:rowC})
 			, this.getColCell({x:colC, y:rowD})
-			, this.getColCell({x:colC, y:rowE})
+			// , this.getColCell({x:colC, y:rowE})
 
-			, this.getColCell({x:colD, y:rowA})
+			// , this.getColCell({x:colD, y:rowA})
 			, this.getColCell({x:colD, y:rowB})
 			, this.getColCell({x:colD, y:rowC})
 			, this.getColCell({x:colD, y:rowD})
-			, this.getColCell({x:colD, y:rowE})
+			// , this.getColCell({x:colD, y:rowE})
 
 			// , this.getColCell({x:colE, y:rowA})
 			// , this.getColCell({x:colE, y:rowB})
@@ -2059,10 +2102,6 @@ export class Viewport extends View
 		this.controlActor   = null;
 		this.args.frameId   = -1;
 
-		this.populateMap();
-
-		this.nextControl = Object.values(this.args.actors)[0];
-
 		this.tags.viewport.focus();
 	}
 
@@ -2086,6 +2125,7 @@ export class Viewport extends View
 		this.controlActor   = null;
 		this.args.frameId   = -1;
 
+		this.args.timer.args.value.args.value = '';
 		this.emeralds.args.value = 0;
 		this.rings.args.value    = 0;
 		this.coins.args.value    = 0;
@@ -2096,6 +2136,8 @@ export class Viewport extends View
 
 		this.args.char.args.value = '';
 		this.args.charName        = '';
+
+		this.args.level = false;
 
 		const layers = this.args.layers;
 		const layerCount = layers.length;
@@ -2114,47 +2156,9 @@ export class Viewport extends View
 
 		this.args.layers = [];
 
-		// this.args.backdrop = null;
+		this.args.titlecard = new Series({cards: this.homeCards()}, this);
 
-		this.args.titlecard = new Series({cards: this.homeCards()});
-
-		this.args.titlecard.play().then((done) => {
-			this.populateMap();
-
-			if(!this.args.networked)
-			{
-				const actors = this.actors.list;
-
-				if(!this.playableIterator)
-				{
-					this.playableIterator = this.playable.entries();
-
-					const item = this.playableIterator.next();
-
-					this.nextControl = item.value[0];
-				}
-
-			}
-			else if(this.args.networked)
-			{
-				const actors = this.actors.list;
-
-				this.nextControl = actors[-1 + this.args.playerId];
-			}
-
-			this.auras.clear();
-
-
-			if(this.nextControl)
-			{
-				this.auras.add(this.nextControl);
-				this.nextControl.args.display = 'initial';
-			}
-
-			this.startLevel();
-
-			this.update();
-		});
+		this.args.titlecard.play();
 	}
 
 	introCards()
@@ -2169,15 +2173,12 @@ export class Viewport extends View
 
 	homeCards()
 	{
+		const titlecard = this.args.zonecard = new Titlecard({}, this)
+
 		return  [
-			new TitleScreenCard({timeout: 50000, waitFor: this.tileMap.ready}, this)
+			new TitleScreenCard({timeout: 50000}, this)
 			, new MainMenu({timeout: -1}, this)
-			, new Titlecard({
-				firstLine:    'PIXEL HILL'
-				, secondLine: 'ZONE'
-				, creditLine: 'Sean Morris'
-				, waitFor:    this.tileMap.ready
-			}, this)
+			, titlecard
 		];
 	}
 

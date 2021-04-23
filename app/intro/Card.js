@@ -13,6 +13,8 @@ export class Card extends View
 		this.args.timeout = this.args.timeout || 1000;
 
 		this.args.animation = 'opening';
+
+		this.done = new Promise(accept => this.accept = accept);
 	}
 
 	play(event)
@@ -32,6 +34,7 @@ export class Card extends View
 			this.onTimeout(timeAcc, () => {
 				this.args.animation = 'closed';
 				const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
+				this.accept([done]);
 				accept([done]);
 			});
 		});

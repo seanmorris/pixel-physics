@@ -19,10 +19,11 @@
 	--zHeight: var(--zMax);
 	--zHeight: calc(var(--timer) * 2.4);
 
-	--tFunc: 0.25s ease-out;
+	--tFunc: 0.5s ease-out;
 
 	transform: scale(0.5);
 	transform-origin: top left;
+
 	width: 200%;
 	height: 200%;
 
@@ -38,14 +39,27 @@
 	--timer2: 0;
 }
 
-.titlecard.closing {
-	--tFunc: 0.25s ease-out;
+.titlecard.start {
+	will-change: contents;
+}
+
+.titlecard.opening  .titlecard-title-line-1,
+.titlecard.opening  .titlecard-title-line-2,
+.titlecard.opening2 .titlecard-title-line-1,
+.titlecard.opening2 .titlecard-title-line-2,
+.titlecard.closed   .titlecard-title-line-1,
+.titlecard.closed   .titlecard-title-line-2 {
+	will-change: transform, opacity;
+}
+
+ .titlecard.closing {
+	--tFunc: 0.25s ease-in;
 	--timer: 0;
 	--timer2: 0;
 }
 
 .titlecard.closed {
-	--tFunc: 0.2s ease-in;
+	--tFunc: 0.25s ease-in;
 	--timer: 100;
 	--timer2: 100;
 }
@@ -65,7 +79,7 @@
 .titlecard-title-line-1,
 .titlecard-title-line-2 {
 	transform: translateX(100%);
-	transition: transform var(--tFunc);
+	transition: transform var(--tFunc), opacity var(--tFunc);
 	padding-right: 18pt;
 }
 
@@ -75,11 +89,11 @@
 }
 
 .titlecard-title-line-1 {
-	transform: translateX(calc(1px + calc(1% * var(--timer))));
+	transform: translateX(calc(1% * var(--timer)));
 }
 
 .titlecard-title-line-2 {
-	transform: translateX(calc(1px + calc(1% * var(--timer2))));
+	transform: translateX(calc(1% * var(--timer2)));
 }
 
 .titlecard-title-number {
@@ -145,6 +159,7 @@
 
 .titlecard.start .titlecard-field {
 	background-color: rgba(0,0,0,1);
+	transform: rotate3d(0,0,0);
 }
 
 .titlecard .titlecard-field {
