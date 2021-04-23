@@ -8,7 +8,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url(/secret/seymour.png);
+	background-image: url(/secret/seymour-color-corrected.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
 	width: 64px;
@@ -37,7 +37,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: seymour-jump steps(4) infinite 160ms;
+	animation: seymour-jump steps(4) infinite 96ms;
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after {

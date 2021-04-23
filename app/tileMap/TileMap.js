@@ -9,6 +9,7 @@ export class TileMap
 		this.tileImages      = new Map;
 		this.tileNumberCache = new Map;
 		this.tileSetCache    = new Map;
+		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
 		this.solidCache = new Map;
@@ -19,7 +20,7 @@ export class TileMap
 		this.tileLayers  = [];
 		this.objectLayers = [];
 
-		const mapUrl = '/map/pixel-hill-zone.json';
+		const mapUrl = args.mapUrl;
 
 		this.ready = new Promise(accept => {
 
@@ -100,17 +101,34 @@ export class TileMap
 
 	getTileNumber(x, y, layerId = 0)
 	{
+		const tileKey = x + ',' + y + ',' + layerId;
+
+		if(this.tileNumberCache.has(tileKey))
+		{
+			return this.tileNumberCache.get(tileKey);
+		}
+
 		const tileLayers      = this.tileLayers;
 		const mapData         = this.mapData;
+
+		if(!tileLayers[layerId])
+		{
+			this.tileNumberCache.set(tileKey, false);
+
+			return false;
+		}
 
 		if(x >= mapData.width || y >= mapData.height
 			|| x < 0 || y < 0
 		){
 			if(layerId !== 0)
 			{
+				this.tileNumberCache.set(tileKey, false);
+
 				return false;
 			}
 
+			this.tileNumberCache.set(tileKey, 1);
 			return 1;
 		}
 
@@ -121,14 +139,25 @@ export class TileMap
 			const layer = tileLayers[layerId];
 			const tile  = layer.data[tileIndex];
 
-			return tile > 0 ? tile - 1 : 0;
+			const tileNumber = tile > 0 ? tile - 1 : 0;
+
+			this.tileNumberCache.set(tileKey, tileNumber);
+
+			return tileNumber;
 		}
+
+		this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}
 
 	getObjectDefs()
 	{
+		if(!this.mapData)
+		{
+			return;
+		}
+
 		return this.mapData.layers
 			.filter(layer => layer.type === 'objectgroup')
 			.map(layer => layer.objects)
@@ -137,6 +166,11 @@ export class TileMap
 
 	getTile(tileNumber)
 	{
+		if(this.tileCache.has(tileNumber))
+		{
+			return this.tileCache.get(tileNumber);
+		}
+
 		const blockSize = this.blockSize;
 
 		let x   = 0;
@@ -157,7 +191,11 @@ export class TileMap
 			src = tileset.image;
 		}
 
-		return [x,y,src];
+		const result = [x,y,src];
+
+		this.tileCache.set(tileNumber, result);
+
+		return result;
 	}
 
 	getSolid(xInput, yInput, layerInput = 0)

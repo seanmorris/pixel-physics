@@ -42,12 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		frameTimes.push(frameTime);
 
-		if(frameTimes.length > 5)
+		if(frameTimes.length > 3)
 		{
 			const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
 			const frameTimeAvg = frameTimeSum / frameTimes.length;
 
-			viewportA.args.fps = (1000 / frameTimeAvg);
+			viewportA.args.fps = (1000 / frameTimeAvg).toFixed(1).padEnd(4, '0');
 
 			frameTimes.splice(0)
 		}

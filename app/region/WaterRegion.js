@@ -113,14 +113,40 @@ export class WaterRegion extends Region
 		super.update();
 	}
 
-	collideA(other, type)
+	updateActor(other)
 	{
-		super.collideA(other, type);
-	}
+		if(!other.controllable)
+		{
+			return;
+		}
 
-	collideB(other, type)
-	{
-		super.collideA(other, type);
+		if(this.viewport.args.frameId % 5 === 0 && (Math.random() > 0.9))
+		{
+			const viewport = this.viewport;
+
+			const bubble = new Tag('<div class = "particle-bubble">');
+
+			bubble.style({
+				'--x': other.x + -32
+				, '--y': other.y + -32 + -other.public.height + 8
+				, 'z-index': 0
+				, opacity: Math.random() * 2
+			});
+
+			const stopHoldingBubble = this.onFrame(() => {
+				bubble.style({
+					'--x': other.x + -32
+					, '--y': other.y + -32 + -other.public.height + 8
+				});
+			});
+
+			viewport.particles.add(bubble);
+
+			setTimeout(() => stopHoldingBubble(), 350);
+
+			setTimeout(() => viewport.particles.remove(bubble), 2500);
+
+		}
 	}
 
 	get solid() { return false; }

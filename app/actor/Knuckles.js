@@ -390,6 +390,18 @@ export class Knuckles extends PointActor
 		this.throwing = Date.now();
 	}
 
+	setCameraMode()
+	{
+		if(this.args.climbing)
+		{
+			this.args.cameraMode = 'aerial';
+		}
+		else
+		{
+			super.setCameraMode();
+		}
+	}
+
 	get solid() { return false; }
 	get canRoll() { return !this.public.climbing; }
 	get canFly() { return true; }

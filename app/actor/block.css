@@ -1,0 +1,171 @@
+.actor-item.actor-switch .sprite,
+.actor-item.actor-block .sprite,
+.actor-item.actor-breakable-block .sprite,
+.actor-item.actor-marble-companion-block .sprite,
+.actor-item.actor-block-marble .sprite {
+	--hoverWidth: -1px;
+}
+
+.actor-item.actor-breakable-block {
+	filter: initial !important;
+}
+
+.actor-item.actor-marble-companion-block .sprite {
+	background-image: url(/Sonic/marble-companion-block.png);
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-breakable-block {
+
+	--break-speed: 0s;
+	--x-speed:  0s;
+	--y-speed: 0s;
+
+	--xTarget: 0vh;
+	--yTarget: 0vh;
+	--spread: 0%;
+}
+
+.actor-item.actor-breakable-block.broken {
+
+	--break-speed: 1.25s;
+	--x-speed:  1.25s;
+	--y-speed: 1.0s;
+
+	--spread: 150%;
+}
+
+.actor-item.actor-breakable-block .sprite {
+
+}
+
+.actor-item.actor-breakable-block.broken .sprite {
+	background-image: none !important;
+
+	opacity: 0;
+}
+
+.actor-item.actor-breakable-block.broken .fragmentsX {
+	--xTarget: calc(var(--xSpeed) * 24px);
+	--yTarget: 50vh;
+	transform: translate(var(--xTarget), -128px);
+}
+
+.actor-item.actor-breakable-block .fragmentsX {
+	position: absolute;
+	transition: transform var(--x-speed) ease-out;
+	transform: translate(var(--xTarget), -0px);
+	top: -16px;
+	left: 0px;
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-breakable-block .fragmentsY {
+	position: absolute;
+	transform: translate(0, var(--yTarget));
+	transition: transform var(--y-speed) ease-in, opacity var(--y-speed) ease-in;
+	top: -16px;
+	left: -16px;
+	width: 32px;
+	height: 32px;
+	opacity: 1;
+}
+
+.actor-item.actor-breakable-block.broken .fragmentsY {
+	opacity: 0;
+}
+
+.actor-item.actor-breakable-block .fragment {
+	background-image: var(--sprite-sheet, url(/Sonic/marble-companion-block.png));
+	background-position-x: calc(var(--sprite-x) * 32);
+	background-position-y: calc(var(--sprite-y) * 32);
+	position: absolute;
+	transition: transform var(--break-speed) ease-out;
+}
+
+.actor-item.actor-breakable-block .fragment-top-left {
+	background-position-x: calc( calc(var(--sprite-x) * 0px) + -32px);
+	background-position-y: calc( calc(var(--sprite-y) * 32px)  + 0px);
+	top: 0px;
+	left: 0px;
+	width: 16px;
+	height: 16px;
+	transform: translate(calc(-1 * var(--spread)), calc(-1 * var(--spread)));
+}
+
+.actor-item.actor-breakable-block .fragment-top-right {
+	background-position-x: calc( calc(var(--sprite-x) * 8px) + -48px);
+	background-position-y: calc( calc(var(--sprite-y) * 32px)  + 0px);
+	top: 0px;
+	left: 16px;
+	width: 16px;
+	height: 16px;
+	transform: translate(var(--spread), calc(-1 * var(--spread)));
+}
+
+.actor-item.actor-breakable-block .fragment-bottom-left {
+	background-position-x: calc( calc(var(--sprite-x) * 0px) + -32px);
+	background-position-y: calc( calc(var(--sprite-y) * 32px)  + -0px);
+	top: 16px;
+	left: 0px;
+	width: 16px;
+	height: 16px;
+	transform: translate(calc(-1 * var(--spread)), var(--spread));
+}
+
+.actor-item.actor-breakable-block .fragment-bottom-right {
+	background-position-x: calc( calc(var(--sprite-x) * 8px) + -48px);
+	background-position-y: calc( calc(var(--sprite-y) * 32px)  + -0px);
+	top: 16px;
+	left: 16px;
+	width: 16px;
+	height: 16px;
+	transform: translate(var(--spread), var(--spread));
+}
+
+.actor-item.actor-block {
+	z-index: calc(10010 - var(--x));
+}
+
+.actor-item.actor-block .sprite.collapse {
+	filter: grayscale(85%) brightness(1.125);
+}
+
+.actor-item.actor-block .sprite.platform {
+	filter: sepia(85%) brightness(1.125) hue-rotate(250deg);
+}
+
+.actor-item.actor-block .sprite,
+.actor-item.actor-block-marble .sprite {
+	background-image: url(/Sonic/marble-zone-block.png);
+	background-repeat: repeat;
+	/*width: 32px;
+	height: 32px;*/
+}
+
+.actor-item.actor-question-block {
+	z-index: 1100;
+}
+
+.actor-item.actor-question-block .sprite {
+	background-image: url(/Sonic/question-block.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -13px;
+	position: absolute;
+	top: -32px;
+	left: -16px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: q-block-spin steps(4) infinite;
+	animation-duration: calc(1ms * 480);
+}
+
+.actor-item.actor-question-block[data-empty="true"] .sprite {
+	background-image: url(/Sonic/question-block.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -76px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: none;
+}
+

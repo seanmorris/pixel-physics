@@ -17,28 +17,32 @@ export class Series extends View
 
 	play()
 	{
-		const card = this.cards.shift();
-		const play = card.play();
+		const card  = this.cards.shift();
+		const early = new Promise(accept => card.onRemove(accept));
+		const play  = card.play();
 
 		this.args.cards.push(card);
 
-		const removeEarly = new Promise(accept => card.onRemove(accept));
+		return Promise.race([play, early, card.done]).then(done => {
 
-		return Promise.race([play, removeEarly]).then(done => {
+			this.parent.onFrameOut(10, () => {
 
-			if(done)
-			{
-				Promise.all(done).then(() => card.remove());
-			}
+				if(done)
+				{
+					this.parent.onFrameOut(10, () => {
+						Promise.all(done).then(() => card.remove());
+					});
+				}
 
-			if(this.cards.length)
-			{
-				return this.play();
-			}
-			else
-			{
-				return play;
-			}
+				if(this.cards.length)
+				{
+					return this.play();
+				}
+				else
+				{
+					return play;
+				}
+			});
 		});
 	}
 

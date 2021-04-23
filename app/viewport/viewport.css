@@ -185,6 +185,7 @@ section.filters {
 	width: calc(100% / var(--scale));
 	height: calc(100% / var(--scale));
 	transition: transform var(--scale-transition), width var(--scale-transition), height var(--scale-transition);
+	/*will-change: contents, transform;*/
 }
 
 .viewport-overlay {

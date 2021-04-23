@@ -16,7 +16,7 @@
 	position: absolute;
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
-	/*pointer-events: none;*/
+	pointer-events: none;
 }
 
 .region.region-lava .sprite,

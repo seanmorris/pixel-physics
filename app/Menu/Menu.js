@@ -147,6 +147,8 @@ export class Menu extends Card
 
 	input(controller)
 	{
+		this.zeroMe = controller;
+
 		if(!this.tags.bound)
 		{
 			return;
@@ -166,7 +168,7 @@ export class Menu extends Card
 		}
 		else if(controller.buttons[14] && controller.buttons[14].time === 1)
 		{
-			this.contract(this.currentItem);
+			this.currentItem && this.contract(this.currentItem);
 		}
 		else if(controller.buttons[15] && controller.buttons[15].time === 1)
 		{
@@ -186,11 +188,16 @@ export class Menu extends Card
 			this.args.last = 'B';
 		}
 
-		next && this.onNextFrame(()=> this.focus(next));
+		next && this.onTimeout(100, ()=> this.focus(next));
 	}
 
 	run(item)
 	{
+		if(this.zeroMe)
+		{
+			this.zeroMe.zero();
+		}
+
 		item.callback && item.callback();
 
 		if(item.children)

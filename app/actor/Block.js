@@ -11,6 +11,7 @@ export class Block extends PointActor
 
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
+		obj.args.tileId = objDef.gid;
 
 		obj.args.x = obj.originalX = objDef.x + Math.floor(objDef.width / 2);
 		obj.args.y = obj.originalY = objDef.y;
@@ -159,6 +160,22 @@ export class Block extends PointActor
 
 			return false;
 		}
+
+		this.viewport.tileMap.ready.then(event => {
+
+			const tile = this.viewport.tileMap.getTile(this.public.tileId);
+
+			if(!tile)
+			{
+				return;
+			}
+
+			this.args.spriteX = tile[0];
+			this.args.spriteY = tile[1];
+
+			this.args.spriteSheet = '/map/' + tile[2];
+
+		});
 	}
 
 	update()
@@ -170,39 +187,42 @@ export class Block extends PointActor
 
 		super.update();
 
-		const current = this.ease.current();
-
-		if(this.public.float && this.public.oscillateX)
+		if(this.public.float && (this.public.oscillateX || this.public.oscillateY))
 		{
-			const moveX = Math.round(current * this.public.oscillateX);
+			const current = this.ease.current();
 
-			this.args.x = this.originalX - moveX;
-		}
+			if(this.ease.done && !this.nextEase)
+			{
+				const reverse = this.ease.reverse;
 
-		if(this.public.float && this.public.oscillateY)
-		{
-			const moveY = Math.round(current * this.public.oscillateY);
+				const Ease = QuintInOut;
 
-			this.args.y = this.originalY - moveY;
-		}
+				this.nextEase = new Ease(this.public.period, {reverse: !reverse});
+			}
 
-		if(this.ease.done && !this.nextEase)
-		{
-			const reverse = this.ease.reverse;
+			if(this.nextEase)
+			{
+				this.ease = this.nextEase;
+				this.nextEase = false;
 
-			const Ease = QuintInOut;
+				this.viewport.onFrameOut(60, () => {
+					this.ease.start();
+				});
+			}
 
-			this.nextEase = new Ease(this.public.period, {reverse: !reverse});
-		}
+			if(this.public.oscillateX)
+			{
+				const moveX = Math.round(current * this.public.oscillateX);
 
-		if(this.nextEase)
-		{
-			this.ease = this.nextEase;
-			this.nextEase = false;
+				this.args.x = this.originalX - moveX;
+			}
 
-			this.viewport.onFrameOut(60, () => {
-				this.ease.start();
-			});
+			if(this.public.oscillateY)
+			{
+				const moveY = Math.round(current * this.public.oscillateY);
+
+				this.args.y = this.originalY - moveY;
+			}
 		}
 
 		if(this.public.collapse)
@@ -252,6 +272,9 @@ export class Block extends PointActor
 				{
 					this.args.goBack = false;
 				}
+
+				this.args.groundAngle = 0;
+				this.args.airAngle = 0;
 			}
 		}
 		else if(this.public.droop)

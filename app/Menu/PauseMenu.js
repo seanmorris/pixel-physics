@@ -23,7 +23,11 @@ export class PauseMenu extends Menu
 			, 'Quit': {
 				children: {
 					'No': { callback: () => this.args.items.back.callback() }
-					, 'Yes': { callback: () => parent.quit() }
+					, 'Yes': { callback: () => {
+						this.args.items.back.callback();
+						parent.unpauseGame();
+						parent.quit();
+					}}
 				}
 			}
 		};

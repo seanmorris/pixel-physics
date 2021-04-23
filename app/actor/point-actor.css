@@ -8,6 +8,8 @@
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
+
+	/*will-change: transform;*/
 }
 
 .point-actor .labels:not(:empty) {
@@ -55,6 +57,8 @@
 }
 
 .point-actor-filter {
+	position: absolute;
+	pointer-events: none;
 	--width: 64 !important;
 	--height: 64 !important;
 	left: calc(calc(calc(1px * calc(var(--xOff)) + calc(1px * calc(var(--x) - 16)))) - 16px);
@@ -108,39 +112,6 @@
 	background-image: url(/Sonic/score-orb.png);
 	width: 32px;
 	height: 32px;
-}
-
-.actor-item.actor-switch .sprite,
-.actor-item.actor-block .sprite,
-.actor-item.actor-marble-companion-block .sprite,
-.actor-item.actor-block-marble .sprite {
-	--hoverWidth: -1px;
-}
-
-.actor-item.actor-marble-companion-block .sprite {
-	background-image: url(/Sonic/marble-companion-block.png);
-	width: 32px;
-	height: 32px;
-}
-
-.actor-item.actor-block {
-	z-index: calc(10010 - var(--x));
-}
-
-.actor-item.actor-block .sprite.collapse {
-	filter: grayscale(85%) brightness(1.125);
-}
-
-.actor-item.actor-block .sprite.platform {
-	filter: sepia(85%) brightness(1.125) hue-rotate(250deg);
-}
-
-.actor-item.actor-block .sprite,
-.actor-item.actor-block-marble .sprite {
-	background-image: url(/Sonic/marble-zone-block.png);
-	background-repeat: repeat;
-	/*width: 32px;
-	height: 32px;*/
 }
 
 .actor-item.actor-explosion .sprite {
@@ -201,27 +172,6 @@
 .actor-item.actor-ring.gone .sprite {
 	opacity: 0;
 	filter: brightness(5);
-}
-
-.actor-item.actor-question-block {
-	z-index: 1100;
-}
-
-.actor-item.actor-question-block .sprite {
-	background-image: url(/Sonic/question-block.png);
-	--sprite-offset-x: -16px;
-	--sprite-offset-y: -13px;
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: q-block-spin steps(4) infinite;
-	animation-duration: calc(1ms * 480);
-}
-
-.actor-item.actor-question-block[data-empty="true"] .sprite {
-	background-image: url(/Sonic/question-block.png);
-	--sprite-offset-x: -16px;
-	--sprite-offset-y: -76px;
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: none;
 }
 
 .actor-item.actor-window .sprite {

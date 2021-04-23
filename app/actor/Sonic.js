@@ -442,6 +442,9 @@ export class Sonic extends PointActor
 		if(this.public.falling)
 		{
 			this.airDash(-1);
+
+			this.willStick = true;
+			this.stayStuck = true;
 		}
 	}
 
@@ -485,6 +488,9 @@ export class Sonic extends PointActor
 		if(this.public.falling)
 		{
 			this.airDash(1);
+
+			this.willStick = true;
+			this.stayStuck = true;
 		}
 	}
 
@@ -896,6 +902,18 @@ export class Sonic extends PointActor
 			this.lightDashing   = false;
 			this.args.float     = 0;
 		});
+	}
+
+	setCameraMode()
+	{
+		if(this.args.wallSticking)
+		{
+			this.args.cameraMode = 'aerial';
+		}
+		else
+		{
+			super.setCameraMode();
+		}
 	}
 
 	get solid() { return false; }

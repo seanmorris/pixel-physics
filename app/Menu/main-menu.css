@@ -279,9 +279,11 @@
 .screen-card-main-menu ul {
 	height: 7em;
 	overflow: auto;
+	scroll-snap-type: y mandatory;
 }
 
 .screen-card-main-menu li {
+	scroll-snap-align: center;
 	position: relative;
 }
 

@@ -11,6 +11,7 @@ import { RollingRegion } from './region/RollingRegion';
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
 import { MarbleBlock }    from './actor/MarbleBlock';
+import { BreakableBlock }    from './actor/BreakableBlock';
 import { Block }          from './actor/Block';
 
 import { Monitor }   from './actor/Monitor';
@@ -72,6 +73,7 @@ export const ObjectPalette = {
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock
+	, 'breakable-block': BreakableBlock
 	, 'bumper':       Bumper
 	, 'drill-car':    DrillCar
 	, 'tornado':      Tornado
