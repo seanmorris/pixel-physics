@@ -75,6 +75,8 @@ export class Viewport extends View
 		this.callFrames = new Map;
 		this.backdrops  = new Map;
 
+		this.willDetach = new Map;
+
 		this.server = null;
 		this.client = null;
 
@@ -861,7 +863,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 10;
+				cameraSpeed = 40;
 
 				switch(this.controlActor.public.mode)
 				{
@@ -1093,6 +1095,8 @@ export class Viewport extends View
 						backdrop.view = new MysticCave;
 
 						backdrop.view.render( this.tags.backdrops );
+
+						backdrop.onRemove( () => backdrop.view.remove() );
 					}
 				}
 
@@ -1161,6 +1165,11 @@ export class Viewport extends View
 		const objDefs = this.tileMap.getObjectDefs();
 
 		this.objDefs = new Map;
+
+		for(const [id,] of this.backdrops)
+		{
+			this.backdrops.delete(id);
+		}
 
 		for(let i in objDefs)
 		{
@@ -1390,6 +1399,16 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.args.frameId % 5 === 0)
+		{
+			for(const [detachee, detacher] of this.willDetach)
+			{
+				this.willDetach.delete(detachee);
+
+				detacher();
+			}
+		}
+
 		this.callFrameOuts();
 
 		this.args.frameId++;
@@ -1702,16 +1721,26 @@ export class Viewport extends View
 
 							actor.wakeUp();
 
-							actor.vizi = true;
 						}
+
+						this.willDetach.delete(actor);
+
+						actor.vizi = true;
 					}
-					else if(actor.vizi && (offscreenX > 0 || offscreenY > 0))
+					else if(actor.vizi && (offscreenX > 0 || offscreenY > 0) && !actor.willhide)
 					{
-						actor.sleep();
+						this.willDetach.set(actor, () => {
 
-						actor.detach();
+							actor.sleep();
 
-						actor.vizi = false;
+							actor.detach();
+
+							actor.vizi = false;
+
+							actor.willhide = null;
+
+							this.willDetach.delete(actor);
+						});
 					}
 
 					inAuras.add(actor);
@@ -2377,7 +2406,11 @@ export class Viewport extends View
 			this.callFrames.set(callFrame, new Set);
 		}
 
-		this.callFrames.get(callFrame).add(callback);
+		const callbacks = this.callFrames.get(callFrame);
+
+		callbacks.add(callback);
+
+		return () => callbacks.delete(callback);
 	}
 
 	// onFrameInterval(frames, callback)

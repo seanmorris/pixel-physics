@@ -29,6 +29,8 @@ export class Region extends PointActor
 		this.args.drag    = 1;
 
 		this.skimSpeed = Infinity;
+
+		this.args.float = -1;
 	}
 
 	update()

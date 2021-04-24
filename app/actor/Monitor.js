@@ -61,7 +61,7 @@ export class Monitor extends PointActor
 		}
 
 		if((type === 1 || type === 3)
-			&& (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
+			&& (Math.abs(other.public.xSpeed) > 15 || other instanceof Projectile)
 			&& !this.public.gone
 			&& this.viewport
 		){
@@ -117,12 +117,15 @@ export class Monitor extends PointActor
 
 		if(other.args.falling)
 		{
-			this.onNextFrame(() => other.args.ySpeed = -ySpeed);
+			this.onNextFrame(() => {
+				other.args.ySpeed  = -ySpeed
+				other.args.falling = true;
+			});
 		}
 
 		if(this.args.falling && other.args.falling)
 		{
-			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed );
+			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
 		}
 
 		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });

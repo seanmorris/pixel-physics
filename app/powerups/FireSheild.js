@@ -5,20 +5,6 @@ export class FireSheild extends Sheild
 	template = `<div class = "sheild fire-sheild [[boosted]]"></div>`;
 	type = 'fire';
 
-	command_0(host, button)
-	{
-		if(host.canFly)
-		{
-			return;
-		}
-
-		if(host.args.jumping)
-		{
-			host.impulse(6, host.args.facing === 'left' ? Math.PI : 0);
-			host.willJump = true;
-		}
-	}
-
 	update(host)
 	{
 		if(!this.initSample)
@@ -43,7 +29,7 @@ export class FireSheild extends Sheild
 			return;
 		}
 
-		if((host.args.jumping || host.args.dashing) && host.args.falling)
+		if(host.args.falling)
 		{
 			host.impulse(1, Math.PI);
 
@@ -51,8 +37,12 @@ export class FireSheild extends Sheild
 			{
 				this.args.boosted = 'boosted';
 
-				this.sample.currentTime = 0;
-				this.sample.play();
+				if(this.sample)
+				{
+					this.sample.currentTime = 0;
+					this.sample.play();
+				}
+
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}
@@ -70,7 +60,7 @@ export class FireSheild extends Sheild
 			return;
 		}
 
-		if((host.args.jumping || host.args.dashing) && host.args.falling)
+		if(host.args.falling)
 		{
 			host.impulse(1, 0);
 
@@ -78,8 +68,11 @@ export class FireSheild extends Sheild
 			{
 				this.args.boosted = 'boosted';
 
-				this.sample.currentTime = 0;
-				this.sample.play();
+				if(this.sample)
+				{
+					this.sample.currentTime = 0;
+					this.sample.play();
+				}
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}

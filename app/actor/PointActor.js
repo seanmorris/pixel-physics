@@ -680,7 +680,7 @@ export class PointActor extends View
 			this.public.standingOn.callCollideHandler(this);
 		}
 
-		if(this.public.falling)
+		if(!this.public.float && this.public.falling)
 		{
 			this.args.standingOn  = null;
 			this.args.landed = false;
@@ -699,7 +699,7 @@ export class PointActor extends View
 				this.args.deepJump = false;
 			}
 		}
-		else if(this.public.jumping)
+		else if(this.public.jumping && !this.public.falling)
 		{
 			this.args.jumping  = false;
 			this.args.deepJump = false;
