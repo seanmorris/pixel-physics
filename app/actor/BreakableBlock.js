@@ -57,7 +57,7 @@ export class BreakableBlock extends Block
 			return !this.broken;
 		}
 
-		if(other.public.rolling || other.public.jumping)
+		if(other.public.rolling || other.public.jumping || other.public.dashed)
 		{
 			const top = this.y - this.public.height;
 

@@ -128,5 +128,4 @@ export class StarPost extends PointActor
 	}
 
 	get solid() { return false; }
-	get isEffect() { return true; }
 }

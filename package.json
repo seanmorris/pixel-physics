@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "curvature": "^0.0.66-k",
-    "subspace-client": "^0.0.7-a",
     "pokemon-parser": "^0.0.5-c",
-    "three": "^0.110.0",
+    "subspace-client": "^0.0.7-a",
+    "subspace-console": "^0.0.1-d",
+    "three": "^0.128.0",
     "three-collada-loader": "^0.0.1-a"
   },
   "devDependencies": {
@@ -21,8 +22,8 @@
     "@babel/preset-env": "^7.12.10",
     "auto-reload-brunch": "^2",
     "babel-brunch": "^7.0.1",
-    "babel-minify": "^0.5.1",
-    "brunch": "^3",
+    "babel-minify": "^0.1.12",
+    "brunch": "^4.0.0",
     "clean-css-brunch": "^3",
     "raw-brunch": "^1.0.2",
     "uglify-es-brunch": "^1"
