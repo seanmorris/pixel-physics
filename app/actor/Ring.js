@@ -71,9 +71,8 @@ export class Ring extends PointActor
 
 		const viewport = this.viewport;
 
-		this.viewport.onFrameOut(220, () => {
-			this.args.gone = false;
-			this.args.type = 'actor-item actor-ring'
+		this.viewport.onFrameOut(2200, () => {
+			this.restore = true;
 		});
 
 		if(other.collect)
@@ -97,6 +96,15 @@ export class Ring extends PointActor
 
 
 		// this.args.gone = true;
+	}
+
+	sleep()
+	{
+		if(this.restore)
+		{
+			this.args.gone = this.restore = false;
+			this.args.type = 'actor-item actor-ring'
+		}
 	}
 
 	get solid() { return false; }

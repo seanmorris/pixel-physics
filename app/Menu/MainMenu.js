@@ -1,8 +1,10 @@
 import { Card } from '../intro/Card';
 
 import { Cylinder } from '../effects/Cylinder';
+
 import { Pinch } from '../effects/Pinch';
 import { Droop } from '../effects/Droop';
+import { Twist } from '../effects/Twist';
 
 import { Menu } from './Menu';
 
@@ -161,17 +163,22 @@ export class MainMenu extends Menu
 	{
 		super.input(controller);
 
-		if(this.args.warp)
+		if(this.args.pinch)
 		{
-			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0)
-			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0)
+			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0);
+			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0);
 
-			this.args.warp.args.intensity = 1 - Math.abs(xAxis ** 2);
-			this.args.warp.args.scale     = 128 * ( 0 + xAxis);
+			let pressure = 0;
 
-			this.args.warp.args.dx = 64*1.618 * xAxis;
+			if(controller.buttons[6])
+			{
+				pressure = 0.25 + controller.buttons[6].pressure - controller.buttons[7].pressure;
+			}
 
-			// this.args.warp.args.intensity = 0.5 * ( 1 + (controller.axes[3] ? controller.axes[3].magnitude : 0));
+			this.args.pinch.args.scale =  pressure * 256;
+
+			this.args.pinch.args.dx = 64*1.618 * xAxis;
+			this.args.pinch.args.dy = 64*1.000 * yAxis;
 		}
 	}
 
@@ -205,8 +212,12 @@ export class MainMenu extends Menu
 
 		this.onRemove(debind);
 
-		this.args.warp = new Droop({
-			id:'menu-warp', scale:  64, width: Math.floor(64 * 1.618), height: 64
+		this.args.pinch = new Twist({
+			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
+		});
+
+		this.args.pinch = new Pinch({
+			id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
 		});
 	}
 

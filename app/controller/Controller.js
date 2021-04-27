@@ -242,18 +242,18 @@ export class Controller
 			}
 		}
 
-		for(const buttonId in axisMap)
+		for(let inputId in axisMap)
 		{
-			if(!this.buttons[buttonId])
+			if(!this.buttons[inputId])
 			{
-				this.buttons[buttonId] = new Button;
+				this.buttons[inputId] = new Button;
 			}
 
-			const axis   = axisMap[ buttonId ];
+			const axis   = axisMap[ inputId ];
 			const value  = Math.sign(1/axis);
 			const axisId = Math.abs(axis);
 
-			if(this.buttons[buttonId].active)
+			if(this.buttons[inputId].active)
 			{
 				tilted[axisId] = true;
 

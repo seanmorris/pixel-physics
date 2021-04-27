@@ -2,8 +2,6 @@
 	position: relative;
 	width: 64px;
 	height: 64px;
-
-	transform: translateX(1%) !important;
 }
 
 .particle-bubble:after {
@@ -27,8 +25,8 @@
 		bubble-inflate steps(2) 1 forwards
 		, bubble-float ease-in 1 forwards
 		, bubble-wave ease-in-out infinite forwards alternate;
-	animation-duration: 400ms, 2500ms, 2000ms;
-	animation-delay: 0ms, 0ms, 150ms;
+	animation-duration: 400ms, 2500ms, 1200ms;
+	animation-delay: 0ms, 100ms, 150ms;
 }
 
 @-webkit-keyframes bubble-wave{
@@ -53,7 +51,7 @@
 		opacity: 0.75;
 	}
 	to{
-		transform: translateY(-128px);
+		transform: translateY(-160px);
 		opacity: 0.25;
 	}
 }

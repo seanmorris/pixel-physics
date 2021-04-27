@@ -75,6 +75,10 @@
 	opacity: 1;
 }
 
+.pinch-filter, .`twist-filter {
+	transform: scale(1.5);
+}
+
 .filters-foreground > .point-actor-filter {
 	backdrop-filter: blur(0px);
 	filter: var(--fgFilter);

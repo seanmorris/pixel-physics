@@ -126,25 +126,25 @@ export class WaterRegion extends Region
 
 			const bubble = new Tag('<div class = "particle-bubble">');
 
-			bubble.style({
-				'--x': other.x + -32
-				, '--y': other.y + -32 + -other.public.height + 8
-				, 'z-index': 0
-				, opacity: Math.random() * 2
-			});
-
 			const stopHoldingBubble = this.onFrame(() => {
-				bubble.style({
-					'--x': other.x + -32
-					, '--y': other.y + -32 + -other.public.height + 8
-				});
+
+				const attach = other.rotatePoint(
+					-5 * other.public.direction
+					, -14 + other.public.height
+				);
+
+				const x = other.x + attach[0];
+				const y = other.y + attach[1];
+
+
+				bubble.style({'--x': x, '--y': y});
 			});
 
 			viewport.particles.add(bubble);
 
 			setTimeout(() => stopHoldingBubble(), 350);
 
-			setTimeout(() => viewport.particles.remove(bubble), 2500);
+			setTimeout(() => viewport.particles.remove(bubble), 3500);
 
 		}
 	}

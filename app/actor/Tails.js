@@ -22,7 +22,7 @@ export class Tails extends PointActor
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
-		this.args.width  = 28;
+		this.args.width  = 16;
 		this.args.height = 32;
 
 		this.args.normalHeight  = 32;
@@ -134,7 +134,7 @@ export class Tails extends PointActor
 				this.box.setAttribute('data-animation', 'flying');
 			}
 		}
-		else if(this.args.falling)
+		else if(this.public.jumping)
 		{
 			this.flyingSound.pause();
 			this.box.setAttribute('data-animation', 'jumping');
@@ -163,8 +163,6 @@ export class Tails extends PointActor
 		{
 			this.args.ySpeed = 0;
 		}
-
-		console.log(this.public.xSpeed, this.public.ySpeed);
 
 		this.args.tailFlyCoolDown = 80;
 

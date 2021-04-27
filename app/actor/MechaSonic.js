@@ -154,6 +154,8 @@ export class MechaSonic extends PointActor
 		}
 		else if(this.public.rolling)
 		{
+			this.scrapeSound && this.scrapeSound.pause();
+
 			if(this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping')
 			{
 				this.box.setAttribute('data-animation', 'curling');
@@ -189,7 +191,11 @@ export class MechaSonic extends PointActor
 				this.onTimeout(512, ()=>{
 					if(this.public.falling)
 					{
-						this.box.setAttribute('data-animation', 'jumping');
+						if(this.public.jumping)
+						{
+							this.box.setAttribute('data-animation', 'jumping');
+
+						}
 
 						this.closeThruster();
 					}

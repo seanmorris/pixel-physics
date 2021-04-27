@@ -64,6 +64,10 @@
 	--timer2: 100;
 }
 
+.titlecard.done {
+	display: none;
+}
+
 .titlecard-title-box {
 	position: absolute;
 	top: 29%;

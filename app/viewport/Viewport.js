@@ -8,6 +8,8 @@ import { TileMap }  from '../tileMap/TileMap';
 
 import { Titlecard } from '../titlecard/Titlecard';
 
+import { Particle3d } from '../particle/Particle3d';
+
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 import { ProtoLabrynth } from  '../backdrop/ProtoLabrynth';
 import { MysticCave } from  '../backdrop/MysticCave';
@@ -109,6 +111,9 @@ export class Viewport extends View
 
 		this.particles = new Bag;
 		this.effects   = new Bag;
+
+		this.maxCameraBound = 80;
+		this.cameraBound = 80;
 
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
@@ -556,7 +561,7 @@ export class Viewport extends View
 	{
 		this.args.backdrop = new Backdrop;
 
-		if(this.tileMap.mapData.properties)
+		if(this.tileMap.mapData && this.tileMap.mapData.properties)
 		{
 			for(const property of this.tileMap.mapData.properties)
 			{
@@ -633,7 +638,16 @@ export class Viewport extends View
 
 		this.nextControl = Object.values(this.args.actors)[0];
 
-		this.nextControl.controller.zero();
+		if(this.nextControl)
+		{
+			this.nextControl.controller.zero();
+		}
+		else if(this.controller)
+		{
+			this.controller.zero();
+		}
+
+		Keyboard.get().reset();
 
 		this.args.zonecard.played.then(() => {
 			this.args.started = true;
@@ -798,10 +812,12 @@ export class Viewport extends View
 
 		let cameraSpeed = 30;
 
-		const highJump  = this.controlActor.public.highJump;
-		const deepJump  = this.controlActor.public.deepJump;
-		const falling   = this.controlActor.public.falling;
-		const fallSpeed = this.controlActor.public.ySpeed;
+		const actor     = this.controlActor;
+
+		const highJump  = actor.public.highJump;
+		const deepJump  = actor.public.deepJump;
+		const falling   = actor.public.falling;
+		const fallSpeed = actor.public.ySpeed;
 
 		switch(this.controlActor.args.cameraMode)
 		{
@@ -815,37 +831,30 @@ export class Viewport extends View
 			case 'aerial':
 
 				this.args.xOffsetTarget = 0.5;
-				this.args.yOffsetTarget = 0.5;
 
-				if((deepJump || highJump) && fallSpeed > 0)
+				if(!actor.public.flying && (deepJump || highJump) && fallSpeed > 0)
 				{
-					this.args.xOffsetTarget = 0.5;
-					this.args.yOffsetTarget = 0.25;
-
-					cameraSpeed = 10;
+					this.args.yOffsetTarget = 0.1;
 				}
-				else if((deepJump || highJump) && fallSpeed < 0)
+				else if(!actor.public.flying && (deepJump || highJump) && fallSpeed < 0)
 				{
-					this.args.xOffsetTarget = 0.5;
-					this.args.yOffsetTarget = 0.75;
-
-					cameraSpeed = 15;
+					this.args.yOffsetTarget = 0.9;
 				}
 				else
 				{
-					this.args.xOffsetTarget = 0.5;
 					this.args.yOffsetTarget = 0.5;
-					cameraSpeed = 25;
 				}
+
+				cameraSpeed = 45;
 
 				break;
 
 			case 'cliff':
 
-				this.args.xOffsetTarget = 0.50 + -0.1 * this.controlActor.public.direction;
-				this.args.yOffsetTarget = 0.65;
+				this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor.public.direction;
+				this.args.yOffsetTarget = 0.45;
 
-				cameraSpeed = 45;
+				cameraSpeed = 30;
 
 				break;
 
@@ -854,22 +863,22 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.65;
 
-				cameraSpeed = 25;
+				cameraSpeed = 15;
 
 				break;
 
-			case 'normal':
+			default:
 
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 40;
+				cameraSpeed = 10;
 
 				switch(this.controlActor.public.mode)
 				{
 					case 0:
 						this.args.xOffsetTarget = 0.5;
-						this.args.yOffsetTarget = 0.75;
+						this.args.yOffsetTarget = 0.6;
 						break;
 
 					case 1:
@@ -879,7 +888,7 @@ export class Viewport extends View
 
 					case 2:
 						this.args.xOffsetTarget = 0.5;
-						this.args.yOffsetTarget = 0.25;
+						this.args.yOffsetTarget = 0.3;
 						break;
 
 					case 3:
@@ -891,94 +900,75 @@ export class Viewport extends View
 				break;
 		}
 
-		const xNext = -this.controlActor.x + this.args.width  * this.args.xOffset;
-		const yNext = -this.controlActor.y + this.args.height * this.args.yOffset;
-
-		const jumping = this.controlActor.public.jumping;
-
-		const dragSpeedX   = (this.args.jumping && this.args.ySpeed < 0) ? 1.00 : 2;
-		const dragSpeedY   = (this.args.jumping && this.args.ySpeed < 0) ? 0.25 : 3;
-		const maxDragX     = 24;
-		const maxDragYDown = 80;
-		const maxDragY     = 32;
-
-		if(this.args.x !== xNext)
-		{
-			const drag = this.args.x - xNext;
-			const abs  = Math.abs(drag);
-			const step = drag / 64;
-
-			if(abs > maxDragX)
-			{
-				this.args.x = xNext + maxDragX * Math.sign(drag);
-			}
-			else if(Math.abs(step) < 1)
-			{
-				this.args.x -= step * dragSpeedX;
-			}
-			else
-			{
-				this.args.x = xNext;
-			}
-		}
-
-		if(this.args.y < yNext)
-		{
-			const drag = this.args.y - yNext;
-			const abs  = Math.abs(drag);
-			const step = drag / 128;
-
-			if(abs > maxDragYDown)
-			{
-				this.args.y = yNext + maxDragYDown * Math.sign(drag);
-			}
-			else if(Math.abs(step) < 1)
-			{
-				this.args.y -= step * dragSpeedY;
-			}
-			else
-			{
-				this.args.y = yNext;
-			}
-		}
-
-		if(this.args.y > yNext)
-		{
-			const drag = this.args.y - yNext;
-			const abs  = Math.abs(drag);
-			const step = drag / 128;
-
-			if(abs > maxDragY)
-			{
-				this.args.y = yNext + maxDragY * Math.sign(drag);
-			}
-			else if(Math.abs(step) > 1)
-			{
-				this.args.y -= step * dragSpeedY;
-			}
-			else
-			{
-				this.args.y = yNext;
-			}
-		}
-
-		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01)
+		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.05)
 		{
 			this.args.yOffset = this.args.yOffsetTarget
 		}
-		else
+		else if(cameraSpeed)
 		{
-			this.args.yOffset += ((this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed);
+			const offsetDiff = this.args.yOffsetTarget - this.args.yOffset;
+
+			this.args.yOffset += offsetDiff / cameraSpeed;
 		}
 
-		if(Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.01)
+		if(Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.05)
 		{
 			this.args.xOffset = this.args.xOffsetTarget
 		}
+		else if(cameraSpeed)
+		{
+			const offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
+
+			this.args.xOffset += offsetDiff / cameraSpeed;
+		}
+
+		if(actor.public.jumping)
+		{
+			this.maxCameraBound = 80;
+
+			if(deepJump || highJump)
+			{
+				this.maxCameraBound = 8;
+			}
+		}
 		else
 		{
-			this.args.xOffset += ((this.args.xOffsetTarget - this.args.xOffset) / cameraSpeed);
+			this.maxCameraBound = 64;
 		}
+
+		if(this.cameraBound <= this.maxCameraBound)
+		{
+			this.cameraBound = this.maxCameraBound;
+		}
+		else
+		{
+			this.cameraBound--;
+		}
+
+		const center = actor.rotatePoint(0, -actor.public.height / 2);
+
+		const xNext = -actor.x + center[0] + this.args.width  * this.args.xOffset;
+		const yNext = -actor.y + center[1] + this.args.height * this.args.yOffset;
+
+		const yDiff = this.args.y - yNext;
+		const xDiff = this.args.x - xNext;
+
+		const distance = Math.sqrt(xDiff ** 2 + yDiff ** 2);
+		const angle    = Math.atan2(yDiff, xDiff);
+
+		const maxDistance = this.cameraBound;
+
+		const dragDistance = Math.min(maxDistance, distance);
+
+		const snapFactor = Math.max(Math.abs(dragDistance / maxDistance), 0.05);
+		const snapFrames = 16;
+		const snapSpeed  = dragDistance / snapFrames;
+
+		this.args.x = xNext + dragDistance * Math.cos(angle);
+		this.args.y = yNext + dragDistance * Math.sin(angle);
+
+		this.args.x -= snapFactor * Math.cos(angle) * snapSpeed;
+		this.args.y -= snapFactor * Math.sin(angle) * snapSpeed;
 
 		if(this.args.x > 96)
 		{
@@ -1004,19 +994,14 @@ export class Viewport extends View
 		}
 	}
 
-	updateBackground()
+	applyMotionBlur()
 	{
-		let controlActor = this.controlActor;
-
-		if(controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle)
-		{
-			controlActor = this.controlActor.standingOn;
-		}
+		const controlActor = this.controlActor;
 
 		if(this.settings.blur && controlActor && this.tags.blur)
 		{
-			let xBlur = (Number(((controlActor.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-			let yBlur = (Number(((controlActor.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
+			let xBlur = (Number(((this.args.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
+			let yBlur = (Number(((this.args.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
 
 			let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
 
@@ -1045,14 +1030,24 @@ export class Viewport extends View
 				this.tags.blur.removeAttribute('stdDeviation');
 			}
 
-			this.xPrev = controlActor.x;
-			this.yPrev = controlActor.y;
+			this.xPrev = this.args.x;
+			this.yPrev = this.args.y;
 		}
 		else
 		{
 			this.tags.blurAngle.setAttribute('style', `transform:none;`);
 			this.tags.blurAngleCancel.setAttribute('style', `transform:none;`);
 			this.tags.blur.removeAttribute('stdDeviation');
+		}
+	}
+
+	updateBackground()
+	{
+		let controlActor = this.controlActor;
+
+		if(controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle)
+		{
+			controlActor = this.controlActor.standingOn;
 		}
 
 		for(const layer of this.args.layers)
@@ -1095,8 +1090,6 @@ export class Viewport extends View
 						backdrop.view = new MysticCave;
 
 						backdrop.view.render( this.tags.backdrops );
-
-						backdrop.onRemove( () => backdrop.view.remove() );
 					}
 				}
 
@@ -1166,15 +1159,39 @@ export class Viewport extends View
 
 		this.objDefs = new Map;
 
-		for(const [id,] of this.backdrops)
+		for(const [id,backdrop] of this.backdrops)
 		{
+			if(backdrop.view)
+			{
+				backdrop.view.remove();
+			}
+
 			this.backdrops.delete(id);
+		}
+
+		for(const particle of this.particles.list)
+		{
+			if(particle)
+			{
+				particle.remove();
+
+				this.particles.remove(particle);
+			}
 		}
 
 		for(let i in objDefs)
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
+
+			if(objType === 'particle')
+			{
+				const particle = new Particle3d;
+
+				particle.style({'--x': objDef.x, '--y': objDef.y});
+
+				this.particles.add(particle.node);
+			}
 
 			if(objType === 'backdrop')
 			{
@@ -1784,6 +1801,8 @@ export class Viewport extends View
 			this.controlActor.setCameraMode();
 
 			this.moveCamera();
+
+			this.applyMotionBlur();
 
 			if(this.controlActor.args.name === 'seymour'
 				&& this.controlActor.y < 3840

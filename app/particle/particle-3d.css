@@ -1,0 +1,118 @@
+.viewport-particles {
+	--xCam: var(--x);
+	--yCam: var(--y);
+}
+
+.particle-3d {
+	position: absolute;
+	overflow: visible;
+
+	transform-style: preserve-3d;
+
+	--radiusX: calc(var(--width) / 2);
+	--centerX: calc(var(--xCam) - var(--radiusX));
+
+	--radiusY: calc(var(--height) / 2);
+	--centerY: calc(var(--yCam) - var(--radiusY));
+
+	--relX: calc(var(--x) - calc(-1*var(--centerX)));
+	--unitX: calc(var(--relX) / var(--width));
+
+	--relY: calc(var(--y) - calc(-1*var(--centerY)));
+	--unitY: calc(var(--relY) / var(--height));
+
+	--width3d: 24;
+
+	width: calc(var(--width3d) * 2px);
+	height: calc(var(--width3d) * 2px);
+
+	perspective: calc(var(--width3d) * 6px);
+	perspective-origin:
+		calc(50% + calc(-200% * var(--unitX)))
+		calc(calc(75% + calc(-200% * var(--unitY))) + calc(var(--width3d) * 0.5px))
+	;
+
+	transform:
+		translate3d(
+			calc(-50% + calc(var(--unitX) * -64px))
+			, calc(-50% + calc(var(--unitY) * -64px))
+			, calc(var(--width3d) * -2.5px))
+		!important;
+
+
+	/*transition: perspective-origin 1s ease-in, transform 1s ease-in;*/
+	z-index: -100;
+
+}
+
+.particle-3d > * {
+	position: absolute;
+	top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin: auto;
+	display: block;
+	background-image: url(/Sonic/marble-zone-block.png);
+	backface-visibility: hidden;
+	background-size: cover;
+
+
+	width: calc(var(--width3d) * 1px);
+	height: calc(var(--width3d) * 1px);
+}
+
+.front-3d {
+	/*transform: rotateY( 0deg ) translateZ( 40px );*/
+
+	transform:
+		rotateY( 0deg )
+		translateZ( 0px );
+
+	z-index: 1;
+}
+
+.back-3d {
+
+	transform:
+		rotateY( 180deg )
+		translateZ( 0px );
+
+	z-index: -1;
+}
+
+.left-3d {
+	transform:
+		rotateY( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( calc(var(--width3d) * -0.5px) );
+}
+
+.right-3d {
+	transform:
+		rotateY( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( calc(var(--width3d) * 0.5px) );
+}
+
+.top-3d {
+
+	transform:
+		rotateX( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( calc(var(--width3d) * -0.5px) );
+
+	z-index: -1;
+}
+
+.bottom-3d {
+
+	transform:
+		rotateX( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( calc(var(--width3d) * 0.5px) );
+
+	z-index: -1;
+
+}
+

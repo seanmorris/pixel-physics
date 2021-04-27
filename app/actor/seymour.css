@@ -29,7 +29,7 @@
 .actor-item.actor-seymour[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
-	animation: seymour-run steps(5) infinite 192ms;
+	animation: seymour-run steps(5) infinite calc(calc(calc(1 - var(--animation-bias)) * 160ms) + 80ms);
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after,
@@ -43,6 +43,7 @@
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after {
 	transform: translateY(22px);
 	animation: seymour-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
+
 }
 
 @-webkit-keyframes seymour-walk {

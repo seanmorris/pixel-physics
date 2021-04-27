@@ -126,7 +126,7 @@
 
 	z-index: -1;
 
-	filter: url(#menu-warp);
+	filter: url(#menu-twist) url(#menu-pinch);
 
 	background-color: #0024d8;
 

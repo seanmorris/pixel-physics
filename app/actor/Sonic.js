@@ -47,12 +47,12 @@ export class Sonic extends PointActor
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
 
-		this.args.width = 28;
+		this.args.width  = 16;
+		this.args.height = 40;
 
 		this.args.normalHeight = 40;
 		this.args.rollingHeight = 23;
 
-		this.args.height = 40;
 
 		this.spindashCharge = 0;
 		this.dropDashCharge = 0;
@@ -137,8 +137,11 @@ export class Sonic extends PointActor
 				this.args.wallSticking = false;
 			}
 
-			this.willStick = false;
-			this.stayStuck = false;
+			if(!this.args.wallSticking)
+			{
+				this.willStick = false;
+				this.stayStuck = false;
+			}
 		}
 
 		if(this.lightDashingCoolDown > 0)
@@ -297,7 +300,7 @@ export class Sonic extends PointActor
 			}
 			else if(!this.public.xSpeed && !this.public.ySpeed)
 			{
-				this.box.setAttribute('data-animation', 'airdash');
+				// this.box.setAttribute('data-animation', 'airdash');
 			}
 		}
 
@@ -361,12 +364,15 @@ export class Sonic extends PointActor
 
 		this.args.mode = 0;
 
+		this.args.rolling = false;
+		this.args.height = this.public.normalHeight;
+
 		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
 			this.args.xSpeed = 0;
 		}
 
-		let dashSpeed = direction * 12;
+		let dashSpeed = direction * 14;
 
 		this.args.float = 3;
 
@@ -412,13 +418,13 @@ export class Sonic extends PointActor
 	{
 		this.dropDashCharge = 0;
 
-		if(this.public.falling && !this.dashed && !this.doubleSpin)
+		if(this.public.jumping && !this.dashed && !this.doubleSpin)
 		{
 			this.doubleSpin = true;
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
 
-			this.pinch(-300, 50);
+			this.pinch(-400, 50);
 		}
 
 		super.command_0();
@@ -432,8 +438,6 @@ export class Sonic extends PointActor
 			{
 				this.dropDashCharge++;
 			}
-
-			this.willStick = false;
 		}
 	}
 
