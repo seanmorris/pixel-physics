@@ -29,3 +29,12 @@
 	font-weight: normal;
 	font-style: normal;
 }
+
+@font-face {
+    font-family: 'poppl-laudatiocondensed';
+    src: url('/fonts/poppl-laudatio/poppllaudatio-condensed-webfont.woff2') format('woff2'),
+         url('/fonts/poppl-laudatio/poppllaudatio-condensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

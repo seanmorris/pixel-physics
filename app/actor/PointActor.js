@@ -884,20 +884,26 @@ export class PointActor extends View
 						{
 							this.args.ignore = 8;
 							this.args.falling = true;
-							this.args.groundAngle = Math.PI;
 
-							this.args.y++;
+							const gSpeed = this.args.gSpeed;
+
+							this.onNextFrame(() => {
+								this.args.groundAngle = Math.PI;
+								this.args.xSpeed = -gSpeed;
+								this.args.mode = MODE_FLOOR;
+							});
 
 							if(this.public.direction == -1)
 							{
-								this.args.facing = 'right'
+								this.args.facing = 'left'
 								this.args.x++;
 							}
 							else
 							{
-								this.args.facing = 'left'
+								this.args.facing = 'right'
 								this.args.x--;
 							}
+
 						}
 					}
 				}
@@ -1190,6 +1196,11 @@ export class PointActor extends View
 
 							this.args.falling = !!this.public.gSpeed;
 							this.args.float = this.args.float < 0 ? this.args.float : 1;
+
+							this.onNextFrame(() => {
+								this.args.groundAngle = Math.PI;
+								this.args.mode = MODE_FLOOR;
+							});
 
 							break;
 
@@ -2034,8 +2045,10 @@ export class PointActor extends View
 						return;
 					}
 
-					if(this.public.falling && !this.getMapSolidAt(this.x, this.y +48))
-					{
+					if(this.public.falling
+						&& Math.abs(this.public.xSpeed > 25)
+						&& !this.getMapSolidAt(this.x, this.y +480)
+					){
 						this.args.cameraMode = 'airplane'
 					}
 				});
@@ -2856,7 +2869,7 @@ export class PointActor extends View
 		return this.castRay(
 			scanDist
 			, this.public.falling
-				? Math.sign(speed) > 0 ? 0 : Math.PI
+				? this.public.airAngle
 				: this.realAngle + (Math.sign(speed) < 0 ? Math.PI : 0)
 			, startPoint
 			, (i, point) => {
@@ -2932,12 +2945,12 @@ export class PointActor extends View
 			return this.public.standingOn.realAngle;
 		}
 
+		const groundAngle = Number(this.public.groundAngle);
+
 		if(this.public.falling)
 		{
-			return Math.PI;
+			return -groundAngle - (Math.PI);
 		}
-
-		const groundAngle = Number(this.public.groundAngle);
 
 		let trajectory;
 

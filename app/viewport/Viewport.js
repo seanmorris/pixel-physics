@@ -20,6 +20,7 @@ import { Card }     from '../intro/Card';
 import { TitleScreenCard } from '../intro/TitleScreenCard';
 import { LoadingCard } from '../intro/LoadingCard';
 import { BootCard } from    '../intro/BootCard';
+import { DebianCard } from '../intro/DebianCard';
 import { SeanCard } from    '../intro/SeanCard';
 import { PauseMenu } from   '../Menu/PauseMenu.js';
 import { MainMenu } from    '../Menu/MainMenu.js';
@@ -486,7 +487,7 @@ export class Viewport extends View
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 
-		this.onTimeout(8800, () => {
+		this.onTimeout(16500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
 
@@ -845,7 +846,7 @@ export class Viewport extends View
 					this.args.yOffsetTarget = 0.5;
 				}
 
-				cameraSpeed = 45;
+				cameraSpeed = 60;
 
 				break;
 
@@ -942,7 +943,7 @@ export class Viewport extends View
 		}
 		else
 		{
-			this.cameraBound--;
+			this.cameraBound -= 1;
 		}
 
 		const center = actor.rotatePoint(0, -actor.public.height / 2);
@@ -2214,6 +2215,7 @@ export class Viewport extends View
 		return [
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
+			, new DebianCard({timeout: 4500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
 		]
