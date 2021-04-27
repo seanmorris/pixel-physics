@@ -74,6 +74,53 @@
 	background-color: rgba(0,0,0,1);
 }
 
+.screen-card-debian-card {
+	background-color: rgba(255,255,255,1);
+	color: black;
+	font-family: poppl-laudatiocondensed;
+	text-align: center;
+	transition: opacity 0.5s ease-out, filter 0.75s ease-out;
+}
+
+.screen-card-debian-card .caption {
+	font-size: 16pt;
+	padding: 1em;
+	transition: opacity 0.75s 2.25s ease-out;
+	opacity: 1;
+}
+
+.screen-card-debian-card.opening {
+	opacity: 0;
+	filter: blur(0px);
+}
+
+.screen-card-debian-card.closed,
+.screen-card-debian-card.closing {
+	opacity: 0;
+	filter: blur(5px) saturate(0);
+}
+
+.screen-card-debian-card.opening .caption {
+	opacity: 0;
+}
+
+.debian-logo {
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url(/ui/debian.svg);
+	width: 128px;
+	height: 128px;
+	background-repeat: no-repeat;
+	background-position: center;
+  	clip-path: circle(0% at 58% 40%);
+	animation: debian-iris 1.75s 1.25s ease-out 1 forwards;
+}
+
+@keyframes debian-iris {
+  0% { clip-path: circle(0% at 58% 40%); }
+  100% { clip-path: circle(100% at 58% 40%); }
+}
+
 .screen-card-title-screen-card .main-elements-container {
 	display: flex;
 	flex-direction: column;

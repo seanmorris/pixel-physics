@@ -278,10 +278,6 @@ export class Sonic extends PointActor
 					this.box.setAttribute('data-animation', 'standing');
 				}
 			}
-			else
-			{
-				this.box.setAttribute('data-animation', 'rolling');
-			}
 
 			if(!this.spindashCharge && this.dashDust)
 			{
@@ -302,6 +298,11 @@ export class Sonic extends PointActor
 			{
 				// this.box.setAttribute('data-animation', 'airdash');
 			}
+		}
+
+		if(this.public.rolling)
+		{
+			this.box.setAttribute('data-animation', 'rolling');
 		}
 
 		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
@@ -921,7 +922,7 @@ export class Sonic extends PointActor
 	}
 
 	get solid() { return false; }
-	get canRoll() { return true; }
+	get canRoll() { return !this.public.wallSticking; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
 
