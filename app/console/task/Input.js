@@ -10,29 +10,52 @@ export class Input extends Task
 	title  = 'Input task';
 	prompt = '..';
 
-	init(buttonId, ms = 500)
+	init(inputId, ms = 500, magnitude = 1)
 	{
-		this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
+		let frame, intervalId, onDone = () => {};
 
-		const frame = {buttons: { [buttonId]: 1 }};
-		const actor = Input.viewport.controlActor;
+		if(inputId[0] === 'a')
+		{
+			const axisId = inputId.substring(1);
 
-		const controller = actor.controller;
+			this.print(`Setting axis ${axisId} to ${magnitude} for ${ms} milliseconds...`);
 
-		const intervalId = setInterval(() => {
+			frame = {axes: { [axisId]: magnitude }};
 
-			frame.buttons[buttonId] = 1;
+			intervalId = setInterval(() => {
 
-			controller.replay(frame);
-			actor.readInput();
+				controller.tilt(axisId, magnitude);
+				actor.readInput();
 
-		}, 16);
+			}, 16);
 
-		controller.replay(frame);
-		actor.readInput();
+			onDone = () => {
 
-		return new Promise(accept => {
-			setTimeout(() => {
+				controller.tilt(axisId, 0);
+				actor.readInput();
+
+				clearInterval(intervalId);
+			};
+		}
+
+		if(inputId[0] === 'b')
+		{
+			const buttonId = inputId.substring(1);
+
+			this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
+
+			frame = {buttons: { [buttonId]: 1 }};
+
+			intervalId = setInterval(() => {
+
+				frame.buttons[buttonId] = 1;
+
+				controller.replay(frame);
+				actor.readInput();
+
+			}, 16);
+
+			onDone = () => {
 
 				frame.buttons[buttonId] = 0;
 
@@ -40,9 +63,25 @@ export class Input extends Task
 				actor.readInput();
 
 				clearInterval(intervalId);
+			};
+		}
 
+		if(!frame)
+		{
+			return;
+		}
+
+		const actor = Input.viewport.controlActor;
+
+		const controller = actor.controller;
+
+		controller.replay(frame);
+		actor.readInput();
+
+		return new Promise(accept => {
+			setTimeout(() => {
+				onDone();
 				accept();
-
 			}, ms);
 		});
 	}
@@ -52,52 +91,3 @@ export class Input extends Task
 		this.print(line);
 	}
 }
-
-// import { Task } from 'subspace-console/Task';
-
-// export class Input extends Task
-// {
-// 	static viewport = null;
-
-// 	static helpText = 'Press a button x for y milliseconds.';
-// 	static useText  = 'input x y';
-
-// 	title  = 'Input task';
-// 	prompt = '..';
-
-// 	init(buttonId, ms = 500)
-// 	{
-// 		this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
-
-// 		this.actor = Input.viewport.controlActor;
-// 		this.frame = {buttons: { [buttonId]: 1 }};
-
-// 		this.buttonId   = buttonId;
-// 		this.controller = this.actor.controller;
-
-// 		this.hold = setInterval(() => this.controller.replay(this.frame), 16);
-// 		this.ms   = ms;
-
-// 		this.controller.replay(this.frame);
-
-// 		return new Promise(accept => {
-// 			setTimeout(() => {
-
-// 				clearInterval(this.hold);
-
-// 				this.frame.buttons[this.buttonId] = 0;
-
-// 				this.controller.replay(this.frame);
-
-// 				accept();
-
-// 			}, this.ms);
-// 		});
-// 	}
-
-// 	main(line)
-// 	{
-// 		this.print(line);
-// 	}
-// }
-

@@ -109,7 +109,11 @@ export class Eggrobo extends PointActor
 		else
 		{
 			this.args.crouching = false;
-			this.box.setAttribute('data-animation', 'jumping');
+
+			if(this.public.jumping)
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+			}
 		}
 
 		if(!this.args.falling)

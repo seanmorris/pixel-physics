@@ -75,7 +75,10 @@ export class Eggman extends PointActor
 
 		if(falling)
 		{
-			this.box.setAttribute('data-animation', 'jumping');
+			if(this.public.jumping)
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+			}
 			this.args.height = this.public.rollingHeight;
 		}
 		else if(this.public.rolling)

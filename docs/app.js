@@ -6494,6 +6494,21 @@ var Keyboard = /*#__PURE__*/function () {
       return this.codes[code];
     }
   }, {
+    key: "reset",
+    value: function reset() {
+      for (var i in this.keys) {
+        delete this.keys[i];
+      }
+
+      for (var i in this.codes) {
+        delete this.codes[i];
+      }
+
+      for (var i in this.whichs) {
+        delete this.whichs[i];
+      }
+    }
+  }, {
     key: "update",
     value: function update() {
       for (var i in this.keys) {
@@ -8053,6 +8068,8 @@ var _Pinch = require("../effects/Pinch");
 
 var _Droop = require("../effects/Droop");
 
+var _Twist = require("../effects/Twist");
+
 var _Menu2 = require("./Menu");
 
 var _SettingsMenu = require("./SettingsMenu");
@@ -8239,12 +8256,18 @@ var MainMenu = /*#__PURE__*/function (_Menu) {
     value: function input(controller) {
       _get(_getPrototypeOf(MainMenu.prototype), "input", this).call(this, controller);
 
-      if (this.args.warp) {
+      if (this.args.pinch) {
         var xAxis = controller.axes[2] ? controller.axes[2].magnitude : 0;
         var yAxis = controller.axes[3] ? controller.axes[3].magnitude : 0;
-        this.args.warp.args.intensity = 1 - Math.abs(Math.pow(xAxis, 2));
-        this.args.warp.args.scale = 128 * (0 + xAxis);
-        this.args.warp.args.dx = 64 * 1.618 * xAxis; // this.args.warp.args.intensity = 0.5 * ( 1 + (controller.axes[3] ? controller.axes[3].magnitude : 0));
+        var pressure = 0;
+
+        if (controller.buttons[6]) {
+          pressure = 0.25 + controller.buttons[6].pressure - controller.buttons[7].pressure;
+        }
+
+        this.args.pinch.args.scale = pressure * 256;
+        this.args.pinch.args.dx = 64 * 1.618 * xAxis;
+        this.args.pinch.args.dy = 64 * 1.000 * yAxis;
       }
     }
   }, {
@@ -8277,8 +8300,14 @@ var MainMenu = /*#__PURE__*/function (_Menu) {
       _get(_getPrototypeOf(MainMenu.prototype), "onRendered", this).call(this, event);
 
       this.onRemove(debind);
-      this.args.warp = new _Droop.Droop({
-        id: 'menu-warp',
+      this.args.pinch = new _Twist.Twist({
+        id: 'menu-twist',
+        scale: 64,
+        width: Math.floor(64 * 1.618),
+        height: 64
+      });
+      this.args.pinch = new _Pinch.Pinch({
+        id: 'menu-pinch',
         scale: 64,
         width: Math.floor(64 * 1.618),
         height: 64
@@ -8657,7 +8686,9 @@ var Menu = /*#__PURE__*/function (_Card) {
         this.zeroMe.zero();
       }
 
-      item.callback && item.callback();
+      item.callback && this.onTimeout(100, function () {
+        return item.callback();
+      });
 
       if (item.children) {
         var prev = this.args.items;
@@ -8981,7 +9012,7 @@ exports.SettingsMenu = SettingsMenu;
 });
 
 ;require.register("Menu/main-menu.html", function(exports, require, module) {
-module.exports = "<div class = \"screen-card screen-card-[[cardName]] [[animation]]\">\n\n\t<div class = \"menu-scroller\"></div>\n\n\t[[warp]]\n\n\t<section class = \"contents\" cv-if = \"!connected\">\n\t\t<div class = \"menu-container\">\n\n\t\t\t<div>Sonic 3000</div>\n\n\t\t\t<div>\n\n\t\t\t\t<ul cv-ref = \"bound\" cv-each = \"items:item:title\">\n\n\t\t\t\t\t<li data-title = \"[[title]]\" class = \"[[item.available]]\" cv-on = \"click:run(item);\" tabindex=\"0\">\n\t\t\t\t\t\t<span class = \"title\">[[title]]</span>\n\t\t\t\t\t\t<span class = \"subtext\">[[item.subtext]]</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"string\">\n\t\t\t\t\t\t\t: <input cv-ref = \"string\" cv-bind = \"item.setting\" cv-on = \"keyup(event);input:change(event)\" tabindex=\"-1\" />\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"number\">\n\t\t\t\t\t\t\t: <input cv-ref = \"number\" cv-bind = \"item.setting\" type = \"number\" cv-on = \"keyup(event);change(event)\" tabindex=\"-1\" max = \"[[item.max]]\" min = \"[[item.min]]\" />\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"boolean\">\n\t\t\t\t\t\t\t: <select cv-on = \"mousedown:toggle(event, item);change(event)\" cv-ref = \"boolean\" cv-bind = \"item.setting\" tabindex=\"-1\">\n\t\t\t\t\t\t\t\t<option value = \"1\">on</option>\n\t\t\t\t\t\t\t\t<option value = \"0\">off</option>\n\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\n\t\t\t\t</ul>\n\n\t\t\t</div>\n\n\t\t</div>\n\n\t</section>\n\n\t<section class = \"contents\" cv-if = \"!connected\">\n\n\t\t<section class = \"contents\" cv-if = \"hostGame\">\n\t\t\t<div class = \"token-exchange\" data-have-token = \"[[haveToken]]\">\n\n\t\t\t\t<label>\n\t\t\t\t\t<p>Input the token from your friend here.</p>\n\t\t\t\t\t<textarea cv-bind = \"input\" cv-on = \"click:paste(event)\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:answer\">go!</button>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<p>Send this token to your friend to get started.</p>\n\t\t\t\t\t<textarea cv-on = \"click:copy\" cv-ref = \"hostOutput\" cv-bind = \"hostOutput\" readonly = \"true\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:copy\">[[copy]]</button>\n\n\t\t\t\t\t<div class = \"close\" cv-on = \"click:disconnect\"></div>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</section>\n\n\t\t<section class = \"contents\" cv-if = \"joinGame\">\n\t\t\t<div class = \"token-exchange\">\n\n\t\t\t\t<label cv-if = \"haveToken\">\n\t\t\t\t\t<p>Send this token to your friend to get started.</p>\n\t\t\t\t\t<textarea cv-on = \"click:copy\" cv-ref = \"joinOutput\" cv-bind = \"joinOutput\" readonly = \"true\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:copy\">[[copy]]</button>\n\t\t\t\t</label>\n\n\t\t\t\t<label cv-if = \"haveToken\">\n\t\t\t\t\t<p>Input the token they send back here.</p>\n\t\t\t\t\t<textarea cv-bind = \"input\" cv-on = \"click:paste(event)\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:accept\">go!</button>\n\t\t\t\t\t<div class = \"close\" cv-on = \"click:disconnect\"></div>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</section>\n\n\t</section>\n</div>\n"
+module.exports = "<div class = \"screen-card screen-card-[[cardName]] [[animation]]\">\n\n\t<div class = \"menu-scroller\"></div>\n\n\t[[pinch]]\n\t[[twist]]\n\n\t<section class = \"contents\" cv-if = \"!connected\">\n\t\t<div class = \"menu-container\">\n\n\t\t\t<div>Sonic 3000</div>\n\n\t\t\t<div>\n\n\t\t\t\t<ul cv-ref = \"bound\" cv-each = \"items:item:title\">\n\n\t\t\t\t\t<li data-title = \"[[title]]\" class = \"[[item.available]]\" cv-on = \"click:run(item);\" tabindex=\"0\">\n\t\t\t\t\t\t<span class = \"title\">[[title]]</span>\n\t\t\t\t\t\t<span class = \"subtext\">[[item.subtext]]</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"string\">\n\t\t\t\t\t\t\t: <input cv-ref = \"string\" cv-bind = \"item.setting\" cv-on = \"keyup(event);input:change(event)\" tabindex=\"-1\" />\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"number\">\n\t\t\t\t\t\t\t: <input cv-ref = \"number\" cv-bind = \"item.setting\" type = \"number\" cv-on = \"keyup(event);change(event)\" tabindex=\"-1\" max = \"[[item.max]]\" min = \"[[item.min]]\" />\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span cv-if = \"item.input\" cv-is = \"boolean\">\n\t\t\t\t\t\t\t: <select cv-on = \"mousedown:toggle(event, item);change(event)\" cv-ref = \"boolean\" cv-bind = \"item.setting\" tabindex=\"-1\">\n\t\t\t\t\t\t\t\t<option value = \"1\">on</option>\n\t\t\t\t\t\t\t\t<option value = \"0\">off</option>\n\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t</li>\n\n\t\t\t\t</ul>\n\n\t\t\t</div>\n\n\t\t</div>\n\n\t</section>\n\n\t<section class = \"contents\" cv-if = \"!connected\">\n\n\t\t<section class = \"contents\" cv-if = \"hostGame\">\n\t\t\t<div class = \"token-exchange\" data-have-token = \"[[haveToken]]\">\n\n\t\t\t\t<label>\n\t\t\t\t\t<p>Input the token from your friend here.</p>\n\t\t\t\t\t<textarea cv-bind = \"input\" cv-on = \"click:paste(event)\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:answer\">go!</button>\n\t\t\t\t</label>\n\n\t\t\t\t<label>\n\t\t\t\t\t<p>Send this token to your friend to get started.</p>\n\t\t\t\t\t<textarea cv-on = \"click:copy\" cv-ref = \"hostOutput\" cv-bind = \"hostOutput\" readonly = \"true\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:copy\">[[copy]]</button>\n\n\t\t\t\t\t<div class = \"close\" cv-on = \"click:disconnect\"></div>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</section>\n\n\t\t<section class = \"contents\" cv-if = \"joinGame\">\n\t\t\t<div class = \"token-exchange\">\n\n\t\t\t\t<label cv-if = \"haveToken\">\n\t\t\t\t\t<p>Send this token to your friend to get started.</p>\n\t\t\t\t\t<textarea cv-on = \"click:copy\" cv-ref = \"joinOutput\" cv-bind = \"joinOutput\" readonly = \"true\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:copy\">[[copy]]</button>\n\t\t\t\t</label>\n\n\t\t\t\t<label cv-if = \"haveToken\">\n\t\t\t\t\t<p>Input the token they send back here.</p>\n\t\t\t\t\t<textarea cv-bind = \"input\" cv-on = \"click:paste(event)\"></textarea>\n\t\t\t\t\t<button cv-on = \"click:accept\">go!</button>\n\t\t\t\t\t<div class = \"close\" cv-on = \"click:disconnect\"></div>\n\t\t\t\t</label>\n\n\t\t\t</div>\n\t\t</section>\n\n\t</section>\n</div>\n"
 });
 
 ;require.register("Menu/menu.html", function(exports, require, module) {
@@ -9632,6 +9663,59 @@ var Block = /*#__PURE__*/function (_PointActor) {
 }(_PointActor2.PointActor);
 
 exports.Block = Block;
+});
+
+;require.register("actor/Block3d.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Block3d = void 0;
+
+var _MarbleBlock2 = require("./MarbleBlock");
+
+var _LavaRegion = require("../region/LavaRegion");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var Block3d = /*#__PURE__*/function (_MarbleBlock) {
+  _inherits(Block3d, _MarbleBlock);
+
+  var _super = _createSuper(Block3d);
+
+  function Block3d() {
+    var _this;
+
+    var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Block3d);
+
+    _this = _super.call(this, args);
+    _this.args.type = 'actor-item actor-block-3d';
+    return _this;
+  }
+
+  return Block3d;
+}(_MarbleBlock2.MarbleBlock);
+
+exports.Block3d = Block3d;
 });
 
 ;require.register("actor/BreakableBlock.js", function(exports, require, module) {
@@ -10878,7 +10962,10 @@ var Eggman = /*#__PURE__*/function (_PointActor) {
       var maxSpeed = this.args.gSpeedMax;
 
       if (falling) {
-        this.box.setAttribute('data-animation', 'jumping');
+        if (this["public"].jumping) {
+          this.box.setAttribute('data-animation', 'jumping');
+        }
+
         this.args.height = this["public"].rollingHeight;
       } else if (this["public"].rolling) {
         this.args.height = this["public"].rollingHeight;
@@ -11104,7 +11191,10 @@ var Eggrobo = /*#__PURE__*/function (_PointActor) {
         }
       } else {
         this.args.crouching = false;
-        this.box.setAttribute('data-animation', 'jumping');
+
+        if (this["public"].jumping) {
+          this.box.setAttribute('data-animation', 'jumping');
+        }
       }
 
       if (!this.args.falling) {
@@ -11525,7 +11615,7 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
     _this.args.gSpeedMax = 18;
     _this.args.jumpForce = 11;
     _this.args.gravity = 0.5;
-    _this.args.width = 28;
+    _this.args.width = 16;
     _this.args.height = 41;
     _this.args.normalHeight = 41;
     _this.args.rollingHeight = 23;
@@ -11652,7 +11742,7 @@ var Knuckles = /*#__PURE__*/function (_PointActor) {
         }
       } else if (this["public"].flying) {
         this.box.setAttribute('data-animation', 'flying');
-      } else {
+      } else if (this["public"].jumping) {
         this.box.setAttribute('data-animation', 'jumping');
       }
 
@@ -12453,6 +12543,8 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
           this.closeThruster();
         }
       } else if (this["public"].rolling) {
+        this.scrapeSound && this.scrapeSound.pause();
+
         if (this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping') {
           this.box.setAttribute('data-animation', 'curling');
           this.onTimeout(512, function () {
@@ -12474,7 +12566,9 @@ var MechaSonic = /*#__PURE__*/function (_PointActor) {
           this.box.setAttribute('data-animation', 'curling');
           this.onTimeout(512, function () {
             if (_this2["public"].falling) {
-              _this2.box.setAttribute('data-animation', 'jumping');
+              if (_this2["public"].jumping) {
+                _this2.box.setAttribute('data-animation', 'jumping');
+              }
 
               _this2.closeThruster();
             }
@@ -12960,6 +13054,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     });
 
     _this.args.type = 'actor-generic';
+    _this.args.modeTime = 0;
     _this.args.charStrings = [];
     _this.args.display = _this.args.display || 'initial';
     _this.args.emeralds = 0;
@@ -12998,7 +13093,7 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.args.jumpedAt = null;
     _this.args.deepJump = false;
     _this.args.highJump = false;
-    _this.maxStep = 6;
+    _this.maxStep = 7;
     _this.backStep = 0;
     _this.frontStep = 0;
     _this.args.rolling = false;
@@ -13096,6 +13191,10 @@ var PointActor = /*#__PURE__*/function (_View) {
     _this.debindGroundX = new Set();
     _this.debindGroundY = new Set();
     _this.debindGroundL = new Set();
+
+    _this.args.bindTo(['mode', 'falling'], function () {
+      _this.args.modeTime = 0;
+    });
 
     _this.args.bindTo('standingOn', function (groundObject, key, target) {
       if (_this.args.standingOn === groundObject) {
@@ -13333,6 +13432,8 @@ var PointActor = /*#__PURE__*/function (_View) {
         return;
       }
 
+      this.args.modeTime++;
+
       if (this.args.standingOn && this.args.standingOn.isVehicle && this.args.standingOn.occupant === this) {
         var vehicle = this.args.standingOn;
         this.processInput();
@@ -13494,6 +13595,28 @@ var PointActor = /*#__PURE__*/function (_View) {
         }
       }
 
+      if (this.args.pushed) {
+        var halfWidth = Math.floor(this.args.width / 2);
+        var rightWall = this.getMapSolidAt(this.x + halfWidth, this.y);
+        var leftWall = this.getMapSolidAt(this.x + -halfWidth + -1, this.y);
+
+        if (!rightWall && leftWall) {
+          if (this["public"].xSpeed < 0) {
+            this.args.xSpeed = 0;
+          }
+
+          this.args.x++;
+        }
+
+        if (rightWall && !leftWall) {
+          if (this["public"].xSpeed > 0) {
+            this.args.xSpeed = 0;
+          }
+
+          this.args.x--;
+        }
+      }
+
       if (!this.viewport || this.removed) {
         return;
       }
@@ -13518,7 +13641,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       var tileMap = this.viewport.tileMap;
 
-      if (this["public"].gSpeed === 0 && !this["public"].falling) {
+      if (Math.abs(this["public"].gSpeed) <= 4 && !this["public"].falling) {
         if (!this.stayStuck && !this["public"].climbing) {
           var half = Math.floor(this["public"].width / 2) || 0;
 
@@ -13527,29 +13650,49 @@ var PointActor = /*#__PURE__*/function (_View) {
             this.lastAngles = [];
 
             if (mode !== MODE_FLOOR) {
-              if (mode === MODE_LEFT && this["public"].groundAngle <= 0) {
-                // this.doJump(1);
-                this.args.x += Math.floor(this["public"].width / 2);
-                this.args.facing = 'right';
-                this.args.falling = true;
-                this.args.direction = 1;
-              } else if (mode === MODE_RIGHT && this["public"].groundAngle >= 0) {
-                // this.doJump(1);
-                this.args.x -= Math.floor(this["public"].width / 2);
-                this.args.facing = 'left';
-                this.args.falling = true;
-                this.args.direction = -1;
-              } else if (mode === MODE_CEILING) {
-                // this.args.y += Math.floor(this.public.height / 1.5);
-                if (this["public"].direction == -1) {
-                  this.args.direction = 1;
-                  this.args.facing = 'right';
-                } else {
-                  this.args.direction = -1;
-                  this.args.facing = 'left';
+              if (mode === MODE_LEFT && this["public"].groundAngle <= Math.PI / 4) {
+                if (this["public"].groundAngle === 0) {
+                  this.args.xSpeed = 0.3;
+                  this["public"].mode = MODE_FLOOR;
+                  this.args.falling = true;
+                  this.args.groundAngle = -Math.PI / 2;
+                  this.args.x++;
                 }
 
-                this.doJump(0.5);
+                if (this.args.gSpeed <= 0) {
+                  this.args.gSpeed = 0;
+                }
+
+                this.args.gSpeed++;
+                this.args.ignore = 15;
+              } else if (mode === MODE_RIGHT && this["public"].groundAngle >= -Math.PI / 4) {
+                if (this["public"].groundAngle === 0) {
+                  this.args.xSpeed = -0.3;
+                  this["public"].mode = MODE_FLOOR;
+                  this.args.falling = true;
+                  this.args.groundAngle = Math.PI / 2;
+                  this.args.x--;
+                }
+
+                if (this.args.gSpeed >= 0) {
+                  this.args.gSpeed = 0;
+                }
+
+                this.args.gSpeed--;
+                this.args.ignore = 15;
+              } else if (mode === MODE_CEILING) {
+                this.args.ignore = 8;
+                this.args.falling = true;
+                this.args.groundAngle = Math.PI;
+                this.args.y++;
+
+                if (this["public"].direction == -1) {
+                  this.args.facing = 'right';
+                  this.args.x++;
+                } else {
+                  this.args.facing = 'left';
+                  this.args.x--;
+                }
               }
             }
           }
@@ -13576,9 +13719,6 @@ var PointActor = /*#__PURE__*/function (_View) {
       if (this["public"].falling && this["public"].ySpeed < this["public"].ySpeedMax) {
         if (!this["public"]["float"]) {
           this.args.ySpeed += this["public"].gravity * (this.region ? this.region["public"].gravity : 1);
-
-          if (Math.abs(this.args.ySpeed) < 1) {// this.args.ySpeed = Math.sign(this.args.ySpeed);
-          }
         }
 
         this.args.landed = false;
@@ -13618,7 +13758,6 @@ var PointActor = /*#__PURE__*/function (_View) {
             return a.args !== _this3.args && a.solid;
           });
           this.args.standingOn = groundActors[0];
-          this.args.groundAngle = 0;
           this.args.falling = false;
         } else if (standingOn) {
           this.args.standingOn = null;
@@ -13649,6 +13788,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       if (this.twister) {
+        "";
         this.twister.args.x = this["public"].x;
         this.twister.args.y = this["public"].y;
         this.twister.args.xOff = this["public"].xOff;
@@ -13678,6 +13818,8 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "updateGroundPosition",
     value: function updateGroundPosition() {
+      var _this4 = this;
+
       var drag = this.region ? this.region["public"].drag : 1;
 
       if (!this["public"].dontJump && this.willJump) {
@@ -13794,46 +13936,48 @@ var PointActor = /*#__PURE__*/function (_View) {
 
               case MODE_LEFT:
                 if (Math.abs(this["public"].gSpeed) < 8 && !this["public"].rolling) {
-                  this.args.mode = MODE_FLOOR;
-
                   if (this["public"].gSpeed < 0) {
-                    this.args.x -= this["public"].direction * this["public"].width / 2;
+                    this.args.x -= this["public"].direction;
                     this.args.y--;
                   } else {
-                    // this.args.x += this.public.direction * this.public.width / 2;
-                    this.args.x++;
+                    this.args.x += radius;
                     this.args.y++;
                   }
                 } else {
-                  this.args.ySpeed = this["public"].gSpeed * Math.cos(this.args.groundAngle);
-                  this.args.xSpeed = this["public"].gSpeed * Math.sin(this.args.groundAngle);
-                  this.args.ignore = this.args.ySpeed < 0 ? -3 : 6;
+                  this.args.ignore = -3;
                   this.xAxis = 0;
                   this.args.falling = true;
                 }
 
+                this.args.ySpeed = this["public"].gSpeed * Math.cos(this.args.groundAngle);
+                this.args.xSpeed = this["public"].gSpeed * Math.sin(this.args.groundAngle);
+                this.onNextFrame(function () {
+                  _this4.args.groundAngle = -Math.PI / 2;
+                  _this4.args.mode = MODE_FLOOR;
+                });
                 break;
 
               case MODE_RIGHT:
                 if (Math.abs(this["public"].gSpeed) < 8 && !this["public"].rolling) {
-                  this.args.mode = MODE_FLOOR;
-
                   if (this["public"].gSpeed > 0) {
-                    this.args.x -= this["public"].direction * this["public"].width / 2;
+                    this.args.x -= this["public"].direction;
                     this.args.y--;
                   } else {
-                    // this.args.x += this.public.direction * this.public.width / 2;
-                    this.args.x--;
+                    this.args.x -= radius;
                     this.args.y++;
                   }
                 } else {
-                  this.args.ySpeed = this["public"].gSpeed * -Math.cos(this.args.groundAngle);
-                  this.args.xSpeed = this["public"].gSpeed * -Math.sin(this.args.groundAngle);
-                  this.args.ignore = this.args.ySpeed < 0 ? -3 : 6;
+                  this.args.ignore = -3;
                   this.xAxis = 0;
                   this.args.falling = true;
                 }
 
+                this.args.ySpeed = this["public"].gSpeed * -Math.cos(this.args.groundAngle);
+                this.args.xSpeed = this["public"].gSpeed * -Math.sin(this.args.groundAngle);
+                this.onNextFrame(function () {
+                  _this4.args.groundAngle = Math.PI / 2;
+                  _this4.args.mode = MODE_FLOOR;
+                });
                 break;
             }
 
@@ -14002,7 +14146,9 @@ var PointActor = /*#__PURE__*/function (_View) {
             if (slopeFactor < 0) {
               this.args.gSpeed *= 1.0000 - (0 - slopeFactor / 2 * 0.005);
             } else if (slopeFactor > 0) {
-              this.args.gSpeed *= 1.0075 * (1 + slopeFactor / 2 * 0.055);
+              if (Math.abs(this["public"].gSpeed) < this["public"].rollSpeedMax) {
+                this.args.gSpeed *= 1.0075 * (1 + slopeFactor / 2 * 0.055);
+              }
             }
 
             if (Math.sign(this["public"].gSpeed) !== Math.sign(this.xAxis) && Math.abs(this["public"].gSpeed) < 1) {// this.public.gSpeed = 10 * Math.sign(this.xAxis);
@@ -14037,10 +14183,12 @@ var PointActor = /*#__PURE__*/function (_View) {
         }
       }
 
-      if (nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false)) {
-        if (Math.abs(this["public"].gSpeed) > this["public"].rollSpeedMax && this["public"].rollSpeedMax !== Infinity && this["public"].rollSpeedMax !== -Infinity) {
-          this.args.gSpeed = this["public"].rollSpeedMax * Math.sign(this["public"].gSpeed);
-        }
+      if (nextPosition && (nextPosition[0] !== false || nextPosition[1] !== false)) {// if(Math.abs(this.public.gSpeed) > this.public.rollSpeedMax
+        // 	&& this.public.rollSpeedMax !== Infinity
+        // 	&& this.public.rollSpeedMax !== -Infinity
+        // ){
+        // 	this.args.gSpeed = this.public.rollSpeedMax * Math.sign(this.public.gSpeed);
+        // }
       } else {
         this.args.ignore = this["public"].ignore || 1;
         this.args.gSpeed = 0;
@@ -14049,8 +14197,10 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "updateAirPosition",
     value: function updateAirPosition() {
-      var _this4 = this;
+      var _this5 = this;
 
+      var xSpeedOriginal = this["public"].xSpeed;
+      var ySpeedOriginal = this["public"].ySpeed;
       var cSquared = Math.pow(this["public"].xSpeed, 2) + Math.pow(this["public"].ySpeed, 2);
       var airSpeed = cSquared ? Math.sqrt(cSquared) : 0;
       var viewport = this.viewport;
@@ -14078,7 +14228,12 @@ var PointActor = /*#__PURE__*/function (_View) {
         this.lastAngles.splice(0);
       }
 
-      this.args.groundAngle = 0;
+      this.args.groundAngle += -Math.sign(this.args.groundAngle) * 0.001 * (this.xAxis ? 25 : 10);
+
+      if (Math.abs(this.args.groundAngle) < 0.01) {
+        this.args.groundAngle = 0;
+      }
+
       var foreDistanceHead = this.scanForward(this["public"].xSpeed, 1.0);
       var foreDistanceWaist = this.scanForward(this["public"].xSpeed, 0.5);
       var foreDistanceFoot = this.scanForward(this["public"].xSpeed, 0.0);
@@ -14136,9 +14291,9 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       var airPoint = this.castRay(airSpeed + radius, this["public"].airAngle, function (i, point) {
         var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
-          return x.args !== _this4.args;
+          return x.args !== _this5.args;
         }).filter(function (x) {
-          return x.callCollideHandler(_this4);
+          return x.callCollideHandler(_this5);
         }).filter(function (x) {
           return x.solid;
         });
@@ -14147,7 +14302,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           return point;
         }
 
-        if (tileMap.getSolid(point[0], point[1], _this4["public"].layer)) {
+        if (tileMap.getSolid(point[0], point[1], _this5["public"].layer)) {
           return lastPoint;
         }
 
@@ -14155,9 +14310,9 @@ var PointActor = /*#__PURE__*/function (_View) {
       });
       var airPointB = this.castRay(airSpeed + radius, this["public"].airAngle, [0, -3], function (i, point) {
         var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
-          return x.args !== _this4.args;
+          return x.args !== _this5.args;
         }).filter(function (x) {
-          return x.callCollideHandler(_this4);
+          return x.callCollideHandler(_this5);
         }).filter(function (x) {
           return x.solid;
         });
@@ -14166,7 +14321,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           return point;
         }
 
-        if (tileMap.getSolid(point[0], point[1], _this4["public"].layer)) {
+        if (tileMap.getSolid(point[0], point[1], _this5["public"].layer)) {
           return lastPointB;
         }
 
@@ -14176,14 +14331,14 @@ var PointActor = /*#__PURE__*/function (_View) {
       var blockers = false;
       var upMargin = (this["public"].flying ? this["public"].height + this["public"].yMargin : this["public"].height) || 1;
       var upDistance = this.castRay(Math.abs(this["public"].ySpeed) + upMargin + 1, -Math.PI / 2, function (i, point) {
-        if (!_this4.viewport) {
+        if (!_this5.viewport) {
           return false;
         }
 
-        var actors = _this4.viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
-          return x.args !== _this4.args;
+        var actors = _this5.viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
+          return x.args !== _this5.args;
         }).filter(function (x) {
-          return x.callCollideHandler(_this4);
+          return x.callCollideHandler(_this5);
         }).filter(function (a) {
           return a.solid;
         });
@@ -14192,12 +14347,10 @@ var PointActor = /*#__PURE__*/function (_View) {
           return i;
         }
 
-        if (tileMap.getSolid(point[0], point[1], _this4.args.layer)) {
+        if (tileMap.getSolid(point[0], point[1], _this5.args.layer)) {
           return i;
         }
       });
-      var xSpeedOriginal = this["public"].xSpeed;
-      var ySpeedOriginal = this["public"].ySpeed;
 
       if (this["public"].ySpeed < 0 && upDistance !== false) {
         this.args.ignore = 1;
@@ -14242,7 +14395,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
         if (Array.isArray(blockers)) {
           blockers = blockers.filter(function (a) {
-            return a.callCollideHandler(_this4);
+            return a.callCollideHandler(_this5);
           });
 
           if (!blockers.length) {
@@ -14250,25 +14403,33 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
         }
 
-        if (this.willStick && !this.getMapSolidAt(this.x - direction, this.y) && !this.getMapSolidAt(this.x, this.y + 1, false)) {
-          var canStick = true;
+        if (this.willStick) {
+          if (!this.getMapSolidAt(this.x - direction, this.y) && !this.getMapSolidAt(this.x - direction, this.y + 1) && !this.getMapSolidAt(this.x - direction, this.y - this["public"].height)) {
+            var canStick = true;
 
-          if (Array.isArray(blockers)) {
-            canStick = blockers.filter(function (a) {
-              return a.canStick;
-            }).length;
-          }
+            if (Array.isArray(blockers)) {
+              canStick = blockers.filter(function (a) {
+                return a.canStick;
+              }).length;
+            }
 
-          if (canStick && isLeft) {
-            this.args.gSpeed = Math.floor(airSpeed) * Math.sign(ySpeedOriginal);
-            this.args.gSpeed = 0.1;
-            this.args.mode = MODE_LEFT;
-          } else if (canStick && isRight) {
-            this.args.gSpeed = Math.floor(airSpeed) * -Math.sign(ySpeedOriginal);
-            this.args.gSpeed = 0.1;
-            this.args.mode = MODE_RIGHT;
-          } else if (canStick) {
-            this.args.mode = MODE_FLOOR;
+            if (canStick && isLeft) {
+              this.args.gSpeed = Math.floor(airSpeed) * Math.sign(ySpeedOriginal);
+              this.args.gSpeed = 0.1;
+              this.args.mode = MODE_LEFT;
+              this.args.groundAngle = 0;
+            } else if (canStick && isRight) {
+              this.args.gSpeed = Math.floor(airSpeed) * -Math.sign(ySpeedOriginal);
+              this.args.gSpeed = 0.1;
+              this.args.mode = MODE_RIGHT;
+              this.args.groundAngle = 0;
+            } else if (canStick) {
+              this.args.mode = MODE_FLOOR;
+            }
+          } else {
+            this.args.ySpeed = 0;
+            this.args.xSpeed = 0;
+            this.args.x -= xSpeedOriginal;
           }
         }
 
@@ -14332,6 +14493,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
         if (this.dropDashCharge && this.args.mode === MODE_FLOOR) {
           var dropBoost = this.dropDashCharge * Math.sign(this["public"].xSpeed || this["public"].direction);
+          this.dropDashCharge = 0;
           this.args.gSpeed += dropBoost;
           var _viewport = this.viewport;
           var dustParticle = new _Tag.Tag('<div class = "particle-dust">');
@@ -14348,14 +14510,12 @@ var PointActor = /*#__PURE__*/function (_View) {
           setTimeout(function () {
             _viewport.particles.remove(dustParticle);
           }, 350);
-        } // if(this.yAxis > 0 && this.canRoll && this.public.gSpeed)
-        // {
-        // 	this.args.rolling = true;
-        // }
-
+        }
       } else if (this["public"].ySpeed > 0) {
         if (this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT) {
-          this.args.direction = this.args.mode === MODE_LEFT ? -1 : 1;
+          var _direction = this.args.mode === MODE_LEFT ? -1 : 1;
+
+          this.args.direction = _direction;
         }
 
         this.args.mode = MODE_FLOOR;
@@ -14386,36 +14546,11 @@ var PointActor = /*#__PURE__*/function (_View) {
           this.args.y += this["public"].ySpeed;
         }
       }
-
-      if (!this.willStick && this.args.falling) {
-        if (this["public"].xSpeed || this.xAxis || this.args.pushed) {
-          var _halfWidth = Math.floor(this.args.width / 2);
-
-          var rightWall = this.getMapSolidAt(this.x + _halfWidth, this.y);
-          var leftWall = this.getMapSolidAt(this.x + -_halfWidth + -1, this.y);
-
-          if (!rightWall && leftWall) {
-            if (this["public"].xSpeed < 0) {
-              this.args.xSpeed = 0;
-            }
-
-            this.args.x++;
-          }
-
-          if (rightWall && !leftWall) {
-            if (this["public"].xSpeed > 0) {
-              this.args.xSpeed = 0;
-            }
-
-            this.args.x--;
-          }
-        }
-      }
     }
   }, {
     key: "setCameraMode",
     value: function setCameraMode() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.args.standingOn && this.args.standingOn.isVehicle) {
         this.args.cameraMode = this.args.standingOn["public"].cameraMode;
@@ -14437,14 +14572,19 @@ var PointActor = /*#__PURE__*/function (_View) {
             this.args.cameraMode = 'normal';
           }
         } else {
-          this.args.cameraMode = 'aerial';
+          if (this.getMapSolidAt(this.x + 0 * this["public"].direction, this.y + 64)) {
+            this.args.cameraMode = 'normal';
+          } else {
+            this.args.cameraMode = 'aerial';
+          }
+
           this.viewport.onFrameOut(45, function () {
-            if (_this5.args.cameraMode === 'airplane') {
+            if (_this6.args.cameraMode === 'airplane') {
               return;
             }
 
-            if (_this5["public"].falling && !_this5.getMapSolidAt(_this5.x, _this5.y + 48)) {
-              _this5.args.cameraMode = 'airplane';
+            if (_this6["public"].falling && !_this6.getMapSolidAt(_this6.x, _this6.y + 48)) {
+              _this6.args.cameraMode = 'airplane';
             }
           });
         }
@@ -14492,7 +14632,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "resolveIntersection",
     value: function resolveIntersection() {
-      var _this6 = this;
+      var _this7 = this;
 
       var backAngle = this.args.airAngle + Math.PI;
       var iterations = 0;
@@ -14519,9 +14659,9 @@ var PointActor = /*#__PURE__*/function (_View) {
 
           if (Array.isArray(blockers)) {
             blockers = blockers.filter(function (x) {
-              return x.args !== _this6.args;
+              return x.args !== _this7.args;
             }).filter(function (x) {
-              return x.callCollideHandler(_this6);
+              return x.callCollideHandler(_this7);
             });
 
             if (!blockers.length) {
@@ -14582,7 +14722,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "checkBelow",
     value: function checkBelow(testX, testY) {
-      var _this7 = this;
+      var _this8 = this;
 
       var below = this.getMapSolidAt(testX + Math.floor(this.args.width / 2), testY + 1);
 
@@ -14592,7 +14732,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (Array.isArray(below)) {
         below = below.filter(function (x) {
-          return x.solid && x.callCollideHandler(_this7);
+          return x.solid && x.callCollideHandler(_this8);
         }).length;
       }
 
@@ -14631,7 +14771,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "processInputDirect",
     value: function processInputDirect() {
-      var _this8 = this;
+      var _this9 = this;
 
       var xAxis = this.xAxis;
       var yAxis = this.yAxis;
@@ -14652,8 +14792,8 @@ var PointActor = /*#__PURE__*/function (_View) {
       if (!this["public"].falling) {
         if (Math.abs(this["public"].gSpeed) < 0.01) {
           this.viewport.onFrameOut(5, function () {
-            if (Math.abs(_this8["public"].gSpeed) < 0.01) {
-              _this8.args.rolling = false;
+            if (Math.abs(_this9["public"].gSpeed) < 0.01) {
+              _this9.args.rolling = false;
             }
           });
           this["public"].gSpeed = 0;
@@ -14757,7 +14897,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "findNextStep",
     value: function findNextStep(offset) {
-      var _this9 = this;
+      var _this10 = this;
 
       if (!this.viewport) {
         return;
@@ -14799,20 +14939,20 @@ var PointActor = /*#__PURE__*/function (_View) {
         }
 
         downFirstSolid = this.castRay(maxStep * (1 + col), this.downAngle, offsetPoint, function (i, point) {
-          var region = _this9.viewport.regionAtPoint(point[0], point[1]);
+          var region = _this10.viewport.regionAtPoint(point[0], point[1]);
 
-          if (region && _this9["public"].mode === MODE_FLOOR && point[1] === 1 + region.y - region["public"].height && Math.abs(_this9["public"].gSpeed) >= region.skimSpeed) {
+          if (region && _this10["public"].mode === MODE_FLOOR && point[1] === 1 + region.y - region["public"].height && Math.abs(_this10["public"].gSpeed) >= region.skimSpeed) {
             return i;
           }
 
-          if (tileMap.getSolid(point[0], point[1], _this9["public"].layer)) {
+          if (tileMap.getSolid(point[0], point[1], _this10["public"].layer)) {
             return i;
           }
 
           var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (a) {
-            return a.args !== _this9.args;
+            return a.args !== _this10.args;
           }).filter(function (a) {
-            return (i <= 1 || _this9["public"].gSpeed) && a.callCollideHandler(_this9);
+            return (i <= 1 || _this10["public"].gSpeed) && a.callCollideHandler(_this10);
           }).filter(function (a) {
             return a.solid;
           });
@@ -14855,19 +14995,19 @@ var PointActor = /*#__PURE__*/function (_View) {
 
           var upLength = +1 + maxStep * (1 + col);
           upFirstSpace = this.castRay(upLength, this.upAngle, _offsetPoint, function (i, point) {
-            var region = _this9.viewport.regionAtPoint(point[0], point[1]);
+            var region = _this10.viewport.regionAtPoint(point[0], point[1]);
 
-            if (!region || _this9["public"].mode !== MODE_FLOOR || point[1] !== 1 + region.y - region["public"].height || Math.abs(_this9["public"].gSpeed) < region.skimSpeed) {
+            if (!region || _this10["public"].mode !== MODE_FLOOR || point[1] !== 1 + region.y - region["public"].height || Math.abs(_this10["public"].gSpeed) < region.skimSpeed) {
               var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
-                return x.args !== _this9.args;
+                return x.args !== _this10.args;
               }).filter(function (a) {
-                return (i <= 1 || _this9["public"].gSpeed) && a.callCollideHandler(_this9);
+                return (i <= 1 || _this10["public"].gSpeed) && a.callCollideHandler(_this10);
               }).filter(function (x) {
                 return x.solid;
               });
 
               if (actors.length === 0) {
-                if (!tileMap.getSolid(point[0], point[1], _this9["public"].layer)) {
+                if (!tileMap.getSolid(point[0], point[1], _this10["public"].layer)) {
                   return i;
                 }
               }
@@ -15012,6 +15152,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       this.args.rolling = false;
       this.args.mode = MODE_FLOOR;
+      this.args.groundAngle = 0;
     }
   }, {
     key: "impulse",
@@ -15042,7 +15183,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "findNearestActor",
     value: function findNearestActor(selector, maxDistance) {
-      var _this10 = this;
+      var _this11 = this;
 
       var direction = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
       var viewport = this.viewport;
@@ -15055,7 +15196,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       var actors = new Map();
       cells.map(function (s) {
         return s.forEach(function (a) {
-          if (a === _this10) {
+          if (a === _this11) {
             return;
           }
 
@@ -15067,9 +15208,9 @@ var PointActor = /*#__PURE__*/function (_View) {
             return;
           }
 
-          var distance = _this10.distanceFrom(a);
+          var distance = _this11.distanceFrom(a);
 
-          var angle = Math.atan2(a.y - _this10.y, a.x - _this10.x);
+          var angle = Math.atan2(a.y - _this11.y, a.x - _this11.x);
 
           if (Math.abs(distance) > maxDistance) {
             return;
@@ -15088,7 +15229,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "scanForward",
     value: function scanForward(speed) {
-      var _this11 = this;
+      var _this12 = this;
 
       var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.5;
       var scanActors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -15107,9 +15248,9 @@ var PointActor = /*#__PURE__*/function (_View) {
       return this.castRay(scanDist, this["public"].falling ? Math.sign(speed) > 0 ? 0 : Math.PI : this.realAngle + (Math.sign(speed) < 0 ? Math.PI : 0), startPoint, function (i, point) {
         if (scanActors) {
           var actors = viewport.actorsAtPoint(point[0], point[1]).filter(function (x) {
-            return x.args !== _this11.args;
+            return x.args !== _this12.args;
           }).filter(function (x) {
-            return i <= radius && x.callCollideHandler(_this11);
+            return i <= radius && x.callCollideHandler(_this12);
           }).filter(function (x) {
             return x.solid;
           });
@@ -15119,7 +15260,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
         }
 
-        if (tileMap.getSolid(point[0], point[1], _this11["public"].layer)) {
+        if (tileMap.getSolid(point[0], point[1], _this12["public"].layer)) {
           return i;
         }
       });
@@ -15127,16 +15268,16 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "scanBottomEdge",
     value: function scanBottomEdge() {
-      var _this12 = this;
+      var _this13 = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var tileMap = this.viewport.tileMap;
       return this.castRay(this["public"].width, direction < 0 ? Math.PI : 0, [-direction * (this["public"].width / 2), 0], function (i, point) {
-        var actors = _this12.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
-          return a.args !== _this12.args;
+        var actors = _this13.viewport.actorsAtPoint(point[0], point[1] + 1).filter(function (a) {
+          return a.args !== _this13.args;
         });
 
-        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this12["public"].layer)) {
+        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, _this13["public"].layer)) {
           return i;
         }
       });
@@ -15144,16 +15285,16 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "scanVerticalEdge",
     value: function scanVerticalEdge() {
-      var _this13 = this;
+      var _this14 = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var tileMap = this.viewport.tileMap;
       return this.castRay(this["public"].height + 1, Math.PI / 2, [direction * this["public"].width / 2, -this["public"].height], function (i, point) {
-        var actors = _this13.viewport.actorsAtPoint(point[0], point[1]).filter(function (a) {
-          return a.args !== _this13.args;
+        var actors = _this14.viewport.actorsAtPoint(point[0], point[1]).filter(function (a) {
+          return a.args !== _this14.args;
         });
 
-        if (actors.length || tileMap.getSolid(point[0], point[1], _this13["public"].layer)) {
+        if (actors.length || tileMap.getSolid(point[0], point[1], _this14["public"].layer)) {
           return i;
         }
       });
@@ -15310,7 +15451,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "getMapSolidAt",
     value: function getMapSolidAt(x, y) {
-      var _this14 = this;
+      var _this15 = this;
 
       var actors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
@@ -15320,7 +15461,7 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       if (actors) {
         var _actors = this.viewport.actorsAtPoint(x, y).filter(function (x) {
-          return x.args !== _this14.args;
+          return x.args !== _this15.args;
         }).filter(function (x) {
           return x.solid;
         });
@@ -15519,7 +15660,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "twist",
     value: function twist(warp) {
-      var _this15 = this;
+      var _this16 = this;
 
       if (!this.twister) {
         var filterContainer = this.viewport.tags.bgFilters;
@@ -15531,9 +15672,9 @@ var PointActor = /*#__PURE__*/function (_View) {
           scale: 60
         });
         this.twister.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], function (v, k) {
-          var _this15$twistFilter$s;
+          var _this16$twistFilter$s;
 
-          _this15.twistFilter.style((_this15$twistFilter$s = {}, _defineProperty(_this15$twistFilter$s, "--".concat(k), v), _defineProperty(_this15$twistFilter$s, "filter", "url(#twist-".concat(_this15.args.id, ")")), _this15$twistFilter$s));
+          _this16.twistFilter.style((_this16$twistFilter$s = {}, _defineProperty(_this16$twistFilter$s, "--".concat(k), v), _defineProperty(_this16$twistFilter$s, "filter", "url(#twist-".concat(_this16.args.id, ")")), _this16$twistFilter$s));
         });
         this.twister.render(this.sprite);
       }
@@ -15543,7 +15684,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "pinch",
     value: function pinch() {
-      var _this16 = this;
+      var _this17 = this;
 
       var warpBg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var warpFg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -15559,9 +15700,9 @@ var PointActor = /*#__PURE__*/function (_View) {
           scale: 60
         });
         this.pincherBg.args.bindTo(['x', 'y', 'width', 'height', 'xOff', 'yOff'], function (v, k) {
-          var _this16$pinchFilterBg;
+          var _this17$pinchFilterBg;
 
-          _this16.pinchFilterBg.style((_this16$pinchFilterBg = {}, _defineProperty(_this16$pinchFilterBg, "--".concat(k), v), _defineProperty(_this16$pinchFilterBg, "filter", "url(#pinch-".concat(_this16.args.id, ")")), _this16$pinchFilterBg));
+          _this17.pinchFilterBg.style((_this17$pinchFilterBg = {}, _defineProperty(_this17$pinchFilterBg, "--".concat(k), v), _defineProperty(_this17$pinchFilterBg, "filter", "url(#pinch-".concat(_this17.args.id, ")")), _this17$pinchFilterBg));
         });
         this.args.yOff = 16;
         this.pincherBg.render(this.sprite);
@@ -15588,7 +15729,7 @@ var PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "droop",
     value: function droop() {
-      var _this17 = this;
+      var _this18 = this;
 
       var warpFactor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var xPosition = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -15607,18 +15748,18 @@ var PointActor = /*#__PURE__*/function (_View) {
         }); // filterContainer.appendChild(this.droopFilterFg.node);
 
         this.args.bindTo(['x', 'y'], function (v, k) {
-          _this17.drooperFg.args[k] = Number(v).toFixed(2);
+          _this18.drooperFg.args[k] = Number(v).toFixed(2);
         }); // this.args.yOff = 16;
 
         this.onNextFrame(function () {
-          _this17.drooperFg.args.scale = Number(warpFactor * 2).toFixed(2);
+          _this18.drooperFg.args.scale = Number(warpFactor * 2).toFixed(2);
 
-          _this17.sprite.style({
+          _this18.sprite.style({
             transform: "translate(-50%, calc(".concat(warpFactor, "px + calc(-100% + 1px)))"),
-            filter: "url(#droop-".concat(_this17.args.id, ")")
+            filter: "url(#droop-".concat(_this18.args.id, ")")
           });
 
-          _this17.drooperFg.args.dx = -xPosition; // this.drooperFg.args.intensity = 1 - (Math.abs(xPosition) / Math.abs(half))
+          _this18.drooperFg.args.dx = -xPosition; // this.drooperFg.args.intensity = 1 - (Math.abs(xPosition) / Math.abs(half))
         });
         this.drooperFg.render(this.sprite);
         return;
@@ -16228,9 +16369,8 @@ var Ring = /*#__PURE__*/function (_PointActor) {
       var x = this.x;
       var y = this.y;
       var viewport = this.viewport;
-      this.viewport.onFrameOut(220, function () {
-        _this2.args.gone = false;
-        _this2.args.type = 'actor-item actor-ring';
+      this.viewport.onFrameOut(2200, function () {
+        _this2.restore = true;
       });
 
       if (other.collect) {
@@ -16248,6 +16388,14 @@ var Ring = /*#__PURE__*/function (_PointActor) {
       // });
       // this.args.gone = true;
 
+    }
+  }, {
+    key: "sleep",
+    value: function sleep() {
+      if (this.restore) {
+        this.args.gone = this.restore = false;
+        this.args.type = 'actor-item actor-ring';
+      }
     }
   }, {
     key: "solid",
@@ -16617,7 +16765,7 @@ var Seymour = /*#__PURE__*/function (_PointActor) {
         else {
             this.box.setAttribute('data-animation', 'standing');
           }
-      } else {
+      } else if (this["public"].jumping) {
         this.box.setAttribute('data-animation', 'jumping');
       }
 
@@ -16742,10 +16890,10 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     _this.args.gSpeedMax = _this.gSpeedMaxNormal;
     _this.args.jumpForce = _this.jumpForceNormal;
     _this.args.gravity = 0.5;
-    _this.args.width = 28;
+    _this.args.width = 16;
+    _this.args.height = 40;
     _this.args.normalHeight = 40;
     _this.args.rollingHeight = 23;
-    _this.args.height = 40;
     _this.spindashCharge = 0;
     _this.dropDashCharge = 0;
     _this.willStick = false;
@@ -16812,8 +16960,10 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
           this.args.wallSticking = false;
         }
 
-        this.willStick = false;
-        this.stayStuck = false;
+        if (!this.args.wallSticking) {
+          this.willStick = false;
+          this.stayStuck = false;
+        }
       }
 
       if (this.lightDashingCoolDown > 0) {
@@ -16919,8 +17069,7 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
 
         if (this["public"].jumping) {
           this.box.setAttribute('data-animation', 'jumping');
-        } else if (!this["public"].xSpeed && !this["public"].ySpeed) {
-          this.box.setAttribute('data-animation', 'airdash');
+        } else if (!this["public"].xSpeed && !this["public"].ySpeed) {// this.box.setAttribute('data-animation', 'airdash');
         }
       }
 
@@ -16969,12 +17118,14 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
       }
 
       this.args.mode = 0;
+      this.args.rolling = false;
+      this.args.height = this["public"].normalHeight;
 
       if (this["public"].xSpeed && Math.sign(this["public"].xSpeed) !== Math.sign(direction)) {
         this.args.xSpeed = 0;
       }
 
-      var dashSpeed = direction * 12;
+      var dashSpeed = direction * 14;
       this.args["float"] = 3;
 
       if (this.args.wallSticking) {
@@ -17009,11 +17160,11 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
     value: function command_0() {
       this.dropDashCharge = 0;
 
-      if (this["public"].falling && !this.dashed && !this.doubleSpin) {
+      if (this["public"].jumping && !this.dashed && !this.doubleSpin) {
         this.doubleSpin = true;
         this.args.xOff = 0;
         this.args.yOff = 32;
-        this.pinch(-300, 50);
+        this.pinch(-400, 50);
       }
 
       _get(_getPrototypeOf(Sonic.prototype), "command_0", this).call(this);
@@ -17025,8 +17176,6 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         if (this.dropDashCharge < 20) {
           this.dropDashCharge++;
         }
-
-        this.willStick = false;
       }
     }
   }, {
@@ -18335,7 +18484,7 @@ var Tails = /*#__PURE__*/function (_PointActor) {
     _this.args.gSpeedMax = 18;
     _this.args.jumpForce = 11;
     _this.args.gravity = 0.5;
-    _this.args.width = 28;
+    _this.args.width = 16;
     _this.args.height = 32;
     _this.args.normalHeight = 32;
     _this.args.rollingHeight = 23;
@@ -18417,7 +18566,7 @@ var Tails = /*#__PURE__*/function (_PointActor) {
         } else {
           this.box.setAttribute('data-animation', 'flying');
         }
-      } else if (this.args.falling) {
+      } else if (this["public"].jumping) {
         this.flyingSound.pause();
         this.box.setAttribute('data-animation', 'jumping');
       }
@@ -18443,7 +18592,6 @@ var Tails = /*#__PURE__*/function (_PointActor) {
         this.args.ySpeed = 0;
       }
 
-      console.log(this["public"].xSpeed, this["public"].ySpeed);
       this.args.tailFlyCoolDown = 80;
       this.args.flying = true;
       this.flyingSound.volume = 0.35 + Math.random() * -0.3;
@@ -20472,27 +20620,63 @@ var Input = /*#__PURE__*/function (_Task) {
 
   _createClass(Input, [{
     key: "init",
-    value: function init(buttonId) {
+    value: function init(inputId) {
       var ms = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 500;
-      this.print("Pressing button ".concat(buttonId, " for ").concat(ms, " milliseconds..."));
-      var frame = {
-        buttons: _defineProperty({}, buttonId, 1)
-      };
-      var actor = Input.viewport.controlActor;
-      var controller = actor.controller;
-      var intervalId = setInterval(function () {
-        frame.buttons[buttonId] = 1;
-        controller.replay(frame);
-        actor.readInput();
-      }, 16);
-      controller.replay(frame);
-      actor.readInput();
-      return new Promise(function (accept) {
-        setTimeout(function () {
+      var magnitude = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+      var frame,
+          intervalId,
+          onDone = function onDone() {};
+
+      if (inputId[0] === 'a') {
+        var axisId = inputId.substring(1);
+        this.print("Setting axis ".concat(axisId, " to ").concat(magnitude, " for ").concat(ms, " milliseconds..."));
+        frame = {
+          axes: _defineProperty({}, axisId, magnitude)
+        };
+        intervalId = setInterval(function () {
+          controller.tilt(axisId, magnitude);
+          actor.readInput();
+        }, 16);
+
+        onDone = function onDone() {
+          controller.tilt(axisId, 0);
+          actor.readInput();
+          clearInterval(intervalId);
+        };
+      }
+
+      if (inputId[0] === 'b') {
+        var buttonId = inputId.substring(1);
+        this.print("Pressing button ".concat(buttonId, " for ").concat(ms, " milliseconds..."));
+        frame = {
+          buttons: _defineProperty({}, buttonId, 1)
+        };
+        intervalId = setInterval(function () {
+          frame.buttons[buttonId] = 1;
+          controller.replay(frame);
+          actor.readInput();
+        }, 16);
+
+        onDone = function onDone() {
           frame.buttons[buttonId] = 0;
           controller.replay(frame);
           actor.readInput();
           clearInterval(intervalId);
+        };
+      }
+
+      if (!frame) {
+        return;
+      }
+
+      var actor = Input.viewport.controlActor;
+      var controller = actor.controller;
+      controller.replay(frame);
+      actor.readInput();
+      return new Promise(function (accept) {
+        setTimeout(function () {
+          onDone();
           accept();
         }, ms);
       });
@@ -20505,39 +20689,7 @@ var Input = /*#__PURE__*/function (_Task) {
   }]);
 
   return Input;
-}(_Task2.Task); // import { Task } from 'subspace-console/Task';
-// export class Input extends Task
-// {
-// 	static viewport = null;
-// 	static helpText = 'Press a button x for y milliseconds.';
-// 	static useText  = 'input x y';
-// 	title  = 'Input task';
-// 	prompt = '..';
-// 	init(buttonId, ms = 500)
-// 	{
-// 		this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
-// 		this.actor = Input.viewport.controlActor;
-// 		this.frame = {buttons: { [buttonId]: 1 }};
-// 		this.buttonId   = buttonId;
-// 		this.controller = this.actor.controller;
-// 		this.hold = setInterval(() => this.controller.replay(this.frame), 16);
-// 		this.ms   = ms;
-// 		this.controller.replay(this.frame);
-// 		return new Promise(accept => {
-// 			setTimeout(() => {
-// 				clearInterval(this.hold);
-// 				this.frame.buttons[this.buttonId] = 0;
-// 				this.controller.replay(this.frame);
-// 				accept();
-// 			}, this.ms);
-// 		});
-// 	}
-// 	main(line)
-// 	{
-// 		this.print(line);
-// 	}
-// }
-
+}(_Task2.Task);
 
 exports.Input = Input;
 
@@ -21155,16 +21307,16 @@ var Controller = /*#__PURE__*/function () {
         }
       }
 
-      for (var _buttonId2 in axisMap) {
-        if (!this.buttons[_buttonId2]) {
-          this.buttons[_buttonId2] = new _Button.Button();
+      for (var inputId in axisMap) {
+        if (!this.buttons[inputId]) {
+          this.buttons[inputId] = new _Button.Button();
         }
 
-        var _axis = axisMap[_buttonId2];
+        var _axis = axisMap[inputId];
         var value = Math.sign(1 / _axis);
         var axisId = Math.abs(_axis);
 
-        if (this.buttons[_buttonId2].active) {
+        if (this.buttons[inputId].active) {
           tilted[axisId] = true;
           this.tilt(axisId, value);
         } else if (!tilted[axisId]) {
@@ -23826,6 +23978,73 @@ _defineProperty(RtcServerTask, "useText", '');
 module.exports = "<div class = \"chatbox\">\n\n\t<div class = \"chat-output\" cv-each = \"outputLines:line\" cv-ref = \"chatOutput\">\n\t\t<p>[[line]]</p>\n\t</div>\n\n\t<div class = \"chat-input\">\n\t\t<input cv-bind = \"chatInput\" cv-ref = \"chatInput\" cv-on = \"keydown:send(event)\">\n\t\t<button cv-on = \"click:send\">send</button>\n\t</div>\n\n</div>\n"
 });
 
+;require.register("particle/Particle3d.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Particle3d = void 0;
+
+var _Tag2 = require("curvature/base/Tag");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var Particle3d = /*#__PURE__*/function (_Tag) {
+  _inherits(Particle3d, _Tag);
+
+  var _super = _createSuper(Particle3d);
+
+  function Particle3d() {
+    var _this;
+
+    _classCallCheck(this, Particle3d);
+
+    _this = _super.call(this, '<div class = "particle-3d">');
+    var front = new _Tag2.Tag('<div class = "front-3d">');
+    var back = new _Tag2.Tag('<div class = "back-3d">');
+    var left = new _Tag2.Tag('<div class = "right-3d">');
+    var right = new _Tag2.Tag('<div class = "left-3d">');
+    var top = new _Tag2.Tag('<div class = "top-3d">');
+    var bottom = new _Tag2.Tag('<div class = "bottom-3d">');
+
+    _this.append(back.node);
+
+    _this.append(left.node);
+
+    _this.append(right.node);
+
+    _this.append(front.node);
+
+    _this.append(top.node);
+
+    _this.append(bottom.node);
+
+    return _this;
+  }
+
+  return Particle3d;
+}(_Tag2.Tag);
+
+exports.Particle3d = Particle3d;
+});
+
 ;require.register("powerups/BubbleSheild.js", function(exports, require, module) {
 "use strict";
 
@@ -24928,16 +25147,13 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
       if (this.viewport.args.frameId % 5 === 0 && Math.random() > 0.9) {
         var viewport = this.viewport;
         var bubble = new _Tag.Tag('<div class = "particle-bubble">');
-        bubble.style({
-          '--x': other.x + -32,
-          '--y': other.y + -32 + -other["public"].height + 8,
-          'z-index': 0,
-          opacity: Math.random() * 2
-        });
         var stopHoldingBubble = this.onFrame(function () {
+          var attach = other.rotatePoint(-5 * other["public"].direction, -14 + other["public"].height);
+          var x = other.x + attach[0];
+          var y = other.y + attach[1];
           bubble.style({
-            '--x': other.x + -32,
-            '--y': other.y + -32 + -other["public"].height + 8
+            '--x': x,
+            '--y': y
           });
         });
         viewport.particles.add(bubble);
@@ -24946,7 +25162,7 @@ var WaterRegion = /*#__PURE__*/function (_Region) {
         }, 350);
         setTimeout(function () {
           return viewport.particles.remove(bubble);
-        }, 2500);
+        }, 3500);
       }
     }
   }, {
@@ -25742,6 +25958,14 @@ var Titlecard = /*#__PURE__*/function (_View) {
               return _this2.args.animation = 'closed';
             });
           });
+
+          timeAcc += 2500;
+
+          _this2.onTimeout(timeAcc, function () {
+            return _this2.onNextFrame(function () {
+              return _this2.args.animation = 'done';
+            });
+          });
         });
       });
       this.playing = playing;
@@ -26227,6 +26451,8 @@ var _TileMap = require("../tileMap/TileMap");
 
 var _Titlecard = require("../titlecard/Titlecard");
 
+var _Particle3d = require("../particle/Particle3d");
+
 var _MarbleGarden = require("../backdrop/MarbleGarden");
 
 var _ProtoLabrynth = require("../backdrop/ProtoLabrynth");
@@ -26384,6 +26610,8 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.args.pauseMenu = new _PauseMenu.PauseMenu({}, _assertThisInitialized(_this));
     _this.particles = new _Bag.Bag();
     _this.effects = new _Bag.Bag();
+    _this.maxCameraBound = 80;
+    _this.cameraBound = 80;
     _this.args.particles = _this.particles.list;
     _this.args.effects = _this.effects.list;
     _this.args.maxFps = 60;
@@ -26847,7 +27075,7 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       this.args.backdrop = new _MarbleGarden.MarbleGarden();
 
-      if (this.tileMap.mapData.properties) {
+      if (this.tileMap.mapData && this.tileMap.mapData.properties) {
         var _iterator = _createForOfIteratorHelper(this.tileMap.mapData.properties),
             _step;
 
@@ -26923,7 +27151,15 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       this.nextControl = Object.values(this.args.actors)[0];
-      this.nextControl.controller.zero();
+
+      if (this.nextControl) {
+        this.nextControl.controller.zero();
+      } else if (this.controller) {
+        this.controller.zero();
+      }
+
+      _Keyboard.Keyboard.get().reset();
+
       this.args.zonecard.played.then(function () {
         _this5.args.started = true;
         _this5.args.running = true;
@@ -27058,10 +27294,11 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
 
       var cameraSpeed = 30;
-      var highJump = this.controlActor["public"].highJump;
-      var deepJump = this.controlActor["public"].deepJump;
-      var falling = this.controlActor["public"].falling;
-      var fallSpeed = this.controlActor["public"].ySpeed;
+      var actor = this.controlActor;
+      var highJump = actor["public"].highJump;
+      var deepJump = actor["public"].deepJump;
+      var falling = actor["public"].falling;
+      var fallSpeed = actor["public"].ySpeed;
 
       switch (this.controlActor.args.cameraMode) {
         case 'airplane':
@@ -27071,45 +27308,39 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         case 'aerial':
           this.args.xOffsetTarget = 0.5;
-          this.args.yOffsetTarget = 0.5;
 
-          if ((deepJump || highJump) && fallSpeed > 0) {
-            this.args.xOffsetTarget = 0.5;
-            this.args.yOffsetTarget = 0.25;
-            cameraSpeed = 10;
-          } else if ((deepJump || highJump) && fallSpeed < 0) {
-            this.args.xOffsetTarget = 0.5;
-            this.args.yOffsetTarget = 0.75;
-            cameraSpeed = 15;
+          if (!actor["public"].flying && (deepJump || highJump) && fallSpeed > 0) {
+            this.args.yOffsetTarget = 0.1;
+          } else if (!actor["public"].flying && (deepJump || highJump) && fallSpeed < 0) {
+            this.args.yOffsetTarget = 0.9;
           } else {
-            this.args.xOffsetTarget = 0.5;
             this.args.yOffsetTarget = 0.5;
-            cameraSpeed = 25;
           }
 
+          cameraSpeed = 45;
           break;
 
         case 'cliff':
-          this.args.xOffsetTarget = 0.50 + -0.1 * this.controlActor["public"].direction;
-          this.args.yOffsetTarget = 0.65;
-          cameraSpeed = 45;
+          this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor["public"].direction;
+          this.args.yOffsetTarget = 0.45;
+          cameraSpeed = 30;
           break;
 
         case 'bridge':
           this.args.xOffsetTarget = 0.50;
           this.args.yOffsetTarget = 0.65;
-          cameraSpeed = 25;
+          cameraSpeed = 15;
           break;
 
-        case 'normal':
+        default:
           this.args.xOffsetTarget = 0.5;
           this.args.yOffsetTarget = 0.75;
-          cameraSpeed = 40;
+          cameraSpeed = 10;
 
           switch (this.controlActor["public"].mode) {
             case 0:
               this.args.xOffsetTarget = 0.5;
-              this.args.yOffsetTarget = 0.75;
+              this.args.yOffsetTarget = 0.6;
               break;
 
             case 1:
@@ -27119,7 +27350,7 @@ var Viewport = /*#__PURE__*/function (_View) {
 
             case 2:
               this.args.xOffsetTarget = 0.5;
-              this.args.yOffsetTarget = 0.25;
+              this.args.yOffsetTarget = 0.3;
               break;
 
             case 3:
@@ -27131,72 +27362,53 @@ var Viewport = /*#__PURE__*/function (_View) {
           break;
       }
 
-      var xNext = -this.controlActor.x + this.args.width * this.args.xOffset;
-      var yNext = -this.controlActor.y + this.args.height * this.args.yOffset;
-      var jumping = this.controlActor["public"].jumping;
-      var dragSpeedX = this.args.jumping && this.args.ySpeed < 0 ? 1.00 : 2;
-      var dragSpeedY = this.args.jumping && this.args.ySpeed < 0 ? 0.25 : 3;
-      var maxDragX = 24;
-      var maxDragYDown = 80;
-      var maxDragY = 32;
-
-      if (this.args.x !== xNext) {
-        var drag = this.args.x - xNext;
-        var abs = Math.abs(drag);
-        var step = drag / 64;
-
-        if (abs > maxDragX) {
-          this.args.x = xNext + maxDragX * Math.sign(drag);
-        } else if (Math.abs(step) < 1) {
-          this.args.x -= step * dragSpeedX;
-        } else {
-          this.args.x = xNext;
-        }
-      }
-
-      if (this.args.y < yNext) {
-        var _drag = this.args.y - yNext;
-
-        var _abs = Math.abs(_drag);
-
-        var _step2 = _drag / 128;
-
-        if (_abs > maxDragYDown) {
-          this.args.y = yNext + maxDragYDown * Math.sign(_drag);
-        } else if (Math.abs(_step2) < 1) {
-          this.args.y -= _step2 * dragSpeedY;
-        } else {
-          this.args.y = yNext;
-        }
-      }
-
-      if (this.args.y > yNext) {
-        var _drag2 = this.args.y - yNext;
-
-        var _abs2 = Math.abs(_drag2);
-
-        var _step3 = _drag2 / 128;
-
-        if (_abs2 > maxDragY) {
-          this.args.y = yNext + maxDragY * Math.sign(_drag2);
-        } else if (Math.abs(_step3) > 1) {
-          this.args.y -= _step3 * dragSpeedY;
-        } else {
-          this.args.y = yNext;
-        }
-      }
-
-      if (Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.01) {
+      if (Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.05) {
         this.args.yOffset = this.args.yOffsetTarget;
-      } else {
-        this.args.yOffset += (this.args.yOffsetTarget - this.args.yOffset) / cameraSpeed;
+      } else if (cameraSpeed) {
+        var offsetDiff = this.args.yOffsetTarget - this.args.yOffset;
+        this.args.yOffset += offsetDiff / cameraSpeed;
       }
 
-      if (Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.01) {
+      if (Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.05) {
         this.args.xOffset = this.args.xOffsetTarget;
-      } else {
-        this.args.xOffset += (this.args.xOffsetTarget - this.args.xOffset) / cameraSpeed;
+      } else if (cameraSpeed) {
+        var _offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
+
+        this.args.xOffset += _offsetDiff / cameraSpeed;
       }
+
+      if (actor["public"].jumping) {
+        this.maxCameraBound = 80;
+
+        if (deepJump || highJump) {
+          this.maxCameraBound = 8;
+        }
+      } else {
+        this.maxCameraBound = 64;
+      }
+
+      if (this.cameraBound <= this.maxCameraBound) {
+        this.cameraBound = this.maxCameraBound;
+      } else {
+        this.cameraBound--;
+      }
+
+      var center = actor.rotatePoint(0, -actor["public"].height / 2);
+      var xNext = -actor.x + center[0] + this.args.width * this.args.xOffset;
+      var yNext = -actor.y + center[1] + this.args.height * this.args.yOffset;
+      var yDiff = this.args.y - yNext;
+      var xDiff = this.args.x - xNext;
+      var distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+      var angle = Math.atan2(yDiff, xDiff);
+      var maxDistance = this.cameraBound;
+      var dragDistance = Math.min(maxDistance, distance);
+      var snapFactor = Math.max(Math.abs(dragDistance / maxDistance), 0.05);
+      var snapFrames = 16;
+      var snapSpeed = dragDistance / snapFrames;
+      this.args.x = xNext + dragDistance * Math.cos(angle);
+      this.args.y = yNext + dragDistance * Math.sin(angle);
+      this.args.x -= snapFactor * Math.cos(angle) * snapSpeed;
+      this.args.y -= snapFactor * Math.sin(angle) * snapSpeed;
 
       if (this.args.x > 96) {
         this.args.x = 96;
@@ -27218,19 +27430,13 @@ var Viewport = /*#__PURE__*/function (_View) {
       }
     }
   }, {
-    key: "updateBackground",
-    value: function updateBackground() {
-      var _this6 = this;
-
+    key: "applyMotionBlur",
+    value: function applyMotionBlur() {
       var controlActor = this.controlActor;
 
-      if (controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle) {
-        controlActor = this.controlActor.standingOn;
-      }
-
       if (this.settings.blur && controlActor && this.tags.blur) {
-        var xBlur = Math.pow(Number((controlActor.x - this.xPrev) * 100 / 500), 2).toFixed(2);
-        var yBlur = Math.pow(Number((controlActor.y - this.yPrev) * 100 / 500), 2).toFixed(2);
+        var xBlur = Math.pow(Number((this.args.x - this.xPrev) * 100 / 500), 2).toFixed(2);
+        var yBlur = Math.pow(Number((this.args.y - this.yPrev) * 100 / 500), 2).toFixed(2);
         var blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
         var maxBlur = 32;
         xBlur = xBlur < maxBlur ? xBlur : maxBlur;
@@ -27251,20 +27457,31 @@ var Viewport = /*#__PURE__*/function (_View) {
           this.tags.blur.removeAttribute('stdDeviation');
         }
 
-        this.xPrev = controlActor.x;
-        this.yPrev = controlActor.y;
+        this.xPrev = this.args.x;
+        this.yPrev = this.args.y;
       } else {
         this.tags.blurAngle.setAttribute('style', "transform:none;");
         this.tags.blurAngleCancel.setAttribute('style', "transform:none;");
         this.tags.blur.removeAttribute('stdDeviation');
       }
+    }
+  }, {
+    key: "updateBackground",
+    value: function updateBackground() {
+      var _this6 = this;
+
+      var controlActor = this.controlActor;
+
+      if (controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle) {
+        controlActor = this.controlActor.standingOn;
+      }
 
       var _iterator2 = _createForOfIteratorHelper(this.args.layers),
-          _step4;
+          _step2;
 
       try {
-        for (_iterator2.s(); !(_step4 = _iterator2.n()).done;) {
-          var layer = _step4.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var layer = _step2.value;
           var xDir = Math.sign(layer.x - this.args.x);
           var yDir = Math.sign(layer.y - this.args.y);
           layer.x = this.args.x;
@@ -27282,21 +27499,21 @@ var Viewport = /*#__PURE__*/function (_View) {
         var yMax = -(_this6.tileMap.mapData.height * 32);
 
         var _iterator3 = _createForOfIteratorHelper(_this6.backdrops),
-            _step5;
+            _step3;
 
         try {
-          var _loop = function _loop() {
-            var _step5$value = _slicedToArray(_step5.value, 2),
-                backdrop = _step5$value[1];
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _step3$value = _slicedToArray(_step3.value, 2),
+                backdrop = _step3$value[1];
 
             var backdropType = '';
 
             var _iterator4 = _createForOfIteratorHelper(backdrop.properties),
-                _step6;
+                _step4;
 
             try {
-              for (_iterator4.s(); !(_step6 = _iterator4.n()).done;) {
-                var property = _step6.value;
+              for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+                var property = _step4.value;
 
                 if (property.name === 'backdrop') {
                   backdropType = property.value;
@@ -27315,9 +27532,6 @@ var Viewport = /*#__PURE__*/function (_View) {
               } else if (backdropType === 'mystic-cave') {
                 backdrop.view = new _MysticCave.MysticCave();
                 backdrop.view.render(_this6.tags.backdrops);
-                backdrop.onRemove(function () {
-                  return backdrop.view.remove();
-                });
               }
             }
 
@@ -27335,10 +27549,6 @@ var Viewport = /*#__PURE__*/function (_View) {
               top: topIntersect,
               bottom: bottomIntersect
             });
-          };
-
-          for (_iterator3.s(); !(_step5 = _iterator3.n()).done;) {
-            _loop();
           }
         } catch (err) {
           _iterator3.e(err);
@@ -27388,12 +27598,17 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.objDefs = new Map();
 
       var _iterator5 = _createForOfIteratorHelper(this.backdrops),
-          _step7;
+          _step5;
 
       try {
-        for (_iterator5.s(); !(_step7 = _iterator5.n()).done;) {
-          var _step7$value = _slicedToArray(_step7.value, 1),
-              id = _step7$value[0];
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var _step5$value = _slicedToArray(_step5.value, 2),
+              id = _step5$value[0],
+              backdrop = _step5$value[1];
+
+          if (backdrop.view) {
+            backdrop.view.remove();
+          }
 
           this.backdrops["delete"](id);
         }
@@ -27403,9 +27618,37 @@ var Viewport = /*#__PURE__*/function (_View) {
         _iterator5.f();
       }
 
+      var _iterator6 = _createForOfIteratorHelper(this.particles.list),
+          _step6;
+
+      try {
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          var _particle = _step6.value;
+
+          if (_particle) {
+            _particle.remove();
+
+            this.particles.remove(_particle);
+          }
+        }
+      } catch (err) {
+        _iterator6.e(err);
+      } finally {
+        _iterator6.f();
+      }
+
       for (var i in objDefs) {
         var objDef = objDefs[i];
         var objType = objDef.type;
+
+        if (objType === 'particle') {
+          var particle = new _Particle3d.Particle3d();
+          particle.style({
+            '--x': objDef.x,
+            '--y': objDef.y
+          });
+          this.particles.add(particle.node);
+        }
 
         if (objType === 'backdrop') {
           this.backdrops.set(objDef.id, objDef);
@@ -27468,12 +27711,12 @@ var Viewport = /*#__PURE__*/function (_View) {
       var spawnDoc = new DocumentFragment();
       var spawned = false;
 
-      var _iterator6 = _createForOfIteratorHelper(this.spawn.values()),
-          _step8;
+      var _iterator7 = _createForOfIteratorHelper(this.spawn.values()),
+          _step7;
 
       try {
-        for (_iterator6.s(); !(_step8 = _iterator6.n()).done;) {
-          var spawn = _step8.value;
+        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+          var spawn = _step7.value;
 
           if (spawn.frame) {
             if (spawn.frame <= this.args.frameId) {
@@ -27504,9 +27747,9 @@ var Viewport = /*#__PURE__*/function (_View) {
           }
         }
       } catch (err) {
-        _iterator6.e(err);
+        _iterator7.e(err);
       } finally {
-        _iterator6.f();
+        _iterator7.f();
       }
 
       if (spawned) {
@@ -27520,12 +27763,12 @@ var Viewport = /*#__PURE__*/function (_View) {
         var cell = nearbyCells[i];
         var actors = cell.values();
 
-        var _iterator7 = _createForOfIteratorHelper(actors),
-            _step9;
+        var _iterator8 = _createForOfIteratorHelper(actors),
+            _step8;
 
         try {
-          for (_iterator7.s(); !(_step9 = _iterator7.n()).done;) {
-            var actor = _step9.value;
+          for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+            var actor = _step8.value;
 
             if (this.updateStarted.has(actor)) {
               continue;
@@ -27535,9 +27778,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.updateStarted.add(actor);
           }
         } catch (err) {
-          _iterator7.e(err);
+          _iterator8.e(err);
         } finally {
-          _iterator7.f();
+          _iterator8.f();
         }
       }
     }
@@ -27548,12 +27791,12 @@ var Viewport = /*#__PURE__*/function (_View) {
         var cell = nearbyCells[i];
         var actors = cell.values();
 
-        var _iterator8 = _createForOfIteratorHelper(actors),
-            _step10;
+        var _iterator9 = _createForOfIteratorHelper(actors),
+            _step9;
 
         try {
-          for (_iterator8.s(); !(_step10 = _iterator8.n()).done;) {
-            var actor = _step10.value;
+          for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+            var actor = _step9.value;
 
             if (this.updated.has(actor)) {
               continue;
@@ -27564,9 +27807,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.updated.add(actor);
           }
         } catch (err) {
-          _iterator8.e(err);
+          _iterator9.e(err);
         } finally {
-          _iterator8.f();
+          _iterator9.f();
         }
       }
     }
@@ -27582,12 +27825,12 @@ var Viewport = /*#__PURE__*/function (_View) {
         var cell = nearbyCells[i];
         var actors = cell.values();
 
-        var _iterator9 = _createForOfIteratorHelper(actors),
-            _step11;
+        var _iterator10 = _createForOfIteratorHelper(actors),
+            _step10;
 
         try {
-          for (_iterator9.s(); !(_step11 = _iterator9.n()).done;) {
-            var actor = _step11.value;
+          for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+            var actor = _step10.value;
 
             if (this.updateEnded.has(actor)) {
               continue;
@@ -27597,9 +27840,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.updateEnded.add(actor);
           }
         } catch (err) {
-          _iterator9.e(err);
+          _iterator10.e(err);
         } finally {
-          _iterator9.f();
+          _iterator10.f();
         }
       }
     }
@@ -27617,18 +27860,18 @@ var Viewport = /*#__PURE__*/function (_View) {
         var cell = nearbyCells[i];
         var actors = cell.values();
 
-        var _iterator10 = _createForOfIteratorHelper(actors),
-            _step12;
+        var _iterator11 = _createForOfIteratorHelper(actors),
+            _step11;
 
         try {
-          for (_iterator10.s(); !(_step12 = _iterator10.n()).done;) {
-            var _actor = _step12.value;
+          for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+            var _actor = _step11.value;
             result.add(_actor);
           }
         } catch (err) {
-          _iterator10.e(err);
+          _iterator11.e(err);
         } finally {
-          _iterator10.f();
+          _iterator11.f();
         }
       }
 
@@ -27640,22 +27883,22 @@ var Viewport = /*#__PURE__*/function (_View) {
       var _this7 = this;
 
       if (this.args.frameId % 5 === 0) {
-        var _iterator11 = _createForOfIteratorHelper(this.willDetach),
-            _step13;
+        var _iterator12 = _createForOfIteratorHelper(this.willDetach),
+            _step12;
 
         try {
-          for (_iterator11.s(); !(_step13 = _iterator11.n()).done;) {
-            var _step13$value = _slicedToArray(_step13.value, 2),
-                detachee = _step13$value[0],
-                detacher = _step13$value[1];
+          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+            var _step12$value = _slicedToArray(_step12.value, 2),
+                detachee = _step12$value[0],
+                detacher = _step12$value[1];
 
             this.willDetach["delete"](detachee);
             detacher();
           }
         } catch (err) {
-          _iterator11.e(err);
+          _iterator12.e(err);
         } finally {
-          _iterator11.f();
+          _iterator12.f();
         }
       }
 
@@ -27756,31 +27999,31 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.updateEnded.clear();
 
       if (this.args.running) {
-        var _iterator12 = _createForOfIteratorHelper(this.regions),
-            _step14;
+        var _iterator13 = _createForOfIteratorHelper(this.regions),
+            _step13;
 
         try {
-          for (_iterator12.s(); !(_step14 = _iterator12.n()).done;) {
-            var region = _step14.value;
+          for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+            var region = _step13.value;
             region.updateStart();
             this.updateStarted.add(region);
             region.update();
             this.updated.add(region);
           }
         } catch (err) {
-          _iterator12.e(err);
+          _iterator13.e(err);
         } finally {
-          _iterator12.f();
+          _iterator13.f();
         }
 
         var actorCells = new WeakMap();
 
-        var _iterator13 = _createForOfIteratorHelper(this.auras),
-            _step15;
+        var _iterator14 = _createForOfIteratorHelper(this.auras),
+            _step14;
 
         try {
-          for (_iterator13.s(); !(_step15 = _iterator13.n()).done;) {
-            var _actor2 = _step15.value;
+          for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+            var _actor2 = _step14.value;
             var nearbyCells = this.getNearbyColCells(_actor2);
             actorCells.set(_actor2, nearbyCells);
 
@@ -27794,17 +28037,17 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.actorUpdateStart(nearbyCells);
           }
         } catch (err) {
-          _iterator13.e(err);
+          _iterator14.e(err);
         } finally {
-          _iterator13.f();
+          _iterator14.f();
         }
 
-        var _iterator14 = _createForOfIteratorHelper(this.auras),
-            _step16;
+        var _iterator15 = _createForOfIteratorHelper(this.auras),
+            _step15;
 
         try {
-          for (_iterator14.s(); !(_step16 = _iterator14.n()).done;) {
-            var _actor3 = _step16.value;
+          for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
+            var _actor3 = _step15.value;
 
             var _nearbyCells = actorCells.get(_actor3);
 
@@ -27818,9 +28061,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             this.actorUpdate(_nearbyCells);
           }
         } catch (err) {
-          _iterator14.e(err);
+          _iterator15.e(err);
         } finally {
-          _iterator14.f();
+          _iterator15.f();
         }
 
         if (this.controlActor) {
@@ -27843,12 +28086,12 @@ var Viewport = /*#__PURE__*/function (_View) {
           var modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL']; // this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
         }
 
-        var _iterator15 = _createForOfIteratorHelper(this.auras),
-            _step17;
+        var _iterator16 = _createForOfIteratorHelper(this.auras),
+            _step16;
 
         try {
-          for (_iterator15.s(); !(_step17 = _iterator15.n()).done;) {
-            var _actor4 = _step17.value;
+          for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
+            var _actor4 = _step16.value;
 
             var _nearbyCells2 = actorCells.get(_actor4);
 
@@ -27860,17 +28103,17 @@ var Viewport = /*#__PURE__*/function (_View) {
             }
           }
         } catch (err) {
-          _iterator15.e(err);
+          _iterator16.e(err);
         } finally {
-          _iterator15.f();
+          _iterator16.f();
         }
 
-        var _iterator16 = _createForOfIteratorHelper(this.regions),
-            _step18;
+        var _iterator17 = _createForOfIteratorHelper(this.regions),
+            _step17;
 
         try {
-          for (_iterator16.s(); !(_step18 = _iterator16.n()).done;) {
-            var _region = _step18.value;
+          for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
+            var _region = _step17.value;
 
             if (!this.updateEnded.has(_region)) {
               _region.updateEnd();
@@ -27879,9 +28122,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             }
           }
         } catch (err) {
-          _iterator16.e(err);
+          _iterator17.e(err);
         } finally {
-          _iterator16.f();
+          _iterator17.f();
         }
       }
 
@@ -27899,12 +28142,12 @@ var Viewport = /*#__PURE__*/function (_View) {
           var wakeDoc = new DocumentFragment();
           var wakeActors = false;
 
-          var _iterator17 = _createForOfIteratorHelper(_this7.actors.list),
-              _step19;
+          var _iterator18 = _createForOfIteratorHelper(_this7.actors.list),
+              _step18;
 
           try {
-            var _loop2 = function _loop2() {
-              var actor = _step19.value;
+            var _loop = function _loop() {
+              var actor = _step18.value;
 
               if (!actor) {
                 return "continue";
@@ -27972,15 +28215,15 @@ var Viewport = /*#__PURE__*/function (_View) {
               }
             };
 
-            for (_iterator17.s(); !(_step19 = _iterator17.n()).done;) {
-              var _ret = _loop2();
+            for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
+              var _ret = _loop();
 
               if (_ret === "continue") continue;
             }
           } catch (err) {
-            _iterator17.e(err);
+            _iterator18.e(err);
           } finally {
-            _iterator17.f();
+            _iterator18.f();
           }
 
           if (wakeActors) {
@@ -28011,6 +28254,7 @@ var Viewport = /*#__PURE__*/function (_View) {
       if (this.controlActor) {
         this.controlActor.setCameraMode();
         this.moveCamera();
+        this.applyMotionBlur();
 
         if (this.controlActor.args.name === 'seymour' && this.controlActor.y < 3840 && this.controlActor.x > 38400 && this.controlActor.standingOn && this.controlActor.standingOn.isVehicle) {
           this.args.secret = 'aurora';
@@ -28056,12 +28300,12 @@ var Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "regionAtPoint",
     value: function regionAtPoint(x, y) {
-      var _iterator18 = _createForOfIteratorHelper(this.regions.values()),
-          _step20;
+      var _iterator19 = _createForOfIteratorHelper(this.regions.values()),
+          _step19;
 
       try {
-        for (_iterator18.s(); !(_step20 = _iterator18.n()).done;) {
-          var region = _step20.value;
+        for (_iterator19.s(); !(_step19 = _iterator19.n()).done;) {
+          var region = _step19.value;
           var regionArgs = region["public"];
           var regionX = regionArgs.x;
           var regionY = regionArgs.y;
@@ -28080,9 +28324,9 @@ var Viewport = /*#__PURE__*/function (_View) {
           }
         }
       } catch (err) {
-        _iterator18.e(err);
+        _iterator19.e(err);
       } finally {
-        _iterator18.f();
+        _iterator19.f();
       }
     }
   }, {
@@ -28102,12 +28346,12 @@ var Viewport = /*#__PURE__*/function (_View) {
         x: x,
         y: y
       }).forEach(function (cell) {
-        var _iterator19 = _createForOfIteratorHelper(cell.values()),
-            _step21;
+        var _iterator20 = _createForOfIteratorHelper(cell.values()),
+            _step20;
 
         try {
-          for (_iterator19.s(); !(_step21 = _iterator19.n()).done;) {
-            var actor = _step21.value;
+          for (_iterator20.s(); !(_step20 = _iterator20.n()).done;) {
+            var actor = _step20.value;
 
             if (actor.removed) {
               continue;
@@ -28136,9 +28380,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             }
           }
         } catch (err) {
-          _iterator19.e(err);
+          _iterator20.e(err);
         } finally {
-          _iterator19.f();
+          _iterator20.f();
         }
       });
       actorPointCache.set(cacheKey, actors);
@@ -28593,18 +28837,18 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       var callbacks = this.callFrames.get(this.args.frameId);
 
-      var _iterator20 = _createForOfIteratorHelper(callbacks),
-          _step22;
+      var _iterator21 = _createForOfIteratorHelper(callbacks),
+          _step21;
 
       try {
-        for (_iterator20.s(); !(_step22 = _iterator20.n()).done;) {
-          var callback = _step22.value;
+        for (_iterator21.s(); !(_step21 = _iterator21.n()).done;) {
+          var callback = _step21.value;
           callback();
         }
       } catch (err) {
-        _iterator20.e(err);
+        _iterator21.e(err);
       } finally {
-        _iterator20.f();
+        _iterator21.f();
       }
 
       this.callFrames["delete"](this.args.frameId);

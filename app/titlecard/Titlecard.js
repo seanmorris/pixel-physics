@@ -62,6 +62,12 @@ export class Titlecard extends View
 				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
 					this.args.animation = 'closed'
 				));
+
+				timeAcc += 2500;
+
+				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+					this.args.animation = 'done'
+				));
 			});
 		});
 

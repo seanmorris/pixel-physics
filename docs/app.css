@@ -126,7 +126,7 @@
 
 	z-index: -1;
 
-	filter: url(#menu-warp);
+	filter: url(#menu-twist) url(#menu-pinch);
 
 	background-color: #0024d8;
 
@@ -668,7 +668,7 @@ input::-webkit-inner-spin-button {
 .actor-item.actor-chalmers[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
-	animation: chalmers-run steps(5) infinite 192ms;
+	animation: chalmers-run steps(5) infinite calc(calc(calc(1 - var(--animation-bias)) * 160ms) + 80ms);
 }
 
 .actor-item.actor-chalmers[data-animation="rolling"] .sprite:after,
@@ -1802,6 +1802,10 @@ input::-webkit-inner-spin-button {
 	opacity: 1;
 }
 
+.pinch-filter, .`twist-filter {
+	transform: scale(1.5);
+}
+
 .filters-foreground > .point-actor-filter {
 	backdrop-filter: blur(0px);
 	filter: var(--fgFilter);
@@ -2260,7 +2264,7 @@ input::-webkit-inner-spin-button {
 .actor-item.actor-seymour[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
-	animation: seymour-run steps(5) infinite 192ms;
+	animation: seymour-run steps(5) infinite calc(calc(calc(1 - var(--animation-bias)) * 160ms) + 80ms);
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after,
@@ -2274,6 +2278,7 @@ input::-webkit-inner-spin-button {
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after {
 	transform: translateY(22px);
 	animation: seymour-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
+
 }
 
 @-webkit-keyframes seymour-walk {
@@ -3569,8 +3574,6 @@ iframe {
 	position: relative;
 	width: 64px;
 	height: 64px;
-
-	transform: translateX(1%) !important;
 }
 
 .particle-bubble:after {
@@ -3594,8 +3597,8 @@ iframe {
 		bubble-inflate steps(2) 1 forwards
 		, bubble-float ease-in 1 forwards
 		, bubble-wave ease-in-out infinite forwards alternate;
-	animation-duration: 400ms, 2500ms, 2000ms;
-	animation-delay: 0ms, 0ms, 150ms;
+	animation-duration: 400ms, 2500ms, 1200ms;
+	animation-delay: 0ms, 100ms, 150ms;
 }
 
 @-webkit-keyframes bubble-wave{
@@ -3620,7 +3623,7 @@ iframe {
 		opacity: 0.75;
 	}
 	to{
-		transform: translateY(-128px);
+		transform: translateY(-160px);
 		opacity: 0.25;
 	}
 }
@@ -3729,6 +3732,125 @@ iframe {
 		opacity: 0.5
 	}
 }
+
+.viewport-particles {
+	--xCam: var(--x);
+	--yCam: var(--y);
+}
+
+.particle-3d {
+	position: absolute;
+	overflow: visible;
+
+	transform-style: preserve-3d;
+
+	--radiusX: calc(var(--width) / 2);
+	--centerX: calc(var(--xCam) - var(--radiusX));
+
+	--radiusY: calc(var(--height) / 2);
+	--centerY: calc(var(--yCam) - var(--radiusY));
+
+	--relX: calc(var(--x) - calc(-1*var(--centerX)));
+	--unitX: calc(var(--relX) / var(--width));
+
+	--relY: calc(var(--y) - calc(-1*var(--centerY)));
+	--unitY: calc(var(--relY) / var(--height));
+
+	--width3d: 24;
+
+	width: calc(var(--width3d) * 2px);
+	height: calc(var(--width3d) * 2px);
+
+	perspective: calc(var(--width3d) * 6px);
+	perspective-origin:
+		calc(50% + calc(-200% * var(--unitX)))
+		calc(calc(75% + calc(-200% * var(--unitY))) + calc(var(--width3d) * 0.5px))
+	;
+
+	transform:
+		translate3d(
+			calc(-50% + calc(var(--unitX) * -64px))
+			, calc(-50% + calc(var(--unitY) * -64px))
+			, calc(var(--width3d) * -2.5px))
+		!important;
+
+
+	/*transition: perspective-origin 1s ease-in, transform 1s ease-in;*/
+	z-index: -100;
+
+}
+
+.particle-3d > * {
+	position: absolute;
+	top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin: auto;
+	display: block;
+	background-image: url(/Sonic/marble-zone-block.png);
+	backface-visibility: hidden;
+	background-size: cover;
+
+
+	width: calc(var(--width3d) * 1px);
+	height: calc(var(--width3d) * 1px);
+}
+
+.front-3d {
+	/*transform: rotateY( 0deg ) translateZ( 40px );*/
+
+	transform:
+		rotateY( 0deg )
+		translateZ( 0px );
+
+	z-index: 1;
+}
+
+.back-3d {
+
+	transform:
+		rotateY( 180deg )
+		translateZ( 0px );
+
+	z-index: -1;
+}
+
+.left-3d {
+	transform:
+		rotateY( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( calc(var(--width3d) * -0.5px) );
+}
+
+.right-3d {
+	transform:
+		rotateY( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( calc(var(--width3d) * 0.5px) );
+}
+
+.top-3d {
+
+	transform:
+		rotateX( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( calc(var(--width3d) * -0.5px) );
+
+	z-index: -1;
+}
+
+.bottom-3d {
+
+	transform:
+		rotateX( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( calc(var(--width3d) * 0.5px) );
+
+	z-index: -1;
+
+}
+
 
 .viewport-particles > * {
 	position: absolute;
@@ -4839,6 +4961,10 @@ iframe {
 	--timer2: 100;
 }
 
+.titlecard.done {
+	display: none;
+}
+
 .titlecard-title-box {
 	position: absolute;
 	top: 29%;
@@ -5036,6 +5162,11 @@ iframe {
 .hud .char-icon.seymour {
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -32px -64px;
+}
+
+.hud .char-icon.chalmers {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -16px -80px;
 }
 
 

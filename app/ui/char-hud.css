@@ -73,3 +73,8 @@
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -32px -64px;
 }
+
+.hud .char-icon.chalmers {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -16px -80px;
+}

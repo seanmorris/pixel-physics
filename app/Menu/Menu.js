@@ -198,7 +198,7 @@ export class Menu extends Card
 			this.zeroMe.zero();
 		}
 
-		item.callback && item.callback();
+		item.callback && this.onTimeout(100, () => item.callback());
 
 		if(item.children)
 		{
