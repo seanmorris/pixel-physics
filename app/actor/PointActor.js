@@ -807,52 +807,52 @@ export class PointActor extends View
 				{
 					case MODE_FLOOR:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + direction === -1 ? 0 : -1
+							this.x + halfWidth * direction + (direction === -1 ? 0 : 1)
 							, this.y - halfHeight
 						);
 
 					case MODE_CEILING:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + direction === -1 ? 0 : -1
+							this.x + halfWidth * direction + (direction === -1 ? 0 : 1)
 							, this.y + halfHeight
 						);
 
 					case MODE_LEFT:
 						return this.getMapSolidAt(
-							this.x + halfHeight * direction === -1 ? 0 : 2
+							this.x + halfHeight * (direction === -1 ? 0 : 2)
 							, this.y
 						)
 
 					case MODE_RIGHT:
 						return this.getMapSolidAt(
-							this.x - halfHeight * direction === -1 ? 0 : 2
+							this.x - halfHeight * (direction === -1 ? 0 : 2)
 							, this.y
 						)
 				}
-
-				const leftWall  = testWallPoint(-1);
-				const rightWall = testWallPoint(1);
-
-				if(rightWall && !leftWall)
-				{
-					if(this.public.xSpeed > 0)
-					{
-						this.args.xSpeed = 0;
-					}
-
-					this.args.x--;
-				}
-
-				if(leftWall && !rightWall)
-				{
-					if(this.public.xSpeed > 0)
-					{
-						this.args.xSpeed = 0;
-					}
-
-					this.args.x++;
-				}
 			};
+
+			const leftWall  = testWallPoint(-1);
+			const rightWall = testWallPoint(1);
+
+			if(rightWall && !leftWall)
+			{
+				if(this.public.xSpeed > 0)
+				{
+					this.args.xSpeed = 0;
+				}
+
+				this.args.x--;
+			}
+
+			if(leftWall && !rightWall)
+			{
+				if(this.public.xSpeed > 0)
+				{
+					this.args.xSpeed = 0;
+				}
+
+				this.args.x++;
+			}
 		}
 
 		if(!this.viewport || this.removed)
