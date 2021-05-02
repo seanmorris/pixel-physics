@@ -38,4 +38,5 @@ export class PowerupGlow extends PointActor
 
 	get canStick() { return false; }
 	get solid() { return false; }
+	get isEffect() { return true; }
 }

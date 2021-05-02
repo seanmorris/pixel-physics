@@ -797,23 +797,24 @@ export class PointActor extends View
 			}
 		}
 
-		const halfWidth  = Math.ceil(this.args.width/2) + this.controllable ? 8 : 0;
+		const halfWidth  = Math.ceil(this.args.width/2);
 		const halfHeight = Math.floor(this.args.height/2);
 
-		if(!this.isRegion && (this.public.pushed || ( !this.willStick && this.controllable )))
+		// if(!this.isRegion && (this.public.pushed || ( !this.willStick && this.controllable )))
+		if(!this.isRegion && this.public.pushed)
 		{
 			const testWallPoint = (direction) => {
 				switch(this.public.mode)
 				{
 					case MODE_FLOOR:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + (direction === -1 ? 0 : 1)
+							this.x + halfWidth * direction + (direction === -1 ? 1 : 0)
 							, this.y - halfHeight
 						);
 
 					case MODE_CEILING:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + (direction === -1 ? 0 : 1)
+							this.x + halfWidth * direction + (direction === -1 ? 1 : 0)
 							, this.y + halfHeight
 						);
 

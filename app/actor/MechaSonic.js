@@ -13,18 +13,18 @@ export class MechaSonic extends PointActor
 
 		this.args.type = 'actor-item actor-mecha-sonic';
 
-		this.args.accel     = 0.35;
-		this.args.decel     = 0.4;
+		this.args.accel     = 0.45;
+		this.args.decel     = 0.3;
 
 		this.args.skidTraction = 2;
 
-		this.args.gSpeedMax = 21;
+		this.args.gSpeedMax = 18;
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
 		this.args.takeoffPlayed = false;
 
-		this.args.width  = 32;
+		this.args.width  = 18;
 		this.args.height = 52;
 
 		this.args.bindTo('falling', v => {
