@@ -1,3 +1,7 @@
+.actor-item.actor-rocks-tall{
+	z-index: 200;
+}
+
 .actor-item.actor-rocks-tall .sprite {
 	background-image: url(/Sonic/rocks-tall.png);
 	background-position: bottom;

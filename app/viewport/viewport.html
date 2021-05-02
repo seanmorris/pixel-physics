@@ -1,11 +1,11 @@
 <section class = "filters" cv-each = "effects:effect">[[effect]]</section>
 
-<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]]" cv-ref = "frame">
+<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]]" cv-ref = "frame">
 	<div class = "viewport-header">
 		<span class = "sean-icon"></span>
 		<h1>Pixel Physics</h1>
 	</div>
-	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
+	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
 
 		<svg>
 		<defs>
@@ -172,9 +172,9 @@
 
 			<div cv-ref = "content" class = "viewport-content">
 
-				<div cv-ref = "actors" class = "viewport-actors">[[actor]]</div>
+				<div cv-ref = "actors" class = "viewport-actors" cv-ref = "actors"></div>
 
-				<div cv-ref = "particles" class = "viewport-particles" cv-each = "particles:particle:p">[[particle]]</div>
+				<div cv-ref = "particles" class = "viewport-particles" cv-ref = "particles"></div>
 
  			</div>
  		</div>
@@ -249,7 +249,7 @@
 
 				<div class = "char-hud">
 					[[char]]
-					<div class = "char-icon [[charName]]"></div>
+					<div class = "char-icon [[charName|hyphenate]]"></div>
 				</div>
 
 			</div>

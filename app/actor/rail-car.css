@@ -1,0 +1,100 @@
+.actor-item.actor-rail-car {
+	z-index: 1;
+}
+
+.actor-item.actor-rail-car .sprite {
+	will-change: top;
+	transition: top 0.65s ease-in;
+	background-image: url(/custom/minecart.png);
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-frag {
+	transition: transform 1s ease-out, filter 0.3s ease-out, opacity 0.65s ease-out;
+	background-image: url(/custom/minecart.png);
+	background-repeat: no-repeat;
+	position: absolute;
+	top: 0;
+	height: 64px;
+	width: 32px;
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-frag-front {
+	left: 32px;
+	background-position: -32px 0;
+	transform: translate(calc(var(--explode) * 1px), calc(calc(calc(var(--explode) * -1px)) + calc(var(--fall) * 1px)));
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-frag-back {
+	transform: translate(calc(var(--explode) * -1px), calc(calc(calc(var(--explode) * -1px)) + calc(var(--fall) * 1px)));
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-wheel {
+	width: 32px;
+	height: 28px;
+	background-image: url(/Sonic/steel-wheel.png);
+	position: absolute;
+	bottom: 0;
+	left: -3px;
+	z-index: 2;
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-wheel {
+	transition: transform 1s ease-out, opacity 0.85s;
+}
+
+.actor-item.actor-rail-car .sprite.moving .rail-car-wheel {
+	animation: steel-wheel-spin calc(calc(calc(1 - var(--animation-bias)) * 80ms) + 40ms) steps(4) infinite reverse;
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-wheel-front {
+	transform: translate(calc(var(--explode) * -1px), calc(calc(calc(var(--explode) * 1px)) + calc(var(--fall) * 1px)));
+}
+
+.actor-item.actor-rail-car .sprite .rail-car-wheel-back {
+	transform: translate(calc(var(--explode) * 1px), calc(calc(calc(var(--explode) * 1px)) + calc(var(--fall) * 1px)));
+	left: auto;
+	right: -3px;
+}
+
+@keyframes steel-wheel-spin {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: -128px 0;
+	}
+}
+
+.actor-item.actor-rail-car .sprite.breaking,
+.actor-item.actor-rail-car .sprite.broken {
+	filter: invert(1) hue-rotate(180deg) brightness(0.75) saturate(0.5) contrast(2);
+	background: transparent;
+	opacity: 0.75;
+	will-change: opacity;
+	top: 512px;
+}
+
+.actor-item.actor-rail-car .sprite.broken .rail-car-wheel,
+.actor-item.actor-rail-car .sprite.broken .rail-car-frag {
+	will-change: opacity;
+	opacity: 0;
+}
+
+.actor-item.actor-rail-car .sprite.breaking .rail-car-wheel,
+.actor-item.actor-rail-car .sprite.broken .rail-car-wheel {
+	animation: steel-wheel-spin calc(calc(calc(1 - var(--animation-bias)) * 40ms) + 80ms) steps(4) infinite reverse;
+}
+
+.actor-item.actor-rail-car .sprite.broken .rail-car-wheel,
+.actor-item.actor-rail-car .sprite.broken .rail-car-frag {
+	--explode: 164;
+	--fall: 256;
+}
+
+.actor-item.actor-rail-car .sprite.breaking .rail-car-wheel,
+.actor-item.actor-rail-car .sprite.breaking .rail-car-frag {
+	--explode: 64;
+	--fall: 0;
+}

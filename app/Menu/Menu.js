@@ -227,6 +227,11 @@ export class Menu extends Card
 		const title = element.getAttribute('data-title');
 		const item  = this.args.items[ title ];
 
+		if(!item)
+		{
+			return;
+		}
+
 		if(item.input === 'number')
 		{
 			item.setting = Number(item.setting) + 1;

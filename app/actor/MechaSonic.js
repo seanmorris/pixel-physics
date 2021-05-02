@@ -25,7 +25,7 @@ export class MechaSonic extends PointActor
 		this.args.takeoffPlayed = false;
 
 		this.args.width  = 32;
-		this.args.height = 63;
+		this.args.height = 52;
 
 		this.args.bindTo('falling', v => {
 			if(!v)

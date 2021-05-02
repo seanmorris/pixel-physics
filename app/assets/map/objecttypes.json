@@ -1,7 +1,13 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "breakable-block",
+        "name": "force-region",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "arrow-sign",
         "properties": [
         ]
     },
@@ -14,6 +20,12 @@
     {
         "color": "#ffa0a0a4",
         "name": "block",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "breakable-block",
         "properties": [
         ]
     },
@@ -132,6 +144,12 @@
                 "type": "string",
                 "value": "0"
             }
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "rail-car",
+        "properties": [
         ]
     },
     {

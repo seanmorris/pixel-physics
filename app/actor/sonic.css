@@ -79,6 +79,26 @@
 	animation: sonic-run steps(4) infinite 128ms;
 }
 
+/*.actor-item.actor-sonic .sprite:after,*/
+.actor-item.actor-sonic[data-falling="true"][data-animation="dropping"] .sprite:after,
+.actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -512px !important;
+
+	transform: rotate(calc(1rad * var(--ground-angle)));
+
+	animation: sonic-drop steps(1) 1 80ms forwards;
+}
+
+.actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
+	transform: rotate(calc(1rad * var(--ground-angle))) translateX(32px);
+}
+
+
+.actor-item.actor-sonic[data-falling="true"][data-facing="left"][data-animation="wall-dropping"] .sprite:after {
+	transform: rotate(calc(-1rad * var(--ground-angle))) translateX(32px);
+}
+
 .actor-item.actor-sonic[data-animation="spindash"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -320px;
@@ -228,6 +248,14 @@
 	}
 }
 
+@-webkit-keyframes sonic-drop {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
 
 @-webkit-keyframes sonic-spindash {
 	from{

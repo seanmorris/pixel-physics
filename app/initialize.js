@@ -47,9 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
 			const frameTimeAvg = frameTimeSum / frameTimes.length;
 
-			viewportA.args.fps = (1000 / frameTimeAvg).toFixed(1).padEnd(4, '0');
+			viewportA.args.fps = 1000 / frameTimeAvg;
 
-			frameTimes.splice(0)
+			frameTimes.splice(0);
 		}
 	};
 

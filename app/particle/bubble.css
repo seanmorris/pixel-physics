@@ -1,30 +1,77 @@
 .particle-bubble {
 	position: relative;
+	will-change: left;
+	opacity: 0.75;
 	width: 64px;
 	height: 64px;
 }
 
-.particle-bubble:after {
+.particle-bubble:before {
 	position: absolute;
+	content: ' ';
+	width: 64px;
+	height: 64px;
+}
+
+.particle-bubble:before,
+.particle-bubble:after {
+	--spanY: calc(var(--maxY) - var(--startY));
+
+	position: absolute;
+
+	top: 0;
+
+	will-change: left;
 
 	width: 64px;
 	height: 64px;
 
 	content: ' ';
-	background-image: url(/Sonic/bubble.png);
 
 	--animation-steps: 4;
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: 0px;
 
-
-
 	z-index: 1000;
+}
 
+.particle-bubble:before {
+	animation: bubble-wave ease-in-out infinite forwards alternate;
+	animation-duration: 2500ms, 1200ms;
+	animation-delay: 100ms, 150ms;
+}
+
+.particle-bubble:after {
+	background-image: url(/Sonic/bubble.png);
 	animation:
 		bubble-inflate steps(2) 1 forwards
-		, bubble-float ease-in 1 forwards
 		, bubble-wave ease-in-out infinite forwards alternate;
+	animation-duration: 400ms, 2500ms, 1200ms;
+	animation-delay: 0ms, 100ms, 150ms;
+}
+
+.particle-bubble:before,
+.particle-bubble:after {
+	transform: scale(calc( 0.25 + calc(var(--size) * 0.75) ));
+}
+
+.particle-bubble.float:before,
+.particle-bubble.float:after {
+	/*transform:  scale(var(--size));*/
+	transition: opacity 0.25s, transform 1s ease-in, top 0.5s ease-in;
+	top: calc( calc( max(var(--spanY), -192) * 1px ) + -4px );
+}
+
+.particle-bubble.floating:before,
+.particle-bubble.floating:after {
+	opacity: 0.25;
+	top: calc( calc( max(var(--spanY), -192) * 1px ) + -4px );
+	/*transform: scale(var(--size));*/
+	transition: transform 0.1s, opacity 0.25s, top 0.5s;
+	animation:
+		bubble-inflate steps(2) 1 forwards
+		, bubble-wave ease-in-out infinite forwards alternate;
+		, bubble-y-wave ease-in-out infinite forwards alternate;
 	animation-duration: 400ms, 2500ms, 1200ms;
 	animation-delay: 0ms, 100ms, 150ms;
 }
@@ -41,18 +88,15 @@
 	}
 }
 
-@-webkit-keyframes bubble-float{
+@-webkit-keyframes bubble-y-wave{
 	from{
-		transform: translateY(1px);
-		opacity: 0.5;
+		top: 0px;
 	}
-	15% {
-		transform: translateY(-8px);
-		opacity: 0.75;
+	50% {
+		top: -6px;
 	}
 	to{
-		transform: translateY(-160px);
-		opacity: 0.25;
+		top: 6px;
 	}
 }
 

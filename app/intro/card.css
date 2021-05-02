@@ -2,7 +2,7 @@
 	background: black;
 }
 
-.viewport-overlay {
+.viewport-frame:not(.no-intro) .viewport-overlay {
 	filter: url(#ntsc);
 }
 
@@ -68,7 +68,7 @@
 }
 
 .screen-card-title-screen-card {
-	background-image: url(/Sonic/title-screen-emblem.png);
+	/*background-image: url(/Sonic/title-screen-emblem.png);*/
 	background-repeat: no-repeat;
 	background-position: center;
 	background-color: rgba(0,0,0,1);
@@ -85,7 +85,7 @@
 .screen-card-debian-card .caption {
 	font-size: 16pt;
 	padding: 1em;
-	transition: opacity 0.75s 2.25s ease-out;
+	transition: opacity 0.75s 1.75s ease-out;
 	opacity: 1;
 }
 
@@ -113,7 +113,7 @@
 	background-repeat: no-repeat;
 	background-position: center;
   	clip-path: circle(0% at 58% 40%);
-	animation: debian-iris 1.75s 1.25s ease-out 1 forwards;
+	animation: debian-iris 2.25s 1s ease-out 1 forwards;
 }
 
 @keyframes debian-iris {

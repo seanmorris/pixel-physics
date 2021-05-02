@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { View } from 'curvature/base/View';
 import { Tag } from 'curvature/base/Tag';
 import { Bag  } from 'curvature/base/Bag';
@@ -8,7 +9,11 @@ export class Layer extends View
 
 	constructor(args,parent)
 	{
+		args[ Bindable.NoGetters ] = true;
+
 		super(args,parent);
+
+		this[ Bindable.NoGetters ] = true;
 
 		this.args.width  = 320;
 		this.args.height = 200;
@@ -50,8 +55,8 @@ export class Layer extends View
 		}
 
 		const blockSize  = this.args.blockSize;
-		const blocksWide = Math.ceil((this.args.width  / blockSize));
-		const blocksHigh = Math.ceil((this.args.height / blockSize));
+		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 1;
+		const blocksHigh = Math.ceil((this.args.height / blockSize)) + 1;
 		const blocksXY   = this.blocksXY;
 		const blocks     = this.blocks;
 		const offsets    = this.offsets;

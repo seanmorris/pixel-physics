@@ -6,7 +6,7 @@ export class Spring extends PointActor
 	float = -1;
 
 	template = `<div
-		class = "point-actor actor-item [[type]] [[collType]]"
+		class = "point-actor actor-item [[type]] [[collType]] [[active]]"
 		style = "
 			display:[[display]];
 			--angle:[[angle]];
@@ -50,7 +50,7 @@ export class Spring extends PointActor
 		this.args.width  = this.args.width  || 32;
 		this.args.height = this.args.height || 32;
 
-		this.args.color  = this.args.color || 0;
+		this.args.color  = this.args.color  || 0;
 	}
 
 	update()
@@ -73,7 +73,7 @@ export class Spring extends PointActor
 
 		super.collideA(other);
 
-		if(this.active)
+		if(this.public.active)
 		{
 			return;
 		}
@@ -93,7 +93,9 @@ export class Spring extends PointActor
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
 		this.viewport.onFrameOut(3,()=>{
-			this.active = false;
+
+			this.args.active = null;
+
 			other.impulse(
 				this.args.power
 				, rounded
@@ -103,11 +105,9 @@ export class Spring extends PointActor
 
 		other.args.direction = Math.sign(this.public.gSpeed);
 
-		this.viewport.onFrameOut(4,()=>{
-			this.active = false;
-		});
+		this.viewport.onFrameOut(4,()=> this.args.active = null );
 
-		this.active = true;
+		this.args.active = 'active';
 
 		other.args.ignore = 5;
 	}

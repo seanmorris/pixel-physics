@@ -13,7 +13,11 @@ export class TextActor extends PointActor
 
 		this.text = new CharacterString({value:''});
 
-		this.args.bindTo('content', v => this.text.args.value = v);
+		this.args.bindTo('content', v => {
+			this.text.args.value = v;
+			this.args.width  = v.length * 18;
+			this.args.height = 18;
+		});
 	}
 
 	onAttached()

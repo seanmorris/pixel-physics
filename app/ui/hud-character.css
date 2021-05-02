@@ -1,7 +1,7 @@
 .hud-character-string {
 	--scale: 1;
 	--xyz: calc(-14px * var(--scale));
-	display: inline-flex;
+	display: inline;
 }
 
 .hud-character {
@@ -53,3 +53,8 @@
 		background-image: url(/Sonic/font.png);
 	}
 }
+s
+o
+n
+i
+c

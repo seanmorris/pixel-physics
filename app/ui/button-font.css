@@ -1,0 +1,57 @@
+.hud-character[data-value="9374"]{
+	background-image: url(/ui/xbox-button-a.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.hud-character[data-value="10005"]{
+	background-image: url(/ui/xbox-button-b.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.hud-character[data-value="10006"]{
+	background-image: url(/ui/xbox-button-x.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}
+
+.hud-character[data-value="10007"]{
+	background-image: url(/ui/xbox-button-y.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}
+
+.hud-character[data-value="10008"]{
+	background-image: url(/ui/xbox-button-lb.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}
+
+.hud-character[data-value="10009"]{
+	background-image: url(/ui/xbox-button-rb.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}

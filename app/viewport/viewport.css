@@ -25,6 +25,7 @@ html, body {
 	--scale-transition: 0.1s ease-in;
 }
 
+.viewport-frame,
 .viewport-frame.standalone {
 	--scale-transition: 0s linear;
 }
@@ -213,6 +214,10 @@ section.filters {
 	height: calc(100% / var(--halfScale));*/
 }
 
+.viewport-overlay .hud-character-string {
+	pointer-events: initial;
+}
+
 .viewport-overlay > * {
 	transform: scale(var(--scale));
 	transition: transform var(--scale-transition);
@@ -265,6 +270,10 @@ section.filters {
 		drop-shadow( var(--outlineWidth)    var(--outlineWidthNeg) 0px var(--outlineColor))
 		drop-shadow( var(--outlineWidthNeg) var(--outlineWidth)    0px var(--outlineColor))
 		drop-shadow( var(--outlineWidthNeg) var(--outlineWidthNeg) 0px var(--outlineColor));
+}
+
+.actor-selected {
+	 /*z-index: 1000;*/
 }
 
 .controllable.actor-generic:hover:not(.actor-selected),
@@ -416,7 +425,8 @@ span.arrow-west {
 	text-align: right !important;
 }
 
-.standalone .viewport-caption {
+.standalone .viewport-caption,
+.viewport-caption {
 	display: none;
 }
 
@@ -551,69 +561,7 @@ input[type=number]::-webkit-outer-spin-button {
 	top: 0em;
 }
 
-.aurora .backdrop::before {
-	opacity: 0.65;
-}
-
-.backdrop::before {
-	opacity: 0;
-	background-image: url(/custom/aurora.png);
-	background-size: 100% 55%;
-	background-repeat: no-repeat;
-}
-
-.aurora .backdrop {
-	background-color: #323292;
-}
-
-.backdrop::before {
-	content: ' ';
-	display: block;
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	transition: opacity 0.5s ease-out;
-	/*opacity: 0;*/
-}
-
-.backdrop {
-	transition: background-color 0.5s ease-out;
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	/*background-image: url(/Sonic/marble-garden-bg.png);
-	background-size: 100% auto;
-	background-position: calc(0.1px * var(--x)) calc(calc(var(--y) / var(--yMax)) * 100%);*/
-	min-height: calc(100%);
-	--height: calc(256px - 512px);
-}
-
-.backdrop.marble-garden {
-	background-color: #4848d8;
-	height: 632px;
-}
-
-.backdrop .parallax {
-	position: absolute;
-	left: 0;
-	width: 100%;
-}
-
-.backdrop.marble-garden .parallax {
-	height: 632px;
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
-}
-
-.backdrop.mystic-cave .parallax,
-.backdrop.proto-labrynth .parallax {
-	height: auto;
-	top: max( calc(100% - calc(1px * var(--top))), calc(1% * 0));
-	bottom: max( calc(100% - calc(1px * var(--bottom))), calc(1% * 0));
-}
-
+.viewport,
 .viewport.standalone {
 	position: fixed;
 	z-index: 10000;
@@ -631,6 +579,7 @@ input[type=number]::-webkit-outer-spin-button {
 	height: calc(100% / var(--scale) );
 }
 
+.viewport-frame,
 .viewport-frame.standalone {
 	position: absolute;
 	top: 0px;
@@ -650,6 +599,6 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: transparent !important;
 }
 
-.viewport-bg-layers [data-name^="Collision"] {
-	/*opacity: 0.1;*/
+.viewport.mouse-hide .labels {
+	display: none;
 }

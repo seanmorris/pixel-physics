@@ -1,0 +1,10 @@
+.viewport.construct {
+	background-color: #400;
+}
+
+.viewport.construct .viewport-background[data-layer="0"] > div {
+	/*box-shadow: inset 0 0 4px rgba(0,255`,0,0.4);*/
+	/*box-shadow: inset 0 0 4px rgba(255,0,0,0.4);*/
+	border-top: 0.5px solid #050;
+	border-left: 0.5px solid #050;
+}

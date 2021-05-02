@@ -140,6 +140,10 @@
 	transition: opacity 0.25s ease-in;
 }
 
+.actor-item.actor-ring .sprite .labels {
+	display: none;
+}
+
 .actor-item.actor-emerald .sprite {
 	background-image: url(/Sonic/emerald-white.png);
 }
@@ -282,6 +286,7 @@
 }
 
 .actor-item:before {
+	display: none;
 	box-sizing: border-box;
 	content: ' ';
 	transform: translate(-50%, calc(-100% + 1px));
@@ -292,7 +297,7 @@
 	width: calc(1px * var(--width));
 }
 
-.actor-item[data-colliding="true"]:before {
+/*.actor-item[data-colliding="true"]:before {
 	--collColor: rgba(0,255,255,0.15);
 	z-index: 10;
 }
@@ -309,7 +314,7 @@
 }
 .actor-item.collision-right:before {
 	border-right: 4px solid var(--collColor);
-}
+}*/
 
 @-webkit-keyframes ringSpin {
 	from{

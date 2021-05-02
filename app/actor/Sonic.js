@@ -23,6 +23,8 @@ const MODE_RIGHT   = 3;
 
 export class Sonic extends PointActor
 {
+	png = new Png('/Sonic/sonic.png');
+
 	constructor(...args)
 	{
 		super(...args);
@@ -79,6 +81,7 @@ export class Sonic extends PointActor
 			if(this.willStick && (this.public.mode === 1 || this.public.mode === 3))
 			{
 				this.args.wallSticking = true;
+				this.dashed = false;
 			}
 			else
 			{
@@ -89,12 +92,10 @@ export class Sonic extends PointActor
 
 	onAttached(event)
 	{
-		if(!Sonic.png)
+		if(!this.superSpriteSheet)
 		{
-			const png = Sonic.png = new Png(this.public.spriteSheet);
-
-			png.ready.then(()=>{
-				const newPng = png.recolor({
+			this.png.ready.then(()=>{
+				const newPng = this.png.recolor({
 					'8080e0': 'e0e080',
 					'6060c0': 'e0e000',
 					'4040a0': 'e0e001',
@@ -126,6 +127,23 @@ export class Sonic extends PointActor
 
 		if(this.public.falling)
 		{
+			if(this.public.wallSticking && !this.dashed)
+			{
+				if(this.public.mode === 1)
+				{
+					this.args.direction = -1;
+					this.args.facing = 'left';
+				}
+				else if(this.public.mode === 3)
+				{
+					this.args.direction = 1;
+					this.args.facing = 'right';
+				}
+
+				this.box.setAttribute('data-animation', 'wall-dropping');
+				this.args.ignore = -2;
+			}
+
 			this.args.wallSticking = false;
 		}
 		else
@@ -245,27 +263,8 @@ export class Sonic extends PointActor
 				if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 				{
 					this.box.setAttribute('data-animation', 'skidding');
-
-					// const viewport = this.viewport;
-
-					// const dustParticle = new Tag('<div class = "particle-dust">');
-
-					// const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
-
-					// dustParticle.style({
-					// 	'--x': dustPoint[0] + this.x
-					// 	, '--y': dustPoint[1] + this.y
-					// 	, 'z-index': 0
-					// 	, opacity: Math.random() * 2
-					// });
-
-					// viewport.particles.add(dustParticle);
-
-					// setTimeout(() => {
-					// 	viewport.particles.remove(dustParticle);
-					// }, 350);
 				}
-				else if(speed > maxSpeed / 2)
+				else if(this.public.moving && speed > maxSpeed / 2)
 				{
 					this.box.setAttribute('data-animation', 'running');
 				}
@@ -363,6 +362,14 @@ export class Sonic extends PointActor
 			return;
 		}
 
+		let dashSpeed = direction * 14;
+
+		if(this.public.wallSticking)
+		{
+			dashSpeed = direction * 18;
+			this.args.float = 6;
+		}
+
 		this.args.mode = 0;
 
 		this.args.rolling = false;
@@ -370,49 +377,44 @@ export class Sonic extends PointActor
 
 		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
 		{
+			dashSpeed = direction * 18;
+			this.args.float  = 12;
 			this.args.xSpeed = 0;
 		}
-
-		let dashSpeed = direction * 14;
 
 		this.args.float = 3;
 
-		if(this.args.wallSticking)
-		{
-			dashSpeed = direction * 18;
-			this.args.float = 6;
-		}
+		this.args.falling = true;
 
-		const foreDistance = this.scanForward(this.args.xSpeed + dashSpeed, 0.5);
+		const finalSpeed = this.args.xSpeed + dashSpeed;
 
-		if(foreDistance < 3 && foreDistance !== false)
-		{
-			this.args.xSpeed = 0;
-			this.dashed = true;
+		const foreDistance = this.castRay(
+			finalSpeed
+			, finalSpeed > 0 ? 0 : Math.PI
+			, (i, point) => {
+				if(this.getMapSolidAt(...point, this.public.layer))
+				{
+					return i;
+				}
+			}
+		);
 
-			this.box.setAttribute('data-animation', 'airdash');
-
-			return;
-		}
-		else if (foreDistance !== false)
+		if(this.public.wallSticking || foreDistance !== false)
 		{
 			dashSpeed = foreDistance * Math.sign(dashSpeed);
 		}
 
 		this.box.setAttribute('data-animation', 'airdash');
 
-		if(this.public.ySpeed > 0)
-		{
-			this.args.ySpeed = 0;
-		}
-
-		this.args.falling = true;
-
-		this.args.xSpeed += dashSpeed;
+		this.args.xSpeed = finalSpeed;
+		this.args.ySpeed = 0;
 
 		this.dashTimer = 0;
 
 		this.dashed = true;
+
+		this.args.mode = 0;
+		this.args.groundAngle = 0;
 	}
 
 	command_0()
@@ -448,7 +450,7 @@ export class Sonic extends PointActor
 		{
 			this.airDash(-1);
 
-			this.willStick = true;
+			this.willStick = 2;
 			this.stayStuck = true;
 		}
 	}
@@ -459,7 +461,7 @@ export class Sonic extends PointActor
 		{
 			this.dropDashCharge = 0;
 
-			this.willStick = true;
+			this.willStick = 2;
 			this.stayStuck = true;
 
 			this.args.ignore = 4;
@@ -485,6 +487,8 @@ export class Sonic extends PointActor
 			this.args.facing = mode === 1 ? 'left' : 'right';
 
 			this.args.mode = 0;
+
+			this.dashed = true;
 		}
 	}
 
@@ -494,7 +498,7 @@ export class Sonic extends PointActor
 		{
 			this.airDash(1);
 
-			this.willStick = true;
+			this.willStick = 2;
 			this.stayStuck = true;
 		}
 	}
@@ -518,6 +522,8 @@ export class Sonic extends PointActor
 			this.args.facing = mode === 1 ? 'right' : 'left';
 
 			this.args.mode = 0;
+
+			this.dashed = true;
 		}
 	}
 
@@ -527,7 +533,7 @@ export class Sonic extends PointActor
 		{
 			this.dropDashCharge = 0;
 
-			this.willStick = true;
+			this.willStick = 2;
 			this.stayStuck = true;
 
 			this.args.ignore = 4;
@@ -661,7 +667,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		const ring = this.findDashableRing(64);
+		const ring = this.findDashableRing();
 
 		if(ring)
 		{
@@ -921,9 +927,27 @@ export class Sonic extends PointActor
 		}
 	}
 
+	startle()
+	{
+		super.startle();
+
+		this.box.setAttribute('data-animation', 'skidding');
+	}
+
 	get solid() { return false; }
 	get canRoll() { return !this.public.wallSticking; }
 	get isEffect() { return false; }
 	get controllable() { return true; }
+
+
+	get facePoint() {
+
+		if(this.public.wallSticking)
+		{
+			return this.rotatePoint(0,-5);
+		}
+
+		return super.facePoint;
+	}
 
 }
