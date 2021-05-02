@@ -36,7 +36,7 @@ export class Eggman extends PointActor
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
 
-		this.args.width  = 32;
+		this.args.width  = 22;
 		this.args.height = 57;
 
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/eggman.png';

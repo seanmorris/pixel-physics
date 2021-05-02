@@ -23,7 +23,7 @@ export class Chalmers extends PointActor
 		this.args.jumpForce = 15;
 		this.args.gravity   = 0.75;
 
-		this.args.width  = 25;
+		this.args.width  = 18;
 		this.args.height = 48;
 	}
 
@@ -83,7 +83,11 @@ export class Chalmers extends PointActor
 				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
-		else
+		else if(this.args.standingOn && this.args.standingOn.isVehicle)
+		{
+			this.box.setAttribute('data-animation', 'standing');
+		}
+		else if(this.args.jumping)
 		{
 			this.box.setAttribute('data-animation', 'jumping');
 		}
