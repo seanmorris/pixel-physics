@@ -42,40 +42,52 @@ export class BreakableBlock extends Block
 			return false;
 		}
 
-		if(other.float && this.float && other instanceof Block)
+		if(other instanceof Block && (other.public.float || this.public.float))
 		{
 			return false;
 		}
 
-		if(!other.controllable)
+		if(!other.isVehicle && !other.controllable)
 		{
 			return !this.broken;
 		}
 
-		if(!other.public.gSpeed && !other.public.xSpeed && !other.public.ySpeed)
+		if(!other.falling && !other.isVehicle && !other.public.gSpeed && !other.public.xSpeed && !other.public.ySpeed)
 		{
 			return !this.broken;
 		}
 
-		if(other.public.rolling || other.public.jumping || other.public.dashed)
+		if(other.isVehicle || other.public.rolling || other.public.jumping || other.public.dashed)
 		{
 			const top = this.y - this.public.height;
 
-			// if(other.public.jumping && other.y < top)
-			// {
-			// 	other.args.ySpeed *= -0.75;
-			// 	other.args.y = top;
-			// }
+			if(this.public.bounceBack && other.public.jumping && other.y < top)
+			{
+				other.args.ySpeed *= -bounceBack;
+				other.args.y = top;
+			}
 
 			this.box.classList.add('broken');
+
+			this.box.classList.add('breaking');
+
+			this.viewport.onFrameOut(4, () => {
+				this.box.classList.remove('breaking');
+			})
 
 			if(other.public.mode % 2 === 0)
 			{
 				const x = other.public.xSpeed || other.public.gSpeed;
 
-				this.fragmentsX.style({'--xSpeed': Math.round(x)});
+				if(other.isVehicle)
+				{
+					this.fragmentsX.style({'--xSpeed': Math.round(x * 1.1 )});
+				}
+				else
+				{
+					this.fragmentsX.style({'--xSpeed': Math.round(x)});
+				}
 			}
-
 
 			this.broken = true;
 

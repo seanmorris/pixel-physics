@@ -61,39 +61,49 @@ export class Block extends PointActor
 
 			const yForceMax = Math.round(droop * (1 - Math.abs(pos)) * 4) / 4;
 
-			if(!other.public.falling)
+			this.args.droopSpeed = other.args.ySpeed || this.args.droopSpeed || 4;
+
+			if(!other.args.falling && this.args.droopSpeed > 6)
 			{
-				this.args.yForce = Math.max(yForceMax, 0);
+				this.args.droopSpeed--;
 
-				if(other.public.gSpeed > half)
+				if(Math.abs(this.args.droopSpeed) < 6)
 				{
-					this.args.yForce = 0;
+					this.args.droopSpeed = 6;
 				}
+			}
 
-				this.args.y = this.originalY + this.public.yForce;
+			this.args.yForce += Math.max(other.args.ySpeed || this.args.droopSpeed, 4);
+
+			if(other.public.gSpeed > half)
+			{
+				this.args.yForce = 0;
+			}
+
+			this.args.yForce = Math.min(yForceMax, this.public.yForce);
+
+			if(other.args.falling)
+			{
+				this.args.yForce = Math.max(this.args.yForce, -yForceMax);
 			}
 			else
 			{
-				this.args.yForce += 1;
+				this.args.yForce = Math.max(this.args.yForce, 0);
+			}
 
-				this.args.yForce = Math.min(yForceMax, this.public.yForce);
-
-				this.args.y = this.originalY + this.public.yForce;
-
-				if(this.public.yForce < yForceMax)
-				{
-					return false;
-				}
+			if(Math.abs(this.args.yForce) <= 1)
+			{
+				this.args.yForce = 0;
+				this.args.y = this.originalY
 			}
 		}
-
 
 		if(this.public.platform)
 		{
 			const otherTop = other.y - other.public.height;
 			const blockTop = this.y - this.public.height;
 
-			if(other.public.falling === false || (other.public.ySpeed > 0 && otherTop <= blockTop))
+			if(other.public.falling === false || (other.public.ySpeed > 0 && other.y <= blockTop))
 			{
 				return true;
 			}
@@ -175,6 +185,11 @@ export class Block extends PointActor
 
 			this.args.spriteSheet = '/map/' + tile[2];
 
+			if(this.public.droop)
+			{
+				this.droop(0);
+			}
+
 		});
 	}
 
@@ -232,6 +247,7 @@ export class Block extends PointActor
 				this.reset = true;
 
 				this.viewport.onFrameOut(300, () => {
+					this.args.groundAngle = 0;
 					this.args.falling = true;
 					this.args.goBack = true;
 					this.args.float = -1;
@@ -293,7 +309,7 @@ export class Block extends PointActor
 
 			if(!this.args.colliding && this.args.yForce && this.snapBack)
 			{
-				this.args.yForce *= 0.65;
+				this.args.yForce *= 0.45;
 			}
 
 			if(Math.abs(this.public.yForce) <= 1)
@@ -302,14 +318,24 @@ export class Block extends PointActor
 				this.snapBack = false;
 			}
 
-			this.args.y = this.originalY + this.public.yForce;
+			this.args.y = Math.ceil(this.originalY + this.public.yForce) || this.originalY;
 
 			this.droop(-1 * this.public.yForce, this.droopPos || 0);
 		}
 	}
 
+	popOut(other)
+	{
+		if(this.args.platform)
+		{
+			return;
+		}
+
+		super.popOut(other);
+	}
+
 	get rotateLock() { return true; }
 	get canStick() { return true; }
-	get solid() { return (!this.public.collapse) || (this.public.float !== 0 || !this.public.goBack); }
+	get solid() { return (!this.public.collapse || (this.public.float !== 0 || !this.public.goBack)); }
 }
 

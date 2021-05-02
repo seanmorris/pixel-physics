@@ -9,7 +9,7 @@ export class CompanionBlock extends MarbleBlock
 
 		this.args.type = 'actor-item actor-marble-companion-block';
 
-		this.args.density = this.args.density || 6;
+		this.args.density = this.args.density || 9.5;
 
 		this.sample = new Audio('/Sonic/S3K_35.wav');
 
@@ -33,18 +33,21 @@ export class CompanionBlock extends MarbleBlock
 			}
 		}
 
-		if(!this.played && this.region instanceof LavaRegion)
+		for(const region of this.regions)
 		{
-			this.onTimeout(50, () => {
-				if(this.viewport.args.audio)
-				{
-					this.sample.volume = 0.15 + (Math.random() * -0.05);
+			if(!this.played && region instanceof LavaRegion)
+			{
+				this.onTimeout(50, () => {
+					if(this.viewport.args.audio)
+					{
+						this.sample.volume = 0.15 + (Math.random() * -0.05);
 
-					this.sample.play();
-				}
-			});
+						this.sample.play();
+					}
+				});
 
-			this.played = true;
+				this.played = true;
+			}
 		}
 
 		super.update();

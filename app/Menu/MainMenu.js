@@ -253,7 +253,7 @@ export class MainMenu extends Menu
 		return answer;
 	}
 
-	accept()
+	acceptRtp()
 	{
 		let answerString = this.args.input;
 
@@ -322,7 +322,7 @@ export class MainMenu extends Menu
 			if(this.args.joinGame && copied.match(/^s3ktp:\/\/accept\//))
 			{
 				this.args.input = copied;
-				this.accept();
+				this.acceptRtp();
 			}
 		});
 	}
@@ -336,8 +336,18 @@ export class MainMenu extends Menu
 		const client = this.client;
 
 		const onOpen  = event => {
+			const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
+
 			this.parent.args.networked = true;
-			this.remove();
+			this.parent.tileMap = tileMap;
+
+			tileMap.ready.then(() => {
+				this.parent.startLevel();
+				this.accept();
+				console.log('Peer connection opened!');
+			});
+
+			this.accept();
 		};
 		const onClose = event => this.disconnect();
 

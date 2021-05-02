@@ -14,6 +14,122 @@ export class Rocks extends PointActor
 		this.args.height = 80;
 
 		this.gone = false;
+
+		this.particleA = new Tag('<div class = "particle-rock">');
+		this.particleB = new Tag('<div class = "particle-rock">');
+		this.particleC = new Tag('<div class = "particle-rock">');
+		this.particleD = new Tag('<div class = "particle-rock">');
+		this.particleE = new Tag('<div class = "particle-rock">');
+		this.particleF = new Tag('<div class = "particle-rock">');
+		this.particleG = new Tag('<div class = "particle-rock">');
+		this.particleH = new Tag('<div class = "particle-rock">');
+	}
+
+	onAttached()
+	{
+		// const direction = Math.sign(other.args.gSpeed || other.args.xSpeed);
+
+		let direction = -1;
+
+		const fuzzFactor = 20;
+		const fallSpeed = 1550;
+		const xForce    = 60;
+		const yForce    = 40;
+
+		const particleA =this.particleA;
+		const particleB =this.particleB;
+		const particleC =this.particleC;
+		const particleD =this.particleD;
+		const particleE =this.particleE;
+		const particleF =this.particleF;
+		const particleG =this.particleG;
+		const particleH =this.particleH;
+
+		particleA.style({
+			'--x': this.x - 8
+			, '--y': this.y - 8
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleB.style({
+			'--x': this.x + 8
+			, '--y': this.y - 0
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleC.style({
+			'--x': this.x
+			, '--y': this.y - 18
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce * 1.1
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleD.style({
+			'--x': this.x + 8
+			, '--y': this.y - 10
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce * 1.1
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleE.style({
+			'--x': this.x - 8
+			, '--y': this.y - 28
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce * 1.2
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleF.style({
+			'--x': this.x + 8
+			, '--y': this.y - 20
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce * 1.2
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleG.style({
+			'--x': this.x - 8
+			, '--y': this.y - 30
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': yForce * 1.2
+			, 'z-index': 0
+		});
+
+		direction *= -1;
+
+		particleH.style({
+			'--x': this.x + 8
+			, '--y': this.y - 30
+			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
+			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
+			, '--yMomentum': 50 * 1.3
+			, 'z-index': 0
+		});
 	}
 
 	update()
@@ -99,93 +215,14 @@ export class Rocks extends PointActor
 			this.sample.play();
 		}
 
-		const particleA = new Tag('<div class = "particle-rock">');
-		const particleB = new Tag('<div class = "particle-rock">');
-		const particleC = new Tag('<div class = "particle-rock">');
-		const particleD = new Tag('<div class = "particle-rock">');
-		const particleE = new Tag('<div class = "particle-rock">');
-		const particleF = new Tag('<div class = "particle-rock">');
-		const particleG = new Tag('<div class = "particle-rock">');
-		const particleH = new Tag('<div class = "particle-rock">');
-
-		const direction = Math.sign(other.args.gSpeed || other.args.xSpeed);
-
-		const fuzzFactor = 60;
-		const fallSpeed = 1250;
-		const xForce    = 180;
-		const yForce    = 10;
-
-		particleA.style({
-			'--x': this.x
-			, '--y': this.y - 10
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleB.style({
-			'--x': this.x + 20
-			, '--y': this.y - 10
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleC.style({
-			'--x': this.x
-			, '--y': this.y - 20
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleD.style({
-			'--x': this.x + 10
-			, '--y': this.y - 20
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleE.style({
-			'--x': this.x
-			, '--y': this.y - 30
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleF.style({
-			'--x': this.x + 20
-			, '--y': this.y - 30
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleG.style({
-			'--x': this.x
-			, '--y': this.y - 40
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': yForce
-			, 'z-index': 0
-		});
-
-		particleH.style({
-			'--x': this.x + 10
-			, '--y': this.y - 40
-			, '--fallSpeed': fallSpeed + (fuzzFactor * Math.random())
-			, '--xMomentum': (xForce * direction) + (fuzzFactor * Math.random())
-			, '--yMomentum': 50
-			, 'z-index': 0
-		});
+		const particleA =this.particleA;
+		const particleB =this.particleB;
+		const particleC =this.particleC;
+		const particleD =this.particleD;
+		const particleE =this.particleE;
+		const particleF =this.particleF;
+		const particleG =this.particleG;
+		const particleH =this.particleH;
 
 		viewport.particles.add(particleA);
 		viewport.particles.add(particleB);
@@ -207,7 +244,7 @@ export class Rocks extends PointActor
 			viewport.particles.remove(particleG);
 			viewport.particles.remove(particleH);
 
-		}, 512);
+		}, 2500);
 
 		viewport.actors.remove( this );
 	}

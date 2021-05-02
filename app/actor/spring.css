@@ -39,13 +39,13 @@
 	--sprite-offset-x: -15px;
 }
 
-.actor-item.actor-spring[data-colliding=true] .sprite {
+.actor-item.actor-spring.active .sprite {
 	--sprite-offset-x: -80px;
 	transition: background 0s steps(2);
 }
 
-.actor-item.actor-spring[data-colliding=true] .spring-pad {
-	transition: top 0.1s;
+.actor-item.actor-spring.active .spring-pad {
+	transition: top 50ms;
 	z-index: 10;
 	top: -32px;
 }

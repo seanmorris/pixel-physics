@@ -5,7 +5,7 @@
 .viewport.standalone,
 .viewport.fullscreen,
 body {
-	background-image:
+	/*background-image:
 		url(/ui/pokemon-ruby-sun-overlay.png)
 		, url(/ui/pokemon-ruby-clouds-overlay-a.png)
 		, url(/ui/pokemon-ruby-clouds-overlay-b.png)
@@ -13,7 +13,7 @@ body {
 		, url(/ui/pokemon-ruby-ground.png);
 	background-repeat: repeat-x, repeat-x, repeat-x, repeat-x, repeat-x;
 	background-position: 0% top, 0% 63%, 0% 63%, 0% 63%, 0% bottom;
-	background-size: auto 37%, auto 42%, auto 42%, auto 42%, auto 21.5%;
+	background-size: auto 37%, auto 42%, auto 42%, auto 42%, auto 21.5%;*/
 	background-color: #357aab;
 	overflow: hidden;
 }

@@ -208,7 +208,7 @@ export class Eggrobo extends PointActor
 				break;
 			case 3:
 				spotAngle  = (-groundAngle) - (Math.PI) + (Math.PI / 4 * direction);
-				trajectory = (-groundAngle);
+				trajectory = (-groundAngle - (Math.PI / 2));
 				break;
 		}
 

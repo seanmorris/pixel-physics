@@ -1,0 +1,36 @@
+.actor-arrow-sign {
+	z-index: -1;
+}
+
+.actor-arrow-sign .arrow-sign-post {
+	background-image: url(/Sonic/arrow-sign-post.png);
+	width: 8px;
+	position: absolute;
+	top: -4px;
+	left: 12px;
+	height: calc(calc(var(--height, 32) * 1px ) + 6px);
+}
+
+.actor-arrow-sign .arrow-sign-post::before {
+	position: absolute;
+	left: 0;
+	width: 8px;
+	height: 8px;
+	content: ' ';
+	background-image: url(/Sonic/arrow-sign-cap.png);
+}
+
+.actor-arrow-sign .arrow-sign-post::before {
+	top: 0;
+}
+
+.actor-arrow-sign .arrow-sign-head-box {
+	transform: rotate(calc(calc(var(--point) + var(--ground-angle)) * 1rad));
+	transition: transform 0.25s ease-in;
+	position: absolute;
+	top: 2px;
+	left: 0;
+	background-image: url(/Sonic/arrow-sign.png);
+	width: 32px;
+	height: 24px;
+}

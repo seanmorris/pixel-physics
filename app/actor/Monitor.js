@@ -61,7 +61,8 @@ export class Monitor extends PointActor
 		}
 
 		if((type === 1 || type === 3)
-			&& (Math.abs(other.public.xSpeed) > 15 || other instanceof Projectile)
+			// && (Math.abs(other.public.xSpeed) > 15 || other instanceof Projectile)
+			&& (other.public.rolling || other instanceof Projectile)
 			&& !this.public.gone
 			&& this.viewport
 		){

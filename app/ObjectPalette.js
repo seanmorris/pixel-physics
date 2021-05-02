@@ -7,6 +7,7 @@ import { ShadeRegion } from './region/ShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
+import { ForceRegion } from './region/ForceRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -24,6 +25,7 @@ import { Bumper } from './actor/Bumper';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
+import { ArrowSign }  from './actor/ArrowSign';
 import { Emerald }   from './actor/Emerald';
 import { Window }    from './actor/Window';
 import { Spring }    from './actor/Spring';
@@ -45,6 +47,7 @@ import { TextActor }  from './actor/TextActor';
 import { EggMobile } from './actor/EggMobile';
 import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
+import { RailCar }  from './actor/RailCar';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
@@ -68,6 +71,7 @@ export const ObjectPalette = {
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
 	, 'star-post':    StarPost
+	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
 	, 'block':           Block
 	, 'q-block':         QuestionBlock
@@ -76,6 +80,7 @@ export const ObjectPalette = {
 	, 'breakable-block': BreakableBlock
 	, 'bumper':       Bumper
 	, 'drill-car':    DrillCar
+	, 'rail-car':     RailCar
 	, 'tornado':      Tornado
 	, 'egg-mobile':   EggMobile
 	, 'rocks-tall':   Rocks
@@ -96,6 +101,7 @@ export const ObjectPalette = {
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
 	, 'shade-region': ShadeRegion
+	, 'force-region': ForceRegion
 	, 'rolling-region': RollingRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing

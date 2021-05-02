@@ -1,0 +1,80 @@
+/*.backdrop.marble-garden {
+	background-color: #000;
+	transform: scale(2);
+}
+.backdrop.marble-garden {
+	background-color: #000;
+	transform: scale(2);
+}
+*/
+.aurora .backdrop::before {
+	opacity: 0.65;
+}
+
+.backdrop::before {
+	/*opacity: 1;*/
+	opacity: 0;
+	background-image: url(/custom/aurora.png);
+	background-size: 100% 55%;
+	background-repeat: no-repeat;
+}
+
+.aurora .backdrop {
+	background-color: #323292;
+}
+
+.backdrop::before {
+	content: ' ';
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	transition: opacity 0.25s 0.75s ease-out;
+	opacity: 0;
+	z-index: -1;
+}
+
+.backdrop {
+	pointer-events: none;
+	transition: background-color 0.75s ease-out;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	/*width: 50%;
+	min-height: 50%;
+	transform-origin: top left;
+	*/
+	/*background-image: url(/Sonic/marble-garden-bg.png);
+	background-size: 100% auto;
+	background-position: calc(0.1px * var(--x)) calc(calc(var(--y) / var(--yMax)) * 100%);*/
+	--height: 1024;
+}
+
+.backdrop.marble-garden {
+	background-color: rgba(25,0,75,0.5);
+	background-color: #4848d8;
+	height: 632px;
+}
+
+.backdrop .parallax {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	min-height: 100%;
+}
+
+.backdrop.marble-garden .parallax {
+	height: 632px;
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
+}
+
+.backdrop.mystic-cave .parallax,
+.backdrop.proto-labrynth .parallax {
+	height: auto;
+	top: max( calc(100% - calc(1px * var(--top))), calc(1% * 0));
+	bottom: max( calc(100% - calc(1px * var(--bottom))), calc(1% * 0));
+}

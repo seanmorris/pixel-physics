@@ -1,11 +1,12 @@
 .particle-rock {
 	width: 23px;
 	height: 23px;
-
 	animation: particle-x-fall ease-out 1 calc(1ms * var(--fallSpeed)) forwards;
+	z-index: 200 !important;
 }
 
 .particle-rock:after {
+	z-index: 200 !important;
 	content: ' ';
 	display: block;
 	transform-origin: bottom center;

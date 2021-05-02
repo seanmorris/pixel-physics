@@ -24,7 +24,7 @@ export class Chalmers extends PointActor
 		this.args.gravity   = 0.75;
 
 		this.args.width  = 25;
-		this.args.height = 64;
+		this.args.height = 48;
 	}
 
 	onAttached()

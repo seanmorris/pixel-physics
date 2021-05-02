@@ -106,7 +106,7 @@ export class TitleScreenCard extends Card
 		});
 
 
-		this.onTimeout(1300, () => this.args.aurora = 'aurora');
+		this.onTimeout(2000, () => this.args.aurora = 'aurora');
 
 		this.started = Date.now();
 

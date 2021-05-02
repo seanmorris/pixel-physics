@@ -104,6 +104,9 @@ export class Knuckles extends PointActor
 			this.punched = false;
 		}
 
+		this.willStick = false;
+		this.stayStuck = false;
+
 		if(!falling)
 		{
 			this.bombsDropped = 0;
@@ -187,13 +190,29 @@ export class Knuckles extends PointActor
 				this.box.setAttribute('data-animation', 'rolling');
 			}
 		}
-		else if(this.public.flying)
+		else
 		{
-			this.box.setAttribute('data-animation', 'flying');
-		}
-		else if(this.public.jumping)
-		{
-			this.box.setAttribute('data-animation', 'jumping');
+			if(this.public.flying)
+			{
+				this.box.setAttribute('data-animation', 'flying');
+			}
+			else if(this.public.jumping)
+			{
+				this.box.setAttribute('data-animation', 'jumping');
+			}
+
+			if(this.public.climbing)
+			{
+				this.args.ySpeed = 0;
+				this.args.xSpeed = 0;
+				this.box.setAttribute('data-animation', 'walking');
+				this.public.climbing = false;
+
+				this.onNextFrame(() => {
+					this.args.groundAngle = 0;
+					this.args.x += -4 * this.public.direction;
+				});
+			}
 		}
 
 		if(this.public.flying)
@@ -237,8 +256,6 @@ export class Knuckles extends PointActor
 
 			if(this.public.flyDirection)
 			{
-				// console.log(this.public.flyDirection, Math.sign(this.args.xSpeed));
-
 				if(Math.abs(this.args.xSpeed) < 16)
 				{
 					if(this.public.flyDirection !== Math.sign(this.public.xSpeed))
@@ -252,22 +269,22 @@ export class Knuckles extends PointActor
 				}
 			}
 
+			if(Math.abs(this.args.xSpeed) > 18)
+			{
+				this.args.xSpeed = 18 * Math.sign(this.args.xSpeed);
+			}
+
 			this.args.float = 3;
 
 			this.willStick = true;
 			this.stayStuck = true;
+
+			this.args.groundAngle = 0;
 		}
 		else if(this.public.mode % 2 === 0 || this.public.groundAngle)
 		{
-			this.willStick = false;
-			this.stayStuck = false;
 			this.args.flyDirection = 0;
 		}
-
-		// if(this.args.knucklesFlyCoolDown == 0 && this.args.ySpeed > 5)
-		// {
-		// 	this.args.flying = false;
-		// }
 
 		if(this.args.knucklesFlyCoolDown > 0)
 		{

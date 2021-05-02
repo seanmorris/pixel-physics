@@ -41,8 +41,6 @@ export class Vehicle extends PointActor
 			{
 				other.args.ySpeed = -5;
 			}
-
-			other.args.falling = true;
 		}
 
 		return false;
@@ -59,8 +57,6 @@ export class Vehicle extends PointActor
 			{
 				other.args.ySpeed = -5;
 			}
-
-			other.args.falling = true;
 		}
 	}
 

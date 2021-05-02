@@ -29,7 +29,7 @@
 .actor-item.actor-seymour[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
-	animation: seymour-run steps(5) infinite calc(calc(calc(1 - var(--animation-bias)) * 160ms) + 80ms);
+	animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias)) * 160ms) + 320ms);
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after,

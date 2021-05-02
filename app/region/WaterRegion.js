@@ -126,25 +126,50 @@ export class WaterRegion extends Region
 
 			const bubble = new Tag('<div class = "particle-bubble">');
 
+			const attach = other.rotatePoint(
+				-5 * other.public.direction
+				, -14 + other.public.height
+			);
+
+			const x = other.x + attach[0];
+			const y = other.y + attach[1];
+
+			bubble.style({'--startY': y, '--size': Math.random()});
+
 			const stopHoldingBubble = this.onFrame(() => {
 
-				const attach = other.rotatePoint(
-					-5 * other.public.direction
-					, -14 + other.public.height
-				);
+				const point = other.facePoint;
 
-				const x = other.x + attach[0];
-				const y = other.y + attach[1];
+				const x = other.x + point[0];
+				const y = other.y + point[1];
 
+				if(other.y < this.y - this.public.height)
+				{
+					bubble.style({display: 'none'});
+				}
 
 				bubble.style({'--x': x, '--y': y});
 			});
 
+			const stopWatchingBubble = this.onFrame(() => {
+				bubble.style({'--maxY': this.y - this.args.height});
+			});
+
 			viewport.particles.add(bubble);
 
-			setTimeout(() => stopHoldingBubble(), 350);
+			viewport.onTimeout(350, () => {
+				bubble.classList.add('float');
+				stopHoldingBubble();
+			});
 
-			setTimeout(() => viewport.particles.remove(bubble), 3500);
+			viewport.onTimeout(1000, () => {
+				bubble.classList.add('floating');
+			});
+
+			setTimeout(() => {
+				viewport.particles.remove(bubble);
+				stopWatchingBubble();
+			}, 1500);
 
 		}
 	}

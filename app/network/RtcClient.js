@@ -11,14 +11,14 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 
 		this.peerClientChannel = this.peerClient.createDataChannel("chat");
 
-		this.peerClientChannel.addEventListener('open', () => {
+		this.peerClientChannel.addEventListener('open', event => {
 			const openEvent = new CustomEvent('open', {detail: event.data });
 			openEvent.originalEvent = event;
 			this.dispatchEvent(openEvent);
 			this.connected = true;
 		});
 
-		this.peerClientChannel.addEventListener('close', () => {
+		this.peerClientChannel.addEventListener('close', event => {
 			const closeEvent = new CustomEvent('close', {detail: event.data });
 			closeEvent.originalEvent = event;
 			this.dispatchEvent(closeEvent);
@@ -59,6 +59,8 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 				}
 				else
 				{
+					console.log(event.candidate);
+
 					candidates.add(event.candidate);
 				}
 

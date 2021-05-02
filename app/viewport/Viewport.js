@@ -2,6 +2,7 @@ import { Bindable } from 'curvature/base/Bindable';
 import { Bag  }     from 'curvature/base/Bag';
 import { Tag  }     from 'curvature/base/Tag';
 import { View }     from 'curvature/base/View';
+import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
 
 import { TileMap }  from '../tileMap/TileMap';
@@ -9,6 +10,7 @@ import { TileMap }  from '../tileMap/TileMap';
 import { Titlecard } from '../titlecard/Titlecard';
 
 import { Particle3d } from '../particle/Particle3d';
+
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 import { ProtoLabrynth } from  '../backdrop/ProtoLabrynth';
@@ -35,6 +37,7 @@ import { Layer } from './Layer';
 
 import { Controller } from '../controller/Controller';
 
+import { BackdropPalette } from '../BackdropPalette';
 import { ObjectPalette } from '../ObjectPalette';
 
 import { ClickSwitch } from '../ui/ClickSwitch';
@@ -59,6 +62,8 @@ import { ChatBox } from '../network/ChatBox';
 
 import { Sonic } from '../actor/Sonic';
 import { Tails } from '../actor/Tails';
+import { Seymour } from '../actor/Seymour';
+import { Chalmers } from '../actor/Chalmers';
 
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
@@ -73,7 +78,12 @@ export class Viewport extends View
 	{
 		super(args,parent);
 
+		this[ Bindable.NoGetters ] = true;
+
+		Router.listen(this, { '': () => '' });
+
 		this.objectPalette = ObjectPalette;
+		this.meta = {};
 
 		this.callFrames = new Map;
 		this.backdrops  = new Map;
@@ -87,30 +97,101 @@ export class Viewport extends View
 
 		this.args.mouse = 'moved';
 
-		this.settings = {
+		this.settings = Bindable.make({
 			blur: false
 			, displace: false
 			, outline: 1
 			, musicVol: 100
 			, sfxVol: 100
 			, username: 'player'
-		};
+		});
 
 		this.vizi = true;
 
 		this.args.level = '';
 
-		this.tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
+		let  mapUrl = '/map/pixel-hill-zone.json';
+		const inputMapUrl = Router.query.map;
+
+		let noMenu = false;
+
+		if(inputMapUrl && inputMapUrl.match(/^\w/))
+		{
+			mapUrl = '/map/' + inputMapUrl;
+
+			noMenu = true;
+		}
+
+		this.tileMap = new TileMap({ mapUrl });
 		this.sprites = new Bag;
 		this.world   = null;
 
 		const ready = this.tileMap.ready;
 
-		this.args.titlecard = new Series({cards: this.introCards()}, this);
+		let noIntro = Router.query.nointro;
+
+		const cards = [];
+
+		if(noMenu)
+		{
+			noIntro = true;
+
+			cards.push(this.args.zonecard = new Titlecard({}, this));
+
+			this.tileMap.ready.then(() => {
+				this.setZoneCard();
+				this.args.zonecard.play().then(()=>{
+					this.startLevel();
+				})
+			});
+		}
+		else if(!noIntro)
+		{
+			cards.push(...this.introCards());
+		}
+		else
+		{
+			this.args.zonecard = new Titlecard({waitFor: this.tileMap.ready}, this);
+
+			cards.push(new MainMenu({timeout: -1}, this), this.args.zonecard);
+		}
+
+		this.args.noIntro = noIntro ? 'no-intro' : '';
+
+		this.args.titlecard = new Series({cards}, this);
 
 		this.args.pauseMenu = new PauseMenu({}, this);
 
-		this.particles = new Bag;
+		this.particleObserver = new IntersectionObserver((entries, observer) => {
+			for(const entry of entries)
+			{
+				if(entry.intersectionRation === 0)
+				{
+					entry.target.style.display = 'none';
+
+					entry.target.remove();
+				}
+				else
+				{
+					delete entry.target.style.display;
+				}
+			}
+		}, {
+			threshold: 0
+		});
+
+		this.particles = new Bag((i,s,a) => {
+			if(a === Bag.ITEM_ADDED)
+			{
+				i.node && this.particleObserver.observe(i.node);
+				i.node && this.tags.particles.appendChild(i.node);
+			}
+			else if(a === Bag.ITEM_REMOVED)
+			{
+				i.remove();
+			}
+		});
+
 		this.effects   = new Bag;
 
 		this.maxCameraBound = 80;
@@ -177,8 +258,6 @@ export class Viewport extends View
 		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
 		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
 
-
-		// this.args.bindTo('frameId', v => this.args.frame.args.value = Number(v) );
 		this.args.frameId = -1;
 
 		this.settings.bindTo('displace', v => this.args.displacement = v ? 'on' : 'off');
@@ -204,10 +283,6 @@ export class Viewport extends View
 
 		});
 
-
-		// this.controlCard = View.from(require('../cards/basic-controls.html'));
-		// this.moveCard    = View.from(require('../cards/basic-moves.html'));
-
 		this.args.blockSize = 32;
 
 		this.args.populated = false;
@@ -218,13 +293,23 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
-		this.args.width  = 32 * 14;
-		this.args.height = 32 * 8;
+		this.args.width  = 32 * 16;
+		this.args.height = 32 * 9;
 		this.args.scale  = 2;
 
-		// this.args.width  = 32 * 14 * 2;
-		// this.args.height = 32 * 8  * 2;
-		// this.args.scale  = 1;
+		if(Router.query.noScale)
+		{
+			this.args.width  = 32 * 14 * 2;
+			this.args.height = 32 * 8  * 2;
+			this.args.scale  = 1;
+		}
+
+		if(Router.query.bigScale)
+		{
+			this.args.width  = 32 * 60;
+			this.args.height = 32 * 34;
+			this.args.scale  = 1;
+		}
 
 		this.collisions = new WeakMap;
 
@@ -310,8 +395,8 @@ export class Viewport extends View
 
 		this.colCellCache = new Map;
 		this.colCellDiv = this.args.width > this.args.height
-			? this.args.width * 0.5
-			: this.args.height * 0.5;
+			? this.args.width * 0.75
+			: this.args.height * 0.75;
 
 		this.colCells = new Map;
 
@@ -445,7 +530,7 @@ export class Viewport extends View
 		}).catch(e =>console.error(e));
 	}
 
-	fitScale(fill = true)
+	fitScale(fill = false)
 	{
 		const hScale = window.innerHeight / this.args.height;
 		const vScale = window.innerWidth / this.args.width;
@@ -487,6 +572,8 @@ export class Viewport extends View
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 
+		this.onTimeout(100, () => this.fitScale(false));
+
 		this.onTimeout(16500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
@@ -500,7 +587,12 @@ export class Viewport extends View
 			}
 		});
 
+		this.listen(window, 'resize', (event) => {
+			this.onTimeout(100, () => this.fitScale(false));
+		});
+
 		this.listen(document, 'fullscreenchange', (event) => {
+			this.onTimeout(100, () => this.fitScale(false));
 			if (!document.fullscreenElement)
 			{
 				this.args.scale = this.initScale;
@@ -545,7 +637,7 @@ export class Viewport extends View
 
 		keyboard.focusElement = this.tags.viewport.node;
 
-		if(window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches)
+		if(0 || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches)
 		{
 			this.args.standalone = 'standalone';
 
@@ -558,24 +650,42 @@ export class Viewport extends View
 		this.onTimeout(100, () => this.args.initializing = '');
 	}
 
-	startLevel()
+	setZoneCard()
 	{
-		this.args.backdrop = new Backdrop;
-
 		if(this.tileMap.mapData && this.tileMap.mapData.properties)
 		{
 			for(const property of this.tileMap.mapData.properties)
 			{
 				const name = property.name.replace(/-/g, '_');
 
-				this.args[ name ] = property.value;
+				this.meta[ name ] = property.value;
 			}
 		}
 
-		this.args.zonecard.args.firstLine  = this.args.titlecard_title_1;
-		this.args.zonecard.args.secondLine = this.args.titlecard_title_2;
-		this.args.zonecard.args.creditLine = this.args.titlecard_author;
-		this.args.zonecard.args.actNumber  = this.args.titlecard_number;
+		this.args.zonecard.args.firstLine  = this.meta.titlecard_title_1;
+		this.args.zonecard.args.secondLine = this.meta.titlecard_title_2;
+		this.args.zonecard.args.creditLine = this.meta.titlecard_author;
+		this.args.zonecard.args.actNumber  = this.meta.titlecard_number;
+	}
+
+	startLevel()
+	{
+		this.setZoneCard();
+
+		const backdropClass = BackdropPalette[ this.meta.backdrop ];
+
+		console.log(this.meta.backdrop);
+
+		if(backdropClass)
+		{
+			this.args.backdrop = new backdropClass;
+		}
+		else
+		{
+			// this.args.backdrop = new Backdrop;
+		}
+
+		this.args.theme = this.meta.theme || 'construct';
 
 		const layers = this.tileMap.tileLayers;
 		const layerCount = layers.length;
@@ -597,8 +707,14 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-			const sonic = new Sonic({name:'Player 1', x: 1500, y: 1600});
-			const tails = new Tails({name:'Player 2', x: 1400, y: 1600});
+			const sonic = new Chalmers({name:'Player 1', x: 1500, y: 1600}, this);
+			const tails = new Seymour({name:'Player 2', x: 1400, y: 1600}, this);
+
+			this.auras.add(sonic);
+			this.auras.add(tails);
+
+			this.actors.add(sonic);
+			this.actors.add(tails);
 
 			sonic.render(this.tags.actors);
 			sonic.onRendered();
@@ -607,12 +723,6 @@ export class Viewport extends View
 			tails.render(this.tags.actors);
 			tails.onRendered();
 			tails.onAttached && tails.onAttached();
-
-			this.auras.add(sonic);
-			this.auras.add(tails);
-
-			this.actors.add(sonic);
-			this.actors.add(tails);
 		}
 
 		this.populateMap();
@@ -628,7 +738,8 @@ export class Viewport extends View
 				this.playableIterator.next();
 			}
 
-			this.nextControl = this.nextControl || actors[0];
+			this.nextControl = Object.values(this.args.actors)[0];
+			// this.nextControl = this.nextControl || actors[0];
 		}
 		else if(this.args.networked)
 		{
@@ -637,9 +748,7 @@ export class Viewport extends View
 			this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
 		}
 
-		this.nextControl = Object.values(this.args.actors)[0];
-
-		if(this.nextControl)
+		if(this.nextControl && this.nextControl.controller)
 		{
 			this.nextControl.controller.zero();
 		}
@@ -811,6 +920,15 @@ export class Viewport extends View
 			return;
 		}
 
+		if(this.cameraBound <= this.maxCameraBound)
+		{
+			this.cameraBound = this.maxCameraBound;
+		}
+		else
+		{
+			this.cameraBound -= 0.0005;
+		}
+
 		let cameraSpeed = 30;
 
 		const actor     = this.controlActor;
@@ -820,12 +938,42 @@ export class Viewport extends View
 		const falling   = actor.public.falling;
 		const fallSpeed = actor.public.ySpeed;
 
+		if(actor.public.jumping)
+		{
+			this.maxCameraBound = 80;
+
+			if(deepJump || highJump)
+			{
+				this.maxCameraBound = 8;
+			}
+		}
+		else
+		{
+			this.maxCameraBound = 64;
+		}
+
 		switch(this.controlActor.args.cameraMode)
 		{
 			case 'airplane':
 
 				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
 				this.args.yOffsetTarget = 0.5;
+
+				break;
+
+			case 'railcar-aerial':
+				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.15 + 0.5;
+				this.args.yOffsetTarget = 0.25;
+				this.maxCameraBound = 48;
+				cameraSpeed = 60;
+
+				break;
+
+			case 'railcar-normal':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.5;
+				this.maxCameraBound = 48;
+				cameraSpeed = 60;
 
 				break;
 
@@ -855,7 +1003,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor.public.direction;
 				this.args.yOffsetTarget = 0.45;
 
-				cameraSpeed = 30;
+				cameraSpeed = 45;
 
 				break;
 
@@ -864,7 +1012,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.65;
 
-				cameraSpeed = 15;
+				cameraSpeed = 45;
 
 				break;
 
@@ -873,7 +1021,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 10;
+				cameraSpeed = 35;
 
 				switch(this.controlActor.public.mode)
 				{
@@ -921,29 +1069,6 @@ export class Viewport extends View
 			const offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
 
 			this.args.xOffset += offsetDiff / cameraSpeed;
-		}
-
-		if(actor.public.jumping)
-		{
-			this.maxCameraBound = 80;
-
-			if(deepJump || highJump)
-			{
-				this.maxCameraBound = 8;
-			}
-		}
-		else
-		{
-			this.maxCameraBound = 64;
-		}
-
-		if(this.cameraBound <= this.maxCameraBound)
-		{
-			this.cameraBound = this.maxCameraBound;
-		}
-		else
-		{
-			this.cameraBound -= 1;
 		}
 
 		const center = actor.rotatePoint(0, -actor.public.height / 2);
@@ -1068,18 +1193,18 @@ export class Viewport extends View
 
 			for(const [,backdrop] of this.backdrops)
 			{
-				let backdropType = '';
-
-				for(const property of backdrop.properties)
-				{
-					if(property.name === 'backdrop')
-					{
-						backdropType = property.value;
-					}
-				}
-
 				if(!backdrop.view)
 				{
+					let backdropType = '';
+
+					for(const property of backdrop.properties)
+					{
+						if(property.name === 'backdrop')
+						{
+							backdropType = property.value;
+						}
+					}
+
 					if(backdropType === 'protolabrynth')
 					{
 						backdrop.view = new ProtoLabrynth;
@@ -1121,12 +1246,15 @@ export class Viewport extends View
 			}));
 		});
 
-		this.tags.bgFilters.style({'--x': this.args.x, '--y': this.args.y});
+		this.tags.bgFilters.style({
+			'--x': Number(this.args.x).toFixed(1)
+			, '--y': Number(this.args.y).toFixed(1)
+		});
 		// this.tags.fgFilters.style({'--x': this.args.x, '--y': this.args.y});
 
 		this.tags.content.style({
-			'--x': this.args.x
-			, '--y': this.args.y
+			'--x': Number(this.args.x).toFixed(1)
+			, '--y': Number(this.args.y).toFixed(1)
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
@@ -1209,15 +1337,33 @@ export class Viewport extends View
 
 			if(this.args.networked)
 			{
-				if(!['layer-switch', 'ring', 'companion-block', 'water-region'].includes(objType))
-				{
+				if(![
+					'layer-switch'
+					, 'ring'
+					, 'companion-block'
+					, 'water-region'
+					, 'block'
+					, 'switch'
+					, 'base-region'
+					, 'water-region'
+					, 'force-region'
+					, 'rolling-region'
+					, 'lava-region'
+					, 'q-block'
+					, 'sheild-fire-monitor'
+					, 'sheild-water-monitor'
+					, 'sheild-electric-monitor'
+				].includes(objType)){
 					continue;
 				}
 			}
 
 			const objClass = ObjectPalette[objType];
+			const rawActor = objClass.fromDef(objDef);
 
-			const actor = Bindable.make(objClass.fromDef(objDef));
+			rawActor[ Bindable.NoGetters ] = true;
+
+			const actor = Bindable.make(rawActor);
 
 			this.actors.add( actor );
 			actor.render(this.tags.actors);
@@ -1228,32 +1374,15 @@ export class Viewport extends View
 				actor.detach();
 			}
 
-			// actor.onAttached && actor.onAttached();
-
-			const width  = this.args.width;
-			const height = this.args.height;
-			const margin = 32;
-
-			const camLeft   = -this.args.x + -16 + -margin;
-			const camRight  = -this.args.x + width + -16 + margin;
-
-			const camTop    = -this.args.y;
-			const camBottom = -this.args.y + height;
-
-			const actorTop   = actor.y - actor.public.height;
-			const actorRight = actor.x + actor.public.width;
-			const actorLeft  = actor.x;
-
-			if(camLeft < actorRight && camRight > actorLeft
-				&& camBottom > actorTop && camTop < actor.y
-			){
+			if(this.actorIsOnScreen(actor))
+			{
 				actor.args.display = 'initial';
 			}
 			else
 			{
 				actor.args.display = 'none';
-
 				actor.detach();
+
 			}
 
 			if(actor.controllable)
@@ -1267,19 +1396,54 @@ export class Viewport extends View
 		}
 	}
 
+	actorIsOnScreen(actor, margin = 32)
+	{
+		const width  = this.args.width;
+		const height = this.args.height;
+
+		const camLeft   = -this.args.x + -16 + -margin;
+		const camRight  = -this.args.x +  16 +  margin + width;
+
+		const camTop    = -this.args.y - margin;
+		const camBottom = -this.args.y + height + margin;
+
+		const actorWidth = actor.public.width;
+
+		const actorTop   = actor.y - actor.public.height;
+		const actorLeft  = actor.x - actorWidth / 2;
+		const actorRight = actor.x + actorWidth + actorWidth / 2;
+
+		if((camLeft < actorRight && camRight > actorLeft)
+			&& camTop < actor.y && camBottom > actorTop
+		){
+			return true;
+		}
+		// else if((actorLeft < camRight && actorRight > camLeft)
+		// 	&& actorTop < camBottom && actor.y > camTop
+		// ){
+		// 	return true;
+		// }
+		else
+		{
+			return false;
+		}
+	}
+
 	spawnActors()
 	{
 		const spawnDoc = new DocumentFragment;
 
 		let spawned = false;
 
-		for(const spawn of this.spawn.values())
+		for(const spawn of this.spawn)
 		{
 			if(spawn.frame)
 			{
 				if(spawn.frame <= this.args.frameId)
 				{
 					this.spawn.delete(spawn);
+
+					spawn.object[ Bindable.NoGetters ] = true;
 
 					this.actors.add(Bindable.make(spawn.object));
 
@@ -1298,6 +1462,8 @@ export class Viewport extends View
 			else
 			{
 				this.spawn.delete(spawn);
+
+				spawn.object[ Bindable.NoGetters ] = true;
 
 				this.actors.add(Bindable.make(spawn.object));
 
@@ -1325,18 +1491,16 @@ export class Viewport extends View
 		for(const i in nearbyCells)
 		{
 			const cell   = nearbyCells[i];
-			const actors = cell.values();
+			const actors = cell;
 
 			for(const actor of actors)
 			{
-				if(this.updateStarted.has(actor))
+				if(this.updated.has(actor))
 				{
 					continue;
 				}
 
-				actor.updateStart();
-
-				this.updateStarted.add(actor);
+				actor.colliding = false;
 			}
 		}
 	}
@@ -1346,7 +1510,7 @@ export class Viewport extends View
 		for(const i in nearbyCells)
 		{
 			const cell   = nearbyCells[i];
-			const actors = cell.values();
+			const actors = cell;
 
 			for(const actor of actors)
 			{
@@ -1366,26 +1530,19 @@ export class Viewport extends View
 
 	actorUpdateEnd(nearbyCells)
 	{
-		const width  = this.args.width;
-		const height = this.args.height;
-		const x = this.args.x;
-		const y = this.args.y;
-
 		for(const i in nearbyCells)
 		{
 			const cell   = nearbyCells[i];
-			const actors = cell.values();
+			const actors = cell;
 
 			for(const actor of actors)
 			{
-				if(this.updateEnded.has(actor))
+				if(this.updated.has(actor))
 				{
 					continue;
 				}
 
-				actor.updateEnd();
-
-				this.updateEnded.add(actor);
+				actor.args.colliding = actor.colliding;
 			}
 		}
 	}
@@ -1404,7 +1561,7 @@ export class Viewport extends View
 		for(const i in nearbyCells)
 		{
 			const cell   = nearbyCells[i];
-			const actors = cell.values();
+			const actors = cell;
 
 			for(const actor of actors)
 			{
@@ -1417,7 +1574,7 @@ export class Viewport extends View
 
 	update()
 	{
-		if(this.args.frameId % 5 === 0)
+		if(this.args.frameId % 15 === 0)
 		{
 			for(const [detachee, detacher] of this.willDetach)
 			{
@@ -1431,7 +1588,7 @@ export class Viewport extends View
 
 		this.args.frameId++;
 
-		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(1);
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
 
 		const time  = (Date.now() - this.startTime) / 1000;
 		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
@@ -1532,128 +1689,82 @@ export class Viewport extends View
 				{
 					this.args.focusMe.args.hide = 'hide';
 				}
-				else
-				{
-					// this.args.focusMe.args.hide = '';
-				}
 
-				this.takeInput(this.controlActor.controller);
+				this.controlActor.controller && this.takeInput(this.controlActor.controller);
 				this.controlActor.readInput();
 			}
-
-			// if(!this.args.maxSpeed)
-			// {
-			// 	this.args.maxSpeed = this.controlActor.args.gSpeedMax;
-			// }
-
-			// this.controlActor.args.gSpeedMax = this.args.maxSpeed;
-
-			// this.controlActor.willStick = !!this.args.willStick;
-			// this.controlActor.stayStuck = !!this.args.stayStuck;
-
-			this.controlActor.crawling = false;
-			this.controlActor.running  = false;
 		}
 
-		this.updateStarted.clear();
 		this.updated.clear();
-		this.updateEnded.clear();
 
 		if(this.args.running)
 		{
 			for(const region of this.regions)
 			{
-				region.updateStart();
-				this.updateStarted.add(region);
-
-				region.update();
-				this.updated.add(region);
-			}
-			const actorCells = new WeakMap;
-
-			for(const actor of this.auras)
-			{
-				const nearbyCells = this.getNearbyColCells(actor);
-
-				actorCells.set(actor, nearbyCells);
-
-				if(this.updateStarted.has(actor))
+				if(!this.actorIsOnScreen(region, 768))
 				{
 					continue;
 				}
 
-				actor.updateStart();
+				region.update();
 
-				this.updateStarted.add(actor);
-
-				this.actorUpdateStart(nearbyCells);
+				this.updated.add(region);
 			}
 
 			for(const actor of this.auras)
 			{
-				const nearbyCells = actorCells.get(actor);
+				if(!this.actorIsOnScreen(actor))
+				{
+					continue;
+				}
 
 				if(this.updated.has(actor))
 				{
 					continue;
 				}
 
+				const nearbyCells = this.getNearbyColCells(actor);
+
 				actor.update();
 
 				this.updated.add(actor);
 
+				this.actorUpdateStart(nearbyCells);
+
 				this.actorUpdate(nearbyCells);
+
+				this.actorUpdateEnd(nearbyCells);
 			}
 
 			if(this.controlActor)
 			{
 				this.rings.args.value = this.controlActor.args.rings;
-				// this.coins.args.value = this.controlActor.args.coins;
 				this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
 
 				this.args.hasRings    = !!this.controlActor.args.rings;
-				// this.args.hasCoins    = !!this.controlActor.args.coins;
 				this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 
 				this.args.char.args.value = this.controlActor.args.name;
 				this.args.charName        = this.controlActor.args.name;
+
+				// this.coins.args.value = this.controlActor.args.coins;
+				// this.args.hasCoins    = !!this.controlActor.args.coins;
 
 				// this.args.xPos.args.value     = Math.round(this.controlActor.x);
 				// this.args.yPos.args.value     = Math.round(this.controlActor.y);
 
 				// this.args.ground.args.value   = this.controlActor.args.landed;
 				// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+
 				// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
 				// this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+
 				// this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 				// this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
 				const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
 				// this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
-			}
-
-			for(const actor of this.auras)
-			{
-				const nearbyCells = actorCells.get(actor);
-
-				if(!this.updateEnded.has(actor))
-				{
-					actor.updateEnd();
-
-					this.updateEnded.add(actor);
-
-					this.actorUpdateEnd(nearbyCells);
-				}
-			}
-
-			for(const region of this.regions)
-			{
-				if(!this.updateEnded.has(region))
-				{
-					region.updateEnd();
-					this.updateEnded.add(region);
-				}
 			}
 		}
 
@@ -1675,57 +1786,21 @@ export class Viewport extends View
 
 			let wakeActors = false;
 
-			for(const actor of this.actors.list)
+			const nearbyActors = this.nearbyActors(this.controlActor) || [];
+
+			for(const actor of [...nearbyActors, ...this.regions])
 			{
 				if(!actor)
 				{
 					continue;
 				}
 
-				const x = actor.x;
-				const y = actor.y;
-				const width  = actor.public.width;
-				const height = actor.public.height;
-
 				if(!this.auras.has(actor))
 				{
-					const actorBottom = y + 64;
-					const actorTop    = y - height - 64;
-					const actorRight  = x + width  + 64;
-					const actorLeft   = x - width  - 64;
+					const actorIsOnScreen = this.actorIsOnScreen(actor);
 
-					if(inAuras.has(actor))
+					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
 					{
-						continue;
-					}
-
-					let offscreenX = 0;
-					let offscreenY = 0;
-
-					if(camLeft < actorRight)
-					{
-						offscreenX = actorRight + -camLeft + -200;
-					}
-					else if(camRight > actorLeft)
-					{
-						offscreenX = camRight + -actorLeft + 200;
-					}
-
-					if(camBottom > actorTop)
-					{
-						offscreenY = camBottom + -actorTop + -200;
-					}
-					else if(camTop < actorBottom)
-					{
-						offscreenY = actorBottom + -camTop + 200;
-					}
-
-					if(camLeft < actorRight
-						&& camRight > actorLeft
-						&& camBottom > actorTop
-						&& camTop < actorBottom
-						&& !(actor instanceof LayerSwitch)
-					){
 						actor.args.display = 'initial';
 
 						if(!actor.vizi)
@@ -1738,18 +1813,19 @@ export class Viewport extends View
 							wakeActors = true;
 
 							actor.wakeUp();
-
 						}
 
 						this.willDetach.delete(actor);
 
 						actor.vizi = true;
 					}
-					else if(actor.vizi && (offscreenX > 0 || offscreenY > 0) && !actor.willhide)
+					else if(!actorIsOnScreen && actor.vizi)
 					{
 						this.willDetach.set(actor, () => {
 
 							actor.sleep();
+
+							actor.args.display = 'none';
 
 							actor.detach();
 
@@ -1770,8 +1846,6 @@ export class Viewport extends View
 				this.tags.actors.append(wakeDoc);
 			}
 		}
-
-		this.spawnActors();
 
 		if(this.nextControl)
 		{
@@ -1833,8 +1907,6 @@ export class Viewport extends View
 			}
 		}
 
-		this.args.moveCard = this.moveCard;
-
 		this.collisions = new WeakMap;
 
 		if(this.args.networked && this.controlActor)
@@ -1850,6 +1922,8 @@ export class Viewport extends View
 				this.client.send(JSON.stringify(netState));
 			}
 		}
+
+		this.spawnActors();
 	}
 
 	click(event)
@@ -1861,9 +1935,11 @@ export class Viewport extends View
 		}
 	}
 
-	regionAtPoint(x, y)
+	regionsAtPoint(x, y)
 	{
-		for(const region of this.regions.values())
+		const regions = new Set;
+
+		for(const region of this.regions)
 		{
 			const regionArgs = region.public;
 
@@ -1885,10 +1961,12 @@ export class Viewport extends View
 			{
 				if(bottom >= y && y > top)
 				{
-					return region;
+					regions.add(region);
 				}
 			}
 		}
+
+		return regions;
 	}
 
 	actorsAtPoint(x, y, w = 0, h = 0)
@@ -1905,7 +1983,7 @@ export class Viewport extends View
 
 		this.getNearbyColCells({x,y}).forEach(cell => {
 
-			for(const actor of cell.values())
+			for(const actor of cell)
 			{
 				if(actor.removed)
 				{
@@ -1924,17 +2002,17 @@ export class Viewport extends View
 
 				const myLeft   = x - myRadius;
 				const myRight  = x + myRadius;
-				const myTop    = y - h;
+				const myTop    = y - Math.max(h, 0);
 				const myBottom = y;
 
-				const offset = Math.floor(width / 2);
+				const offset = width / 2;
 
 				const otherLeft   = -offset + actorX;
 				const otherRight  = -offset + actorX + width;
 				const otherTop    = actorY - height;
 				const otherBottom = actorY;
 
-				if(myRight >= otherLeft && otherRight > myLeft)
+				if(myRight >= otherLeft && otherRight >= myLeft)
 				{
 					if(otherBottom >= myTop && myBottom > otherTop)
 					{
@@ -2000,25 +2078,12 @@ export class Viewport extends View
 		}
 
 		return colCells.get(name);
-
-		// const column = colCells.get(cellX) || new Map;
-
-		// if(!column.has(cellY))
-		// {
-		// 	column.set(cellY, new Map);
-		// }
-
-		// const cell = column.get(cellY) || new Set;
-
-		// colCells[cellX][cellY] = colCells[cellX][cellY] || new Set;
-
-		// return colCells[cellX][cellY];
-
-		// return cell;
 	}
 
 	setColCell(actor)
 	{
+		actor[ Bindable.NoGetters ] = true;
+
 		actor = Bindable.make(actor);
 
 		const cell = this.getColCell(actor);
@@ -2223,7 +2288,7 @@ export class Viewport extends View
 
 	homeCards()
 	{
-		const titlecard = this.args.zonecard = new Titlecard({}, this)
+		const titlecard = this.args.zonecard = new Titlecard({}, this);
 
 		return  [
 			new TitleScreenCard({timeout: 50000}, this)
@@ -2282,6 +2347,7 @@ export class Viewport extends View
 		const server = (!refresh && server) || new RtcServer(rtcConfig);
 
 		const onOpen = event => {
+			console.log('Connection opened!');
 			this.args.chatBox  = new ChatBox({pipe: server});
 			// const actors = this.actors.list;
 
@@ -2323,6 +2389,8 @@ export class Viewport extends View
 
 		this.server = server;
 
+		console.log(server);
+
 		return server;
 	}
 
@@ -2338,6 +2406,7 @@ export class Viewport extends View
 		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
 
 		const onOpen = event => {
+			console.log('Connection opened!')
 			// const actors = this.actors.list;
 			this.args.chatBox = new ChatBox({pipe: client});
 			// if(actors[0])
@@ -2379,6 +2448,8 @@ export class Viewport extends View
 		this.listen(client, 'message', onMessage);
 
 		this.client = client;
+
+		console.log(client);
 
 		return client;
 	}
@@ -2503,5 +2574,10 @@ export class Viewport extends View
 		this.onTimeout(5000, () => {
 			this.args.mouse = 'hide';
 		});
+	}
+
+	hyphenate(string)
+	{
+		return String(string).replace(/\s/g, '-').toLowerCase();
 	}
 }

@@ -33,13 +33,18 @@ export class LayerSwitch extends PointActor
 
 	collideA(other, type)
 	{
-		let speed = other.args.gSpeed;
+		let speed = other.public.gSpeed || other.public.direction || other.xAxis;
 		let back  = !!Number(this.public.back);
 		let roll  = !!Number(this.public.roll);
 
-		const half = this.width / 2;
+		const half = this.args.width / 2;
 
-		if(other.x < this.x - half || half + this.x < other.x)
+		if(other.x < this.x + -half || other.x > this.x + half)
+		{
+			return;
+		}
+
+		if(other.y < this.y + -this.public.height || other.y > this.y)
 		{
 			return;
 		}
@@ -52,7 +57,7 @@ export class LayerSwitch extends PointActor
 
 		if(back && other.public.falling)
 		{
-			speed = other.args.xSpeed;
+			speed = other.public.xSpeed || other.public.direction;
 			back  = !back;
 		}
 
