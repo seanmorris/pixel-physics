@@ -16,12 +16,12 @@ export class Seymour extends PointActor
 		this.args.normalHeight = 64;
 		this.args.rollingHeight = 23;
 
-		this.args.accel     = 0.45;
-		this.args.decel     = 0.3;
+		this.args.accel     = 0.25;
+		this.args.decel     = 0.4;
 
-		this.args.gSpeedMax = 16;
-		this.args.jumpForce = 15;
-		this.args.gravity   = 0.75;
+		this.args.gSpeedMax = 18;
+		this.args.jumpForce = 11;
+		this.args.gravity   = 0.5;
 
 		this.args.width  = 18;
 		this.args.height = 48;

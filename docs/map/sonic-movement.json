@@ -46,13 +46,13 @@
                         {
                          "name":"content",
                          "type":"string",
-                         "value":"Use the d-pad or"
+                         "value":"Press any button to"
                         }],
                  "rotation":0,
                  "type":"text-actor",
                  "visible":true,
                  "width":128,
-                 "x":128,
+                 "x":160,
                  "y":1152
                 }, 
                 {
@@ -72,24 +72,6 @@
                  "width":128,
                  "x":384,
                  "y":1136
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
-                 "id":17,
-                 "name":"text-actor",
-                 "properties":[
-                        {
-                         "name":"content",
-                         "type":"string",
-                         "value":"left stick to move"
-                        }],
-                 "rotation":0,
-                 "type":"text-actor",
-                 "visible":true,
-                 "width":128,
-                 "x":128,
-                 "y":1168
                 }, 
                 {
                  "gid":2,
@@ -1315,32 +1297,14 @@
                         {
                          "name":"content",
                          "type":"string",
-                         "value":"Use the right stick"
+                         "value":"Use # to switch shields."
                         }],
                  "rotation":0,
                  "type":"text-actor",
                  "visible":true,
-                 "width":144,
-                 "x":8048,
+                 "width":192,
+                 "x":8016,
                  "y":3992
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
-                 "id":113,
-                 "name":"text-actor",
-                 "properties":[
-                        {
-                         "name":"content",
-                         "type":"string",
-                         "value":"to switch shields."
-                        }],
-                 "rotation":0,
-                 "type":"text-actor",
-                 "visible":true,
-                 "width":144,
-                 "x":8048,
-                 "y":4008
                 }, 
                 {
                  "gid":2,
@@ -2306,6 +2270,42 @@
                  "width":32,
                  "x":15584,
                  "y":2112
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":198,
+                 "name":"text-actor",
+                 "properties":[
+                        {
+                         "name":"content",
+                         "type":"string",
+                         "value":"Use \u271a to move."
+                        }],
+                 "rotation":0,
+                 "type":"text-actor",
+                 "visible":true,
+                 "width":128,
+                 "x":160,
+                 "y":1136
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":199,
+                 "name":"text-actor",
+                 "properties":[
+                        {
+                         "name":"content",
+                         "type":"string",
+                         "value":"activate your gamepad."
+                        }],
+                 "rotation":0,
+                 "type":"text-actor",
+                 "visible":true,
+                 "width":128,
+                 "x":160,
+                 "y":1168
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2418,7 +2418,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":198,
+ "nextobjectid":200,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -34,6 +34,8 @@ const DEFAULT_GRAVITY = MODE_FLOOR;
 
 export class PointActor extends View
 {
+	static lastClick = 0;
+
 	template = `<div
 		class  = "point-actor [[type]]"
 		style  = "
@@ -454,6 +456,11 @@ export class PointActor extends View
 
 	onRendered()
 	{
+		if(this.init)
+		{
+			return;
+		}
+
 		const regionClass = this.viewport.objectPalette['base-region']
 
 		this.isRegion = this instanceof regionClass;
@@ -461,12 +468,54 @@ export class PointActor extends View
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
+		this.init = true;
+
 		if(this.controllable)
 		{
 			this.sprite.parentNode.classList.add('controllable');
 		}
 
 		this.listen('click', ()=>{
+
+			const now = Date.now();
+
+			const timeSince = now - PointActor.lastClick;
+
+			console.log(timeSince);
+
+			if(timeSince < 1000)
+			{
+				this.viewport.auras.add(this);
+
+				const clear = this.viewport.onFrameInterval(1, () => {
+
+					const frame = this.viewport.serializePlayer();
+
+
+					this.viewport.onFrameOut(5, () => {
+
+						if(frame.input)
+						{
+							this.controller.replay(frame.input);
+							this.readInput();
+						}
+
+						if(frame.args)
+						{
+							Object.assign(this.args, frame.args);
+
+							this.viewport.setColCell(this);
+						}
+					});
+
+				});
+
+				this.onRemove(clear);
+
+				return;
+			}
+
+			PointActor.lastClick = now;
 
 			if(this.viewport.args.networked)
 			{
