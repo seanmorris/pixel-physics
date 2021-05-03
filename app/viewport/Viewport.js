@@ -85,6 +85,7 @@ export class Viewport extends View
 		this.objectPalette = ObjectPalette;
 		this.meta = {};
 
+		this.callIntervals = new Map;
 		this.callFrames = new Map;
 		this.backdrops  = new Map;
 
@@ -1585,6 +1586,7 @@ export class Viewport extends View
 		}
 
 		this.callFrameOuts();
+		this.callFrameIntervals();
 
 		this.args.frameId++;
 
@@ -1849,13 +1851,15 @@ export class Viewport extends View
 
 		if(this.nextControl)
 		{
-			this.auras.delete(this.controlActor);
+			// this.auras.delete(this.controlActor);
+			this.auras.clear();
 
 			this.controlActor && this.controlActor.sprite.parentNode.classList.remove('actor-selected');
 
 			this.controlActor = this.nextControl;
 
 			this.controlActor.sprite.parentNode.classList.add('actor-selected');
+
 
 			this.auras.add(this.controlActor);
 
@@ -2505,22 +2509,26 @@ export class Viewport extends View
 		return () => callbacks.delete(callback);
 	}
 
-	// onFrameInterval(frames, callback)
-	// {
-	// 	if(frames <= 0)
-	// 	{
-	// 		return;
-	// 	}
+	onFrameInterval(interval, callback)
+	{
+		if(frames <= 0)
+		{
+			return;
+		}
 
-	// 	const callFrame = this.args.frameId + frames;
+		const callInterval = interval;
 
-	// 	if(!this.callFrames.has(callFrame))
-	// 	{
-	// 		this.callFrames.set(callFrame, new Set);
-	// 	}
+		if(!this.callIntervals.has(callInterval))
+		{
+			this.callIntervals.set(callInterval, new Set);
+		}
 
-	// 	this.callFrames.get(callFrame).add(callback);
-	// }
+		const callbacks = this.callIntervals.get(callInterval);
+
+		callbacks.add(callback);
+
+		return () => callbacks.delete(callback);
+	}
 
 	callFrameOuts()
 	{
@@ -2537,6 +2545,20 @@ export class Viewport extends View
 		}
 
 		this.callFrames.delete(this.args.frameId);
+	}
+
+	callFrameIntervals()
+	{
+		for(const [interval, callbacks] of this.callIntervals)
+		{
+			if(this.args.frameId % interval === 0)
+			{
+				for(const callback of callbacks)
+				{
+					callback();
+				}
+			}
+		}
 	}
 
 	pauseGame()

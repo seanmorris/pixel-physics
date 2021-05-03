@@ -1,4 +1,40 @@
-.hud-character[data-value="9374"]{
+.hud-character[data-value="9913"] {
+	background-image: url(/ui/arrow-keys.svg);
+	background-position: 50% 50% !important;
+	background-size: 100% 100%;
+	width: 28px;
+	height: 20px;
+	transform: translateY(-4px);
+}
+
+.input-xbox .hud-character[data-value="9913"]{
+	background-image: url(/ui/xbox-dpad.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.input-playstation .hud-character[data-value="9913"]{
+	background-image: url(/ui/playstation-dpad.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.hud-character[data-value="9374"] {
+	background-image: url(/ui/space.png);
+	background-position: 50% 50% !important;
+	background-size: 100% 100%;
+	width: 26px;
+	height: 16px;
+	transform: translateY(-2px);
+}
+
+.input-xbox .hud-character[data-value="9374"]{
 	background-image: url(/ui/xbox-button-a.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -7,7 +43,25 @@
 	height: 1.25em;
 }
 
-.hud-character[data-value="10005"]{
+.input-playstation .hud-character[data-value="9374"]{
+	background-image: url(/ui/playstation-button-x.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.hud-character[data-value="10005"] {
+	background-image: url(/ui/ctrl.png);
+	background-position: 50% 50% !important;
+	background-size: 100% 100%;
+	width: 26px;
+	height: 16px;
+	transform: translateY(-2px);
+}
+
+.input-xbox .hud-character[data-value="10005"]{
 	background-image: url(/ui/xbox-button-b.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -16,7 +70,25 @@
 	height: 1.25em;
 }
 
-.hud-character[data-value="10006"]{
+.input-playstation .hud-character[data-value="10005"]{
+	background-image: url(/ui/playstation-button-circle.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+}
+
+.hud-character[data-value="10006"] {
+	background-image: url(/ui/shift.png);
+	background-position: 50% 50% !important;
+	background-size: 100% 100%;
+	width: 26px;
+	height: 16px;
+	transform: translateY(-2px);
+}
+
+.input-xbox .hud-character[data-value="10006"]{
 	background-image: url(/ui/xbox-button-x.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -26,7 +98,21 @@
 	margin-top: -0.125em;
 }
 
-.hud-character[data-value="10007"]{
+.input-playstation .hud-character[data-value="10006"]{
+	background-image: url(/ui/playstation-button-square.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}
+
+.hud-character[data-value="10007"] {
+	--value: 25 !important;
+}
+
+.input-xbox .hud-character[data-value="10007"]{
 	background-image: url(/ui/xbox-button-y.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -36,7 +122,21 @@
 	margin-top: -0.125em;
 }
 
+.input-playstation .hud-character[data-value="10007"]{
+	background-image: url(/ui/playstation-button-triangle.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+}
+
 .hud-character[data-value="10008"]{
+	--value: 16 !important;
+}
+
+.input-xbox .hud-character[data-value="10008"]{
 	background-image: url(/ui/xbox-button-lb.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -46,7 +146,22 @@
 	margin-top: -0.125em;
 }
 
+.input-playstation .hud-character[data-value="10008"]{
+	background-image: url(/ui/playstation-button-l1.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	position: relative;
+	top: -0.25em;
+}
+
 .hud-character[data-value="10009"]{
+	--value: 4 !important;
+}
+
+.input-xbox .hud-character[data-value="10009"]{
 	background-image: url(/ui/xbox-button-rb.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -54,4 +169,44 @@
 	width: 1.5em;
 	height: 1.25em;
 	margin-top: -0.125em;
+}
+
+.input-playstation .hud-character[data-value="10009"]{
+	background-image: url(/ui/playstation-button-r1.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	position: relative;
+	top: -0.25em;
+}
+
+.hud-character[data-value="-62"]{
+	background-image: url(/ui/numpad-directions.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	width: 28px;
+	height: 48px;
+	transform: translateY(-16px);
+}
+
+.input-xbox .hud-character[data-value="-62"]{
+	background-image: url(/ui/xbox-button-rs.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.75em !important;
+	height: 1.75em !important;
+	transform: translateY(-0.35em);
+}
+
+.input-playstation .hud-character[data-value="-62"]{
+	background-image: url(/ui/playstation-button-rs.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.75em;
+	height: 1.75em;
+	transform: translateY(-0.35em);
 }
