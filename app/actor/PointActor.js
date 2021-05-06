@@ -958,7 +958,7 @@ export class PointActor extends View
 						{
 							if(this.public.groundAngle === 0)
 							{
-								this.args.xSpeed = 0.3;
+								this.args.xSpeed = 1;
 								this.public.mode = MODE_FLOOR
 								this.args.falling = true;
 								this.args.groundAngle = -Math.PI / 2;
@@ -979,7 +979,7 @@ export class PointActor extends View
 						{
 							if(this.public.groundAngle === 0)
 							{
-								this.args.xSpeed = -0.3;
+								this.args.xSpeed = -1;
 								this.public.mode = MODE_FLOOR
 								this.args.falling = true;
 								this.args.groundAngle = Math.PI / 2;
