@@ -104,6 +104,15 @@
 	background-repeat: no-repeat;
 }
 
+.actor-selected {
+	z-index: 100000;
+}
+
+.actor-item[data-active=true] {
+	z-index: 20000;
+}
+
+
 .sprite > svg {
 	position: absolute;
 	top: 0px;

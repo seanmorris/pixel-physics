@@ -603,10 +603,3 @@ input[type=number]::-webkit-outer-spin-button {
 	display: none;
 }
 
-.actor-selected {
-	z-index: 1;
-}
-
-.actor-item[data-active=true] {
-	z-index: 2;
-}
