@@ -8,7 +8,7 @@
 	--heightNx: calc(-1px * var(--height));
 	/*pointer-events: none;*/
 
-	/*z-index: 5000000;*/
+	z-index: 5000000;
 }
 
 .region.region-lava .sprite,

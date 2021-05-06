@@ -22,12 +22,17 @@ export class Ring extends PointActor
 	{
 		if(this.public.gone)
 		{
-			return;
+			return false;
+		}
+
+		if(!other.controllable && !other.occupant && !other.public.owner)
+		{
+			return false;
 		}
 
 		super.collideA(other);
 
-		if(other.args.owner)
+		if(other.public.owner)
 		{
 			other.args.owner.args.rings += 1;
 		}
@@ -35,17 +40,14 @@ export class Ring extends PointActor
 		{
 			other.occupant.args.rings += 1;
 		}
-		else
+		else if(other.controllable)
 		{
 			other.args.rings += 1;
 		}
 
-		if(!other.controllable && !other.occupant && !other.args.owner)
-		{
-			return;
-		}
-
 		this.args.gone = true;
+
+		this.viewport.auras.delete(this);
 
 		this.args.type = 'actor-item actor-ring collected';
 
@@ -63,7 +65,7 @@ export class Ring extends PointActor
 
 		const viewport = this.viewport;
 
-		this.viewport.onFrameOut(2200, () => {
+		this.viewport.onFrameOut(1200, () => {
 			this.restore = true;
 		});
 
@@ -73,6 +75,9 @@ export class Ring extends PointActor
 				other.collect(this);
 			});
 		}
+
+		this.args.xSpeed = 0;
+		this.args.ySpeed = 0;
 
 		// this.onTimeout(120, () => {
 		// 	viewport.actors.remove( this );
@@ -94,11 +99,14 @@ export class Ring extends PointActor
 	{
 		if(this.restore)
 		{
+			this.args.x = this.def.get('x');
+			this.args.y = this.def.get('y');
+			this.args.float = -1;
+
 			this.args.gone = this.restore = false;
 			this.args.type = 'actor-item actor-ring'
 		}
 	}
 
 	get solid() { return false; }
-	get isEffect() { return true; }
 }

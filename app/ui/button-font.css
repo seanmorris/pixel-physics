@@ -45,7 +45,7 @@
 	transform: translateY(-2px);
 }
 
-.hud-character[data-value="9374"]{
+.input-generic .hud-character[data-value="9374"]{
 	background-image: url(/ui/generic-button-0.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;

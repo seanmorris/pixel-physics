@@ -4,6 +4,11 @@ import { Tag } from 'curvature/base/Tag';
 
 export class DrillCar extends Vehicle
 {
+	instructions = [
+		'Jump ⓿'
+		, 'Fly ⓿+⓿'
+	];
+
 	constructor(...args)
 	{
 		super(...args);

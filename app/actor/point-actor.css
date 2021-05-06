@@ -149,6 +149,10 @@
 	transition: opacity 0.25s ease-in;
 }
 
+.actor-item.actor-ring {
+	z-index: 100000;
+}
+
 .actor-item.actor-ring .sprite .labels {
 	display: none;
 }

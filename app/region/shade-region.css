@@ -33,7 +33,7 @@
 	width: calc(1px * var(--width));
 	height: calc(1px * var(--height));
 	pointer-events: none;
-	z-index: 20000;
+	z-index: 5000000;
 }
 
 .region.region-shade .region-color,

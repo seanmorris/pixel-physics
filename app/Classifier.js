@@ -76,7 +76,7 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 
 	count(key)
 	{
-		return this.get(key).size;
+		return this.index.has(key) && this.get(key).size;
 	}
 
 	has(key)
