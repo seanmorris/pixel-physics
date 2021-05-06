@@ -37,7 +37,7 @@ export class LayerSwitch extends PointActor
 		let back  = !!Number(this.public.back);
 		let roll  = !!Number(this.public.roll);
 
-		const half = this.args.width / 2;
+		const half = this.args.width / 2 + (speed > 0 ? -1 : 0);
 
 		if(other.x < this.x + -half || other.x > this.x + half)
 		{

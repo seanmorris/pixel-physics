@@ -219,6 +219,11 @@ export class TileMap
 					continue;
 				}
 
+				if(layer.name.substring(0, 10) === 'Foreground')
+				{
+					continue;
+				}
+
 				if(layer.name.substring(0, 12) === 'Destructible')
 				{
 					if(layer.destroyed)

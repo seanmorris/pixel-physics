@@ -12,6 +12,9 @@ module.exports = {
 			pattern: /\.(html|svg)$/,
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`
 		}
+		, preval:{
+			tokens: { BUILD_TIME: ()=> Date.now() }
+		}
 	}
 	, paths: {
 		public: './docs'

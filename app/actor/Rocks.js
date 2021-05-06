@@ -145,6 +145,11 @@ export class Rocks extends PointActor
 
 	collideA(other, type)
 	{
+		if(this.public.gone)
+		{
+			return false;
+		}
+
 		super.collideA(other, type);
 
 		if(other.occupant || other.rolling)

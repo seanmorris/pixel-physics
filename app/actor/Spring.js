@@ -96,11 +96,31 @@ export class Spring extends PointActor
 
 			this.args.active = null;
 
-			other.impulse(
-				this.args.power
-				, rounded
-				, ![0, Math.PI].includes(this.args.angle)
-			);
+			if(other.args.ySpeed === 0 && other.args.xSpeed === 0)
+			{
+				if(other.controller)
+				{
+					other.controller.rumble({
+						duration: 200,
+						strongMagnitude: 1.0,
+						weakMagnitude: 1.0
+					});
+
+					this.onTimeout(200, () => {
+						other.controller.rumble({
+							duration: 400,
+							strongMagnitude: 0.0,
+							weakMagnitude: 0.5
+						});
+					});
+				}
+
+				other.impulse(
+					this.args.power
+					, rounded
+					, ![0, Math.PI].includes(this.args.angle)
+				);
+			}
 		});
 
 		other.args.direction = Math.sign(this.public.gSpeed);

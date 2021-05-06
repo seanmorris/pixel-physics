@@ -39,4 +39,5 @@
 
 .pause-menu-hide {
 	opacity: 0;
+	pointer-events: none !important;
 }
