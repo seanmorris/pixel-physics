@@ -47,6 +47,8 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 * R 🠈 🠉 🠋 🠊 - HJKL / Numpad
 * <kbd>**L1**</kbd> - q
 * <kbd>**R1**</kbd> - e
+* <kbd>**L2**</kbd> - Digit1
+* <kbd>**R2**</kbd> - Digit3
 
 ### Sonic
 
@@ -117,6 +119,8 @@ Press R🠊 to use a stored fire shield.
 Gives Sonic a triple air jump (Press 🅐/✕ after leaving the ground).
 
 Press R🠈 to use a stored electric shield.
+
+Press <kbd>L2</kbd> to activate the shield's magnet.
 
 ### Insta Shield
 

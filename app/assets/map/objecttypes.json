@@ -1,7 +1,7 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "stopper",
+        "name": "cinematic",
         "properties": [
         ]
     },
@@ -258,6 +258,12 @@
     {
         "color": "#ffa0a0a4",
         "name": "star-post",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "stopper",
         "properties": [
         ]
     },

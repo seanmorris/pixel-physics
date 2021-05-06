@@ -8,7 +8,7 @@
 
 .actor-item.actor-breakable-block {
 	filter: initial !important;
-	z-index: 10;
+	z-index: 300000;
 }
 
 .actor-item.actor-marble-companion-block .sprite {
@@ -31,9 +31,6 @@
 	--x-speed:  0.75s;
 	--y-speed: 1.0s;
 	--spread: 450%;
-}
-
-.actor-item.actor-breakable-block .sprite {
 }
 
 .actor-item.actor-breakable-block.broken .sprite {

@@ -16,6 +16,8 @@ const keys = {
 	, 'KeyZ': 3
 	, 'KeyQ': 4
 	, 'KeyE': 5
+	, 'Digit1': 6
+	, 'Digit3': 7
 
 
 	, 'KeyW': 12

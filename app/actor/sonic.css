@@ -208,6 +208,10 @@
 	animation: sonic-animate steps(var(--animation-steps)) infinite 96ms;
 }
 
+.actor-item.actor-sonic[data-super="true"] .sprite {
+	animation: super-sonic-flicker steps(10) infinite 1s alternate;
+}
+
 @-webkit-keyframes sonic-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
@@ -276,10 +280,19 @@
 		filter: brightness(1);
 	}
 	75%{
-		filter: brightness(2);
+		filter: brightness(1.1);
 	}
 	to{
-		filter: brightness(100);
+		filter: brightness(10);
+	}
+}
+
+@-webkit-keyframes super-sonic-flicker {
+	from{
+		filter: brightness(0.85);
+	}
+	to{
+		filter: brightness(1.125);
 	}
 }
 

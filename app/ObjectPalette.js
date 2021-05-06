@@ -24,6 +24,8 @@ import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
 
 import { Bumper } from './actor/Bumper';
 
+import { Cinematic } from './actor/Cinematic';
+
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
 import { ArrowSign }  from './actor/ArrowSign';
@@ -69,6 +71,7 @@ import { Balloon } from './actor/Balloon';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
+	, cinematic:      Cinematic
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
 	, 'star-post':    StarPost

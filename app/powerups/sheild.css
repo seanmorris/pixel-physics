@@ -20,17 +20,74 @@
 .bubble-sheild:not(.bouncing) .bubble-sheild-shine {
 	background-image: url(/Sonic/bubble-sheild-shine.png);
 	position: absolute;
-	z-index: 100;
+	z-index: 100000;
 	top: 0;
 	left: 12px;
 	width: 48px;
 	height: 48px;
 	background-position: -48px 0;
 	animation: water-sheild-rotate 0.5s steps(9) infinite reverse;
+}
 
-	/*animation: water-sheild-rotate 0.32s steps(9) infinite reverse;
+.super-sheild {
+	position: absolute;
+	background-position: -8px 10px;
+	background-repeat: no-repeat;
+	z-index: 300000;
+	width: 48px;
+	height: 48px;
+}
+
+.super-sheild-shine {
+	position: absolute;
+	z-index: 300001;
+	left: 9px;
+	top: 18px;
+	width: 48px;
+	height: 48px;
+}
+
+[data-animation=jumping] .super-sheild-shine {
+	left: 8px;
+	top: 24px;
+	width: 48px;
+	height: 48px;
+}
+
+.super-sheild .super-sheild-shine {
+	animation: water-sheild-rotate 0.5s steps(9) infinite reverse, sheild-flip calc(0.75s) infinite;
 	background-image: url(/Sonic/super-shine.png);
-	opacity: var(--animation-bias);*/
+	opacity: var(--animation-bias);
+}
+
+
+.super-sheild .super-sheild-spark {
+	position: absolute;
+	left: 8px;
+	top: 17px;
+	width: 48px;
+	height: 48px;
+	animation: electric-sheild-rotate 300ms steps(8) infinite alternate forwards;
+	background-image: url(/Sonic/sheild-electric.png);
+	background-position: calc(-48px * 3) 0;
+	/*opacity: var(--animation-bias);*/
+}
+
+.super-sheild .super-sheild-flare {
+	position: absolute;
+	left: 8px;
+	top: 18px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/sheild-fire.png);
+	background-position: calc(-48px * 0) 0;
+	animation: fire-sheild-rotate 0.5s steps(19) infinite;
+}
+
+[data-super]:not([data-super=true]) .super-sheild-shine,
+[data-hyper]:not([data-hyper=true]) .super-sheild-spark,
+[data-hyper]:not([data-hyper=true]) .super-sheild-flare {
+	display: none;
 }
 
 .electric-sheild {
@@ -50,7 +107,7 @@
 .electric-sheild.boosted {
 	animation:
 		electric-sheild-flash 0.20s steps(3) infinite forwards,
-		sheild-flip 0.45s infinite;
+		sheild-flip 0.15s infinite;
 }
 
 .fire-sheild {
@@ -241,11 +298,11 @@
 
 @keyframes water-sheild-rotate {
 	from{
-		z-index: -100;
+		z-index: -1;
 		background-position: calc(-48px * 0) 0;
 	}
 	to{
-		z-index: 100;
+		z-index: 300000;
 		background-position: calc(-48px * 9) 0;
 	}
 }

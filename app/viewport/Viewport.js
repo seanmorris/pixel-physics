@@ -1003,6 +1003,15 @@ export class Viewport extends View
 
 				break;
 
+			case 'cinematic':
+
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.50;
+				this.cameraBound = 1;
+				cameraSpeed = 0;
+
+				break;
+
 			case 'cliff':
 
 				this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor.public.direction;
@@ -1064,6 +1073,10 @@ export class Viewport extends View
 
 			this.args.yOffset += offsetDiff / cameraSpeed;
 		}
+		else
+		{
+			this.args.yOffset = this.args.yOffsetTarget;
+		}
 
 		if(Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.05)
 		{
@@ -1074,6 +1087,10 @@ export class Viewport extends View
 			const offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
 
 			this.args.xOffset += offsetDiff / cameraSpeed;
+		}
+		else
+		{
+			this.args.xOffset = this.args.xOffsetTarget;
 		}
 
 		const center = actor.rotatePoint(0, -actor.public.height / 2);
@@ -1407,8 +1424,13 @@ export class Viewport extends View
 		}
 	}
 
-	actorIsOnScreen(actor, margin = 32)
+	actorIsOnScreen(actor, margin = 160)
 	{
+		if(!actor)
+		{
+			return;
+		}
+
 		const width  = this.args.width;
 		const height = this.args.height;
 
@@ -1725,7 +1747,12 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
-				if(!this.actorIsOnScreen(actor))
+				// if(!this.actorIsOnScreen(actor))
+				// {
+				// 	continue;
+				// }
+
+				if(!actor)
 				{
 					continue;
 				}
@@ -1864,12 +1891,20 @@ export class Viewport extends View
 			// this.auras.delete(this.controlActor);
 			this.auras.clear();
 
-			this.controlActor && this.controlActor.sprite.parentNode.classList.remove('actor-selected');
+			this.controlActor
+				&& this.controlActor.sprite.parentNode
+				&& this.controlActor.sprite.parentNode.classList.remove('actor-selected');
+
+			if(this.controlActor)
+			{
+				this.controlActor.selected = false;
+			}
 
 			this.controlActor = this.nextControl;
 
-			this.controlActor.sprite.parentNode.classList.add('actor-selected');
+			this.controlActor.selected = true;
 
+			this.controlActor.sprite.parentNode.classList.add('actor-selected');
 
 			this.auras.add(this.controlActor);
 

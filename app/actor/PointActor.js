@@ -14,6 +14,7 @@ import { Controller } from '../controller/Controller';
 
 import { Sheild }         from '../powerups/Sheild';
 import { FireSheild }     from '../powerups/FireSheild';
+import { SuperSheild }     from '../powerups/SuperSheild';
 import { BubbleSheild }   from '../powerups/BubbleSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
 
@@ -143,6 +144,8 @@ export class PointActor extends View
 			, ElectricSheild
 		]);
 
+		this.noClip = false;
+
 		this.sheild = null;
 
 		this.inventory.addEventListener('adding', event => {
@@ -162,6 +165,11 @@ export class PointActor extends View
 
 			for(const shield of this.inventory.get(Sheild))
 			{
+				if(shield instanceof SuperSheild)
+				{
+					continue;
+				}
+
 				shield.detach();
 			}
 
@@ -308,6 +316,11 @@ export class PointActor extends View
 		});
 
 		this.args.bindTo('standingOn', (groundObject,key,target) => {
+
+			if(this.isGhost)
+			{
+				return;
+			}
 
 			if(this.args.standingOn === groundObject)
 			{
@@ -468,9 +481,19 @@ export class PointActor extends View
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
+		if(this.controllable)
+		{
+			const superSheild = new SuperSheild;
+
+			this.powerups.add(superSheild);
+			this.inventory.add(superSheild);
+		}
+
 		this.init = true;
 
 		this.args.bindTo('animation', v => this.box.setAttribute('data-animation', v));
+		this.bindTo('isSuper',  v => this.box.setAttribute('data-super', v));
+		this.bindTo('isHyper',  v => this.box.setAttribute('data-hyper', v));
 
 		if(this.controllable)
 		{
@@ -841,7 +864,19 @@ export class PointActor extends View
 			return;
 		}
 
-		if(!this.isRegion && !this.isEffect && this.public.falling && this.viewport)
+		if(this.noClip)
+		{
+			if(this.public.xSpeed)
+			{
+				this.args.x += this.public.xSpeed;
+			}
+
+			if(this.public.ySpeed)
+			{
+				this.args.y += this.public.ySpeed;
+			}
+		}
+		else if(!this.isRegion && !this.isEffect && this.public.falling && this.viewport)
 		{
 			this.updateAirPosition();
 		}
@@ -861,7 +896,7 @@ export class PointActor extends View
 		const halfHeight = Math.floor(this.args.height/2);
 
 		// if(!this.isRegion && (this.public.pushed || ( !this.willStick && this.controllable )))
-		if(!this.isRegion && this.public.pushed)
+		if(!this.noClip && !this.isRegion && this.public.pushed)
 		{
 			const testWallPoint = (direction) => {
 				switch(this.public.mode)
@@ -1030,12 +1065,12 @@ export class PointActor extends View
 		this.args.x = Math.floor(this.public.x);
 		this.args.y = Math.floor(this.public.y);
 
-		if(this.public.falling && !this.isEffect && (this.public.xSpeed || this.public.ySpeed))
+		if(!this.noClip && this.public.falling && !this.isEffect && (this.public.xSpeed || this.public.ySpeed))
 		{
 			this.resolveIntersection();
 		}
 
-		if(!this.public.falling && !this.isRegion)
+		if(!this.noClip && !this.public.falling && !this.isRegion)
 		{
 			if(this.public.mode === MODE_FLOOR && !this.public.gSpeed && !this.public.xSpeed)
 			{
@@ -2181,7 +2216,7 @@ export class PointActor extends View
 
 	callCollideHandler(other)
 	{
-		if(this.isGhost)
+		if(this.isGhost || other.isGhost)
 		{
 			return;
 		}
@@ -2450,7 +2485,7 @@ export class PointActor extends View
 
 				this.public.gSpeed = 0;
 			}
-			else if(this.canRoll && this.yAxis > 0)
+			else if(this.canRoll && this.yAxis > 0.5)
 			{
 				this.args.rolling = true;
 			}
@@ -2458,7 +2493,22 @@ export class PointActor extends View
 
 		const drag = this.getLocalDrag();
 
-		if(!this.public.falling)
+		if(this.noClip)
+		{
+			this.args.xSpeed += xAxis * this.public.airAccel * drag;
+			this.args.ySpeed += yAxis * this.public.airAccel * drag;
+
+			if(!xAxis)
+			{
+				this.args.xSpeed = 0;
+			}
+
+			if(!yAxis)
+			{
+				this.args.ySpeed = 0;
+			}
+		}
+		else if(!this.public.falling)
 		{
 			if(!this.args.ignore && xAxis && !this.public.rolling)
 			{
@@ -2507,7 +2557,7 @@ export class PointActor extends View
 
 			const tileMap = this.viewport.tileMap;
 
-			if(this.getMapSolidAt(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y))
+			if(!this.noClip && this.getMapSolidAt(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y))
 			{
 				this.args.xSpeed = 0;
 			}
