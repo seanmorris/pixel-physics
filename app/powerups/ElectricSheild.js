@@ -36,6 +36,14 @@ export class ElectricSheild extends Sheild
 		}
 	}
 
+	hold_6(host, button)
+	{
+		host.args.xOff  = 0;
+		host.args.yOff  = 32;
+
+		host.pinch(-400 * button.pressure, 0);
+	}
+
 	update(host)
 	{
 		if(!this.sample)

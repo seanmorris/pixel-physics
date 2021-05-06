@@ -8,6 +8,7 @@
 
 .actor-item.actor-breakable-block {
 	filter: initial !important;
+	z-index: 10;
 }
 
 .actor-item.actor-marble-companion-block .sprite {
@@ -132,7 +133,7 @@
 }
 
 .actor-item.actor-block .sprite.platform {
-	filter: sepia(85%) brightness(1.125) hue-rotate(250deg);
+	filter: sepia(85%) brightness(0.9125) hue-rotate(140deg);
 }
 
 .actor-item.actor-block .sprite,

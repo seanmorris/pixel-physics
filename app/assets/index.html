@@ -2,10 +2,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <meta name="x-build-time" content="{{ _.BUILD_TIME }}">
   <title>Pixel Physics</title>
-  <link rel = "manifest" href = "/manifest.json">
-  <link rel="stylesheet" href="/app.css">
-  <script src="/app.js"></script>
+  <link rel = "manifest" href = "/manifest.json?build={{ _.BUILD_TIME }}">
+  <link rel="stylesheet" href="/app.css?build={{ _.BUILD_TIME }}">
+  <script src="/app.js?build={{ _.BUILD_TIME }}"></script>
   <script>require('initialize');</script>
 </head>
 <body></body>

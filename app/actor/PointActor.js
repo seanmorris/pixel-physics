@@ -470,6 +470,8 @@ export class PointActor extends View
 
 		this.init = true;
 
+		this.args.bindTo('animation', v => this.box.setAttribute('data-animation', v));
+
 		if(this.controllable)
 		{
 			this.sprite.parentNode.classList.add('controllable');
@@ -792,26 +794,35 @@ export class PointActor extends View
 
 			let headPoint;
 
+			const height = Math.max(this.public.height, 32);
+
 			switch(this.public.mode)
 			{
 				case MODE_FLOOR:
-					headPoint = [this.x, this.y - this.public.height];
+					headPoint = [this.x, this.y + -height + -1];
 					break;
 
 				case MODE_CEILING:
-					headPoint = [this.x, this.y + this.public.height];
+					headPoint = [this.x, this.y + height + 1];
 					break;
 
 				case MODE_LEFT:
-					headPoint = [this.x + this.public.height, this.y];
+					headPoint = [this.x + height + 1, this.y];
 					break;
 
 				case MODE_RIGHT:
-					headPoint = [this.x - this.public.height, this.y];
+					headPoint = [this.x + -height + -1, this.y];
 					break;
 			}
 
-			if(!tileMap.getSolid(...headPoint, this.public.layer))
+			let jumpBlock = this.getMapSolidAt(...headPoint);
+
+			if(Array.isArray(jumpBlock))
+			{
+				jumpBlock = !!jumpBlock.filter(a => !a.args.platform).length;
+			}
+
+			if(!jumpBlock)
 			{
 				let force = this.args.jumpForce * drag;
 
@@ -857,13 +868,13 @@ export class PointActor extends View
 				{
 					case MODE_FLOOR:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + (direction === -1 ? 1 : 0)
+							this.x + halfWidth * direction + (direction === -1 ? 0 : -1)
 							, this.y - halfHeight
 						);
 
 					case MODE_CEILING:
 						return this.getMapSolidAt(
-							this.x + halfWidth * direction + (direction === -1 ? 1 : 0)
+							this.x + halfWidth * direction + (direction === -1 ? 0 : -1)
 							, this.y + halfHeight
 						);
 
@@ -1772,7 +1783,7 @@ export class PointActor extends View
 
 				if(actors.length > 0)
 				{
-					return point;
+					return lastPoint;
 				}
 
 				if(tileMap.getSolid(point[0], point[1], this.public.layer))
@@ -1796,7 +1807,7 @@ export class PointActor extends View
 
 				if(actors.length > 0)
 				{
-					return point;
+					return lastPointB;
 				}
 
 				if(tileMap.getSolid(point[0], point[1], this.public.layer))
@@ -2496,7 +2507,7 @@ export class PointActor extends View
 
 			const tileMap = this.viewport.tileMap;
 
-			if(tileMap.getSolid(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y, this.public.layer))
+			if(this.getMapSolidAt(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y))
 			{
 				this.args.xSpeed = 0;
 			}
@@ -3251,7 +3262,20 @@ export class PointActor extends View
 		{
 			const actors = this.viewport.actorsAtPoint(x,y)
 				.filter(x=>x.args!==this.args)
-				.filter(x=>x.solid);
+				.filter(x=>x.solid)
+				.filter(x=> {
+					if(!x.args.platform)
+					{
+						return true;
+					}
+
+					if(this.y < x.y + x.args.height && this.args.ySpeed >= 0)
+					{
+						return true;
+					}
+
+					return false;
+				});
 
 			if(actors.length > 0)
 			{
@@ -3621,5 +3645,10 @@ export class PointActor extends View
 			-5 * this.public.direction
 			, -14 + this.public.height
 		);
+	}
+
+	registerDebug(name)
+	{
+		window[name] = this;
 	}
 }

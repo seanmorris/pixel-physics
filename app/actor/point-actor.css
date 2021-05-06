@@ -75,7 +75,7 @@
 	opacity: 1;
 }
 
-.pinch-filter, .`twist-filter {
+.pinch-filter, .twist-filter {
 	transform: scale(1.5);
 }
 

@@ -35,27 +35,32 @@ export class MarbleBlock extends PointActor
 			return true;
 		}
 
-		if(type === 1 && otherSpeed <= 0)
+		if(!this.args.falling && type === 1 && otherSpeed <= 0)
 		{
 			return false;
 		}
 
-		if(type === 3 && otherSpeed >= 0)
+		if(!this.args.falling && type === 3 && otherSpeed >= 0)
 		{
 			return false;
 		}
 
-		if(type === 1 || type === 3)
+		const blockTop = this.y - this.args.height;
+
+		if((type === 1 || type === 3) && (other.y >= this.y || other.y > blockTop))
 		{
 			if(!otherSpeed)
 			{
 				return true;
 			}
 
-			this.args.pushed = Math.sign(other.public.gSpeed);
+			this.args.pushed = Math.sign(other.public.gSpeed) || this.args.pushed;
 
 			const tileMap = this.viewport.tileMap;
+
 			const moveBy  = (type === 1 && 1) || (type === 3 && -1);
+
+			const scan = this.scanBottomEdge(moveBy);
 
 			const blockers = tileMap.getSolid(this.x + (this.args.width/2) * moveBy, this.y)
 
@@ -64,13 +69,11 @@ export class MarbleBlock extends PointActor
 				return true;
 			}
 
-			const scan = this.scanBottomEdge(moveBy);
-
-			if(this.args.falling && moveBy > 0 && scan === 0)
+			if(moveBy > 0 && scan === 0)
 			{
 				this.args.falling = true;
 			}
-			else if(this.args.falling && moveBy < 0 && scan === 0)
+			else if(moveBy < 0 && scan === 0)
 			{
 				this.args.falling = true;
 			}
@@ -78,7 +81,7 @@ export class MarbleBlock extends PointActor
 			{
 				const nextPosition = this.findNextStep(moveBy);
 
-				if(!nextPosition[1])
+				if(!nextPosition[1] || nextPosition[2])
 				{
 					this.args.x += nextPosition[0] || moveBy;
 

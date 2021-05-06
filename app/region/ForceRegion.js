@@ -28,15 +28,62 @@ export class ForceRegion extends Region
 
 	updateActor(other)
 	{
-		if(Math.abs(other.public.xSpeed) < Math.abs(this.public.xForce))
+		if(other.args.falling)
 		{
-			other.args.xSpeed += Math.sign(other.public.xSpeed - -this.public.xForce);
+			if(Math.abs(other.public.xSpeed) < Math.abs(this.public.xForce))
+			{
+				other.args.xSpeed += Math.sign(other.public.xSpeed - -this.public.xForce);
+			}
+
+			if(Math.abs(other.public.ySpeed) < Math.abs(this.public.yForce))
+			{
+				other.args.ySpeed += Math.sign(other.public.ySpeed - -this.public.yForce);
+			}
+
+			return;
 		}
 
-		if(Math.abs(other.public.ySpeed) < Math.abs(this.public.yForce))
+		switch(other.args.mode)
 		{
-			other.args.ySpeed += Math.sign(other.public.ySpeed - -this.public.yForce);
+			case 0:
+
+				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.xForce))
+				{
+					other.args.gSpeed += Math.sign(other.public.gSpeed - -this.public.xForce);
+				}
+
+				break;
+
+
+			case 1:
+
+				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.yForce))
+				{
+					other.args.gSpeed += Math.sign(other.public.gSpeed - -this.public.yForce);
+				}
+
+				break;
+
+			case 2:
+
+				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.xForce))
+				{
+					other.args.gSpeed -= Math.sign(other.public.gSpeed - -this.public.xForce);
+				}
+
+				break;
+
+
+			case 3:
+
+				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.yForce))
+				{
+					other.args.gSpeed -= Math.sign(other.public.gSpeed - -this.public.yForce);
+				}
+
+				break;
 		}
+
 	}
 
 	get solid() { return false; }

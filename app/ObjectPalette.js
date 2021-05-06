@@ -13,6 +13,7 @@ import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
 import { MarbleBlock }    from './actor/MarbleBlock';
 import { BreakableBlock }    from './actor/BreakableBlock';
+import { Stopper }    from './actor/Stopper';
 import { Block }          from './actor/Block';
 
 import { Monitor }   from './actor/Monitor';
@@ -78,6 +79,7 @@ export const ObjectPalette = {
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock
 	, 'breakable-block': BreakableBlock
+	, 'stopper': Stopper
 	, 'bumper':       Bumper
 	, 'drill-car':    DrillCar
 	, 'rail-car':     RailCar

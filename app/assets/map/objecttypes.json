@@ -1,7 +1,7 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "force-region",
+        "name": "stopper",
         "properties": [
         ]
     },
@@ -80,6 +80,12 @@
                 "type": "string",
                 "value": "red"
             }
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "force-region",
+        "properties": [
         ]
     },
     {

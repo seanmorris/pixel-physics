@@ -15,8 +15,8 @@ export class Layer extends View
 
 		this[ Bindable.NoGetters ] = true;
 
-		this.args.width  = 320;
-		this.args.height = 200;
+		this.args.width  = args.width  || 320;
+		this.args.height = args.height || 200;
 
 		this.args.blockSize = 32;
 
@@ -58,6 +58,8 @@ export class Layer extends View
 		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 1;
 		const blocksHigh = Math.ceil((this.args.height / blockSize)) + 1;
 		const blocksXY   = this.blocksXY;
+		const centerX    = blocksWide / 2;
+		const centerY    = blocksHigh / 2;
 		const blocks     = this.blocks;
 		const offsets    = this.offsets;
 		const blockSrcs  = this.blockSrcs;
@@ -68,6 +70,8 @@ export class Layer extends View
 
 		let startColumn = 0;
 		let endColumn   = blocksWide;
+
+		let ii = 0;
 
 		for(let i = startColumn; i <= endColumn; i += Math.sign(blocksWide))
 		{
@@ -137,6 +141,8 @@ export class Layer extends View
 						block.style({
 							display: 'initial', 'background-position': blockOffset
 							, 'background-image': `url(/map/${blockSrc})`
+							, '--screenX': (centerX - ii) / centerX
+							, '--screenY': (j - centerY) / centerY
 						});
 					}
 					else
@@ -148,6 +154,8 @@ export class Layer extends View
 				offsets.set(block, blockOffset);
 				blockSrcs.set(block, blockSrc);
 			}
+
+			ii++;
 		}
 	}
 }

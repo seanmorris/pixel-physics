@@ -317,7 +317,8 @@ export class Viewport extends View
 		this.args.x = this.args.x || 0;
 		this.args.y = this.args.y || 0;
 
-		this.args.layers = [];
+		this.args.fgLayers = [];
+		this.args.layers   = [];
 
 		this.args.animation = '';
 
@@ -675,15 +676,13 @@ export class Viewport extends View
 
 		const backdropClass = BackdropPalette[ this.meta.backdrop ];
 
-		console.log(this.meta.backdrop);
-
 		if(backdropClass)
 		{
 			this.args.backdrop = new backdropClass;
 		}
 		else
 		{
-			// this.args.backdrop = new Backdrop;
+			this.args.backdrop = null;
 		}
 
 		this.args.theme = this.meta.theme || 'construct';
@@ -693,16 +692,21 @@ export class Viewport extends View
 
 		for(let i = 0; i < layerCount; i++)
 		{
-			if(!this.args.layers[i])
-			{
-				this.args.layers[i] = new Layer({
-					layerId: i
-					, viewport: this
-					, name: layers[i].name
-				});
+			const layer = new Layer({
+				layerId: i
+				, viewport: this
+				, name:     layers[i].name
+				, width:    this.args.width
+				, height:   this.args.height
+			});
 
-				this.args.layers[i].args.height = this.args.height;
-				this.args.layers[i].args.width  = this.args.width;
+			if(layers[i].name.substring(0, 10) === 'Foreground')
+			{
+				this.args.fgLayers.push(layer);
+			}
+			else
+			{
+				this.args.layers.push(layer);
 			}
 		}
 
@@ -809,15 +813,15 @@ export class Viewport extends View
 
 					if(gamepadId.match(/xbox/i))
 					{
-						this.args.inputName = 'xbox controller & keyboard';
-
 						this.args.inputType = 'input-xbox';
+					}
+					else if(gamepadId.match(/playstation/i))
+					{
+						this.args.inputType = 'input-playstation';
 					}
 					else
 					{
-						this.args.inputName = 'playstation controller & keyboard';
-
-						this.args.inputType = 'input-playstation';
+						this.args.inputType = 'input-generic';
 					}
 
 				}
@@ -1177,7 +1181,7 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		for(const layer of this.args.layers)
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
 			const xDir = Math.sign(layer.x - this.args.x);
 			const yDir = Math.sign(layer.y - this.args.y);
@@ -1251,6 +1255,11 @@ export class Viewport extends View
 			'--x': Number(this.args.x).toFixed(1)
 			, '--y': Number(this.args.y).toFixed(1)
 		});
+
+		// this.tags.fgFilters.style({
+		// 	'--x': Number(this.args.x).toFixed(1)
+		// 	, '--y': Number(this.args.y).toFixed(1)
+		// });
 		// this.tags.fgFilters.style({'--x': this.args.x, '--y': this.args.y});
 
 		this.tags.content.style({
@@ -1268,6 +1277,7 @@ export class Viewport extends View
 			: (-this.args.blockSize + (this.args.y % this.args.blockSize)) % this.args.blockSize;
 
 		this.tags.background.style({transform: `translate( ${xMod}px, ${yMod}px )`});
+		this.tags.foreground.style({transform: `translate( ${xMod}px, ${yMod}px )`});
 
 		this.tags.frame.style({
 			'--width': this.args.width
@@ -2016,7 +2026,7 @@ export class Viewport extends View
 				const otherTop    = actorY - height;
 				const otherBottom = actorY;
 
-				if(myRight >= otherLeft && otherRight >= myLeft)
+				if(myRight >= otherLeft && otherRight > myLeft)
 				{
 					if(otherBottom >= myTop && myBottom > otherTop)
 					{
@@ -2260,19 +2270,18 @@ export class Viewport extends View
 		const layers = this.args.layers;
 		const layerCount = layers.length;
 
-		for(let i = 0; i < layerCount; i++)
+		for(const layer of this.args.layers)
 		{
-			if(!layers[i])
-			{
-				continue;
-			}
+			layer.remove();
+		}
 
-			const layer = layers[i];
-
+		for(const layer of this.args.fgLayers)
+		{
 			layer.remove();
 		}
 
 		this.args.layers = [];
+		this.args.fgLayers = [];
 
 		this.args.titlecard = new Series({cards: this.homeCards()}, this);
 

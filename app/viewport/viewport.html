@@ -158,6 +158,7 @@
 
 			<div class = "blurAngle" cv-ref = "blurAngle">
 			<div class = "blurDistance" cv-ref = "blurDistance">
+
 			<div class = "blurAngleCancel" cv-ref = "blurAngleCancel">
 				<div
 					cv-ref  = "background"
@@ -171,13 +172,18 @@
 			<div class = "filters filters-background" cv-ref = "bgFilters"></div>
 
 			<div cv-ref = "content" class = "viewport-content">
-
 				<div cv-ref = "actors" class = "viewport-actors" cv-ref = "actors"></div>
-
 				<div cv-ref = "particles" class = "viewport-particles" cv-ref = "particles"></div>
-
  			</div>
+
+	 		<div
+				cv-ref  = "foreground"
+				class   = "viewport-bg-layers"
+				cv-each = "fgLayers:layer"
+			>[[layer]]</div>
+
  		</div>
+
 
  		<div class = "viewport-overlay">
 			<div class = "hud">
@@ -272,10 +278,10 @@
 
 			</div>
 
-			<!-- <div class = "hud hud-dark hud-bottom-left">
+			<div class = "hud hud-dark hud-bottom-left">
 				[[nowPlaying]]
 				[[trackName]]
-			</div> -->
+			</div>
 
 			<div class = "hud hud-top-left">
 				<div class = "timer">[[timer]]</div>

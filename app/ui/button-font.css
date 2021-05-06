@@ -4,7 +4,16 @@
 	background-size: 100% 100%;
 	width: 28px;
 	height: 20px;
-	transform: translateY(-4px);
+	transform: translateY(-8px);
+}
+
+.input-generic .hud-character[data-value="9913"] {
+	background-image: url(/ui/generic-button-dpad.svg);
+	background-position: 50% 50% !important;
+	background-size: 100% 100%;
+	width: 28px;
+	height: 20px;
+	transform: translateY(-8px);
 }
 
 .input-xbox .hud-character[data-value="9913"]{
@@ -14,6 +23,7 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(-4px);
 }
 
 .input-playstation .hud-character[data-value="9913"]{
@@ -23,6 +33,7 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(-4px);
 }
 
 .hud-character[data-value="9374"] {
@@ -32,6 +43,17 @@
 	width: 26px;
 	height: 16px;
 	transform: translateY(-2px);
+}
+
+.hud-character[data-value="9374"]{
+	background-image: url(/ui/generic-button-0.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+	position: relative;
+	top: -0.125em;
 }
 
 .input-xbox .hud-character[data-value="9374"]{
@@ -61,6 +83,17 @@
 	transform: translateY(-2px);
 }
 
+.input-generic .hud-character[data-value="10005"]{
+	background-image: url(/ui/generic-button-1.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+	position: relative;
+	top: -0.125em;
+}
+
 .input-xbox .hud-character[data-value="10005"]{
 	background-image: url(/ui/xbox-button-b.svg);
 	background-position: 50% 50% !important;
@@ -86,6 +119,17 @@
 	width: 26px;
 	height: 16px;
 	transform: translateY(-2px);
+}
+
+.input-generic .hud-character[data-value="10006"]{
+	background-image: url(/ui/generic-button-2.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+	position: relative;
+	top: -0.125em;
 }
 
 .input-xbox .hud-character[data-value="10006"]{
@@ -122,6 +166,17 @@
 	margin-top: -0.125em;
 }
 
+.input-generic .hud-character[data-value="10007"]{
+	background-image: url(/ui/generic-button-3.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.1em;
+	height: 1.25em;
+	position: relative;
+	top: -0.125em;
+}
+
 .input-playstation .hud-character[data-value="10007"]{
 	background-image: url(/ui/playstation-button-triangle.svg);
 	background-position: 50% 50% !important;
@@ -134,6 +189,18 @@
 
 .hud-character[data-value="10008"]{
 	--value: 16 !important;
+}
+
+.input-generic .hud-character[data-value="10008"]{
+	background-image: url(/ui/generic-button-4.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+	position: relative;
+	top: -0.25em;
 }
 
 .input-xbox .hud-character[data-value="10008"]{
@@ -159,6 +226,18 @@
 
 .hud-character[data-value="10009"]{
 	--value: 4 !important;
+}
+
+.input-generic .hud-character[data-value="10009"]{
+	background-image: url(/ui/generic-button-5.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.5em;
+	height: 1.25em;
+	margin-top: -0.125em;
+	position: relative;
+	top: -0.25em;
 }
 
 .input-xbox .hud-character[data-value="10009"]{
@@ -189,6 +268,16 @@
 	width: 28px;
 	height: 48px;
 	transform: translateY(-16px);
+}
+
+.input-generic .hud-character[data-value="-62"]{
+	background-image: url(/ui/generic-button-rs.svg);
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 80% 80%;
+	width: 1.75em !important;
+	height: 1.75em !important;
+	transform: translateY(-0.35em);
 }
 
 .input-xbox .hud-character[data-value="-62"]{

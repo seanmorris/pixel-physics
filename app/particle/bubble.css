@@ -1,4 +1,5 @@
 .particle-bubble {
+	z-index: 10;
 	position: relative;
 	will-change: left;
 	opacity: 0.75;
@@ -52,22 +53,22 @@
 
 .particle-bubble:before,
 .particle-bubble:after {
-	transform: scale(calc( 0.25 + calc(var(--size) * 0.75) ));
+	transform: scale(calc( 0.5 + calc(var(--size) * 0.5) ));
 }
 
 .particle-bubble.float:before,
 .particle-bubble.float:after {
 	/*transform:  scale(var(--size));*/
-	transition: opacity 0.25s, transform 1s ease-in, top 0.5s ease-in;
-	top: calc( calc( max(var(--spanY), -192) * 1px ) + -4px );
+	transition: opacity 0.25s, transform 1s ease-in, top 1s ease-in;
+	top: calc( calc( max(var(--spanY), -384) * 1px ) + -4px );
 }
 
 .particle-bubble.floating:before,
 .particle-bubble.floating:after {
 	opacity: 0.25;
-	top: calc( calc( max(var(--spanY), -192) * 1px ) + -4px );
+	top: calc( calc( max(var(--spanY), -1567) * 1px ) + -4px );
 	/*transform: scale(var(--size));*/
-	transition: transform 0.1s, opacity 0.25s, top 0.5s;
+	transition: transform 0.1s, opacity 0.75s, top 1.0s;
 	animation:
 		bubble-inflate steps(2) 1 forwards
 		, bubble-wave ease-in-out infinite forwards alternate;

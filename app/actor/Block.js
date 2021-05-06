@@ -100,10 +100,15 @@ export class Block extends PointActor
 
 		if(this.public.platform)
 		{
+			if(other.willStick)
+			{
+				return false;
+			}
+
 			const otherTop = other.y - other.public.height;
 			const blockTop = this.y - this.public.height;
 
-			if(other.public.falling === false || (other.public.ySpeed > 0 && other.y <= blockTop))
+			if((other.y <= blockTop) && (other.public.falling === false || other.args.ySpeed > 0))
 			{
 				return true;
 			}
@@ -335,7 +340,7 @@ export class Block extends PointActor
 	}
 
 	get rotateLock() { return true; }
-	get canStick() { return true; }
+	get canStick() { return !this.public.platform; }
 	get solid() { return (!this.public.collapse || (this.public.float !== 0 || !this.public.goBack)); }
 }
 
