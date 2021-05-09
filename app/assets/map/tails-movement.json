@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":128,
  "infinite":false,
  "layers":[
@@ -231,7 +238,7 @@
         {
          "name":"titlecard-title-1",
          "type":"string",
-         "value":"TAILS MOVEMENT"
+         "value":"TAILS CONTROL"
         }, 
         {
          "name":"titlecard-title-2",
@@ -239,7 +246,7 @@
          "value":"TUTORIAL ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"2020.12.18",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {

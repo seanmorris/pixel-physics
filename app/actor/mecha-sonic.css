@@ -33,6 +33,7 @@
 .actor-item.actor-mecha-sonic[data-animation="crouching"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -64px;
+	animation: mecha-sonic-crouching steps(1) 1 160ms forwards;
 }
 
 .actor-item.actor-mecha-sonic[data-animation="skidding"] .sprite:after {
@@ -53,10 +54,17 @@
 	animation: mecha-sonic-runningb steps(2) infinite 1ms;
 }
 
+/*.actor-item.actor-mecha-sonic .sprite:after,*/
 .actor-item.actor-mecha-sonic[data-animation="curling"] .sprite:after {
 	--sprite-offset-x: -0px;
-	--sprite-offset-y: -128px;
-	animation: mecha-sonic-curl steps(1) 1 128ms;
+	--sprite-offset-y: -128px !important;
+	animation: mecha-sonic-curling steps(1) 1 128ms forwards;
+}
+
+.actor-item.actor-mecha-sonic[data-animation="uncurling"] .sprite:after {
+	--sprite-offset-x: -0px !important;
+	--sprite-offset-y: -128px !important;
+	animation: mecha-sonic-uncurling steps(1) 1 96ms;
 }
 
 .actor-item.actor-mecha-sonic[data-animation="jumping"] .sprite:after {
@@ -123,12 +131,21 @@
 	left: -4px;
 }
 
-@-webkit-keyframes mecha-sonic-curl {
+@-webkit-keyframes mecha-sonic-curling {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-uncurling {
+	from{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 }
 
@@ -138,6 +155,15 @@
 	}
 	to{
 		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes mecha-sonic-crouching {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

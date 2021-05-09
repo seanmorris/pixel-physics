@@ -1,0 +1,29 @@
+.actor-flickie{
+	pointer-events: none;
+	z-index: var(--z);
+}
+
+.actor-flickie .sprite {
+	will-change: top, left, transform;
+	background-image: url(/Sonic/flickie.png);
+	background-position: -32px -0px;
+	height: 20px;
+	width: 16px;
+}
+
+.actor-flickie.ascending .sprite {
+	animation: flickie-flap 0.17s infinite steps(2);
+}
+
+.actor-flickie.decending .sprite {
+	background-position: -32px calc(-20px * var(--palletShift));
+}
+
+@keyframes flickie-flap {
+	from {
+		background-position: -32px calc(-20px * var(--palletShift));
+	}
+	to {
+		background-position: -64px calc(-20px * var(--palletShift));
+	}
+}

@@ -116,7 +116,7 @@ export class Eggman extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'walking');
 			}
-			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
+			else if(this.args.crouching || (this.args.standingOn && this.args.standingOn.isVehicle))
 			{
 				this.box.setAttribute('data-animation', 'crouching');
 			}

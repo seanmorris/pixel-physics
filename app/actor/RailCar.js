@@ -19,7 +19,7 @@ export class RailCar extends Vehicle
 		this.args.decel     = 0.00;
 		this.args.accel     = 0.75;
 		this.args.gravity   = 1;
-		this.args.ignore    = -1;
+		// this.args.ignore    = -1;
 
 		this.args.seatHeight = 44;
 
@@ -143,5 +143,5 @@ export class RailCar extends Vehicle
 		// Don't process input at all.
 	}
 
-	get solid() { return !this.broken && !this.occupant; }
+	get solid() { return !this.args.broken && !this.occupant; }
 }

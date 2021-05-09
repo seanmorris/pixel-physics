@@ -51,22 +51,7 @@ export class MainMenu extends Menu
 							});
 						}
 					}
-					, 'Bendy Bridges': {
-						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/bendy-bridges.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
-						}
-					}
-					, 'Sonic Movement Tutorial': {
+					, 'Sonic Control Tutorial': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
 
@@ -79,7 +64,7 @@ export class MainMenu extends Menu
 							});
 						}
 					}
-					, 'Tails Movement Tutorial': {
+					, 'Tails Control Tutorial': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/tails-movement.json' });
 
@@ -92,7 +77,94 @@ export class MainMenu extends Menu
 							});
 						}
 					}
-					, 'Knuckles Movement Tutorial': {available: 'unavailable'}
+					, 'Knuckles Control Tutorial': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/knuckles-movement.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Light Dash Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/light-dash-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Block Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/block-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Vehicle Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/vehicle-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Half Pipe Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/half-pipe-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Flickie Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/flickie-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
 					, 'locked': { available: 'unavailable' }
 					, 'locked ': { available: 'unavailable' }
 					, 'locked  ': { available: 'unavailable' }
@@ -346,8 +418,6 @@ export class MainMenu extends Menu
 				this.accept();
 				console.log('Peer connection opened!');
 			});
-
-			this.accept();
 		};
 		const onClose = event => this.disconnect();
 

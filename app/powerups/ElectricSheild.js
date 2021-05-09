@@ -41,24 +41,24 @@ export class ElectricSheild extends Sheild
 
 	release_6(host, button)
 	{
-		this.magnetism = 0;
+		// this.magnetism = 0;
 
-		for(const ring of this.attract)
-		{
-			this.onTimeout(3000, () => {
-				ring.args.x = ring.def.get('x');
-				ring.args.y = ring.def.get('y');
-				host.viewport.auras.delete(ring);
-				host.viewport.setColCell(ring);
-				ring.restore = true;
-				ring.args.float = -1;
-				ring.noClip = false;
-				ring.args.xSpeed  = 0;
-				ring.args.ySpeed  = 0;
-			});
+		// for(const ring of this.attract)
+		// {
+		// 	this.onTimeout(3000, () => {
+		// 		ring.args.x = ring.def.get('x');
+		// 		ring.args.y = ring.def.get('y');
+		// 		host.viewport.auras.delete(ring);
+		// 		host.viewport.setColCell(ring);
+		// 		ring.restore = true;
+		// 		ring.args.float = -1;
+		// 		ring.noClip = false;
+		// 		ring.args.xSpeed  = 0;
+		// 		ring.args.ySpeed  = 0;
+		// 	});
 
-			this.attract.delete(ring);
-		}
+		// 	this.attract.delete(ring);
+		// }
 	}
 
 	hold_6(host, button)
@@ -70,38 +70,7 @@ export class ElectricSheild extends Sheild
 
 		this.magnetism = Math.max(0, button.pressure - 0.25);
 
-		host.pinch(220 * this.magnetism, 0);
-
-		if(!this.magnetism)
-		{
-			for(const ring of this.attract)
-			{
-				this.onTimeout(100, () => {
-					ring.args.gone    = true;
-					ring.args.xSpeed  = 0;
-					ring.args.ySpeed  = 0;
-					ring.args.x = ring.def.get('x');
-					ring.args.y = ring.def.get('y');
-
-					this.onTimeout(3000, () => {
-						host.viewport.auras.delete(ring);
-						host.viewport.setColCell(ring);
-						ring.args.float = -1;
-						ring.noClip = false;
-						ring.restore = true;
-					});
-				});
-
-				this.attract.delete(ring);
-
-			}
-			return;
-		}
-
-		// if(this.attract.size > 32)
-		// {
-		// 	return;
-		// }
+		host.pinch(260 * this.magnetism, 0);
 
 		const Ring = host.viewport.objectPalette.ring;
 
@@ -130,7 +99,7 @@ export class ElectricSheild extends Sheild
 			return true;
 		};
 
-		const ring = host.findNearestActor(findRing, this.magnetism * 512);
+		const ring = host.findNearestActor(findRing, this.magnetism * 386);
 
 		if(ring)
 		{
@@ -172,32 +141,22 @@ export class ElectricSheild extends Sheild
 		if(!host.public.falling)
 		{
 			this.jumps = 3;
-
-			// this.args.boosted = '';
 		}
 
 		for(const ring of this.attract)
 		{
-			if(!ring)
-			{
-				host.viewport.auras.delete(ring);
-				this.attract.delete(ring);
-				continue;
-			}
-
 			if(ring.args.gone)
 			{
-				host.viewport.auras.delete(ring);
 				this.attract.delete(ring);
 
-				this.onTimeout(100, () => {
+				this.onTimeout(500, () => {
 					ring.args.xSpeed  = 0;
 					ring.args.ySpeed  = 0;
 					ring.args.x = ring.def.get('x');
 					ring.args.y = ring.def.get('y');
+					host.viewport.setColCell(ring);
 					this.onTimeout(3000, () => {
 						host.viewport.auras.delete(ring);
-						host.viewport.setColCell(ring);
 						ring.args.float = -1;
 						ring.noClip = false;
 						ring.restore = true;
@@ -207,23 +166,21 @@ export class ElectricSheild extends Sheild
 				continue;
 			}
 
-			// if(!ring.vizi)
-			// {
-			// 	this.onTimeout(5000, () => {
-			// 		ring.args.x = ring.def.get('x');
-			// 		ring.args.y = ring.def.get('y');
-			// 		ring.args.gone = true;
-			// 		ring.restore = true;
-			// 		ring.xSpeed  = 0;
-			// 		ring.ySpeed  = 0;
-			// 	});
-			// 	continue;
-			// }
-
 			ring.noClip = true;
 
 			const xDiff = host.x - ring.x;
-			const yDiff = (host.y - host.args.height/2) - ring.y;
+			const yDiff = (host.y - host.args.height/4) - ring.y;
+
+			const angle = Math.atan2(yDiff, xDiff);
+			const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
+
+			const maxDistance = 384;
+
+			if(distance > maxDistance)
+			{
+				ring.args.x = host.x - Math.cos(angle) * maxDistance;
+				ring.args.y = host.y - Math.sin(angle) * maxDistance;
+			}
 
 			const xDir = Math.sign(xDiff);
 			const yDir = Math.sign(yDiff);
@@ -231,22 +188,28 @@ export class ElectricSheild extends Sheild
 			const xSame = Math.sign(ring.args.xSpeed) === xDir;
 			const ySame = Math.sign(ring.args.ySpeed) === yDir;
 
-			const xMag = Math.max(this.magnetism, xSame ? 0.5 : 0.65);
-			const yMag = Math.max(this.magnetism, ySame ? 0.4 : 0.55);
+			host.viewport.setColCell(ring);
+
+			const force = this.magnetism || 0.55;
+
+			const xMag = Math.max(force, xSame ? 0.35 : 0.45);
+			const yMag = Math.max(force, ySame ? 0.25 : 0.35);
 
 			// const xMag = Math.max(this.magnetism, xDiff === xDir ? 0.35 : 0.35);
 			// const yMag = Math.max(this.magnetism, yDiff === yDir ? 0.125 : 0.135);
 
 			ring.args.groundAngle = 0;
 
-			if(!xSame || Math.abs(ring.args.xSpeed) < 10)
+			const fudge = this.magnetism ? Math.random() : 1;
+
+			if(!xSame || Math.abs(ring.args.xSpeed) < 8)
 			{
-				ring.args.xSpeed += xMag * (xDir * Math.random());
+				ring.args.xSpeed += xMag * (xDir * fudge);
 			}
 
-			if(!ySame || Math.abs(ring.args.ySpeed) < 10)
+			if(!ySame || Math.abs(ring.args.ySpeed) < 8)
 			{
-				ring.args.ySpeed += yMag * (yDir * Math.random());
+				ring.args.ySpeed += yMag * (yDir * fudge);
 			}
 
 			ring.args.falling = true;

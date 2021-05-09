@@ -8,7 +8,7 @@
 
 .actor-item.actor-breakable-block {
 	filter: initial !important;
-	z-index: 300000;
+	z-index: 400000;
 }
 
 .actor-item.actor-marble-companion-block .sprite {
@@ -150,8 +150,8 @@
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -13px;
 	position: absolute;
-	top: -32px;
-	left: -16px;
+/*	top: -32px;
+	left: -16px;*/
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	animation: q-block-spin steps(4) infinite;
 	animation-duration: calc(1ms * 480);

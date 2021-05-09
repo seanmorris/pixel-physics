@@ -1,7 +1,7 @@
 [
     {
         "color": "#ffa0a0a4",
-        "name": "cinematic",
+        "name": "flickie",
         "properties": [
         ]
     },
@@ -32,6 +32,12 @@
     {
         "color": "#ffa0a0a4",
         "name": "bumper",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffa0a0a4",
+        "name": "cinematic",
         "properties": [
         ]
     },

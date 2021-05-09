@@ -36,6 +36,7 @@ section.filters {
 }
 
 .viewport {
+	contain: paint;
 	image-rendering: high-quality;
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
@@ -271,10 +272,6 @@ section.filters {
 		drop-shadow( var(--outlineWidthNeg) var(--outlineWidthNeg) 0px var(--outlineColor));
 }
 
-.actor-selected {
-	 /*z-index: 1000;*/
-}
-
 .controllable.actor-generic:hover:not(.actor-selected),
 .controllable:not(.actor-generic):hover:not(.actor-selected) .sprite {
 	--outlineColor: white !important;
@@ -292,30 +289,8 @@ section.filters {
 	align-items: center;
 }
 
-.viewport-content {
-	/*z-index: 1;*/
-}
-
-.viewport-background[data-layer="0"] {
-
-}
-
-.viewport-background[data-layer="2"] {
-	/*z-index: 1000;*/
-}
-
-.viewport-background[data-layer="0"] > div {
-	/*box-shadow: inset 0 0 4px rgba(255,0,0,0.4);*/
-	/*border-top: 0.5px solid #020;
-	border-left: 0.5px solid #020;*/
-}
-
 .viewport-background > div {
 	background-repeat: no-repeat;
-	/*filter: url(#dilate);*/
-	/*border-bottom: 1px solid #CCC;
-	border-right: 1px solid #CCC;
-	box-sizing: border-box;*/
 }
 
 .viewport-zoom .blurAngle {

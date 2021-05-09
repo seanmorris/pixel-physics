@@ -38,6 +38,8 @@ export class StarPost extends PointActor
 
 	onRendered()
 	{
+		super.onRendered();
+
 		this.sprite = this.findTag('div.sprite');
 		this.box    = this.findTag('div');
 

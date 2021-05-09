@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Vehicle } from './Vehicle';
 import { Tag } from 'curvature/base/Tag';
 
 import { SkidDust } from '../behavior/SkidDust';
@@ -23,6 +24,9 @@ export class MechaSonic extends PointActor
 		this.args.gravity   = 0.5;
 
 		this.args.takeoffPlayed = false;
+
+		this.public.rollingHeight = 52;
+		this.public.normalHeight  = 31;
 
 		this.args.width  = 18;
 		this.args.height = 52;
@@ -98,19 +102,33 @@ export class MechaSonic extends PointActor
 			}
 		}
 
+		if(!falling)
+		{
+			this.dashed = false;
+		}
+
 		if(!this.public.rolling && !falling)
 		{
+			if(this.yAxis > 0)
+			{
+				this.args.crouching = true;
+			}
+			else
+			{
+				this.args.crouching = false;
+			}
+
 			if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
 			{
 				this.scrapeSound && this.scrapeSound.play();
 
-				this.box.setAttribute('data-animation', 'skidding');
+				this.args.animation = 'skidding';
 			}
 			else if(speed >= minRun2)
 			{
 				this.scrapeSound && this.scrapeSound.pause();
 
-				this.box.setAttribute('data-animation', 'running2');
+				this.args.animation = ('running2');
 
 				this.thrusterSound && this.thrusterSound.play();
 
@@ -130,82 +148,121 @@ export class MechaSonic extends PointActor
 			else if(speed >= minRun)
 			{
 				this.scrapeSound && this.scrapeSound.play();
-				this.box.setAttribute('data-animation', 'running');
+				this.args.animation = ('running');
 			}
 			else if(this.args.moving && gSpeed)
 			{
 				this.scrapeSound && this.scrapeSound.play();
-				this.box.setAttribute('data-animation', 'walking');
+
+				if(this.args.animation === 'curling'
+					|| this.args.animation === 'jumping'
+					|| this.args.animation === 'rolling'
+				){
+					this.args.animation = 'uncurling';
+
+					this.onTimeout(128, ()=>{
+						this.args.animation = 'walking';
+					});
+				}
+				else if(this.args.animation === 'standing'
+					|| this.args.animation === 'running'
+					|| this.args.animation === 'running2'
+				){
+					this.args.animation = 'walking';
+				}
 			}
 			else if(this.args.crouching || (this.standingOn && this.standingOn.isVehicle))
 			{
-				this.box.setAttribute('data-animation', 'crouching');
+				this.args.animation = 'crouching';
 			}
 			else
 			{
 				this.scrapeSound && this.scrapeSound.pause();
-				this.box.setAttribute('data-animation', 'standing');
+
+				if(this.args.animation === 'curling'
+					|| this.args.animation === 'jumping'
+					|| this.args.animation === 'rolling'
+				){
+					this.args.animation = 'uncurling';
+
+					this.onTimeout(128, ()=>{
+						this.args.animation = 'standing';
+					});
+				}
+				else if(this.args.animation === 'walking'
+					|| this.args.animation === 'running'
+					|| this.args.animation === 'running2'
+					|| this.args.animation === 'skidding'
+					|| this.args.animation === 'crouching'
+					|| this.args.animation === 'rolling'
+				){
+					this.args.animation = 'standing';
+				}
 			}
 
 			if(speed < minRun2)
 			{
-				this.closeThruster()
+				this.closeThruster();
 			}
 		}
 		else if(this.public.rolling)
 		{
 			this.scrapeSound && this.scrapeSound.pause();
 
-			if(this.box.getAttribute('data-animation') !== 'rolling' && this.box.getAttribute('data-animation') !== 'jumping')
-			{
-				this.box.setAttribute('data-animation', 'curling');
+			if(this.args.animation !== 'curling'
+				&& this.args.animation !== 'uncurling'
+				&& this.args.animation !== 'rolling'
+				&& this.args.animation !== 'jumping'
+			){
+				this.args.animation = 'crouching';
 
-				this.onTimeout(512, ()=>{
+				this.onTimeout(200, ()=>{
 					if(this.public.rolling)
 					{
-						this.box.setAttribute('data-animation', 'rolling');
+						this.args.animation = 'rolling';
 
 						this.closeThruster();
 					}
 				});
-			}
-			else
-			{
-				this.box.setAttribute('data-animation', 'rolling');
-
-				this.closeThruster();
 			}
 		}
 		else
 		{
 			this.scrapeSound && this.scrapeSound.pause();
 
-			const animation = this.box.getAttribute('data-animation');
-
-			if(animation !== 'rolling'
-				&& animation !== 'jumping'
-				&& animation !== 'curling')
+			if(this.dashed)
 			{
-				this.box.setAttribute('data-animation', 'curling');
+				this.args.animation = 'running2';
+			}
+			else if(this.args.animation !== 'rolling'
+				&& this.args.animation !== 'jumping'
+				&& this.args.animation !== 'uncurling'
+				&& this.args.animation !== 'curling'
+				&& this.args.animation !== 'crouching'
+			){
+				this.args.animation = 'curling';
 
-				this.onTimeout(512, ()=>{
+				this.onTimeout(200, ()=>{
+					this.thrusterCloseSound && this.thrusterCloseSound.play();
+
 					if(this.public.falling)
 					{
-						if(this.public.jumping)
+						if(this.dashed)
 						{
-							this.box.setAttribute('data-animation', 'jumping');
-
+							this.args.animation = 'running2';
+						}
+						else if(this.public.jumping)
+						{
+							this.args.animation = 'jumping';
 						}
 
 						this.closeThruster();
 					}
 				});
 			}
-			else
+			else if(!this.public.jumping)
 			{
-				this.box.setAttribute('data-animation', 'jumping');
-
-				this.closeThruster();
+				this.args.animation = 'crouching';
 			}
 		}
 
@@ -234,8 +291,105 @@ export class MechaSonic extends PointActor
 		this.scrapeSound && this.scrapeSound.pause();
 	}
 
-	get solid() { return false; }
-	get isEffect() { return false; }
+	command_5()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(1);
+		}
+	}
+
+	command_4()
+	{
+		if(this.public.falling)
+		{
+			this.airDash(-1);
+		}
+	}
+
+	airDash(direction)
+	{
+		if(this.dashed || (this.public.ignore && this.public.ignore !== -2))
+		{
+			return;
+		}
+
+		if(direction < 0)
+		{
+			this.args.direction = -1;
+			this.args.facing    = 'left';
+		}
+		else
+		{
+			this.args.direction = 1;
+			this.args.facing    = 'right';
+		}
+
+		let dashSpeed = direction * 7;
+
+		this.args.float = 3;
+
+		this.args.mode = 0;
+		this.args.float = 2;
+
+		this.args.rolling = false;
+		this.args.height = this.public.normalHeight;
+
+		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
+		{
+			dashSpeed = direction * 11;
+			this.args.float  = 6;
+			this.args.xSpeed = 0;
+		}
+
+		this.args.falling = true;
+
+		const finalSpeed = this.args.xSpeed + dashSpeed;
+
+		const space = this.scanForward(dashSpeed, 0.5);
+
+		if(space && Math.abs(finalSpeed) > Math.abs(space))
+		{
+			dashSpeed = space * Math.sign(finalSpeed);
+		}
+
+		const foreDistance = this.castRay(
+			finalSpeed
+			, finalSpeed > 0 ? 0 : Math.PI
+			, (i, point) => {
+				if(this.getMapSolidAt(...point, this.public.layer))
+				{
+					return i;
+				}
+			}
+		);
+
+		if(foreDistance !== false)
+		{
+			dashSpeed = foreDistance * Math.sign(dashSpeed);
+		}
+
+		this.args.xSpeed = finalSpeed;
+		this.args.ySpeed = 0;
+
+		this.dashTimer = 0;
+
+		this.dashed = true;
+
+		this.args.mode = 0;
+		this.args.groundAngle = 0;
+
+		this.args.takeoffPlayed = true;
+
+		if(this.takeoffSound)
+		{
+			this.takeoffSound.currentTime = 0;
+			this.takeoffSound.play();
+		}
+	}
+
+	// get solid() { return !this.occupant; }
+	// get isVehicle() { return true; }
 	get canRoll() { return true; }
 	get controllable() { return true; }
 }

@@ -16,34 +16,51 @@
 		>
 			<feImage
 				preserveAspectRatio = "none"
-				result = "DisplacementSource"
-				xlink:href="[[blob]]"
+				result  = "DisplacementSourceLeft"
+				cv-attr = "width:droopWidthLeft,href:blob"
+			/>
+
+			<feImage
+				preserveAspectRatio = "none"
+				result  = "DisplacementSourceRightInvert"
+				cv-attr = "x:droopRightStart,width:droopWidthRight,href:blob"
 			/>
 
 			<feColorMatrix
+				in     = "DisplacementSourceRightInvert"
+				result = "DisplacementSourceRight"
 				type   = "matrix"
-				in     = "DisplacementSource"
-				result = "DisplacementIntensity"
 				values="
-					1.0  0.0  0.0  0.0  0.0
-					0.0  1.0  0.0  0.0  0.0
-					0.0  0.0  1.0  0.0  0.0
-					0.0  0.0  0.0  1.0  0.0"
+					1 0 0 0 0
+					0 -1 0 0 1.5
+					0 0 1 0 0
+					0 0 0 1 0"
 			/>
 
-			<feOffset
-				in      = "DisplacementIntensity"
-				result  = "OffsetSource"
-				cv-attr =  "dx:dx,dy:dy"
+			<feComposite
+				operator="over"
+				in     = "DisplacementSourceLeft"
+				in2    = "DisplacementSourceRight"
+				result = "DisplacementSource"
+				width  ="102%"
 			/>
 
 			<feFlood flood-color="#808000" result = "OffsetNeutral" />
 
 			<feComposite
 				operator="over"
+				in     = "DisplacementSource"
 				in2    = "OffsetNeutral"
-				in     = "OffsetSource"
 				result = "DisplacementResult"
+				width  ="102%"
+			/>
+
+			<feComposite
+				operator="over"
+				in     = "DisplacementSource"
+				in2    = "OffsetNeutral"
+				result = "DisplacementResult"
+				width  ="102%"
 			/>
 
 			<feDisplacementMap
@@ -53,6 +70,7 @@
 				in2     = "DisplacementResult"
 				cv-ref  = "displace"
 				cv-attr = "scale:scale"
+				width  ="102%"
 			/>
 
 		</filter>

@@ -250,6 +250,7 @@ export class Eggrobo extends PointActor
 		this.args.shotCoolDown = 4;
 	}
 
+	get canFly() { return true; }
 	get solid() { return false; }
 	get controllable() { return true; }
 }

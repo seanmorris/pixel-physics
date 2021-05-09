@@ -46,7 +46,14 @@ export class EggMobile extends Vehicle
 					ySpeed += (this.yAxis * this.args.accel) * 6;
 				}
 
-				ySpeed = Math.floor(ySpeed * 1000) / 1000;
+				if(ySpeed > 0)
+				{
+					ySpeed = Math.floor(ySpeed * 1000) / 1000;
+				}
+				else
+				{
+					ySpeed = Math.ceil(ySpeed * 1000) / 1000;
+				}
 
 				this.args.ySpeed = ySpeed;
 			}
@@ -58,7 +65,25 @@ export class EggMobile extends Vehicle
 
 		if(!this.xAxis)
 		{
-			this.args.xSpeed = this.args.xSpeed * this.args.decel;
+			if(Math.abs(this.public.xSpeed) <= 1)
+			{
+				this.public.xSpeed = 0;
+			}
+
+			if(this.args.xSpeed > 0)
+			{
+				this.args.xSpeed = Math.floor(this.args.xSpeed * this.args.decel);
+			}
+			else
+			{
+				this.args.xSpeed = Math.ceil(this.args.xSpeed * this.args.decel);
+			}
+		}
+
+		if(!this.occupant)
+		{
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
 		}
 
 		this.args.falling = true;
@@ -70,5 +95,5 @@ export class EggMobile extends Vehicle
 
 	}
 
-	get solid() { return true; }
+	get solid() { return !this.occupant; }
 }

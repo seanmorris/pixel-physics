@@ -3,7 +3,7 @@ import { PointActor } from './PointActor';
 export class Cinematic extends PointActor
 {
 	noClip = true;
-	panSpeed = 32;
+	panSpeed = 9;
 
 	constructor(args, parent)
 	{

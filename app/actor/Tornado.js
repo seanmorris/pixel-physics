@@ -308,5 +308,5 @@ export class Tornado extends Vehicle
 		this.args.crashed = false;
 	}
 
-	get solid() { return true; }
+	get solid() { return !this.occupant; }
 }

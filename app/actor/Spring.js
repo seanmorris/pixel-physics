@@ -1,6 +1,8 @@
 import { PointActor } from './PointActor';
 import { Region }     from '../region/Region';
 
+const WillSpring = Symbol('WillSpring');
+
 export class Spring extends PointActor
 {
 	float = -1;
@@ -37,6 +39,9 @@ export class Spring extends PointActor
 		const obj = super.fromDef(objDef);
 
 		obj.args.angle = Number(obj.args.angle);
+
+		obj.args.width  = objDef.width  || 32;
+		obj.args.height = objDef.height || 32;
 
 		return obj;
 	}
@@ -80,8 +85,26 @@ export class Spring extends PointActor
 
 		if(other instanceof Region)
 		{
-			return false;
+			return;
 		}
+
+		this.args.active = 'active';
+
+		this.viewport.onFrameOut(5,() => {
+			delete other[WillSpring];
+			this.args.active = null;
+		});
+
+		if(other[WillSpring])
+		{
+			return;
+		}
+
+		other[WillSpring] = true;
+
+		other.args.gSpeed = 0;
+		other.args.xSpeed = 0;
+		other.args.ySpeed = 0;
 
 		if(this.viewport.args.audio && this.sample)
 		{
@@ -92,44 +115,35 @@ export class Spring extends PointActor
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		this.viewport.onFrameOut(3,()=>{
-
-			this.args.active = null;
-
-			if(other.args.ySpeed === 0 && other.args.xSpeed === 0)
+		this.viewport.onFrameOut(2,() => {
+			other.args.halted = 1;
+			if(other.controller)
 			{
-				if(other.controller)
-				{
+				other.controller.rumble({
+					duration: 120,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
+				});
+
+				this.onTimeout(100, () => {
 					other.controller.rumble({
-						duration: 200,
-						strongMagnitude: 1.0,
-						weakMagnitude: 1.0
+						duration: 500,
+						strongMagnitude: 0.0,
+						weakMagnitude: 0.25
 					});
-
-					this.onTimeout(200, () => {
-						other.controller.rumble({
-							duration: 400,
-							strongMagnitude: 0.0,
-							weakMagnitude: 0.5
-						});
-					});
-				}
-
-				other.impulse(
-					this.args.power
-					, rounded
-					, ![0, Math.PI].includes(this.args.angle)
-				);
+				});
 			}
+
+			other.args.direction = Math.sign(this.public.gSpeed);
+
+			other.impulse(
+				this.args.power
+				, rounded
+				, ![0, Math.PI].includes(this.args.angle)
+			);
 		});
 
-		other.args.direction = Math.sign(this.public.gSpeed);
-
-		this.viewport.onFrameOut(4,()=> this.args.active = null );
-
-		this.args.active = 'active';
-
-		other.args.ignore = 5;
+		other.args.ignore = 4;
 	}
 
 	get canStick() { return false; }

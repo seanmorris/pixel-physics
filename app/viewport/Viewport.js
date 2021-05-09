@@ -959,16 +959,23 @@ export class Viewport extends View
 
 		switch(this.controlActor.args.cameraMode)
 		{
-			case 'airplane':
+			case 'airplane': {
+				const xSpeed     = this.controlActor.args.standingOn && this.controlActor.args.standingOn.public.xSpeed;
+				const absSpeed   = Math.abs(xSpeed);
+				const shiftSpeed = 5;
 
-				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
+				cameraSpeed = 10;
+				const speedBias = Math.min(Math.max(0.1 * (-shiftSpeed + absSpeed), 0),1) * -Math.sign(xSpeed);
+
+				this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
 				this.args.yOffsetTarget = 0.5;
-
 				break;
 
+			}
+
 			case 'railcar-aerial':
-				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.15 + 0.5;
 				this.args.yOffsetTarget = 0.25;
+				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.15 + 0.5;
 				this.maxCameraBound = 48;
 				cameraSpeed = 60;
 
@@ -976,6 +983,7 @@ export class Viewport extends View
 
 			case 'railcar-normal':
 				this.args.xOffsetTarget = 0.5;
+				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
 				this.args.yOffsetTarget = 0.5;
 				this.maxCameraBound = 48;
 				cameraSpeed = 60;
@@ -1035,12 +1043,18 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 35;
+				cameraSpeed = 15;
+
+				const gSpeed     = this.controlActor.public.gSpeed;
+				const absSpeed   = Math.abs(gSpeed);
+				const shiftSpeed = 15;
+
+				const speedBias = Math.min(Math.max(0.1 * (-shiftSpeed + absSpeed), 0),1) * -Math.sign(gSpeed);
 
 				switch(this.controlActor.public.mode)
 				{
 					case 0:
-						this.args.xOffsetTarget = 0.5;
+						this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
 						this.args.yOffsetTarget = 0.6;
 						break;
 
@@ -1050,7 +1064,7 @@ export class Viewport extends View
 						break;
 
 					case 2:
-						this.args.xOffsetTarget = 0.5;
+						this.args.xOffsetTarget = 0.5 - speedBias * 0.5;
 						this.args.yOffsetTarget = 0.3;
 						break;
 
@@ -1062,6 +1076,8 @@ export class Viewport extends View
 
 				break;
 		}
+
+		this.args.yOffsetTarget += this.controlActor.args.cameraBias;
 
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.05)
 		{
@@ -1108,38 +1124,41 @@ export class Viewport extends View
 
 		const dragDistance = Math.min(maxDistance, distance);
 
-		const snapFactor = Math.max(Math.abs(dragDistance / maxDistance), 0.05);
-		const snapFrames = 16;
+		const snapFactor = Math.abs(dragDistance / maxDistance);
+		const snapFrames = 24;
 		const snapSpeed  = dragDistance / snapFrames;
 
-		this.args.x = xNext + dragDistance * Math.cos(angle);
-		this.args.y = yNext + dragDistance * Math.sin(angle);
+		let x = xNext + dragDistance * Math.cos(angle)
+		let y = yNext + dragDistance * Math.sin(angle);
 
-		this.args.x -= snapFactor * Math.cos(angle) * snapSpeed;
-		this.args.y -= snapFactor * Math.sin(angle) * snapSpeed;
+		x = Number(Number(x - snapFactor * Math.cos(angle) * snapSpeed).toFixed(2));
+		y = Number(Number(y - snapFactor * Math.sin(angle) * snapSpeed).toFixed(2));
 
-		if(this.args.x > 96)
+		if(x > 96)
 		{
-			this.args.x = 96;
+			x = 96;
 		}
 
-		if(this.args.y > 96)
+		if(y > 96)
 		{
-			this.args.y = 96;
+			y = 96;
 		}
 
 		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width - 96;
 		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height - 96;
 
-		if(this.args.x < xMax)
+		if(x < xMax)
 		{
-			this.args.x = xMax;
+			x = xMax;
 		}
 
-		if(this.args.y < yMax)
+		if(y < yMax)
 		{
-			this.args.y = yMax;
+			y = yMax;
 		}
+
+		this.args.x = x;
+		this.args.y = y;
 	}
 
 	applyMotionBlur()
@@ -1369,7 +1388,12 @@ export class Viewport extends View
 					'layer-switch'
 					, 'ring'
 					, 'companion-block'
+					, 'region'
+					, 'force-region'
+					, 'shade-region'
+					, 'rolling-region'
 					, 'water-region'
+					, 'lava-region'
 					, 'block'
 					, 'switch'
 					, 'base-region'
@@ -1424,7 +1448,7 @@ export class Viewport extends View
 		}
 	}
 
-	actorIsOnScreen(actor, margin = 160)
+	actorIsOnScreen(actor, margin = 64)
 	{
 		if(!actor)
 		{
@@ -1451,11 +1475,11 @@ export class Viewport extends View
 		){
 			return true;
 		}
-		// else if((actorLeft < camRight && actorRight > camLeft)
-		// 	&& actorTop < camBottom && actor.y > camTop
-		// ){
-		// 	return true;
-		// }
+		else if((actorLeft < camRight && actorRight > camLeft)
+			&& actorTop < camBottom && actor.y > camTop
+		){
+			return true;
+		}
 		else
 		{
 			return false;
@@ -1528,12 +1552,13 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
-				if(this.updated.has(actor))
+				actor.updateStart();
+
+				if(actor.colliding)
 				{
-					continue;
+					actor.colliding = false;
 				}
 
-				actor.colliding = false;
 			}
 		}
 	}
@@ -1554,8 +1579,6 @@ export class Viewport extends View
 
 				actor.update();
 
-				this.setColCell(actor);
-
 				this.updated.add(actor);
 			}
 		}
@@ -1570,12 +1593,11 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
-				if(this.updated.has(actor))
-				{
-					continue;
-				}
-
 				actor.args.colliding = actor.colliding;
+
+				actor.updateEnd();
+
+				this.setColCell(actor);
 			}
 		}
 	}
@@ -1740,19 +1762,16 @@ export class Viewport extends View
 					continue;
 				}
 
+				region.updateStart();
 				region.update();
+				region.updateEnd();
 
 				this.updated.add(region);
 			}
 
 			for(const actor of this.auras)
 			{
-				// if(!this.actorIsOnScreen(actor))
-				// {
-				// 	continue;
-				// }
-
-				if(!actor)
+				if(!this.actorIsOnScreen(actor))
 				{
 					continue;
 				}
@@ -1764,6 +1783,7 @@ export class Viewport extends View
 
 				const nearbyCells = this.getNearbyColCells(actor);
 
+				actor.updateStart();
 				actor.update();
 
 				this.updated.add(actor);
@@ -1773,6 +1793,8 @@ export class Viewport extends View
 				this.actorUpdate(nearbyCells);
 
 				this.actorUpdateEnd(nearbyCells);
+
+				actor.updateEnd();
 			}
 
 			if(this.controlActor)
@@ -1834,50 +1856,52 @@ export class Viewport extends View
 					continue;
 				}
 
-				if(!this.auras.has(actor))
+				if(this.auras.has(actor))
 				{
-					const actorIsOnScreen = this.actorIsOnScreen(actor);
+					continue;
+				}
 
-					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
+				const actorIsOnScreen = this.actorIsOnScreen(actor);
+
+				if(actorIsOnScreen && !(actor instanceof LayerSwitch))
+				{
+					actor.args.display = 'initial';
+
+					if(!actor.vizi)
 					{
-						actor.args.display = 'initial';
-
-						if(!actor.vizi)
+						if(!actor.public.hidden)
 						{
-							if(!actor.public.hidden)
-							{
-								actor.nodes.map(n => wakeDoc.append(n));
-							}
-
-							wakeActors = true;
-
-							actor.wakeUp();
+							actor.nodes.map(n => wakeDoc.append(n));
 						}
 
-						this.willDetach.delete(actor);
+						wakeActors = true;
 
-						actor.vizi = true;
-					}
-					else if(!actorIsOnScreen && actor.vizi)
-					{
-						this.willDetach.set(actor, () => {
-
-							actor.sleep();
-
-							actor.args.display = 'none';
-
-							actor.detach();
-
-							actor.vizi = false;
-
-							actor.willhide = null;
-
-							this.willDetach.delete(actor);
-						});
+						actor.wakeUp();
 					}
 
-					inAuras.add(actor);
+					this.willDetach.delete(actor);
+
+					actor.vizi = true;
 				}
+				else if(!actorIsOnScreen && actor.vizi)
+				{
+					this.willDetach.set(actor, () => {
+
+						actor.sleep();
+
+						actor.args.display = 'none';
+
+						actor.detach();
+
+						actor.vizi = false;
+
+						actor.willhide = null;
+
+						this.willDetach.delete(actor);
+					});
+				}
+
+				inAuras.add(actor);
 			}
 
 			if(wakeActors)
@@ -1889,7 +1913,7 @@ export class Viewport extends View
 		if(this.nextControl)
 		{
 			// this.auras.delete(this.controlActor);
-			this.auras.clear();
+			!this.args.networked && this.auras.clear();
 
 			this.controlActor
 				&& this.controlActor.sprite.parentNode
@@ -2047,7 +2071,7 @@ export class Viewport extends View
 				const width  = actorArgs.width;
 				const height = actorArgs.height;
 
-				const myRadius = Math.max(Math.floor(w / 2)-1, 0);
+				const myRadius = Math.max(Math.floor(w / 2), 0);
 
 				const myLeft   = x - myRadius;
 				const myRight  = x + myRadius;
@@ -2056,8 +2080,8 @@ export class Viewport extends View
 
 				const offset = width / 2;
 
-				const otherLeft   = -offset + actorX;
-				const otherRight  = -offset + actorX + width;
+				const otherLeft   = actorX - offset;
+				const otherRight  = actorX + offset;
 				const otherTop    = actorY - height;
 				const otherBottom = actorY;
 
@@ -2069,7 +2093,6 @@ export class Viewport extends View
 					}
 				}
 			}
-
 		});
 
 		actorPointCache.set(cacheKey, actors);
