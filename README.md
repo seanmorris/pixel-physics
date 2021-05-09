@@ -54,13 +54,16 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 
 * 🅐/✕ - Jump
 * 🅐/✕ - Insta-shield (while airborne)
-* 🅑/ⵔ  - spindash
+* 🅑/ⵔ - spindash (while stopped)
+* 🅑/ⵔ - somersault (while moving)
 * 🠋 - roll (while moving)
 * 🠋🅐/✕ - dropdash (hold while airborne, release to cancel)
 * 🅧/▢ - light dash (while airborne)
 * 🅨/△ - super transform
 * <kbd>**L1**</kbd>/<kbd>**R1**</kbd> - air dash (while airborne)
 * <kbd>**L1**</kbd>/<kbd>**R1**</kbd> - wall stick/kick (hold while airborne/release to jump)
+* 🅐/✕ - jump from wall (preserves dash)
+* 🅑/ⵔ - drop from wall
 
 ### Tails
 
@@ -95,6 +98,7 @@ Player 1 will be Sonic, player 2, tails. This is in extreme alpha.
 
 * 🅐/✕ - Jump
 * 🠋 - roll (while moving)
+* <kbd>**L1**</kbd>/<kbd>**R1**</kbd> - air dash (while airborne)
 
 ## Shields
 
@@ -136,7 +140,7 @@ Tail's rocket plane is fully functional here. Make sure you pull up the landing 
 
 * 🅐/✕ - Jump
 * 🅑/ⵔ  - toggle landing gear
-* 🅧/▢ - fire rocket
+* 🅧/▢ - fire rocket engine
 
 ### Egg Mobile
 
@@ -148,6 +152,12 @@ The egg mobile is always hovering. Use it to get up high to areas you wouldn't o
 
 * 🅐/✕ - Jump
 * 🅐/✕ - fly (while airborne)
+
+### Mine Cart
+
+You cannot control the mine cart, but it can jump.
+
+* 🅐/✕ - Jump
 
 ## Items
 
@@ -165,7 +175,7 @@ Chaos Emeralds (will) power Super Transforms. In the current version, this restr
 
 ### Blocks
 
-Some blocks some can be pushed, some are structural and make up floors, walls or ceilings. Some will break off fall when tread on, even lightly. Keep an eye out.
+Some blocks some can be pushed, others are structural and make up floors, walls, bridges, or ceilings. Some will break off fall when tread on, even lightly. Keep an eye out.
 
 Try a bounce attack on falling blocks.
 

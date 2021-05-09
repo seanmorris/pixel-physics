@@ -217,7 +217,7 @@ export class Knuckles extends PointActor
 
 		if(this.public.flying)
 		{
-			if(this.yAxis > 0)
+			if(this.yAxis > 0 || this.checkBelow(this.x,this.y))
 			{
 				this.args.flying = false;
 				return;

@@ -9,7 +9,11 @@
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
 
-	/*will-change: transform;*/
+	/*will-change: transform, top, left;*/
+}
+
+.point-actor .sprite {
+	z-index: var(--z);
 }
 
 .point-actor .labels:not(:empty) {
@@ -104,22 +108,11 @@
 	background-repeat: no-repeat;
 }
 
-.actor-selected {
-	z-index: 100000;
-}
-
-.actor-item[data-active=true] {
-	z-index: 20000;
-}
-
-
 .sprite > svg {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 }
-
-
 
 .actor-item.actor-bumper .sprite {
 	background-image: url(/Sonic/score-orb.png);

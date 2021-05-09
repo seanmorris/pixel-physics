@@ -19,11 +19,12 @@ export class Block extends PointActor
 		return obj;
 	}
 
-	constructor(args = {})
+	constructor(args = {}, parent)
 	{
-		super(args);
+		super(args, parent);
 
 		this.args.yForce = 0;
+		this.args.yLean  = 0;
 
 		this.args.type = 'actor-item actor-block';
 
@@ -51,51 +52,43 @@ export class Block extends PointActor
 			return false;
 		}
 
+
 		if(this.public.droop && (type === 0 || type === 2))
 		{
-			const droop = Number(this.public.droop);
-			const half  = Math.floor((this.args.width - Math.abs(other.public.gSpeed)) / 2);
-			const pos   = ((this.x - other.x) / half);
+			const blockTop = this.originalY + -this.public.height;
+			const half     = Math.floor(this.args.width / 2);
+			const speed    = other.public.gSpeed;
+			const absSpeed = Math.abs(speed);
 
-			this.droopPos = (this.x - other.x);
+			if(absSpeed > half)
+			{
+				this.args.y      = this.originalY;
+				other.args.y     = blockTop;
+				this.args.yForce = 0;
+				this.args.yLean  = 0;
+
+				return true;
+			}
+
+			const pos      = ((this.x + -other.x + -(speed * 2)) / half);
+			const droop    = Number(this.public.droop) * 0.9;
+			const absPos   = Math.abs(pos);
+
+			if(absPos >= 0.9)
+			{
+				this.args.yForce = 0;
+				this.args.yLean = 0;
+
+				return true;
+			}
 
 			const yForceMax = Math.round(droop * (1 - Math.abs(pos)) * 4) / 4;
 
-			this.args.droopSpeed = other.args.ySpeed || this.args.droopSpeed || 4;
+			this.args.yForce += Math.max(other.args.ySpeed, 4);
+			this.args.yForce  = Math.min(yForceMax, this.public.yForce);
+			this.args.yForce  = Math.max(this.args.yForce, -yForceMax);
 
-			if(!other.args.falling && this.args.droopSpeed > 6)
-			{
-				this.args.droopSpeed--;
-
-				if(Math.abs(this.args.droopSpeed) < 6)
-				{
-					this.args.droopSpeed = 6;
-				}
-			}
-
-			this.args.yForce += Math.max(other.args.ySpeed || this.args.droopSpeed, 4);
-
-			if(other.public.gSpeed > half)
-			{
-				this.args.yForce = 0;
-			}
-
-			this.args.yForce = Math.min(yForceMax, this.public.yForce);
-
-			if(other.args.falling)
-			{
-				this.args.yForce = Math.max(this.args.yForce, -yForceMax);
-			}
-			else
-			{
-				this.args.yForce = Math.max(this.args.yForce, 0);
-			}
-
-			if(Math.abs(this.args.yForce) <= 1)
-			{
-				this.args.yForce = 0;
-				this.args.y = this.originalY
-			}
+			this.droopPos = (this.x - other.x);
 		}
 
 		if(this.public.platform)
@@ -106,7 +99,7 @@ export class Block extends PointActor
 			}
 
 			const otherTop = other.y - other.public.height;
-			const blockTop = this.y - this.public.height;
+			const blockTop = this.y  - this.public.height;
 
 			if((other.y <= blockTop) && (other.public.falling === false || other.args.ySpeed > 0))
 			{
@@ -314,7 +307,7 @@ export class Block extends PointActor
 
 			if(!this.args.colliding && this.args.yForce && this.snapBack)
 			{
-				this.args.yForce *= 0.45;
+				this.args.yForce *= 0.35;
 			}
 
 			if(Math.abs(this.public.yForce) <= 1)
@@ -323,9 +316,31 @@ export class Block extends PointActor
 				this.snapBack = false;
 			}
 
-			this.args.y = Math.ceil(this.originalY + this.public.yForce) || this.originalY;
+			if(this.args.yForce !== this.args.yLean)
+			{
+				const diff = this.args.yLean - this.args.yForce;
+				const step = 9;
 
-			this.droop(-1 * this.public.yForce, this.droopPos || 0);
+				this.args.yLean -= Math.sign(diff) * step;
+
+				if(Math.abs(diff) < step)
+				{
+					this.args.yLean = this.args.yForce;
+				}
+			}
+
+			if(!this.public.yLean)
+			{
+				this.args.y = this.originalY;
+			}
+			else
+			{
+				this.onNextFrame(() => {
+					this.args.y = Math.ceil(this.originalY + this.public.yLean) || this.originalY;
+					this.droop(-1 * this.public.yLean, this.droopPos || 0);
+				});
+			}
+
 		}
 	}
 

@@ -83,10 +83,6 @@ export class Seymour extends PointActor
 				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
-		else if(this.args.standingOn && this.args.standingOn.isVehicle)
-		{
-			this.box.setAttribute('data-animation', 'jumping');
-		}
 		else if(this.args.jumping)
 		{
 			this.box.setAttribute('data-animation', 'jumping');

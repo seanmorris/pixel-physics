@@ -3,9 +3,9 @@ import { Tag  } from 'curvature/base/Tag';
 
 export class BreakableBlock extends Block
 {
-	constructor(args = {})
+	constructor(args = {}, parent)
 	{
-		super(args);
+		super(args, parent);
 
 		this.args.type = 'actor-item actor-breakable-block';
 
@@ -33,6 +33,8 @@ export class BreakableBlock extends Block
 		this.sprite = this.findTag('div.sprite');
 
 		this.box.append(this.fragmentsX.node);
+
+		super.onRendered();
 	}
 
 	collideA(other, type)

@@ -28,6 +28,11 @@ export class MarbleBlock extends PointActor
 	{
 		super.collideA(other, type);
 
+		if(other.isEffect)
+		{
+			return false;
+		}
+
 		const otherSpeed = other.args.gSpeed || other.args.xSpeed;
 
 		if(Math.abs(other.public.ySpeed) > Math.abs(other.public.xSpeed))
