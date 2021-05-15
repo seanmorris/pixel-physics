@@ -12,6 +12,7 @@ export class Ring extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
+		this.args.static = true;
 		this.args.gone   = false;
 		this.args.float  = -1;
 		this.sample = new Audio('/Sonic/ring-collect.wav');

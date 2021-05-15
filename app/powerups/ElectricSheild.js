@@ -150,6 +150,7 @@ export class ElectricSheild extends Sheild
 				this.attract.delete(ring);
 
 				this.onTimeout(500, () => {
+					ring.args.static  = false;
 					ring.args.xSpeed  = 0;
 					ring.args.ySpeed  = 0;
 					ring.args.x = ring.def.get('x');

@@ -195,8 +195,8 @@ export class Viewport extends View
 
 		this.effects   = new Bag;
 
-		this.maxCameraBound = 80;
-		this.cameraBound = 80;
+		this.maxCameraBound = 30;
+		this.cameraBound = 30;
 
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
@@ -945,7 +945,7 @@ export class Viewport extends View
 
 		if(actor.public.jumping)
 		{
-			this.maxCameraBound = 80;
+			this.maxCameraBound = 30;
 
 			if(deepJump || highJump)
 			{
@@ -1007,7 +1007,7 @@ export class Viewport extends View
 					this.args.yOffsetTarget = 0.5;
 				}
 
-				cameraSpeed = 60;
+				cameraSpeed = 30;
 
 				break;
 
@@ -1025,7 +1025,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor.public.direction;
 				this.args.yOffsetTarget = 0.45;
 
-				cameraSpeed = 45;
+				cameraSpeed = 30;
 
 				break;
 
@@ -1034,7 +1034,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.65;
 
-				cameraSpeed = 45;
+				cameraSpeed = 30;
 
 				break;
 
@@ -1043,7 +1043,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 15;
+				cameraSpeed = 30;
 
 				const gSpeed     = this.controlActor.public.gSpeed;
 				const absSpeed   = Math.abs(gSpeed);
@@ -1054,23 +1054,23 @@ export class Viewport extends View
 				switch(this.controlActor.public.mode)
 				{
 					case 0:
-						this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
+						this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
 						this.args.yOffsetTarget = 0.6;
 						break;
 
 					case 1:
 						this.args.xOffsetTarget = 0.25;
-						this.args.yOffsetTarget = 0.50;
+						this.args.yOffsetTarget = 0.50 + speedBias * 0.35;
 						break;
 
 					case 2:
-						this.args.xOffsetTarget = 0.5 - speedBias * 0.5;
+						this.args.xOffsetTarget = 0.5 - speedBias * 0.35;
 						this.args.yOffsetTarget = 0.3;
 						break;
 
 					case 3:
 						this.args.xOffsetTarget = 0.75;
-						this.args.yOffsetTarget = 0.50;
+						this.args.yOffsetTarget = 0.50 - speedBias * 0.35;
 						break;
 				}
 
@@ -1448,7 +1448,7 @@ export class Viewport extends View
 		}
 	}
 
-	actorIsOnScreen(actor, margin = 64)
+	actorIsOnScreen(actor, margin = 128)
 	{
 		if(!actor)
 		{
@@ -1674,13 +1674,20 @@ export class Viewport extends View
 
 			return;
 		}
-		else if(this.args.paused && !this.args.networked)
+		else if(this.args.paused !== false && !this.args.networked)
 		{
 			this.takeInput(controller);
 
 			this.args.pauseMenu.input(controller);
 
-			return;
+			if(this.args.paused > 0)
+			{
+				this.args.paused--;
+			}
+			else
+			{
+				return;
+			}
 		}
 
 		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
@@ -2632,7 +2639,7 @@ export class Viewport extends View
 	{
 		this.focus();
 
-		this.args.paused = true;
+		this.args.paused = -1;
 
 		this.args.pauseMenu.focusFirst();
 

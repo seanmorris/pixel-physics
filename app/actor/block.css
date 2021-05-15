@@ -122,7 +122,7 @@
 }
 
 .actor-item.actor-block {
-	z-index: calc(10010 - var(--x));
+	z-index: calc(-1 - var(--x));
 }
 
 .actor-item.actor-block .sprite.collapse {
@@ -131,6 +131,7 @@
 
 .actor-item.actor-block .sprite.platform {
 	filter: sepia(85%) brightness(0.9125) hue-rotate(140deg);
+	/*z-index: -10000 !important;*/
 }
 
 .actor-item.actor-block .sprite,

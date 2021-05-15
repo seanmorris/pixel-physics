@@ -54,8 +54,8 @@ export class Sonic extends PointActor
 
 		this.args.lookTime = 0;
 
-		this.args.normalHeight = 40;
-		this.args.rollingHeight = 23;
+		this.args.normalHeight  = 40;
+		this.args.rollingHeight = 28;
 
 		this.registerDebug('sonic');
 
@@ -84,11 +84,15 @@ export class Sonic extends PointActor
 			if(this.willStick && (this.public.mode === 1 || this.public.mode === 3))
 			{
 				this.args.wallSticking = true;
-				this.dashed = false;
+				this.onNextFrame(()=>{
+					this.dashed = false;
+				});
 			}
 			else
 			{
-				this.args.wallSticking = false;
+				this.onNextFrame(()=>{
+					this.args.wallSticking = false;
+				});
 			}
 		});
 	}
@@ -146,9 +150,7 @@ export class Sonic extends PointActor
 				this.args.animation = 'wall-dropping';
 				this.args.wallDropping = true;
 
-				this.onNextFrame(()=>{
-					this.args.groundAngle = 0;
-				});
+				this.args.groundAngle = 0;
 
 				this.args.ignore = -2;
 			}
@@ -167,7 +169,6 @@ export class Sonic extends PointActor
 			if(!this.args.wallSticking)
 			{
 				this.willStick = false;
-				this.stayStuck = false;
 			}
 		}
 
@@ -182,12 +183,6 @@ export class Sonic extends PointActor
 		}
 
 		const falling = this.public.falling;
-
-		if(!this.box)
-		{
-			super.update();
-			return;
-		}
 
 		if(this.public.wallSticking)
 		{
@@ -273,7 +268,7 @@ export class Sonic extends PointActor
 				{
 					this.args.animation = 'skidding';
 				}
-				else if(this.public.moving && speed > maxSpeed * 0.65)
+				else if(this.public.moving && speed > maxSpeed * 0.45)
 				{
 					if(this.isSuper && this.public.moving && speed > maxSpeed * 0.95)
 					{
@@ -416,13 +411,10 @@ export class Sonic extends PointActor
 
 		let dashSpeed = direction * 11;
 
-		this.args.float = 3;
-
 		if(this.public.wallSticking)
 		{
 			this.args.x += dashSpeed;
 			dashSpeed = direction * 18;
-			this.args.float = 6;
 		}
 
 		this.args.mode = 0;
@@ -442,28 +434,28 @@ export class Sonic extends PointActor
 
 		const finalSpeed = this.args.xSpeed + dashSpeed;
 
-		const space = this.scanForward(dashSpeed, 0.5);
+		const space = this.scanForward(dashSpeed * direction, 0.5);
 
 		if(space && Math.abs(finalSpeed) > Math.abs(space))
 		{
 			dashSpeed = space * Math.sign(finalSpeed);
 		}
 
-		const foreDistance = this.castRay(
-			finalSpeed
-			, finalSpeed > 0 ? 0 : Math.PI
-			, (i, point) => {
-				if(this.getMapSolidAt(...point, this.public.layer))
-				{
-					return i;
-				}
-			}
-		);
+		// const foreDistance = this.castRay(
+		// 	finalSpeed
+		// 	, finalSpeed > 0 ? 0 : Math.PI
+		// 	, (i, point) => {
+		// 		if(this.getMapSolidAt(...point, this.public.layer))
+		// 		{
+		// 			return i;
+		// 		}
+		// 	}
+		// );
 
-		if(foreDistance !== false)
-		{
-			dashSpeed = foreDistance * Math.sign(dashSpeed);
-		}
+		// if(foreDistance !== false)
+		// {
+		// 	dashSpeed = foreDistance * Math.sign(dashSpeed);
+		// }
 
 		this.args.animation = 'airdash';
 
@@ -524,6 +516,12 @@ export class Sonic extends PointActor
 
 			this.willStick = 2;
 			this.stayStuck = true;
+		}
+
+		if(this.args.mode === 2)
+		{
+			this.stayStuck = false;
+			this.args.falling = true;
 		}
 	}
 
@@ -588,12 +586,18 @@ export class Sonic extends PointActor
 
 	hold_5(button)
 	{
-		if(this.public.jumping || this.dashed)
+		if(this.public.jumping || this.dashed && this.args.mode !== 2)
 		{
 			this.dropDashCharge = 0;
 
 			this.willStick = 2;
 			this.stayStuck = true;
+		}
+
+		if(this.args.mode === 2)
+		{
+			this.stayStuck = false;
+			this.args.falling = true;
 		}
 	}
 
@@ -608,7 +612,24 @@ export class Sonic extends PointActor
 		{
 			this.args.rolling = true;
 
-			this.viewport.onFrameOut(20, () => this.args.rolling = false);
+			const standOrRecheck = () => {
+
+				const backOfHead =[this.x-this.args.width/2, this.y+this.args.height+1]
+
+				const actualBackOfHead = this.rotatePoint(...backOfHead);
+
+				if(this.getMapSolidAt(...actualBackOfHead))
+				{
+					this.viewport.onFrameOut(20, standOrRecheck);
+
+					return;
+				}
+
+				this.args.rolling = false;
+
+			};
+
+			this.viewport.onFrameOut(20, standOrRecheck);
 		}
 	}
 

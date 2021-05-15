@@ -56,6 +56,7 @@ export class Spring extends PointActor
 		this.args.height = this.args.height || 32;
 
 		this.args.color  = this.args.color  || 0;
+		this.args.static = true;
 	}
 
 	update()
@@ -116,7 +117,6 @@ export class Spring extends PointActor
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
 		this.viewport.onFrameOut(2,() => {
-			other.args.halted = 1;
 			if(other.controller)
 			{
 				other.controller.rumble({

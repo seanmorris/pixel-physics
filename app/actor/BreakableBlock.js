@@ -8,6 +8,7 @@ export class BreakableBlock extends Block
 		super(args, parent);
 
 		this.args.type = 'actor-item actor-breakable-block';
+		this.args.static = true;
 
 		this.fragmentsX = new Tag('<div class = "fragmentsX">');
 		this.fragmentsY = new Tag('<div class = "fragmentsY">');

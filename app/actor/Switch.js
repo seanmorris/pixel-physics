@@ -53,6 +53,11 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
+		if(this.activator)
+		{
+			this.ignore = 8;
+		}
+
 		if(other.public.ySpeed < 0)
 		{
 			if(other.public.ySpeed === 0 && other.y > this.y )
@@ -73,45 +78,7 @@ export class Switch extends PointActor
 			return;
 		}
 
-		this.ignore = 8;
-
-		other.onRemove(()=>{
-			if(this.activator === other)
-			{
-				this.activator = null;
-			}
-		});
-
-		// if(other.isVehicle)
-		// {
-		// 	if(!this.public.active)
-		// 	{
-		// 		this.activate();
-		// 	}
-
-		// 	this.activator = other;
-
-		// 	this.ignore = 16;
-
-		// 	const top = this.y - this.public.height;
-
-		// 	if(other.y > top && !other.public.falling)
-		// 	{
-		// 		other.args.y = top;
-		// 	}
-
-		// 	if(type === 1 || type === 3)
-		// 	{
-		// 		return false;
-		// 	}
-
-		// 	if(type === 0 || other.public.ySpeed < 0)
-		// 	{
-		// 		return false;
-		// 	}
-
-		// 	return true;
-		// }
+		other.onRemove(()=> this.activator = null);
 
 		if(other.y < this.y)
 		{

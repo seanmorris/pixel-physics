@@ -7,7 +7,9 @@
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
 	/*pointer-events: none;*/
+}
 
+.region .sprite {
 	z-index: 5000000;
 }
 
