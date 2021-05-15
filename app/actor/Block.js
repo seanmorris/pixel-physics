@@ -52,7 +52,6 @@ export class Block extends PointActor
 			return false;
 		}
 
-
 		if(this.public.droop && (type === 0 || type === 2))
 		{
 			const blockTop = this.originalY + -this.public.height;

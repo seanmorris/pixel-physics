@@ -99,14 +99,14 @@
 	animation: sonic-drop steps(1) 1 80ms forwards;
 }
 
-/*.actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
+.actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
 	transform: rotate(calc(1rad * var(--ground-angle))) translateX(32px);
-}*/
+}
 
 
-/*.actor-item.actor-sonic[data-falling="true"][data-facing="left"][data-animation="wall-dropping"] .sprite:after {
+.actor-item.actor-sonic[data-falling="true"][data-facing="left"][data-animation="wall-dropping"] .sprite:after {
 	transform: rotate(calc(-1rad * var(--ground-angle))) translateX(32px);
-}*/
+}
 
 .actor-item.actor-sonic[data-animation="spindash"] .sprite:after {
 	--sprite-offset-x: -0px;
@@ -128,7 +128,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
-	transform: rotate(calc(1rad * var(--air-angle)));
+	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
 }
 
 .actor-item.actor-sonic[data-animation="wall-stick"] .sprite:after {
@@ -146,7 +146,7 @@
 }
 
 .actor-item.actor-sonic[data-facing="left"][data-animation="airdash"] .sprite:after {
-	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
+	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg))  translateY(-3px);
 }
 
 .actor-item.actor-sonic[data-animation="lightdash"] .sprite:after {
@@ -195,11 +195,24 @@
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
-	animation: sonic-jump steps(7) infinite 256ms;
+	animation: sonic-jump steps(7) infinite 64ms;
+
+	/*animation: sonic-animate steps(4) infinite 128ms;*/
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px !important;
+	--animation-steps: -4;
+	--animation-width: 64px;
 }
 
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
-	animation: sonic-jump steps(7) infinite 128ms;
+	/*animation: sonic-animate steps(4) infinite 128ms;*/
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px !important;
+	--animation-steps: -4;
+	--animation-width: 64px;
+
+	animation: sonic-jump steps(7) infinite 160ms;
+
 	/*animation: sonic-jump steps(7) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
 }
@@ -249,6 +262,15 @@
 }
 
 @-webkit-keyframes sonic-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-448px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@-webkit-keyframes sonic-jump-alt {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}

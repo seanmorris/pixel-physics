@@ -44,6 +44,12 @@ export class PauseMenu extends Menu
 			this.args.hideMenu = '';
 		}
 
+		if(controller.buttons[5] && controller.buttons[5].time === 1)
+		{
+			this.args.hideMenu = 'pause-menu-hide';
+			this.parent.args.paused = 1;
+		}
+
 		super.input(controller);
 	}
 }

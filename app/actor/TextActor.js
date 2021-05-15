@@ -10,6 +10,7 @@ export class TextActor extends PointActor
 		super(args, parent);
 
 		this.args.type  = 'actor-item actor-text-actor';
+		this.args.float = -1;
 
 		this.text = new CharacterString({value:''});
 
@@ -28,4 +29,5 @@ export class TextActor extends PointActor
 	}
 
 	get solid() { return false; }
+	get isEffect() { return true; }
 }

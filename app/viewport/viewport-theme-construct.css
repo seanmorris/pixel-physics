@@ -5,7 +5,7 @@
 .viewport.construct .viewport-background[data-name^="Destructible"] > div,
 .viewport.construct .viewport-background[data-name^="Collision"] > div {
 	/*border: 1px solid #050;*/
-	box-shadow: inset 0 0 1.5px rgba(0,255,0,0.75);
+	box-shadow: inset 0 0 5px rgba(0,255,0,0.5);
 	/*--distX: calc(calc(calc(var(--screenX)*var(--screenX))*var(--screenX))*var(--screenX));
 	--distY: calc(calc(calc(var(--screenY)*var(--screenY))*var(--screenY))*var(--screenY));
 	--dist: calc(var(--distX)*var(--distY));*/
