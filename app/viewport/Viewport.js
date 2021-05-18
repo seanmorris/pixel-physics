@@ -974,19 +974,11 @@ export class Viewport extends View
 			}
 
 			case 'railcar-aerial':
-				this.args.yOffsetTarget = 0.25;
-				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.15 + 0.5;
-				this.maxCameraBound = 48;
-				cameraSpeed = 60;
-
-				break;
-
 			case 'railcar-normal':
 				this.args.xOffsetTarget = 0.5;
-				this.args.xOffsetTarget = -this.controlActor.args.direction * 0.35 + 0.5;
 				this.args.yOffsetTarget = 0.5;
-				this.maxCameraBound = 48;
-				cameraSpeed = 60;
+				this.maxCameraBound = 0;
+				cameraSpeed = 0;
 
 				break;
 

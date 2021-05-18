@@ -197,35 +197,35 @@
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="0"] .sprite {
-	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle)));
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle)));
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="1"] .sprite {
-	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg)));
+	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="2"] .sprite {
-	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg)));
+	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg)));
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="3"] .sprite {
-	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg)));
+	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="0"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--ground-angle))) scale(-1,1);
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) scale(-1,1);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="1"][data-facing="left"] .sprite {
-	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--ground-angle) + 90deg))) scale(-1,1);
+	transform: translate(calc(-50% + 2px), -100%) rotate(calc( calc(-1rad * var(--display-angle) + 90deg))) scale(-1,1);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="2"][data-facing="left"] .sprite {
-	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 180deg))) scale(-1,1);
+	transform: translate(-50%, calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--display-angle) + 180deg))) scale(-1,1);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="3"][data-facing="left"] .sprite {
-	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--ground-angle) + 270deg))) scale(-1,1);
+	transform: translate(calc(-50% - 1px), calc(-100% + 2px)) rotate(calc( calc(-1rad * var(--display-angle) + 270deg))) scale(-1,1);
 }
 
 
