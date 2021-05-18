@@ -57,7 +57,7 @@ export class Sonic extends PointActor
 		this.args.normalHeight  = 40;
 		this.args.rollingHeight = 28;
 
-		this.registerDebug('sonic');
+		// this.registerDebug('sonic');
 
 		this.spindashCharge = 0;
 		this.dropDashCharge = 0;
