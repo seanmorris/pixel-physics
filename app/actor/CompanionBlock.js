@@ -24,12 +24,14 @@ export class CompanionBlock extends MarbleBlock
 
 			if(!tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y))
 			{
-				this.args.xSpeed = this.public.pushed;
+				if(this.args.falling)
+				{
+					this.args.x += this.public.pushed;
+				}
 			}
 			else
 			{
 				this.public.pushed = 0;
-				this.args.xSpeed   = 0;
 			}
 		}
 

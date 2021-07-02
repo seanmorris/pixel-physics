@@ -10,8 +10,8 @@ export class RailCar extends Vehicle
 
 		this.args.type = 'actor-item actor-rail-car';
 
-		this.args.width  = 42;
-		this.args.height = 64;
+		this.args.width  = 32;
+		this.args.height = 48;
 
 		this.removeTimer = null;
 
