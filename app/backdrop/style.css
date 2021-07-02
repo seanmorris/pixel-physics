@@ -72,6 +72,18 @@
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
 }
 
+.backdrop.industrial .parallax {
+	height: calc(-1 * var(--stacked));
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stacked) / 3)));
+}
+
+
+.backdrop.industrial {
+	/*background-color: rgba(255,255,255,1);*/
+	/*background-color: #4848d8;*/
+	/*background-color: rgba(0,0,75,0.5);*/
+}
+
 .backdrop.mystic-cave .parallax,
 .backdrop.proto-labrynth .parallax {
 	height: auto;

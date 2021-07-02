@@ -1006,7 +1006,7 @@
         {
          "name":"backdrop",
          "type":"string",
-         "value":""
+         "value":"industrial"
         }, 
         {
          "name":"theme",

@@ -6,13 +6,13 @@
 .actor-flickie .sprite {
 	will-change: top, left, transform;
 	background-image: url(/Sonic/flickie.png);
-	background-position: -32px -0px;
+	background-position: -32px  calc(-20px * var(--palletShift));
 	height: 20px;
 	width: 16px;
 }
 
 .actor-flickie.ascending .sprite {
-	animation: flickie-flap 0.17s infinite steps(2);
+	animation: flickie-flap 0.15s infinite steps(2);
 }
 
 .actor-flickie.decending .sprite {

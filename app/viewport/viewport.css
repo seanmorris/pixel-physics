@@ -36,7 +36,6 @@ section.filters {
 }
 
 .viewport {
-	contain: paint;
 	image-rendering: high-quality;
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
@@ -48,6 +47,10 @@ section.filters {
 	overflow: hidden;
 	color: red;
 	font-size: 0.7rem;
+}
+
+.viewport .viewport-bg-layers {
+	/*contain: size layout;*/
 }
 
 .viewport.mouse-moved {
@@ -190,6 +193,7 @@ section.filters {
 }
 
 .viewport-overlay {
+	/*contain: strict;*/
 	position: absolute;
 	pointer-events: none;
 	top: 0px;
@@ -491,6 +495,7 @@ input[type=number]::-webkit-outer-spin-button {
 .viewport-actors,
 .viewport-particles {
 	display: contents;
+	/*contain: strict;*/
 }
 
 .viewport-particles {

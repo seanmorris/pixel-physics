@@ -116,32 +116,30 @@ export class Spring extends PointActor
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		this.viewport.onFrameOut(2,() => {
-			if(other.controller)
-			{
+		if(other.controller)
+		{
+			other.controller.rumble({
+				duration: 120,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
+
+			this.onTimeout(100, () => {
 				other.controller.rumble({
-					duration: 120,
-					strongMagnitude: 1.0,
-					weakMagnitude: 1.0
+					duration: 500,
+					strongMagnitude: 0.0,
+					weakMagnitude: 0.25
 				});
+			});
+		}
 
-				this.onTimeout(100, () => {
-					other.controller.rumble({
-						duration: 500,
-						strongMagnitude: 0.0,
-						weakMagnitude: 0.25
-					});
-				});
-			}
+		other.args.direction = Math.sign(this.public.gSpeed);
 
-			other.args.direction = Math.sign(this.public.gSpeed);
-
-			other.impulse(
-				this.args.power
-				, rounded
-				, ![0, Math.PI].includes(this.args.angle)
-			);
-		});
+		other.impulse(
+			this.args.power
+			, rounded
+			, ![0, Math.PI].includes(this.args.angle)
+		);
 
 		other.args.ignore = 4;
 	}

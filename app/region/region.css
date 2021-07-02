@@ -7,10 +7,12 @@
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
 	/*pointer-events: none;*/
+
+	/*will-change: transform, top, left;*/
 }
 
 .region .sprite {
-	z-index: 5000000;
+	z-index: 9000000;
 }
 
 .region.region-lava .sprite,

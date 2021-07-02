@@ -33,16 +33,16 @@ export class Sonic extends PointActor
 
 		this.args.type = 'actor-sonic actor-item';
 
-		this.accelNormal = 0.25;
+		this.accelNormal = 0.20;
 		this.accelSuper  = 0.70;
 
-		this.args.accel     = 0.25;
-		this.args.decel     = 0.40;
+		this.args.accel     = 0.20;
+		this.args.decel     = 0.45;
 
 		this.gSpeedMaxNormal = 18;
 		this.gSpeedMaxSuper  = 25;
 
-		this.jumpForceNormal = 11;
+		this.jumpForceNormal = 11.5;
 		this.jumpForceSuper  = 16;
 
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
@@ -460,7 +460,9 @@ export class Sonic extends PointActor
 		this.args.animation = 'airdash';
 
 		this.args.xSpeed = finalSpeed;
+		// this.args.direction = Math.sign(finalSpeed);
 		this.args.ySpeed = 0;
+		this.args.gSpeed = 0;
 
 		this.dashTimer = 0;
 
@@ -560,6 +562,23 @@ export class Sonic extends PointActor
 		}
 	}
 
+	hold_5(button)
+	{
+		if(this.public.jumping || this.dashed && this.args.mode !== 2)
+		{
+			this.dropDashCharge = 0;
+
+			this.willStick = 2;
+			this.stayStuck = true;
+		}
+
+		if(this.args.mode === 2)
+		{
+			this.stayStuck = false;
+			this.args.falling = true;
+		}
+	}
+
 	release_5()
 	{
 		this.onNextFrame(() => {
@@ -581,23 +600,6 @@ export class Sonic extends PointActor
 			this.args.mode = 0;
 
 			this.dashed = true;
-		}
-	}
-
-	hold_5(button)
-	{
-		if(this.public.jumping || this.dashed && this.args.mode !== 2)
-		{
-			this.dropDashCharge = 0;
-
-			this.willStick = 2;
-			this.stayStuck = true;
-		}
-
-		if(this.args.mode === 2)
-		{
-			this.stayStuck = false;
-			this.args.falling = true;
 		}
 	}
 

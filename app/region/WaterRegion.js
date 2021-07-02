@@ -128,7 +128,7 @@ export class WaterRegion extends Region
 
 			const attach = other.rotatePoint(
 				-5 * other.public.direction
-				, -14 + other.public.height
+				, -5 + other.public.height
 			);
 
 			const x = other.x + attach[0];

@@ -40,23 +40,26 @@ export class Flickie extends PointActor
 		let   fudge = Math.random();
 
 		const xDiff = host.x + -this.x;
-		const yDiff = host.y + -this.y + -host.args.height * 0.5;
+		const yDiff = host.y + -this.y;
 
 		const angle = Math.atan2(yDiff, xDiff);
 		const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
 
 		const maxDistance = 256;
-		const minDistance = 16;
+		const minDistance = 32;
 
-		const airSpeed =  Math.max(
+		let minSpeed = 1;
+
+		const airSpeed = Math.max(
 			Math.abs(host.args.gSpeed)
 			, Math.abs(host.args.xSpeed)
 			, Math.abs(host.args.ySpeed)
-			, 2
-		);
+			, minSpeed
+		) * 1.1;
+
+		const xSpeedRelativeOriginal = this.args.xSpeed - (host.args.xSpeed || host.args.gSpeed);
 
 		let maxSpeed = airSpeed + 3;
-		let minSpeed = 2;
 
 		let facing = null;
 
@@ -72,12 +75,13 @@ export class Flickie extends PointActor
 				this.args.ySpeed = minSpeed * Math.sign(-0.5 + Math.random());
 			}
 		}
-
-
-		if(distance > maxDistance)
+		else if(distance >= maxDistance)
 		{
 			this.args.x = Math.floor(host.x - Math.cos(angle) * maxDistance);
 			this.args.y = Math.floor(host.y - Math.sin(angle) * maxDistance);
+
+			this.args.xSpeed = xDiff / 60 + (host.args.xSpeed || host.args.gSpeed);
+			this.args.ySpeed = 0;
 
 			this.viewport.setColCell(this);
 
@@ -90,7 +94,11 @@ export class Flickie extends PointActor
 				facing = 'right';
 			}
 
-			maxSpeed += 2;
+			maxSpeed *= 4;
+		}
+		else
+		{
+
 		}
 
 		const xDir = Math.sign(xDiff);
@@ -99,20 +107,20 @@ export class Flickie extends PointActor
 		const xSame = Math.sign(this.args.xSpeed) === xDir;
 		const ySame = this.args.ySpeed && Math.sign(this.args.ySpeed) === yDir;
 
-		const xMag = Math.max(force);
-		const yMag = Math.max(force);
+		const xMag = Math.max(force) * 0.35 * (xSame ? 0.85 : 0.85);
+		const yMag = Math.max(force) * 0.20 * (xSame ? 0.75 : 1.50);
 
 		if(!xSame || Math.abs(this.args.xSpeed) < maxSpeed)
 		{
 			const step = xMag * xDir * fudge;
 
-			if(!this.swapZ && this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(step))
-			{
-				this.swapZ = this.viewport.onFrameOut(20, () => {
-					this.args.z = this.args.z > -1000 ? -100000 : 100000;
-					this.swapZ = false;
-				})
-			}
+			// if(!this.swapZ && this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(step))
+			// {
+			// 	this.swapZ = this.viewport.onFrameOut(1, () => {
+
+			// 		this.swapZ = false;
+			// 	})
+			// }
 
 			let xSpeed = this.args.xSpeed + step;
 
@@ -122,6 +130,18 @@ export class Flickie extends PointActor
 			}
 
 			this.args.xSpeed = xSpeed;
+
+			if(distance >= maxDistance)
+			{
+				const xSpeed = host.args.xSpeed || host.args.gSpeed;
+				const ySpeed = host.args.ySpeed;
+
+				if(facing)
+				{
+					this.args.xSpeed = xDiff / 90 + xSpeed;
+					this.args.ySpeed = yDiff / 90 + ySpeed;
+				}
+			}
 		}
 
 		if(!facing && this.public.xSpeed < 0)
@@ -145,15 +165,31 @@ export class Flickie extends PointActor
 			this.args.ySpeed = ySpeed;
 		}
 
+		if(Math.sign(xSpeedRelativeOriginal) && Math.sign(host.args.xSpeed || host.args.gSpeed) !== Math.sign(xSpeedRelativeOriginal))
+		{
+			if(Math.abs(this.x - host.x) > minDistance || Math.abs(this.y - host.y) > minDistance)
+			{
+				this.args.z = this.args.z > -1000 ? -100000 : 100000;
+			}
+		}
+
 		if(facing)
 		{
 			this.args.facing = facing;
 		}
 
-		if(this.args.ySpeed < 0)
+		if(this.args.ySpeed > 0)
 		{
-			this.box.classList.add('decending');
-			this.box.classList.remove('ascending');
+			this.onTimeout(250, () => {
+
+				if(this.args.ySpeed <= 0 || airSpeed < 1.5)
+				{
+					return;
+				}
+
+				this.box.classList.add('decending');
+				this.box.classList.remove('ascending');
+			})
 		}
 		else
 		{

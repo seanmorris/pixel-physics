@@ -54,7 +54,7 @@
 	height: 48px;
 }
 
-.super-sheild .super-sheild-shine {
+[data-super][data-falling=false] .super-sheild .super-sheild-shine {
 	animation: water-sheild-rotate 0.5s steps(9) infinite reverse, sheild-flip calc(0.75s) infinite;
 	background-image: url(/Sonic/super-shine.png);
 	opacity: var(--animation-bias);

@@ -8,7 +8,8 @@ export class Backdrop extends View
 		<div cv-ref = "backdrop" class = "parallax"></div>
 	</div>`;
 
-	layers   = [];
+	layers = [];
+	urls   = [];
 
 	stacked = 0;
 
@@ -56,11 +57,13 @@ export class Backdrop extends View
 			stacked += (strips[i].height - 1);
 		}
 
+		this.urls = urls;
+
 		this.stacked = stacked;
 
 		const xPos = xPositions.join(', ');
 		const yPos = yPositions.join(', ');
-		const url = urls.map(u=>`url(${u})`).join(', ');
+		const url  = this.urls.map(u=>`url(${u})`).join(', ');
 
 		backdrop.style({
 			'background-position-y':   yPos
@@ -75,5 +78,38 @@ export class Backdrop extends View
 			['x', 'y', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom']
 			, (v,k) => backdrop.style({[`--${k}`]: v})
 		);
+
+		this.args.bindTo('frame', (v,k) => {
+			for(const i in this.args.strips)
+			{
+				const strip = this.args.strips[i];
+
+				if(strip.frames)
+				{
+					if(strip.timeout-- === 0)
+					{
+						strip.timeout = strip.interval;
+						strip.frame++;
+
+						if(strip.frame >= strip.frames.length)
+						{
+							strip.frame = 0;
+						}
+
+						this.urls[i] = strip.frames[ strip.frame ];
+
+						this.refreshLayers();
+					}
+
+				}
+			}
+		});
+	}
+
+	refreshLayers()
+	{
+		this.tags.backdrop.style({
+			'background-image': this.urls.map(u=>`url(${u})`).join(', ')
+		});
 	}
 }

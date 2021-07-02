@@ -167,8 +167,6 @@ export class Rocks extends PointActor
 			&& this.viewport
 			&& !this.public.gone
 		){
-			this.args.gone = true;
-
 			if(this.args.falling && Math.abs(other.args.ySpeed) > 0)
 			{
 				other.args.xSpeed *= -1;
@@ -198,16 +196,20 @@ export class Rocks extends PointActor
 
 	collideB(other)
 	{
-		if(this.public.gone)
+		if(other.args.falling && this.public.gone)
 		{
 			other.args.ySpeed *= -1;
 			other.args.falling = true;
 		}
+
+		return false;
 	}
 
 
 	pop(other)
 	{
+		this.args.gone = true;
+
 		const viewport = this.viewport;
 
 		if(!viewport)
