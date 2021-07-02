@@ -220,7 +220,7 @@ export class PointActor extends View
 		this.args.deepJump = false;
 		this.args.highJump = false;
 
-		this.maxStep   = 5;
+		this.maxStep   = 6;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
@@ -3276,8 +3276,8 @@ export class PointActor extends View
 	scanForward(speed, height = 0.5, scanActors = true)
 	{
 		const dir      = Math.sign(speed);
-		const radius   = Math.round(this.public.width / 2);
-		const hRadius  = Math.round(this.public.height / 2);
+		const radius   = Math.round(this.args.width / 2);
+		const hRadius  = Math.round(this.args.height / 2);
 		const scanDist = Math.ceil(Math.abs(speed));
 		const viewport = this.viewport;
 
@@ -3288,12 +3288,12 @@ export class PointActor extends View
 
 		const tileMap  = viewport.tileMap;
 
-		const startPoint = this.rotatePoint(radius * -dir, this.public.height * height);
+		const startPoint = this.rotatePoint(radius * -dir, this.args.height * height);
 
 		return this.castRay(
-			scanDist + radius
-			, this.public.falling
-				? (Math.sign(speed) < 0 ? Math.PI : 0)
+			scanDist + this.args.width
+			, this.args.falling
+				? [Math.PI,0,0][dir+1]
 				: this.roundAngle(this.realAngle + [0,0,Math.PI][dir+1], 16)
 			, startPoint
 			, (i, point) => {
@@ -3381,10 +3381,10 @@ export class PointActor extends View
 
 		const groundAngle = Number(this.public.groundAngle);
 
-		// if(this.public.falling)
-		// {
-		// 	return -groundAngle - (Math.PI);
-		// }
+		if(this.public.falling)
+		{
+			return -groundAngle - (Math.PI);
+		}
 
 		let trajectory;
 

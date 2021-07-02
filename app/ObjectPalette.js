@@ -28,6 +28,8 @@ import { Cinematic } from './actor/Cinematic';
 
 import { Flickie } from './actor/Flickie';
 
+import { CrabMeat } from './actor/CrabMeat';
+
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
 import { ArrowSign }  from './actor/ArrowSign';
@@ -124,6 +126,7 @@ export const ObjectPalette = {
 	, 'sheild-water-monitor': SheildWaterMonitor
 	, 'sheild-electric-monitor': SheildElectricMonitor
 	, 'flickie': Flickie
+	, 'crabmeat': CrabMeat
 };
 
 

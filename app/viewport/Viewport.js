@@ -99,8 +99,8 @@ export class Viewport extends View
 		this.args.mouse = 'moved';
 
 		this.settings = Bindable.make({
-			blur: false
-			, displace: false
+			blur: true
+			, displace: true
 			, outline: 1
 			, musicVol: 100
 			, sfxVol: 100
@@ -266,7 +266,7 @@ export class Viewport extends View
 
 		for(const setting in this.settings)
 		{
-			const val = localStorage.getItem('sonic-3000-setting=' + setting);
+			const val = localStorage.getItem('sonic-3000-setting-v0.0.0=' + setting);
 
 			try
 			{
@@ -280,7 +280,7 @@ export class Viewport extends View
 
 		this.settings.bindTo((v,k)=>{
 
-			localStorage.setItem('sonic-3000-setting=' + k, JSON.stringify(v));
+			localStorage.setItem('sonic-3000-setting-v0.0.0=' + k, JSON.stringify(v));
 
 		});
 

@@ -1,0 +1,38 @@
+.actor-item.actor-crabmeat .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-crabmeat .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 15px;
+	background-image: url(/Sonic/crabmeat.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-crabmeat[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-crabmeat[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: crabmeat-walk steps(6) infinite 320ms;
+}
+
+@keyframes crabmeat-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
