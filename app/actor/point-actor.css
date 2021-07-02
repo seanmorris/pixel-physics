@@ -8,8 +8,6 @@
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
-
-	/*will-change: transform, top, left;*/
 }
 
 .point-actor .sprite {

@@ -52,6 +52,7 @@
 	position: absolute;
 	transition: transform var(--x-speed) ease-out , opacity var(--y-speed) ease-in;
 	transform: translate(var(--xTarget), -0px);
+	/*opacity: 0.5;*/
 	top: -16px;
 	left: 0px;
 	width: 32px;
@@ -62,6 +63,7 @@
 	position: absolute;
 	transform: translate(0, var(--yTarget));
 	transition: transform var(--y-speed) ease-in, opacity var(--y-speed) ease-in;
+	/*opacity: 0.5;*/
 	top: -16px;
 	left: -16px;
 	width: 32px;

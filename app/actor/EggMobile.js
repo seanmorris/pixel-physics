@@ -20,7 +20,7 @@ export class EggMobile extends Vehicle
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
 
-		this.args.width  = 54;
+		this.args.width  = 28;
 		this.args.height = 20;
 
 		this.args.yMargin = 42;
@@ -31,6 +31,11 @@ export class EggMobile extends Vehicle
 
 	update()
 	{
+		if(this.checkBelow(this.x, this.y))
+		{
+			this.args.y--;
+		}
+
 		if(Math.abs(this.yAxis) > 0.1)
 		{
 			if(Math.abs(this.args.ySpeed) < this.args.ySpeedMax)

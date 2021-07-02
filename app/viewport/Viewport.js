@@ -195,8 +195,8 @@ export class Viewport extends View
 
 		this.effects   = new Bag;
 
-		this.maxCameraBound = 30;
-		this.cameraBound = 30;
+		this.maxCameraBound = 48;
+		this.cameraBound = 48;
 
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
@@ -312,7 +312,7 @@ export class Viewport extends View
 			this.args.scale  = 1;
 		}
 
-		this.collisions = new WeakMap;
+		this.collisions = new Map;
 
 		this.args.x = this.args.x || 0;
 		this.args.y = this.args.y || 0;
@@ -769,7 +769,7 @@ export class Viewport extends View
 			this.args.running = true;
 
 			this.update();
-			this.update();
+			// this.update();
 
 			this.args.level = 'level';
 
@@ -945,16 +945,16 @@ export class Viewport extends View
 
 		if(actor.public.jumping)
 		{
-			this.maxCameraBound = 30;
+			this.maxCameraBound = 24;
 
 			if(deepJump || highJump)
 			{
-				this.maxCameraBound = 8;
+				this.maxCameraBound = 12;
 			}
 		}
 		else
 		{
-			this.maxCameraBound = 64;
+			this.maxCameraBound = 48;
 		}
 
 		switch(this.controlActor.args.cameraMode)
@@ -967,7 +967,7 @@ export class Viewport extends View
 				cameraSpeed = 10;
 				const speedBias = Math.min(Math.max(0.1 * (-shiftSpeed + absSpeed), 0),1) * -Math.sign(xSpeed);
 
-				this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
+				this.args.xOffsetTarget = 0.5 + speedBias * 0.1;
 				this.args.yOffsetTarget = 0.5;
 				break;
 
@@ -1014,7 +1014,7 @@ export class Viewport extends View
 
 			case 'cliff':
 
-				this.args.xOffsetTarget = 0.50 + -0.15 * this.controlActor.public.direction;
+				this.args.xOffsetTarget = 0.50 + -0.02 * this.controlActor.public.direction;
 				this.args.yOffsetTarget = 0.45;
 
 				cameraSpeed = 30;
@@ -1035,13 +1035,13 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 
-				cameraSpeed = 30;
+				cameraSpeed = 25;
 
 				const gSpeed     = this.controlActor.public.gSpeed;
 				const absSpeed   = Math.abs(gSpeed);
 				const shiftSpeed = 15;
 
-				const speedBias = Math.min(Math.max(0.1 * (-shiftSpeed + absSpeed), 0),1) * -Math.sign(gSpeed);
+				const speedBias = Math.min(Math.max(0.1 * Math.max(-shiftSpeed + absSpeed), 0),1) * -Math.sign(gSpeed);
 
 				switch(this.controlActor.public.mode)
 				{
@@ -1070,6 +1070,11 @@ export class Viewport extends View
 		}
 
 		this.args.yOffsetTarget += this.controlActor.args.cameraBias;
+
+		if(this.controlActor.args.cameraBias)
+		{
+			cameraSpeed = 15;
+		}
 
 		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.05)
 		{
@@ -1296,6 +1301,12 @@ export class Viewport extends View
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
+		this.tags.regionBox.style({
+			'--x': Number(this.args.x).toFixed(1)
+			, '--y': Number(this.args.y).toFixed(1)
+			, '--outlineWidth': this.settings.outline + 'px'
+		});
+
 		const xMod = this.args.x <= 0
 			? (this.args.x % (this.args.blockSize))
 			: (-this.args.blockSize + (this.args.x % this.args.blockSize)) % this.args.blockSize;
@@ -1410,7 +1421,16 @@ export class Viewport extends View
 			const actor = Bindable.make(rawActor);
 
 			this.actors.add( actor );
-			actor.render(this.tags.actors);
+
+			if(actor instanceof Region)
+			{
+				actor.render(this.tags.actors);
+			}
+			else
+			{
+				actor.render(this.tags.actors);
+			}
+
 			actor.onRendered();
 
 			if(actor.onAttach && actor.onAttach() === false)
@@ -1440,7 +1460,7 @@ export class Viewport extends View
 		}
 	}
 
-	actorIsOnScreen(actor, margin = 128)
+	actorIsOnScreen(actor, margin = 256)
 	{
 		if(!actor)
 		{
@@ -1456,9 +1476,9 @@ export class Viewport extends View
 		const camTop    = -this.args.y - margin;
 		const camBottom = -this.args.y + height + margin;
 
-		const actorWidth = actor.public.width;
+		const actorWidth = actor.args.width;
 
-		const actorTop   = actor.y - actor.public.height;
+		const actorTop   = actor.y - actor.args.height;
 		const actorLeft  = actor.x - actorWidth / 2;
 		const actorRight = actor.x + actorWidth + actorWidth / 2;
 
@@ -1480,9 +1500,11 @@ export class Viewport extends View
 
 	spawnActors()
 	{
-		const spawnDoc = new DocumentFragment;
+		const actorDoc  = new DocumentFragment;
+		const regionDoc = new DocumentFragment;
 
-		let spawned = false;
+		let actorSpawned  = false;
+		let regionSpawned = false;
 
 		for(const spawn of this.spawn)
 		{
@@ -1491,12 +1513,16 @@ export class Viewport extends View
 				if(spawn.frame <= this.args.frameId)
 				{
 					this.spawn.delete(spawn);
-
 					spawn.object[ Bindable.NoGetters ] = true;
-
 					this.actors.add(Bindable.make(spawn.object));
 
-					spawn.object.render(spawnDoc);
+					const isRegion = spawn.object instanceof Region;
+
+					const doc = isRegion
+						? actorDoc
+						: actorDoc;
+
+					spawn.object.render(doc);
 					spawn.object.onRendered();
 					spawn.object.onAttached && spawn.object.onAttached()
 
@@ -1505,7 +1531,15 @@ export class Viewport extends View
 						spawn.object.detach();
 					}
 
-					spawned = true;
+					if(isRegion)
+					{
+						actorSpawned = true;
+					}
+					else
+					{
+						actorSpawned = true;
+					}
+
 				}
 			}
 			else
@@ -1516,7 +1550,7 @@ export class Viewport extends View
 
 				this.actors.add(Bindable.make(spawn.object));
 
-				spawn.object.render(spawnDoc);
+				spawn.object.render(actorDoc);
 				spawn.object.onRendered();
 				spawn.object.onAttached && spawn.object.onAttached()
 
@@ -1525,13 +1559,18 @@ export class Viewport extends View
 					spawn.object.detach();
 				}
 
-				spawned = true;
+				actorSpawned = true;
 			}
 		}
 
-		if(spawned)
+		if(actorSpawned)
 		{
-			this.tags.actors.append(spawnDoc);
+			this.tags.actors.append(actorDoc);
+		}
+
+		if(regionSpawned)
+		{
+			this.tags.actors.append(regionDoc);
 		}
 	}
 
@@ -1796,6 +1835,17 @@ export class Viewport extends View
 				actor.updateEnd();
 			}
 
+			if(this.collisions)
+			{
+				for(const [collider, collidees] of this.collisions)
+				{
+					for(const collidee of collidees)
+					{
+						collidee.pause(false);
+					}
+				}
+			}
+
 			if(this.controlActor)
 			{
 				this.rings.args.value = this.controlActor.args.rings;
@@ -1842,14 +1892,18 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-			const wakeDoc = new DocumentFragment;
+			const actorDoc = new DocumentFragment;
+			const regionDoc = new DocumentFragment;
 
 			let wakeActors = false;
+			let wakeRegions = false;
 
-			const nearbyActors = this.nearbyActors(this.controlActor) || [];
+			// const nearbyActors = this.nearbyActors(this.controlActor) || [];
 
-			for(const actor of [...nearbyActors, ...this.regions])
+			for(const a in this.actors.list)
 			{
+				const actor = this.actors.list[a];
+
 				if(!actor)
 				{
 					continue;
@@ -1870,10 +1924,17 @@ export class Viewport extends View
 					{
 						if(!actor.public.hidden)
 						{
-							actor.nodes.map(n => wakeDoc.append(n));
+							if(actor instanceof Region)
+							{
+								actor.nodes.map(n => actorDoc.append(n));
+								wakeActors = true;
+							}
+							else
+							{
+								actor.nodes.map(n => actorDoc.append(n));
+								wakeActors = true;
+							}
 						}
-
-						wakeActors = true;
 
 						actor.wakeUp();
 					}
@@ -1882,7 +1943,7 @@ export class Viewport extends View
 
 					actor.vizi = true;
 				}
-				else if(!actorIsOnScreen && actor.vizi)
+				else if(actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen)
 				{
 					this.willDetach.set(actor, () => {
 
@@ -1905,7 +1966,12 @@ export class Viewport extends View
 
 			if(wakeActors)
 			{
-				this.tags.actors.append(wakeDoc);
+				this.tags.actors.append(actorDoc);
+			}
+
+			if(wakeRegions)
+			{
+				this.tags.actors.append(regionDoc);
 			}
 		}
 
@@ -1979,8 +2045,6 @@ export class Viewport extends View
 			}
 		}
 
-		this.collisions = new WeakMap;
-
 		if(this.args.networked && this.controlActor)
 		{
 			const netState = {frame:this.serializePlayer()};
@@ -1996,6 +2060,8 @@ export class Viewport extends View
 		}
 
 		this.spawnActors();
+
+		this.collisions = new Map;
 	}
 
 	click(event)

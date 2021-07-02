@@ -15,7 +15,7 @@ export class DrillCar extends Vehicle
 
 		this.args.type = 'actor-item actor-drill-car';
 
-		this.args.width  = 42;
+		this.args.width  = 38;
 		this.args.height = 48;
 
 		this.removeTimer = null;
