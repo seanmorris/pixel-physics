@@ -22,7 +22,7 @@ export class Eggrobo extends PointActor
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
-		this.args.width  = 32;
+		this.args.width  = 18;
 		this.args.height = 57;
 	}
 
@@ -222,12 +222,14 @@ export class Eggrobo extends PointActor
 
 		const projectile = new Projectile({
 			direction: this.public.direction
-			, x: this.public.x + offset[0]
-			, y: this.public.y + offset[1]
+			, x: this.args.x + offset[0] + (this.args.xSpeed || this.args.gSpeed)
+			, y: this.args.y + offset[1]
 			, owner: this
+			, xSpeed: this.args.xSpeed || this.args.gSpeed
+			, YSpeed: this.args.YSpeed
 		});
 
-		projectile.impulse(16, trajectory + (direction < 0 ? Math.PI : 0), true);
+		projectile.impulse(18, trajectory + (direction < 0 ? Math.PI : 0), true);
 
 		projectile.update();
 

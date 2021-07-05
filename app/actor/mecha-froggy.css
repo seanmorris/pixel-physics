@@ -1,0 +1,67 @@
+.actor-item.actor-mecha-froggy .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-mecha-froggy .sprite:after {
+	content: '';
+	position: absolute;
+	top:  0;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/custom/mecha-froggy.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width:  64px;
+	z-index: 1;
+}
+
+.actor-item.actor-mecha-froggy[data-animation="walking"] .sprite:after {
+	animation: mecha-froggy-walk steps(3) infinite 180ms alternate;
+}
+.actor-item.actor-mecha-froggy[data-animation="running"] .sprite:after {
+	/*animation: mecha-froggy-walk steps(3) infinite 160ms alternate;*/
+	background-position: 0px -96px;
+}
+
+.actor-item.actor-mecha-froggy[data-animation="jumping"] .sprite:after {
+	/*animation: mecha-froggy-walk steps(3) 1 120ms forwards;*/
+	background-position: -128px 0;
+}
+
+@keyframes mecha-froggy-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+.mecha-froggy-flame {
+	display: none;
+	width: 104px;
+	height: 8px;
+	background-image: url(/Sonic/flare.png);
+	position: absolute;
+	right: 38px;
+	bottom: 28px;
+
+	/*background-position: 0px calc(-8px * 5);
+	background-position: 0px calc(-8px * 9);*/
+	animation: mecha-froggy-boost steps(4) infinite 50ms;
+}
+
+.actor-item.actor-mecha-froggy[data-animation="running"] .mecha-froggy-flame {
+	display: initial;
+}
+
+@keyframes mecha-froggy-boost {
+	from{
+		background-position: 0px calc(-8px * 5);
+	}
+	to{
+		background-position: 0px calc(-8px * 9);
+	}
+}

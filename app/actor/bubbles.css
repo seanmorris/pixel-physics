@@ -1,0 +1,65 @@
+.actor-item.actor-bubbles .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-bubbles .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/bubbles.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-bubbles .bubbles-wings {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -64px;
+	background-image: url(/Sonic/bubbles.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: bubbles-flap steps(2) infinite 50ms;
+}
+
+.actor-item.actor-bubbles .bubbles-flame {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-image: url(/Sonic/bubbles.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: bubbles-boost steps(2) infinite 55ms;
+}
+
+.actor-item.actor-bubbles[data-animation="aiming"] .sprite:after {
+	--sprite-offset-x: -64px;
+}
+
+@keyframes bubbles-flap {
+	from{
+		background-position: -0px -64px;
+	}
+	to{
+		background-position: -128px -64px;
+	}
+}
+
+@keyframes bubbles-boost {
+	from{
+		background-position: -0px -128px;
+	}
+	to{
+		background-position: -128px -128px;
+	}
+}
