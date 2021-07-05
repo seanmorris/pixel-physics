@@ -1164,25 +1164,22 @@ export class Viewport extends View
 
 		if(this.settings.blur && controlActor && this.tags.blur)
 		{
-			let xBlur = (Number(((this.args.x - this.xPrev) * 100) / 500) ** 2).toFixed(2);
-			let yBlur = (Number(((this.args.y - this.yPrev) * 100) / 500) ** 2).toFixed(2);
+			const xMoved = this.args.x - this.xPrev;
+			const yMoved = this.args.y - this.yPrev;
 
-			let blurAngle = Number(controlActor.realAngle + Math.PI).toFixed(2);
+			let xBlur = ((Number(xMoved) / 5) ** 2).toFixed(2);
+			let yBlur = ((Number(yMoved) / 5) ** 2).toFixed(2);
 
 			const maxBlur = 32;
 
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 4).toFixed(2);
+			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 2).toFixed(2);
+			const blurAngle = Math.atan2(yMoved, xMoved);
 
-			if(blur > 1)
+			if(blur > 0.5)
 			{
-				if(controlActor.public.falling)
-				{
-					blurAngle = Math.atan2(controlActor.public.ySpeed, controlActor.public.xSpeed);
-				}
-
 				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
 				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
 				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 1}, 0`);

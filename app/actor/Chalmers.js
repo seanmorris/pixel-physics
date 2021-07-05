@@ -23,7 +23,7 @@ export class Chalmers extends PointActor
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
-		this.args.width  = 18;
+		this.args.width  = 16;
 		this.args.height = 48;
 	}
 

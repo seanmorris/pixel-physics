@@ -106,6 +106,8 @@ export class PointActor extends View
 
 		this[ Bindable.NoGetters ] = true;
 
+		this.stepCache = {};
+
 		this.fallTime  = 0;
 
 		this.autoStyle = new Map;
@@ -247,6 +249,7 @@ export class PointActor extends View
 		this.willStick = false;
 		this.stayStuck = false;
 
+		this.args.startled = this.args.startled || 0;
 		this.args.halted = this.args.halted || 0;
 		this.args.ignore = this.args.ignore || 0;
 		this.args.float  = this.args.float  || 0;
@@ -255,7 +258,10 @@ export class PointActor extends View
 
 		this.args.flyAngle = 0;
 
-		this.args.bindTo(['x','y'], (v, k) => isNaN(v) && console.trace(k, v));
+		this.args.bindTo(['x','y'], (v, k) => {
+			isNaN(v) && console.trace(k, v)
+			this.stepCache = {};
+		});
 
 		this.args.bindTo('xSpeed', v => {
 			this.airAngle = Math.atan2(this.args.ySpeed, v)
@@ -802,6 +808,11 @@ export class PointActor extends View
 		if(this.public.ignore > 0)
 		{
 			this.args.ignore--;
+		}
+
+		if(this.args.startled > 0)
+		{
+			this.args.startled--;
 		}
 
 		if(this.public.float > 0)
@@ -1441,43 +1452,29 @@ export class PointActor extends View
 
 			const testStep = (radius + 1) * direction;
 
-			if(Math.abs(testStep) > max)
-			{
-				const testPosition = this.findNextStep(testStep);
-
-				if(testPosition.length > 2 && testPosition[3])
-				{
-					this.args.moving = false;
-					this.args.gSpeed = 0;
-
-					wasPaused || this.pause(false);
-
-					return;
-				}
-			}
+			// const frontPoint = this.rotatePoint((radius*0.5) * -direction, 0);
 
 			for(let s = 0; s < max; s += step)
 			{
-				const scanPosition = this.findNextStep((radius + step) * direction);
+				const scanPosition = this.findNextStep(radius * direction);
 
-				if(scanPosition[3])
+				nextPosition = this.findNextStep(step * direction);
+
+				if(!nextPosition || !scanPosition)
+				{
+					break;
+				}
+
+				if(scanPosition && scanPosition[3])
 				{
 					this.args.gSpeed = 0;
 					break;
 				}
 
-				nextPosition = this.findNextStep(step * direction);
-
-				if(!nextPosition)
+				if(!this.scanForward(direction, 1) && !this.public.rolling)
 				{
-					break;
+					// this.scanForward(direction, 0.5);
 				}
-
-				if(!this.scanForward(step * direction, 1) && !this.public.rolling)
-				{
-					this.scanForward(step * direction, 0.5);
-				}
-
 
 				if(nextPosition[3])
 				{
@@ -2840,6 +2837,11 @@ export class PointActor extends View
 			return;
 		}
 
+		if(this.stepCache[offset] !== undefined)
+		{
+			return this.stepCache[offset];
+		}
+
 		const viewport = this.viewport;
 		const tileMap  = viewport.tileMap;
 		const maxStep  = this.maxStep;
@@ -3006,13 +3008,13 @@ export class PointActor extends View
 				if(upFirstSpace === false)
 				{
 					return [false, false, false, true];
-					return [(1+col) * sign, false, false, true];
+					// return [(1+col) * sign, false, false, true];
 				}
 
 				if(upDiff >= maxStep)
 				{
 					return [false, false, false, true];
-					return [(-1+col), prev, false, true];
+					// return [(-1+col), prev, false, true];
 				}
 
 				prev = prevUp = upFirstSpace;
@@ -3020,6 +3022,15 @@ export class PointActor extends View
 			else
 			{
 				prev = prevDown = downFirstSolid;
+			}
+
+			if(upFirstSpace !== false)
+			{
+				this.stepCache[col * sign] = [col * sign, upFirstSpace, false];
+			}
+			else
+			{
+				this.stepCache[col * sign] = [col * sign, -downFirstSolid, false];
 			}
 		}
 
@@ -3249,26 +3260,27 @@ export class PointActor extends View
 
 	startle()
 	{
-		if(this.args.ySpeed >= 0)
+		if(this.args.startled > 0)
 		{
-			this.args.ySpeed = -4;
+			return;
 		}
-		else
-		{
-			this.args.ySpeed -= 4;
-		}
+
+		this.args.startled = 30;
+		this.args.ignore   = 30;
+
+		this.args.ySpeed = -7;
 
 		this.args.standingOn = false;
 
-		this.args.gSpeed = 0;
-
-		this.args.xSpeed = -1 * Math.sign(this.public.xSpeed || this.public.gSpeed || this.args.direction);
+		this.args.xSpeed = -4 * Math.sign(this.public.xSpeed || this.public.gSpeed || this.args.direction);
 
 		if(this.args.mode === MODE_CEILING)
 		{
 			this.args.xSpeed *= -1;
 			this.args.ySpeed *= -1;
 		}
+
+		this.args.gSpeed = 0;
 
 		this.args.falling = true;
 	}

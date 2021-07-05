@@ -37,13 +37,13 @@ export class Projectile extends PointActor
 
 		if(!this.removeTimer)
 		{
-			this.removeTimer = this.onTimeout(500, () => this.explode());
+			this.removeTimer = this.onTimeout(2500, () => this.explode());
 		}
 	}
 
 	collideA(other)
 	{
-		if(other === this.args.owner || other instanceof Projectile || other instanceof Region || other instanceof Spring)
+		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
 		{
 			return false;
 		}

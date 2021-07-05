@@ -46,7 +46,7 @@ export class Flickie extends PointActor
 		const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
 
 		const maxDistance = 256;
-		const minDistance = 32;
+		const minDistance = 64;
 
 		let minSpeed = 1;
 
@@ -107,8 +107,8 @@ export class Flickie extends PointActor
 		const xSame = Math.sign(this.args.xSpeed) === xDir;
 		const ySame = this.args.ySpeed && Math.sign(this.args.ySpeed) === yDir;
 
-		const xMag = Math.max(force) * 0.35 * (xSame ? 0.85 : 0.85);
-		const yMag = Math.max(force) * 0.20 * (xSame ? 0.75 : 1.50);
+		const xMag = Math.max(force) * 0.35 * (xSame ? 0.85 : 0.55);
+		const yMag = Math.max(force) * 0.10 * (xSame ? 0.75 : 1.50);
 
 		if(!xSame || Math.abs(this.args.xSpeed) < maxSpeed)
 		{
@@ -187,11 +187,15 @@ export class Flickie extends PointActor
 					return;
 				}
 
-				this.box.classList.add('decending');
-				this.box.classList.remove('ascending');
+				if(this.box)
+				{
+					this.box.classList.add('decending');
+					this.box.classList.remove('ascending');
+				}
+
 			})
 		}
-		else
+		else if(this.box)
 		{
 			this.box.classList.remove('decending');
 			this.box.classList.add('ascending');

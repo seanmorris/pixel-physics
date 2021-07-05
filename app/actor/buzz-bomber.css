@@ -1,0 +1,65 @@
+.actor-item.actor-buzz-bomber .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-buzz-bomber .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/buzz-bomber.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-buzz-bomber .buzz-bomber-wings {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -64px;
+	background-image: url(/Sonic/buzz-bomber.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: buzz-bomber-flap steps(2) infinite 50ms;
+}
+
+.actor-item.actor-buzz-bomber .buzz-bomber-flame {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	background-image: url(/Sonic/buzz-bomber.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: buzz-bomber-boost steps(2) infinite 55ms;
+}
+
+.actor-item.actor-buzz-bomber[data-animation="aiming"] .sprite:after {
+	--sprite-offset-x: -64px;
+}
+
+@keyframes buzz-bomber-flap {
+	from{
+		background-position: -0px -64px;
+	}
+	to{
+		background-position: -128px -64px;
+	}
+}
+
+@keyframes buzz-bomber-boost {
+	from{
+		background-position: -0px -128px;
+	}
+	to{
+		background-position: -128px -128px;
+	}
+}

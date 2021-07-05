@@ -1,12 +1,16 @@
-import { PointActor } from './PointActor';
+import { Flickie } from './Flickie';
+
+import { Mixin } from 'curvature/base/Mixin';
 import { Tag } from 'curvature/base/Tag';
+import { PointActor } from './PointActor';
 
 import { SkidDust } from '../behavior/SkidDust';
+import { CanPop } from '../mixin/CanPop';
 
 import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 
-export class CrabMeat extends PointActor
+export class CrabMeat extends Mixin.from(PointActor, CanPop)
 {
 	constructor(...args)
 	{
@@ -30,6 +34,9 @@ export class CrabMeat extends PointActor
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.sample = new Audio('/Sonic/object-destroyed.wav');
+		this.sample.volume = 0.6 + (Math.random() * -0.3);
 	}
 
 	update()
@@ -52,94 +59,12 @@ export class CrabMeat extends PointActor
 		super.update();
 	}
 
-	collideA(other, type)
+	effect(other)
 	{
-		console.log(type, other);
-		if(type !== 2
-			&& ((other.args.ySpeed > 0 && other.y < this.y) || other.args.rolling)
-			&& (!this.args.falling || this.args.float === -1)
-			&& !this.args.gone
-			&& this.viewport
-		){
-			this.pop(other);
-			return;
-		}
-
-		if((type === 1 || type === 3)
-			// && (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
-			&& (other.args.rolling || other instanceof Projectile)
-			&& !this.args.gone
-			&& this.viewport
-		){
-			this.pop(other)
-			return;
-		}
-
-		return false;
-	}
-
-	pop(other)
-	{
-		const viewport = this.viewport;
-
-		if(!viewport || this.args.gone)
-		{
-			return;
-		}
-
-		const explosion = new Tag('<div class = "particle-explosion">');
-
-		explosion.style({'--x': this.x, '--y': this.y-16});
-
-		viewport.particles.add(explosion);
-
-		setTimeout(() => viewport.particles.remove(explosion), 512);
-
-		setTimeout(() => this.screen && this.screen.remove(), 1024);
-
-		this.box.setAttribute('data-animation', 'broken');
-
-		if(other.occupant)
-		{
-			other = other.occupant;
-		}
-
-		if(other.args.owner)
-		{
-			other = other.args.owner;
-		}
-
-		if(other.controllable)
-		{
-			this.effect(other);
-		}
-
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
-
-		const ySpeed = other.args.ySpeed;
-
-		if(other.args.falling)
-		{
-			this.onNextFrame(() => {
-				other.args.ySpeed  = -ySpeed
-				other.args.falling = true;
-			});
-		}
-
-		if(this.args.falling && other.args.falling)
-		{
-			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
-		}
-
-		this.onTimeout(1500, () => {
-			this.viewport.actors.remove(this);
-			this.remove();
-		});
-
-		this.args.gone = true;
+		this.viewport.spawn.add({object:new Flickie({
+			x: this.args.x,
+			y: this.args.y,
+		})});
 	}
 
 	get solid() { return false; }
