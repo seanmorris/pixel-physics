@@ -73,17 +73,6 @@ export class LayerSwitch extends PointActor
 			toLayer = back ? 2 : 1;
 		}
 
-		if(toLayer === 2)
-		{
-			performance.mark('loop-start');
-		}
-		else
-		{
-			performance.mark('loop-end');
-
-			performance.measure('loopMarker', 'loop-start', 'loop-end');
-		}
-
 		if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
 		{
 			other.args.layer = toLayer;

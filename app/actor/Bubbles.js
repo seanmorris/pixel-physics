@@ -29,7 +29,7 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
-		this.args.width     = 15;
+		this.args.width     = 32;
 		this.args.height    = 32;
 
 		this.willStick = false;
@@ -75,5 +75,5 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 
 	get solid() { return false; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
+	// get controllable() { return true; }
 }

@@ -40,6 +40,9 @@ export class Block extends PointActor
 
 		this.args.collapse = args.collapse ?? false;
 
+		// this.moving = this.reverse = false;
+		// this.remaining = 0;
+
 		this.ease = new QuintInOut(this.public.period);
 
 		this.ease.start();
@@ -50,6 +53,25 @@ export class Block extends PointActor
 		if(other instanceof this.constructor)
 		{
 			return false;
+		}
+
+		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
+		{
+			if(other.args.y < this.args.y)
+			{
+				other.args.y = this.y + -this.args.height + this.args.ySpeed + -1;
+
+				if(other.args.ySpeed < 0)
+				{
+					other.args.ySpeed = this.args.ySpeed
+				}
+			}
+			else
+			{
+				other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
+				other.args.ySpeed = this.args.ySpeed;
+			}
+			return;
 		}
 
 		if(this.public.droop && (type === 0 || type === 2))
@@ -113,12 +135,7 @@ export class Block extends PointActor
 			return true;
 		}
 
-		if(this.args.float > 0)
-		{
-			return true;
-		}
-
-		if(this.public.collapse && (type === 0 || type === 2))
+		if(this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
 		{
 			if(other.public.ySpeed > 15)
 			{
@@ -146,7 +163,7 @@ export class Block extends PointActor
 			}
 			else if(other.public.ySpeed > 0 || other.public.gSpeed)
 			{
-				this.args.float = 5;
+				this.args.float = this.args.float > 0 ? this.args.float : 5;
 			}
 		}
 
@@ -157,10 +174,7 @@ export class Block extends PointActor
 	{
 		this.public.collapse && this.tags.sprite.classList.add('collapse');
 		this.public.platform && this.tags.sprite.classList.add('platform');
-	}
 
-	onAttach(event)
-	{
 		if(this.public.hidden)
 		{
 			event && event.preventDefault();
@@ -196,8 +210,6 @@ export class Block extends PointActor
 		{
 			this.args.gSpeed = 0;
 		}
-
-		super.update();
 
 		if(this.public.float && (this.public.oscillateX || this.public.oscillateY))
 		{
@@ -235,9 +247,55 @@ export class Block extends PointActor
 
 				this.args.y = this.originalY - moveY;
 			}
+
+			// if(this.public.oscillateX && !this.moving)
+			// {
+			// 	this.reverse = !this.reverse;
+
+			// 	this.moving = true;
+
+			// 	this.viewport.onFrameOut(this.public.period, () => {
+			// 		this.args.falling = true;
+			// 		this.args.float   = -1;
+
+			// 		const magnitude = this.public.oscillateX / this.public.period;
+
+			// 		this.args.xSpeed = magnitude * (this.reverse ? -1 : 1);
+
+			// 		this.remaining = this.public.period;
+
+			// 		this.viewport.onFrameOut(this.public.period, () => {
+			// 			this.args.xSpeed = 0;
+			// 			this.moving = false;
+			// 		});
+			// 	});
+			// }
+
+			// if(this.public.oscillateY && !this.moving)
+			// {
+			// 	this.reverse = !this.reverse;
+
+			// 	this.moving = true;
+
+			// 	this.viewport.onFrameOut(this.public.period, () => {
+			// 		this.args.falling = true;
+			// 		this.args.float   = -1;
+
+			// 		const magnitude = this.public.oscillateY / this.public.period;
+
+			// 		this.args.ySpeed = magnitude * (this.reverse ? -1 : 1);
+
+			// 		this.remaining = this.public.period;
+
+			// 		this.viewport.onFrameOut(this.public.period, () => {
+			// 			this.args.ySpeed = 0;
+			// 			this.moving = false;
+			// 		});
+			// 	});
+			// }
 		}
 
-		if(this.public.collapse)
+		if(this.args.collapse)
 		{
 			if(!this.reset)
 			{
@@ -252,12 +310,12 @@ export class Block extends PointActor
 				});
 			}
 
-			if(this.public.goBack)
+			if(this.args.goBack)
 			{
 				this.args.float = -1;
 
-				const distX = this.originalX - this.public.x;
-				const distY = this.originalY - this.public.y;
+				const distX = this.originalX - this.args.x;
+				const distY = this.originalY - this.args.y;
 
 				this.args.xSpeed = 0;
 				this.args.ySpeed = 0;
@@ -339,8 +397,9 @@ export class Block extends PointActor
 					this.droop(-1 * this.public.yLean, this.droopPos || 0);
 				});
 			}
-
 		}
+
+		super.update();
 	}
 
 	popOut(other)

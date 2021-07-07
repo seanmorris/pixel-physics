@@ -1838,6 +1838,11 @@ export class Viewport extends View
 				{
 					for(const collidee of collidees)
 					{
+						if(!collidee)
+						{
+							continue;
+						}
+
 						collidee.pause(false);
 					}
 				}

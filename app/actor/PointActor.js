@@ -1450,30 +1450,53 @@ export class PointActor extends View
 
 			this.pause(true);
 
-			const testStep = (radius + 1) * direction;
-
-			// const frontPoint = this.rotatePoint((radius*0.5) * -direction, 0);
 
 			for(let s = 0; s < max; s += step)
 			{
-				const scanPosition = this.findNextStep(radius * direction);
+				// const scanPosition = this.findNextStep(radius * direction);
+
+				// if(scanPosition && scanPosition[3])
+				// {
+				// 	this.args.gSpeed = 0;
+				// 	break;
+				// }
+
+				// if(!scanPosition)
+				// {
+				// 	break;
+				// }
+
+				if(!this.args.rolling)
+				{
+					const headDist = this.scanForward(direction, 1);
+
+					if(headDist)
+					{
+						this.args.x += (headDist - (this.args.width/2)) * direction;
+						this.args.gSpeed = 0;
+						return;
+					}
+					else
+					{
+						const waistDist = this.scanForward(direction, 0.5);
+
+						if(waistDist)
+						{
+							this.args.x += (waistDist - (this.args.width/2)) * direction;
+							this.args.gSpeed = 0;
+							return;
+
+						}
+
+					}
+				}
+
 
 				nextPosition = this.findNextStep(step * direction);
 
-				if(!nextPosition || !scanPosition)
+				if(!nextPosition)
 				{
 					break;
-				}
-
-				if(scanPosition && scanPosition[3])
-				{
-					this.args.gSpeed = 0;
-					break;
-				}
-
-				if(!this.scanForward(direction, 1) && !this.public.rolling)
-				{
-					// this.scanForward(direction, 0.5);
 				}
 
 				if(nextPosition[3])
@@ -1833,7 +1856,7 @@ export class PointActor extends View
 					{
 						speedFactor = 0.99990 * (1 - (slopeFactor**2/4) / 2);
 					}
-					else if(slopeFactor > 0 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
+					else if(slopeFactor > 1 && Math.abs(this.public.gSpeed) < this.public.gSpeedMax / 2)
 					{
 						speedFactor = 1.05000 * (1 + (slopeFactor**2/4) / 2);
 					}
@@ -1853,14 +1876,14 @@ export class PointActor extends View
 
 				if(!this.stayStuck && slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
 				{
-					if(this.args.mode === 1)
-					{
-						this.args.gSpeed = 1;
-					}
-					else if(this.args.mode === 3)
-					{
-						this.args.gSpeed = -1;
-					}
+					// if(this.args.mode === 1)
+					// {
+					// 	this.args.gSpeed = 1;
+					// }
+					// else if(this.args.mode === 3)
+					// {
+					// 	this.args.gSpeed = -1;
+					// }
 				}
 			}
 		}
@@ -2002,7 +2025,11 @@ export class PointActor extends View
 
 			const shiftBy = radius + -minHit;
 			const shift = shiftBy * -direction;
-			this.args.x += shift;
+
+			if(!isNaN(shift))
+			{
+				this.args.x += shift;
+			}
 
 			this.args.flySpeed = 0;
 			this.args.xSpeed   = 0;
@@ -2232,11 +2259,7 @@ export class PointActor extends View
 			{
 				this.args.x = Number(airPoint[0]);
 				this.args.y = Number(airPoint[1]);
-
-				// console.log(this.args.x, this.args.y, collisionAngle, airPoint, airPointB);
 			}
-
-			// console.log(this.args.mode, collisionAngle, airPoint, airPointB);
 		}
 
 		if(!tileMap.getSolid(this.x + (this.public.width / 2) * Math.sign(this.args.xSpeed), this.y, this.public.layer))
@@ -2254,14 +2277,14 @@ export class PointActor extends View
 
 		if(airPoint === false)
 		{
-			if(this.public.xSpeed)
+			if(this.args.xSpeed)
 			{
-				this.args.x += this.public.xSpeed;
+				this.args.x += this.args.xSpeed;
 			}
 
-			if(this.public.ySpeed)
+			if(this.args.ySpeed)
 			{
-				this.args.y += this.public.ySpeed;
+				this.args.y += this.args.ySpeed;
 			}
 		}
 
@@ -2446,7 +2469,7 @@ export class PointActor extends View
 		other.collideB(this, (type + 2) % 4);
 
 		const ab = this.collideA(other, type);
-		const ba = other.collideA(this, (type + 2) % 4);
+		const ba = other.collideA(this, type > -1 ? ((type + 2) % 4) : type);
 
 		const result = ab || ba;
 
@@ -3690,6 +3713,13 @@ export class PointActor extends View
 
 	command_0() // jump
 	{
+		if(this.args.hangingFrom)
+		{
+			this.args.hangingFrom.unhook();
+
+			return;
+		}
+
 		if(this.public.falling || this.willJump || this.public.dontJump)
 		{
 			if(this.args.standingOn && this.args.standingOn.isVehicle)

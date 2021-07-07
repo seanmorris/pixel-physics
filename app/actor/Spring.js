@@ -84,6 +84,11 @@ export class Spring extends PointActor
 			return;
 		}
 
+		if(other.args.platform)
+		{
+			return;
+		}
+
 		if(other instanceof Region)
 		{
 			return;
@@ -135,13 +140,21 @@ export class Spring extends PointActor
 
 		other.args.direction = Math.sign(this.public.gSpeed);
 
+		other.args.xSpeed = 0;
+		other.args.ySpeed = 0;
+		other.args.gSpeed = 0;
+		other.args.float  = 2;
+
+		other.args.x = this.x + Math.cos(rounded) * 8;
+		other.args.y = this.y + Math.sin(rounded) * 8;
+
 		other.impulse(
 			this.args.power
 			, rounded
 			, ![0, Math.PI].includes(this.args.angle)
 		);
 
-		other.args.ignore = 4;
+		other.args.ignore = 16;
 	}
 
 	get canStick() { return false; }

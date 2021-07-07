@@ -4,7 +4,7 @@ import { Projectile } from '../actor/Projectile';
 
 export const CanPop = {
 	collideA: function(other, type) {
-		if((other.args.jumping || other.args.rolling || other instanceof Projectile)
+		if((other.dashed || other.args.jumping || other.args.rolling || other instanceof Projectile)
 			&& !this.args.gone
 			&& this.viewport
 		){
@@ -23,7 +23,7 @@ export const CanPop = {
 	, pop: function(other) {
 		const viewport = this.viewport;
 
-		if(!viewport || this.args.gone)
+		if(!viewport || this.args.gone || other.args.owner === this)
 		{
 			return;
 		}
@@ -58,6 +58,11 @@ export const CanPop = {
 		if(viewport.args.audio && this.sample)
 		{
 			this.sample.play();
+
+			if(other.dashed)
+			{
+				other.args.xSpeed /= 4;
+			}
 
 			other.dashed = false;
 		}

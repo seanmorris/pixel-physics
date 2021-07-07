@@ -1,0 +1,25 @@
+.actor-item.actor-rocket .sprite {
+}
+
+.actor-item.actor-rocket .sprite:before {
+	position: absolute;
+	content: '';
+	background-image: url(/Sonic/rocket.png);
+	height: calc(var(--height) * 1px);
+	width: 64px;
+	height: 16px;
+	position: absolute;
+	z-index: -100;
+	animation: rocket-thrust steps(2) infinite 10ms;
+	transform: translate(-32px) rotate(calc( var(--air-angle, 0) * 1rad ));
+
+}
+
+@keyframes rocket-thrust {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: 0 -32px;
+	}
+}

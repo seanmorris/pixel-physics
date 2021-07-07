@@ -76,6 +76,15 @@ import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
 import { Balloon } from './actor/Balloon';
 
+import { Spinner } from './actor/Spinner';
+
+import { GrapplePoint } from './actor/GrapplePoint';
+import { WoodenCrate } from './actor/WoodenCrate';
+import { Rocket } from './actor/Rocket';
+
+import { RoadBarrier } from './actor/RoadBarrier';
+import { Cone } from './actor/Cone';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -133,6 +142,12 @@ export const ObjectPalette = {
 	, 'mecha-froggy': MechaFroggy
 	, 'buzz-bomber': BuzzBomber
 	, 'bubbles': Bubbles
+	, 'grapple-point': GrapplePoint
+	, 'rocket': Rocket
+	, 'spinner': Spinner
+	, 'wooden-crate': WoodenCrate
+	, 'road-barrier': RoadBarrier
+	, 'cone': Cone
 };
 
 

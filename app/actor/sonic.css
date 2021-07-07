@@ -230,6 +230,13 @@
 	animation: sonic-animate steps(var(--animation-steps)) infinite 96ms;
 }
 
+.actor-item.actor-sonic[data-animation="hanging"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -704px;
+	height: 64px;
+	top:  24px;
+}
+
 .actor-item.actor-sonic[data-super="true"] .sprite {
 	animation: super-sonic-flicker steps(10) infinite 1s alternate;
 }
