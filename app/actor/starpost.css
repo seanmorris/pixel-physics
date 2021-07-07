@@ -28,7 +28,7 @@
 }
 
 .actor-star-post[data-spin="true"] .star-post-head-box {
-	animation: spin2x 1 ease-in-out 700ms both;
+	animation: spin2x 1 ease-out 700ms both;
 	width: 16px;
 	height: 16px;
 }
@@ -39,6 +39,7 @@
 
 .actor-star-post[data-active="true"][data-direction="-1"] .star-post-head-box {
 	animation-direction: reverse;
+	animation-timing-function: ease-in;
 }
 
 .actor-item.actor-star-post .sprite {

@@ -1,14 +1,14 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
-import { Projectile } from '../actor/Projectile';
+// import { Projectile } from '../actor/Projectile';
 
 import { Monitor } from './Monitor';
 
 import { RingMonitor } from './monitor/RingMonitor';
 
-import { SheildFireMonitor } from './monitor/SheildFireMonitor';
-import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
 import { SheildElectricMonitor } from './monitor/SheildElectricMonitor';
+import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
+import { SheildFireMonitor } from './monitor/SheildFireMonitor';
 
 export class StarPost extends PointActor
 {
@@ -56,7 +56,12 @@ export class StarPost extends PointActor
 	{
 		super.collideA(other);
 
-		if(!other.controllable && !other.args.owner && !other.occupant)
+		if(other.args.owner)
+		{
+			other = other.args.owner;
+		}
+
+		if(!other.controllable && !other.occupant)
 		{
 			return;
 		}
@@ -68,6 +73,8 @@ export class StarPost extends PointActor
 
 		if(!this.args.active)
 		{
+			this.args.active = true;
+
 			this.box.setAttribute('data-direction', other.args.direction);
 			this.box.setAttribute('data-active', 'true');
 			this.box.setAttribute('data-spin', 'true');
@@ -100,34 +107,35 @@ export class StarPost extends PointActor
 
 			this.viewport.spawn.add({object:monitor});
 
-			this.args.active = true;
-
-			this.onTimeout(3000, () => {
+			this.viewport.onFrameOut(360, () => {
 				this.box.setAttribute('data-active', 'false');
-				this.args.active = false
+				this.box.setAttribute('data-spin', 'false');
+				this.args.active = false;
 			});
 
 			this.spinning = true;
 
-			this.onTimeout(600, () => this.spinning = false);
+			this.viewport.onFrameOut(36, () => {
+				this.spinning = false;
+			});
 		}
-		else if(other instanceof Projectile && !this.spinning)
-		{
-			this.box.setAttribute('data-direction', other.args.direction);
-			this.box.setAttribute('data-spin', 'false');
+		// else if(other instanceof Projectile && !this.spinning)
+		// {
+		// 	this.box.setAttribute('data-direction', other.args.direction);
+		// 	this.box.setAttribute('data-spin', 'false');
 
-			if(this.viewport.args.audio && this.sample)
-			{
-				this.sample.currentTime = 0;
-				this.sample.play();
-			}
+		// 	if(this.viewport.args.audio && this.sample)
+		// 	{
+		// 		this.sample.currentTime = 0;
+		// 		this.sample.play();
+		// 	}
 
-			this.onTimeout(0, () => this.box.setAttribute('data-spin', 'true'));
+		// 	this.onTimeout(0, () => this.box.setAttribute('data-spin', 'true'));
 
-			this.spinning = true;
+		// 	this.spinning = true;
 
-			this.onTimeout(600, () => this.spinning = false);
-		}
+		// 	this.onTimeout(600, () => this.spinning = false);
+		// }
 	}
 
 	get solid() { return false; }

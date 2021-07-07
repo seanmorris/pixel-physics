@@ -341,6 +341,11 @@ export class Sonic extends PointActor
 			this.args.animation = 'dropping';
 		}
 
+		if(this.public.hangingFrom)
+		{
+			this.args.animation = 'hanging';
+		}
+
 		if(this.public.rolling)
 		{
 			this.args.animation = 'rolling';
@@ -409,12 +414,12 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		let dashSpeed = direction * 11;
+		let dashSpeed = direction * 13;
 
 		if(this.public.wallSticking)
 		{
 			this.args.x += dashSpeed;
-			dashSpeed = direction * 18;
+			dashSpeed = direction * 21;
 		}
 
 		this.args.mode = 0;
@@ -616,16 +621,23 @@ export class Sonic extends PointActor
 
 			const standOrRecheck = () => {
 
-				const backOfHead =[this.x-this.args.width/2, this.y+this.args.height+1]
+				const backOfHead =[this.args.width/2, this.args.height+4]
 
-				const actualBackOfHead = this.rotatePoint(...backOfHead);
+				// const actualBackOfHead = this.rotatePoint(...backOfHead);
 
-				if(this.getMapSolidAt(...actualBackOfHead))
+				const solid = this.getMapSolidAt(this.x - backOfHead[0], this.y - backOfHead[1]);
+
+				if(solid)
 				{
 					this.viewport.onFrameOut(20, standOrRecheck);
 
+					this.args.gSpeed = this.args.direction * 4;
+					this.args.rolling = true;
+
 					return;
 				}
+
+				console.log('stand!');
 
 				this.args.rolling = false;
 

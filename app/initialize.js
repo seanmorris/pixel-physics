@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		frameTimes.push(frameTime);
 
-		if(frameTimes.length > 3)
+		if(frameTimes.length > 1)
 		{
 			const frameTimeSum = frameTimes.reduce((a,b)=>a+b);
 			const frameTimeAvg = frameTimeSum / frameTimes.length;

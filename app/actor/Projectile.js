@@ -4,6 +4,7 @@ import { Tag }        from 'curvature/base/Tag';
 
 import { Region } from '../region/Region';
 import { Spring } from './Spring';
+// import { StarPost } from './StarPost';
 
 export class Projectile extends PointActor
 {
@@ -47,6 +48,13 @@ export class Projectile extends PointActor
 		{
 			return false;
 		}
+
+		if(!other.solid && !other.controllable)
+		{
+			return false;
+		}
+
+		other.controllable && other.startle();
 
 		this.args.x += Math.cos(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
 		this.args.y += Math.sin(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);

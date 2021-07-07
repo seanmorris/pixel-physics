@@ -29,7 +29,7 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
-		this.args.width     = 15;
+		this.args.width     = 18;
 		this.args.height    = 32;
 
 		this.willStick = false;
@@ -61,13 +61,13 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 
 	effect(other)
 	{
-		this.viewport.spawn.add({object:new Flickie({
-			x: this.args.x,
-			y: this.args.y,
-		})});
+		// this.viewport.spawn.add({object:new Flickie({
+		// 	x: this.args.x,
+		// 	y: this.args.y,
+		// })});
 	}
 
 	get solid() { return false; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
+	// get controllable() { return true; }
 }

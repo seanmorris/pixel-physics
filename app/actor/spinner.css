@@ -1,0 +1,23 @@
+.actor-item.actor-spinner {
+	position: absolute;
+	width: 64px;
+	height: 64px;
+}
+
+.actor-item.actor-spinner .sprite {
+	position: relative;
+	background-position: 0 0;
+	background-image: url(/Sonic/spinner.png);
+	width: 62px;
+	height: 24px;
+	animation: spinner-spin steps(2) infinite 50ms;
+}
+
+@keyframes spinner-spin {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: 0 -48px;
+	}
+}

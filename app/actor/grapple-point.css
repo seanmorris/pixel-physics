@@ -1,0 +1,20 @@
+.actor-item.actor-grapple-point .sprite {
+	background-image: url(/Sonic/hook.png);
+	background-position: center -4px;
+	height: calc(var(--height) * 1px);
+	width: 22px;
+	position: absolute;
+	z-index: -100;
+
+}
+
+
+.actor-item.actor-grapple-point .chain {
+	z-index: -100000;
+	height: calc(65px - calc(var(--height) * 1px));
+	width: 6px;
+	position: absolute;
+	bottom: calc(0px + calc(var(--height) * 1px));
+	left: calc(50% - 4px);
+	background-image: url(/Sonic/chain-link.png);
+}

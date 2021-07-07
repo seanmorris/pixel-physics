@@ -29,8 +29,8 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
-		this.args.width     = 15;
-		this.args.height    = 32;
+		this.args.width     = 32;
+		this.args.height    = 16;
 
 		this.willStick = false;
 		this.stayStuck = false;
@@ -59,6 +59,8 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 		if(this.aiming)
 		{
 			this.box.setAttribute('data-animation', 'aiming');
+
+			// this.args.x = this.viewport.controlActor.x + (45 * -this.args.direction);
 		}
 		else
 		{
@@ -84,25 +86,111 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 		super.update();
 	}
 
-	hold_1()
+	command_1()
 	{
-		this.aiming = true;
+		this.aiming = !this.aiming;
+
+		// if(this.aiming)
+		// {
+		// 	this.args.xSpeed = 0;
+		// 	this.args.ySpeed = 0;
+		// }
 	}
 
-	release_1()
+	command_2()
 	{
-		this.aiming = false;
+		if(!this.aiming || !this.viewport)
+		{
+			return;
+		}
+
+		const offset = [0, -24];
+
+		const projectile = new Projectile({
+			direction: this.public.direction
+			, x: this.args.x + offset[0] + (this.args.xSpeed || this.args.gSpeed)
+			, y: this.args.y + offset[1]
+			, owner: this
+			, xSpeed: this.args.xSpeed || this.args.gSpeed
+			, YSpeed: this.args.YSpeed
+		});
+
+		projectile.impulse(18, 1.57 + (Math.PI/4) * 1);
+
+		this.viewport.auras.add(projectile);
+		this.viewport.spawn.add({object:projectile});
 	}
 
 	effect(other)
 	{
-		this.viewport.spawn.add({object:new Flickie({
-			x: this.args.x,
-			y: this.args.y,
-		})});
+		// this.viewport.spawn.add({object:new Flickie({
+		// 	x: this.args.x,
+		// 	y: this.args.y,
+		// })});
+	}
+
+	wakeUp()
+	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
+		this.args.direction = -1;
+		this.args.facing    = 'left';
+
+		this.args.xSpeed = -7;
+
+		this.aiming = false;
+
+		viewport.onFrameOut(22, () => {
+
+			this.aiming = true;
+			const xSpeed = this.args.xSpeed;
+			this.args.xSpeed = 0;
+
+			viewport.onFrameOut(10, () => {
+				this.command_2();
+
+				viewport.onFrameOut(10, () => {
+					this.aiming = false;
+					this.args.xSpeed = xSpeed;
+
+					viewport.onFrameOut(100, () => {
+						this.sleep();
+					});
+				});
+			});
+		});
+	}
+
+	sleep()
+	{
+		this.args.x = this.def.get('x');
+		this.args.y = this.def.get('y');
+
+		this.onNextFrame(() => {
+
+			if(!this.viewport)
+			{
+				return;
+			}
+
+			this.args.x = this.def.get('x');
+			this.args.y = this.def.get('y');
+
+			this.viewport.setColCell(this);
+
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+			this.args.pushed = 0;
+			this.args.float  = 0;
+		});
 	}
 
 	get solid() { return false; }
+	// get controllable() { return true; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
 }

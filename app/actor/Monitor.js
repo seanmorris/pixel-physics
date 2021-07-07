@@ -66,7 +66,7 @@ export class Monitor extends PointActor
 			&& !this.public.gone
 			&& this.viewport
 		){
-			this.pop(other)
+			this.pop(other);
 			return;
 		}
 	}
