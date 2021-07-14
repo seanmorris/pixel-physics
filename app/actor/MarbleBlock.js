@@ -111,9 +111,9 @@ export class MarbleBlock extends PointActor
 		return true;
 	}
 
+	get isPushable() { return true; }
 	get canStick() { return false; }
 	get solid() { return true; }
 	get rotateLock() { return true; }
-	get isPushable() { return true; }
 }
 

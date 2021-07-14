@@ -47,8 +47,9 @@
 }
 
 .region.region-water .sprite {
-	top: calc( calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry))) - 16px);
 	bottom: calc( var(--bottomBoundary));
+	top: calc( calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry))) - 16px);
+	/*clip-path: var(--maskImage);*/
 }
 
 .region.region-water .region-color-wrapper {
@@ -93,8 +94,8 @@
 	position: absolute;
 	left:   0;
 	right:  0;
-	top:    0;
-	bottom: 64px;
+	top:    3px;
+	bottom: 65px;
 }
 
 .region.region-lava .region-color,

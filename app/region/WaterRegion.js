@@ -1,6 +1,7 @@
 import { Region } from "./Region";
 
 import { Tag } from 'curvature/base/Tag';
+import { View } from 'curvature/base/View';
 
 export class WaterRegion extends Region
 {
@@ -33,11 +34,26 @@ export class WaterRegion extends Region
 			this.filter = new Tag('<div class = "region-filter">');
 			this.color  = new Tag('<div class = "region-color">');
 
+			this.mask = View.from(`<svg style = "width: 100vw;height: 100vh">
+				<defs>
+					<clipPath id = "mask-${this.args.id}" clipPathUnits="userSpaceOnUse">
+	    				<path d="
+	    					M 0 0 L 0 ${32 * 17} L ${32 * 17} ${32 * 17} L ${32 * 17} 0 z
+	    					M ${32 * 17} 150 L ${32 * 17} 200 L ${32 * 17/2} 175 L ${32 * 17/2} 175 z"
+
+	    				/>
+    				</clipPath>
+    			</defs>
+			<svg>`);
+
 			this.filterWrapper.appendChild(this.filter.node);
 			this.colorWrapper.appendChild(this.color.node);
 
 			this.tags.sprite.appendChild(this.filterWrapper.node);
 			this.tags.sprite.appendChild(this.colorWrapper.node);
+			this.mask.render(this.tags.sprite);
+
+			this.tags.sprite.style({'--maskImage': `url(#mask-${this.args.id})`});
 		}
 
 		if(!this.switch && this.public.switch)
@@ -120,16 +136,18 @@ export class WaterRegion extends Region
 			return;
 		}
 
+		if(other.y - other.args.height < this.y - this.args.height)
+		{
+			return;
+		}
+
 		if(this.viewport.args.frameId % 5 === 0 && (Math.random() > 0.9))
 		{
 			const viewport = this.viewport;
 
 			const bubble = new Tag('<div class = "particle-bubble">');
 
-			const attach = other.rotatePoint(
-				-5 * other.public.direction
-				, -5 + other.public.height
-			);
+			const attach = other.rotatePoint(...other.facePoint);
 
 			const x = other.x + attach[0];
 			const y = other.y + attach[1];
@@ -144,6 +162,11 @@ export class WaterRegion extends Region
 				const y = other.y + point[1];
 
 				if(other.y < this.y - this.public.height)
+				{
+					bubble.style({display: 'none'});
+				}
+
+				if(y < this.y - this.public.height)
 				{
 					bubble.style({display: 'none'});
 				}

@@ -110,13 +110,13 @@ export class Industrial extends Backdrop
 				autoscroll: 0
 				, parallax: 0.125
 				, url:      '/Sonic/backdrop/labrynth-industrial/5-bw-small.png'
-				, height:   30
+				, height:   10
 			}
 			, {
 				autoscroll: 0
 				, parallax: 0.15
 				, url:      '/Sonic/backdrop/labrynth-industrial/5-bw-small.png'
-				, height:   30
+				, height:   10
 			}
 			, {
 				autoscroll: 0
@@ -166,7 +166,7 @@ export class Industrial extends Backdrop
 				autoscroll: 0
 				, parallax: 0.35
 				, url:      '/Sonic/backdrop/labrynth-industrial/5.png'
-				, height:   50
+				, height:   40
 			}
 			, {
 				autoscroll: 0

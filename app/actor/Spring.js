@@ -96,12 +96,24 @@ export class Spring extends PointActor
 
 		this.args.active = 'active';
 
+		if(this.viewport.args.audio && this.sample)
+		{
+			this.sample.currentTime = 0;
+			this.sample.volume = 0.25 + (Math.random() * 0.1);
+			this.sample.play();
+		}
+
+		if(other[WillSpring])
+		{
+			return;
+		}
+
 		this.viewport.onFrameOut(5,() => {
 			delete other[WillSpring];
 			this.args.active = null;
 		});
 
-		if(other[WillSpring])
+		if(other.noClip)
 		{
 			return;
 		}
@@ -112,12 +124,7 @@ export class Spring extends PointActor
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 
-		if(this.viewport.args.audio && this.sample)
-		{
-			this.sample.currentTime = 0;
-			this.sample.volume = 0.2 + (Math.random() / 4);
-			this.sample.play();
-		}
+
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
@@ -138,15 +145,18 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.direction = Math.sign(this.public.gSpeed);
+		// other.args.direction = Math.sign(this.public.gSpeed);
 
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 		other.args.gSpeed = 0;
 		other.args.float  = 2;
 
-		other.args.x = this.x + Math.cos(rounded) * 8;
-		other.args.y = this.y + Math.sin(rounded) * 8;
+		other.args.x = this.x + Math.cos(rounded) * 16;
+		other.args.y = this.y + Math.sin(rounded) * 16;
+
+		other.args.jumping = false;
+
 
 		other.impulse(
 			this.args.power
@@ -154,7 +164,32 @@ export class Spring extends PointActor
 			, ![0, Math.PI].includes(this.args.angle)
 		);
 
-		other.args.ignore = 16;
+		if(
+			![0, Math.PI].includes(this.args.angle)
+			|| other.args.falling
+			|| other.args.mode !== 0
+		){
+			other.args.falling = true;
+			other.args.mode = 0;
+		}
+
+		other.args.xSpeed = Math.cos(rounded) * 1;
+		other.args.ySpeed = Math.sin(rounded) * 1;
+
+		other.args.ignore = 1;
+
+		this.onNextFrame(()=>{
+			other.args.groundAngle = 0;
+			if(!other.args.falling)
+			{
+				other.args.ignore = 8;
+			}
+		});
+	}
+
+	sleep()
+	{
+		this.args.active = null;
 	}
 
 	get canStick() { return false; }

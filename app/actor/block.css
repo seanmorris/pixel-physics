@@ -6,9 +6,12 @@
 	--hoverWidth: -1px;
 }
 
+.actor-item.actor-block svg {
+	pointer-events: none;
+}
+
 .actor-item.actor-breakable-block {
 	filter: initial !important;
-	z-index: 400000;
 }
 
 .actor-item.actor-marble-companion-block .sprite {
@@ -33,6 +36,10 @@
 	--spread: 450%;
 }
 
+.actor-item.actor-breakable-block > * {
+	z-index: 100;
+}
+
 .actor-item.actor-breakable-block.broken .sprite {
 	background-image: none !important;
 	opacity: 0;
@@ -53,10 +60,10 @@
 	transition: transform var(--x-speed) ease-out , opacity var(--y-speed) ease-in;
 	transform: translate(var(--xTarget), -0px);
 	/*opacity: 0.5;*/
-	top: -16px;
+	top:  calc(var(--height, 32) * -0.5px);
 	left: 0px;
-	width: 32px;
-	height: 32px;
+	width: calc(var(--width, 32) * 1px);
+	height: calc(var(--height, 32) * 1px);
 }
 
 .actor-item.actor-breakable-block .fragmentsY {
@@ -64,11 +71,11 @@
 	transform: translate(0, var(--yTarget));
 	transition: transform var(--y-speed) ease-in, opacity var(--y-speed) ease-in;
 	/*opacity: 0.5;*/
-	top: -16px;
-	left: -16px;
-	width: 32px;
-	height: 32px;
-	opacity: 1;
+	top: calc(var(--height, 32) * -0.5px);
+	left: calc(var(--width, 32) * -0.5px);
+	width: calc(var(--width, 32) * 1px);
+	height: calc(var(--height, 32) * 1px);
+	opacity: 1;;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsY {
@@ -81,45 +88,43 @@
 	background-position-y: calc(var(--sprite-y) * 32);
 	position: absolute;
 	transition: transform var(--break-speed) ease-out;
+	--halfX: calc(var(--width, 32) * 0.5px);
+	--halfY: calc(var(--height, 32) * 0.5px);
+	--centerX: calc(calc(var(--sprite-x) + -1) * calc(var(--width, 32) * -1px));
+	--centerY: calc(calc(var(--sprite-y) + 0) * calc(var(--width, 32) * -1px));
+	width: var(--halfX);
+	height: var(--halfY);
 }
 
 .actor-item.actor-breakable-block .fragment-top-left {
-	background-position-x: calc( calc( calc(var(--sprite-x) + -1) * -32px) + 0px);
-	background-position-y: calc( calc( calc(var(--sprite-y) + 0) * -32px) + 0px);
+	background-position-x: calc(var(--centerX) + 0px);
+	background-position-y: calc(var(--centerY) + 0px);
 	top: 0px;
 	left: 0px;
-	width: 16px;
-	height: 16px;
 	transform: translate(calc(-1 * var(--spread)), calc(-1 * var(--spread)));
 }
 
 .actor-item.actor-breakable-block .fragment-top-right {
-	background-position-x: calc( calc( calc(var(--sprite-x) + -1) * -32px) + -16px);
-	background-position-y: calc( calc( calc(var(--sprite-y) + 0) * -32px) + -0px);
+	background-position-x: calc(var(--centerX) - var(--halfX));
+	background-position-y: calc(var(--centerY) + 0px);
 	top: 0px;
-	left: 16px;
-	width: 16px;
-	height: 16px;
+	left: calc(var(--width) * 0.5px);
 	transform: translate(var(--spread), calc(-1 * var(--spread)));
 }
 
 .actor-item.actor-breakable-block .fragment-bottom-left {
-	background-position-x: calc( calc( calc(var(--sprite-x) + -1) * -32px) + 0px);
-	background-position-y: calc( calc( calc(var(--sprite-y) + 0) * -32px) + -16px);
-	top: 16px;
+	background-position-x: calc(var(--centerX) + 0px);
+	background-position-y: calc(var(--centerY) - var(--halfY));
+	top: calc(var(--height) * 0.5px);
 	left: 0px;
-	width: 16px;
-	height: 16px;
 	transform: translate(calc(-1 * var(--spread)), var(--spread));
 }
 
 .actor-item.actor-breakable-block .fragment-bottom-right {
-	background-position-x: calc( calc( calc(var(--sprite-x) + -1) * -32px) + -16px);
-	background-position-y: calc( calc( calc(var(--sprite-y) + 0) * -32px) + -16px);
-	top: 16px;
-	left: 16px;
-	width: 16px;
-	height: 16px;
+	background-position-x: calc(var(--centerX) - var(--halfX));
+	background-position-y: calc(var(--centerY) - var(--halfY));
+	top: calc(var(--height) * 0.5px);
+	left: calc(var(--width) * 0.5px);
 	transform: translate(var(--spread), var(--spread));
 }
 

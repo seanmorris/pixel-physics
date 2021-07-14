@@ -80,6 +80,13 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 			}
 		}
 
+		if(this.args.xSpeed === 0)
+		{
+			this.viewport.onFrameOut(10, () => {
+				this.attack();
+			});
+		}
+
 		this.args.falling = true;
 		this.args.flying  = true;
 
@@ -138,30 +145,59 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 
 		const viewport = this.viewport;
 
+		this.sleeping = false;
+
+		this.attack();
+	}
+
+	attack()
+	{
+		if(this.sleeping || this.attacking)
+		{
+			return;
+		}
+
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
 		this.args.direction = -1;
 		this.args.facing    = 'left';
 
-		this.args.xSpeed = -7;
+		this.args.xSpeed = -10;
 
 		this.aiming = false;
 
-		viewport.onFrameOut(22, () => {
+		this.attacking = true;
 
+		viewport.onFrameOut(15, () => {
 			this.aiming = true;
-			const xSpeed = this.args.xSpeed;
-			this.args.xSpeed = 0;
 
 			viewport.onFrameOut(10, () => {
-				this.command_2();
-
-				viewport.onFrameOut(10, () => {
-					this.aiming = false;
-					this.args.xSpeed = xSpeed;
-
-					viewport.onFrameOut(100, () => {
-						this.sleep();
-					});
+				let shots = 2;
+				const cancelInterval = viewport.onFrameInterval(15, () => {
+					this.command_2();
+					shots-- || cancelInterval();
 				});
+			});
+
+		});
+
+		viewport.onFrameOut(50, () => {
+
+			const xSpeed = this.args.xSpeed;
+			this.args.xSpeed = 0.5 * -xSpeed;
+
+			viewport.onFrameOut(100, () => {
+				this.aiming = false;
+
+				this.attacking = false;
+
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
 			});
 		});
 	}
@@ -187,6 +223,9 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 			this.args.ySpeed = 0;
 			this.args.pushed = 0;
 			this.args.float  = 0;
+
+			this.attacking = false;
+			this.sleeping = true;
 		});
 	}
 

@@ -9,10 +9,13 @@ import { Pinch } from '../effects/Pinch';
 import { Png } from '../sprite/Png';
 
 import { Ring } from './Ring';
+import { Spring } from './Spring';
 
 import { FireSheild }     from '../powerups/FireSheild';
 import { BubbleSheild }   from '../powerups/BubbleSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
+
+import { GrindingRegion } from '../region/GrindingRegion';
 
 import { SkidDust } from '../behavior/SkidDust';
 
@@ -57,6 +60,8 @@ export class Sonic extends PointActor
 		this.args.normalHeight  = 40;
 		this.args.rollingHeight = 28;
 
+		this.sparks = new Set();
+
 		// this.registerDebug('sonic');
 
 		this.spindashCharge = 0;
@@ -73,6 +78,8 @@ export class Sonic extends PointActor
 		this.moveCard = View.from(require('../cards/basic-moves.html'));
 
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
+
+		this.sampleRingLoss = new Audio('/Sonic/ring-loss.wav');
 
 		this.args.bindTo('falling', v => {
 
@@ -130,6 +137,15 @@ export class Sonic extends PointActor
 					this.setProfile();
 				}
 			}
+		}
+
+
+		for(const spark of this.sparks)
+		{
+			spark.style({
+				opacity: Math.random() * 2
+				, '--y': spark.y
+			});
 		}
 
 		if(this.public.falling)
@@ -375,6 +391,39 @@ export class Sonic extends PointActor
 			this.args.animation = 'standing';
 		}
 
+		if(this.args.grinding && !this.args.falling)
+		{
+			const dustParticle = new Tag(`<div class = "particle-sparks">`);
+
+			for(let i = 0; i < Math.abs(this.public.gSpeed/5); i ++)
+			{
+				const dustPoint = this.rotatePoint(
+					-this.public.gSpeed * 1.75
+						+ i * 2.5 * this.args.direction
+					, 3-i
+				);
+
+				dustParticle.style({
+					'--x': dustPoint[0] + this.x
+					, '--y': dustPoint[1] + this.y + Math.random * -3
+					, 'z-index': 0
+					, 'animation-delay': (-Math.random()*0.25) + 's'
+					, opacity: Math.random() * 2
+				});
+
+				dustParticle.y = dustPoint[1] + this.y;
+
+				this.viewport.particles.add(dustParticle);
+
+				this.sparks.add(dustParticle);
+
+				this.viewport.onFrameOut(30, () => {
+					this.viewport.particles.remove(dustParticle);
+					this.sparks.delete(dustParticle);
+				});
+			}
+		}
+
 		if(this.pincherBg)
 		{
 			this.pincherBg.args.scale *= 0.875;
@@ -394,6 +443,13 @@ export class Sonic extends PointActor
 		if(!this.twister)
 		{
 			this.twist(0);
+		}
+
+		if(this.args.grinding)
+		{
+			this.args.rolling = false;
+
+			this.args.animation = 'grinding';
 		}
 
 		super.update();
@@ -491,17 +547,6 @@ export class Sonic extends PointActor
 		}
 
 		super.command_0();
-	}
-
-	hold_0()
-	{
-		if(this.yAxis > 0 && this.public.jumping)
-		{
-			if(this.dropDashCharge < 20)
-			{
-				this.dropDashCharge++;
-			}
-		}
 	}
 
 	command_4()
@@ -629,7 +674,7 @@ export class Sonic extends PointActor
 
 				if(solid)
 				{
-					this.viewport.onFrameOut(20, standOrRecheck);
+					this.viewport.onFrameOut(40, standOrRecheck);
 
 					this.args.gSpeed = this.args.direction * 4;
 					this.args.rolling = true;
@@ -685,6 +730,21 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
+		if(this.public.jumping)
+		{
+			if(this.dropDashCharge < 20)
+			{
+				this.dropDashCharge++;
+
+				return;
+			}
+		}
+
+		if(this.dropDashCharge)
+		{
+			return;
+		}
+
 		if(this.args.falling || this.willJump || this.public.gSpeed)
 		{
 			this.spindashCharge = 0;
@@ -988,7 +1048,33 @@ export class Sonic extends PointActor
 	{
 		super.startle();
 
-		this.args.animation = 'skidding';
+		this.onNextFrame(() => this.args.animation = 'skidding');
+	}
+
+	die()
+	{
+		super.die();
+
+		this.onNextFrame(() => this.args.animation = 'dead');
+	}
+
+	loseRings()
+	{
+		super.loseRings();
+
+		if(this.viewport.args.audio && this.sampleRingLoss)
+		{
+			this.sampleRingLoss.volume = 0.15 + (Math.random() * -0.05);
+			this.sampleRingLoss.play();
+		}
+	}
+
+	collideA(other)
+	{
+		if(other instanceof Spring)
+		{
+			this.onNextFrame(()=>this.args.animation = 'springdash');
+		}
 	}
 
 	get solid() { return false; }
@@ -1007,4 +1093,23 @@ export class Sonic extends PointActor
 		return super.facePoint;
 	}
 
+	crossRegionBoundary(region, entered)
+	{
+		if(region instanceof GrindingRegion)
+		{
+			if(!entered)
+			{
+				if(this.args.falling)
+				{
+					this.args.animation = 'springdash';
+				}
+				else
+				{
+					this.args.grinding = false;
+				}
+			}
+		}
+
+		super.crossRegionBoundary(region, entered);
+	}
 }

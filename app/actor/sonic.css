@@ -124,7 +124,8 @@
 
 .actor-item.actor-sonic[data-animation="dash"] .sprite:after,
 .actor-item.actor-sonic[data-animation="airdash"] .sprite:after,
-.actor-item.actor-sonic[data-animation="lightdash"] .sprite:after {
+.actor-item.actor-sonic[data-animation="lightdash"] .sprite:after,
+.actor-item.actor-sonic[data-animation="springdash"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 
@@ -145,7 +146,9 @@
 	transform: translateY(32px) rotate(calc(1rad * var(--ground-angle))) scaleX(-1);
 }
 
-.actor-item.actor-sonic[data-facing="left"][data-animation="airdash"] .sprite:after {
+.actor-item.actor-sonic[data-facing="left"][data-animation="airdash"] .sprite:after,
+.actor-item.actor-sonic[data-facing="left"][data-animation="lightdash"] .sprite:after,
+.actor-item.actor-sonic[data-facing="left"][data-animation="springdash"] .sprite:after {
 	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg))  translateY(-3px);
 }
 
@@ -228,6 +231,16 @@
 	--animation-width: 64px;
 
 	animation: sonic-animate steps(var(--animation-steps)) infinite 96ms;
+}
+
+.actor-item.actor-sonic[data-animation="dead"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -768px;
+}
+
+.actor-item.actor-sonic[data-animation="grinding"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
 }
 
 .actor-item.actor-sonic[data-animation="hanging"] .sprite:after {

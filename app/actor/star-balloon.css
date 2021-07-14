@@ -1,0 +1,7 @@
+.actor-item.actor-star-balloon {
+}
+
+.actor-item.actor-balloon.actor-star-balloon .sprite:before {
+	background-image: url(/Sonic/baloon-star.png);
+}
+

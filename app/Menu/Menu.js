@@ -65,6 +65,10 @@ export class Menu extends Card
 		}
 
 		const bounds = this.tags.bound;
+
+		const element = this.findNext(null, bounds);
+
+		element && this.focus(element);
 	}
 
 	findNext(current, bounds, reverse = false)
@@ -203,7 +207,10 @@ export class Menu extends Card
 		if(item.children)
 		{
 			const prev = this.args.items;
-			const back = {callback: () => this.args.items = prev};
+			const back = {callback: () => {
+				this.args.items = prev
+				this.onNextFrame(()=>this.focusFirst());
+			}};
 
 			this.args.items = item.children;
 
@@ -259,6 +266,8 @@ export class Menu extends Card
 		const title = element.getAttribute('data-title');
 		const item  = this.args.items[ title ];
 
+		// console.log(element, this.args.items, title, item);
+
 		if(item.input === 'number')
 		{
 			item.setting = Number(item.setting) - 1;
@@ -293,7 +302,6 @@ export class Menu extends Card
 			if(next)
 			{
 				this.focus(next);
-				return;
 			}
 		}
 	}

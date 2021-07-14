@@ -51,6 +51,21 @@ export class MainMenu extends Menu
 							});
 						}
 					}
+					, 'Radical City Zone': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/empty-zone.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
 					, 'Sonic Control Tutorial': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
@@ -153,6 +168,21 @@ export class MainMenu extends Menu
 					, 'Flickie Test': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/flickie-test.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+					, 'Water Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/water-test.json' });
 
 							this.parent.args.networked = false;
 							this.parent.tileMap = tileMap;

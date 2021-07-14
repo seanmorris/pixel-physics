@@ -1,0 +1,13 @@
+.actor-steel-crate {
+	z-index: 1;
+}
+
+.actor-steel-crate .sprite.actor-steel-crate {
+	background-image: url(/custom/steel-crate.png);
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-breakable-block.actor-steel-crate .fragment {
+	background-image: url(/custom/steel-crate.png);
+}

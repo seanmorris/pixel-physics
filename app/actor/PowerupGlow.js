@@ -15,11 +15,14 @@ export class PowerupGlow extends PointActor
 
 	onAttached()
 	{
+		this.autoAttr.get(this.box)['data-closed'] = 'closed';
+
 		this.icon = new Tag('<div class = "powerup-icon">');
 		this.halo = new Tag('<div class = "powerup-halo">');
 
-		this.tags.sprite.appendChild(this.halo.node);
 		this.tags.sprite.appendChild(this.icon.node);
+
+		this.box.appendChild(this.halo.node);
 	}
 
 	collideA(other)
@@ -32,8 +35,8 @@ export class PowerupGlow extends PointActor
 			return;
 		}
 
-		this.onTimeout(125, () => this.tags.sprite.classList.add('closed'));
-		this.onTimeout(2500, () => this.tags.sprite.classList.remove('closed'));
+		this.onTimeout(125, () => this.args.closed = 'closed');
+		this.onTimeout(4500, () => this.args.closed = '');
 	}
 
 	get canStick() { return false; }

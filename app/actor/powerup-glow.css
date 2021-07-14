@@ -22,7 +22,7 @@
 	transition: top 0.3s ease-out;
 }
 
-.actor-powerup-glow .sprite .powerup-halo {
+.actor-powerup-glow .powerup-halo {
 	background: url(custom/powerup-glow.png);
 	background-size: 128px 100%;
 	background-repeat: repeat-x;
@@ -31,8 +31,12 @@
 	display: block;
 	height: 64px;
 	width: 64px;
+	position: relative;
+	top:  -64px;
+	left:  -32px;
+	z-index: 100;
 	transform-origin: bottom;
-	transform: perspective(50em) rotateX(-55deg) scale(0.667, 1);
+	transform: perspective(10em) rotateX(-45deg) scale(0.667, 1);
 	animation: powerup-glow-scroll linear infinite 10s forwards;
 	/*background-blend-mode: lighten;*/
 	opacity: 1;
@@ -43,15 +47,15 @@
 		, filter 0.75s 0.25s ease-out;
 }
 
-.actor-powerup-glow .sprite .powerup-icon {
+.actor-powerup-glow .powerup-icon {
 	animation: powerup-glow-bob ease-in-out infinite 1.75s alternate both;
 }
 
-.actor-powerup-glow .sprite.closed .powerup-icon {
+.actor-powerup-glow[data-closed="closed"] .powerup-icon {
 	top: -16px;
 }
 
-.actor-powerup-glow .sprite.closed .powerup-halo {
+.actor-powerup-glow[data-closed="closed"] .powerup-halo {
 	opacity: 1;
 	filter: blur(5px);
 	transform: perspective(50em) rotateX(0deg) scale(0, 0.5);
@@ -61,7 +65,7 @@
 		, filter 0.75s 0.25s ease-in;
 }
 
-.actor-powerup-glow .sprite.closed .powerup-icon {
+.actor-powerup-glow[data-closed="closed"] .powerup-icon {
 	transform: translate(-50%, -175%);
 }
 

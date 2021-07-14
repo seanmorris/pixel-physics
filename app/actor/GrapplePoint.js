@@ -14,6 +14,10 @@ export class GrapplePoint extends PointActor
 		this.args.height = 32;
 
 		this.args.type   = 'actor-item actor-grapple-point';
+
+		this.ignoreOthers = new Set;
+
+		this.args.gravity = 0.4;
 	}
 
 	onAttached()
@@ -37,59 +41,78 @@ export class GrapplePoint extends PointActor
 			return;
 		}
 
-		const tiedTo = this.args._tiedTo;
+		this.args.falling = true;
 
-		super.update();
+		const tiedTo = this.args._tiedTo;
 
 		const xDist = tiedTo.x - this.x;
 		const yDist = tiedTo.y - this.y;
 
-
 		const angle = Math.atan2(yDist, xDist);
 		const dist  = Math.sqrt(yDist**2 + xDist**2);
 
-		const maxDist = 64;
+		const maxDist = this.args.ropeLength || 64;
+
+		this.chain.style({'--distance':Math.min(dist, maxDist)});
 
 		this.args.groundAngle = -(angle + Math.PI / 2);
 
-		if(dist > maxDist)
+		const gravityAngle = angle + Math.PI;
+
+		if(dist >= maxDist)
 		{
-			const xNext = tiedTo.x - Math.cos(angle) * maxDist;
-			const yNext = tiedTo.y - Math.sin(angle) * maxDist;
-
-			if(Math.abs(xDist) <= 2)
+			if(this.hooked && this.hooked.xAxis)
 			{
-				this.args.ySpeed = 0;
-
-				this.args.x = tiedTo.x
+				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
+				{
+					this.args.xSpeed += this.hooked.xAxis * 0.5;
+				}
 			}
 
-			if(Math.abs(yDist) <= 2)
-			{
-				this.args.xSpeed = 0;
+			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
+			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
 
-				this.args.y = tiedTo.y;
-			}
+			this.args.xSpeed -= Math.cos(gravityAngle);
+			this.args.ySpeed -= Math.sin(gravityAngle);
 
 			this.args.x = xNext;
 			this.args.y = yNext;
+
+			this.viewport.setColCell(this);
+
+			if(this.x === tiedTo.x && !tiedTo.args.xSpeed)
+			{
+				this.args.ySpeed = 0;
+			}
 		}
+
+		super.update();
 
 		if(this.hooked)
 		{
 			this.hooked.args.x = this.x;
 			this.hooked.args.y = this.y + this.hooked.args.height;
 
-			if(tiedTo.args.xSpeed < 24)
+			if(this.hooked.xAxis>0)
 			{
-				tiedTo.args.xSpeed += 0.5;
-				tiedTo.args.ySpeed -= 0.5;
+				this.hooked.args.facing = 'right';
+				this.hooked.args.direction = +1;
+			}
+			else if(this.hooked.xAxis<0)
+			{
+				this.hooked.args.facing = 'left';
+				this.hooked.args.direction = -1;
 			}
 		}
 	}
 
 	collideB(other)
 	{
+		if(other.args.hangingFrom || this.ignoreOthers.has(other))
+		{
+			return; false;
+		}
+
 		if(this.args.ignore)
 		{
 			return false;
@@ -103,6 +126,9 @@ export class GrapplePoint extends PointActor
 		other.args.falling = true;
 
 		this.hooked = other;
+
+		this.args.xSpeed = other.args.xSpeed;
+		this.args.ySpeed = other.args.ySpeed;
 
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
@@ -123,14 +149,11 @@ export class GrapplePoint extends PointActor
 		{
 			const tiedTo = this.args._tiedTo;
 
-			// tiedTo.dispatchEvent(new CustomEvent('hooked'), {detail: {
-			// 	hook: this, subject: other
-			// }});
+			tiedTo.dispatchEvent(new CustomEvent('hooked'), {detail: {
+				hook: this, subject: other
+			}});
 
-			tiedTo.args.xSpeed += 2;
-			tiedTo.args.ySpeed += 2;
-
-			tiedTo.launched = true;
+			tiedTo.activate && tiedTo.activate();
 
 			const drop = () => {
 
@@ -139,19 +162,25 @@ export class GrapplePoint extends PointActor
 					return;
 				}
 
-				this.hooked.args.xSpeed = tiedTo.xSpeedLast ?? 0;
-				this.hooked.args.ySpeed = tiedTo.ySpeedLast ?? 0;
+				if(tiedTo.explode)
+				{
+					this.hooked.args.gSpeed = 0;
 
-				this.hooked.args.gSpeed = 0;
+					this.unhook();
+					tiedTo.explode();
+					this.args.ignore = 30;
+					this.args.float = 60;
 
-				this.unhook();
-				tiedTo.explode();
-				this.args.ignore = 30;
-				// this.viewport.actors.remove(this);
+					this.args.x = this.def.get('x');
+					this.args.y = this.def.get('y');
+
+					this.viewport.setColCell(this);
+
+				}
 			};
 
-			this.viewport.onFrameOut(65, drop);
-			// tiedTo.onRemove(drop);
+			this.viewport.onFrameOut(75, drop);
+			tiedTo.onRemove(drop);
 		}
 	}
 
@@ -166,11 +195,22 @@ export class GrapplePoint extends PointActor
 			return;
 		}
 
+		if(this.args._tiedTo)
+		{
+			const tiedTo = this.args._tiedTo;
+		}
+
 		hooked.args.ignore = hooked.args.float = 0;
 
 		hooked.args.y++;
 
+		hooked.args.xSpeed += this.xSpeedLast ?? 0;
+		hooked.args.ySpeed += this.ySpeedLast ?? 0;
+
 		hooked.args.hangingFrom = null;
 
+		this.ignoreOthers.add(hooked);
+
+		this.viewport.onFrameOut(15, () => this.ignoreOthers.delete(hooked));
 	}
 }

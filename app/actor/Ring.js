@@ -2,8 +2,6 @@ import { PointActor } from './PointActor';
 
 export class Ring extends PointActor
 {
-	float = -1;
-
 	constructor(...args)
 	{
 		super(...args);
@@ -17,16 +15,35 @@ export class Ring extends PointActor
 		this.args.float  = -1;
 		this.sample = new Audio('/Sonic/ring-collect.wav');
 		this.sample.volume = 0.15 + (Math.random() * -0.05);
+
+		this.args.gravity = 0.24 * 2;
+	}
+
+	update()
+	{
+		if((this.viewport.args.frameId) % 4)
+		{
+			this.noClip = true;
+		}
+		else if(!this.args.decoration)
+		{
+			this.noClip = false;
+		}
+
+		if(!this.args.falling)
+		{
+			// this.args.y += -6;
+			this.args.ySpeed = (-this.ySpeedLast *0.5);
+			this.args.xSpeed = (this.xSpeedLast *0.65);
+			this.args.falling = true;
+		}
+
+		super.update()
 	}
 
 	collideA(other)
 	{
-		if(this.public.gone)
-		{
-			return false;
-		}
-
-		if(!other.controllable && !other.occupant && !other.public.owner)
+		if(this.public.gone || this.args.ignore)
 		{
 			return false;
 		}
@@ -35,20 +52,38 @@ export class Ring extends PointActor
 
 		if(other.public.owner)
 		{
-			other.args.owner.args.rings += 1;
+			other = other.args.owner;
 		}
-		else if(other.occupant)
+
+		if(other.occupant)
 		{
-			other.occupant.args.rings += 1;
+			other = other.occupant;
 		}
-		else if(other.controllable)
+
+		if(!other.controllable && !other.occupant && !other.public.owner)
+		{
+			return false;
+		}
+
+		if(other.controllable)
 		{
 			other.args.rings += 1;
+
+			// const losable = new this.constructor;
+
+			// losable.viewport = this.viewport;
+
+			// losable.render(other.ringDoc);
 		}
 
 		this.args.gone = true;
 
 		this.viewport.auras.delete(this);
+
+		this.args.xSpeed = 0;
+		this.args.ySpeed = 0;
+		this.args.static = true;
+		this.args.float  = -1;
 
 		this.args.type = 'actor-item actor-ring collected';
 
@@ -79,21 +114,6 @@ export class Ring extends PointActor
 
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
-
-		// this.onTimeout(120, () => {
-		// 	viewport.actors.remove( this );
-		// 	this.remove();
-		// });
-
-		// viewport.spawn.add({
-		// 	time: Date.now() + 3500
-		// 	, frame:  this.viewport.args.frameId + 210
-		// 	, object: new Ring({x,y})
-		// });
-
-
-
-		// this.args.gone = true;
 	}
 
 	wakeUp()
@@ -102,7 +122,7 @@ export class Ring extends PointActor
 		{
 			this.args.x = this.def.get('x');
 			this.args.y = this.def.get('y');
-			this.args.float = -1;
+			// this.args.float = -1;
 
 			this.args.gone = this.restore = false;
 			this.args.type = 'actor-item actor-ring'

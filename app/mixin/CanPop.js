@@ -14,7 +14,7 @@ export const CanPop = {
 
 		if(other.controllable)
 		{
-			other.startle();
+			other.damage();
 		}
 
 		return false;

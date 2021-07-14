@@ -11,10 +11,11 @@
 
 .actor-item.actor-grapple-point .chain {
 	z-index: -100000;
-	height: calc(65px - calc(var(--height) * 1px));
+	height: calc(calc(1px * calc(var(--distance, 64)+0)) - calc(var(--height) * 1px));
 	width: 6px;
 	position: absolute;
 	bottom: calc(0px + calc(var(--height) * 1px));
 	left: calc(50% - 4px);
 	background-image: url(/Sonic/chain-link.png);
+	background-position: bottom;
 }

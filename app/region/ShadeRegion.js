@@ -19,7 +19,7 @@ export class ShadeRegion extends Region
 		, 'frost'
 		, 'eight-bit'
 		, 'corruption'
-		// , 'black-hole'
+		, 'black-hole'
 		, 'normal'
 	];
 

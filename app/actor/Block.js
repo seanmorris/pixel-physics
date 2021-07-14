@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Tag } from 'curvature/base/Tag';
+
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
 
@@ -13,7 +15,7 @@ export class Block extends PointActor
 		obj.args.height = objDef.height;
 		obj.args.tileId = objDef.gid;
 
-		obj.args.x = obj.originalX = objDef.x + Math.floor(objDef.width / 2);
+		// obj.args.x = obj.originalX = objDef.x + Math.floor(objDef.width / 2);
 		obj.args.y = obj.originalY = objDef.y;
 
 		return obj;
@@ -45,7 +47,31 @@ export class Block extends PointActor
 
 		this.ease = new QuintInOut(this.public.period);
 
-		this.ease.start();
+		// this.args.active = this.args.active ?? -1;
+		this.args.active = -1;
+
+		if(this.args.active)
+		{
+			this.ease.start();
+		}
+	}
+
+	onRendered(event)
+	{
+		super.onRendered(event);
+
+		if(this.screen)
+		{
+			return;
+		}
+
+		this.screen = new Tag(`<input type = "text" placeholder = "this effect is dynamic">`);
+		this.screen2 = new Tag(`<input tabindex = "0" type = "button" value = "submit">`);
+
+		// this.sprite.appendChild(this.screen.node);
+		// this.sprite.appendChild(this.screen2.node);
+
+		// this.screen.style({'pointer-events':'initial', 'z-index': 1000});
 	}
 
 	collideA(other, type)
@@ -53,6 +79,13 @@ export class Block extends PointActor
 		if(other instanceof this.constructor)
 		{
 			return false;
+		}
+
+		if(this.args.droop
+			&& other.args.ySpeed >= 0
+			&& other.args.standingOn !== this
+		){
+			return true;
 		}
 
 		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
@@ -84,16 +117,18 @@ export class Block extends PointActor
 			if(absSpeed > half)
 			{
 				this.args.y      = this.originalY;
-				other.args.y     = blockTop;
+				other.args.y     = blockTop + -1;
 				this.args.yForce = 0;
 				this.args.yLean  = 0;
 
 				return true;
 			}
 
-			const pos      = ((this.x + -other.x + -(speed * 2)) / half);
-			const droop    = Number(this.public.droop) * 0.9;
-			const absPos   = Math.abs(pos);
+			const pos    = ((this.x + -other.x + -(speed * 2)) / half);
+			const droop  = Number(this.public.droop) * 0.9;
+			const absPos = Math.abs(pos);
+
+			this.screen.placeholder = `drooping at ${pos.toFixed(2)}`;
 
 			if(absPos >= 0.9)
 			{
@@ -110,6 +145,16 @@ export class Block extends PointActor
 			this.args.yForce  = Math.max(this.args.yForce, -yForceMax);
 
 			this.droopPos = (this.x - other.x);
+
+			if(this.args.output)
+			{
+				const output = this.viewport.actorsById[ this.args.output ];
+
+				if(output)
+				{
+					output.args.content = this.screen.value;
+				}
+			}
 		}
 
 		if(this.public.platform)
@@ -204,6 +249,23 @@ export class Block extends PointActor
 		});
 	}
 
+	activate()
+	{
+		this.args.active = true;
+
+		this.viewport.onFrameOut(10, () => {
+			if(this.args.active)
+			{
+				this.ease.start();
+			}
+		});
+	}
+
+	deactivate()
+	{
+		this.args.active = false;
+	}
+
 	update()
 	{
 		if(this.public.collapse)
@@ -224,14 +286,24 @@ export class Block extends PointActor
 				this.nextEase = new Ease(this.public.period, {reverse: !reverse});
 			}
 
-			if(this.nextEase)
+			if(this.nextEase && this.args.active)
 			{
 				this.ease = this.nextEase;
 				this.nextEase = false;
 
-				this.viewport.onFrameOut(60, () => {
-					this.ease.start();
-				});
+				if(this.args.active === -1)
+				{
+					this.viewport.onFrameOut(60, () => {
+						if(this.args.active)
+						{
+							this.ease.start();
+						}
+					});
+				}
+				else
+				{
+					this.args.active = false;
+				}
 			}
 
 			if(this.public.oscillateX)
@@ -314,6 +386,8 @@ export class Block extends PointActor
 			{
 				this.args.float = -1;
 
+				this.noClip = true;
+
 				const distX = this.originalX - this.args.x;
 				const distY = this.originalY - this.args.y;
 
@@ -342,6 +416,7 @@ export class Block extends PointActor
 				if(this.public.x === this.originalX && this.args.y === this.originalY)
 				{
 					this.args.goBack = false;
+					this.noClip = false;
 				}
 
 				this.args.groundAngle = 0;
@@ -364,11 +439,12 @@ export class Block extends PointActor
 
 			if(!this.args.colliding && this.args.yForce && this.snapBack)
 			{
-				this.args.yForce *= 0.35;
+				this.args.yForce *= 0.15;
 			}
 
 			if(Math.abs(this.public.yForce) <= 1)
 			{
+				this.screen.placeholder = `flat.`;
 				this.args.yForce = 0;
 				this.snapBack = false;
 			}
@@ -376,7 +452,7 @@ export class Block extends PointActor
 			if(this.args.yForce !== this.args.yLean)
 			{
 				const diff = this.args.yLean - this.args.yForce;
-				const step = 9;
+				const step = 16;
 
 				this.args.yLean -= Math.sign(diff) * step;
 
@@ -392,6 +468,8 @@ export class Block extends PointActor
 			}
 			else
 			{
+				this.args.y = Math.ceil(this.originalY + this.public.yLean) || this.originalY;
+				this.droop(-1 * this.public.yLean, this.droopPos || 0);
 				this.onNextFrame(() => {
 					this.args.y = Math.ceil(this.originalY + this.public.yLean) || this.originalY;
 					this.droop(-1 * this.public.yLean, this.droopPos || 0);

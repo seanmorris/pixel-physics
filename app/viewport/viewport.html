@@ -7,7 +7,7 @@
 	</div>
 	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
 
-		<svg>
+		<svg height="100" width="100">
 		<defs>
 
 			<filter id="motionBlur">
@@ -158,7 +158,6 @@
 
 			<div class = "blurAngle" cv-ref = "blurAngle">
 			<div class = "blurDistance" cv-ref = "blurDistance">
-
 			<div class = "blurAngleCancel" cv-ref = "blurAngleCancel">
 				<div
 					cv-ref  = "background"
@@ -180,20 +179,26 @@
  				<div cv-ref = "regions" class = "viewport-actors"></div>
  			</div>
 
-	 		<div
-				cv-ref  = "foreground"
-				class   = "viewport-bg-layers"
-				cv-each = "fgLayers:layer"
-			>[[layer]]</div>
+			<div class = "blurAngle" cv-ref = "blurAngleFg">
+			<div class = "blurDistance" cv-ref = "blurDistanceFg">
+ 			<div class = "blurAngleCancel" cv-ref = "blurAngleCancelFg">
+				<div
+					cv-ref  = "foreground"
+					class   = "viewport-bg-layers"
+					cv-each = "fgLayers:layer"
+				>[[layer]]</div>
+			</div>
+			</div>
+			</div>
 
  		</div>
 
 
  		<div class = "viewport-overlay">
-			<div class = "hud">
-				<table>
+			<div class = "hud hud-top-right hud-table">
+				<!-- <table>
 
-					<!-- <tr>
+					<tr>
 						<td colspan = "2">[[char]]</td>
 					</tr>
 
@@ -215,6 +220,11 @@
 					<tr>
 						<td>[[labelY]]</td>
 						<td>[[yPos]]</td>
+					</tr>
+
+					<tr>
+						<td>[[labelGSpeed]]</td>
+						<td>[[gSpeed]]</td>
 					</tr>
 
 					<tr>
@@ -240,19 +250,9 @@
 					<tr>
 						<td>[[labelFrame]]</td>
 						<td>[[frame]]</td>
-					</tr> -->
+					</tr>
 
-					<!-- <tr>
-						<td>[[labelFps]]</td>
-						<td>[[fpsSprite]]</td>
-					</tr> -->
-
-					<!-- <tr>
-						<td>[[labelGSpeed]]</td>
-						<td>[[gSpeed]]</td>
-					</tr> -->
-
-				</table>
+				</table> -->
 			</div>
 
 			<div class = "hud hud-top-right">

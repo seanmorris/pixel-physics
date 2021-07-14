@@ -1,5 +1,13 @@
-.actor-wooden-crate .sprite {
+.actor-wooden-crate {
+	z-index: 1;
+}
+
+.actor-wooden-crate .sprite.actor-wooden-crate {
 	background-image: url(/Sonic/wooden-crate.png);
-	height: 60px;
-	width: 60px;
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-breakable-block.actor-wooden-crate .fragment {
+	background-image: url(/Sonic/wooden-crate.png);
 }
