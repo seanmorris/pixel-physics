@@ -1,0 +1,12 @@
+.actor-item.actor-spikes {
+	position: absolute;
+	height: 32px;
+}
+
+.actor-item.actor-spikes .sprite {
+	position: relative;
+	background-position: 0 0;
+	background-image: url(/Sonic/spikes-wide.png);
+	background-repeat: repeat-x;
+	height: 32px;
+}

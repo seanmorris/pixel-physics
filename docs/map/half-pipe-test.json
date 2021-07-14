@@ -254,15 +254,15 @@
          "tilewidth":32
         }, 
         {
-         "columns":8,
+         "columns":16,
          "firstgid":2889,
          "image":"chemical-plant-tiles.png",
-         "imageheight":256,
-         "imagewidth":256,
+         "imageheight":512,
+         "imagewidth":512,
          "margin":0,
          "name":"chemical-plant-tiles",
          "spacing":0,
-         "tilecount":64,
+         "tilecount":256,
          "tileheight":32,
          "tilewidth":32
         }],

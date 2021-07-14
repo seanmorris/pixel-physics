@@ -7,6 +7,7 @@ import { ShadeRegion } from './region/ShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
+import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
@@ -75,15 +76,20 @@ import { Chalmers } from './actor/Chalmers';
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
 import { Balloon } from './actor/Balloon';
+import { StarBalloon } from './actor/StarBalloon';
 
 import { Spinner } from './actor/Spinner';
 
 import { GrapplePoint } from './actor/GrapplePoint';
 import { WoodenCrate } from './actor/WoodenCrate';
+import { SteelCrate } from './actor/SteelCrate';
 import { Rocket } from './actor/Rocket';
 
 import { RoadBarrier } from './actor/RoadBarrier';
+import { Spikes } from './actor/Spikes';
 import { Cone } from './actor/Cone';
+
+import { Orb } from './actor/Orb';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -124,6 +130,7 @@ export const ObjectPalette = {
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
 	, 'rolling-region': RollingRegion
+	, 'grinding-region': GrindingRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
@@ -133,6 +140,7 @@ export const ObjectPalette = {
 	, 'water-jet':    WaterJet
 	, 'water-fall':   WaterFall
 	, 'balloon':      Balloon
+	, 'star-balloon': StarBalloon
 	, 'ring-monitor': RingMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
 	, 'sheild-water-monitor': SheildWaterMonitor
@@ -146,8 +154,11 @@ export const ObjectPalette = {
 	, 'rocket': Rocket
 	, 'spinner': Spinner
 	, 'wooden-crate': WoodenCrate
+	, 'steel-crate': SteelCrate
 	, 'road-barrier': RoadBarrier
+	, 'spikes': Spikes
 	, 'cone': Cone
+	, 'orb': Orb
 };
 
 

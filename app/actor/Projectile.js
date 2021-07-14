@@ -54,7 +54,10 @@ export class Projectile extends PointActor
 			return false;
 		}
 
-		other.controllable && other.startle();
+		if(this.args.owner && !this.args.owner.args.gone)
+		{
+			other.controllable && other.damage();
+		}
 
 		this.args.x += Math.cos(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
 		this.args.y += Math.sin(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);

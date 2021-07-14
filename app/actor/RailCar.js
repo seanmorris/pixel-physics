@@ -85,7 +85,7 @@ export class RailCar extends Vehicle
 			{
 				const viewport = this.viewport;
 
-				if(this.public.falling && !this.public.xSpeed)
+				if(this.public.falling && (!this.public.xSpeed && !this.public.ySpeed))
 				{
 					this.breakApart();
 				}
@@ -124,9 +124,11 @@ export class RailCar extends Vehicle
 
 				occupant.startle();
 
-				this.args.xSpeed  = -1 * this.originalSpeed;
 				this.args.falling = true;
-				occupant.args.xSpeed  = -4 * Math.sign(this.originalSpeed);
+
+				this.onNextFrame(()=>{
+					occupant.args.xSpeed  = -4 * Math.sign(this.gSpeedLast || this.xSpeedLast);
+				});
 			}
 
 			this.sprite.classList.add('breaking');

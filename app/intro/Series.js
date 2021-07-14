@@ -13,6 +13,8 @@ export class Series extends View
 		this.cards = args.cards;
 		this.args.cards = [];
 		this.args.card = null;
+
+		this.startTime = false;
 	}
 
 	play()
@@ -22,6 +24,8 @@ export class Series extends View
 		const play  = card.play();
 
 		this.args.cards.push(card);
+
+		this.startTime = Date.now();
 
 		return Promise.race([play, early, card.done]).then(done => {
 

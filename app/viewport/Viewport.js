@@ -86,10 +86,9 @@ export class Viewport extends View
 		this.meta = {};
 
 		this.callIntervals = new Map;
-		this.callFrames = new Map;
-		this.backdrops  = new Map;
-
-		this.willDetach = new Map;
+		this.callFrames    = new Map;
+		this.willDetach    = new Map;
+		this.backdrops     = new Map;
 
 		this.server = null;
 		this.client = null;
@@ -193,7 +192,7 @@ export class Viewport extends View
 			}
 		});
 
-		this.effects   = new Bag;
+		this.effects = new Bag;
 
 		this.maxCameraBound = 48;
 		this.cameraBound = 48;
@@ -395,11 +394,11 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 		this.listen(window, 'gamepaddisconnected', event => this.padRemoved(event));
 
-		this.colCellCache = new Map;
 		this.colCellDiv = this.args.width > this.args.height
 			? this.args.width * 0.75
 			: this.args.height * 0.75;
 
+		this.colCellCache = new Map;
 		this.colCells = new Map;
 
 		this.actorPointCache = new Map;
@@ -1181,13 +1180,17 @@ export class Viewport extends View
 			if(blur > 0.5)
 			{
 				this.tags.blurAngle.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
+				this.tags.blurAngleFg.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
 				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
+				this.tags.blurAngleCancelFg.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
 				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 1}, 0`);
 			}
 			else
 			{
 				this.tags.blurAngle.setAttribute('style', `transform:none;`);
+				this.tags.blurAngleFg.setAttribute('style', `transform:none;`);
 				this.tags.blurAngleCancel.setAttribute('style', `transform:none;`);
+				this.tags.blurAngleCancelFg.setAttribute('style', `transform:none;`);
 				this.tags.blur.removeAttribute('stdDeviation');
 			}
 
@@ -1197,7 +1200,9 @@ export class Viewport extends View
 		else
 		{
 			this.tags.blurAngle.setAttribute('style', `transform:none;`);
+			this.tags.blurAngleFg.setAttribute('style', `transform:none;`);
 			this.tags.blurAngleCancel.setAttribute('style', `transform:none;`);
+			this.tags.blurAngleCancelFg.setAttribute('style', `transform:none;`);
 			this.tags.blur.removeAttribute('stdDeviation');
 		}
 	}
@@ -1657,6 +1662,49 @@ export class Viewport extends View
 
 	update()
 	{
+		const controller = this.controlActor
+			? this.controlActor.controller
+			: this.controller;
+
+		if(!this.args.paused)
+		{
+			this.callFrameOuts();
+			this.callFrameIntervals();
+
+			this.args.frameId++;
+		}
+
+		if(this.args.paused !== false && !this.args.networked)
+		{
+			this.takeInput(controller);
+
+			this.args.pauseMenu.input(controller);
+
+			if(this.args.paused > 0)
+			{
+				this.args.paused--;
+			}
+
+			return;
+		}
+
+		if(!this.args.started)
+		{
+			this.startTime = Date.now();
+
+			if(controller)
+			{
+				this.takeInput(controller);
+
+				if(this.args.titlecard)
+				{
+					this.args.titlecard.input(controller);
+				}
+			}
+
+			return;
+		}
+
 		if(this.args.frameId % 15 === 0)
 		{
 			for(const [detachee, detacher] of this.willDetach)
@@ -1667,12 +1715,8 @@ export class Viewport extends View
 			}
 		}
 
-		this.callFrameOuts();
-		this.callFrameIntervals();
-
-		this.args.frameId++;
-
 		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
+		this.args.frame.args.value = this.args.frameId;
 
 		const time  = (Date.now() - this.startTime) / 1000;
 		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
@@ -1683,39 +1727,6 @@ export class Viewport extends View
 		if(neg)
 		{
 			minutes = Number(minutes);
-		}
-
-		const controller = this.controlActor
-			? this.controlActor.controller
-			: this.controller;
-
-		if(!this.args.started)
-		{
-			this.takeInput(controller);
-
-			this.startTime = Date.now();
-
-			if(this.args.titlecard)
-			{
-				this.args.titlecard.input(controller);
-			}
-
-			return;
-		}
-		else if(this.args.paused !== false && !this.args.networked)
-		{
-			this.takeInput(controller);
-
-			this.args.pauseMenu.input(controller);
-
-			if(this.args.paused > 0)
-			{
-				this.args.paused--;
-			}
-			else
-			{
-				return;
-			}
 		}
 
 		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
@@ -1806,10 +1817,10 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
-				if(!this.actorIsOnScreen(actor))
-				{
-					continue;
-				}
+				// if(!this.actorIsOnScreen(actor))
+				// {
+				// 	continue;
+				// }
 
 				if(this.updated.has(actor))
 				{
@@ -1862,21 +1873,21 @@ export class Viewport extends View
 				// this.coins.args.value = this.controlActor.args.coins;
 				// this.args.hasCoins    = !!this.controlActor.args.coins;
 
-				// this.args.xPos.args.value     = Math.round(this.controlActor.x);
-				// this.args.yPos.args.value     = Math.round(this.controlActor.y);
+				this.args.xPos.args.value     = Math.round(this.controlActor.x);
+				this.args.yPos.args.value     = Math.round(this.controlActor.y);
 
-				// this.args.ground.args.value   = this.controlActor.args.landed;
-				// this.args.gSpeed.args.value   = this.controlActor.args.gSpeed.toFixed(2);
+				this.args.ground.args.value   = this.controlActor.args.landed;
+				this.args.gSpeed.args.value   = Number(this.controlActor.args.gSpeed).toFixed(2);
 
-				// this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
-				// this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+				this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
+				this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
 
-				// this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
-				// this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+				this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
+				this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
 				const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
-				// this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+				this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
 			}
 		}
 
@@ -2345,6 +2356,22 @@ export class Viewport extends View
 
 		this.controlActor && this.actors.remove(this.controlActor);
 
+		this.callFrames.clear();
+		this.callIntervals.clear();
+		this.collisions.clear();
+		this.colCellCache.clear();
+		this.colCells.clear();
+
+		for(const effect of this.effects.list)
+		{
+			effect && this.effects.remove(effect);
+		}
+
+		for(const particle of this.particles.list)
+		{
+			particle && this.particles.remove(particle);
+		}
+
 		this.spawn.clear();
 		this.actorPointCache.clear();
 
@@ -2353,7 +2380,7 @@ export class Viewport extends View
 
 		this.args.populated = false;
 		this.controlActor   = null;
-		this.args.frameId   = -1;
+		// this.args.frameId   = -1;
 
 		this.tags.viewport.focus();
 	}
@@ -2407,10 +2434,6 @@ export class Viewport extends View
 
 		this.args.layers = [];
 		this.args.fgLayers = [];
-
-		this.args.titlecard = new Series({cards: this.homeCards()}, this);
-
-		this.args.titlecard.play();
 	}
 
 	introCards()
@@ -2527,7 +2550,7 @@ export class Viewport extends View
 
 		this.server = server;
 
-		console.log(server);
+		// console.log(server);
 
 		return server;
 	}
@@ -2587,7 +2610,7 @@ export class Viewport extends View
 
 		this.client = client;
 
-		console.log(client);
+		// console.log(client);
 
 		return client;
 	}

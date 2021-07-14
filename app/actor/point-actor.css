@@ -133,8 +133,9 @@
 
 .actor-item.actor-ring .sprite {
 	background-image: url(/Sonic/rings.png);
-	--sprite-offset-x: -16px;
-	--sprite-offset-y: -148px;
+
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -152px;
 	animation: ringSpin steps(4) infinite;
 	animation-duration: calc(1ms * 350);
 	transition: opacity 0.25s ease-in;

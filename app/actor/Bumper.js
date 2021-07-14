@@ -35,9 +35,8 @@ export class Bumper extends PointActor
 
 	collideA(other)
 	{
-		if(this.ignores.has(this.ignores))
+		if(this.ignores.has(other))
 		{
-			this.ignores.set(other, 16);
 			return;
 		}
 
@@ -50,18 +49,20 @@ export class Bumper extends PointActor
 				this.sample.play();
 			}
 
-			other.args.xSpeed *= -1;
-			other.args.ySpeed *= -1;
+			const xDiff = this.x - other.x;
+			const yDiff = this.y - other.y;
 
-			if(Math.abs(other.args.xSpeed) < 7)
-			{
-				other.args.xSpeed = 7 * Math.sign(other.args.xSpeed);
-			}
+			const speed = Math.max(12, Math.sqrt(other.args.xSpeed ** 2, other.args.ySpeed ** 2));
 
-			if(Math.abs(other.args.ySpeed) < 7)
-			{
-				other.args.ySpeed = 7 * Math.sign(other.args.ySpeed);
-			}
+			const angle = Math.atan2(yDiff, xDiff);
+
+			const otherRadius = other.args.width / 2;
+
+			other.args.x = this.x// + Math.cos(angle) * 10;
+			other.args.y = this.y// + Math.sin(angle) * 10;
+
+			other.args.xSpeed = -speed * Math.cos(angle);
+			other.args.ySpeed = -speed * Math.sin(angle);
 		}
 		else
 		{
@@ -73,7 +74,7 @@ export class Bumper extends PointActor
 			}
 		}
 
-		this.ignores.set(other, 16);
+		this.ignores.set(other, 4);
 	}
 
 	get canStick() { return false; }

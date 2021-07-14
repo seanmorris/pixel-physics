@@ -2,8 +2,6 @@ import { Vehicle } from './Vehicle';
 
 export class EggMobile extends Vehicle
 {
-	float = -1;
-
 	constructor(...args)
 	{
 		super(...args);
@@ -14,8 +12,8 @@ export class EggMobile extends Vehicle
 		this.args.decel     = 0.8;
 
 		this.args.gSpeedMax = 15;
-		this.args.xSpeedMax = 25;
-		this.args.ySpeedMax = 30;
+		this.args.xSpeedMax = 45;
+		this.args.ySpeedMax = 45;
 
 		this.args.jumpForce = 12;
 		this.args.gravity   = 0.6;
@@ -27,6 +25,7 @@ export class EggMobile extends Vehicle
 
 		this.args.falling = true;
 		this.args.flying = true;
+		this.args.float = -1;
 	}
 
 	update()
@@ -36,7 +35,7 @@ export class EggMobile extends Vehicle
 			this.args.y--;
 		}
 
-		if(Math.abs(this.yAxis) > 0.1)
+		if(Math.abs(this.yAxis) > 0.5)
 		{
 			if(Math.abs(this.args.ySpeed) < this.args.ySpeedMax)
 			{
@@ -84,6 +83,10 @@ export class EggMobile extends Vehicle
 				this.args.xSpeed = Math.ceil(this.args.xSpeed * this.args.decel);
 			}
 		}
+		// else
+		// {
+		// 	this.args.xSpeed = Math.ceil(this.args.xSpeed * this.args.decel);
+		// }
 
 		if(!this.occupant)
 		{
@@ -95,6 +98,8 @@ export class EggMobile extends Vehicle
 		this.args.flying  = true;
 
 		this.args.mode = 0;
+
+		this.args.cameraMode = 'aerial';
 
 		super.update();
 

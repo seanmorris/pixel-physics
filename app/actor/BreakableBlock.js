@@ -1,4 +1,6 @@
 import { Block } from './Block';
+import { Orb } from './Orb';
+
 import { Tag  } from 'curvature/base/Tag';
 
 export class BreakableBlock extends Block
@@ -45,22 +47,30 @@ export class BreakableBlock extends Block
 			return false;
 		}
 
+		if(!(other.args.rolling && other.args.mode))
+		{
+			if(other.args.falling || (!other.args.falling && type === 0))
+			{
+				return true;
+			}
+		}
+
 		if(other instanceof Block && (other.public.float || this.public.float))
 		{
 			return false;
 		}
 
-		if(!other.isVehicle && !other.controllable)
+		if(!(other instanceof Orb) && !other.isVehicle && !other.controllable && !other.args.rolling)
 		{
 			return !this.broken;
 		}
 
-		if(!other.falling && !other.isVehicle && !other.public.gSpeed && !other.public.xSpeed && !other.public.ySpeed)
+		if(!(other instanceof Orb) && !other.falling && !other.isVehicle && !other.public.gSpeed && !other.public.xSpeed && !other.public.ySpeed)
 		{
 			return !this.broken;
 		}
 
-		if(other.isVehicle || other.public.rolling || other.public.jumping || other.public.dashed)
+		if((other instanceof Orb) || other.isVehicle || other.public.rolling || other.public.jumping || other.public.dashed)
 		{
 			const top = this.y - this.public.height;
 
@@ -70,34 +80,9 @@ export class BreakableBlock extends Block
 				other.args.y = top;
 			}
 
-			this.box.classList.add('broken');
+			this.onNextFrame(()=>this.break(other));
 
-			this.box.classList.add('breaking');
-
-			this.viewport.onFrameOut(4, () => {
-				this.box.classList.remove('breaking');
-			})
-
-			if(other.public.mode % 2 === 0)
-			{
-				const x = other.public.xSpeed || other.public.gSpeed;
-
-				if(other.isVehicle)
-				{
-					this.fragmentsX.style({'--xSpeed': Math.round(x * 1.1 )});
-				}
-				else
-				{
-					this.fragmentsX.style({'--xSpeed': Math.round(x)});
-				}
-			}
-
-			this.broken = true;
-
-			if(!this.refresher)
-			{
-				this.refresher = true;
-			}
+			return false;
 		}
 
 		return !this.broken;
@@ -106,8 +91,42 @@ export class BreakableBlock extends Block
 	sleep()
 	{
 		this.box.classList.remove('broken');
+		this.args.x = this.def.get('x');
+		this.args.y = this.def.get('y');
 
 		this.broken = false;
+	}
+
+	break(other)
+	{
+		this.box.classList.add('broken');
+
+		this.box.classList.add('breaking');
+
+		this.viewport.onFrameOut(4, () => {
+			this.box.classList.remove('breaking');
+		});
+
+		if(other && other.public.mode % 2 === 0)
+		{
+			const x = other.public.xSpeed || other.public.gSpeed;
+
+			if(other.isVehicle)
+			{
+				this.fragmentsX.style({'--xSpeed': Math.round(x * 1.1 )});
+			}
+			else
+			{
+				this.fragmentsX.style({'--xSpeed': Math.round(x)});
+			}
+		}
+
+		if(!this.refresher)
+		{
+			this.refresher = true;
+		}
+
+		this.broken = true;
 	}
 
 	get solid() { return !this.broken; }

@@ -16,19 +16,19 @@ export class Balloon extends PointActor
 		this.args.airAngle = -Math.PI;
 	}
 
-	update()
-	{
-		if(this.attachedTo)
-		{
-			const other = this.attachedTo;
-			const attach = other.rotatePoint(0, other.args.height + 8);
+	// update()
+	// {
+	// 	if(this.attachedTo)
+	// 	{
+	// 		const other = this.attachedTo;
+	// 		const attach = other.rotatePoint(0, other.args.height + 8);
 
-			this.args.x = other.x + attach[0];
-			this.args.y = other.y + attach[1];
+	// 		this.args.x = other.x + attach[0];
+	// 		this.args.y = other.y + attach[1];
 
-			this.args.airAngle = other.realAngle;
-		}
-	}
+	// 		this.args.airAngle = other.realAngle;
+	// 	}
+	// }
 
 	collideA(other)
 	{
@@ -37,7 +37,7 @@ export class Balloon extends PointActor
 			return;
 		}
 
-		this.attachedTo = other;
+		// this.attachedTo = other;
 	}
 
 	// get solid() { return false; }

@@ -12,6 +12,4 @@ export class Cone extends PointActor
 	}
 
 	get solid() { return false; }
-	get isEffect() { return true; }
-	get isGhost() { return true; }
 }
