@@ -1,0 +1,7 @@
+.particle-stars {
+	background-image: url(/Sonic/invincibility-stars.png);
+	background-position-x:  calc(var(--frame) * -64px);
+	background-position-y:  calc(var(--frame) * -0px);
+	width: 64px;
+	height: 64px;
+}

@@ -1,7 +1,29 @@
-.actor-item.actor-star-balloon {
+.actor-item.actor-balloon.actor-star-balloon {
+	z-index: 1;
+}
+
+.actor-item.actor-balloon.actor-star-balloon .sprite {
+	position: absolute;
+	z-index: 1000;
 }
 
 .actor-item.actor-balloon.actor-star-balloon .sprite:before {
 	background-image: url(/Sonic/baloon-star.png);
+	background-repeat: no-repeat;
 }
 
+.actor-item.actor-balloon.actor-star-balloon .sprite:before {
+}
+
+.actor-item.actor-balloon.actor-star-balloon .sprite.popped:before {
+	animation: star-balloon-pop steps(4) 1 100ms forwards;
+}
+
+@keyframes star-balloon-pop {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -128px 0;
+	}
+}

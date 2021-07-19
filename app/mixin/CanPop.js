@@ -52,6 +52,8 @@ export const CanPop = {
 
 		if(other.controllable && typeof this.effect === 'function')
 		{
+			other.args.score += 100;
+
 			this.effect(other);
 		}
 

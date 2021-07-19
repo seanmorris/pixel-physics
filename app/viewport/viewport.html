@@ -195,8 +195,8 @@
 
 
  		<div class = "viewport-overlay">
-			<div class = "hud hud-top-right hud-table">
-				<!-- <table>
+			<div class = "hud hud-top-right hud-table"  cv-if = "debugOsd">
+				<table>
 
 					<tr>
 						<td colspan = "2">[[char]]</td>
@@ -252,10 +252,10 @@
 						<td>[[frame]]</td>
 					</tr>
 
-				</table> -->
+				</table>
 			</div>
 
-			<div class = "hud hud-top-right">
+			<div class = "hud hud-top-right" cv-if = "showHud">
 
 				<div class = "char-hud">
 					[[char]]
@@ -264,7 +264,7 @@
 
 			</div>
 
-			<div class = "hud hud-bottom-right">
+			<div class = "hud hud-bottom-right" cv-if = "showHud">
 
 				<div class ="sheild-hud [[currentSheild]] [[hasElectric]] [[hasFire]] [[hasWater]]">
 					<div class = "sheild-icon sheild-electric"></div>
@@ -273,25 +273,53 @@
 					<div class = "sheild-icon sheild-water"></div>
 				</div>
 
-				<table>
-					<tr>
-						<td>[[labelFps]]</td>
-						<td>[[fpsSprite]]</td>
-					</tr>
-				</table>
-
+				<span class = "contents" cv-if = "showFps">
+					<table>
+						<tr>
+							<td>[[labelFps]]</td>
+							<td>[[fpsSprite]]</td>
+						</tr>
+					</table>
+				</span>
 			</div>
 
-			<div class = "hud hud-dark hud-bottom-left">
+			<div class = "hud hud-dark hud-bottom-left" cv-if = "showHud">
 				[[nowPlaying]]
 				[[trackName]]
 			</div>
 
-			<div class = "hud hud-top-left">
-				<div class = "timer">[[timer]]</div>
-				<div cv-if = "hasRings">[[rings]]</div>
-				<div cv-if = "hasCoins">[[coins]]</div>
-				<div cv-if = "hasEmeralds">[[emeralds]]</div>
+			<div class = "hud hud-top-left"  cv-if = "showHud">
+				<div>[[scoreLabel]] [[score]]</div>
+				<div>[[timerLabel]] [[timer]]</div>
+				<div>[[ringLabel]] [[rings]]</div>
+			</div>
+
+			<div class = "hud hud-dark hud-centered" cv-if = "actClear">
+				<table>
+					<tr><td colspan="2">
+						<div class = "centered">[[actClearLabel]]</div>
+					</td></tr>
+					<tr>
+						<td>[[timeBonusLabel]]</td>
+						<td>[[timeBonus]]</td>
+					</tr>
+					<tr>
+						<td>[[ringBonusLabel]]</td>
+						<td>[[ringBonus]]</td>
+					</tr>
+					<!-- <tr>
+						<td>[[perfectBonusLabel]]</td>
+						<td>[[perfectBonus]]</td>
+					</tr> -->
+					<tr>
+						<td>[[speedBonusLabel]]</td>
+						<td>[[speedBonus]]</td>
+					</tr>
+					<tr>
+						<td>[[totalBonusLabel]]</td>
+						<td>[[totalBonus]]</td>
+					</tr>
+				</table>
 			</div>
 
 			<section class = "full" cv-if = "paused">[[pauseMenu]]</section>
@@ -316,7 +344,7 @@
 
 		</div>
 
-		<div class = "quick-controls">
+		<div class = "quick-controls" cv-if = "shortcuts">
 
 			[[muteSwitch]]
 
@@ -329,92 +357,4 @@
 
 	</div>
 
-	<div class = "viewport-caption [[inputType]]">
-
-		<div class = "top-bar">
-
-			<div class = "buttons">
-
-				<button cv-on = "click:fullscreen(event)">fullscreen</button>
-
-				<span cv-if = "!isRecording">
-					<span cv-if = "!isReplaying">
-						<button cv-on = "click:reset(event)">reset</button>
-						<button cv-on = "click:record(event)">record</button>
-						<span cv-if = "hasRecording">
-							<button cv-on = "click:playback(event)">playback</button>
-						</span>
-					</span>
-				</span>
-
-				<span cv-if = "isReplaying">
-					<button cv-on = "click:stop(event)">stop</button>
-				</span>
-
-				<span cv-if = "isRecording">
-					<button cv-on = "click:stop(event)">stop</button>
-				</span>
-
-			</div>
-
-			<a class = "github" cv-link = "https://github.com/seanmorris/pixel-physics">
-				<span class = "github-icon"></span>
-				view the project on github
-			</a>
-
-			<label class = "change-character">
-
-				change character:
-
-				<select cv-each = "controllable:obj:name" cv-ref = "currentActor" cv-on = "change(event)">
-					<option value = "[[name]]">[[name]]</option>
-				</select>
-
-			</label>
-
-		</div>
-
-		<div>
-
-			<div>
-				<b>controls: [[inputName]]</b> [[controlCard]]
-			</div>
-
-			<!-- <div>
-				<b>moves:</b> [[moveCard]]
-			</div> -->
-
-			<div class = "right">
-
-				<b>options:</b>
-
-				<label>
-					<span>enable audio</span>
-					<input type = "checkbox" cv-bind = "audio" value = "1" />
-				</label>
-
-				<label>
-					<span>max fps</span>
-					<input type = "number" cv-bind = "maxFps" value = "100" />
-				</label>
-
-				<label>
-					<span>scale:</span>
-					<form>
-						<input type = "number" cv-bind = "scale" min = "1" max = "5" />
-					</form>
-				</label>
-
-			</div>
-		</div>
-	</div>
-
 </div>
-
-
-
-
-<div class = "sun"></div>
-<div class = "clouds-a"></div>
-<div class = "clouds-b"></div>
-

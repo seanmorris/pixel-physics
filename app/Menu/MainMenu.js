@@ -208,9 +208,7 @@ export class MainMenu extends Menu
 
 			}
 
-			, Settings: SettingsMenu(parent)
-
-			, 'Direct Connect': {
+			, '2 Player P2P': {
 
 				children: {
 
@@ -243,6 +241,7 @@ export class MainMenu extends Menu
 
 				available: 'unavailable'
 			}
+			, Settings: SettingsMenu(parent)
 		};
 
 		this.bgm = new Audio('/Sonic/s3k-competition.mp3');

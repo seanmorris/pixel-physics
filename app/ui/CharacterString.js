@@ -25,30 +25,30 @@ export class CharacterString extends View
 
 		this.args.bindTo('value', v => {
 
-			if(Math.abs(v) < low)
-			{
-				this.args.color = '';
-			}
-			else if(Math.abs(v) > low)
-			{
-				this.args.color = 'yellow';
-			}
-			else if(Math.abs(v) > med)
-			{
-				this.args.color = 'orange';
-			}
-			else if(Math.abs(v) > high)
-			{
-				this.args.color = 'red';
-			}
+			// if(Math.abs(v) < low)
+			// {
+			// 	this.args.color = '';
+			// }
+			// else if(Math.abs(v) > low)
+			// {
+			// 	this.args.color = 'yellow';
+			// }
+			// else if(Math.abs(v) > med)
+			// {
+			// 	this.args.color = 'orange';
+			// }
+			// else if(Math.abs(v) > high)
+			// {
+			// 	this.args.color = 'red';
+			// }
 			// else if(this.args.flash > 0)
 			// {
 			// 	this.args.color = this.args.flashColor;
 			// }
-			else
-			{
-				this.args.color = '';
-			}
+			// else
+			// {
+			// 	this.args.color = '';
+			// }
 
 			const chars = String(v).split('').map((pos,i) => {
 

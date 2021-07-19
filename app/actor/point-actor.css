@@ -20,12 +20,14 @@
 	padding: 2px;
 	position: absolute;
 	bottom: calc(1px * var(--height));
-	transform: rotateY(0deg);
+	left: 50%;
+	transform: translate(-50%) rotateY(0deg);
 	transition: transform 0.125s ease-out;
+	flex-direction: column;
 }
 
 .point-actor[data-facing="left"] .labels {
-	transform: rotateY(180deg);
+	transform: translate(-50%) rotateY(180deg);
 }
 
 .point-actor[data-mode="1"] .labels {

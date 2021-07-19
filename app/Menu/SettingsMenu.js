@@ -24,6 +24,34 @@ export const SettingsMenu = (parent) => { return {
 					, max: 15
 					, min: 0
 				}
+
+				, 'Display HUD': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable the HUD'
+					, set: value => parent.settings.showHud = value
+					, get: () => parent.settings.showHud
+				}
+
+				, 'Debug OSD': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable debug OSD'
+					, set: value => parent.settings.debugOsd = value
+					, get: () => parent.settings.debugOsd
+				}
+
+				, 'FPS Meter': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable the FPS meter'
+					, set: value => parent.settings.showFps = value
+					, get: () => parent.settings.showFps
+				}
+
+				, 'Mute/Fullscreen': {
+					input: 'boolean'
+					, subtext: 'Show the mute & fullscreen controls in the bottom right.'
+					, set: value => parent.settings.shortcuts = value
+					, get: () => parent.settings.shortcuts
+				}
 			}
 		}
 

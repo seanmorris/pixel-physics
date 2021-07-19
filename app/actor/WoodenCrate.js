@@ -18,7 +18,8 @@ export class WoodenCrate extends BreakableBlock
 	{
 		if(type === 0 && other.controllable)
 		{
-			return super.collideA(other, type);
+			return true;
+			// return super.collideA(other, type);
 		}
 
 		if(type !== 1 && type !== 3 || other.y <= this.y - this.args.height)

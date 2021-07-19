@@ -9,6 +9,7 @@ import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
+import { CorkscrewRegion } from './region/CorkscrewRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -19,6 +20,7 @@ import { Block }          from './actor/Block';
 
 import { Monitor }   from './actor/Monitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
+import { SheildStarMonitor } from './actor/monitor/SheildStarMonitor';
 import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
 import { SheildWaterMonitor } from './actor/monitor/SheildWaterMonitor';
 import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
@@ -83,11 +85,18 @@ import { Spinner } from './actor/Spinner';
 import { GrapplePoint } from './actor/GrapplePoint';
 import { WoodenCrate } from './actor/WoodenCrate';
 import { SteelCrate } from './actor/SteelCrate';
+import { UnbreakableCrate } from './actor/UnbreakableCrate';
 import { Rocket } from './actor/Rocket';
 
 import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
 import { Cone } from './actor/Cone';
+
+import { Signpost } from './actor/Signpost';
+
+import { RedEyeJet } from './actor/RedEyeJet';
+import { MiniMace } from './actor/MiniMace';
+import { Magnet	 } from './actor/Magnet';
 
 import { Orb } from './actor/Orb';
 
@@ -129,6 +138,7 @@ export const ObjectPalette = {
 	, 'lava-region':  LavaRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
+	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
 	, 'grinding-region': GrindingRegion
 	, 'ring':         Ring
@@ -143,6 +153,7 @@ export const ObjectPalette = {
 	, 'star-balloon': StarBalloon
 	, 'ring-monitor': RingMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
+	, 'sheild-star-monitor': SheildStarMonitor
 	, 'sheild-water-monitor': SheildWaterMonitor
 	, 'sheild-electric-monitor': SheildElectricMonitor
 	, 'flickie': Flickie
@@ -155,10 +166,13 @@ export const ObjectPalette = {
 	, 'spinner': Spinner
 	, 'wooden-crate': WoodenCrate
 	, 'steel-crate': SteelCrate
+	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
+	, 'signpost': Signpost
+	, 'red-eye-jet': RedEyeJet
+	, 'mini-mace': MiniMace
+	, 'magnet': Magnet
 	, 'spikes': Spikes
 	, 'cone': Cone
 	, 'orb': Orb
 };
-
-

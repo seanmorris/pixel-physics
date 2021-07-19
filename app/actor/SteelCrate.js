@@ -35,7 +35,7 @@ export class SteelCrate extends BreakableBlock
 
 		if(type === 0 && other.controllable)
 		{
-			return super.collideA(other, type);
+			return true;
 		}
 
 		if(type !== 1 && type !== 3 || other.y <= this.y - this.args.height)

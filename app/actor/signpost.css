@@ -1,0 +1,50 @@
+.actor-item.actor-signpost {
+	z-index: -1 !important;
+}
+
+.actor-item.actor-signpost .labels {
+	display: flex !important;
+	transform: translate(-50%) rotateY(0deg);
+	left: 50%;
+}
+
+.actor-item.actor-signpost[data-facing="left"] .labels {
+	transform: translate(-50%) rotateY(180deg);
+}
+
+.actor-item.actor-signpost .sprite {
+	background-image: url(/Sonic/signpost.png);
+	width: 48px;
+	height: 48px;
+	/*--spinTime:  1280ms;*/
+	--spinTime:  128ms;
+	/*background-position-x: calc(-48px * 4);*/
+}
+
+.actor-item.actor-signpost[data-active=true] .sprite {
+	animation: signpost-spin steps(8) infinite var(--spinTime) forwards
+		, signpost-roll steps(6) infinite calc(var(--spinTime) * 18) forwards reverse;
+}
+
+.actor-item.actor-signpost[data-active=true][data-cleared-by=sonic] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+}
+
+@keyframes signpost-spin {
+	from{
+		background-position-x: 0;
+	}
+	to{
+		background-position-x: -384px;
+	}
+}
+
+@keyframes signpost-roll {
+	from{
+		background-position-y: 0;
+	}
+	to{
+		background-position-y: -288px;
+	}
+}

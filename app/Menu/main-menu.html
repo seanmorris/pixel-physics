@@ -18,16 +18,16 @@
 						<span class = "title">[[title]]</span>
 						<span class = "subtext">[[item.subtext]]</span>
 						<span cv-if = "item.input" cv-is = "string">
-							: <input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" />
+							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "number">
-							: <input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" />
+							: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "boolean">
-							: <select cv-on = "mousedown:toggle(event, item);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
+							: <span data-wraps = "select"><select cv-on = "mousedown:toggle(event, item);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
 								<option value = "1">on</option>
 								<option value = "0">off</option>
-							</select>
+							</select></span>
 						</span>
 					</li>
 

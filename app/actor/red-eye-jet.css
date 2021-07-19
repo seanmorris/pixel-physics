@@ -1,0 +1,120 @@
+.actor-red-eye-jet {
+	z-index: 100;
+}
+
+.actor-item.actor-red-eye-jet[data-animation=damaged] > * {
+	animation: red-eye-jet-fire-damage steps(1) 20 45ms forwards
+}
+
+.actor-item.actor-red-eye-jet .sprite {
+	background-image: url(/custom/red-eye-jet-body.png);
+}
+
+.actor-item.actor-red-eye-jet .boost-fire {
+	background-image: url(/Sonic/red-eye-jet-fire.png);
+	position: absolute;
+	width: 22px;
+	height: 32px;
+	transform-origin: top;
+	animation: red-eye-jet-fire-spin steps(3) infinite 18ms forwards
+		, red-eye-jet-fire-flicker steps(3) infinite 1ms forwards;
+}
+
+.actor-item.actor-red-eye-jet[data-phase=exploding] .boost-fire,
+.actor-item.actor-red-eye-jet[data-phase=dead] .boost-fire {
+	display: none;
+}
+
+.actor-item.actor-red-eye-jet .boost-fire-left {
+	left: 21px;
+}
+
+.actor-item.actor-red-eye-jet .boost-fire-right {
+	left: -43px;
+}
+
+.orange-eye {
+	position: absolute;
+	background-image: url(/custom/orange-eye.png);
+	transition: transform 0.125s ease-out;
+	width:  24px;
+	height: 24px;
+	top:   -32px;
+	left:  -12px;
+}
+
+.actor-item.actor-red-eye-jet[data-looking=left] .orange-eye {
+	background-position-x: -24px;
+	transform: translateX(-6px);
+}
+
+.actor-item.actor-red-eye-jet[data-looking=right] .orange-eye {
+	background-position-x: -48px;
+	transform: translateX(6px);
+}
+
+.actor-item.actor-red-eye-jet[data-looking=far-left] .orange-eye {
+	background-position-x: -24px;
+	transform: translateX(-12px);
+}
+
+.actor-item.actor-red-eye-jet[data-looking=far-right] .orange-eye {
+	background-position-x: -48px;
+	transform: translateX(12px);
+}
+
+.actor-item.actor-red-eye-jet[data-ducking=false] .orange-eye {
+	transition: transform 0.2s ease-out;
+	transform: translateY(6px);
+	background-position-y: -96px;
+}
+
+.actor-item.actor-red-eye-jet[data-looking=left][data-ducking=false] .orange-eye {
+	transition: transform 0.2s ease-out 0.2s;
+	transform: translateY(6px) translateX(4px);
+}
+
+.actor-item.actor-red-eye-jet[data-looking=right][data-ducking=false] .orange-eye {
+	transition: transform 0.2s ease-out 0.2s;
+	transform: translateY(6px) translateX(-4px);
+}
+
+.actor-item.actor-red-eye-jet[data-phase="exploding"] .orange-eye,
+.actor-item.actor-red-eye-jet[data-animation="damaged"] .orange-eye {
+	transition: transform 0.1s ease-out  !important;
+	transform: translateY(-6px)  !important;
+	background-position-y: -96px !important;
+}
+
+@keyframes red-eye-jet-fire-spin {
+	from{
+		background-position-x: 0;
+	}
+	to{
+		background-position-x: -66px;
+	}
+}
+
+@keyframes red-eye-jet-fire-flicker {
+	from{
+		transform: scaleY(0);
+	}
+	50%{
+		transform: scaleY(1);
+	}
+	to{
+		transform: scaleY(1);
+	}
+}
+
+@keyframes red-eye-jet-fire-damage {
+	from{
+		filter: hue-rotate(0deg) invert(0);
+	}
+	50%{
+		filter:  invert(1) hue-rotate(180deg);
+	}
+	to{
+		filter: hue-rotate(0deg) invert(0);
+	}
+}

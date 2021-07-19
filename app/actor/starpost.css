@@ -47,3 +47,8 @@
 	height: 48px;
 	width: 16px;
 }
+
+.actor-item.actor-star-post .labels {
+	display: flex !important;
+	flex-direction: column;
+}

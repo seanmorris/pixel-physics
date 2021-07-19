@@ -28,12 +28,35 @@
 
 	animation:
 		particle-animate steps(var(--animation-steps)) infinite 256ms,
-		particle-stretch steps(var(--animation-steps)) infinite 256ms
+		particle-animate steps(var(--animation-steps)) infinite 256ms,
+		spark-y-fall ease-in infinite 1024ms forwards
 	;
 
 	opacity: 1;
 
 	transform-origin: center 1em;
+}
+
+.envelope-sparks {
+	animation: spark-x-fall ease-out infinite 1024ms forwards;
+}
+
+@keyframes spark-x-fall {
+	from{
+		transform: translate(calc(0px * var(--xMomentum)), 0px);
+	}
+	to{
+		transform: translate(calc(-4px * var(--xMomentum)), 0px);
+	}
+}
+
+@keyframes spark-y-fall {
+	from{
+		transform: translate(0, calc(1px * var(--yMomentum)));
+	}
+	to{
+		transform: translate(0, 50vh);
+	}
 }
 
 .particle-spindash-dust {

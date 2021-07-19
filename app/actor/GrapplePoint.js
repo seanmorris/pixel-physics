@@ -30,6 +30,11 @@ export class GrapplePoint extends PointActor
 		this.sprite.appendChild(this.chain.node);
 	}
 
+	findNextStep()
+	{
+		return false;
+	}
+
 	update()
 	{
 		if(!this.args._tiedTo)
@@ -41,9 +46,15 @@ export class GrapplePoint extends PointActor
 			return;
 		}
 
-		this.args.falling = true;
-
 		const tiedTo = this.args._tiedTo;
+
+		if(!tiedTo.args.falling)
+		{
+			this.args.groundAngle = -1.57;
+			return false;
+		}
+
+		this.args.falling = true;
 
 		const xDist = tiedTo.x - this.x;
 		const yDist = tiedTo.y - this.y;
@@ -108,6 +119,13 @@ export class GrapplePoint extends PointActor
 
 	collideB(other)
 	{
+		const tiedTo = this.args._tiedTo;
+
+		if(!tiedTo || !tiedTo.args.falling)
+		{
+			return false;
+		}
+
 		if(other.args.hangingFrom || this.ignoreOthers.has(other))
 		{
 			return; false;

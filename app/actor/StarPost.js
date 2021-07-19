@@ -1,3 +1,4 @@
+import { CharacterString } from '../ui/CharacterString';
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 // import { Projectile } from '../actor/Projectile';
@@ -105,19 +106,42 @@ export class StarPost extends PointActor
 				, y:       this.y - 48
 			});
 
+			this.viewport.storeCheckpoint(other.args.id, this.args.id);
+
 			this.viewport.spawn.add({object:monitor});
 
-			this.viewport.onFrameOut(360, () => {
-				this.box.setAttribute('data-active', 'false');
-				this.box.setAttribute('data-spin', 'false');
-				this.args.active = false;
-			});
+			// this.viewport.onFrameOut(360, () => {
+			// 	this.box.setAttribute('data-active', 'false');
+			// 	this.box.setAttribute('data-spin', 'false');
+			// 	this.args.active = false;
+			// });
 
 			this.spinning = true;
 
 			this.viewport.onFrameOut(36, () => {
 				this.spinning = false;
 			});
+
+			// const time  = (this.viewport.args.frameId - this.viewport.args.startFrameId) / 60;
+			// let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
+			// let seconds = String((Math.abs(time) % 60).toFixed(0)).padStart(2,'0');
+
+			// const neg = time < 0 ? '-' : '';
+
+			// if(neg)
+			// {
+			// 	minutes = Number(minutes);
+			// }
+
+			// const yardsPerFrame = other.public.gSpeed / 32;
+			// const feetPerSecond = yardsPerFrame * 60 * 3;
+
+			// this.args.charStrings = [
+			// 	new CharacterString({value: `Speed: ${feetPerSecond.toFixed(3)} ft/s`})
+			// 	, new CharacterString({value: `Time: ${neg}${minutes}:${seconds}`})
+			// 	, new CharacterString({value: `Score: ${other.args.score}`})
+			// 	, new CharacterString({value: `Rings: ${other.args.rings}`})
+			// ];
 		}
 		// else if(other instanceof Projectile && !this.spinning)
 		// {

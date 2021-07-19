@@ -139,15 +139,6 @@ export class Sonic extends PointActor
 			}
 		}
 
-
-		for(const spark of this.sparks)
-		{
-			spark.style({
-				opacity: Math.random() * 2
-				, '--y': spark.y
-			});
-		}
-
 		if(this.public.falling)
 		{
 			if(this.public.wallSticking && !this.dashed)
@@ -393,35 +384,39 @@ export class Sonic extends PointActor
 
 		if(this.args.grinding && !this.args.falling)
 		{
-			const dustParticle = new Tag(`<div class = "particle-sparks">`);
+			const sparkParticle = new Tag(`<div class = "particle-sparks">`);
+			const sparkEnvelope = new Tag(`<div class = "envelope-sparks">`);
 
-			for(let i = 0; i < Math.abs(this.public.gSpeed/5); i ++)
-			{
-				const dustPoint = this.rotatePoint(
-					-this.public.gSpeed * 1.75
-						+ i * 2.5 * this.args.direction
-					, 3-i
-				);
+			sparkEnvelope.appendChild(sparkParticle.node);
 
-				dustParticle.style({
-					'--x': dustPoint[0] + this.x
-					, '--y': dustPoint[1] + this.y + Math.random * -3
-					, 'z-index': 0
-					, 'animation-delay': (-Math.random()*0.25) + 's'
-					, opacity: Math.random() * 2
-				});
+			const sparkPoint = this.rotatePoint(
+				-this.public.gSpeed * 1.75 * this.args.direction
+				, 8
+			);
 
-				dustParticle.y = dustPoint[1] + this.y;
+			const flip = Math.sign(this.args.gSpeed);
 
-				this.viewport.particles.add(dustParticle);
+			sparkEnvelope.style({
+				'--x': sparkPoint[0] + this.x
+				, '--y': sparkPoint[1] + this.y + Math.random * -3
+				, 'z-index': 0
+				, 'animation-delay': (-Math.random()*0.25) + 's'
+				, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
+				, '--flip': flip
+				, '--angle': this.realAngle
+				, opacity: Math.random() * 2
+			});
 
-				this.sparks.add(dustParticle);
+			sparkEnvelope.particle = sparkParticle;
 
-				this.viewport.onFrameOut(30, () => {
-					this.viewport.particles.remove(dustParticle);
-					this.sparks.delete(dustParticle);
-				});
-			}
+			this.viewport.particles.add(sparkEnvelope);
+
+			this.sparks.add(sparkEnvelope);
+
+			this.viewport.onFrameOut(30, () => {
+				this.viewport.particles.remove(sparkEnvelope);
+				this.sparks.delete(sparkEnvelope);
+			});
 		}
 
 		if(this.pincherBg)
@@ -453,6 +448,23 @@ export class Sonic extends PointActor
 		}
 
 		super.update();
+
+		if(this.args.grinding && !this.args.falling)
+		{
+			for(const spark of this.sparks)
+			{
+				const sparkPoint = this.rotatePoint(
+					1.75 * this.args.direction
+					, 8
+				);
+
+				spark.style({
+					opacity: Math.random() * 2
+					, '--x': sparkPoint[0] + this.x
+					, '--y': sparkPoint[1] + this.y
+				});
+			}
+		}
 	}
 
 	readInput()
@@ -730,6 +742,11 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
+		if(this.args.ignore)
+		{
+			return;
+		}
+
 		if(this.public.jumping)
 		{
 			if(this.dropDashCharge < 20)

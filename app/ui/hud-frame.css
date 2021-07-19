@@ -8,14 +8,35 @@
 	z-index: 1000;
 }
 
+.hud-centered:empty {
+	display: none;
+}
+
+.hud-centered {
+	top: 50%;
+	left:  50%;
+	transform: scale(var(--scale)) translate(-50%, -50%) !important;
+	min-width: 20em;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	transform-origin: top left;
+}
+
+.hud .centered {
+	display: flex;
+	justify-content: center;
+}
+
+
 .hud-top-left {
 	display: block;
 	position: absolute;
-	top: 3px;
-	left: 3px;
+	top: 0.75em;
+	left: 0.75em;
 	right: 0;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	flex-wrap: wrap;
 	transform-origin: top left;
 	width: 240px;
@@ -39,8 +60,8 @@
 .hud-top-right {
 	display: block;
 	position: absolute;
-	top: 3px;
-	right: 3px;
+	top: 0.75em;
+	right: 0.75em;
 	display: flex;
 	flex-direction: column;
 	transform-origin: top right;
