@@ -112,6 +112,9 @@ export class PointActor extends View
 
 		this.fallTime  = 0;
 
+		this.args.score = 0;
+		this.args.rings = 0;
+
 		this.autoStyle = new Map;
 		this.autoAttr  = new Map;
 
@@ -714,8 +717,10 @@ export class PointActor extends View
 
 				const viewport = this.viewport;
 
-				// viewport.reset();
-				// viewport.startLevel();
+				console.clear();
+				viewport.reset();
+				viewport.startLevel();
+
 			}
 
 			this.viewport && this.viewport.setColCell(this);
@@ -2121,9 +2126,9 @@ export class PointActor extends View
 
 			const foreDistanceHead  = hScanDist ? this.scanForward(hScanDist, 0.9) : false;
 			const foreDistanceWaist = hScanDist ? this.scanForward(hScanDist, 0.5) : false;
-			// const foreDistanceFoot  = hScanDist ? this.scanForward(hScanDist, 0.1) : false;
+			const foreDistanceFoot  = hScanDist ? this.scanForward(hScanDist, 0.1) : false;
 
-			const distances = [foreDistanceHead, foreDistanceWaist];
+			const distances = [foreDistanceHead, foreDistanceWaist, foreDistanceFoot];
 
 			hits = distances.filter(x => x !== false);
 		}
@@ -2454,7 +2459,7 @@ export class PointActor extends View
 
 			this.onNextFrame(()=>{
 				this.args.gSpeed += dropBoost
-				if(this.yAxis >= 0)
+				if(!this.args.ignore && this.yAxis >= 0)
 				{
 					this.args.rolling = true;
 				}
@@ -2870,7 +2875,7 @@ export class PointActor extends View
 			if(Math.abs(this.public.gSpeed) < 0.01)
 			{
 				this.viewport.onFrameOut(5, ()=>{
-					if(Math.abs(this.public.gSpeed) < 0.01)
+					if(!this.args.ignore && Math.abs(this.public.gSpeed) < 0.01)
 					{
 						this.args.rolling = false
 					}
@@ -2878,7 +2883,7 @@ export class PointActor extends View
 
 				this.args.gSpeed = 0;
 			}
-			else if(this.canRoll && this.yAxis > 0.55)
+			else if(!this.args.ignore && this.canRoll && this.yAxis > 0.55)
 			{
 				this.args.rolling = true;
 			}
@@ -3834,25 +3839,37 @@ export class PointActor extends View
 
 		const controller = this.controller;
 
-		if(controller.axes[0])
+
+		if(!this.args.ignore)
 		{
-			this.xAxis = controller.axes[0].magnitude;
+			if(controller.axes[0])
+			{
+				this.xAxis = controller.axes[0].magnitude;
+			}
+
+			if(controller.axes[1])
+			{
+				this.yAxis = controller.axes[1].magnitude;
+			}
+
+			if(controller.axes[2])
+			{
+				this.aAxis = controller.axes[2].magnitude;
+			}
+
+			if(controller.axes[3])
+			{
+				this.bAxis = controller.axes[3].magnitude;
+			}
+		}
+		else
+		{
+			this.xAxis = 0;
+			this.yAxis = 0;
+			this.aAxis = 0;
+			this.bAxis = 0;
 		}
 
-		if(controller.axes[1])
-		{
-			this.yAxis = controller.axes[1].magnitude;
-		}
-
-		if(controller.axes[2])
-		{
-			this.aAxis = controller.axes[2].magnitude;
-		}
-
-		if(controller.axes[3])
-		{
-			this.bAxis = controller.axes[3].magnitude;
-		}
 
 		const buttons = controller.buttons;
 
@@ -3956,7 +3973,7 @@ export class PointActor extends View
 
 	command_1()
 	{
-		if(this.canRoll && this.public.gSpeed)
+		if(!this.args.ignore && this.canRoll && this.public.gSpeed)
 		{
 			this.args.rolling = true;
 		}
@@ -4194,7 +4211,7 @@ export class PointActor extends View
 
 		this.spawnRings = this.spawnRings || 0;
 
-		const maxSpawn = Math.max(Math.min(this.args.rings, 24));
+		const maxSpawn = Math.min(this.args.rings, 12);
 
 		while(this.spawnRings < maxSpawn)
 		{
@@ -4216,7 +4233,6 @@ export class PointActor extends View
 
 			ring.args.width  = 16;
 			ring.args.height = 16;
-
 
 			this.viewport.onFrameOut(3 + (this.spawnRings % 3), () => {
 				this.viewport.spawn.add({object:ring});

@@ -144,6 +144,8 @@
 .actor-item.actor-block .sprite,
 .actor-item.actor-block-marble .sprite {
 	background-image: url(/Sonic/marble-zone-block.png);
+	background-position-x: calc(var(--sprite-x) * 32);
+	background-position-y: calc(var(--sprite-y) * 32);
 	background-repeat: repeat;
 	/*width: 32px;
 	height: 32px;*/

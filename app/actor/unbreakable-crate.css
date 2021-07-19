@@ -1,0 +1,9 @@
+.actor-unbreakable-crate {
+	z-index: 1;
+}
+
+.actor-unbreakable-crate .sprite {
+	background-image: url(/custom/unbreakable-crate.png);
+	height: 64px;
+	width: 64px;
+}

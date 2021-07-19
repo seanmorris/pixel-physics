@@ -34,12 +34,20 @@
 	}
 }
 
-
 @keyframes particle-y-fall {
 	from{
 		transform: translate(0, calc(-1px * var(--yMomentum)));
 	}
 	to{
 		transform: translate(0, 50vh);
+	}
+}
+
+@keyframes particle-glow {
+	from{
+		filter:  contrast(0) brightness(5);
+	}
+	to{
+		filter:  initial
 	}
 }

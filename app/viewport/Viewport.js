@@ -89,6 +89,7 @@ export class Viewport extends View
 		this.callFrames    = new Map;
 		this.willDetach    = new Map;
 		this.backdrops     = new Map;
+		this.checkpoints   = new Map;
 
 		this.server = null;
 		this.client = null;
@@ -100,6 +101,10 @@ export class Viewport extends View
 		this.settings = Bindable.make({
 			blur: true
 			, displace: true
+			, showHud: true
+			, shortcuts: true
+			, showFps: true
+			, debugOsd: false
 			, outline: 1
 			, musicVol: 100
 			, sfxVol: 100
@@ -121,6 +126,8 @@ export class Viewport extends View
 
 			noMenu = true;
 		}
+
+		this.args.startFrameId = 0;
 
 		this.tileMap = new TileMap({ mapUrl });
 		this.sprites = new Bag;
@@ -194,8 +201,8 @@ export class Viewport extends View
 
 		this.effects = new Bag;
 
-		this.maxCameraBound = 48;
-		this.cameraBound = 48;
+		this.maxCameraBound = 64;
+		this.cameraBound = 64;
 
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
@@ -221,7 +228,7 @@ export class Viewport extends View
 
 		this.args.labelGround = new CharacterString({value:'Grounded: '});
 		this.args.labelAngle  = new CharacterString({value:'Gnd theta: '});
-		this.args.labelGSpeed = new CharacterString({value:'speed: '});
+		this.args.labelGSpeed = new CharacterString({value:'Gnd spd: '});
 		this.args.labelXSpeed = new CharacterString({value:'X air spd: '});
 		this.args.labelYSpeed = new CharacterString({value:'Y air spd: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
@@ -249,19 +256,39 @@ export class Viewport extends View
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
 
-		this.rings = new CharacterString({value:0});
-		this.coins = new CharacterString({value:0});
-		this.emeralds = new CharacterString({value:'0/7'});
+		this.args.scoreLabel = new CharacterString({value:'SCORE: ', color: 'yellow'});
+		this.args.timerLabel = new CharacterString({value:'TIME: ',  color: 'yellow'});
+		this.args.ringLabel  = new CharacterString({value:'RINGS: ', color: 'yellow'});
 
-		this.args.emeralds = new HudFrame({value:this.emeralds, type: 'emerald-frame'});
-		this.args.timer = new HudFrame({value:new CharacterString({value:'00:00.00'})});
-		this.args.rings = new HudFrame({value:this.rings, type: 'ring-frame'});
-		this.args.coins = new HudFrame({value:this.coins, type: 'coin-frame'});
+		this.args.actClearLabel = new CharacterString({value:'...', color: 'yellow'});
+
+		this.args.perfectBonusLabel = new CharacterString({value:'PERFECT BONUS: ', color: 'yellow'});
+		this.args.perfectBonus      = new CharacterString({value: 0});
+
+		this.args.speedBonusLabel   = new CharacterString({value:'SPEED BONUS: ', color: 'yellow'});
+		this.args.speedBonus        = new CharacterString({value: 0});
+
+		this.args.ringBonusLabel    = new CharacterString({value:'RING BONUS: ', color: 'yellow'});
+		this.args.ringBonus         = new CharacterString({value: 0});
+
+		this.args.timeBonusLabel    = new CharacterString({value:'TIME BONUS: ', color: 'yellow'});
+		this.args.timeBonus         = new CharacterString({value: 0});
+
+		this.args.totalBonusLabel   = new CharacterString({value:'TOTAL: ', color: 'yellow'});
+		this.args.totalBonus        = new CharacterString({value: 0});
+
+		this.args.rings = new CharacterString({value:0});
+		this.args.score = new CharacterString({value:0});
+		this.args.timer = new CharacterString({value:'00:00'});
 
 		this.args.frameId = -1;
 
-		this.settings.bindTo('displace', v => this.args.displacement = v ? 'on' : 'off');
-		this.settings.bindTo('outline',  v => this.args.outline  = v);
+		this.settings.bindTo('displace',  v => this.args.displacement = v ? 'on' : 'off');
+		this.settings.bindTo('outline',   v => this.args.outline   = v);
+		this.settings.bindTo('debugOsd',  v => this.args.debugOsd  = v);
+		this.settings.bindTo('showHud',   v => this.args.showHud   = v);
+		this.settings.bindTo('shortcuts', v => this.args.shortcuts = v);
+		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
 
 		for(const setting in this.settings)
 		{
@@ -369,7 +396,6 @@ export class Viewport extends View
 
 				this.auras.delete(i);
 
-				delete i.controllable[i.args.name];
 				delete this.actorsById[i.args.id];
 				delete i[ColCell];
 
@@ -383,7 +409,6 @@ export class Viewport extends View
 		const comparator = () => {};
 
 		this.layerDb = new Classifier(critiera, comparator);
-
 		this.objectDb = new Classifier(Object.values(ObjectPalette));
 
 		this.blocks = new Bag;
@@ -408,8 +433,6 @@ export class Viewport extends View
 		this.args.audio = true;
 
 		this.nextControl = false;
-
-		this.args.controllable = {};
 
 		this.updateStarted = new Set;
 		this.updateEnded = new Set;
@@ -669,11 +692,11 @@ export class Viewport extends View
 		this.args.zonecard.args.actNumber  = this.meta.titlecard_number;
 	}
 
-	startLevel()
+	fillBackground()
 	{
-		this.setZoneCard();
-
 		const backdropClass = BackdropPalette[ this.meta.backdrop ];
+
+		delete this.args.backdrop;
 
 		if(backdropClass)
 		{
@@ -707,6 +730,18 @@ export class Viewport extends View
 			{
 				this.args.layers.push(layer);
 			}
+		}
+	}
+
+	startLevel()
+	{
+		this.setZoneCard();
+
+		this.args.startFrameId = this.args.frameId;
+
+		if(!this.args.backdrop)
+		{
+			this.fillBackground();
 		}
 
 		if(this.args.networked)
@@ -744,6 +779,17 @@ export class Viewport extends View
 
 			this.nextControl = Object.values(this.args.actors)[0];
 			// this.nextControl = this.nextControl || actors[0];
+
+			const storedPosition = this.getCheckpoint(this.nextControl.args.id);
+			const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
+
+
+			if(checkpoint)
+			{
+				this.args.startFrameId = this.args.frameId - storedPosition.frames;
+				this.args.x = this.nextControl.args.x = checkpoint.x;
+				this.args.y = this.nextControl.args.y = checkpoint.y;
+			}
 		}
 		else if(this.args.networked)
 		{
@@ -953,7 +999,7 @@ export class Viewport extends View
 		}
 		else
 		{
-			this.maxCameraBound = 48;
+			this.maxCameraBound = 64;
 		}
 
 		switch(this.controlActor.args.cameraMode)
@@ -1453,7 +1499,7 @@ export class Viewport extends View
 
 			if(actor.controllable)
 			{
-				this.args.controllable[ objDef.name ] = actor;
+				actor.name = objDef.name;
 
 				// this.auras.add( actor );
 
@@ -1715,12 +1761,21 @@ export class Viewport extends View
 			}
 		}
 
+		if(!Number(this.args.rings.args.value))
+		{
+			this.args.ringLabel.args.color = 'red';
+		}
+		else
+		{
+			this.args.ringLabel.args.color = 'yellow';
+		}
+
 		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
 		this.args.frame.args.value = this.args.frameId;
 
-		const time  = (Date.now() - this.startTime) / 1000;
-		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
-		let seconds = String((Math.abs(time) % 60).toFixed(2)).padStart(5,'0');
+		const time  = (this.args.frameId - this.args.startFrameId) / 60;
+		let minutes = String(Math.trunc(Math.abs(time) / 60)).padStart(2,'0')
+		let seconds = String(Math.trunc(Math.abs(time) % 60)).padStart(2,'0');
 
 		const neg = time < 0 ? '-' : '';
 
@@ -1729,7 +1784,7 @@ export class Viewport extends View
 			minutes = Number(minutes);
 		}
 
-		this.args.timer.args.value.args.value = `${neg}${minutes}:${seconds}`;
+		this.args.timer.args.value = `${neg}${minutes}:${seconds}`;
 
 		if(this.dontSwitch > 0)
 		{
@@ -1861,33 +1916,37 @@ export class Viewport extends View
 
 			if(this.controlActor)
 			{
-				this.rings.args.value = this.controlActor.args.rings;
-				this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
+				this.args.score.args.value = String(this.controlActor.args.score).padStart(4, ' ');
+				this.args.rings.args.value = String(this.controlActor.args.rings).padStart(4, ' ');
+				// this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
 
 				this.args.hasRings    = !!this.controlActor.args.rings;
 				this.args.hasEmeralds = !!this.controlActor.args.emeralds;
-
 				this.args.char.args.value = this.controlActor.args.name;
 				this.args.charName        = this.controlActor.args.name;
 
-				// this.coins.args.value = this.controlActor.args.coins;
-				// this.args.hasCoins    = !!this.controlActor.args.coins;
+				if(this.args.debugOsd)
+				{
+					// this.coins.args.value = this.controlActor.args.coins;
+					// this.args.hasCoins    = !!this.controlActor.args.coins;
 
-				this.args.xPos.args.value     = Math.round(this.controlActor.x);
-				this.args.yPos.args.value     = Math.round(this.controlActor.y);
+					this.args.xPos.args.value     = Number(this.controlActor.x).toFixed(2);
+					this.args.yPos.args.value     = Number(this.controlActor.y).toFixed(2);
 
-				this.args.ground.args.value   = this.controlActor.args.landed;
-				this.args.gSpeed.args.value   = Number(this.controlActor.args.gSpeed).toFixed(2);
+					this.args.ground.args.value   = this.controlActor.args.landed;
+					this.args.gSpeed.args.value   = Number(this.controlActor.args.gSpeed).toFixed(2);
 
-				this.args.xSpeed.args.value   = Math.round(this.controlActor.args.xSpeed);
-				this.args.ySpeed.args.value   = Math.round(this.controlActor.args.ySpeed);
+					this.args.xSpeed.args.value   = Number(this.controlActor.args.xSpeed).toFixed(2);
+					this.args.ySpeed.args.value   = Number(this.controlActor.args.ySpeed).toFixed(2);
 
-				this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
-				this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+					this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
+					this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
-				const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
+					const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
-				this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+					this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+				}
+
 			}
 		}
 
@@ -1918,11 +1977,6 @@ export class Viewport extends View
 				const actor = this.actors.list[a];
 
 				if(!actor)
-				{
-					continue;
-				}
-
-				if(this.auras.has(actor))
 				{
 					continue;
 				}
@@ -2319,25 +2373,6 @@ export class Viewport extends View
 		return cache.filter(set=>set.size);
 	}
 
-	change(event)
-	{
-		if(!event.target.value)
-		{
-			return;
-		}
-
-		if(!this.args.controllable[ event.target.value ])
-		{
-			return;
-		}
-
-		const actor = this.args.controllable[ event.target.value ];
-
-		this.nextControl = actor;
-
-		this.tags.viewport.focus();
-	}
-
 	screenFilter(filterName)
 	{
 		this.args.screenFilter = filterName;
@@ -2361,6 +2396,9 @@ export class Viewport extends View
 		this.collisions.clear();
 		this.colCellCache.clear();
 		this.colCells.clear();
+		this.regions.clear();
+		this.spawn.clear();
+		this.auras.clear();
 
 		for(const effect of this.effects.list)
 		{
@@ -2405,10 +2443,10 @@ export class Viewport extends View
 		this.controlActor   = null;
 		this.args.frameId   = -1;
 
-		this.args.timer.args.value.args.value = '';
-		this.emeralds.args.value = 0;
-		this.rings.args.value    = 0;
-		this.coins.args.value    = 0;
+		this.args.timer.args.value = '';
+		this.args.rings.args.value  = 0;
+		// this.emeralds.args.value = 0;
+		// this.coins.args.value    = 0;
 
 		this.args.hasRings    = false;
 		this.args.hasCoins    = false;
@@ -2432,8 +2470,15 @@ export class Viewport extends View
 			layer.remove();
 		}
 
-		this.args.layers = [];
-		this.args.fgLayers = [];
+		const cards = [];
+
+		cards.push(...this.homeCards());
+
+		this.args.titlecard = new Series({cards}, this);
+
+		this.args.backdrop = null;
+
+		this.args.titlecard.play();
 	}
 
 	introCards()
@@ -2758,5 +2803,106 @@ export class Viewport extends View
 	hyphenate(string)
 	{
 		return String(string).replace(/\s/g, '-').toLowerCase();
+	}
+
+	storeCheckpoint(actorId, checkpointId)
+	{
+		if(!this.checkpoints.has(this.tileMap.mapUrl))
+		{
+			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+		}
+
+		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
+
+		checkpointsByActor.set(actorId, {checkpointId, frames: this.args.frameId - this.args.startFrameId});
+	}
+
+	getCheckpoint(actorId)
+	{
+		if(!this.checkpoints.has(this.tileMap.mapUrl))
+		{
+			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+		}
+
+		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
+		const currentCheckpoint  = checkpointsByActor.get(actorId);
+
+		return currentCheckpoint;
+	}
+
+	clearCheckpoints(actorId)
+	{
+		if(!this.checkpoints.has(this.tileMap.mapUrl))
+		{
+			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+		}
+
+		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
+
+		checkpointsByActor.clear();
+
+		checkpointsByActor.delete(actorId);
+	}
+
+	clearAct(message)
+	{
+		this.args.actClearLabel.args.value = message;
+
+		const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);
+		const ringBonus  = this.controlActor.args.rings * 100;
+		let   timeBonus  = 0;
+
+		const time  = (this.args.frameId - this.args.startFrameId) / 60;
+		const seconds = Math.trunc(Math.abs(time));
+
+		if(seconds < 30)
+		{
+			timeBonus = 50000;
+		}
+		else if(seconds < 45)
+		{
+			timeBonus = 10000;
+		}
+		else if(seconds < 60)
+		{
+			timeBonus = 5000;
+		}
+		else if(seconds < 90)
+		{
+			timeBonus = 4000;
+		}
+		else if(seconds < 120)
+		{
+			timeBonus = 3000;
+		}
+		else if(seconds < 180)
+		{
+			timeBonus = 2000;
+		}
+		else if(seconds < 240)
+		{
+			timeBonus = 1000;
+		}
+		else
+		{
+			timeBonus = 500;
+		}
+
+		const totalBonus = timeBonus + ringBonus + speedBonus;
+
+		this.controlActor.args.score += totalBonus;
+
+		this.args.actClear = true;
+
+		this.args.timeBonus.args.value  = 0;
+		this.args.ringBonus.args.value  = 0;
+		this.args.speedBonus.args.value = 0;
+		this.args.totalBonus.args.value = 0;
+
+		this.onFrameOut(45,  () => this.args.timeBonus.args.value  = timeBonus);
+		this.onFrameOut(90,  () => this.args.ringBonus.args.value  = ringBonus);
+		this.onFrameOut(135, () => this.args.speedBonus.args.value = speedBonus);
+		this.onFrameOut(180, () => this.args.totalBonus.args.value = totalBonus);
+		this.onFrameOut(420, () => this.args.actClear = false);
 	}
 }

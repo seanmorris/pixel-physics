@@ -72,6 +72,8 @@ export class Block extends PointActor
 		// this.sprite.appendChild(this.screen2.node);
 
 		// this.screen.style({'pointer-events':'initial', 'z-index': 1000});
+
+		this.args.spriteSheet = '/Sonic/marble-zone-block.png';
 	}
 
 	collideA(other, type)

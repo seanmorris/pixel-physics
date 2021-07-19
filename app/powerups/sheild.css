@@ -60,7 +60,6 @@
 	opacity: var(--animation-bias);
 }
 
-
 .super-sheild .super-sheild-spark {
 	position: absolute;
 	left: 8px;
@@ -249,6 +248,41 @@
 	transform: scale(1.5) translate(-0px, -2px);
 }
 
+.star-sheild {
+	position: absolute;
+	background-repeat: no-repeat;
+	z-index: 300000;
+	width: 64px;
+	height: 64px;
+}
+
+.star-sheild-stars {
+	position: absolute;
+	z-index: 300001;
+	left: -3px;
+	top: 10px;
+	width: 64px;
+	height: 64px;
+}
+
+[data-animation=lightdash] .star-sheild-stars,
+[data-animation=springdash] .star-sheild-stars,
+[data-animation=airdash] .star-sheild-stars {
+	top: -2px;
+}
+[data-animation=rolling] .star-sheild-stars,
+[data-animation=jumping] .star-sheild-stars {
+	left: 0px;
+	top: 16px;
+	width: 64px;
+	height: 64px;
+}
+
+.star-sheild .star-sheild-stars {
+	animation: star-shield-rotate 0.15s steps(5) infinite;
+	background-image: url(/Sonic/invincibility-stars.png);
+}
+
 @keyframes electric-sheild-rotate {
 	from{
 		background-position: calc(-48px * 3) 0;
@@ -316,12 +350,20 @@
 	}
 }
 
-
 @keyframes bubble-sheild-bounce {
 	from{
 		background-position: 0 0;
 	}
 	to{
 		background-position: -216px 0;
+	}
+}
+
+@keyframes star-shield-rotate {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: -320px 0;
 	}
 }

@@ -40,13 +40,19 @@
 
 /*:not(textarea):not(input):not(button):not(select):focus*/
 
+.screen-card-main-menu textarea,
+.screen-card-pause-menu textarea {
+	resize: none;
+}
+
 .screen-card-main-menu :focus .title,
 .screen-card-main-menu li:focus-within .title,
 .screen-card-main-menu .focused .title {
 	/*outline: 1px solid rgba(255,255,255,0.2);
 	outline-offset: 0.6em;*/
 	text-decoration: underline;
-	color: white;
+	/*color: white;*/
+	color: rgb(255,255,100);
 }
 .screen-card-main-menu :focus,
 .screen-card-main-menu .focused {
@@ -99,7 +105,7 @@
 .screen-card-main-menu .unavailable:focus::after {
 	display: initial;
 
-	font-size: 0.2em;
+	font-size: 0.45em;
 
 	position: absolute;
 	left: 0;
@@ -214,7 +220,7 @@
 .screen-card-main-menu .token-exchange textarea {
 	border: 1.125px solid #333;
 	padding: 0.25rem;
-	font-size: 0.25rem;
+	font-size: 0.333rem;
 	box-sizing: content-box;
 	border-radius: 5px;
 	color: black !important;
@@ -255,13 +261,28 @@
 }
 
 .screen-card-pause-menu input,
-.screen-card-pause-menu select,
 .screen-card-main-menu input,
+.screen-card-pause-menu select,
 .screen-card-main-menu select {
 	background: none;
 	appearance: none;
 	border: none;
 	color: white;
+}
+.screen-card-pause-menu [data-wraps=number]::before,
+.screen-card-main-menu [data-wraps=number]::before,
+.screen-card-pause-menu [data-wraps=select]::before,
+.screen-card-main-menu [data-wraps=select]::before {
+	content: '◀︎';
+	padding-right: 0.5em;
+}
+
+.screen-card-pause-menu [data-wraps=number]::after,
+.screen-card-main-menu [data-wraps=number]::after,
+.screen-card-pause-menu [data-wraps=select]::after,
+.screen-card-main-menu [data-wraps=select]::after {
+	content: '▶';
+	padding-left: 0.5em;
 }
 
 .screen-card-pause-menu input,
@@ -276,8 +297,15 @@
 	width: 8em;
 }
 
+.screen-card-main-menu input[type=number],
+.screen-card-pause-menu input[type=number] {
+	text-align: center;
+	display: inline;
+	width: 1rem;
+}
+
 .screen-card-main-menu ul {
-	height: 7em;
+	height: 11em;
 	overflow: auto;
 	scroll-snap-type: y mandatory;
 }

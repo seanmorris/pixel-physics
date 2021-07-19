@@ -6,8 +6,9 @@
 	--animation-steps: 4;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
+	/*--sprite-offset-y: -192px;*/
 
-	z-index: 10;
+	z-index: 100;
 
 	animation: explosion steps(4) 1 forwards;
 	animation-duration: 512ms;

@@ -13,7 +13,8 @@
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;
 	height: calc(12px * var(--scale));
 	width: calc(8px * var(--scale));
-	font-size: calc(13px * var(--scale));
+	font-size: calc(8px * var(--scale));
+	overflow: hidden;
 	color: rgba(0,0,0,0);
 }
 
@@ -23,11 +24,9 @@
 	background-image: url(/Sonic/font-red.png);
 }
 
-
 .hud-character-string.yellow .hud-character {
 	background-image: url(/Sonic/font-yellow.png);
 }
-
 
 .hud-character-string.orange .hud-character {
 	background-image: url(/Sonic/font-orange.png);
@@ -45,8 +44,7 @@
 	width: calc(6px * var(--scale));
 }
 
-
-@-webkit-keyframes redalert{
+@keyframes redalert {
 	from{
 		background-image: url(/Sonic/font-red.png);
 	}
