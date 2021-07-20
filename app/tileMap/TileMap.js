@@ -22,6 +22,8 @@ export class TileMap
 
 		const mapUrl = args.mapUrl;
 
+		this.mapUrl = mapUrl;
+
 		this.ready = new Promise(accept => {
 
 			fetch(mapUrl).then(r=> r.json()).then(data => {

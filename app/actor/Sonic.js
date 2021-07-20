@@ -329,6 +329,11 @@ export class Sonic extends PointActor
 
 				this.dashDust = null;
 			}
+
+			if(this.dropDashCharge)
+			{
+				this.args.animation = 'spindash';
+			}
 		}
 		else if(!this.dashed)
 		{
@@ -355,7 +360,15 @@ export class Sonic extends PointActor
 
 		if(this.public.rolling)
 		{
-			this.args.animation = 'rolling';
+			if(this.args.animation !== 'spindash')
+			{
+				this.args.animation = 'rolling';
+			}
+			else
+			{
+				this.viewport.onFrameOut(8, () => this.args.animation = 'rolling');
+				this.args.animation = 'spindash';
+			}
 		}
 
 		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)

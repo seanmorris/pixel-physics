@@ -10,6 +10,8 @@ import { RollingRegion } from './region/RollingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
 import { CorkscrewRegion } from './region/CorkscrewRegion';
+import { BossRegion } from './region/BossRegion';
+import { ExitRegion } from './region/ExitRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -141,6 +143,8 @@ export const ObjectPalette = {
 	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
 	, 'grinding-region': GrindingRegion
+	, 'boss-region': BossRegion
+	, 'exit-region': ExitRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin

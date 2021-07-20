@@ -63,6 +63,10 @@
 	transform: translateX(12px);
 }
 
+.actor-item.actor-red-eye-jet[data-animation=braking] .orange-eye {
+	background-position-y: 48px;
+}
+
 .actor-item.actor-red-eye-jet[data-ducking=false] .orange-eye {
 	transition: transform 0.2s ease-out;
 	transform: translateY(6px);

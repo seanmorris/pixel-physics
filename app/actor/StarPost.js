@@ -89,12 +89,9 @@ export class StarPost extends PointActor
 				throwSpeed = 5 * Math.sign(throwSpeed);
 			}
 
-			const monitorClasses = [
-				RingMonitor
-				, SheildFireMonitor
-				, SheildWaterMonitor
-				, SheildElectricMonitor
-			];
+			const monitorClasses = other.args.rings > 50
+				? [RingMonitor, SheildFireMonitor, SheildWaterMonitor, SheildElectricMonitor]
+				: [RingMonitor];
 
 			const monitorClass = monitorClasses[Math.floor( Math.random() * monitorClasses.length )];
 

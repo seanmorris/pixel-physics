@@ -66,7 +66,7 @@ export class Spring extends PointActor
 		if(this.viewport && this.viewport.args.audio && !this.sample)
 		{
 			this.sample = new Audio('/Sonic/spring-activated.wav');
-			this.sample.volume = 0.25 + (Math.random() * 0.1);
+			this.sample.volume = 0.05 + (Math.random() * 0.1);
 		}
 	}
 
@@ -99,7 +99,7 @@ export class Spring extends PointActor
 		if(this.viewport.args.audio && this.sample)
 		{
 			this.sample.currentTime = 0;
-			this.sample.volume = 0.25 + (Math.random() * 0.1);
+			this.sample.volume = 0.05 + (Math.random() * 0.1);
 			this.sample.play();
 		}
 

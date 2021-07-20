@@ -22,8 +22,6 @@ export class CorkscrewRegion extends Region
 		return obj;
 	}
 
-	isWater = true;
-
 	constructor(...args)
 	{
 		super(...args);

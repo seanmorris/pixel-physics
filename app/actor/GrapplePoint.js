@@ -145,6 +145,8 @@ export class GrapplePoint extends PointActor
 
 		this.hooked = other;
 
+		this.viewport.auras.add(this);
+
 		this.args.xSpeed = other.args.xSpeed;
 		this.args.ySpeed = other.args.ySpeed;
 
@@ -213,22 +215,24 @@ export class GrapplePoint extends PointActor
 			return;
 		}
 
-		if(this.args._tiedTo)
-		{
-			const tiedTo = this.args._tiedTo;
-		}
+		const tiedTo = this.args._tiedTo;
 
 		hooked.args.ignore = hooked.args.float = 0;
 
 		hooked.args.y++;
 
-		hooked.args.xSpeed += this.xSpeedLast ?? 0;
-		hooked.args.ySpeed += this.ySpeedLast ?? 0;
+		hooked.args.xSpeed += tiedTo.xSpeedLast ?? 0;
+		hooked.args.ySpeed += tiedTo.ySpeedLast ?? 0;
 
 		hooked.args.hangingFrom = null;
 
 		this.ignoreOthers.add(hooked);
 
-		this.viewport.onFrameOut(15, () => this.ignoreOthers.delete(hooked));
+		hooked.args.falling = true;
+
+		this.viewport.onFrameOut(15, () => {
+			this.ignoreOthers.delete(hooked);
+			this.viewport.auras.delete(this);
+		});
 	}
 }

@@ -9,7 +9,7 @@ export class RingMonitor extends Monitor
 		this.box.attr({'data-monitor':'ring'});
 
 		this.ringSample = new Audio('/Sonic/ring-collect.wav');
-		this.ringSample.volume = 0.15 + (Math.random() * -0.05);
+		this.ringSample.volume = 0.10 + (Math.random() * -0.05);
 	}
 
 	effect(other)

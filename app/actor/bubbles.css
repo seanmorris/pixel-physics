@@ -10,7 +10,7 @@
 	left: 0;
 	/*background-image: url(/secret/super-seymour.png);*/
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
+	--sprite-offset-y: -64px;
 	background-image: url(/Sonic/bubbles.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
@@ -18,16 +18,14 @@
 	z-index: 1;
 }
 
-.actor-item.actor-bubbles .bubbles-wings {
-	position: absolute;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	--sprite-offset-x: -0px;
-	--sprite-offset-y: -64px;
-	background-image: url(/Sonic/bubbles.png);
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: bubbles-flap steps(2) infinite 50ms;
+.actor-item.actor-bubbles[data-gold=true] .sprite:after {
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-bubbles[data-fade=true] .sprite:after {
+	animation:
+		bubbles-spin 150ms steps(5) 1 forwards
+		,  bubbles-fade 400ms ease-out 1 forwards;
 }
 
 .actor-item.actor-bubbles .bubbles-flame {
@@ -46,20 +44,20 @@
 	--sprite-offset-x: -64px;
 }
 
-@keyframes bubbles-flap {
+@keyframes bubbles-spin {
 	from{
-		background-position: -0px -64px;
+		background-position-x: -0px;
 	}
 	to{
-		background-position: -128px -64px;
+		background-position-x: -320px;
 	}
 }
 
-@keyframes bubbles-boost {
+@keyframes bubbles-fade {
 	from{
-		background-position: -0px -128px;
+		opacity: 1;
 	}
 	to{
-		background-position: -128px -128px;
+		opacity: 0;
 	}
 }

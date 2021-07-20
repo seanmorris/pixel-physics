@@ -1,6 +1,6 @@
-import { View } from 'curvature/base/View';
+import { Powerup } from './Powerup';
 
-export class Sheild extends View
+export class Sheild extends Powerup
 {
 
 }

@@ -3,7 +3,35 @@ import { Sheild } from './Sheild';
 export class FireSheild extends Sheild
 {
 	template = `<div class = "sheild fire-sheild [[boosted]]"></div>`;
+	protect = true;
 	type = 'fire';
+
+	acquire(host)
+	{
+		const viewport = host.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		const invertDamage = event => {
+
+			event.preventDefault();
+
+			const other = event.detail.other;
+
+			other && other.pop && other.pop(host);
+
+			this.onNextFrame(() => host.inventory.remove(this));
+
+			host.removeEventListener('damage', invertDamage);
+
+			host.startle();
+		};
+
+		host.addEventListener('damage', invertDamage, {once: true});
+	}
 
 	update(host)
 	{
@@ -42,7 +70,6 @@ export class FireSheild extends Sheild
 					this.sample.currentTime = 0;
 					this.sample.play();
 				}
-
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}

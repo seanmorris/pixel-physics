@@ -1052,7 +1052,7 @@ export class Viewport extends View
 
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.50;
-				this.cameraBound = 1;
+				this.maxCameraBound     = 1;
 				cameraSpeed = 0;
 
 				break;
@@ -1072,6 +1072,16 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.65;
 
 				cameraSpeed = 30;
+
+				break;
+
+			case 'boss':
+
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.80;
+				this.maxCameraBound     = 1;
+
+				cameraSpeed = 10;
 
 				break;
 
@@ -1494,7 +1504,6 @@ export class Viewport extends View
 			{
 				actor.args.display = 'none';
 				actor.detach();
-
 			}
 
 			if(actor.controllable)
@@ -1504,6 +1513,24 @@ export class Viewport extends View
 				// this.auras.add( actor );
 
 				actor.args.display = 'initial';
+			}
+		}
+
+		for(const actor of this.actors.list)
+		{
+			if(!actor)
+			{
+				continue;
+			}
+
+			const position = this.getCheckpoint(actor.args.id);
+
+			if(position && position.checkpointId)
+			{
+				const checkpoint = this.actorsById[position.checkpointId];
+
+				actor.args.x = checkpoint.x;
+				actor.args.y = checkpoint.y;
 			}
 		}
 	}
@@ -1631,6 +1658,11 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
+				if(this.updateStarted.has(actor))
+				{
+					continue;
+				}
+
 				actor.updateStart();
 
 				if(actor.colliding)
@@ -1638,6 +1670,7 @@ export class Viewport extends View
 					actor.colliding = false;
 				}
 
+				this.updateStarted.add(this);
 			}
 		}
 	}
@@ -1672,11 +1705,18 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
+				if(this.updateEnded.has(actor))
+				{
+					continue;
+				}
+
 				actor.args.colliding = actor.colliding;
 
 				actor.updateEnd();
 
 				this.setColCell(actor);
+
+				this.updateEnded.add(this);
 			}
 		}
 	}
@@ -1847,12 +1887,17 @@ export class Viewport extends View
 					this.args.focusMe.args.hide = 'hide';
 				}
 
-				this.controlActor.controller && this.takeInput(this.controlActor.controller);
-				this.controlActor.readInput();
+				if(!this.args.cutScene)
+				{
+					this.controlActor.controller && this.takeInput(this.controlActor.controller);
+					this.controlActor.readInput();
+				}
 			}
 		}
 
+		this.updateStarted.clear();
 		this.updated.clear();
+		this.updateEnded.clear();
 
 		if(this.args.running)
 		{
@@ -2346,7 +2391,7 @@ export class Viewport extends View
 			// , this.getColCell({x:colA, y:rowE})
 
 			// , this.getColCell({x:colB, y:rowA})
-			, this.getColCell({x:colB, y:rowB})
+			this.getColCell({x:colB, y:rowB})
 			, this.getColCell({x:colB, y:rowC})
 			, this.getColCell({x:colB, y:rowD})
 			// , this.getColCell({x:colB, y:rowE})
@@ -2380,6 +2425,10 @@ export class Viewport extends View
 
 	reset()
 	{
+		this.args.actClear = false;
+		this.args.cutScene = false;
+		this.args.fade = false;
+
 		this.stop();
 
 		for(const i in this.actors.list)
@@ -2425,6 +2474,25 @@ export class Viewport extends View
 
 	quit()
 	{
+		this.args.actClear = false;
+		this.args.cutScene = false;
+		this.args.fade = false;
+
+		this.callFrames.clear();
+		this.callIntervals.clear();
+		this.collisions.clear();
+		this.colCellCache.clear();
+		this.colCells.clear();
+		this.regions.clear();
+		this.spawn.clear();
+		this.auras.clear();
+
+		this.args.timeBonus.args.value  = 0;
+		this.args.ringBonus.args.value  = 0;
+		this.args.speedBonus.args.value = 0;
+		this.args.totalBonus.args.value = 0;
+
+
 		for(const i in this.actors.list)
 		{
 			const actor = this.actors.list[i];
@@ -2807,41 +2875,51 @@ export class Viewport extends View
 
 	storeCheckpoint(actorId, checkpointId)
 	{
-		if(!this.checkpoints.has(this.tileMap.mapUrl))
+		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
-			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+			this.checkpoints[this.tileMap.mapUrl] = {};
 		}
 
-		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
+		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
 
-		checkpointsByActor.set(actorId, {checkpointId, frames: this.args.frameId - this.args.startFrameId});
+		checkpointsByActor[actorId] = {checkpointId, frames: this.args.frameId - this.args.startFrameId};
+
+		localStorage.setItem(
+			`checkpoints:::${this.tileMap.mapUrl}`
+			, JSON.stringify(this.checkpoints[this.tileMap.mapUrl])
+		);
 	}
 
 	getCheckpoint(actorId)
 	{
-		if(!this.checkpoints.has(this.tileMap.mapUrl))
+
+		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
-			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+			const checkpointSource = localStorage.getItem(`checkpoints:::${this.tileMap.mapUrl}`) || '{}';
+			this.checkpoints[this.tileMap.mapUrl] = JSON.parse(checkpointSource) || {};
 		}
 
-		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
-		const currentCheckpoint  = checkpointsByActor.get(actorId);
+		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+		const currentCheckpoint  = checkpointsByActor[actorId];
 
 		return currentCheckpoint;
 	}
 
 	clearCheckpoints(actorId)
 	{
-		if(!this.checkpoints.has(this.tileMap.mapUrl))
+		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
-			this.checkpoints.set(this.tileMap.mapUrl, new Map);
+			this.checkpoints[this.tileMap.mapUrl] = {};
 		}
 
-		const checkpointsByActor = this.checkpoints.get(this.tileMap.mapUrl);
+		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
 
-		checkpointsByActor.clear();
+		delete checkpointsByActor[actorId];
 
-		checkpointsByActor.delete(actorId);
+		localStorage.setItem(
+			`checkpoints:::${this.tileMap.mapUrl}`
+			, JSON.stringify(this.checkpoints[this.tileMap.mapUrl])
+		);
 	}
 
 	clearAct(message)

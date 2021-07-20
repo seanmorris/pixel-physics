@@ -54,6 +54,8 @@ export class Rocket extends PointActor
 
 	activate()
 	{
+		this.viewport.auras.add(this);
+
 		this.args.launched = true;
 
 		if(this.args.xMax)
@@ -125,6 +127,8 @@ export class Rocket extends PointActor
 			this.args.y = this.def.get('y');
 
 			this.viewport.setColCell(this);
+
+			this.viewport.auras.delete(this);
 		});
 
 

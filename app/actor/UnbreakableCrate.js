@@ -14,6 +14,21 @@ export class UnbreakableCrate extends Block
 		this.args.static = false;
 	}
 
+	update()
+	{
+		if(this.args.gate)
+		{
+			const gatekeeper = this.viewport.actorsById[ this.args.gate ];
+
+			if(!gatekeeper.args.hitPoints)
+			{
+				this.viewport.actors.remove(this);
+			}
+		}
+
+		super.update();
+	}
+
 	collideA(other, type)
 	{
 		return true;

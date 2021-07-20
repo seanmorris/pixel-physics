@@ -38,21 +38,9 @@ export class MainMenu extends Menu
 
 				, children: {
 
-					'Pixel Hill Zone': {
-						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
-						}
-					}
-					, 'Radical City Zone': {
-						callback: () => {
+					'Radical City Zone': {
+						subtext: 'Gotta go fast!'
+						, callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/empty-zone.json' });
 
 							this.parent.args.networked = false;
@@ -66,8 +54,10 @@ export class MainMenu extends Menu
 							});
 						}
 					}
+
 					, 'Sonic Control Tutorial': {
-						callback: () => {
+						subtext: 'Learn the controls for Sonic'
+						, callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
 
 							this.parent.args.networked = false;
@@ -79,8 +69,25 @@ export class MainMenu extends Menu
 							});
 						}
 					}
+
+					, 'Pixel Hill Zone': {
+						subtext: 'Movement Sandbox - all characters'
+						, callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+
 					, 'Tails Control Tutorial': {
-						callback: () => {
+						subtext: 'Learn the controls for Tails'
+						, callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/tails-movement.json' });
 
 							this.parent.args.networked = false;
@@ -93,7 +100,8 @@ export class MainMenu extends Menu
 						}
 					}
 					, 'Knuckles Control Tutorial': {
-						callback: () => {
+						subtext: 'Learn the controls for Knuckles'
+						, callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/knuckles-movement.json' });
 
 							this.parent.args.networked = false;

@@ -20,7 +20,6 @@ export class SheildElectricMonitor extends Monitor
 
 		const sheild = new ElectricSheild;
 
-		other.powerups.add(sheild);
 		other.inventory.add(sheild);
 	}
 }

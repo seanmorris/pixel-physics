@@ -11,7 +11,7 @@ export class Signpost extends PointActor
 		this.args.type = 'actor-item actor-signpost';
 
 		this.args.width  = 48;
-		this.args.height = 48;
+		this.args.height = 256;
 
 		this.args.active = false;
 		this.args.follow = false;
@@ -25,8 +25,6 @@ export class Signpost extends PointActor
 		}
 
 		other.args.rolling = false;
-
-		this.viewport.clearCheckpoints(other.args.id);
 
 		this.viewport.onFrameOut(120, () => this.box.setAttribute('data-cleared-by', other.args.name));
 		this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH RADICAL CITY ZONE`));

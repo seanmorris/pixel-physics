@@ -582,3 +582,16 @@ input[type=number]::-webkit-outer-spin-button {
 	display: none;
 }
 
+.viewport .shade {
+	transition: background 0.5s ease-in;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1001;
+}
+
+.viewport .shade[data-fade=true] {
+	background-color: rgba(0,0,0,1);
+}
