@@ -1,9 +1,43 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
 
 export class BubbleSheild extends Sheild
 {
 	template = `<div class = "sheild bubble-sheild [[bouncing]]"><div class = "bubble-sheild-shine"></div></div>`;
+	protect = true;
 	type = 'water';
+
+	acquire(host)
+	{
+		const viewport = host.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		const invertDamage = event => {
+
+			if(host.args.currentSheild !== Bindable.make(this))
+			{
+				return;
+			}
+
+			event.preventDefault();
+
+			const other = event.detail.other;
+
+			other && other.pop && other.pop(host);
+
+			this.onNextFrame(() => host.inventory.remove(this));
+
+			host.removeEventListener('damage', invertDamage);
+
+			host.startle();
+		};
+
+		host.addEventListener('damage', invertDamage, {once: true});
+	}
 
 	command_0(host, button)
 	{
@@ -38,6 +72,11 @@ export class BubbleSheild extends Sheild
 
 	update(host)
 	{
+		if(host.args.ySpeed < -5)
+		{
+			this.onNextFrame(() => host.args.bouncing = false);
+		}
+
 		if(!this.sample)
 		{
 			this.initSample = new Audio('/Sonic/S3K_3F.wav');

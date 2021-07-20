@@ -20,7 +20,6 @@ export class SheildWaterMonitor extends Monitor
 
 		const sheild = new BubbleSheild;
 
-		other.powerups.add(sheild);
 		other.inventory.add(sheild);
 	}
 }

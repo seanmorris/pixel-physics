@@ -103,6 +103,12 @@
 		sheild-flip calc(600ms) infinite;
 }
 
+.actor-bubbles .electric-sheild {
+	animation-duration: 200ms, 400ms;
+	left: 11px;
+	top: 26px;
+}
+
 .electric-sheild.boosted {
 	animation:
 		electric-sheild-flash 0.20s steps(3) infinite forwards,
@@ -185,10 +191,16 @@
 	left: 6px;
 	top: 10px;
 }
-[data-animation=lightdash] .fire-sheild.boosted,
-[data-animation=lightdash-back] .fire-sheild.boosted,
-[data-animation=airdash] .fire-sheild.boosted {
+
+[data-animation=airdash-back] .fire-sheild.boosted,
+[data-animation=lightdash-back] .fire-sheild.boosted {
 	left: -12px;
+	top: 10px;
+}
+
+[data-animation=lightdash] .fire-sheild.boosted,
+[data-animation=airdash] .fire-sheild.boosted {
+	left: -0px;
 	top: 10px;
 }
 

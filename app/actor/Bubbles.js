@@ -10,6 +10,8 @@ import { CanPop } from '../mixin/CanPop';
 import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 
+import { ElectricSheild } from '../powerups/ElectricSheild';
+
 export class Bubbles extends Mixin.from(PointActor, CanPop)
 {
 	constructor(...args)
@@ -44,8 +46,48 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 		this.aiming = false;
 	}
 
+	onAttached()
+	{
+		this.shield = new ElectricSheild
+
+		if(this.args.electric)
+		{
+			this.inventory.add(this.shield);
+
+			this.args.currentSheild = this.shield;
+		}
+
+		this.autoAttr.get(this.box)['data-gold'] = 'gold';
+		this.autoAttr.get(this.box)['data-fade'] = 'fade';
+	}
+
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		if(this.args.gold && !this.args.fading)
+		{
+			if(Math.abs(this.viewport.controlActor.x - this.x) < 256
+				&& Math.abs(this.viewport.controlActor.y - this.y) < 128
+			){
+				this.args.fading = true;
+
+				const viewport = this.viewport;
+
+				viewport.onFrameOut(25, () => this.args.fade = true);
+
+				viewport.onFrameOut(55, () => viewport.actors.remove(this));
+			}
+		}
+
+		if(this.viewport && this.args.electric && this.viewport.args.frameId % 100 === 0)
+		{
+			this.args.currentSheild = this.args.currentSheild ? null : this.shield;
+		}
+
 		this.args.ySpeed = this.yAxis;
 
 		this.box.setAttribute('data-animation', 'standing');

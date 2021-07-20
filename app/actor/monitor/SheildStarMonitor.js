@@ -20,7 +20,6 @@ export class SheildStarMonitor extends Monitor
 
 		const sheild = new StarSheild;
 
-		other.powerups.add(sheild);
 		other.inventory.add(sheild);
 	}
 }

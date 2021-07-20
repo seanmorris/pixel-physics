@@ -3,11 +3,39 @@ import { Sheild } from './Sheild';
 export class ElectricSheild extends Sheild
 {
 	template = `<div class = "sheild electric-sheild [[boosted]]"></div>`;
+	protect = true;
 	type = 'electric';
 	jumps = 3;
 	attract = new Set;
 	magnetism = 0;
 	magnetTimeout = false;
+
+	acquire(host)
+	{
+		const viewport = host.viewport;
+
+		if(!viewport)
+		{
+			return;
+		}
+
+		const invertDamage = event => {
+
+			event.preventDefault();
+
+			const other = event.detail.other;
+
+			other && other.pop && other.pop(host);
+
+			this.onNextFrame(() => host.inventory.remove(this));
+
+			host.removeEventListener('damage', invertDamage);
+
+			host.startle();
+		};
+
+		host.addEventListener('damage', invertDamage, {once: true});
+	}
 
 	command_0(host, button)
 	{
@@ -119,7 +147,7 @@ export class ElectricSheild extends Sheild
 			});
 		}
 
-		if(!this.sample)
+		if(!this.sample && host.controllable)
 		{
 			this.initSample = new Audio('/Sonic/S3K_41.wav');
 			this.initSample.volume = 0.15 + (Math.random() * -0.05);

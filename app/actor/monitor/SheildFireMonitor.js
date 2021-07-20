@@ -20,7 +20,6 @@ export class SheildFireMonitor extends Monitor
 
 		const sheild = new FireSheild;
 
-		other.powerups.add(sheild);
 		other.inventory.add(sheild);
 	}
 }

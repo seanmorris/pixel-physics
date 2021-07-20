@@ -15,12 +15,15 @@ export class Stopper extends BreakableBlock
 		{
 			if(!this.broken)
 			{
-				other.args.x = this.args.x;
+				other.args.x = this.args.x + 6;
 				this.viewport.onFrameOut(3, () => {
 					other.args.ySpeed = 3;
-					other.args.x = this.args.x;
+					other.args.x = this.args.x + 6;
 					other.args.xSpeed = 0;
 					other.args.ySpeed = 0;
+					other.args.groundAngle = 0;
+					other.args.falling = true;
+					other.args.animation = 'rolling';
 					other.args.ignore = 30;
 					other.args.float  = 30;
 					this.viewport.onFrameOut(30, () => {

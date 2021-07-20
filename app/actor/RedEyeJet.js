@@ -18,8 +18,11 @@ export class RedEyeJet extends PointActor
 		this.args.phase = 'attacking';
 
 		this.args.hitPoints = this.args.hitPoints || 8;
+		this.args.maxSpeed  = 9;
 
 		this.ignores = new Map;
+
+		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 	}
 
 	collideA(other, type)
@@ -29,11 +32,16 @@ export class RedEyeJet extends PointActor
 			return;
 		}
 
-		if(this.args.phase !== 'exploding' && !(other.args.jumping || other.args.rolling || other.dashed))
+		if(this.args.hitPoints > 0)
 		{
-			other.damage();
+			if(!(other.args.jumping || other.args.rolling || other.dashed))
+			{
+				other.args.xSpeed = -other.args.xSpeed * 1.5;
 
-			return true;
+				other.damage();
+
+				return true;
+			}
 		}
 
 		if(this.ignores.has(other))
@@ -41,16 +49,28 @@ export class RedEyeJet extends PointActor
 			return true;
 		}
 
-		if(this.args.phase === 'damaged')
+		if(this.viewport.args.audio)
+		{
+			this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+			this.hitSound.play();
+		}
+
+		if(this.args.phase === 'damaged' || this.args.phase === 'braking')
 		{
 			return true;
 		}
 
-		if(!this.args.falling)
+		if(!this.args.falling && this.args.phase !== 'exploding')
 		{
+			if(!(other.args.jumping || other.args.rolling || other.dashed))
+			{
+				return true;
+			}
+
 			this.box.setAttribute('data-phase', 'exploding');
 			this.args.phase = 'exploding';
 
+			this.viewport.clearCheckpoints(other.args.id);
 
 			const viewport = this.viewport;
 
@@ -61,11 +81,63 @@ export class RedEyeJet extends PointActor
 			});
 
 			viewport.onFrameOut(100, () => {
-				this.viewport.clearAct(`${other.args.name} BEAT THE MINI-MACE`);
+				viewport.clearAct(`${other.args.name} BEAT THE MINI-MACE`);
 			});
 
-			viewport.onFrameOut(180, () => {
-				viewport.actors.remove(this);
+			viewport.onFrameOut(200, () => {
+				this.viewport.args.cutScene = true;
+			});
+
+			viewport.onFrameOut(205, () => {
+				this.viewport.controlActor.controller.replay({axes: [1,0,0,1]});
+				this.viewport.controlActor.readInput();
+			});
+
+			viewport.onFrameOut(210, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1]});
+				this.viewport.controlActor.readInput();
+			});
+
+			viewport.onFrameOut(225, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+				this.args.phase = 'done';
+			});
+			viewport.onFrameOut(226, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1,1,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+			viewport.onFrameOut(245, () => {
+				this.viewport.controlActor.controller.replay({buttons: [0,1,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+			viewport.onFrameOut(285, () => {
+				this.viewport.controlActor.controller.replay({buttons: [0,0,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+
+			viewport.onFrameOut(300, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+			viewport.onFrameOut(301, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+			viewport.onFrameOut(345, () => {
+				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,1]});
+				this.viewport.controlActor.readInput();
+			});
+			viewport.onFrameOut(346, () => {
+				this.viewport.controlActor.controller.replay({buttons: [0,0,0,0,0,0]});
+				this.viewport.controlActor.readInput();
+			});
+
+			viewport.onFrameOut(500, () => {
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
+
+				this.args.y = -1024;
 			});
 		}
 
@@ -77,48 +149,77 @@ export class RedEyeJet extends PointActor
 			return true;
 		}
 
-		if((type === 1 || type === 3 || type === -1) && other.args.xSpeed)
+		if(type === 1)
 		{
-			other.args.x = this.x - (this.args.width / 2) * Math.sign(other.args.xSpeed || other.args.direction);
+			other.args.x = this.x - (this.args.width / 2);
+		}
+
+		if(type === 3)
+		{
+			other.args.x = this.x + (this.args.width / 2);
 		}
 
 		if(type === 1 || type === 3 || type === 0)
 		{
-			if(!['dead','exploding'].includes(this.args.phase))
+			if(!['dead','exploding', 'done'].includes(this.args.phase))
 			{
 				this.args.phase = 'damaged';
 				this.args.animation = '';
 
-				if(this.args.hitPoints > 0)
+				if(this.args.hitPoints >= 0)
 				{
 					this.args.hitPoints--;
 				}
 
 				this.args.animation = 'damaged';
 
-				this.viewport.onFrameOut(40, () => {
+				if(this.args.hitPoints === 0 && this.args.phase !== 'exploding')
+				{
+					this.box.setAttribute('data-phase', 'dead');
+					this.args.animation = '';
+					this.args.phase = 'dead';
+				}
+
+				this.viewport.onFrameOut(10, () => {
+					if(this.args.hitPoints > 0)
+					{
+						this.args.phase = 'braking';
+					}
+				});
+
+				this.viewport.onFrameOut(120, () => {
 					if(this.args.hitPoints > 0)
 					{
 						this.args.animation = 'attacking';
 						this.args.phase     = 'attacking'
 					}
-					else if(!['dead','exploding'].includes(this.args.phase))
+					else if(!['dead', 'exploding', 'done'].includes(this.args.phase))
 					{
 						this.box.setAttribute('data-phase', 'dead');
 						this.args.animation = 'dead';
 						this.args.phase     = 'dead';
 
 						this.args.xSpeed = 0;
+
+						other.args.score += 20000;
 					}
 				});
 			}
 
 			if(this.args.falling)
 			{
-				this.args.xSpeed = other.args.xSpeed;
+				this.args.xSpeed = other.args.xSpeed * 1.5;
 			}
 
 			other.args.xSpeed *= -1;
+
+			if(type === 1 || type === 3)
+			{
+				if(Math.abs(other.args.xSpeed) < 5)
+				{
+					other.args.xSpeed = Math.sign(other.args.xSpeed) * 5;
+				}
+			}
 
 			other.args.falling = true;
 			other.args.float   = other.args.float || 1;
@@ -159,6 +260,8 @@ export class RedEyeJet extends PointActor
 		{
 			other.args.ignore = 20;
 		}
+
+		return true;
 	}
 
 	update()
@@ -183,6 +286,13 @@ export class RedEyeJet extends PointActor
 			{
 				const explosion = new Tag('<div class = "particle-explosion">');
 
+				if(viewport.args.audio)
+				{
+					this.hitSound.currentTime = 0;
+					this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+					this.hitSound.play();
+				}
+
 				const xOff = this.args.width  * Math.random() - (this.args.width  / 2);
 				const yOff = this.args.height * Math.random() - (this.args.height / 2);
 
@@ -198,27 +308,27 @@ export class RedEyeJet extends PointActor
 			return;
 		}
 
-		if(this.args.phase === 'damaged')
+		if(this.args.phase === 'braking')
 		{
 			this.args.xSpeed *= 0.999;
 		}
 
 		if(0 < this.x - this.viewport.controlActor.x)
 		{
-			this.box.setAttribute('data-looking', 'left');
+			this.box.setAttribute('data-looking', 'far-left');
 
-			if(128 < this.x - this.viewport.controlActor.x)
+			if(128 < this.x - this.viewport.controlActor.x || this.viewport.controlActor.args.direction !== -1)
 			{
-				this.box.setAttribute('data-looking', 'far-left');
+				this.box.setAttribute('data-looking', 'left');
 			}
 		}
 		else if(0 > this.x - this.viewport.controlActor.x)
 		{
-			this.box.setAttribute('data-looking', 'right');
+			this.box.setAttribute('data-looking', 'far-right');
 
-			if(-128 > this.x - this.viewport.controlActor.x)
+			if(-128 > this.x - this.viewport.controlActor.x || this.viewport.controlActor.args.direction !== 1)
 			{
-				this.box.setAttribute('data-looking', 'far-right');
+				this.box.setAttribute('data-looking', 'right');
 			}
 		}
 
@@ -236,13 +346,6 @@ export class RedEyeJet extends PointActor
 			if(this.args.phase === 'attacking')
 			{
 				this.args.xSpeed += -Math.sign(this.x - this.viewport.controlActor.x) * 0.35;
-
-				const maxSpeed = 13;
-
-				if(Math.abs(this.args.xSpeed) > maxSpeed)
-				{
-					this.args.xSpeed = Math.sign(this.args.xSpeed) * maxSpeed;
-				}
 			}
 		}
 
@@ -254,6 +357,11 @@ export class RedEyeJet extends PointActor
 		else
 		{
 			this.args.float = 0;
+		}
+
+		if(Math.abs(this.args.xSpeed) > this.args.maxSpeed)
+		{
+			this.args.xSpeed = Math.sign(this.args.xSpeed) * this.args.maxSpeed;
 		}
 
 		super.update();

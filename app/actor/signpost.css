@@ -3,6 +3,8 @@
 }
 
 .actor-item.actor-signpost .labels {
+	position: absolute;
+	bottom: 48px;
 	display: flex !important;
 	transform: translate(-50%) rotateY(0deg);
 	left: 50%;

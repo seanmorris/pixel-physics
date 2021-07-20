@@ -198,7 +198,7 @@
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
-	animation: sonic-jump steps(7) infinite 64ms;
+	animation: sonic-jump steps(8) infinite 192ms;
 
 	/*animation: sonic-animate steps(4) infinite 128ms;*/
 	--sprite-offset-x: -0px;
@@ -214,9 +214,9 @@
 	--animation-steps: -4;
 	--animation-width: 64px;
 
-	animation: sonic-jump steps(7) infinite 160ms;
+	animation: sonic-jump steps(8) infinite 128ms;
 
-	/*animation: sonic-jump steps(7) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
+	/*animation: sonic-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
 }
 
@@ -286,7 +286,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-448px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-512px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

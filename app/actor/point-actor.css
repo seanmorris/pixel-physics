@@ -26,8 +26,16 @@
 	flex-direction: column;
 }
 
+.point-actor[data-respawning=true] {
+	display: none !important;
+}
+
 .point-actor[data-facing="left"] .labels {
 	transform: translate(-50%) rotateY(180deg);
+}
+
+.point-actor[data-mercy=true] {
+	animation: mercy-flicker 350ms infinite steps(1);
 }
 
 .point-actor[data-mode="1"] .labels {
@@ -323,7 +331,7 @@
 	border-right: 4px solid var(--collColor);
 }*/
 
-@-webkit-keyframes ringSpin {
+@keyframes ringSpin {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -332,7 +340,7 @@
 	}
 }
 
-@-webkit-keyframes q-block-spin {
+@keyframes q-block-spin {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -341,7 +349,7 @@
 	}
 }
 
-@-webkit-keyframes ringTwinkle {
+@keyframes ringTwinkle {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -350,7 +358,7 @@
 	}
 }
 
-@-webkit-keyframes starPostActive {
+@keyframes starPostActive {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -359,7 +367,7 @@
 	}
 }
 
-@-webkit-keyframes coinTwinkle {
+@keyframes coinTwinkle {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -368,7 +376,7 @@
 	}
 }
 
-@-webkit-keyframes spin {
+@keyframes spin {
 	from{
 		transform: rotate(0deg);
 	}
@@ -377,13 +385,24 @@
 	}
 }
 
-
-@-webkit-keyframes spin2x {
+@keyframes spin2x {
 	from{
 		transform: rotate(0deg);
 	}
 	to{
 		transform: rotate(-720deg);
+	}
+}
+
+@keyframes mercy-flicker {
+	from{
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	to{
+		opacity: 0;
 	}
 }
 

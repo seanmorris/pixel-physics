@@ -115,6 +115,8 @@ export class PointActor extends View
 		this.args.score = 0;
 		this.args.rings = 0;
 
+		this.args.mercy = false;
+
 		this.autoStyle = new Map;
 		this.autoAttr  = new Map;
 
@@ -136,16 +138,37 @@ export class PointActor extends View
 
 			const item = event.detail.object;
 
-			this.args.currentSheild = item;
-
 			if(this.inventory.has(item.constructor))
 			{
 				event.preventDefault();
+				return;
 			}
 
+			this.powerups.add(item);
+
+			item.acquire && item.acquire(this);
+
+			this.args.currentSheild = item;
+
+			item.equip && item.equip(this);
 		});
 
-		this.args.bindTo('currentSheild', v => {
+		this.inventory.addEventListener('removing', event => {
+			const item = event.detail.object;
+			this.powerups.delete(item);
+
+			if(Bindable.make(item) === this.args.currentSheild)
+			{
+				this.args.currentSheild = null;
+			}
+		});
+
+		this.args.bindTo('currentSheild', (v,k,t,d,p) => {
+
+			if(p)
+			{
+				p.unequip && p.unequip(this);
+			}
 
 			for(const shield of this.inventory.get(Sheild))
 			{
@@ -157,7 +180,10 @@ export class PointActor extends View
 				shield.detach();
 			}
 
+			v && v.equip && v.equip(this);
+
 			v && v.render(this.sprite);
+
 		});
 
 		Object.defineProperty(this, 'public', {value: {}});
@@ -541,6 +567,8 @@ export class PointActor extends View
 		this.autoAttr.set(this.box, {
 			'data-camera-mode': 'cameraMode'
 			, 'data-colliding': 'colliding'
+			, 'data-respawning':'respawning'
+			, 'data-mercy':     'mercy'
 			, 'data-falling':   'falling'
 			, 'data-facing':    'facing'
 			, 'data-filter':    'filter'
@@ -570,7 +598,8 @@ export class PointActor extends View
 		{
 			const superSheild = new SuperSheild;
 
-			this.powerups.add(superSheild);
+			superSheild.equip(this);
+
 			this.inventory.add(superSheild);
 		}
 
@@ -653,7 +682,7 @@ export class PointActor extends View
 
 	updateStart()
 	{
-
+		this.args.localCameraMode = null;
 	}
 
 	updateEnd()
@@ -699,20 +728,37 @@ export class PointActor extends View
 
 		if(this.args.respawning)
 		{
-			const xDiff = this.args.x - this.def.get('x');
-			const yDiff = this.args.y - this.def.get('y');
+			const stored = this.viewport.getCheckpoint(this.args.id);
+
+			let toX, toY;
+
+			if(stored && stored.checkpointId)
+			{
+				const checkpoint = this.viewport.actorsById[ stored.checkpointId ];
+
+				toX = checkpoint.x;
+				toY = checkpoint.y;
+			}
+			else
+			{
+				toX = this.def.get('x');
+				toY = this.def.get('y');
+			}
+
+			const xDiff = this.args.x - toX;
+			const yDiff = this.args.y - toY;
 
 			this.args.x -= (xDiff / 20) || 1;
 			this.args.y -= (yDiff / 20) || 1;
 
-			if(Math.abs(xDiff) < 4 || Math.abs(yDiff) < 4)
+			if(Math.abs(xDiff) < 1 || Math.abs(yDiff) < 1)
 			{
 				this.args.dead = false;
 				this.noClip = false;
 				this.args.respawning = false;
 				this.args.display    = 'initial';
-				this.args.x = this.def.get('x');
-				this.args.y = this.def.get('y');
+				this.args.x = toX;
+				this.args.y = toY;
 				this.args.ignore = 4;
 
 				const viewport = this.viewport;
@@ -2497,6 +2543,10 @@ export class PointActor extends View
 		{
 			this.args.cameraMode = this.args.standingOn.public.cameraMode;
 		}
+		else if(this.args.localCameraMode)
+		{
+			this.args.cameraMode = this.args.localCameraMode;
+		}
 		else if(this.controllable)
 		{
 			if(!this.public.falling || this.getMapSolidAt(this.x, this.y + 24))
@@ -2552,6 +2602,7 @@ export class PointActor extends View
 				});
 			}
 		}
+
 	}
 
 	callCollideHandler(other)
@@ -3466,14 +3517,36 @@ export class PointActor extends View
 		return closest;
 	}
 
-	damage()
+	damage(other, type = 'normal')
 	{
+		const shield = this.args.currentSheild;
+
+		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
+
+		if(!this.dispatchEvent(damageEvent))
+		{
+			return;
+		}
+
+		if(this.args.mercy)
+		{
+			return;
+		}
+
 		if(this.args.rings)
 		{
+			this.args.mercy = true;
+
+			this.viewport.onFrameOut(180, () => this.args.mercy = false);
+
 			this.onNextFrame(()=>{
 				this.startle();
-				this.loseRings();
-				this.args.rings = 0;
+
+				if(!shield || !shield.protect)
+				{
+					this.loseRings();
+					this.args.rings = 0;
+				}
 			});
 		}
 		else
@@ -4177,7 +4250,6 @@ export class PointActor extends View
 
 		this.args.respawning = true;
 		this.args.display    = 'none';
-
 	}
 
 	sleep()

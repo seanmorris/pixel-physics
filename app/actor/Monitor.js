@@ -82,6 +82,8 @@ export class Monitor extends PointActor
 
 		const explosion = new Tag('<div class = "particle-explosion">');
 
+		other.args.score += 100;
+
 		explosion.style({'--x': this.x, '--y': this.y-16});
 
 		viewport.particles.add(explosion);
