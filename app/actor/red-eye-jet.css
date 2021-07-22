@@ -7,7 +7,8 @@
 }
 
 .actor-item.actor-red-eye-jet .sprite {
-	background-image: url(/custom/red-eye-jet-body.png);
+	background-image: url(/custom/red-eye-jet-body-center.png);
+	background-position: center;
 }
 
 .actor-item.actor-red-eye-jet .boost-fire {
@@ -20,7 +21,36 @@
 		, red-eye-jet-fire-flicker steps(3) infinite 1ms forwards;
 }
 
+.actor-item.actor-red-eye-jet .body-left {
+	background-image: url(/custom/red-eye-jet-body-left.png);
+	position: absolute;
+	top: -32px;
+	left: -48px;
+	width: 32px;
+	height: 32px;
+	transition: transform 1.25s ease-out;
+}
+
+.actor-item.actor-red-eye-jet .body-right {
+	background-image: url(/custom/red-eye-jet-body-right.png);
+	position: absolute;
+	top: -32px;
+	left: 16px;
+	width: 32px;
+	height: 32px;
+	transition: transform 1.5s ease-out;
+}
+
+.actor-item.actor-red-eye-jet[data-phase=exploded] .body-left {
+	transform: translate(-512px);
+}
+
+.actor-item.actor-red-eye-jet[data-phase=exploded] .body-right {
+	transform: translate(512px);
+}
+
 .actor-item.actor-red-eye-jet[data-phase=exploding] .boost-fire,
+.actor-item.actor-red-eye-jet[data-phase=exploded] .boost-fire,
 .actor-item.actor-red-eye-jet[data-phase=dead] .boost-fire {
 	display: none;
 }
@@ -41,6 +71,7 @@
 	height: 24px;
 	top:   -32px;
 	left:  -12px;
+	z-index: 100;
 }
 
 .actor-item.actor-red-eye-jet[data-looking=left] .orange-eye {

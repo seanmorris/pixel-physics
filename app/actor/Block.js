@@ -73,7 +73,7 @@ export class Block extends PointActor
 
 		// this.screen.style({'pointer-events':'initial', 'z-index': 1000});
 
-		this.args.spriteSheet = '/Sonic/marble-zone-block.png';
+		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 	}
 
 	collideA(other, type)
@@ -217,7 +217,7 @@ export class Block extends PointActor
 		return true;
 	}
 
-	onAttached(event)
+	onAttach(event)
 	{
 		this.public.collapse && this.tags.sprite.classList.add('collapse');
 		this.public.platform && this.tags.sprite.classList.add('platform');
@@ -231,7 +231,7 @@ export class Block extends PointActor
 
 		this.viewport.tileMap.ready.then(event => {
 
-			const tile = this.viewport.tileMap.getTile(this.public.tileId);
+			const tile = this.viewport.tileMap.getTile(this.public.tileId-1);
 
 			if(!tile)
 			{

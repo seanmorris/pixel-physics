@@ -24,6 +24,31 @@ export class WaterRegion extends Region
 		this.draining = 0;
 	}
 
+	skim(actor)
+	{
+		super.skim(actor);
+
+		if(this.viewport.args.frameId % 4)
+		{
+			return;
+		}
+
+		const splashParticle = new Tag(`<div class = "particle-skim">`);
+
+		const splashPoint = actor.rotatePoint(actor.public.gSpeed, 0);
+
+		splashParticle.style({
+			'--x': splashPoint[0] + actor.x
+			, '--y': splashPoint[1] + actor.y
+			, 'z-index': 0
+			, '--flip': `${actor.args.direction}`
+		});
+
+		this.viewport.particles.add(splashParticle);
+
+		this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
+	}
+
 	update()
 	{
 		if(!this.filterWrapper && this.tags.sprite)

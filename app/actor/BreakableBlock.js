@@ -47,7 +47,7 @@ export class BreakableBlock extends Block
 			return false;
 		}
 
-		if(!(other.args.rolling && other.args.mode))
+		if(!(other.args.rolling && other.args.mode) && !other.isVehicle)
 		{
 			if((other.args.falling && !(other.dashed || other.args.jumping))
 				|| (!other.args.falling && type === 0)

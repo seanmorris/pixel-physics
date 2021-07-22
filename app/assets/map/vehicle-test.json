@@ -246,7 +246,7 @@
         {
          "name":"backdrop",
          "type":"string",
-         "value":""
+         "value":"marble-garden"
         }, 
         {
          "name":"theme",

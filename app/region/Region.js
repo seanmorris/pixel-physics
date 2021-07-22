@@ -31,6 +31,18 @@ export class Region extends PointActor
 		this.skimSpeed = Infinity;
 
 		this.args.float = -1;
+
+		this.skimmers = new WeakSet;
+	}
+
+	skim(actor)
+	{
+		this.skimmers.add(actor);
+	}
+
+	updateStart()
+	{
+		this.skimmers = new WeakSet;
 	}
 
 	update()

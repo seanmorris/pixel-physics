@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
 
 export class FireSheild extends Sheild
@@ -17,20 +18,28 @@ export class FireSheild extends Sheild
 
 		const invertDamage = event => {
 
+			if(host.args.currentSheild !== Bindable.make(this))
+			{
+				return;
+			}
+
 			event.preventDefault();
 
 			const other = event.detail.other;
 
 			other && other.pop && other.pop(host);
 
-			this.onNextFrame(() => host.inventory.remove(this));
+			this.onNextFrame(() => {
+				host.args.currentSheild = null;
+				host.inventory.remove(this)
+			});
 
 			host.removeEventListener('damage', invertDamage);
 
 			host.startle();
 		};
 
-		host.addEventListener('damage', invertDamage, {once: true});
+		host.addEventListener('damage', invertDamage);
 	}
 
 	update(host)
@@ -48,10 +57,22 @@ export class FireSheild extends Sheild
 				this.initSample.play();
 			}
 		}
+
+		if(!host.public.falling)
+		{
+			this.power = 15;
+		}
 	}
 
 	hold_4(host, button)
 	{
+		if(this.power <= 0)
+		{
+			return;
+		}
+
+		this.power--;
+
 		if(host.canFly)
 		{
 			return;
@@ -82,6 +103,13 @@ export class FireSheild extends Sheild
 
 	hold_5(host, button)
 	{
+		if(this.power <= 0)
+		{
+			return;
+		}
+
+		this.power--;
+
 		if(host.canFly)
 		{
 			return;

@@ -6,6 +6,9 @@ import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 
+import { WoodenCrate } from '../actor/WoodenCrate';
+import { SteelCrate } from '../actor/SteelCrate';
+
 export class Monitor extends PointActor
 {
 	constructor(...args)
@@ -48,6 +51,11 @@ export class Monitor extends PointActor
 
 	collideA(other, type)
 	{
+		if(other instanceof WoodenCrate || other instanceof SteelCrate)
+		{
+			return false;
+		}
+
 		super.collideA(other, type);
 
 		if(type !== 2

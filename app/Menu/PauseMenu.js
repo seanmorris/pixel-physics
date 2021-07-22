@@ -18,9 +18,14 @@ export class PauseMenu extends Menu
 		this.args.animation = '';
 
 		this.args.items = {
-			'Continue': { callback: () => parent.unpauseGame() }
+			Continue: { callback: () => parent.unpauseGame() }
+			, Reset: { callback: () => {
+				parent.unpauseGame();
+				parent.reset();
+				parent.startLevel();
+			} }
 			, Settings: SettingsMenu(parent)
-			, 'Quit': {
+			, Quit: {
 				children: {
 					'No': { callback: () => this.args.items.back.callback() }
 					, 'Yes': { callback: () => {

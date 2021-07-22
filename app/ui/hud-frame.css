@@ -28,12 +28,11 @@
 	justify-content: center;
 }
 
-
 .hud-top-left {
 	display: block;
 	position: absolute;
 	top: 0.75em;
-	left: 0.75em;
+	left: 1.25em;
 	right: 0;
 	display: flex;
 	flex-direction: column;

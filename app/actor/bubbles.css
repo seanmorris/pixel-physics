@@ -30,18 +30,15 @@
 
 .actor-item.actor-bubbles .bubbles-flame {
 	position: absolute;
-	top: 0;
-	width: 100%;
-	height: 100%;
+	top: 48px;
+	left: 3px;
+	width: 12px;
+	height: 8px;
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
-	background-image: url(/Sonic/bubbles.png);
+	background-image: url(/Sonic/bubbles-flame.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: bubbles-boost steps(2) infinite 55ms;
-}
-
-.actor-item.actor-bubbles[data-animation="aiming"] .sprite:after {
-	--sprite-offset-x: -64px;
+	animation: bubbles-flame-flicker 100ms ease-out infinite forwards;
 }
 
 @keyframes bubbles-spin {
@@ -54,6 +51,15 @@
 }
 
 @keyframes bubbles-fade {
+	from{
+		opacity: 1;
+	}
+	to{
+		opacity: 0;
+	}
+}
+
+@keyframes bubbles-flame-flicker {
 	from{
 		opacity: 1;
 	}

@@ -16,7 +16,8 @@
 	left: 0;
 	background-image: var(--sprite-sheet);
 	transition: background-image 0.5s ease-out;
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	background-position-x: var(--sprite-offset-x);
+	background-position-y: var(--sprite-offset-y);
 	height: 100%;
 	width: 100%;
 	--sprite-offset-x: 0px;
@@ -85,6 +86,7 @@
 .actor-item.actor-sonic[data-animation="running"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
+	background-position-y: var(--sprite-offset-y);
 	animation: sonic-run steps(4) infinite 128ms;
 }
 
@@ -239,8 +241,10 @@
 }
 
 .actor-item.actor-sonic[data-animation="grinding"] .sprite:after {
-	--sprite-offset-x: -0px;
+	top: 2px;
+	/*--sprite-offset-x: -0px;*/
 	--sprite-offset-y: -832px;
+	animation: sonic-run steps(4) infinite 128ms forwards;
 }
 
 .actor-item.actor-sonic[data-animation="hanging"] .sprite:after {
@@ -254,7 +258,7 @@
 	animation: super-sonic-flicker steps(10) infinite 1s alternate;
 }
 
-@-webkit-keyframes sonic-animate {
+@keyframes sonic-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -263,7 +267,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-walk {
+@keyframes sonic-walk {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -272,7 +276,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-run {
+@keyframes sonic-run {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -281,7 +285,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-jump {
+@keyframes sonic-jump {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -290,7 +294,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-jump-alt {
+@keyframes sonic-jump-alt {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -299,7 +303,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-wall-stick {
+@keyframes sonic-wall-stick {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -308,7 +312,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-drop {
+@keyframes sonic-drop {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -317,7 +321,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-spindash {
+@keyframes sonic-spindash {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -326,7 +330,7 @@
 	}
 }
 
-@-webkit-keyframes sonic-flicker {
+@keyframes sonic-flicker {
 	from{
 		filter: brightness(1);
 	}
@@ -338,7 +342,7 @@
 	}
 }
 
-@-webkit-keyframes super-sonic-flicker {
+@keyframes super-sonic-flicker {
 	from{
 		filter: brightness(0.85);
 	}

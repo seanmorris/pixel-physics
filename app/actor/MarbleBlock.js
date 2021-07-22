@@ -10,6 +10,8 @@ export class MarbleBlock extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
+
+		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 	}
 
 	update()
@@ -94,8 +96,6 @@ export class MarbleBlock extends PointActor
 
 				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
 				{
-					// this.args.x += nextPosition[0] || moveBy;
-
 					const otherRadius = other.args.width;
 					const myRadius = this.args.width / 2;
 
