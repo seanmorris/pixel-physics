@@ -328,8 +328,6 @@ export class TileMap
 			{
 				const nextTileset = this.mapData.tilesets[Number(i) + 1];
 
-				let src;
-
 				if(nextTileset)
 				{
 					if(tileNumber + 1 < nextTileset.firstgid)

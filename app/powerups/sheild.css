@@ -26,7 +26,7 @@
 	width: 48px;
 	height: 48px;
 	background-position: -48px 0;
-	animation: water-sheild-rotate 0.5s steps(9) infinite reverse;
+	animation: water-sheild-rotate 0.5s steps(9) infinite;
 }
 
 .super-sheild {
@@ -185,6 +185,7 @@
 	top: 24px;
 }
 
+[data-animation=springdash] .electric-sheild,
 [data-animation=lightdash] .electric-sheild,
 [data-animation=lightdash-back] .electric-sheild ,
 [data-animation=airdash] .electric-sheild {
@@ -192,12 +193,14 @@
 	top: 10px;
 }
 
-[data-animation=airdash-back] .fire-sheild.boosted,
-[data-animation=lightdash-back] .fire-sheild.boosted {
-	left: -12px;
-	top: 10px;
+[data-animation=springdash] .fire-sheild,
+[data-animation=airdash-back] .fire-sheild,
+[data-animation=lightdash-back] .fire-sheild {
+	left: 8px;
+	top: 8px;
 }
 
+[data-animation=springdash] .fire-sheild.boosted,
 [data-animation=lightdash] .fire-sheild.boosted,
 [data-animation=airdash] .fire-sheild.boosted {
 	left: -0px;
@@ -226,6 +229,7 @@
 	top: 24px;
 }
 
+[data-animation=springdash] .bubble-sheild,
 [data-animation=lightdash-back] .bubble-sheild,
 [data-animation=lightdash] .bubble-sheild,
 [data-animation=airdash] .bubble-sheild {

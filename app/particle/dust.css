@@ -14,6 +14,25 @@
 	opacity: 0.75;
 }
 
+.particle-skim {
+	background-image: url(/Sonic/skim-splash.png);
+
+	width: 48px;
+	height: 16px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--animation-steps: 4;
+	--animation-width: 48px;
+
+	transform: translate(-50%, -100%) scaleX(var(--flip, 1)) !important;
+
+	animation:
+		particle-animate steps(var(--animation-steps)) infinite 256ms
+		, particle-fade ease-out 1 256ms forwards
+	;
+}
+
 .particle-sparks {
 
 	background-image: url(/Sonic/mecha-sparks.png);

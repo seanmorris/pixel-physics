@@ -1,5 +1,7 @@
-import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
+
+import { PointActor } from './PointActor';
+import { MiniMace } from './MiniMace';
 
 export class RedEyeJet extends PointActor
 {
@@ -15,13 +17,14 @@ export class RedEyeJet extends PointActor
 
 		this.args.float = -1;
 
-		this.args.phase = 'attacking';
+		this.args.phase = 'intro';
 
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
 
 		this.ignores = new Map;
 
+		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
 		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 	}
 
@@ -55,11 +58,6 @@ export class RedEyeJet extends PointActor
 			this.hitSound.play();
 		}
 
-		if(this.args.phase === 'damaged' || this.args.phase === 'braking')
-		{
-			return true;
-		}
-
 		if(!this.args.falling && this.args.phase !== 'exploding')
 		{
 			if(!(other.args.jumping || other.args.rolling || other.dashed))
@@ -75,9 +73,15 @@ export class RedEyeJet extends PointActor
 			const viewport = this.viewport;
 
 			viewport.onFrameOut(80, () => {
+				this.box.setAttribute('data-phase', 'exploded');
 				this.args.falling = true;
 				this.args.ySpeed  = -12;
 				this.noClip = true;
+				if(this.viewport.args.audio)
+				{
+					this.dieSound.volume = 0.5;
+					this.dieSound.play();
+				}
 			});
 
 			viewport.onFrameOut(100, () => {
@@ -98,39 +102,13 @@ export class RedEyeJet extends PointActor
 				this.viewport.controlActor.readInput();
 			});
 
-			viewport.onFrameOut(225, () => {
-				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
-				this.viewport.controlActor.readInput();
-				this.args.phase = 'done';
-			});
-			viewport.onFrameOut(226, () => {
-				this.viewport.controlActor.controller.replay({buttons: [1,1,0,0,0,0]});
-				this.viewport.controlActor.readInput();
-			});
-			viewport.onFrameOut(245, () => {
-				this.viewport.controlActor.controller.replay({buttons: [0,1,0,0,0,0]});
-				this.viewport.controlActor.readInput();
+			viewport.onFrameOut(211, () => {
+				this.viewport.controlActor.dropDashCharge = 30;
 			});
 			viewport.onFrameOut(285, () => {
 				this.viewport.controlActor.controller.replay({buttons: [0,0,0,0,0,0]});
 				this.viewport.controlActor.readInput();
-			});
-
-			viewport.onFrameOut(300, () => {
-				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
-				this.viewport.controlActor.readInput();
-			});
-			viewport.onFrameOut(301, () => {
-				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,0]});
-				this.viewport.controlActor.readInput();
-			});
-			viewport.onFrameOut(345, () => {
-				this.viewport.controlActor.controller.replay({buttons: [1,0,0,0,0,1]});
-				this.viewport.controlActor.readInput();
-			});
-			viewport.onFrameOut(346, () => {
-				this.viewport.controlActor.controller.replay({buttons: [0,0,0,0,0,0]});
-				this.viewport.controlActor.readInput();
+				this.args.phase = 'done';
 			});
 
 			viewport.onFrameOut(500, () => {
@@ -149,14 +127,35 @@ export class RedEyeJet extends PointActor
 			return true;
 		}
 
+		const xBounce = Math.max(Math.abs(other.args.xSpeed), Math.abs(this.args.xSpeed));
+
+		console.log(xBounce);
+
+		if(this.args.falling)
+		{
+			this.args.xSpeed = other.args.xSpeed;
+		}
+
 		if(type === 1)
 		{
+			other.args.xSpeed = -xBounce * 1.25;
 			other.args.x = this.x - (this.args.width / 2);
+
+			if(other.args.xSpeed < -7)
+			{
+				other.args.xSpeed = -7;
+			}
 		}
 
 		if(type === 3)
 		{
+			other.args.xSpeed = xBounce * 1.25;
 			other.args.x = this.x + (this.args.width / 2);
+
+			if(other.args.xSpeed > 7)
+			{
+				other.args.xSpeed = 7;
+			}
 		}
 
 		if(type === 1 || type === 3 || type === 0)
@@ -180,14 +179,7 @@ export class RedEyeJet extends PointActor
 					this.args.phase = 'dead';
 				}
 
-				this.viewport.onFrameOut(10, () => {
-					if(this.args.hitPoints > 0)
-					{
-						this.args.phase = 'braking';
-					}
-				});
-
-				this.viewport.onFrameOut(120, () => {
+				this.viewport.onFrameOut(40, () => {
 					if(this.args.hitPoints > 0)
 					{
 						this.args.animation = 'attacking';
@@ -205,24 +197,6 @@ export class RedEyeJet extends PointActor
 					}
 				});
 			}
-
-			if(this.args.falling)
-			{
-				this.args.xSpeed = other.args.xSpeed * 1.5;
-			}
-
-			other.args.xSpeed *= -1;
-
-			if(type === 1 || type === 3)
-			{
-				if(Math.abs(other.args.xSpeed) < 5)
-				{
-					other.args.xSpeed = Math.sign(other.args.xSpeed) * 5;
-				}
-			}
-
-			other.args.falling = true;
-			other.args.float   = other.args.float || 1;
 
 			if(type === 0)
 			{
@@ -266,6 +240,46 @@ export class RedEyeJet extends PointActor
 
 	update()
 	{
+		if(this.args.phase === 'intro')
+		{
+			this.args.maxSpeed  = 9;
+
+			for(const mace of this.hanging.get(MiniMace))
+			{
+				mace.args.x = this.x
+				mace.args.y = this.y + 16;
+				mace.args.float = -1;
+			}
+
+			if(Math.abs(this.viewport.controlActor.x - this.x) < 8 && this.y < this.viewport.controlActor.y)
+			{
+				this.args.phase = 'attacking';
+			}
+		}
+
+		if(this.args.phase === 'attacking')
+		{
+			this.args.maxSpeed  = 9;
+
+			for(const mace of this.hanging.get(MiniMace))
+			{
+				mace.args.float = 0;
+			}
+
+			if(Math.abs(this.viewport.controlActor.x - this.x) > 256)
+			{
+				this.args.phase = 'chasing';
+			}
+		}
+
+		if(this.args.phase === 'chasing')
+		{
+			if(Math.abs(this.viewport.controlActor.x - this.x) < 8 && this.y < this.viewport.controlActor.y)
+			{
+				this.args.phase = 'attacking';
+			}
+		}
+
 		for(const [object, timeout] of this.ignores)
 		{
 			if(timeout <= 0)
@@ -308,25 +322,39 @@ export class RedEyeJet extends PointActor
 			return;
 		}
 
-		if(this.args.phase === 'braking')
+		if(this.args.phase === 'damaged')
 		{
 			this.args.xSpeed *= 0.999;
 		}
 
-		if(0 < this.x - this.viewport.controlActor.x)
+		if(this.x - this.viewport.controlActor.x > 0)
 		{
-			this.box.setAttribute('data-looking', 'far-left');
-
-			if(128 < this.x - this.viewport.controlActor.x || this.viewport.controlActor.args.direction !== -1)
+			if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
+			{
+				this.box.setAttribute('data-looking', 'far-left');
+			}
+			else if(this.viewport.controlActor.args.direction === -1)
+			{
+				this.box.setAttribute('data-looking', 'far-left');
+			}
+			else
 			{
 				this.box.setAttribute('data-looking', 'left');
 			}
 		}
-		else if(0 > this.x - this.viewport.controlActor.x)
+		else if(this.x - this.viewport.controlActor.x < 0)
 		{
 			this.box.setAttribute('data-looking', 'far-right');
 
-			if(-128 > this.x - this.viewport.controlActor.x || this.viewport.controlActor.args.direction !== 1)
+			if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
+			{
+				this.box.setAttribute('data-looking', 'far-right');
+			}
+			else if(this.viewport.controlActor.args.direction === 1)
+			{
+				this.box.setAttribute('data-looking', 'far-right');
+			}
+			else
 			{
 				this.box.setAttribute('data-looking', 'right');
 			}
@@ -343,8 +371,13 @@ export class RedEyeJet extends PointActor
 
 		if(this.args.hitPoints)
 		{
-			if(this.args.phase === 'attacking')
+			if(['attacking', 'intro', 'chasing'].includes(this.args.phase))
 			{
+				if(Math.abs(this.x - this.viewport.controlActor.x) > 768)
+				{
+					this.args.x = this.viewport.controlActor.x + Math.sign(this.x - this.viewport.controlActor.x) * 768;
+				}
+
 				this.args.xSpeed += -Math.sign(this.x - this.viewport.controlActor.x) * 0.35;
 			}
 		}
@@ -357,6 +390,22 @@ export class RedEyeJet extends PointActor
 		else
 		{
 			this.args.float = 0;
+		}
+
+
+		if(this.args.phase === 'intro' || this.args.phase === 'attacking')
+		{
+			this.args.maxSpeed  = 9;
+		}
+
+		if(this.args.phase === 'chasing')
+		{
+			this.args.maxSpeed = Math.min(21, Math.abs(this.viewport.controlActor.x - this.x));
+
+			for(const mace of this.hanging.get(MiniMace))
+			{
+				mace.args.xSpeed = this.args.xSpeed;
+			}
 		}
 
 		if(Math.abs(this.args.xSpeed) > this.args.maxSpeed)
@@ -372,13 +421,19 @@ export class RedEyeJet extends PointActor
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
-		this.eye = new Tag(`<div class = "orange-eye">`);
+		this.body = new Tag(`<div class = "body-center">`);
+		this.bodyL = new Tag(`<div class = "body-left">`);
+		this.bodyR = new Tag(`<div class = "body-right">`);
 		this.fireA = new Tag(`<div class = "boost-fire boost-fire-left">`);
 		this.fireB = new Tag(`<div class = "boost-fire boost-fire-right">`);
+		this.eye = new Tag(`<div class = "orange-eye">`);
 
-		this.box.appendChild(this.eye.node);
+		this.box.appendChild(this.body.node);
+		this.box.appendChild(this.bodyL.node);
+		this.box.appendChild(this.bodyR.node);
 		this.box.appendChild(this.fireA.node);
 		this.box.appendChild(this.fireB.node);
+		this.box.appendChild(this.eye.node);
 	}
 
 	get solid() { return true; }

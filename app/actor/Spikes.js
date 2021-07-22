@@ -27,7 +27,6 @@ export class Spikes extends PointActor
 		if(type === 0)
 		{
 			other.controllable && other.damage();
-			other.args.ySpeed = -Math.abs(other.args.ySpeed);
 		}
 
 		return true;

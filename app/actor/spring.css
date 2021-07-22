@@ -14,7 +14,7 @@
 	height: 32px;
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -13px;
-	transition: background 0.0s 0.2s steps(2);
+	transition: background 0.0s 0.125s steps(2);
 }
 
 .actor-item.actor-spring .spring-pad {

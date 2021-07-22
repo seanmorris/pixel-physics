@@ -1,7 +1,8 @@
-import { Flickie } from './Flickie';
-
 import { Mixin } from 'curvature/base/Mixin';
 import { Tag } from 'curvature/base/Tag';
+
+import { Flickie } from './Flickie';
+
 import { PointActor } from './PointActor';
 
 import { SkidDust } from '../behavior/SkidDust';
@@ -59,6 +60,10 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 
 		this.autoAttr.get(this.box)['data-gold'] = 'gold';
 		this.autoAttr.get(this.box)['data-fade'] = 'fade';
+
+		this.chain = new Tag('<div class = "bubbles-flame">');
+
+		this.sprite.appendChild(this.chain.node);
 	}
 
 	update()

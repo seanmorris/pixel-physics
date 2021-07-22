@@ -14,7 +14,8 @@
 }
 
 .screen-card.screen-card-pause-menu li {
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0,0,0,0.75);
+	box-shadow: 0em 0.05em 0.25em rgba(255,255,255,0.25);
 	margin: 1em;
 	text-align: center;
 	list-style: none;
@@ -40,4 +41,8 @@
 .pause-menu-hide {
 	opacity: 0;
 	pointer-events: none !important;
+}
+
+section.pause-menu {
+	z-index: 1001;
 }

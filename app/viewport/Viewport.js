@@ -351,6 +351,7 @@ export class Viewport extends View
 		this.regions = new Set;
 		this.spawn   = new Set;
 		this.auras   = new Set;
+		this.recent  = new Set;
 
 		this.actorsById = {};
 
@@ -603,6 +604,7 @@ export class Viewport extends View
 		});
 
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
+		this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
 
 		this.listen(this.tags.frame, 'click', (event) => {
 			if(event.target === this.tags.frame.node)
@@ -1359,12 +1361,6 @@ export class Viewport extends View
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
-		this.tags.regionBox.style({
-			'--x': Number(this.args.x).toFixed(1)
-			, '--y': Number(this.args.y).toFixed(1)
-			, '--outlineWidth': this.settings.outline + 'px'
-		});
-
 		const xMod = this.args.x <= 0
 			? (this.args.x % (this.args.blockSize))
 			: (-this.args.blockSize + (this.args.x % this.args.blockSize)) % this.args.blockSize;
@@ -2015,47 +2011,55 @@ export class Viewport extends View
 			let wakeActors = false;
 			let wakeRegions = false;
 
-			// const nearbyActors = this.nearbyActors(this.controlActor) || [];
+			const nearbyActors = this.nearbyActors(this.controlActor) || [];
 
-			for(const a in this.actors.list)
+			// for(const region of this.regions)
+
+			for(const actorList of [nearbyActors, this.regions])
 			{
-				const actor = this.actors.list[a];
-
-				if(!actor)
+				for(const actor of actorList)
 				{
-					continue;
-				}
+					const actorIsOnScreen = this.actorIsOnScreen(actor);
 
-				const actorIsOnScreen = this.actorIsOnScreen(actor);
-
-				if(actorIsOnScreen && !(actor instanceof LayerSwitch))
-				{
-					actor.args.display = 'initial';
-
-					if(!actor.vizi)
+					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
 					{
-						if(!actor.public.hidden)
+						actor.args.display = 'initial';
+
+						if(!actor.vizi)
 						{
-							if(actor instanceof Region)
+							if(!actor.public.hidden)
 							{
-								actor.nodes.map(n => actorDoc.append(n));
-								wakeActors = true;
+								if(actor instanceof Region)
+								{
+									actor.nodes.map(n => actorDoc.append(n));
+									wakeActors = true;
+								}
+								else
+								{
+									actor.nodes.map(n => actorDoc.append(n));
+									wakeActors = true;
+								}
 							}
-							else
-							{
-								actor.nodes.map(n => actorDoc.append(n));
-								wakeActors = true;
-							}
+
+							actor.wakeUp();
 						}
 
-						actor.wakeUp();
+						this.willDetach.delete(actor);
+
+						actor.vizi = true;
 					}
 
-					this.willDetach.delete(actor);
+					inAuras.add(actor);
 
-					actor.vizi = true;
+					this.recent.add(actor);
 				}
-				else if(actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen)
+			}
+
+			for(const actor of this.recent)
+			{
+				const actorIsOnScreen = this.actorIsOnScreen(actor);
+
+				if(actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen)
 				{
 					this.willDetach.set(actor, () => {
 
@@ -2070,10 +2074,11 @@ export class Viewport extends View
 						actor.willhide = null;
 
 						this.willDetach.delete(actor);
-					});
-				}
 
-				inAuras.add(actor);
+					});
+
+					this.recent.delete(actor);
+				}
 			}
 
 			if(wakeActors)
@@ -2231,14 +2236,14 @@ export class Viewport extends View
 
 		const actors = [];
 
-		this.getNearbyColCells({x,y}).forEach(cell => {
-
+		for(const cell of this.getNearbyColCells({x,y}))
+		{
 			for(const actor of cell)
 			{
-				if(actor.removed)
-				{
-					continue;
-				}
+				// if(actor.removed)
+				// {
+				// 	continue;
+				// }
 
 				const actorArgs = actor.public;
 
@@ -2270,7 +2275,7 @@ export class Viewport extends View
 					}
 				}
 			}
-		});
+		}
 
 		actorPointCache.set(cacheKey, actors);
 

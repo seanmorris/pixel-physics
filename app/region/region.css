@@ -57,7 +57,7 @@
 	position: absolute;
 	left:   0;
 	right:  0;
-	top:    12px;
+	top:    14px;
 	bottom: 64px;
 }
 
@@ -94,7 +94,7 @@
 	position: absolute;
 	left:   0;
 	right:  0;
-	top:    3px;
+	top:    12px;
 	bottom: 65px;
 }
 
@@ -124,23 +124,26 @@
 	content: '.';
 	color: transparent;
 	background-image: url(Sonic/water-surface-wave.png);
+	background-position: 0px 0px;
 	position: absolute;
 
-	width: 100%;
 	opacity: min(var(--height), 0.5);
+
+	width: calc(100% + 2px);
+
+	left: calc(-1px);
 	height: 16px;
-
-	background-position: 0px 0px;
-
+	top: 8px;
 
 	/*animation:  100ms steps(1,end) infinite;
 	background-position-x: 0px;
 	background-position-y: 32px;*/
 	animation-name: water-waves-frames, water-waves-flow;
-	animation-timing-function: steps(3), linear;
+	animation-timing-function: steps(3), ease-in-out;
 	animation-iteration-count: infinite, infinite;
-	animation-duration: 0.75s, 1.5s;
-
+	animation-duration: 1400ms, 2800ms;
+	animation-direction: normal, alternate;
+	animation-delay: 0ms, 0ms;
 }
 
 @keyframes water-waves-frames {
@@ -157,6 +160,6 @@
 		background-position-x: 0px;
 	}
 	100% {
-		background-position-x: 32px;
+		background-position-x: 96px;
 	}
 }

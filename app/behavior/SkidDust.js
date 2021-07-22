@@ -23,7 +23,14 @@ export class SkidDust extends Behavior
 			return;
 		}
 
-		if(Math.sign(host.public.gSpeed) === direction)
+		const direction = host.public.direction;
+
+		if(!Math.sign(host.public.gSpeed) || !Math.sign(direction))
+		{
+			return;
+		}
+
+		if(Math.sign(host.public.gSpeed) === Math.sign(direction))
 		{
 			return;
 		}
@@ -38,9 +45,6 @@ export class SkidDust extends Behavior
 			return;
 		}
 
-		host.box.setAttribute('data-animation', 'skidding');
-
-		const direction = host.public.direction;
 		const viewport  = host.viewport;
 
 		if(viewport.args.frameId % 2 !== 0)

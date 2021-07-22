@@ -14,7 +14,7 @@ export class Orb extends Mixin.from(PointActor)
 		this.args.height  = 48;
 		this.args.rolled  = 0;
 
-		// this.args.decel = 0;
+		this.args.decel = 0;
 
 		this.args.bindTo('x', (v,k,t,d,p) => this.args.rolled += Number(v - p || 0));
 
@@ -35,8 +35,8 @@ export class Orb extends Mixin.from(PointActor)
 
 		const other = this.viewport.controlActor;
 
-		const speedMag  = Math.max(Math.abs(this.args.gSpeed) || Math.abs(other.args.gSpeed), 1);
-		const speedSign = Math.sign(this.args.gSpeed || other.args.gSpeed);
+		const speedMag  = Math.max(Math.abs(this.args.gSpeed) || Math.abs(other.args.gSpeed), 14);
+		const speedSign = Math.sign(this.args.gSpeed || this.gSpeedLast || other.args.gSpeed);
 
 		const xSpace = this.x - other.x;
 

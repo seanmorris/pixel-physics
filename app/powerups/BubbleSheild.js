@@ -29,14 +29,17 @@ export class BubbleSheild extends Sheild
 
 			other && other.pop && other.pop(host);
 
-			this.onNextFrame(() => host.inventory.remove(this));
+			this.onNextFrame(() => {
+				host.args.currentSheild = null;
+				host.inventory.remove(this)
+			});
 
 			host.removeEventListener('damage', invertDamage);
 
 			host.startle();
 		};
 
-		host.addEventListener('damage', invertDamage, {once: true});
+		host.addEventListener('damage', invertDamage);
 	}
 
 	command_0(host, button)

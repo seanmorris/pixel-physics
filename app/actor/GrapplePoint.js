@@ -43,6 +43,8 @@ export class GrapplePoint extends PointActor
 
 			this.args._tiedTo = tiedTo;
 
+			tiedTo.hanging.set(this.constructor, this);
+
 			return;
 		}
 
@@ -154,12 +156,14 @@ export class GrapplePoint extends PointActor
 		other.args.ySpeed = 0;
 		other.args.gSpeed = 0;
 
-		other.args.ignore = other.args.float = -1;
+		other.args.ignore = -4;
+		other.args.float =  -1;
 
 		other.args.x = this.x;
 		other.args.y = this.y + other.args.height;
 
 		other.args.hangingFrom = this;
+		other.args.jumping = false;
 
 		// this.dispatchEvent(new CustomEvent('hooked'), {detail: {
 		// 	hook: this, subject: other
@@ -221,14 +225,23 @@ export class GrapplePoint extends PointActor
 
 		hooked.args.y++;
 
-		hooked.args.xSpeed += tiedTo.xSpeedLast ?? 0;
-		hooked.args.ySpeed += tiedTo.ySpeedLast ?? 0;
+		hooked.args.xSpeed += this.xSpeedLast ?? 0;
+		hooked.args.ySpeed += this.ySpeedLast ?? 0;
+		// if(tiedTo.xSpeedLast || tiedTo.ySpeedLast)
+		// {
+		// 	hooked.args.xSpeed += tiedTo.xSpeedLast ?? 0;
+		// 	hooked.args.ySpeed += tiedTo.ySpeedLast ?? 0;
+		// }
+		// else
+		// {
+		// }
 
 		hooked.args.hangingFrom = null;
 
 		this.ignoreOthers.add(hooked);
 
 		hooked.args.falling = true;
+		hooked.args.jumping = true;
 
 		this.viewport.onFrameOut(15, () => {
 			this.ignoreOthers.delete(hooked);

@@ -4,8 +4,6 @@ import { Tag } from 'curvature/base/Tag';
 
 export class ForceRegion extends Region
 {
-	isWater = true;
-
 	constructor(...args)
 	{
 		super(...args);

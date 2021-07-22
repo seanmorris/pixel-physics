@@ -90,8 +90,8 @@
 	transition: transform var(--break-speed) ease-out;
 	--halfX: calc(var(--width, 32) * 0.5px);
 	--halfY: calc(var(--height, 32) * 0.5px);
-	--centerX: calc(calc(var(--sprite-x) + -1) * calc(var(--width, 32) * -1px));
-	--centerY: calc(calc(var(--sprite-y) + 0) * calc(var(--width, 32) * -1px));
+	--centerX: calc(var(--sprite-x) * calc(var(--width, 32) * -1px));
+	--centerY: calc(var(--sprite-y) * calc(var(--width, 32) * -1px));
 	width: var(--halfX);
 	height: var(--halfY);
 }
@@ -101,7 +101,7 @@
 	background-position-y: calc(var(--centerY) + 0px);
 	top: 0px;
 	left: 0px;
-	transform: translate(calc(-1 * var(--spread)), calc(-1 * var(--spread)));
+	transform: scale(1.01) translate(calc(-1 * var(--spread)), calc(-1 * var(--spread)));
 }
 
 .actor-item.actor-breakable-block .fragment-top-right {
@@ -109,7 +109,7 @@
 	background-position-y: calc(var(--centerY) + 0px);
 	top: 0px;
 	left: calc(var(--width) * 0.5px);
-	transform: translate(var(--spread), calc(-1 * var(--spread)));
+	transform: scale(1.01) translate(var(--spread), calc(-1 * var(--spread)));
 }
 
 .actor-item.actor-breakable-block .fragment-bottom-left {
@@ -117,7 +117,7 @@
 	background-position-y: calc(var(--centerY) - var(--halfY));
 	top: calc(var(--height) * 0.5px);
 	left: 0px;
-	transform: translate(calc(-1 * var(--spread)), var(--spread));
+	transform: scale(1.01) translate(calc(-1 * var(--spread)), var(--spread));
 }
 
 .actor-item.actor-breakable-block .fragment-bottom-right {
@@ -125,7 +125,7 @@
 	background-position-y: calc(var(--centerY) - var(--halfY));
 	top: calc(var(--height) * 0.5px);
 	left: calc(var(--width) * 0.5px);
-	transform: translate(var(--spread), var(--spread));
+	transform: scale(1.01) translate(var(--spread), var(--spread));
 }
 
 .actor-item.actor-block {
@@ -143,7 +143,8 @@
 
 .actor-item.actor-block .sprite,
 .actor-item.actor-block-marble .sprite {
-	background-image: url(/Sonic/marble-zone-block.png);
+	/*background-image: url(/Sonic/marble-zone-block.png);*/
+	background-image: var(--sprite-sheet, url(/Sonic/marble-zone-block.png));
 	background-position-x: calc(var(--sprite-x) * 32);
 	background-position-y: calc(var(--sprite-y) * 32);
 	background-repeat: repeat;

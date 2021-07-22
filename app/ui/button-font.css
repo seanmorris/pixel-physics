@@ -3,8 +3,8 @@
 	background-position: 50% 50% !important;
 	background-size: 100% 100%;
 	width: 28px;
-	height: 20px;
-	transform: translateY(-8px);
+	/*height: 20px;
+	transform: translateY(-8px);*/
 }
 
 .input-generic .hud-character[data-value="9913"] {

@@ -258,8 +258,8 @@ export class Sonic extends PointActor
 		}
 		else if(!falling)
 		{
-			const direction = this.public.direction;
-			const gSpeed    = this.public.gSpeed;
+			const direction = this.args.direction;
+			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.public.gSpeedMax;
 
@@ -269,9 +269,10 @@ export class Sonic extends PointActor
 			{
 				this.args.animation = 'spindash';
 			}
-			else if(!this.public.rolling)
+			else if(!this.args.rolling)
 			{
-				if(Math.sign(this.public.gSpeed) !== direction && this.public.gSpeed)
+
+				if(Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
 				{
 					this.args.animation = 'skidding';
 				}
@@ -719,6 +720,8 @@ export class Sonic extends PointActor
 
 	release_1() // spindash
 	{
+		this.dropDashCharge = 0;
+
 		if(!this.spindashCharge)
 		{
 			return;
@@ -1024,6 +1027,8 @@ export class Sonic extends PointActor
 
 	collect(pickup)
 	{
+		super.collect(pickup);
+
 		if(pickup instanceof Ring)
 		{
 			if(this.lightDashing)

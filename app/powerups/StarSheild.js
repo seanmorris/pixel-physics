@@ -55,18 +55,15 @@ export class StarSheild extends Sheild
 			return;
 		}
 
-		if(viewport.args.frameId % 3)
-		{
-			return;
-		}
-
 		const particle = new Tag('<div class = "particle-stars">');
 
 		const point = host.rotatePoint(host.args.gSpeed, (host.args.height / 2));
 
+		const dashed = host.dashed || host.args.animation === 'springdash';
+
 		particle.style({
 			'--x': point[0] + host.x + -4 + host.args.xSpeed
-			, '--y': point[1] + host.y + (host.dashed ? -18 : 0) + host.args.ySpeed
+			, '--y': point[1] + host.y + (dashed ? -18 : 0) + host.args.ySpeed
 			, '--frame': this.frame++
 			, 'z-index': -1
 			, opacity: Math.random() * 2

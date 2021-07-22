@@ -2,6 +2,7 @@
 	--scale: 1;
 	--xyz: calc(-14px * var(--scale));
 	display: inline;
+	vertical-align: middle;
 	/*contain: strict;*/
 }
 
@@ -13,7 +14,7 @@
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;
 	height: calc(12px * var(--scale));
 	width: calc(8px * var(--scale));
-	font-size: calc(8px * var(--scale));
+	font-size: calc(12px * var(--scale));
 	overflow: hidden;
 	color: rgba(0,0,0,0);
 }

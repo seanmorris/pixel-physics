@@ -15,6 +15,17 @@ export const Constrainable = {
 			const tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
 
 			this.args._tiedTo = tiedTo;
+
+			if(!tiedTo.hanging.has(this.constructor))
+			{
+				tiedTo.hanging.set(this.constructor, new Set);
+			}
+
+			const hangList = tiedTo.hanging.get(this.constructor);
+
+			hangList.add(this);
+
+			this.onRemove(() => hangList.delete(this));
 		}
 	}
 

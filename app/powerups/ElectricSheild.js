@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
 
 export class ElectricSheild extends Sheild
@@ -21,20 +22,28 @@ export class ElectricSheild extends Sheild
 
 		const invertDamage = event => {
 
+			if(host.args.currentSheild !== Bindable.make(this))
+			{
+				return;
+			}
+
 			event.preventDefault();
 
 			const other = event.detail.other;
 
 			other && other.pop && other.pop(host);
 
-			this.onNextFrame(() => host.inventory.remove(this));
+			this.onNextFrame(() => {
+				host.args.currentSheild = null;
+				host.inventory.remove(this)
+			});
 
 			host.removeEventListener('damage', invertDamage);
 
 			host.startle();
 		};
 
-		host.addEventListener('damage', invertDamage, {once: true});
+		host.addEventListener('damage', invertDamage);
 	}
 
 	command_0(host, button)

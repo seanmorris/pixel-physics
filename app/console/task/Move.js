@@ -17,5 +17,10 @@ export class Move extends Task
 
 		actor.args.x = Number(x);
 		actor.args.y = Number(y);
+
+		if(actor.viewport)
+		{
+			actor.viewport.setColCell(actor);
+		}
 	}
 }
