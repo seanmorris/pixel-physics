@@ -18,6 +18,7 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
+
 }
 
 .actor-item.actor-knuckles[data-animation="standing"] .sprite:after {
@@ -31,13 +32,31 @@
 
 .actor-item.actor-knuckles[data-animation="throw-bomb"] .sprite:after {
 	--sprite-offset-y: -416px;
-	animation: knuckles-jump steps(5) 1 160ms;
+	animation: knuckles-jump steps(5) 1 320ms;
+}
+
+.actor-item.actor-knuckles[data-animation="readying"] .sprite:after {
+	--sprite-offset-y: 0px;
+	--sprite-offset-y: -544px;
+	animation: knuckles-ready steps(3) infinite forwards 360ms;
+}
+
+.actor-item.actor-knuckles[data-animation="jabbing"] .sprite:after {
+	--sprite-offset-y: 0px;
+	--sprite-offset-y: -544px;
+	animation: knuckles-jab steps(1) 1 84ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -352px;
-	animation: knuckles-punch steps(4) 1 192ms;
+	animation: knuckles-punch steps(3) 1 112ms forwards;
+}
+
+.actor-item.actor-knuckles[data-animation="last-punching"] .sprite:after {
+	--sprite-offset-y: 0px;
+	--sprite-offset-y: -544px;
+	animation: knuckles-last-punch steps(2) 1 48ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="walking"] .sprite:after {
@@ -121,12 +140,43 @@
 	}
 }
 
-@keyframes knuckles-punch {
+@keyframes knuckles-ready {
 	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-jab {
+	from{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-punch {
+	from{
+		background-position: calc(-352px + var(--sprite-offset-x)) -544px;
+
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-602px + var(--sprite-offset-x)) -544px;
+
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-last-punch {
+	from{
+		background-position: calc(-576px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-704px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

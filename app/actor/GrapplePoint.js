@@ -76,7 +76,6 @@ export class GrapplePoint extends PointActor
 
 		if(dist >= maxDist)
 		{
-
 			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
 			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
 
@@ -167,10 +166,6 @@ export class GrapplePoint extends PointActor
 		other.args.hangingFrom = this;
 		other.args.jumping = false;
 
-		// this.dispatchEvent(new CustomEvent('hooked'), {detail: {
-		// 	hook: this, subject: other
-		// }});
-
 		if(this.args._tiedTo)
 		{
 			const tiedTo = this.args._tiedTo;
@@ -205,7 +200,7 @@ export class GrapplePoint extends PointActor
 				}
 			};
 
-			this.viewport.onFrameOut(75, drop);
+			this.viewport.onFrameOut(tiedTo.args.flightTime ?? 85, drop);
 			tiedTo.onRemove(drop);
 		}
 	}
@@ -229,14 +224,6 @@ export class GrapplePoint extends PointActor
 
 		hooked.args.xSpeed += this.xSpeedLast ?? 0;
 		hooked.args.ySpeed += this.ySpeedLast ?? 0;
-		// if(tiedTo.xSpeedLast || tiedTo.ySpeedLast)
-		// {
-		// 	hooked.args.xSpeed += tiedTo.xSpeedLast ?? 0;
-		// 	hooked.args.ySpeed += tiedTo.ySpeedLast ?? 0;
-		// }
-		// else
-		// {
-		// }
 
 		hooked.args.hangingFrom = null;
 

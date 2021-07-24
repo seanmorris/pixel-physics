@@ -227,6 +227,7 @@ export class Viewport extends View
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
 		this.args.labelGround = new CharacterString({value:'Grounded: '});
+		this.args.labelCamera = new CharacterString({value:'Camera: '});
 		this.args.labelAngle  = new CharacterString({value:'Gnd theta: '});
 		this.args.labelGSpeed = new CharacterString({value:'Gnd spd: '});
 		this.args.labelXSpeed = new CharacterString({value:'X air spd: '});
@@ -247,6 +248,8 @@ export class Viewport extends View
 		this.args.ySpeed = new CharacterString({value:0});
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
+
+		this.args.cameraMode = new CharacterString({value:0});
 
 		this.args.airAngle   = new CharacterString({value:0});
 
@@ -289,6 +292,15 @@ export class Viewport extends View
 		this.settings.bindTo('showHud',   v => this.args.showHud   = v);
 		this.settings.bindTo('shortcuts', v => this.args.shortcuts = v);
 		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
+
+		this.args.emeralds = [
+			// 'green'
+			// , 'cyan'
+			// , 'white'
+			// , 'orangered'
+			// , 'yellow'
+			// , 'purple'
+		];
 
 		for(const setting in this.settings)
 		{
@@ -738,6 +750,7 @@ export class Viewport extends View
 	startLevel()
 	{
 		this.setZoneCard();
+		this.args.fade = false;
 
 		this.args.startFrameId = this.args.frameId;
 
@@ -767,6 +780,11 @@ export class Viewport extends View
 		}
 
 		this.populateMap();
+
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			layer.args.destroyed = false;
+		}
 
 		if(!this.args.networked)
 		{
@@ -1012,9 +1030,10 @@ export class Viewport extends View
 				const shiftSpeed = 5;
 
 				cameraSpeed = 10;
-				const speedBias = Math.min(Math.max(0.1 * (-shiftSpeed + absSpeed), 0),1) * -Math.sign(xSpeed);
 
-				this.args.xOffsetTarget = 0.5 + speedBias * 0.1;
+				const speedBias = Math.min(absSpeed / 40, 1) * -Math.sign(gSpeed);
+
+				this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
 				this.args.yOffsetTarget = 0.5;
 				break;
 
@@ -1098,7 +1117,7 @@ export class Viewport extends View
 				const absSpeed   = Math.abs(gSpeed);
 				const shiftSpeed = 15;
 
-				const speedBias = Math.min(Math.max(0.1 * Math.max(-shiftSpeed + absSpeed), 0),1) * -Math.sign(gSpeed);
+				const speedBias = Math.min(absSpeed / 25, 1) * -Math.sign(gSpeed);
 
 				switch(this.controlActor.public.mode)
 				{
@@ -1133,11 +1152,7 @@ export class Viewport extends View
 			cameraSpeed = 15;
 		}
 
-		if(Math.abs(this.args.yOffsetTarget - this.args.yOffset) < 0.05)
-		{
-			this.args.yOffset = this.args.yOffsetTarget
-		}
-		else if(cameraSpeed)
+		if(cameraSpeed)
 		{
 			const offsetDiff = this.args.yOffsetTarget - this.args.yOffset;
 
@@ -1148,11 +1163,7 @@ export class Viewport extends View
 			this.args.yOffset = this.args.yOffsetTarget;
 		}
 
-		if(Math.abs(this.args.xOffsetTarget - this.args.xOffset) < 0.05)
-		{
-			this.args.xOffset = this.args.xOffsetTarget
-		}
-		else if(cameraSpeed)
+		if(cameraSpeed)
 		{
 			const offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
 
@@ -1986,8 +1997,8 @@ export class Viewport extends View
 					const modes = ['FLOOR', 'L-WALL', 'CEILING', 'R-WALL'];
 
 					this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
+					this.args.cameraMode.args.value = this.controlActor.args.cameraMode;
 				}
-
 			}
 		}
 
@@ -2475,6 +2486,11 @@ export class Viewport extends View
 		// this.args.frameId   = -1;
 
 		this.tags.viewport.focus();
+
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			layer.args.destroyed = false;
+		}
 	}
 
 	quit()
@@ -2503,6 +2519,11 @@ export class Viewport extends View
 			const actor = this.actors.list[i];
 
 			this.actors.remove(actor);
+		}
+
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			layer.args.destroyed = false;
 		}
 
 		this.args.isRecording = false;

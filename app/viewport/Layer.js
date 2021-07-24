@@ -34,6 +34,16 @@ export class Layer extends View
 		Object.defineProperty(this, 'blockSrcs', {value: new Map});
 
 		this.args.blocks = this.blocks.list;
+
+		this.args.bindTo('destroyed', v => {
+			const viewport = this.args.viewport;
+			const tileMap  = viewport.tileMap;
+			const layerId  = this.args.layerId;
+			const layers   = tileMap.tileLayers;
+			const layerDef = layers[layerId];
+
+			layerDef.destroyed = !!v;
+		});
 	}
 
 	update(tileMap, xDir, yDir)

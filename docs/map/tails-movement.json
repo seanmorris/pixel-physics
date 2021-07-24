@@ -226,6 +226,16 @@
  "orientation":"orthogonal",
  "properties":[
         {
+         "name":"backdrop",
+         "type":"string",
+         "value":"marble-garden"
+        }, 
+        {
+         "name":"theme",
+         "type":"string",
+         "value":"construct"
+        }, 
+        {
          "name":"titlecard-author",
          "type":"string",
          "value":"SEAN MORRIS"

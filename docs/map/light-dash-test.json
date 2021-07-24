@@ -1332,6 +1332,29 @@
                  "width":32,
                  "x":2048,
                  "y":736
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":345,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"sheild-electric-monitor",
+                 "visible":true,
+                 "width":32,
+                 "x":5312,
+                 "y":896
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1468,7 +1491,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":345,
+ "nextobjectid":346,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -1545,15 +1568,15 @@
          "tilewidth":32
         }, 
         {
-         "columns":8,
+         "columns":16,
          "firstgid":2889,
          "image":"chemical-plant-tiles.png",
-         "imageheight":256,
-         "imagewidth":256,
+         "imageheight":512,
+         "imagewidth":512,
          "margin":0,
          "name":"chemical-plant-tiles",
          "spacing":0,
-         "tilecount":64,
+         "tilecount":256,
          "tileheight":32,
          "tilewidth":32
         }],

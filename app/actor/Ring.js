@@ -25,7 +25,7 @@ export class Ring extends PointActor
 		{
 			this.noClip = true;
 		}
-		else if(!this.args.decoration)
+		else if(!this.args.decoration && !this.attract)
 		{
 			this.noClip = false;
 		}
@@ -39,6 +39,16 @@ export class Ring extends PointActor
 		}
 
 		super.update()
+	}
+
+	callCollideHandler(other)
+	{
+		if(other instanceof Ring)
+		{
+			return;
+		}
+
+		return super.callCollideHandler(other);
 	}
 
 	collideA(other)

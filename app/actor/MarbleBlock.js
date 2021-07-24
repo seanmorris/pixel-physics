@@ -14,18 +14,6 @@ export class MarbleBlock extends PointActor
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 	}
 
-	update()
-	{
-		super.update();
-
-		const scan = this.scanBottomEdge();
-
-		if(scan === 0)
-		{
-			this.args.falling = true;
-		}
-	}
-
 	collideA(other, type)
 	{
 		super.collideA(other, type);

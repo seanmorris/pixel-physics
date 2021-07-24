@@ -28,8 +28,8 @@ export class Knuckles extends PointActor
 		this.args.normalHeight = 41;
 		this.args.rollingHeight = 23;
 
-		this.punching = 0;
-		this.punched  = false;
+		this.punchTime = 0;
+		this.punched  = 0;
 
 		this.beforePunch = 'standing';
 
@@ -73,7 +73,7 @@ export class Knuckles extends PointActor
 			return;
 		}
 
-		if(this.throwing && Date.now() - this.throwing > 160)
+		if(this.throwing && Date.now() - this.throwing > 320)
 		{
 			this.throwing = false;
 			this.holdBomb = false;
@@ -89,19 +89,26 @@ export class Knuckles extends PointActor
 			this.viewport.spawn.add({object: bomb});
 		}
 
-		if(this.punching && Date.now() - this.punching > 256)
-		{
-			this.punching = false;
+		this.readying = false;
 
-			this.args.gSpeed = this.punchMomentum;
+		if(this.punchTime && Date.now() - this.punchTime > (this.willPunch ? 1536 : 512))
+		{
 			this.punchMomentum = 0;
+			this.punchTime = false;
+			this.willPunch = false;
+			this.punching  = false;
+			this.punched = 0;
 		}
 
-		if(this.punching && Date.now() - this.punching > 128)
+		if(this.punchTime && Date.now() - this.punchTime > 384)
 		{
-			this.punchMomentum = this.public.gSpeed;
-			this.args.gSpeed = 2 * Math.sign(this.public.gSpeed);
-			this.punched = false;
+			this.args.gSpeed = 0;
+			this.readying = true;
+		}
+
+		if(this.punchTime && Date.now() - this.punchTime > 128)
+		{
+			this.punching = true;
 		}
 
 		this.willStick = false;
@@ -168,9 +175,20 @@ export class Knuckles extends PointActor
 				{
 					this.box.setAttribute('data-animation', 'throw-bomb');
 				}
-				else if(this.punching)
+				else if(!this.readying && this.punched)
 				{
-					this.box.setAttribute('data-animation', 'punching');
+					if(this.punched % 2)
+					{
+						this.box.setAttribute('data-animation', 'jabbing');
+					}
+					else
+					{
+						this.box.setAttribute('data-animation', 'punching');
+					}
+				}
+				else if(this.readying || this.willPunch)
+				{
+					this.box.setAttribute('data-animation', 'readying');
 				}
 				else if(speed > maxSpeed * 0.75)
 				{
@@ -321,35 +339,64 @@ export class Knuckles extends PointActor
 	{
 		super.command_0();
 
-		if(!this.public.falling)
+		if(!this.args.falling)
 		{
 			return;
 		}
 
 		this.args.flying = true;
-		this.args.xSpeed = 9 * this.public.direction;
+		this.args.xSpeed = 9 * this.args.direction;
 		this.args.willJump = false;
 	}
 
 	command_1()
 	{
-		if(this.punching || this.throwing || this.public.climbing)
+		if(this.punchTime && Date.now() - this.punchTime < 72)
 		{
+			this.punchMomentum = 0;
+			this.args.ignore = 8;
+			this.willPunch = false;
+			this.punchTime = false;
+			this.punched = 0;
 			return;
 		}
 
-		this.beforePunch = this.box.getAttribute('data-animation');
-		this.punching    = Date.now();
-		this.punched     = true;
-		this.args.ignore = 8;
+		this.willPunch = true;
+
+		if(this.punchTime)
+		{
+			this.args.ignore = 15;
+			this.args.gSpeed = 0;
+			return;
+		}
+
+		this.punchMomentum = this.punchMomentum || this.args.gSpeed || (4 * this.args.direction);
+		this.args.ignore = 15;
+		this.args.gSpeed = 0;
 	}
 
 	release_1()
 	{
-		if(!this.punched)
+		if(this.punchTime && Date.now() - this.punchTime < 96)
 		{
-			// this.box.setAttribute('data-animation', this.beforePunch);
+			this.willPunch = false;
+			this.punchMomentum = 0;
+			this.punched = 0;
+			return;
 		}
+
+		this.args.gSpeed = this.punchMomentum;
+
+		this.punchTime = Date.now();
+
+		this.willPunch = false;
+
+		if(this.throwing || this.args.climbing)
+		{
+			return;
+		}
+
+		this.punched++;
 	}
 
 	command_2()
@@ -373,7 +420,7 @@ export class Knuckles extends PointActor
 			return;
 		}
 
-		if(this.punching || this.throwing)
+		if(this.punchTime || this.throwing)
 		{
 			return;
 		}

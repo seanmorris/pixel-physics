@@ -1,5 +1,5 @@
 .actor-item.actor-rocks-tall{
-	z-index: 200;
+	z-index: -100;
 }
 
 .actor-item.actor-rocks-tall .sprite {

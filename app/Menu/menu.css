@@ -16,6 +16,8 @@
 .screen-card.screen-card-pause-menu li {
 	background-color: rgba(0,0,0,0.75);
 	box-shadow: 0em 0.05em 0.25em rgba(255,255,255,0.25);
+	backdrop-filter: blur(1.25px);
+	border: 1px solid transparent;
 	margin: 1em;
 	text-align: center;
 	list-style: none;
@@ -30,6 +32,11 @@
 
 .screen-card.screen-card-pause-menu li.focused {
 	font-weight: bold;
+	background-color: rgba(255,255,255,0.125);
+	backdrop-filter: blur(1.25px);
+	border-radius: 5px;
+	border-color: white;
+	text-shadow: 0em 0.15em 0.125em black;
 }
 
 .screen-card.screen-card-pause-menu .menu-container > div {
