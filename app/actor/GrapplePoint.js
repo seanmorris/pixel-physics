@@ -17,7 +17,9 @@ export class GrapplePoint extends PointActor
 
 		this.ignoreOthers = new Set;
 
-		this.args.gravity = 0.4;
+		// this.args.gravity = 0.01;
+
+		this.noClip = true;
 	}
 
 	onAttached()
@@ -58,11 +60,13 @@ export class GrapplePoint extends PointActor
 
 		this.args.falling = true;
 
+		super.update();
+
 		const xDist = tiedTo.x - this.x;
 		const yDist = tiedTo.y - this.y;
 
-		const angle = Math.atan2(yDist, xDist);
 		const dist  = Math.sqrt(yDist**2 + xDist**2);
+		const angle = Math.atan2(yDist, xDist);
 
 		const maxDist = this.args.ropeLength || 64;
 
@@ -70,23 +74,22 @@ export class GrapplePoint extends PointActor
 
 		this.args.groundAngle = -(angle + Math.PI / 2);
 
-		const gravityAngle = angle + Math.PI;
-
 		if(dist >= maxDist)
 		{
-			if(this.hooked && this.hooked.xAxis)
+
+			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
+			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
+
+			this.args.xSpeed -= Math.cos(angle + Math.PI);
+			this.args.ySpeed -= Math.sin(angle + Math.PI);
+
+			if(this.hooked && this.hooked.xAxis && this.args.ySpeed > 0)
 			{
 				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
 				{
 					this.args.xSpeed += this.hooked.xAxis * 0.5;
 				}
 			}
-
-			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
-			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
-
-			this.args.xSpeed -= Math.cos(gravityAngle);
-			this.args.ySpeed -= Math.sin(gravityAngle);
 
 			this.args.x = xNext;
 			this.args.y = yNext;
@@ -99,7 +102,6 @@ export class GrapplePoint extends PointActor
 			}
 		}
 
-		super.update();
 
 		if(this.hooked)
 		{

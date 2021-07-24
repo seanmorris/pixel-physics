@@ -66,21 +66,13 @@ export const Constrainable = {
 
 		if(dist >= maxDist)
 		{
-			if(this.hooked && this.hooked.xAxis)
-			{
-				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
-				{
-					this.args.xSpeed += this.hooked.xAxis * 0.5;
-				}
-			}
-
-			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
-			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
+			const xNext = tiedTo.x - Math.cos(angle) * maxDist;// - tiedTo.args.xSpeed;
+			const yNext = tiedTo.y - Math.sin(angle) * maxDist;// - tiedTo.args.ySpeed;
 
 			this.args.xSpeed -= Math.cos(gravityAngle);
 			this.args.ySpeed -= Math.sin(gravityAngle);
 
-			this.args.x = xNext;
+			this.args.x = xNext - (tiedTo.args.xSpeed / 5);
 			this.args.y = yNext;
 
 			this.viewport.setColCell(this);

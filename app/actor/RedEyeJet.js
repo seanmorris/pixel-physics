@@ -49,7 +49,7 @@ export class RedEyeJet extends PointActor
 
 		if(this.ignores.has(other))
 		{
-			return true;
+			return false;
 		}
 
 		if(this.viewport.args.audio)
@@ -266,7 +266,7 @@ export class RedEyeJet extends PointActor
 				mace.args.float = 0;
 			}
 
-			if(Math.abs(this.viewport.controlActor.x - this.x) > 256)
+			if(Math.abs(this.viewport.controlActor.x - this.x) > 255)
 			{
 				this.args.phase = 'chasing';
 			}
@@ -395,20 +395,17 @@ export class RedEyeJet extends PointActor
 
 		if(this.args.phase === 'intro' || this.args.phase === 'attacking')
 		{
-			this.args.maxSpeed  = 9;
+			this.args.maxSpeed  = 11;
 		}
 
 		if(this.args.phase === 'chasing')
 		{
-			this.args.maxSpeed = Math.min(21, Math.abs(this.viewport.controlActor.x - this.x));
-
-			for(const mace of this.hanging.get(MiniMace))
+			if(Math.abs(this.x - this.viewport.controlActor.x) < 128)
 			{
-				mace.args.xSpeed = this.args.xSpeed;
+				this.args.maxSpeed = Math.max(this.args.maxSpeed, this.viewport.controlActor.args.xSpeed);
 			}
 		}
-
-		if(Math.abs(this.args.xSpeed) > this.args.maxSpeed)
+		else if(Math.abs(this.args.xSpeed) > this.args.maxSpeed)
 		{
 			this.args.xSpeed = Math.sign(this.args.xSpeed) * this.args.maxSpeed;
 		}
