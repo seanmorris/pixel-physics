@@ -152,7 +152,7 @@ export class Rocks extends PointActor
 
 		super.collideA(other, type);
 
-		if(other.occupant || other.rolling)
+		if(other.occupant || other.args.rolling || other.punching)
 		{
 			this.pop(other);
 
@@ -179,10 +179,7 @@ export class Rocks extends PointActor
 
 		if(
 			(type === 1 || type === 3)
-			&& ((Math.abs(other.args.xSpeed) > 10
-				|| (Math.abs(other.args.gSpeed) > 10))
-				|| (other instanceof Projectile)
-			)
+			&& other instanceof Projectile
 			&& this.viewport
 			&& !this.public.gone
 		){

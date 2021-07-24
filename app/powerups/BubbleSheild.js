@@ -77,7 +77,11 @@ export class BubbleSheild extends Sheild
 	{
 		if(host.args.ySpeed < -5)
 		{
-			this.onNextFrame(() => host.args.bouncing = false);
+			this.onNextFrame(() => {
+				host.args.bouncing = false;
+				this.args.bouncing = false;
+				this.args.force = 0;
+			});
 		}
 
 		if(!this.sample)
@@ -101,7 +105,7 @@ export class BubbleSheild extends Sheild
 
 		if(!host.public.falling)
 		{
-			if(this.args.bouncing)
+			if(this.args.bouncing && this.args.force)
 			{
 				host.args.gSpeed = 0;
 

@@ -22,8 +22,6 @@ export class RedEyeJet extends PointActor
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
 
-		this.ignores = new Map;
-
 		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
 		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 	}
@@ -45,11 +43,6 @@ export class RedEyeJet extends PointActor
 
 				return true;
 			}
-		}
-
-		if(this.ignores.has(other))
-		{
-			return false;
 		}
 
 		if(this.viewport.args.audio)
@@ -128,8 +121,6 @@ export class RedEyeJet extends PointActor
 		}
 
 		const xBounce = Math.max(Math.abs(other.args.xSpeed), Math.abs(this.args.xSpeed));
-
-		console.log(xBounce);
 
 		if(this.args.falling)
 		{
@@ -280,18 +271,6 @@ export class RedEyeJet extends PointActor
 			}
 		}
 
-		for(const [object, timeout] of this.ignores)
-		{
-			if(timeout <= 0)
-			{
-				this.ignores.delete(object);
-			}
-			else
-			{
-				this.ignores.set(object, -1 + timeout);
-			}
-		}
-
 		if(this.args.phase === 'exploding')
 		{
 			const viewport = this.viewport;
@@ -373,9 +352,9 @@ export class RedEyeJet extends PointActor
 		{
 			if(['attacking', 'intro', 'chasing'].includes(this.args.phase))
 			{
-				if(Math.abs(this.x - this.viewport.controlActor.x) > 768)
+				if(Math.abs(this.x - this.viewport.controlActor.x) > 384)
 				{
-					this.args.x = this.viewport.controlActor.x + Math.sign(this.x - this.viewport.controlActor.x) * 768;
+					this.args.x = this.viewport.controlActor.x + Math.sign(this.x - this.viewport.controlActor.x) * 384;
 				}
 
 				this.args.xSpeed += -Math.sign(this.x - this.viewport.controlActor.x) * 0.35;

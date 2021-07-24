@@ -80,11 +80,11 @@ export class Switch extends PointActor
 
 		other.onRemove(()=> this.activator = null);
 
-		if(other.y < this.y)
+		if(other.y === this.y - this.args.height)
 		{
 			if(!this.public.active)
 			{
-				this.activate();
+				this.activate(other);
 			}
 
 			this.ignore = 8;
@@ -104,7 +104,7 @@ export class Switch extends PointActor
 		return false;
 	}
 
-	activate()
+	activate(other)
 	{
 		this.beep();
 
@@ -114,6 +114,8 @@ export class Switch extends PointActor
 			const layer   = this.viewport.args.layers[ layerId ];
 
 			layer.args.destroyed = true;
+
+			console.log('destroyLayer');
 		}
 
 		if(this.args.water)

@@ -58,10 +58,22 @@ export class Monitor extends PointActor
 
 		super.collideA(other, type);
 
+		if(type === 2 && this.args.float && other.controllable)
+		{
+			other.args.ySpeed *= -1;
+			this.args.ySpeed = -4;
+
+			this.args.float = 0;
+
+			this.ignores.set(other, 15);
+
+			return true;
+		}
+
 		if(type !== 2
-			&& ((other.public.ySpeed > 0 && other.y < this.y) || other.public.rolling)
-			&& (!this.public.falling || this.public.float === -1)
-			&& !this.public.gone
+			&& ((other.args.ySpeed > 0 && other.y < this.y) || other.args.rolling)
+			&& (!this.args.falling || this.args.float === -1)
+			&& !this.args.gone
 			&& this.viewport
 		){
 			this.pop(other);
@@ -69,9 +81,9 @@ export class Monitor extends PointActor
 		}
 
 		if((type === 1 || type === 3)
-			// && (Math.abs(other.public.xSpeed) > 15 || other instanceof Projectile)
-			&& (other.public.rolling || other instanceof Projectile)
-			&& !this.public.gone
+			// && (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
+			&& (other.args.rolling || other instanceof Projectile)
+			&& !this.args.gone
 			&& this.viewport
 		){
 			this.pop(other);
@@ -83,7 +95,7 @@ export class Monitor extends PointActor
 	{
 		const viewport = this.viewport;
 
-		if(!viewport || this.public.gone)
+		if(!viewport || this.args.gone)
 		{
 			return;
 		}

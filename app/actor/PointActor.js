@@ -120,6 +120,7 @@ export class PointActor extends View
 		this.autoStyle = new Map;
 		this.autoAttr  = new Map;
 		this.hanging   = new Map;
+		this.ignores   = new Map;
 
 		this.regions   = new Set;
 		this.powerups  = new Set;
@@ -778,6 +779,20 @@ export class PointActor extends View
 			return;
 		}
 
+		for(const [object, timeout] of this.ignores)
+		{
+			if(timeout <= 0)
+			{
+				this.ignores.delete(object);
+			}
+			else
+			{
+				this.ignores.set(object, -1 + timeout);
+			}
+		}
+
+		this.args.skimming = false;
+
 		this.args.airAngle = this.airAngle;
 
 		if(this.args.falling)
@@ -1419,15 +1434,23 @@ export class PointActor extends View
 			{
 				if(Math.floor(this.y+1) === region.y - region.public.height
 					&& Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed
+					&& !this.args.falling
 				){
 					this.args.gSpeed = Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) * Math.sign(this.args.gSpeed);
+					this.args.skimming = true;
 					falling = false;
+					region.skim(this);
 					break;
 				}
 			}
 
 			this.args.standingOn = null;
 			this.args.falling = falling;
+
+			if(falling)
+			{
+				this.args.xSpeed = this.args.gSpeed || this.args.xSpeed;
+			}
 		}
 		else
 		{
@@ -1683,21 +1706,21 @@ export class PointActor extends View
 
 							let falling = !!this.public.gSpeed;
 
-							const regionsBelow = this.viewport.regionsAtPoint(this.groundPoint[0], this.groundPoint[1]+1);
+							// const regionsBelow = this.viewport.regionsAtPoint(this.groundPoint[0], this.groundPoint[1]+1);
 
-							for(const region of regionsBelow)
-							{
-								if(Math.floor(this.y+1) === region.y - region.public.height
-									&& Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed
-								){
-									this.args.gSpeed = Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) * Math.sign(this.args.gSpeed);
+							// for(const region of regionsBelow)
+							// {
+							// 	if(Math.floor(this.y+1) === region.y - region.public.height
+							// 		&& Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed
+							// 	){
+							// 		this.args.gSpeed = Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) * Math.sign(this.args.gSpeed);
 
-									region.skim(this);
+							// 		region.skim(this);
 
-									falling = false;
-									break;
-								}
-							}
+							// 		falling = false;
+							// 		break;
+							// 	}
+							// }
 
 							this.args.falling = falling;
 
@@ -1994,11 +2017,6 @@ export class PointActor extends View
 							this.args.gSpeed *= 1.0075 * (1+(slopeFactor/2) * 0.055);
 						}
 					}
-
-					if(Math.sign(this.public.gSpeed) !== Math.sign(this.xAxis) && Math.abs(this.public.gSpeed) < 1)
-					{
-						// this.public.gSpeed = 10 * Math.sign(this.xAxis);
-					}
 				}
 				if(this.public.grinding)
 				{
@@ -2059,18 +2077,6 @@ export class PointActor extends View
 						}
 					}
 				}
-
-				if(!this.stayStuck && slopeFactor < -1 && Math.abs(this.args.gSpeed) < 1)
-				{
-					// if(this.args.mode === 1)
-					// {
-					// 	this.args.gSpeed = 1;
-					// }
-					// else if(this.args.mode === 3)
-					// {
-					// 	this.args.gSpeed = -1;
-					// }
-				}
 			}
 		}
 
@@ -2086,6 +2092,62 @@ export class PointActor extends View
 				this.args.gSpeed = 0;
 			}
 		}
+	}
+
+	findAirPointA(i, point, actor)
+	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
+		const actors = viewport.actorsAtPoint(point[0], point[1])
+			.filter(x => x.args !== actor.args)
+			.filter(x => x.callCollideHandler(actor))
+			.filter(x => x.solid);
+
+		if(actors.length > 0)
+		{
+			return actor.lastPointA;
+		}
+
+		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		{
+			return actor.lastPointA;
+		}
+
+		actor.lastPointA = point.map(Math.floor);
+	}
+
+	findAirPointB(i, point, actor)
+	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
+		const actors = viewport.actorsAtPoint(point[0], point[1])
+			.filter(x => x.args !== actor.args)
+			.filter(x => x.callCollideHandler(actor))
+			.filter(x => x.solid);
+
+		if(actors.length > 0)
+		{
+			return actor.lastPointB;
+		}
+
+		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		{
+			return actor.lastPointB;
+		}
+
+		actor.lastPointB = point.map(Math.floor);
 	}
 
 	updateAirPosition()
@@ -2140,28 +2202,7 @@ export class PointActor extends View
 		const upDistance = this.castRay(
 			Math.max(Math.abs(this.public.ySpeed), upMargin) + 1
 			, -Math.PI / 2
-			, (i, point) => {
-
-				if(!this.viewport)
-				{
-					return false;
-				}
-
-				const actors = this.viewport.actorsAtPoint(point[0], point[1])
-					.filter(x => x.args !== this.args)
-					.filter(x => x.callCollideHandler(this))
-					.filter(a => a.solid);
-
-				if(actors.length > 0)
-				{
-					return i;
-				}
-
-				if(tileMap.getSolid(point[0], point[1], this.args.layer))
-				{
-					return i;
-				}
-			}
+			, this.findSolid
 		);
 
 		let hits = [];
@@ -2245,48 +2286,14 @@ export class PointActor extends View
 		const airPoint = this.castRay(
 			scanDist
 			, this.public.airAngle
-			, (i, point) => {
-				const actors = viewport.actorsAtPoint(point[0], point[1])
-					.filter(x => x.args !== this.args)
-					.filter(x => x.callCollideHandler(this))
-					.filter(x => x.solid);
-
-				if(actors.length > 0)
-				{
-					return lastPoint;
-				}
-
-				if(tileMap.getSolid(point[0], point[1], this.public.layer))
-				{
-					return lastPoint;
-				}
-
-				lastPoint = point.map(Math.floor);
-			}
+			, this.findAirPointA
 		);
 
 		const airPointB = this.castRay(
 			scanDist
 			, this.public.airAngle
 			, [0, -3]
-			, (i, point) => {
-				const actors = viewport.actorsAtPoint(point[0], point[1])
-					.filter(x => x.args !== this.args)
-					.filter(x => x.callCollideHandler(this))
-					.filter(x => x.solid);
-
-				if(actors.length > 0)
-				{
-					return lastPointB;
-				}
-
-				if(tileMap.getSolid(point[0], point[1], this.public.layer))
-				{
-					return lastPointB;
-				}
-
-				lastPointB = point.map(Math.floor);
-			}
+			, this.findAirPointB
 		);
 
 		this.willJump = false;
@@ -2562,11 +2569,11 @@ export class PointActor extends View
 
 				if(this.public.mode === MODE_FLOOR && this.public.groundAngle === 0)
 				{
-					if(!underSolid && forwardSolid)
+					if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
 					{
 						this.args.cameraMode = 'bridge';
 					}
-					else if(!forwardDeepSolid)
+					else if(!forwardDeepSolid && !this.args.grinding && !this.args.skimming)
 					{
 						this.args.cameraMode = 'cliff';
 					}
@@ -2612,6 +2619,16 @@ export class PointActor extends View
 
 	callCollideHandler(other)
 	{
+		if(this.ignores.has(other))
+		{
+			return false;
+		}
+
+		if(other.ignores.has(this))
+		{
+			return false;
+		}
+
 		if(this.args.dead || other.args.dead)
 		{
 			return;
@@ -3086,6 +3103,97 @@ export class PointActor extends View
 	collideB(other)
 	{}
 
+	findDownSolid(i, point, actor)
+	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
+		if(actor.args.groundAngle === 0)
+		{
+			const regions = actor.viewport.regionsAtPoint(point[0], point[1]);
+
+			for(const region of regions)
+			{
+				if(actor.args.mode === MODE_FLOOR
+					&& -1 + point[1] === region.y + -region.public.height
+					&& Math.abs(actor.args.gSpeed) >= region.skimSpeed
+				){
+					return -1 + i;
+				}
+			}
+		}
+
+		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		{
+			return i;
+		}
+
+		const actors = viewport.actorsAtPoint(point[0], point[1])
+			.filter(a => a.args !== actor.args)
+			.filter(a => a.callCollideHandler(actor))
+			.filter(a => a.solid);
+
+		if(actors.length > 0)
+		{
+			return i;
+		}
+	}
+
+	findUpSpace(i, point, actor)
+	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
+		if(actor.args.groundAngle <= 0)
+		{
+			const regions = actor.viewport.regionsAtPoint(point[0], point[1]);
+
+			for(const region of regions)
+			{
+				if(actor.args.mode !== MODE_FLOOR
+					|| point[1] !== 1 + region.y + -region.args.height
+					|| Math.abs(actor.args.gSpeed) < region.skimSpeed
+				){
+					const actors = viewport.actorsAtPoint(point[0], point[1])
+						.filter(x => x.args !== actor.args)
+						.filter(a => a.callCollideHandler(actor))
+						.filter(x => x.solid);
+
+					if(actors.length === 0)
+					{
+						if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
+						{
+							return i;
+						}
+					}
+				}
+			}
+		}
+
+		const actors = viewport.actorsAtPoint(point[0], point[1])
+			.filter(x => x.args !== actor.args)
+			.filter(a => a.callCollideHandler(actor))
+			.filter(x => x.solid);
+
+		if(actors.length === 0)
+		{
+			if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
+			{
+				return i;
+			}
+		}
+	}
+
 	findNextStep(offset)
 	{
 		if(!this.viewport)
@@ -3141,41 +3249,10 @@ export class PointActor extends View
 			}
 
 			downFirstSolid = this.castRay(
-				maxStep * (1+col)
+				maxStep// * (1+col)
 				, this.downAngle
 				, offsetPoint
-				, (i, point) => {
-
-					if(this.args.groundAngle === 0)
-					{
-						const regions = this.viewport.regionsAtPoint(point[0], point[1]);
-
-						for(const region of regions)
-						{
-							if(this.public.mode === MODE_FLOOR
-								&& point[1] === radius + region.y + -region.public.height
-								&& Math.abs(this.public.gSpeed) >= region.skimSpeed
-							){
-								return i;
-							}
-						}
-					}
-
-					if(tileMap.getSolid(point[0], point[1], this.public.layer))
-					{
-						return i;
-					}
-
-					const actors = viewport.actorsAtPoint(point[0], point[1])
-						.filter(a => a.args !== this.args)
-						.filter(a => a.callCollideHandler(this))
-						.filter(a => a.solid);
-
-					if(actors.length > 0)
-					{
-						return i;
-					}
-				}
+				, this.findDownSolid
 			);
 
 			if(downFirstSolid === false)
@@ -3213,53 +3290,13 @@ export class PointActor extends View
 						break;
 				}
 
-				const upLength = +1 + maxStep * (1 + col);
+				const upLength = +1 + maxStep;
 
 				upFirstSpace = this.castRay(
 					upLength
 					, this.upAngle
 					, offsetPoint
-					, (i, point) => {
-
-						if(this.args.groundAngle <= 0)
-						{
-							const regions = this.viewport.regionsAtPoint(point[0], point[1]);
-
-							for(const region of regions)
-							{
-								if(this.public.mode !== MODE_FLOOR
-									|| point[1] !== 1 + region.y + -region.public.height
-									|| Math.abs(this.public.gSpeed) < region.skimSpeed
-								){
-									const actors = viewport.actorsAtPoint(point[0], point[1])
-										.filter(x => x.args !== this.args)
-										.filter(a => a.callCollideHandler(this))
-										.filter(x => x.solid);
-
-									if(actors.length === 0)
-									{
-										if(!tileMap.getSolid(point[0], point[1], this.public.layer))
-										{
-											return i;
-										}
-									}
-								}
-							}
-						}
-
-						const actors = viewport.actorsAtPoint(point[0], point[1])
-							.filter(x => x.args !== this.args)
-							.filter(a => a.callCollideHandler(this))
-							.filter(x => x.solid);
-
-						if(actors.length === 0)
-						{
-							if(!tileMap.getSolid(point[0], point[1], this.public.layer))
-							{
-								return i;
-							}
-						}
-					}
+					, this.findUpSpace
 				);
 
 				const upDiff = Math.abs(prevUp - upFirstSpace);
@@ -3267,13 +3304,11 @@ export class PointActor extends View
 				if(upFirstSpace === false)
 				{
 					return [false, false, false, true];
-					// return [(1+col) * sign, false, false, true];
 				}
 
 				if(upDiff >= maxStep)
 				{
 					return [false, false, false, true];
-					// return [(-1+col), prev, false, true];
 				}
 
 				prev = prevUp = upFirstSpace;
@@ -3594,6 +3629,40 @@ export class PointActor extends View
 		});
 	}
 
+	findSolid(i, point, actor)
+	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
+		const actors = viewport.actorsAtPoint(point[0], point[1])
+			.filter(x => x.args !== actor.args)
+			.filter(x => (i <= actor.args.width/2) && x.callCollideHandler(actor))
+			.filter(x => x.solid);
+
+		if(actors.length > 0)
+		{
+			return i;
+		}
+
+		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		{
+			return i;
+		}
+	}
+
+	findSolidTile(i, point, actor)
+	{
+		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		{
+			return i;
+		}
+	}
+
 	scanForward(speed, height = 0.5, scanActors = true)
 	{
 		const dir      = Math.sign(speed);
@@ -3617,26 +3686,7 @@ export class PointActor extends View
 				? [Math.PI,0,0][dir+1]
 				: this.roundAngle(this.realAngle + [0,0,Math.PI][dir+1], 16)
 			, startPoint
-			, (i, point) => {
-
-				if(scanActors)
-				{
-					const actors = viewport.actorsAtPoint(point[0], point[1])
-						.filter(x => x.args !== this.args)
-						.filter(x => (i <= radius) && x.callCollideHandler(this))
-						.filter(x => x.solid);
-
-					if(actors.length > 0)
-					{
-						return i;
-					}
-				}
-
-				if(tileMap.getSolid(point[0], point[1], this.public.layer))
-				{
-					return i;
-				}
-			}
+			, scanActors ? this.findSolid : this.findSolidTile
 		);
 	}
 
@@ -4209,7 +4259,8 @@ export class PointActor extends View
 				if(splash.node)
 				{
 					splash.style({
-						'--x': this.x, '--y': region.y + -region.args.height + -8
+						'--x': this.x + this.args.xSpeed,
+						'--y': region.y + -region.args.height + -8
 						, 'z-index': 5, opacity: Math.random
 						, '--particleScale': this.args.particleScale
 						, '--time': 320

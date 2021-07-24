@@ -367,7 +367,7 @@ export class Sonic extends PointActor
 			}
 			else
 			{
-				this.viewport.onFrameOut(8, () => this.args.animation = 'rolling');
+				this.viewport.onFrameOut(15, () => this.args.animation = 'rolling');
 				this.args.animation = 'spindash';
 			}
 		}

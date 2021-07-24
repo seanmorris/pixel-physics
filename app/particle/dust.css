@@ -28,8 +28,8 @@
 	transform: translate(-50%, -100%) scaleX(var(--flip, 1)) !important;
 
 	animation:
-		particle-animate steps(var(--animation-steps)) infinite 256ms
-		, particle-fade ease-out 1 256ms forwards
+		particle-animate steps(var(--animation-steps)) infinite 64ms
+		, particle-fade ease-out 1 192ms forwards
 	;
 }
 

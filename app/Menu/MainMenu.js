@@ -113,6 +113,21 @@ export class MainMenu extends Menu
 							});
 						}
 					}
+					, 'Terrain Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/bendy-bridges.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
 					, 'Light Dash Test': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/light-dash-test.json' });

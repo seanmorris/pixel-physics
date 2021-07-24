@@ -33,6 +33,15 @@ export class Orb extends Mixin.from(PointActor)
 			return;
 		}
 
+		if(!this.args.falling)
+		{
+			this.viewport.auras.add(this);
+		}
+		else
+		{
+			this.viewport.auras.delete(this);
+		}
+
 		const other = this.viewport.controlActor;
 
 		const speedMag  = Math.max(Math.abs(this.args.gSpeed) || Math.abs(other.args.gSpeed), 14);

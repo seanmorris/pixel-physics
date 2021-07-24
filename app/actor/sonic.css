@@ -190,6 +190,7 @@
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
+	left:  4px;
 /*
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -224px;

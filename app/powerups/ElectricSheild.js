@@ -185,6 +185,7 @@ export class ElectricSheild extends Sheild
 			if(ring.args.gone)
 			{
 				this.attract.delete(ring);
+				ring.attract = null;
 
 				this.onTimeout(500, () => {
 					if(!ring.def)
@@ -208,7 +209,8 @@ export class ElectricSheild extends Sheild
 				continue;
 			}
 
-			ring.noClip = true;
+			ring.attract = host;
+			ring.noClip  = true;
 
 			const xDiff = host.x - ring.x;
 			const yDiff = (host.y - host.args.height/4) - ring.y;

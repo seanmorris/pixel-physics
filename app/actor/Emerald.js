@@ -50,9 +50,6 @@ export class Emerald extends PointActor
 
 			this.args.type = 'actor-item actor-emerald collected gone emerald-' + (this.args.color || 'white');
 
-			this.viewport.actors.remove( this );
-			this.remove();
-
 			if(other.args.owner)
 			{
 				other.args.owner.args.emeralds += 1;
@@ -65,6 +62,14 @@ export class Emerald extends PointActor
 			{
 				other.args.emeralds += 1;
 			}
+
+			if(!this.viewport.args.emeralds.includes(this.args.color))
+			{
+				this.viewport.args.emeralds.push(this.args.color);
+			}
+
+			this.viewport.actors.remove( this );
+			this.remove();
 		}
 
 		this.args.gone = true;

@@ -94,6 +94,18 @@ export class TileMap
 		});
 	}
 
+	reset()
+	{
+		for(let i = 0; i < this.tileLayers.length; i++)
+		{
+			const layer = this.tileLayers[i];
+
+			layer.destroyed = false;
+
+			console.log(layer);
+		}
+	}
+
 	coordsToTile(x, y)
 	{
 		const blockSize = this.mapData.tilewidth;
@@ -104,10 +116,11 @@ export class TileMap
 	getTileNumber(x, y, layerId = 0)
 	{
 		const tileKey = x + ',' + y + ',' + layerId;
+		const cached  = this.tileNumberCache.get(tileKey);
 
-		if(this.tileNumberCache.has(tileKey))
+		if(cached !== undefined)
 		{
-			return this.tileNumberCache.get(tileKey);
+			return cached;
 		}
 
 		const tileLayers      = this.tileLayers;
@@ -168,9 +181,11 @@ export class TileMap
 
 	getTile(tileNumber)
 	{
-		if(this.tileCache.has(tileNumber))
+		const cached = this.tileCache.get(tileNumber);
+
+		if(cached !== undefined)
 		{
-			return this.tileCache.get(tileNumber);
+			return cached;
 		}
 
 		const blockSize = this.blockSize;
@@ -308,9 +323,11 @@ export class TileMap
 	{
 		tileNumber = Number(tileNumber);
 
-		if(this.tileSetCache.has(tileNumber))
+		const cached = this.tileSetCache.get(tileNumber);
+
+		if(cached !== undefined)
 		{
-			return this.tileSetCache.get(tileNumber);
+			return cached;
 		}
 
 		if(!this.mapData)

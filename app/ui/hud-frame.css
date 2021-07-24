@@ -65,6 +65,19 @@
 	flex-direction: column;
 	transform-origin: top right;
 	justify-content: flex-start;
+	align-items: flex-end;
+}
+
+.emerald-hud {
+	padding-top: 2px;
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.emerald-hud img {
+	width: 5px;
+	height: 5px;
+	padding: 2.5px;
 }
 
 .hud-bottom-right {
@@ -215,6 +228,7 @@
 	text-align: right;
 }
 
+.emerald-hud img,
 .hud .hud-character-string {
 	filter:
 		drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.5))

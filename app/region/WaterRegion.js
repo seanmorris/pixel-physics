@@ -34,7 +34,6 @@ export class WaterRegion extends Region
 		}
 
 		const splashParticle = new Tag(`<div class = "particle-skim">`);
-
 		const splashPoint = actor.rotatePoint(actor.public.gSpeed, 0);
 
 		splashParticle.style({
@@ -46,7 +45,7 @@ export class WaterRegion extends Region
 
 		this.viewport.particles.add(splashParticle);
 
-		this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
+	this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
 	}
 
 	update()
