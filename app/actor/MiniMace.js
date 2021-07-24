@@ -21,7 +21,9 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		}
 	}
 
-	update()
+	update(){}
+
+	updateEnd()
 	{
 		if(!this.viewport.auras.has(this))
 		{
@@ -38,5 +40,7 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		{
 			this.noClip = true;
 		}
+
+		super.updateEnd();
 	}
 }
