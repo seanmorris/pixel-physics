@@ -201,7 +201,7 @@
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
-	animation: sonic-jump steps(4) infinite 128ms;
+	animation: sonic-jump steps(4) infinite 96ms;
 
 	/*animation: sonic-animate steps(4) infinite 1280ms;*/
 	--sprite-offset-x: -0px;
@@ -217,8 +217,8 @@
 	--animation-steps: -4;
 	--animation-width: 64px;
 
-	/*animation: sonic-jump steps(8) infinite 128ms;*/
-	animation: sonic-jump steps(4) infinite 128ms;
+	animation: sonic-jump steps(8) infinite 96ms;
+	/*animation: sonic-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 64ms) + 128ms);*/
 
 	/*animation: sonic-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
