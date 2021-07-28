@@ -578,6 +578,10 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: transparent !important;
 }
 
+.viewport div.intro-cards {
+	z-index: 1002;
+}
+
 .viewport.mouse-hide .labels {
 	display: none;
 }

@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":256,
  "infinite":false,
  "layers":[
@@ -135,6 +142,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -153,6 +165,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -171,6 +188,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -189,6 +211,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -207,6 +234,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -225,6 +257,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -243,6 +280,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -261,6 +303,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -279,6 +326,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -297,6 +349,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -315,6 +372,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -333,6 +395,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -351,6 +418,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -369,6 +441,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -387,6 +464,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -405,6 +487,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -423,6 +510,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -441,6 +533,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -834,6 +931,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -852,6 +954,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -870,6 +977,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -888,6 +1000,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -906,6 +1023,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -924,6 +1046,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -942,6 +1069,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -960,6 +1092,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -978,6 +1115,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -996,6 +1138,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -1014,6 +1161,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -1032,6 +1184,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"breakable-block",
@@ -3467,7 +3624,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 

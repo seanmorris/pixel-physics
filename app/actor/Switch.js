@@ -80,7 +80,7 @@ export class Switch extends PointActor
 
 		other.onRemove(()=> this.activator = null);
 
-		if(other.y === this.y - this.args.height)
+		if(other.y <= this.y - this.args.height)
 		{
 			if(!this.public.active)
 			{
@@ -93,10 +93,10 @@ export class Switch extends PointActor
 
 			this.activator = other;
 
-			if(type === 1 || type === 3)
-			{
-				return false;
-			}
+			// if(type === 1 || type === 3)
+			// {
+			// 	return false;
+			// }
 
 			return true;
 		}

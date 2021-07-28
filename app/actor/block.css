@@ -90,8 +90,8 @@
 	transition: transform var(--break-speed) ease-out;
 	--halfX: calc(var(--width, 32) * 0.5px);
 	--halfY: calc(var(--height, 32) * 0.5px);
-	--centerX: calc(var(--sprite-x) * calc(var(--width, 32) * -1px));
-	--centerY: calc(var(--sprite-y) * calc(var(--width, 32) * -1px));
+	--centerX: calc(var(--sprite-x) * calc(32 * -1px));
+	--centerY: calc(var(--sprite-y) * calc(32 * -1px));
 	width: var(--halfX);
 	height: var(--halfY);
 }

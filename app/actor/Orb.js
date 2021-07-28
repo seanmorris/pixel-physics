@@ -33,13 +33,18 @@ export class Orb extends Mixin.from(PointActor)
 			return;
 		}
 
-		if(!this.args.falling)
+		if(this.args.falling)
 		{
-			this.viewport.auras.add(this);
+			this.viewport.onFrameOut(10, () => {
+				if(this.args.falling)
+				{
+					this.viewport.auras.delete(this);
+				}
+			});
 		}
 		else
 		{
-			this.viewport.auras.delete(this);
+			this.viewport.auras.add(this);
 		}
 
 		const other = this.viewport.controlActor;

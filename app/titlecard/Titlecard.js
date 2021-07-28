@@ -22,6 +22,11 @@ export class Titlecard extends View
 
 	play(event)
 	{
+		if(this.playing)
+		{
+			return this.playing;
+		}
+
 		const playing = new Promise(accept => {
 
 			const waitFor = this.args.waitFor || Promise.resolve();
@@ -65,9 +70,11 @@ export class Titlecard extends View
 
 				timeAcc += 2500;
 
-				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
+				this.onTimeout(timeAcc, () => this.onNextFrame( () =>{
 					this.args.animation = 'done'
-				));
+
+					this.playing = false;
+				}));
 			});
 		});
 

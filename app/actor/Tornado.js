@@ -25,7 +25,7 @@ export class Tornado extends Vehicle
 		this.args.accel     = 0.5;
 
 		this.args.seatHeight  = 14;
-		this.args.seatForward = 12;
+		this.args.seatForward = -32;
 
 		this.args.skidTraction = 0.95;
 
@@ -89,28 +89,28 @@ export class Tornado extends Vehicle
 	{
 		if(!this.occupant || !this.args.falling)
 		{
-			this.args.flyAngle = this.public.falling ? 0.26 : -0.26;
+			this.args.flyAngle = this.args.falling ? 0.26 : -0.26;
 			this.args.flying   = false;
 			this.args.float    = 0;
 		}
 
-		if(!this.public.thrusting && Math.abs(this.public.xSpeed) < 8)
+		if(!this.args.thrusting && Math.abs(this.args.xSpeed) < 8)
 		{
 			this.args.float  = 0;
 			this.args.flying = false;
 		}
-		else if(this.public.falling)
+		else if(this.args.falling)
 		{
 			this.args.float  = -1;
 			this.args.flying = true;
 		}
 
-		if(!this.args.jumping && this.public.xSpeed === 0 && this.public.falling)
+		if(!this.args.jumping && this.args.xSpeed === 0 && this.args.falling)
 		{
 			this.args.flying = false;
 			this.args.float  = 0;
 
-			if(this.public.thrusting)
+			if(this.args.thrusting)
 			{
 				this.args.crashed   = true;
 				this.args.thrusting = false;
@@ -124,7 +124,7 @@ export class Tornado extends Vehicle
 
 		const maxAirSpeed = this.args.xSpeedMaxThrusting;
 
-		if(this.public.thrusting && this.args.fuelLevel <= 0)
+		if(this.args.thrusting && this.args.fuelLevel <= 0)
 		{
 			this.args.thrusting = false;
 			this.args.noThrust  = Date.now() + 500;
@@ -132,9 +132,9 @@ export class Tornado extends Vehicle
 			this.args.thrusterFill = Date.now() + 500;
 		}
 
-		if(this.public.thrusting)
+		if(this.args.thrusting)
 		{
-			this.args.xSpeedMax = this.public.xSpeedMaxThrusting;
+			this.args.xSpeedMax = this.args.xSpeedMaxThrusting;
 
 			if(this.args.fuelLevel > 0)
 			{
@@ -143,7 +143,7 @@ export class Tornado extends Vehicle
 		}
 		else
 		{
-			this.args.xSpeedMax = this.public.xSpeedMaxOriginal;
+			this.args.xSpeedMax = this.args.xSpeedMaxOriginal;
 
 			if(this.args.thrusterFill < Date.now() && this.args.fuelLevel < 100)
 			{
@@ -153,14 +153,14 @@ export class Tornado extends Vehicle
 
 		this.fuelMeter.style({'--fuelLevel': this.args.fuelLevel / 100});
 
-		if(!this.public.thrusting && Math.abs(this.public.xSpeed) > maxAirSpeed)
+		if(!this.args.thrusting && Math.abs(this.args.xSpeed) > maxAirSpeed)
 		{
-			this.args.xSpeed -= Math.sign(this.public.xSpeed) * 0.2;
+			this.args.xSpeed -= Math.sign(this.args.xSpeed) * 0.2;
 		}
 
-		if(this.public.thrusting && (Math.sign(this.args.xSpeed) !== this.public.direction || Math.abs(this.public.xSpeed) < maxAirSpeed))
+		if(this.args.thrusting && (Math.sign(this.args.xSpeed) !== this.args.direction || Math.abs(this.args.xSpeed) < maxAirSpeed))
 		{
-			if(!this.args.falling && this.public.xSpeed === 0)
+			if(!this.args.falling && this.args.xSpeed === 0)
 			{
 				this.args.flyAngle = -0.26;
 				this.args.falling = true;
@@ -169,35 +169,35 @@ export class Tornado extends Vehicle
 				this.args.ySpeed = -5;
 			}
 
-			this.args.xSpeed += Math.sign(this.public.direction) * 4;
+			this.args.xSpeed += Math.sign(this.args.direction) * 4;
 		}
 
-		if(Math.abs(this.public.xSpeed) > this.args.xSpeedMax / 2
-			&& !this.public.thrusting
+		if(Math.abs(this.args.xSpeed) > this.args.xSpeedMax / 2
+			&& !this.args.thrusting
 			&& !this.xAxis
 		){
 			this.args.xSpeed *= 0.95;
 		}
 
-		if(Math.abs(this.public.xSpeed) > maxAirSpeed)
+		if(Math.abs(this.args.xSpeed) > maxAirSpeed)
 		{
-			this.args.xSpeed = maxAirSpeed * Math.sign(this.public.direction);
+			this.args.xSpeed = maxAirSpeed * Math.sign(this.args.direction);
 		}
 
-		if(this.public.flying)
+		if(this.args.flying)
 		{
-			if(this.public.ySpeed === 0)
+			if(this.args.ySpeed === 0)
 			{
 				this.args.flyAngle = 0;
 			}
 
-			if(this.public.landingGear)
+			if(this.args.landingGear)
 			{
-				if(!this.public.thrusting && this.args.flyAngle < Math.PI / 4)
+				if(!this.args.thrusting && this.args.flyAngle < Math.PI / 4)
 				{
 					this.args.flyAngle += 0.005;
 				}
-				else if(this.public.thrusting && this.args.flyAngle > -Math.PI / 4)
+				else if(this.args.thrusting && this.args.flyAngle > -Math.PI / 4)
 				{
 					this.args.flyAngle -= 0.005;
 				}
@@ -214,7 +214,7 @@ export class Tornado extends Vehicle
 				}
 			}
 
-			if(!this.public.xSpeed)
+			if(!this.args.xSpeed)
 			{
 				this.args.flying = false;
 				return;
@@ -236,29 +236,29 @@ export class Tornado extends Vehicle
 				this.args.flyAngle = newAngle;
 			}
 
-			if(Math.sign(this.public.xSpeed) === this.public.direction)
+			if(Math.sign(this.args.xSpeed) === this.args.direction)
 			{
-				const speed = this.public.xSpeed || this.public.gSpeed;
+				const speed = this.args.xSpeed || this.args.gSpeed;
 
-				this.args.ySpeed = Math.sin(this.public.flyAngle) * speed * this.public.direction * 2;
+				this.args.ySpeed = Math.sin(this.args.flyAngle) * speed * (this.args.direction || Math.sign(speed)) * 2;
 			}
 		}
 		else
 		{
-			if(!this.public.thrusting && this.args.flyAngle < Math.PI / 2 && this.args.ySpeed > 0)
+			if(!this.args.thrusting && this.args.flyAngle < Math.PI / 2 && this.args.ySpeed > 0)
 			{
 				this.args.flyAngle += 0.025;
 			}
 		}
 
-		if(this.public.flying)
+		if(this.args.flying)
 		{
 			this.args.airAngle = this.args.flyAngle
 
 			this.args.jumping = false;
 		}
 
-		if(!this.public.falling)
+		if(!this.args.falling)
 		{
 			this.args.landingGear = true;
 			this.args.flyAngle = -0.26;
@@ -266,7 +266,7 @@ export class Tornado extends Vehicle
 
 		super.update();
 
-		if(this.public.flying)
+		if(this.args.flying)
 		{
 			this.args.cameraMode = 'airplane';
 		}

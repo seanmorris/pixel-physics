@@ -528,26 +528,11 @@ export class Sonic extends PointActor
 			dashSpeed = space * Math.sign(finalSpeed);
 		}
 
-		// const foreDistance = this.castRay(
-		// 	finalSpeed
-		// 	, finalSpeed > 0 ? 0 : Math.PI
-		// 	, (i, point) => {
-		// 		if(this.getMapSolidAt(...point, this.public.layer))
-		// 		{
-		// 			return i;
-		// 		}
-		// 	}
-		// );
+		this.args.animation = 'rolling';
 
-		// if(foreDistance !== false)
-		// {
-		// 	dashSpeed = foreDistance * Math.sign(dashSpeed);
-		// }
-
-		this.args.animation = 'airdash';
+		this.viewport.onFrameOut(3, () => this.args.animation = 'airdash');
 
 		this.args.xSpeed = finalSpeed;
-		// this.args.direction = Math.sign(finalSpeed);
 		this.args.ySpeed = 0;
 		this.args.gSpeed = 0;
 
@@ -985,7 +970,7 @@ export class Sonic extends PointActor
 
 		const angleDiff = Math.abs(currentAngle - angle);
 
-		let dashSpeed = this.distanceFrom(ring) * 8 * ((Math.PI / 2) / angleDiff);
+		let dashSpeed = this.distanceFrom(ring) * 4 * ((Math.PI / 2) / angleDiff);
 
 		const maxDash = 55;
 

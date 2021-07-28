@@ -116,6 +116,11 @@
 	--screen-y: 4;
 }
 
+[data-monitor="life-sean"] .monitor-screen {
+	--screen-x: 4;
+	--screen-y: 4;
+}
+
 [data-monitor="life-atomic-superball"] .monitor-screen {
 	--screen-x: 3;
 	--screen-y: 4;
