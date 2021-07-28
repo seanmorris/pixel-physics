@@ -5,7 +5,7 @@
 .actor-item.actor-tornado .sprite .plane {
 	position: absolute;
 	top: -5px;
-	left: -32px;
+	left: 16px;
 	width: 128px;
 	height: 64px;
 	transform: rotate(calc(1rad * var(--fly-angle)));

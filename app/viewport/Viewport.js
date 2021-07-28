@@ -1031,9 +1031,9 @@ export class Viewport extends View
 
 				cameraSpeed = 10;
 
-				const speedBias = Math.min(absSpeed / 40, 1) * -Math.sign(gSpeed);
+				const speedBias = Math.min(absSpeed / 40, 1) * -Math.sign(xSpeed);
 
-				this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
+				this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
 				this.args.yOffsetTarget = 0.5;
 				break;
 
@@ -1222,6 +1222,9 @@ export class Viewport extends View
 			y = yMax;
 		}
 
+		// this.args.x = Number(x).toFixed(3) || x;
+		// this.args.y = Number(y).toFixed(3) || y;
+
 		this.args.x = x;
 		this.args.y = y;
 	}
@@ -1244,7 +1247,7 @@ export class Viewport extends View
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
 			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 2).toFixed(2);
-			const blurAngle = Math.atan2(yMoved, xMoved);
+			const blurAngle = Math.atan2(yMoved, xMoved).toFixed(4);
 
 			if(blur > 0.5)
 			{

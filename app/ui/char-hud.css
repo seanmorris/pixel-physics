@@ -80,3 +80,10 @@
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -16px -80px;
 }
+
+
+.hud .char-icon.player-1,
+.hud .char-icon.sean {
+	background-image: url(/Sonic/monitor-screens.png);
+	background-position: -32px -80px;
+}

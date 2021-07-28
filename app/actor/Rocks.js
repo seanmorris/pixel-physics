@@ -4,9 +4,9 @@ import { Tag }        from 'curvature/base/Tag';
 
 export class Rocks extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.type = 'actor-item actor-rocks-tall';
 

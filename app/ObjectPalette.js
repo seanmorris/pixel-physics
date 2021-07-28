@@ -77,6 +77,8 @@ import { Knuckles }   from './actor/Knuckles';
 import { Seymour } from './actor/Seymour';
 import { Chalmers } from './actor/Chalmers';
 
+import { Sean } from './actor/Sean';
+
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
 import { Balloon } from './actor/Balloon';
@@ -132,6 +134,7 @@ export const ObjectPalette = {
 	, 'eggrobo':      Eggrobo
 	, 'seymour':      Seymour
 	, 'chalmers':     Chalmers
+	, 'sean':         Sean
 	, 'switch':       Switch
 	, 'window':       Window
 	, 'emerald':      Emerald

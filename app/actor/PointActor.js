@@ -1355,11 +1355,6 @@ export class PointActor extends View
 			this.args.y = Math.floor(this.public.y);
 		}
 
-		// if(!this.noClip && this.public.falling && !this.isEffect && (this.public.xSpeed || this.public.ySpeed))
-		// {
-		// 	this.resolveIntersection();
-		// }
-
 		if(!this.noClip && !this.public.falling && !this.isRegion)
 		{
 			if(this.public.mode === MODE_FLOOR && !this.public.gSpeed && !this.public.xSpeed)
@@ -1424,7 +1419,6 @@ export class PointActor extends View
 		else if(standingOn)
 		{
 			this.args.standingOn = null;
-			// this.args.falling = false;
 		}
 		else if(this.public.mode === MODE_FLOOR && regionsBelow.size)
 		{
@@ -1455,7 +1449,6 @@ export class PointActor extends View
 		else
 		{
 			this.args.standingOn = null;
-			// this.args.falling = true;
 		}
 
 		if(this.args.falling && this.args.ySpeed < this.args.ySpeedMax)
@@ -1748,69 +1741,78 @@ export class PointActor extends View
 							break;
 
 						case MODE_LEFT:
-							if(Math.abs(this.public.gSpeed) < 8 && !this.public.rolling)
+							if(!this.args.climbing)
 							{
-								if(this.public.gSpeed < 0)
+								if(Math.abs(this.public.gSpeed) < 8 && !this.args.rolling)
 								{
-									this.args.x -= this.public.direction;
-									this.args.y--;
+									if(this.public.gSpeed < 0)
+									{
+										this.args.x -= this.public.direction;
+										this.args.y -= this.public.gSpeed + 2;
+										this.args.groundAngle = 0;
+									}
+									else
+									{
+										this.args.x += radius;
+										this.args.y++;
+									}
+
 								}
 								else
 								{
+									this.args.ignore = -3;
 									this.args.x += radius;
-									this.args.y++;
+									this.xAxis = 0;
 								}
 
-							}
-							else
-							{
-								this.args.ignore = -3;
-								this.args.x += radius;
-								this.xAxis = 0;
-							}
+								this.args.xSpeed  =  gSpeed * Math.sin(gAngle);
+								this.args.ySpeed  =  gSpeed * Math.cos(gAngle);
 
-							this.args.ySpeed  =  gSpeed * Math.cos(gAngle);
-							this.args.xSpeed  =  gSpeed * Math.sin(gAngle);
-
-							this.onNextFrame(() => {
-								this.args.groundAngle = -Math.PI * 0.5;
-								this.args.mode = MODE_FLOOR;
-							});
+								this.onNextFrame(() => {
+									this.args.groundAngle = -Math.PI * 0.5;
+									this.args.mode = MODE_FLOOR;
+								});
+							}
 
 							this.args.falling = true;
 
 							break;
 
 						case MODE_RIGHT:
-							if(Math.abs(this.public.gSpeed) < 8 && !this.public.rolling)
+							if(!this.args.climbing)
 							{
-								if(this.public.gSpeed > 0)
+								if(Math.abs(this.args.gSpeed) < 8 && !this.args.rolling)
 								{
-									this.args.x -= this.public.direction;
-									this.args.y--;
+									if(this.public.gSpeed > 0)
+									{
+										this.args.x -= this.public.direction;
+										this.args.y -= this.public.gSpeed + 2;
+										this.args.groundAngle = 0;
+									}
+									else
+									{
+										this.args.x -= radius;
+										this.args.y++;
+
+									}
+
 								}
 								else
 								{
+									this.args.ignore = -3;
 									this.args.x -= radius;
-									this.args.y++;
-
+									this.xAxis = 0;
 								}
 
-							}
-							else
-							{
-								this.args.ignore = -3;
-								this.args.x -= radius;
-								this.xAxis = 0;
-							}
+								this.args.xSpeed  = -gSpeed * Math.sin(gAngle);
+								this.args.ySpeed  = -gSpeed * Math.cos(gAngle);
 
-							this.args.ySpeed  = -gSpeed * Math.cos(gAngle);
-							this.args.xSpeed  = -gSpeed * Math.sin(gAngle);
+								this.onNextFrame(() => {
+									this.args.groundAngle = Math.PI * 0.5;
+									this.args.mode = MODE_FLOOR;
+								});
 
-							this.onNextFrame(() => {
-								this.args.groundAngle = Math.PI * 0.5;
-								this.args.mode = MODE_FLOOR;
-							});
+							}
 
 							this.args.falling = true;
 
@@ -2309,17 +2311,39 @@ export class PointActor extends View
 
 		if(airPoint !== false && airPointB !== false)
 		{
-			const angleIsStickable = Math.abs(collisionAngle) > Math.PI / 8 && Math.abs(collisionAngle) < Math.PI;
+			let angleIsWall = false;
 
-			const isLeft  = angleIsStickable && xSpeedOriginal < 0;
-			const isRight = angleIsStickable && xSpeedOriginal > 0;
+			console.log(collisionAngle);
 
-			this.args.gSpeed = xSpeedOriginal || this.args.gSpeed;
+			if(xSpeedOriginal < 0)
+			{
+				angleIsWall = collisionAngle <= Math.PI / 2;
+			}
+
+			if(xSpeedOriginal > 0)
+			{
+				angleIsWall = collisionAngle >= Math.PI / 2;
+			}
+
+			const isLeft  = angleIsWall && xSpeedOriginal < 0;
+			const isRight = angleIsWall && xSpeedOriginal > 0;
+
+			if(!this.willStick)
+			{
+				this.args.gSpeed = xSpeedOriginal || this.args.gSpeed;
+			}
+
 			this.args.xSpeed = 0;
 			this.args.ySpeed = 0;
 
 			const stickX = airPoint[0];
 			const stickY = airPoint[1];
+
+			if(this.args.flying && !angleIsWall && collisionAngle)
+			{
+				this.args.mode = MODE_CEILING;
+				this.args.xSpeed *= -1;
+			}
 
 			this.args.x = stickX;
 			this.args.y = stickY;
@@ -2354,14 +2378,14 @@ export class PointActor extends View
 						this.args.gSpeed = 0;
 						this.args.mode   = MODE_LEFT;
 
-						this.args.groundAngle = 0;
+						// this.args.groundAngle = 0;
 					}
 					else if(canStick && isRight)
 					{
 						this.args.gSpeed = 0;
 						this.args.mode   = MODE_RIGHT;
 
-						this.args.groundAngle = 0;
+						// this.args.groundAngle = 0;
 					}
 					else if(canStick)
 					{
@@ -2722,120 +2746,6 @@ export class PointActor extends View
 		return result;
 	}
 
-	resolveIntersection()
-	{
-		let backAngle = this.args.airAngle + Math.PI / 2;
-
-		let iterations = 0;
-
-		if(this.getMapSolidAt(this.x, this.y, false))
-		{
-			let testX = this.x;
-			let testY = this.y;
-
-			this.args.ignore = 10;
-
-			let blockers, b;
-
-			const maxIterations = this.public.height > this.public.width
-				? this.public.height
-				: this.public.witdth;
-
-			while(true)
-			{
-				if(!this.viewport)
-				{
-					return;
-				}
-
-				b = this.getMapSolidAt(testX, testY, false);
-
-				if(!b)
-				{
-					break;
-				}
-
-				blockers = b;
-
-				if(Array.isArray(blockers))
-				{
-					blockers = blockers.filter(x=>x.args!==this.args).filter(x=>x.callCollideHandler(this));
-
-					if(!blockers.length)
-					{
-						break;
-					}
-				}
-
-				testX += Math.cos(backAngle);
-				testY += Math.sin(backAngle);
-
-				iterations++;
-
-				if(iterations > maxIterations)
-				{
-					break;
-				}
-			}
-
-			const below = this.checkBelow(testX, testY);
-
-			if(Array.isArray(blockers))
-			{
-				if(this.willStick && blockers.filter(a => a.canStick).length)
-				{
-					this.args.ySpeed = 0;
-					this.args.xSpeed = 0;
-				}
-
-				if(!below)
-				{
-					this.args.falling = true;
-				}
-
-			}
-			else if(blockers)
-			{
-				if((this.willStick|| below) && this.args.ySpeed > 0)
-				{
-					// this.args.falling = false;
-
-					const halfWidth = Math.floor(this.public.width / 2);
-
-					const backPosition = this.findNextStep(-4);
-					const forePosition = this.findNextStep(4);
-					const sensorSpread = 8;
-
-					const newAngle = Math.atan2(forePosition[1] - backPosition[1], sensorSpread+1);
-
-					if(isNaN(newAngle))
-					{
-						console.log(newAngle);
-					}
-
-					this.args.angle = this.args.groundAngle = newAngle;
-
-					this.lastAngles.unshift(newAngle);
-					this.lastAngles.splice(this.angleAvg);
-
-					// const slopeDir = -Math.sign(this.public.groundAngle);
-
-					// this.args.gSpeed += (1 + this.public.ySpeed) * slopeDir;
-				}
-				else if(!below)
-				{
-					this.args.falling = true;
-				}
-
-			}
-
-			this.args.x = testX;
-			this.args.y = testY;
-
-			this.willJump = false;
-		}
-	}
-
 	checkBelow(testX, testY)
 	{
 		const lPoint = [];
@@ -2893,6 +2803,8 @@ export class PointActor extends View
 			&& this.args.standingOn.isVehicle
 			&& this === Bindable.make(this.args.standingOn.occupant)
 		){
+			this.viewport.auras.add(this.args.standingOn);
+
 			const vehicle = this.args.standingOn;
 
 			vehicle.xAxis = this.xAxis;
@@ -2987,7 +2899,7 @@ export class PointActor extends View
 				const axisSign = Math.sign(xAxis);
 				const sign     = Math.sign(this.public.gSpeed);
 
-				if(!this.public.rolling)
+				if(!this.public.rolling && !this.args.climbing)
 				{
 					if(axisSign === sign || !sign)
 					{
@@ -4085,6 +3997,7 @@ export class PointActor extends View
 		{
 			if(this.args.standingOn && this.args.standingOn.isVehicle)
 			{
+				this.viewport.auras.delete(this.args.standingOn);
 				this.willJump = true;
 			}
 

@@ -1,0 +1,74 @@
+.actor-item.actor-sean .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-sean .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url(/secret/sean.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-sean[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-sean[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -64px;
+	animation: sean-walk steps(3) infinite 288ms;
+}
+
+.actor-item.actor-sean[data-animation="running"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -128px;
+	animation: sean-run steps(3) infinite 192ms;
+}
+
+.actor-item.actor-sean[data-animation="rolling"] .sprite:after,
+.actor-item.actor-sean[data-animation="jumping"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -192px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: sean-jump steps(4) infinite 96ms forwards;
+}
+
+.actor-item.actor-sean[data-animation="rolling"] .sprite:after {
+
+	animation: sean-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
+
+}
+
+@keyframes sean-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes sean-run {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes sean-jump {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

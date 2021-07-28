@@ -42,7 +42,7 @@ export class Knuckles extends PointActor
 				return;
 			}
 
-			if(this.public.mode === 1 || this.public.mode === 3)
+			if(this.public.mode === 1 || this.public.mode === 2 || this.public.mode === 3)
 			{
 				this.args.climbing = true;
 
@@ -60,11 +60,6 @@ export class Knuckles extends PointActor
 
 	update()
 	{
-		if(this.public.mode === 0 || this.public.mode === 2)
-		{
-			this.args.climbing = false;
-		}
-
 		const falling = this.public.falling;
 
 		if(!this.box)
@@ -102,7 +97,7 @@ export class Knuckles extends PointActor
 
 		if(this.punchTime && Date.now() - this.punchTime > 384)
 		{
-			this.args.gSpeed = 0;
+			// this.args.gSpeed = 0;
 			this.readying = true;
 		}
 
@@ -223,13 +218,21 @@ export class Knuckles extends PointActor
 			{
 				this.args.ySpeed = 0;
 				this.args.xSpeed = 0;
+				this.args.ignore = 10;
+				this.args.falling = false;
 				this.box.setAttribute('data-animation', 'walking');
-				this.public.climbing = false;
+				this.args.groundAngle = 0;
 
-				this.onNextFrame(() => {
-					this.args.groundAngle = 0;
-					this.args.x += -4 * this.public.direction;
-				});
+				if(this.args.mode === 1)
+				{
+					this.args.x += -4;
+				}
+				else if(this.args.mode === 3)
+				{
+					this.args.x += 4;
+				}
+
+				this.args.mode = 0;
 			}
 		}
 
@@ -310,6 +313,11 @@ export class Knuckles extends PointActor
 		}
 
 		super.update();
+
+		if(this.public.mode === 0 || this.public.mode === 2)
+		{
+			this.args.climbing = false;
+		}
 	}
 
 	dropBomb()

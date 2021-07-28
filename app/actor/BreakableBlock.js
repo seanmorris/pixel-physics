@@ -40,13 +40,18 @@ export class BreakableBlock extends Block
 		super.onRendered();
 	}
 
-	collideA(other, type)
+	callCollideHandler(...args)
 	{
 		if(this.broken)
 		{
 			return false;
 		}
 
+		return super.callCollideHandler(...args);
+	}
+
+	collideA(other, type)
+	{
 		if(!(other.args.rolling && other.args.mode) && !other.isVehicle)
 		{
 			if((other.args.falling && !(other.dashed || other.args.jumping))
@@ -66,13 +71,23 @@ export class BreakableBlock extends Block
 			return !this.broken;
 		}
 
-		if(!(other instanceof Orb) && !other.falling && !other.isVehicle && !other.public.gSpeed && !other.public.xSpeed && !other.public.ySpeed)
-		{
+		if(!(other instanceof Orb)
+			&& !other.falling
+			&& !other.isVehicle
+			&& !other.public.gSpeed
+			&& !other.public.xSpeed
+			&& !other.public.ySpeed
+		){
 			return !this.broken;
 		}
 
-		if((other instanceof Orb) || other.isVehicle || other.public.rolling || other.public.jumping || other.public.dashed)
-		{
+		if((other instanceof Orb)
+			|| other.isVehicle
+			|| other.public.rolling
+			|| other.public.jumping
+			|| other.public.dashed
+			|| other.punching
+		){
 			const top = this.y - this.public.height;
 
 			if(this.public.bounceBack && other.public.jumping && other.y < top)
@@ -93,7 +108,7 @@ export class BreakableBlock extends Block
 	{
 		this.box.classList.remove('broken');
 		this.args.x = this.def.get('x');
-		this.args.y = this.def.get('y');
+		this.args.y = this.def.get('y') + 1;
 
 		this.broken = false;
 	}

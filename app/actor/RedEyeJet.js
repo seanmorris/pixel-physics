@@ -129,37 +129,44 @@ export class RedEyeJet extends PointActor
 
 		if(type === 1)
 		{
-			other.args.xSpeed = -xBounce * 1.25;
 			other.args.x = this.x - (this.args.width / 2);
 
-			if(other.args.xSpeed < -7)
+			if(this.args.hitPoints > 0)
 			{
-				other.args.xSpeed = -7;
+				other.args.xSpeed = -xBounce * 1.25;
+				other.args.xSpeed = Math.min(-7, -this.args.xSpeed);
+
+				this.args.hitPoints--;
+			}
+			else
+			{
+				other.args.xSpeed = -1;
 			}
 		}
 
 		if(type === 3)
 		{
-			other.args.xSpeed = xBounce * 1.25;
 			other.args.x = this.x + (this.args.width / 2);
 
-			if(other.args.xSpeed > 7)
+			if(this.args.hitPoints > 0)
 			{
-				other.args.xSpeed = 7;
+				other.args.xSpeed = xBounce * 1.25;
+				other.args.xSpeed = Math.max(-7, -this.args.xSpeed);
+
+				this.args.hitPoints--;
+			}
+			else
+			{
+				other.args.xSpeed = 1;
 			}
 		}
 
 		if(type === 1 || type === 3 || type === 0)
 		{
-			if(!['dead','exploding', 'done'].includes(this.args.phase))
+			if(!['dead','exploding','damaged','done'].includes(this.args.phase))
 			{
 				this.args.phase = 'damaged';
 				this.args.animation = '';
-
-				if(this.args.hitPoints >= 0)
-				{
-					this.args.hitPoints--;
-				}
 
 				this.args.animation = 'damaged';
 
@@ -223,7 +230,7 @@ export class RedEyeJet extends PointActor
 
 		if(!this.args.hitPoints)
 		{
-			other.args.ignore = 20;
+			other.args.ignore = -2;
 		}
 
 		return true;
