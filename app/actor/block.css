@@ -97,8 +97,8 @@
 }
 
 .actor-item.actor-breakable-block .fragment-top-left {
-	background-position-x: calc(var(--centerX) + 0px);
-	background-position-y: calc(var(--centerY) + 0px);
+	background-position-x: calc(var(--centerX));
+	background-position-y: calc(var(--centerY));
 	top: 0px;
 	left: 0px;
 	transform: scale(1.01) translate(calc(-1 * var(--spread)), calc(-1 * var(--spread)));
@@ -106,14 +106,14 @@
 
 .actor-item.actor-breakable-block .fragment-top-right {
 	background-position-x: calc(var(--centerX) - var(--halfX));
-	background-position-y: calc(var(--centerY) + 0px);
+	background-position-y: calc(var(--centerY));
 	top: 0px;
 	left: calc(var(--width) * 0.5px);
 	transform: scale(1.01) translate(var(--spread), calc(-1 * var(--spread)));
 }
 
 .actor-item.actor-breakable-block .fragment-bottom-left {
-	background-position-x: calc(var(--centerX) + 0px);
+	background-position-x: calc(var(--centerX));
 	background-position-y: calc(var(--centerY) - var(--halfY));
 	top: calc(var(--height) * 0.5px);
 	left: 0px;

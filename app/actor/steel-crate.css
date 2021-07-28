@@ -4,10 +4,10 @@
 
 .actor-steel-crate .sprite.actor-steel-crate {
 	background-image: url(/custom/steel-crate.png);
-	height: 64px;
-	width: 64px;
 }
 
 .actor-item.actor-breakable-block.actor-steel-crate .fragment {
 	background-image: url(/custom/steel-crate.png);
+	--centerX: calc(var(--sprite-x) * calc(var(--width, 32) * -1px));
+	--centerY: calc(var(--sprite-y) * calc(var(--height, 32) * -1px));
 }
