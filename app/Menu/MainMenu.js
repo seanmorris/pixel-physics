@@ -128,6 +128,21 @@ export class MainMenu extends Menu
 							});
 						}
 					}
+					, 'Full Layer Shift Test': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/west-side-zone.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
 					, 'Light Dash Test': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/light-dash-test.json' });
