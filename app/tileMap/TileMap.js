@@ -106,29 +106,38 @@ export class TileMap
 		}
 	}
 
-	coordsToTile(x, y)
+	coordsToTile(x, y, layerId)
 	{
 		const blockSize = this.mapData.tilewidth;
 
-		return [Math.floor(x / blockSize) , Math.floor((y) / blockSize)];
+		let offsetX = 0;
+		let offsetY = 0;
+
+		if(this.tileLayers[layerId])
+		{
+			offsetX = this.tileLayers[layerId].offsetX ?? 0;
+			offsetY = this.tileLayers[layerId].offsetY ?? 0;
+		}
+
+		return [Math.floor((x-offsetX) / blockSize) , Math.floor((y-offsetY) / blockSize)];
 	}
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		const tileKey = x + ',' + y + ',' + layerId;
-		const cached  = this.tileNumberCache.get(tileKey);
+		// const tileKey = x + ',' + y + ',' + layerId;
+		// const cached  = this.tileNumberCache.get(tileKey);
 
-		if(cached !== undefined)
-		{
-			return cached;
-		}
+		// if(cached !== undefined)
+		// {
+		// 	return cached;
+		// }
 
-		const tileLayers      = this.tileLayers;
-		const mapData         = this.mapData;
+		const tileLayers = this.tileLayers;
+		const mapData    = this.mapData;
 
 		if(!tileLayers[layerId])
 		{
-			this.tileNumberCache.set(tileKey, false);
+			// this.tileNumberCache.set(tileKey, false);
 
 			return false;
 		}
@@ -138,12 +147,13 @@ export class TileMap
 		){
 			if(layerId !== 0)
 			{
-				this.tileNumberCache.set(tileKey, false);
+				// this.tileNumberCache.set(tileKey, false);
 
 				return false;
 			}
 
-			this.tileNumberCache.set(tileKey, 1);
+			// this.tileNumberCache.set(tileKey, 1);
+
 			return 1;
 		}
 
@@ -156,12 +166,12 @@ export class TileMap
 
 			const tileNumber = tile > 0 ? tile - 1 : 0;
 
-			this.tileNumberCache.set(tileKey, tileNumber);
+			// this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
 		}
 
-		this.tileNumberCache.set(tileKey, false);
+		// this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}
@@ -217,14 +227,14 @@ export class TileMap
 
 	getSolid(xInput, yInput, layerInput = 0)
 	{
-		const currentTile = this.coordsToTile(xInput, yInput);
+		const currentTile = this.coordsToTile(xInput, yInput, layerInput);
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
 		if(layerInput === 1 || layerInput ===  2)
 		{
 			if(this.getSolid(xInput, yInput, 0))
 			{
-				return true;
+				return this.tileLayers[0];
 			}
 
 			for(let i = 3; i < this.tileLayers.length; i++)
@@ -251,7 +261,7 @@ export class TileMap
 
 				if(this.getSolid(xInput, yInput, i))
 				{
-					return true;
+					return this.tileLayers[i];
 				}
 			}
 		}
@@ -265,7 +275,7 @@ export class TileMap
 
 			if(tileNumber === 1)
 			{
-				return true;
+				return this.tileLayers[layerInput];
 			}
 		}
 
@@ -274,12 +284,10 @@ export class TileMap
 		const mapData   = this.mapData;
 		const blockSize = mapData.tilewidth;
 
-		const tilePos = this.getTile(tileNumber).map(coord => {
-			return coord * blockSize
-		});
+		const tilePos = this.getTile(tileNumber).map(coord => coord * blockSize);
 
-		const x = Math.floor(Number(xInput) % blockSize);
-		const y = Math.floor(Number(yInput) % blockSize);
+		const x = (Number(xInput) % blockSize);
+		const y = (Number(yInput) % blockSize);
 
 		const xPixel = tilePos[0] + x;
 		const yPixel = tilePos[1] + y;
@@ -307,7 +315,7 @@ export class TileMap
 		if(pixel[3] === 255)
 		{
 			// result = 0xFFFFFF;
-			result = true;
+			result = this.tileLayers[layerInput];
 		}
 		else
 		{

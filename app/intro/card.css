@@ -89,11 +89,13 @@
 	opacity: 1;
 }
 
+.screen-card-webkit-card.opening,
 .screen-card-debian-card.opening {
 	opacity: 0;
 	filter: blur(0px);
 }
 
+.screen-card-webkit-card.closed,
 .screen-card-debian-card.closed,
 .screen-card-debian-card.closing {
 	opacity: 0;
@@ -116,9 +118,70 @@
 	animation: debian-iris 2.25s 1s ease-out 1 forwards;
 }
 
+.chromium-logo {
+	position: relative;
+	margin: auto;
+	width: 128px;
+	height: 128px;
+	left:  0px;
+	transition: transform 0.1s ease-out;
+	transform: skew(0deg);
+	margin-bottom: 2em;
+}
+
+.chromium-logo:after {
+	position: absolute;
+	background-image: url(/ui/chromium-logo.svg);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 128px;
+	height: 128px;
+	content: ' ';
+}
+
+.spindash .chromium-logo,
+.spindash-charge .chromium-logo {
+	transition: transform 0.5s ease-in;
+}
+
+.spindash .chromium-logo:after,
+.spindash-charge .chromium-logo:after {
+	animation: chromium-spinup 1.5s ease-in; infinite forwards;
+}
+
+.spindash-charge .chromium-logo {
+	transform: skew(-25deg) translateX(-40px);
+	transition: transform 0.45s ease-out, left 0s 0s ease-out;
+}
+
+.closed .chromium-logo,
+.closing .chromium-logo,
+.spindash .chromium-logo {
+	transition: transform 0.075s ease-out, left 0.5s ease-out;
+	transform: skew(0deg);
+	left:  50vw;
+}
+
+.closed .chromium-logo:after,
+.closing .chromium-logo:after,
+.spindash .chromium-logo:after {
+	animation: chromium-spin 35ms linear infinite forwards;
+}
+
 @keyframes debian-iris {
   0% { clip-path: circle(0% at 58% 40%); }
   100% { clip-path: circle(100% at 58% 40%); }
+}
+
+@keyframes chromium-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes chromium-spinup {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(3600deg); }
 }
 
 .screen-card-title-screen-card .main-elements-container {

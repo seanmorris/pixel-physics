@@ -30,6 +30,11 @@ export class Ring extends PointActor
 			this.noClip = false;
 		}
 
+		if(this.args.decoration)
+		{
+			this.args.type = 'actor-item actor-ring decoration';
+		}
+
 		if(!this.args.falling)
 		{
 			// this.args.y += -6;

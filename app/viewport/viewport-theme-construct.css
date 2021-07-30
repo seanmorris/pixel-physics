@@ -2,6 +2,7 @@
 	background-color: #411 !important;
 }
 
+.viewport.construct .viewport-background[data-name^="Moving"] > div,
 .viewport.construct .viewport-background[data-name^="Destructible"] > div,
 .viewport.construct .viewport-background[data-name^="Collision"] > div {
 	/*border: 1px solid #050;*/
