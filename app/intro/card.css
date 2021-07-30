@@ -145,6 +145,8 @@
 	transform: skew(-25deg) translateX(-40px);
 }
 
+.closed .chromium-logo,
+.closing .chromium-logo,
 .spindash .chromium-logo {
 	transition: transform 75ms ease-out, left 0.5s ease-out;
 	left:  50vw;
@@ -152,11 +154,6 @@
 
 .spindash-charge .chromium-logo:after {
 	animation: chromium-spinup 1.5s ease-in; infinite forwards;
-}
-
-.closed .chromium-logo,
-.closing .chromium-logo {
-	opacity: 0;
 }
 
 .closed .chromium-logo:after,

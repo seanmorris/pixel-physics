@@ -612,7 +612,7 @@ export class Viewport extends View
 
 		this.onTimeout(100, () => this.fitScale(false));
 
-		this.onTimeout(20500, () => {
+		this.onTimeout(21500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
 
