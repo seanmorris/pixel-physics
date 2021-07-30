@@ -25,7 +25,7 @@
 	--animation-steps: 4;
 	--animation-width: 48px;
 
-	transform: translate(-50%, -100%) scaleX(var(--flip, 1)) !important;
+	transform: translate(-50%, calc(-100% + 3px)) scaleX(var(--flip, 1)) !important;
 
 	animation:
 		particle-animate steps(var(--animation-steps)) infinite 64ms

@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":82,
  "infinite":false,
  "layers":[
@@ -39,8 +32,8 @@
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":2128,
-                 "y":704
+                 "x":1736,
+                 "y":776
                 }, 
                 {
                  "gid":3145,
@@ -878,7 +871,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -910,7 +903,7 @@
                  "value":"TUTORIAL ZONE"
                 }],
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":256,
          "x":0,
          "y":0
@@ -922,7 +915,7 @@
          "name":"Collision 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":256,
          "x":0,
          "y":0
@@ -934,7 +927,7 @@
          "name":"Collision 2",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":256,
          "x":0,
          "y":0
@@ -958,7 +951,7 @@
          "name":"Art 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":256,
          "x":0,
          "y":0
@@ -970,7 +963,7 @@
          "name":"Art 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":256,
          "x":0,
          "y":0
@@ -1034,7 +1027,7 @@
          "value":"ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -1104,6 +1097,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":256
 }

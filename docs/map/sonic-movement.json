@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":256,
  "infinite":false,
  "layers":[
@@ -3598,6 +3591,18 @@
                  "width":32,
                  "x":10320,
                  "y":2848
+                }, 
+                {
+                 "gid":2,
+                 "height":48,
+                 "id":399,
+                 "name":"star-post",
+                 "rotation":0,
+                 "type":"star-post",
+                 "visible":true,
+                 "width":16,
+                 "x":14216,
+                 "y":2656
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3692,7 +3697,7 @@
          "name":"Destructible 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":512,
          "x":0,
          "y":0
@@ -3704,7 +3709,7 @@
          "name":"Art 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":512,
          "x":0,
          "y":0
@@ -3716,7 +3721,7 @@
          "name":"Art 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":512,
          "x":0,
          "y":0
@@ -3728,7 +3733,7 @@
          "name":"Foreground 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":512,
          "x":0,
          "y":0
@@ -3740,13 +3745,13 @@
          "name":"Foreground 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":512,
          "x":0,
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":398,
+ "nextobjectid":400,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -3780,7 +3785,7 @@
          "value":"TUTORIAL ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -3850,6 +3855,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":512
 }

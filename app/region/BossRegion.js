@@ -36,6 +36,19 @@ export class BossRegion extends Region
 			return;
 		}
 
-		other.args.localCameraMode = 'boss';
+		if(!this.args._boss)
+		{
+			const boss = this.viewport.actorsById[ this.args.boss ];
+
+			if(!boss.args.hitPoints)
+			{
+				other.args.bossMode = false;
+			}
+			else
+			{
+				other.args.bossMode = true;
+			}
+		}
+
 	}
 }

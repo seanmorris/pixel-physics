@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":128,
  "infinite":false,
  "layers":[
@@ -196,18 +189,6 @@
                 {
                  "gid":2,
                  "height":16,
-                 "id":314,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":96,
-                 "y":3776
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
                  "id":315,
                  "name":"flickie",
                  "rotation":0,
@@ -220,30 +201,6 @@
                 {
                  "gid":2,
                  "height":16,
-                 "id":316,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":96,
-                 "y":3760
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
-                 "id":321,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":3776
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
                  "id":322,
                  "name":"flickie",
                  "rotation":0,
@@ -252,18 +209,6 @@
                  "width":16,
                  "x":288,
                  "y":3776
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
-                 "id":323,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":3760
                 }, 
                 {
                  "gid":2,
@@ -340,18 +285,6 @@
                 {
                  "gid":2,
                  "height":16,
-                 "id":338,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":96,
-                 "y":3680
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
                  "id":339,
                  "name":"flickie",
                  "rotation":0,
@@ -364,30 +297,6 @@
                 {
                  "gid":2,
                  "height":16,
-                 "id":340,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":96,
-                 "y":3664
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
-                 "id":345,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":3680
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
                  "id":346,
                  "name":"flickie",
                  "rotation":0,
@@ -396,18 +305,6 @@
                  "width":16,
                  "x":288,
                  "y":3680
-                }, 
-                {
-                 "gid":2,
-                 "height":16,
-                 "id":347,
-                 "name":"flickie",
-                 "rotation":0,
-                 "type":"flickie",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":3664
                 }, 
                 {
                  "gid":2,
@@ -522,7 +419,7 @@
          "value":"TEST ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -553,6 +450,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":2048
 }

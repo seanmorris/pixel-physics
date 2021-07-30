@@ -24,6 +24,7 @@ export class RedEyeJet extends PointActor
 
 		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
 		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
+		this.dudSound = new Audio('/Sonic/S2_59.wav');
 	}
 
 	collideA(other, type)
@@ -43,12 +44,6 @@ export class RedEyeJet extends PointActor
 
 				return true;
 			}
-		}
-
-		if(this.viewport.args.audio)
-		{
-			this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-			this.hitSound.play();
 		}
 
 		if(!this.args.falling && this.args.phase !== 'exploding')
@@ -114,21 +109,37 @@ export class RedEyeJet extends PointActor
 
 		this.ignores.set(other, 15);
 
+
 		if(type === 2)
 		{
-			other.args.ySpeed = 7;
-			return true;
+			if(this.viewport.args.audio)
+			{
+				this.dudSound.volume = 0.35 + (Math.random() * -0.15);
+				this.dudSound.play();
+			}
+
+			other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
 		}
 
 		const xBounce = Math.max(Math.abs(other.args.xSpeed), Math.abs(this.args.xSpeed));
 
-		if(this.args.falling)
+		if(this.args.hitPoints > 1 && this.args.falling)
 		{
 			this.args.xSpeed = other.args.xSpeed;
+		}
+		else
+		{
+			this.args.xSpeed = 0;
 		}
 
 		if(type === 1)
 		{
+			if(this.viewport.args.audio)
+			{
+				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+				this.hitSound.play();
+			}
+
 			other.args.x = this.x - (this.args.width / 2);
 
 			if(this.args.hitPoints > 0)
@@ -140,24 +151,32 @@ export class RedEyeJet extends PointActor
 			}
 			else
 			{
-				other.args.xSpeed = -1;
+				other.args.xSpeed = -2;
+				other.args.ignore = -2;
 			}
 		}
 
 		if(type === 3)
 		{
+			if(this.viewport.args.audio)
+			{
+				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+				this.hitSound.play();
+			}
+
 			other.args.x = this.x + (this.args.width / 2);
 
 			if(this.args.hitPoints > 0)
 			{
 				other.args.xSpeed = xBounce * 1.25;
-				other.args.xSpeed = Math.max(-7, -this.args.xSpeed);
+				other.args.xSpeed = Math.max(7, -this.args.xSpeed);
 
 				this.args.hitPoints--;
 			}
 			else
 			{
-				other.args.xSpeed = 1;
+				other.args.xSpeed = 2;
+				other.args.ignore = -2;
 			}
 		}
 
@@ -177,7 +196,7 @@ export class RedEyeJet extends PointActor
 					this.args.phase = 'dead';
 				}
 
-				this.viewport.onFrameOut(40, () => {
+				this.viewport.onFrameOut(20, () => {
 					if(this.args.hitPoints > 0)
 					{
 						this.args.animation = 'attacking';
@@ -210,6 +229,12 @@ export class RedEyeJet extends PointActor
 					other.args.xSpeed = -4 * Math.sign(this.x - other.x);
 					other.args.ySpeed = -Math.floor(Math.abs(ySpeed)) || -4;
 				});
+
+				if(this.viewport.args.audio)
+				{
+					this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+					this.hitSound.play();
+				}
 			}
 
 			const gSpeed = other.args.gSpeed;

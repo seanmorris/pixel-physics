@@ -37,16 +37,59 @@ export class Layer extends View
 
 		this.args.bindTo('destroyed', v => {
 			const viewport = this.args.viewport;
-			const tileMap  = viewport.tileMap;
-			const layerId  = this.args.layerId;
-			const layers   = tileMap.tileLayers;
-			const layerDef = layers[layerId];
+			const layers   = viewport.tileMap.tileLayers;
+			const layerDef = layers[this.args.layerId];
 
 			layerDef.destroyed = !!v;
 		});
+
+		this.args.bindTo(['offsetX', 'offsetY'], (v,k,t,d,p) => {
+			const viewport = this.args.viewport;
+			const layers   = viewport.tileMap.tileLayers;
+			const layerDef = layers[this.args.layerId];
+
+			this[`${k}Changed`] = layerDef[`${k}Changed`] = v - (p||0);
+
+			layerDef[k] = v;
+		});
 	}
 
-	update(tileMap, xDir, yDir)
+	move()
+	{
+		const viewport = this.args.viewport;
+		const layers   = viewport.tileMap.tileLayers;
+		const layerDef = layers[this.args.layerId];
+
+		if(layerDef)
+		{
+			layerDef.offsetXChanged = 0;
+			layerDef.offsetYChanged = 0;
+		}
+
+		this.fallspeed = this.fallspeed || 0;
+
+		if(this.tags.background && this.args.name.split(' ')[0] === 'Moving')
+		{
+			// this.args.offsetX = 192 * Math.sin(this.args.viewport.args.frameId / 150);
+			this.args.offsetY = 128 * Math.sin(this.args.viewport.args.frameId / 100);
+
+			// this.args.offsetY += this.fallspeed;
+
+			// if(this.args.offsetY < 4096)
+			// {
+			// 	this.fallspeed += 0.01;
+			// }
+			// else
+			// {
+			// 	this.fallspeed = 0;
+			// }
+
+			this.tags.background.style({'--offsetX': -this.args.offsetX % this.args.blockSize});
+			this.tags.background.style({'--offsetY': -this.args.offsetY % this.args.blockSize});
+		}
+	}
+
+	update(tileMap)
 	{
 		const viewport = this.args.viewport;
 
@@ -85,13 +128,24 @@ export class Layer extends View
 
 		for(let i = startColumn; i <= endColumn; i += Math.sign(blocksWide))
 		{
-			const tileX = i - Math.ceil(this.x / blockSize);
+			const tileX = i
+				+ -Math.ceil(this.x / blockSize)
+				+ -Math.ceil(offsetX / blockSize)
+				+ (offsetX > 0 ? 1 : 0);
 
 			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
 			{
 				const xy = String(i) + '::' + String(j);
 
-				const tileY = j - Math.ceil(this.y / blockSize);
+				// const tileY = j - Math.ceil(this.y / blockSize);
+
+				const tileY = j
+					+ -Math.ceil(this.y / blockSize)
+					+ (this.offsetYChange < 0
+						? -Math.ceil(offsetY / blockSize)
+						: -Math.floor(offsetY / blockSize)
+					)
+					+ (offsetY < 0 ? -1 : 0);
 
 				const blockId = tileMap.getTileNumber(tileX, tileY, layerId);
 

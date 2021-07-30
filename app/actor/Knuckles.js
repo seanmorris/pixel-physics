@@ -97,7 +97,6 @@ export class Knuckles extends PointActor
 
 		if(this.punchTime && Date.now() - this.punchTime > 384)
 		{
-			// this.args.gSpeed = 0;
 			this.readying = true;
 		}
 

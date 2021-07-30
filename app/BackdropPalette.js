@@ -1,7 +1,8 @@
 import { MarbleGarden  } from 'backdrop/MarbleGarden';
 import { ProtoLabrynth } from 'backdrop/ProtoLabrynth';
-import { Industrial }    from 'backdrop/Industrial';
+import { Industrial    } from 'backdrop/Industrial';
 import { MysticCave    } from 'backdrop/MysticCave';
+import { WestSide      } from 'backdrop/WestSide';
 
 
 export const BackdropPalette = {
@@ -9,4 +10,5 @@ export const BackdropPalette = {
 	, 'marble-garden': MarbleGarden
 	, 'industrial':    Industrial
 	, 'mystic-cave':   MysticCave
+	, 'west-side':     WestSide
 }

@@ -19,6 +19,7 @@ import { BubbleSheild }   from '../powerups/BubbleSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
 
 import { LayerSwitch } from './LayerSwitch';
+import { Layer } from '../viewport/Layer';
 
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
@@ -684,10 +685,34 @@ export class PointActor extends View
 	updateStart()
 	{
 		this.args.localCameraMode = null;
+
+		if(this.args.standingLayer)
+		{
+			if(this.args.standingLayer.offsetXChanged)
+			{
+				this.args.x += this.args.standingLayer.offsetXChanged;
+			}
+
+			if(this.args.standingLayer.offsetYChanged)
+			{
+				this.args.y += this.args.standingLayer.offsetYChanged;
+			}
+		}
 	}
 
 	updateEnd()
 	{
+		if(this.args.falling)
+		{
+			if(this.args.standingLayer)
+			{
+				this.args.xSpeed += this.args.standingLayer.offsetXChanged;
+				this.args.ySpeed += this.args.standingLayer.offsetYChanged;
+			}
+
+			this.args.standingLayer = null;
+		}
+
 		for(const [tag, cssArgs] of this.autoStyle)
 		{
 			const styles = {};
@@ -722,15 +747,6 @@ export class PointActor extends View
 
 	update()
 	{
-		if(this.viewport
-			&& this.viewport.meta.deathLine
-			&& !this.args.dead
-			&& this.controllable
-			&& this.y > this.viewport.meta.deathLine
-		){
-			this.die();
-		}
-
 		if(this.args.respawning)
 		{
 			const stored = this.viewport.getCheckpoint(this.args.id);
@@ -777,6 +793,36 @@ export class PointActor extends View
 			this.viewport && this.viewport.setColCell(this);
 
 			return;
+		}
+
+		if(this.viewport
+			&& this.viewport.meta.deathLine
+			&& !this.args.dead
+			&& this.controllable
+			&& this.y > this.viewport.meta.deathLine
+		){
+			this.die();
+			return;
+		}
+
+		if(this.args.controllable)
+		{
+			const height = Math.max(this.public.height, 32);
+
+			const headPoint = this.rotatePoint(0, height * 0.75);
+
+			let jumpBlock = this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]);
+
+			if(Array.isArray(jumpBlock))
+			{
+				jumpBlock = !!jumpBlock.filter(a => !a.args.platform && !a.isVehicle).length;
+			}
+
+			if(!this.args.falling && jumpBlock)
+			{
+				this.die();
+				return;
+			}
 		}
 
 		for(const [object, timeout] of this.ignores)
@@ -962,7 +1008,7 @@ export class PointActor extends View
 			this.args.float--;
 		}
 
-		if(this.public.standingOn)
+		if(this.public.standingOn instanceof PointActor)
 		{
 			this.public.standingOn.callCollideHandler(this);
 		}
@@ -1076,30 +1122,11 @@ export class PointActor extends View
 
 			const tileMap = this.viewport.tileMap;
 
-			let headPoint;
-
 			const height = Math.max(this.public.height, 32);
 
-			switch(this.public.mode)
-			{
-				case MODE_FLOOR:
-					headPoint = [this.x, this.y + -height + -1];
-					break;
+			const headPoint = this.rotatePoint(0, height + 1);
 
-				case MODE_CEILING:
-					headPoint = [this.x, this.y + height + 1];
-					break;
-
-				case MODE_LEFT:
-					headPoint = [this.x + height + 1, this.y];
-					break;
-
-				case MODE_RIGHT:
-					headPoint = [this.x + -height + -1, this.y];
-					break;
-			}
-
-			let jumpBlock = this.getMapSolidAt(...headPoint);
+			let jumpBlock = this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]);
 
 			if(Array.isArray(jumpBlock))
 			{
@@ -1160,7 +1187,7 @@ export class PointActor extends View
 				this.args.animationBias = 1;
 			}
 		}
-		else if(!this.public.static && !this.isRegion &&!this.isEffect && !this.public.falling)
+		else if(this.args.standingLayer || (!this.public.static && !this.isRegion &&!this.isEffect && !this.public.falling))
 		{
 			this.updateGroundPosition();
 
@@ -1351,8 +1378,8 @@ export class PointActor extends View
 
 		if(this.controllable)
 		{
-			this.args.x = Math.floor(this.public.x);
-			this.args.y = Math.floor(this.public.y);
+			this.args.x = (this.public.x);
+			this.args.y = (this.public.y);
 		}
 
 		if(!this.noClip && !this.public.falling && !this.isRegion)
@@ -1394,7 +1421,7 @@ export class PointActor extends View
 		}
 
 		const regionsBelow = this.viewport.regionsAtPoint(this.groundPoint[0], this.groundPoint[1]+1);
-		const standingOn   = this.getMapSolidAt(...this.groundPoint);
+		const standingOn = this.getMapSolidAt(...this.groundPoint);
 
 		if(Array.isArray(standingOn) && standingOn.length)
 		{
@@ -1419,6 +1446,15 @@ export class PointActor extends View
 		else if(standingOn)
 		{
 			this.args.standingOn = null;
+
+			if(typeof standingOn === 'object')
+			{
+				this.args.standingLayer = standingOn;
+			}
+			else
+			{
+				this.args.standingLayer = null;
+			}
 		}
 		else if(this.public.mode === MODE_FLOOR && regionsBelow.size)
 		{
@@ -2207,6 +2243,12 @@ export class PointActor extends View
 			, this.findSolid
 		);
 
+		const downDistance = this.castRay(
+			Math.abs(this.public.ySpeed) + 1
+			, Math.PI / 2
+			, this.findSolid
+		);
+
 		let hits = [];
 
 		if(!this.args.hLock)
@@ -2312,8 +2354,6 @@ export class PointActor extends View
 		if(airPoint !== false && airPointB !== false)
 		{
 			let angleIsWall = false;
-
-			console.log(collisionAngle);
 
 			if(xSpeedOriginal < 0)
 			{
@@ -2520,7 +2560,7 @@ export class PointActor extends View
 			}
 		}
 
-		if(this.args.standingOn)
+		if(this.args.standingOn instanceof PointActor)
 		{
 			const groundTop = this.args.standingOn.y - this.args.standingOn.args.height;
 
@@ -2572,6 +2612,12 @@ export class PointActor extends View
 	{
 		if(!this.viewport)
 		{
+			return;
+		}
+
+		if(this.args.bossMode)
+		{
+			this.args.cameraMode = 'boss';
 			return;
 		}
 
@@ -2638,7 +2684,6 @@ export class PointActor extends View
 				});
 			}
 		}
-
 	}
 
 	callCollideHandler(other)

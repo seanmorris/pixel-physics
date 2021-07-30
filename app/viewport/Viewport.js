@@ -23,6 +23,7 @@ import { TitleScreenCard } from '../intro/TitleScreenCard';
 import { LoadingCard } from '../intro/LoadingCard';
 import { BootCard } from    '../intro/BootCard';
 import { DebianCard } from '../intro/DebianCard';
+import { WebkitCard } from '../intro/WebkitCard';
 import { SeanCard } from    '../intro/SeanCard';
 import { PauseMenu } from   '../Menu/PauseMenu.js';
 import { MainMenu } from    '../Menu/MainMenu.js';
@@ -611,7 +612,7 @@ export class Viewport extends View
 
 		this.onTimeout(100, () => this.fitScale(false));
 
-		this.onTimeout(16500, () => {
+		this.onTimeout(20500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
 
@@ -1102,7 +1103,7 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.80;
 				this.maxCameraBound     = 1;
 
-				cameraSpeed = 10;
+				cameraSpeed = 5;
 
 				break;
 
@@ -1113,36 +1114,38 @@ export class Viewport extends View
 
 				cameraSpeed = 25;
 
-				const gSpeed     = this.controlActor.public.gSpeed;
-				const absSpeed   = Math.abs(gSpeed);
-				const shiftSpeed = 15;
+			break;
+		}
 
-				const speedBias = Math.min(absSpeed / 25, 1) * -Math.sign(gSpeed);
+		if(this.controlActor.args.cameraMode !== 'boss')
+		{
+			const gSpeed     = this.controlActor.public.gSpeed;
+			const absSpeed   = Math.abs(gSpeed);
+			const shiftSpeed = 15;
+			const speedBias = Math.min(absSpeed / 25, 1) * -Math.sign(gSpeed);
 
-				switch(this.controlActor.public.mode)
-				{
-					case 0:
-						this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
-						this.args.yOffsetTarget = 0.6;
-						break;
+			switch(this.controlActor.public.mode)
+			{
+				case 0:
+					this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
+					this.args.yOffsetTarget = 0.6;
+					break;
 
-					case 1:
-						this.args.xOffsetTarget = 0.25;
-						this.args.yOffsetTarget = 0.50 + speedBias * 0.35;
-						break;
+				case 1:
+					this.args.xOffsetTarget = 0.25;
+					this.args.yOffsetTarget = 0.50 + speedBias * 0.35;
+					break;
 
-					case 2:
-						this.args.xOffsetTarget = 0.5 - speedBias * 0.35;
-						this.args.yOffsetTarget = 0.3;
-						break;
+				case 2:
+					this.args.xOffsetTarget = 0.5 - speedBias * 0.35;
+					this.args.yOffsetTarget = 0.3;
+					break;
 
-					case 3:
-						this.args.xOffsetTarget = 0.75;
-						this.args.yOffsetTarget = 0.50 - speedBias * 0.35;
-						break;
-				}
-
-				break;
+				case 3:
+					this.args.xOffsetTarget = 0.75;
+					this.args.yOffsetTarget = 0.50 - speedBias * 0.35;
+					break;
+			}
 		}
 
 		this.args.yOffsetTarget += this.controlActor.args.cameraBias;
@@ -1196,8 +1199,8 @@ export class Viewport extends View
 		let x = xNext + dragDistance * Math.cos(angle)
 		let y = yNext + dragDistance * Math.sin(angle);
 
-		x = Number(Number(x - snapFactor * Math.cos(angle) * snapSpeed).toFixed(2));
-		y = Number(Number(y - snapFactor * Math.sin(angle) * snapSpeed).toFixed(2));
+		x = Number(Number(x - snapFactor * Math.cos(angle) * snapSpeed));
+		y = Number(Number(y - snapFactor * Math.sin(angle) * snapSpeed));
 
 		if(x > 96)
 		{
@@ -1222,9 +1225,6 @@ export class Viewport extends View
 			y = yMax;
 		}
 
-		// this.args.x = Number(x).toFixed(3) || x;
-		// this.args.y = Number(y).toFixed(3) || y;
-
 		this.args.x = x;
 		this.args.y = y;
 	}
@@ -1238,15 +1238,15 @@ export class Viewport extends View
 			const xMoved = this.args.x - this.xPrev;
 			const yMoved = this.args.y - this.yPrev;
 
-			let xBlur = ((Number(xMoved) / 5) ** 2).toFixed(2);
-			let yBlur = ((Number(yMoved) / 5) ** 2).toFixed(2);
+			let xBlur = ((Number(xMoved) / 5) ** 2);
+			let yBlur = ((Number(yMoved) / 5) ** 2);
 
 			const maxBlur = 32;
 
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 2).toFixed(2);
+			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 2);
 			const blurAngle = Math.atan2(yMoved, xMoved).toFixed(4);
 
 			if(blur > 0.5)
@@ -1359,19 +1359,13 @@ export class Viewport extends View
 		});
 
 		this.tags.bgFilters.style({
-			'--x': Number(this.args.x).toFixed(1)
-			, '--y': Number(this.args.y).toFixed(1)
+			'--x': Number(this.args.x)
+			, '--y': Number(this.args.y)
 		});
 
-		// this.tags.fgFilters.style({
-		// 	'--x': Number(this.args.x).toFixed(1)
-		// 	, '--y': Number(this.args.y).toFixed(1)
-		// });
-		// this.tags.fgFilters.style({'--x': this.args.x, '--y': this.args.y});
-
 		this.tags.content.style({
-			'--x': Number(this.args.x).toFixed(1)
-			, '--y': Number(this.args.y).toFixed(1)
+			'--x': Number(this.args.x)
+			, '--y': Number(this.args.y)
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
@@ -1673,6 +1667,8 @@ export class Viewport extends View
 					continue;
 				}
 
+				this.updateStarted.add(actor);
+
 				actor.updateStart();
 
 				if(actor.colliding)
@@ -1680,7 +1676,6 @@ export class Viewport extends View
 					actor.colliding = false;
 				}
 
-				this.updateStarted.add(this);
 			}
 		}
 	}
@@ -1699,9 +1694,9 @@ export class Viewport extends View
 					continue;
 				}
 
-				actor.update();
-
 				this.updated.add(actor);
+
+				actor.update();
 			}
 		}
 	}
@@ -1720,13 +1715,13 @@ export class Viewport extends View
 					continue;
 				}
 
+				this.updateEnded.add(actor);
+
 				actor.args.colliding = actor.colliding;
 
 				actor.updateEnd();
 
 				this.setColCell(actor);
-
-				this.updateEnded.add(this);
 			}
 		}
 	}
@@ -1799,6 +1794,17 @@ export class Viewport extends View
 			}
 
 			return;
+		}
+
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			const xDir = Math.sign(layer.x - this.args.x);
+			const yDir = Math.sign(layer.y - this.args.y);
+
+			layer.x = this.args.x;
+			layer.y = this.args.y;
+
+			layer.move(this.tileMap, xDir, yDir);
 		}
 
 		if(this.args.frameId % 15 === 0)
@@ -1927,30 +1933,22 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
-				// if(!this.actorIsOnScreen(actor))
-				// {
-				// 	continue;
-				// }
-
 				if(this.updated.has(actor))
 				{
 					continue;
 				}
 
+				this.actorUpdateStart([[actor]]);
+				this.actorUpdate([[actor]]);
+				this.actorUpdateEnd([[actor]]);
+
 				const nearbyCells = this.getNearbyColCells(actor);
 
-				actor.updateStart();
-				actor.update();
-
-				this.updated.add(actor);
-
 				this.actorUpdateStart(nearbyCells);
-
 				this.actorUpdate(nearbyCells);
-
 				this.actorUpdateEnd(nearbyCells);
 
-				actor.updateEnd();
+				this.setColCell(actor);
 			}
 
 			if(this.collisions)
@@ -2584,6 +2582,7 @@ export class Viewport extends View
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
 			, new DebianCard({timeout: 4500})
+			, new WebkitCard({timeout: 5500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
 		]

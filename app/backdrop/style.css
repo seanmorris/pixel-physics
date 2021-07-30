@@ -23,6 +23,10 @@
 	background-color: #323292;
 }
 
+.backdrop.west-side {
+	background-color: #1e1659;
+}
+
 .backdrop::before {
 	content: ' ';
 	display: block;
