@@ -140,33 +140,29 @@
 	content: ' ';
 }
 
-.spindash .chromium-logo,
 .spindash-charge .chromium-logo {
 	transition: transform 0.5s ease-in;
+	transform: skew(-25deg) translateX(-40px);
 }
 
-.spindash .chromium-logo:after,
+.spindash .chromium-logo {
+	transition: transform 75ms ease-out, left 0.5s ease-out;
+	left:  50vw;
+}
+
 .spindash-charge .chromium-logo:after {
 	animation: chromium-spinup 1.5s ease-in; infinite forwards;
 }
 
-.spindash-charge .chromium-logo {
-	transform: skew(-25deg) translateX(-40px);
-	transition: transform 0.45s ease-out, left 0s 0s ease-out;
-}
-
 .closed .chromium-logo,
-.closing .chromium-logo,
-.spindash .chromium-logo {
-	transition: transform 0.075s ease-out, left 0.5s ease-out;
-	transform: skew(0deg);
-	left:  50vw;
+.closing .chromium-logo {
+	opacity: 0;
 }
 
 .closed .chromium-logo:after,
 .closing .chromium-logo:after,
 .spindash .chromium-logo:after {
-	animation: chromium-spin 35ms linear infinite forwards;
+	animation: chromium-spin 96ms linear infinite forwards;
 }
 
 @keyframes debian-iris {
