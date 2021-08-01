@@ -35,30 +35,33 @@ export class Layer extends View
 
 		this.args.blocks = this.blocks.list;
 
-		this.args.bindTo('destroyed', v => {
-			const viewport = this.args.viewport;
-			const layers   = viewport.tileMap.tileLayers;
-			const layerDef = layers[this.args.layerId];
+		this.meta = {};
 
-			layerDef.destroyed = !!v;
-		});
+		const viewport = this.args.viewport;
+		const layers   = viewport.tileMap.tileLayers;
+		const layerDef = layers[this.args.layerId];
 
-		this.args.bindTo(['offsetX', 'offsetY'], (v,k,t,d,p) => {
-			const viewport = this.args.viewport;
-			const layers   = viewport.tileMap.tileLayers;
-			const layerDef = layers[this.args.layerId];
+		if(layerDef.properties)
+		{
+			for(const property of layerDef.properties)
+			{
+				this.meta[property.name] = property.value;
 
-			this[`${k}Changed`] = layerDef[`${k}Changed`] = v - (p||0);
+			}
 
-			layerDef[k] = v;
-		});
+			layerDef.layer = this;
+		}
 	}
 
 	move()
 	{
-		const viewport = this.args.viewport;
-		const layers   = viewport.tileMap.tileLayers;
-		const layerDef = layers[this.args.layerId];
+		const viewport   = this.args.viewport;
+		const layers     = viewport.tileMap.tileLayers;
+		const layerDef   = layers[this.args.layerId];
+		const controller = viewport.actorsById[ this.meta.controller ];
+
+		this.offsetXChanged = 0;
+		this.offsetYChanged = 0;
 
 		if(layerDef)
 		{
@@ -66,27 +69,60 @@ export class Layer extends View
 			layerDef.offsetYChanged = 0;
 		}
 
-		this.fallspeed = this.fallspeed || 0;
-
-		if(this.tags.background && this.args.name.split(' ')[0] === 'Moving')
+		if(controller)
 		{
-			// this.args.offsetX = 192 * Math.sin(this.args.viewport.args.frameId / 150);
-			this.args.offsetY = 128 * Math.sin(this.args.viewport.args.frameId / 100);
-
-			// this.args.offsetY += this.fallspeed;
-
-			// if(this.args.offsetY < 4096)
-			// {
-			// 	this.fallspeed += 0.01;
-			// }
-			// else
-			// {
-			// 	this.fallspeed = 0;
-			// }
-
-			this.tags.background.style({'--offsetX': -this.args.offsetX % this.args.blockSize});
-			this.tags.background.style({'--offsetY': -this.args.offsetY % this.args.blockSize});
+			this.args.offsetX = controller.args.xLayer || 0;
+			this.args.offsetY = controller.args.yLayer || 0;
 		}
+		else
+		{
+			this.args.offsetX = 0;
+			this.args.offsetY = 0;
+		}
+
+
+		this.fallspeed = this.fallspeed || 0;
+	}
+
+	onAttach(event)
+	{
+		const viewport   = this.args.viewport;
+		const layers     = viewport.tileMap.tileLayers;
+		const layerDef   = layers[ this.args.layerId ];
+		const controller = viewport.actorsById[ this.meta.controller ];
+
+		if(!layerDef || !controller)
+		{
+			return;
+		}
+
+		console.log(layers[ this.args.layerId ], controller);
+
+		this.args.bindTo('destroyed', v => {
+			const viewport = this.args.viewport;
+			const layers   = viewport.tileMap.tileLayers;
+			const layerDef = layers[this.args.layerId];
+
+			layerDef.destroyed = !!v;
+
+			controller.args.destroyed = !!v;
+		});
+
+		// controller.args.bindTo('xLayer', v => { this.args.offsetX = v || 0});
+		// controller.args.bindTo('yLayer', v => { this.args.offsetY = v || 0});
+
+		this.args.bindTo(['offsetX', 'offsetY'], (v,k,t,d,p) => {
+
+			const changed = v - (p||0);
+
+			layerDef[k] = v;
+			controller.args[k] = v;
+
+			controller.args[`${k}Changed`] = changed;
+			layerDef[`${k}Changed`] = changed;
+			this[`${k}Changed`] = changed
+		});
+
 	}
 
 	update(tileMap)
@@ -140,7 +176,7 @@ export class Layer extends View
 				// const tileY = j - Math.ceil(this.y / blockSize);
 
 				const tileY = j
-					+ -Math.ceil(this.y / blockSize)
+					+ Math.floor(-this.y / blockSize)
 					+ (this.offsetYChange < 0
 						? -Math.ceil(offsetY / blockSize)
 						: -Math.floor(offsetY / blockSize)
@@ -221,5 +257,14 @@ export class Layer extends View
 
 			ii++;
 		}
+
+		if(this.tags.background)
+		{
+			const background = this.tags.background;
+
+			background.style({'--offsetX': -offsetX % blockSize});
+			background.style({'--offsetY': -offsetY % blockSize});
+		}
+
 	}
 }

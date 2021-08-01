@@ -14,6 +14,8 @@ export class TileMap
 		this.heightMaskCache = new Map;
 		this.solidCache = new Map;
 
+		this.meta = new Map;
+
 		this.collisionLayers = [];
 		this.destructibleLayers = [];
 
@@ -89,6 +91,16 @@ export class TileMap
 					fetchImages.push(fetchImage);
 				}
 
+				if(this.mapData && this.mapData.properties)
+				{
+					for(const property of this.mapData.properties)
+					{
+						const name = property.name.replace(/-/g, '_');
+
+						this.meta.set(name, property.value);
+					}
+				}
+
 				Promise.all(fetchImages).then(accept);
 			});
 		});
@@ -119,40 +131,68 @@ export class TileMap
 			offsetY = this.tileLayers[layerId].offsetY ?? 0;
 		}
 
-		return [Math.floor((x-offsetX) / blockSize) , Math.floor((y-offsetY) / blockSize)];
+		return [
+			Math.floor( (x-offsetX) / blockSize )
+			, Math.floor( (y-offsetY) / blockSize )
+		];
 	}
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		// const tileKey = x + ',' + y + ',' + layerId;
-		// const cached  = this.tileNumberCache.get(tileKey);
+		const tileKey = x + ',' + y + ',' + layerId;
+		const cached  = this.tileNumberCache.get(tileKey);
 
-		// if(cached !== undefined)
-		// {
-		// 	return cached;
-		// }
+		if(cached !== undefined)
+		{
+			return cached;
+		}
 
 		const tileLayers = this.tileLayers;
 		const mapData    = this.mapData;
 
 		if(!tileLayers[layerId])
 		{
-			// this.tileNumberCache.set(tileKey, false);
+			this.tileNumberCache.set(tileKey, false);
 
 			return false;
 		}
 
-		if(x >= mapData.width || y >= mapData.height
-			|| x < 0 || y < 0
-		){
+		if(x >= mapData.width || x < 0)
+		{
+			if(x < 0 || !this.meta.get('wrapX'))
+			{
+				if(layerId !== 0)
+				{
+					this.tileNumberCache.set(tileKey, false);
+
+					return false;
+				}
+
+				this.tileNumberCache.set(tileKey, 1);
+
+				return 1;
+			}
+			else
+			{
+				if(x < 0 && x % this.mapData.width !== 0)
+				{
+					y++;
+				}
+
+				x = x % this.mapData.width;
+			}
+		}
+
+		if(y >= mapData.height || y < 0)
+		{
 			if(layerId !== 0)
 			{
-				// this.tileNumberCache.set(tileKey, false);
+				this.tileNumberCache.set(tileKey, false);
 
 				return false;
 			}
 
-			// this.tileNumberCache.set(tileKey, 1);
+			this.tileNumberCache.set(tileKey, 1);
 
 			return 1;
 		}
@@ -166,12 +206,12 @@ export class TileMap
 
 			const tileNumber = tile > 0 ? tile - 1 : 0;
 
-			// this.tileNumberCache.set(tileKey, tileNumber);
+			this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
 		}
 
-		// this.tileNumberCache.set(tileKey, false);
+		this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}
@@ -242,6 +282,11 @@ export class TileMap
 				const layer = this.tileLayers[i];
 
 				if(layer.name.substring(0, 3) === 'Art')
+				{
+					continue;
+				}
+
+				if(layer.name.substring(0, 10) === 'Moving Art')
 				{
 					continue;
 				}

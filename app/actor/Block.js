@@ -447,7 +447,6 @@ export class Block extends PointActor
 			if(Math.abs(this.public.yForce) <= 1)
 			{
 				this.screen.placeholder = `flat.`;
-				this.args.yForce = 0;
 				this.snapBack = false;
 			}
 

@@ -4,14 +4,16 @@ import { Tag } from 'curvature/base/Tag';
 
 export class ForceRegion extends Region
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.type = 'region region-force';
 
-		this.args.xForce = 0;
-		this.args.yForce = -5;
+		this.args.xForce = this.args.xForce || 0;
+		this.args.yForce = this.args.yForce || -5;
+
+		this.args.active = 1;
 	}
 
 	update()
@@ -24,19 +26,45 @@ export class ForceRegion extends Region
 		super.update();
 	}
 
+	onAttach()
+	{
+		if(!this.viewport || !this.args.switch)
+		{
+			return;
+		}
+
+		this.switch = this.viewport.actorsById[ this.args.switch ];
+
+		if(!this.switch)
+		{
+			return;
+		}
+
+		this.switch.args.bindTo('active', v => {
+			this.args.active = v > 0 ? v : this.args.active;
+		});
+	}
+
 	updateActor(other)
 	{
+		if(other.args.static)
+		{
+			return;
+		}
+
+		if(this.args.active <= 0)
+		{
+			return;
+		}
+
 		if(other.args.falling)
 		{
-			if(Math.abs(other.public.xSpeed) < Math.abs(this.public.xForce))
-			{
-				other.args.xSpeed += Math.sign(other.public.xSpeed - -this.public.xForce);
-			}
-
-			if(Math.abs(other.public.ySpeed) < Math.abs(this.public.yForce))
-			{
-				other.args.ySpeed += Math.sign(other.public.ySpeed - -this.public.yForce);
-			}
+			this.onNextFrame(()=>{
+				other.args.xSpeed += Math.sign(this.public.xForce);
+				other.args.ySpeed += Math.sign(this.public.yForce);
+				other.args.animation = 'springdash';
+				other.args.groundAngle = 0;
+			});
 
 			return;
 		}
@@ -45,39 +73,27 @@ export class ForceRegion extends Region
 		{
 			case 0:
 
-				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.xForce))
-				{
-					other.args.gSpeed += Math.sign(other.public.gSpeed - -this.public.xForce);
-				}
+				other.args.gSpeed += Math.sign(this.public.xForce);
 
 				break;
 
 
 			case 1:
 
-				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.yForce))
-				{
-					other.args.gSpeed += Math.sign(other.public.gSpeed - -this.public.yForce);
-				}
+				other.args.gSpeed += Math.sign(this.public.yForce);
 
 				break;
 
 			case 2:
 
-				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.xForce))
-				{
-					other.args.gSpeed -= Math.sign(other.public.gSpeed - -this.public.xForce);
-				}
+				other.args.gSpeed -= Math.sign(this.public.xForce);
 
 				break;
 
 
 			case 3:
 
-				if(Math.abs(other.public.gSpeed) < Math.abs(this.public.yForce))
-				{
-					other.args.gSpeed -= Math.sign(other.public.gSpeed - -this.public.yForce);
-				}
+				other.args.gSpeed -= Math.sign(this.public.yForce);
 
 				break;
 		}

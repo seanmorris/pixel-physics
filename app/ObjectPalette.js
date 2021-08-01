@@ -12,6 +12,7 @@ import { ForceRegion } from './region/ForceRegion';
 import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
+import { ExplodingRegion } from './region/ExplodingRegion'
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -104,11 +105,14 @@ import { Magnet	 } from './actor/Magnet';
 
 import { Orb } from './actor/Orb';
 
+import { LayerController } from './actor/LayerController';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
+	, 'layer-controller': LayerController
 	, 'star-post':    StarPost
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
@@ -146,6 +150,7 @@ export const ObjectPalette = {
 	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
 	, 'grinding-region': GrindingRegion
+	, 'exploding-region': ExplodingRegion
 	, 'boss-region': BossRegion
 	, 'exit-region': ExitRegion
 	, 'ring':         Ring

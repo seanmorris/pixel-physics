@@ -106,9 +106,16 @@ export class BreakableBlock extends Block
 
 	sleep()
 	{
+		if(this.args.dontRestore)
+		{
+			return;
+		}
+
 		this.box.classList.remove('broken');
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y') + 1;
+
+		this.args.active = 0;
 
 		this.broken = false;
 	}
@@ -143,6 +150,8 @@ export class BreakableBlock extends Block
 		}
 
 		this.broken = true;
+
+		this.args.active = 1;
 	}
 
 	get solid() { return !this.broken; }
