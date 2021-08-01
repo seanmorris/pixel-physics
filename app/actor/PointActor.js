@@ -686,7 +686,7 @@ export class PointActor extends View
 	{
 		this.args.localCameraMode = null;
 
-		if(this.args.standingLayer)
+		if(this.args.standingLayer && !this.args.static)
 		{
 			if(this.args.standingLayer.offsetXChanged)
 			{
@@ -697,20 +697,27 @@ export class PointActor extends View
 			{
 				this.args.y += this.args.standingLayer.offsetYChanged;
 			}
+
+			const layer = this.args.standingLayer.layer;
+
+			if(layer && layer.meta.grinding)
+			{
+				this.args.grinding = true;
+			}
 		}
 	}
 
 	updateEnd()
 	{
-		if(this.args.falling)
+		if(!this.args.static && this.args.falling)
 		{
-			if(this.args.standingLayer)
-			{
-				this.args.xSpeed += this.args.standingLayer.offsetXChanged;
-				this.args.ySpeed += this.args.standingLayer.offsetYChanged;
-			}
+			// if(this.args.standingLayer)
+			// {
+			// 	this.args.xSpeed += this.args.standingLayer.offsetXChanged;
+			// 	this.args.ySpeed += this.args.standingLayer.offsetYChanged;
+			// }
 
-			this.args.standingLayer = null;
+			// this.args.standingLayer = null;
 		}
 
 		for(const [tag, cssArgs] of this.autoStyle)
@@ -805,7 +812,7 @@ export class PointActor extends View
 			return;
 		}
 
-		if(this.args.controllable)
+		if(this.controllable)
 		{
 			const height = Math.max(this.public.height, 32);
 
@@ -944,8 +951,8 @@ export class PointActor extends View
 
 		if(this.impulseMag !== null)
 		{
-			this.args.xSpeed += Number(Number(Math.cos(this.impulseDir) * this.impulseMag).toFixed(2));
-			this.args.ySpeed += Number(Number(Math.sin(this.impulseDir) * this.impulseMag).toFixed(2));
+			this.args.xSpeed += Math.cos(this.impulseDir) * this.impulseMag;
+			this.args.ySpeed += Math.sin(this.impulseDir) * this.impulseMag;
 
 			if(!this.impulseFal)
 			{
@@ -1180,7 +1187,7 @@ export class PointActor extends View
 
 			this.updateAirPosition();
 
-			this.args.animationBias = Math.abs(this.args.airSpeed / this.args.flySpeedMax).toFixed(1);
+			this.args.animationBias = Math.abs(this.args.airSpeed / this.args.flySpeedMax);
 
 			if(this.args.animationBias > 1)
 			{
@@ -1191,7 +1198,7 @@ export class PointActor extends View
 		{
 			this.updateGroundPosition();
 
-			this.args.animationBias = Math.abs(this.args.gSpeed / this.args.gSpeedMax).toFixed(1);
+			this.args.animationBias = Math.abs(this.args.gSpeed / this.args.gSpeedMax);
 
 			if(this.args.animationBias > 1)
 			{
@@ -1440,6 +1447,11 @@ export class PointActor extends View
 
 					this.args.groundAngle = groundActor.groundAngle || 0;
 					this.args.standingOn  = groundActor;
+
+					if(groundActor.args.standingLayer)
+					{
+						this.args.standingLayer = groundActor.args.standingLayer;
+					}
 				}
 			}
 		}
@@ -2449,7 +2461,7 @@ export class PointActor extends View
 
 			if(forePosition && backPosition)
 			{
-				const newAngle = Number(Math.atan2(forePosition[1] - backPosition[1], sensorSpread).toFixed(1));
+				const newAngle = Number(Math.atan2(forePosition[1] - backPosition[1], sensorSpread));
 
 				if(isNaN(newAngle))
 				{
@@ -4151,19 +4163,19 @@ export class PointActor extends View
 
 		if(!this.drooperFg)
 		{
-			this.drooperFg = new Droop({
-				id: 'droop-' + this.args.id
+			this.drooperFg = new Droop(
+{				id: 'droop-' + this.args.id
 				, width: this.public.width * 3
 				, height: this.public.height * 3
 				, scale: 64
 			});
 
 			this.args.bindTo(['x', 'y'], (v,k) => {
-				this.drooperFg.args[k] = Number(v).toFixed(2);
+				this.drooperFg.args[k] = Number(v);
 			});
 
 			this.onNextFrame(() => {
-				this.drooperFg.args.scale = Number(warpFactor * 2).toFixed(2);
+				this.drooperFg.args.scale = Number(warpFactor * 2);
 
 				this.sprite.style({
 					transform: `translate(-50%, calc(${warpFactor}px + calc(-100% + 1px)))`
@@ -4178,7 +4190,7 @@ export class PointActor extends View
 			return;
 		}
 
-		this.drooperFg.args.scale = Number(warpFactor * 2).toFixed(2);
+		this.drooperFg.args.scale = Number(warpFactor * 2);
 
 		this.sprite.style({
 			transform: `translate(-50%, calc(${warpFactor}px + calc(-100% + 1px)))`

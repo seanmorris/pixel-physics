@@ -4,19 +4,13 @@ import { Tag } from 'curvature/base/Tag';
 
 export class RollingRegion extends Region
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.type = 'region rolling';
 
-		// this.entryParticle = '<div class = "particle-splash">';
-
-		// this.args.gravity = 0.5;
-		// this.args.drag    = 0.85;
-		// this.args.density = 10;
-
-		// this.skimSpeed = 10;
+		this.args.minSpeed = args.minSpeed || 4;
 	}
 
 	update()
@@ -46,9 +40,14 @@ export class RollingRegion extends Region
 
 	updateActor(other)
 	{
-		if(Math.abs(other.public.gSpeed) < 4)
+		if(!other.controllable)
 		{
-			other.args.gSpeed = 4 * Math.sign(other.args.gSpeed || other.args.direction);
+			return;
+		}
+
+		if(Math.abs(other.args.gSpeed) < this.args.minSpeed)
+		{
+			other.args.gSpeed = this.args.minSpeed * Math.sign(other.args.gSpeed || other.args.direction);
 		}
 
 		if(!other.public.rolling)
@@ -60,6 +59,7 @@ export class RollingRegion extends Region
 		{
 			other.willJump = false;
 		}
+
 	}
 
 	collideA(other, type)

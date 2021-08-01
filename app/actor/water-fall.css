@@ -6,11 +6,40 @@
 	z-index: 100;
 }
 
+.actor-water-fall[data-upward] .sprite {
+	position: relative;
+	animation: water-fall-animate steps(4) infinite 72ms reverse;
+	transform-origin: top center;
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(180deg) !important
+}
+
+.actor-water-fall[data-upward] .sprite:after {
+	animation: water-fall-cap-animate steps(4) infinite 72ms reverse;
+	background-image: url(/Sonic/water-fall-cap.png);
+	position: absolute;
+	content: ' ';
+	width: 66px;
+	height: 32px;
+	bottom: -28px;
+	left: -1px;
+}
+
 @keyframes water-fall-animate {
 	from{
 		background-position: 0px 0px;
 	}
 	to{
 		background-position: -256px 0px;
+	}
+}
+
+@keyframes water-fall-cap-animate {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 0px -128px;
 	}
 }

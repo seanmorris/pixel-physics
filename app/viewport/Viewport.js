@@ -1032,7 +1032,7 @@ export class Viewport extends View
 
 				cameraSpeed = 10;
 
-				const speedBias = Math.min(absSpeed / 40, 1) * -Math.sign(xSpeed);
+				const speedBias = Math.min(absSpeed / 40, 0.0001) * -Math.sign(xSpeed);
 
 				this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
 				this.args.yOffsetTarget = 0.5;
@@ -1110,14 +1110,14 @@ export class Viewport extends View
 			default:
 
 				this.args.xOffsetTarget = 0.5;
-				this.args.yOffsetTarget = 0.75;
+				this.args.yOffsetTarget = 0.5;
 
 				cameraSpeed = 25;
 
 			break;
 		}
 
-		if(this.controlActor.args.cameraMode !== 'boss')
+		if(['normal', 'bridge', 'aerial'].includes(this.controlActor.args.cameraMode))
 		{
 			const gSpeed     = this.controlActor.public.gSpeed;
 			const absSpeed   = Math.abs(gSpeed);
@@ -1152,6 +1152,7 @@ export class Viewport extends View
 
 		if(this.controlActor.args.cameraBias)
 		{
+			cameraSpeed = 15;
 			cameraSpeed = 15;
 		}
 
@@ -1199,10 +1200,10 @@ export class Viewport extends View
 		let x = xNext + dragDistance * Math.cos(angle)
 		let y = yNext + dragDistance * Math.sin(angle);
 
-		x = Number(Number(x - snapFactor * Math.cos(angle) * snapSpeed));
-		y = Number(Number(y - snapFactor * Math.sin(angle) * snapSpeed));
+		x = x - snapFactor * Math.cos(angle) * snapSpeed;
+		y = y - snapFactor * Math.sin(angle) * snapSpeed;
 
-		if(x > 96)
+		if(x > 96 && !this.meta.wrapX)
 		{
 			x = 96;
 		}
@@ -1215,7 +1216,7 @@ export class Viewport extends View
 		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width - 96;
 		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height - 96;
 
-		if(x < xMax)
+		if(x < xMax && !this.meta.wrapX)
 		{
 			x = xMax;
 		}
@@ -1337,7 +1338,7 @@ export class Viewport extends View
 				const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
 
 				backdrop.view && Object.assign(backdrop.view.args, ({
-					x: Math.round(this.args.x)
+					x: this.args.x
 					, xMax: xMax
 					, y: this.args.y + backdrop.y
 					, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
@@ -1359,13 +1360,13 @@ export class Viewport extends View
 		});
 
 		this.tags.bgFilters.style({
-			'--x': Number(this.args.x)
-			, '--y': Number(this.args.y)
+			'--x': this.args.x
+			, '--y': this.args.y
 		});
 
 		this.tags.content.style({
-			'--x': Number(this.args.x)
-			, '--y': Number(this.args.y)
+			'--x': this.args.x
+			, '--y': this.args.y
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
@@ -1757,26 +1758,12 @@ export class Viewport extends View
 			? this.controlActor.controller
 			: this.controller;
 
-		if(!this.args.paused)
+		if(!this.args.paused || this.args.networked)
 		{
 			this.callFrameOuts();
 			this.callFrameIntervals();
 
 			this.args.frameId++;
-		}
-
-		if(this.args.paused !== false && !this.args.networked)
-		{
-			this.takeInput(controller);
-
-			this.args.pauseMenu.input(controller);
-
-			if(this.args.paused > 0)
-			{
-				this.args.paused--;
-			}
-
-			return;
 		}
 
 		if(!this.args.started)
@@ -1791,6 +1778,20 @@ export class Viewport extends View
 				{
 					this.args.titlecard.input(controller);
 				}
+			}
+
+			return;
+		}
+
+		if(this.args.paused !== false && !this.args.networked)
+		{
+			this.takeInput(controller);
+
+			this.args.pauseMenu.input(controller);
+
+			if(this.args.paused > 0)
+			{
+				this.args.paused--;
 			}
 
 			return;
@@ -1933,11 +1934,6 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
-				if(this.updated.has(actor))
-				{
-					continue;
-				}
-
 				this.actorUpdateStart([[actor]]);
 				this.actorUpdate([[actor]]);
 				this.actorUpdateEnd([[actor]]);
@@ -1983,14 +1979,14 @@ export class Viewport extends View
 					// this.coins.args.value = this.controlActor.args.coins;
 					// this.args.hasCoins    = !!this.controlActor.args.coins;
 
-					this.args.xPos.args.value     = Number(this.controlActor.x).toFixed(2);
-					this.args.yPos.args.value     = Number(this.controlActor.y).toFixed(2);
+					this.args.xPos.args.value     = Number(this.controlActor.x).toFixed(3);
+					this.args.yPos.args.value     = Number(this.controlActor.y).toFixed(3);
 
 					this.args.ground.args.value   = this.controlActor.args.landed;
-					this.args.gSpeed.args.value   = Number(this.controlActor.args.gSpeed).toFixed(2);
+					this.args.gSpeed.args.value   = Number(this.controlActor.args.gSpeed).toFixed(3);
 
-					this.args.xSpeed.args.value   = Number(this.controlActor.args.xSpeed).toFixed(2);
-					this.args.ySpeed.args.value   = Number(this.controlActor.args.ySpeed).toFixed(2);
+					this.args.xSpeed.args.value   = Number(this.controlActor.args.xSpeed).toFixed(3);
+					this.args.ySpeed.args.value   = Number(this.controlActor.args.ySpeed).toFixed(3);
 
 					this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 					this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
@@ -2024,8 +2020,6 @@ export class Viewport extends View
 			let wakeRegions = false;
 
 			const nearbyActors = this.nearbyActors(this.controlActor) || [];
-
-			// for(const region of this.regions)
 
 			for(const actorList of [nearbyActors, this.regions])
 			{
@@ -2106,7 +2100,6 @@ export class Viewport extends View
 
 		if(this.nextControl)
 		{
-			// this.auras.delete(this.controlActor);
 			!this.args.networked && this.auras.clear();
 
 			this.controlActor
@@ -2292,16 +2285,6 @@ export class Viewport extends View
 		actorPointCache.set(cacheKey, actors);
 
 		return actors;
-	}
-
-	screenBox()
-	{
-		return [
-			this.camera.x   - Math.floor(this.width/2)
-			, this.camera.y - Math.floor(this.height/2)
-			, this.camera.x + Math.ceil(this.width/2)
-			, this.camera.y + Math.ceil(this.height/2)
-		];
 	}
 
 	padConnected(event)

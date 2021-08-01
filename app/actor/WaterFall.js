@@ -22,18 +22,31 @@ export class WaterFall extends PointActor
 	{
 		super(...args);
 
-		this.args.width  = this.public.width  || 32;
-		this.args.height = this.public.height || 64;
+		this.args.width  = this.args.width  || 32;
+		this.args.height = this.args.height || 64;
 		this.args.type   = 'actor-item actor-water-fall';
 		this.args.active = false;
+		this.args.static = true;
 	}
 
-	onAttached()
+	onAttach()
 	{
-		this.switch = this.viewport.actorsById[ this.public.switch ];
+		this.autoAttr.get(this.box)['data-upward'] = 'upward';
+
+		if(!this.viewport || !this.args.switch)
+		{
+			return;
+		}
+
+		this.switch = this.viewport.actorsById[ this.args.switch ];
+
+		if(!this.switch)
+		{
+			return;
+		}
 
 		this.switch.args.bindTo('active', v => {
-			if(v && !this.args.active)
+			if(v && v > 0 && !this.args.active)
 			{
 				this.args.active = true;
 				this.onNextFrame(()=>{
@@ -51,16 +64,19 @@ export class WaterFall extends PointActor
 		if(this.args.toHeight !== this.args.height)
 		{
 			const diff = this.args.toHeight - this.args.height;
-			const increment = Math.sign(diff) * 8;
+			const increment = Math.sign(diff) * 32;
 
-			if(diff < increment)
+			if(diff <= increment)
 			{
 				this.args.height = this.args.toHeight;
-				this.args.y = this.public.yOriginal + this.args.toHeight;
+				this.args.y = this.args.yOriginal + this.args.toHeight;
+			}
+			else
+			{
+				this.args.height += increment;
+				this.args.y += increment;
 			}
 
-			this.args.height += increment;
-			this.args.y += increment;
 		}
 	}
 

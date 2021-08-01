@@ -108,6 +108,13 @@ export class Switch extends PointActor
 	{
 		this.beep();
 
+		if(this.args.target && this.viewport.actorsById[ this.args.target ])
+		{
+			const target = this.viewport.actorsById[ this.args.target ];
+
+			target.activate(other, this);
+		}
+
 		if(this.args.destroyLayer)
 		{
 			const layerId = this.args.destroyLayer;

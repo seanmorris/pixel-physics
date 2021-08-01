@@ -62,8 +62,6 @@ export class Sonic extends PointActor
 
 		this.sparks = new Set();
 
-		// this.registerDebug('sonic');
-
 		this.spindashCharge = 0;
 		this.dropDashCharge = 0;
 
@@ -367,7 +365,7 @@ export class Sonic extends PointActor
 			}
 			else
 			{
-				this.viewport.onFrameOut(15, () => this.args.animation = 'rolling');
+				this.viewport.onFrameOut(8, () => this.args.animation = 'rolling');
 				this.args.animation = 'spindash';
 			}
 		}
