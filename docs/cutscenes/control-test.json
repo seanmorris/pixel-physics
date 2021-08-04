@@ -1,0 +1,12 @@
+[
+    {
+        "event": "input",
+        "axes":[1,0,0,0],
+        "time": 0
+    },
+    {
+        "event": "input",
+        "axes":[0,0,0,0],
+        "time": 40
+    }
+]

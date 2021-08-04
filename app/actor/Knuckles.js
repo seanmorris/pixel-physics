@@ -7,9 +7,9 @@ import { SkidDust } from '../behavior/SkidDust';
 
 export class Knuckles extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.behaviors.add(new SkidDust);
 
@@ -34,6 +34,8 @@ export class Knuckles extends PointActor
 		this.beforePunch = 'standing';
 
 		this.bombsDropped = 0;
+
+		this.sparks = new Set();
 
 		this.args.bindTo('falling', v => {
 
@@ -201,6 +203,13 @@ export class Knuckles extends PointActor
 			{
 				this.box.setAttribute('data-animation', 'rolling');
 			}
+
+			if(this.args.grinding)
+			{
+				this.args.rolling = false;
+
+				this.box.setAttribute('data-animation', 'grinding');
+			}
 		}
 		else
 		{
@@ -316,6 +325,60 @@ export class Knuckles extends PointActor
 		if(this.public.mode === 0 || this.public.mode === 2)
 		{
 			this.args.climbing = false;
+		}
+
+		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
+		{
+			const sparkParticle = new Tag(`<div class = "particle-sparks">`);
+			const sparkEnvelope = new Tag(`<div class = "envelope-sparks">`);
+
+			sparkEnvelope.appendChild(sparkParticle.node);
+
+			const sparkPoint = this.rotatePoint(
+				-this.public.gSpeed * 1.75 * this.args.direction
+				, 8
+			);
+
+			const flip = Math.sign(this.args.gSpeed);
+
+			sparkEnvelope.style({
+				'--x': sparkPoint[0] + this.x
+				, '--y': sparkPoint[1] + this.y + Math.random * -3
+				, 'z-index': 0
+				, 'animation-delay': (-Math.random()*0.25) + 's'
+				, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
+				, '--flip': flip
+				, '--angle': this.realAngle
+				, opacity: Math.random() * 2
+			});
+
+			sparkEnvelope.particle = sparkParticle;
+
+			this.viewport.particles.add(sparkEnvelope);
+
+			this.sparks.add(sparkEnvelope);
+
+			this.viewport.onFrameOut(30, () => {
+				this.viewport.particles.remove(sparkEnvelope);
+				this.sparks.delete(sparkEnvelope);
+			});
+		}
+
+		if(this.sparks.size)
+		{
+			for(const spark of this.sparks)
+			{
+				const sparkPoint = this.rotatePoint(
+					1.75 * this.args.direction
+					, 8
+				);
+
+				spark.style({
+					opacity: Math.random() * 2
+					, '--x': sparkPoint[0] + this.x
+					, '--y': sparkPoint[1] + this.y
+				});
+			}
 		}
 	}
 
@@ -477,5 +540,5 @@ export class Knuckles extends PointActor
 	get canRoll() { return !this.public.climbing; }
 	get canFly() { return true; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
+	get controllable() { return !this.args.npc; }
 }

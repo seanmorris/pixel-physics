@@ -1,0 +1,96 @@
+.screen-effects {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: calc(100% / var(--scale));
+	height: calc(100% / var(--scale));
+	transform-origin: top left;
+	transform: scale(var(--scale));
+}
+
+.screen-effects .screen-fire {
+	position: absolute;
+	width: 100%;
+	height:  300%;
+	display: flex;
+	filter:  url(#waves);
+	opacity: 0.7;
+	transform: translateY(33.3%);
+}
+
+.screen-effects .screen-fire .fire-strip > div {
+	width: 32px;
+	height:  100%;
+	background-image: url(/Sonic/angel-island-fire.png);
+	background-position: calc(var(--index, 0) * -32px) 0;
+	background-repeat: repeat-x;
+	opacity: 1;
+}
+
+.screen-effects .screen-fire.playing {
+	animation: screen-fire-slide 2.5s linear 1;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n) {
+	animation: screen-fire-twist 2.5s 0.0s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(4n) > div {
+	animation: screen-fire-flicker 0.4s 0.2s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+1) {
+	animation: screen-fire-twist 2.5s 0.1s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+1) > div {
+	animation: screen-fire-flicker 0.4s 0.1s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+2) {
+	animation: screen-fire-twist 2.5s 0.2s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+2) > div {
+	animation: screen-fire-flicker 0.4s 0.0s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+3) {
+	animation: screen-fire-twist 2.5s 0.3s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+3) > div {
+	animation: screen-fire-flicker 0.4s 0.3s ease-in-out infinite alternate;
+}
+/*
+@keyframes screen-fire-twist {
+	from {
+		transform:  scaleX(-1)
+	}
+	50% {
+		transform:  scaleX(-1)
+	}
+	to {
+		transform:  scaleX(1)
+	}
+}*/
+
+@keyframes screen-fire-flicker {
+	from {
+		transform: scale(1.1, 1);
+
+	}
+	to {
+		transform: scale(1.1, 0.93);
+	}
+}
+
+@keyframes screen-fire-slide {
+	from {
+		transform: translateY(33.3%);
+
+	}
+	to {
+		transform: translateY(-100%);
+	}
+}

@@ -13,6 +13,39 @@ export class ExplodingRegion extends Region
 		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 	}
 
+	updateActor(actor)
+	{
+		if(!this.args.active)
+		{
+			return;
+		}
+
+		if(actor.controllable)
+		{
+			return;
+		}
+
+		if(actor.break)
+		{
+			actor.break();
+
+			if(!this.viewport.actorIsOnScreen(actor))
+			{
+				this.viewport.actors.remove(actor);
+			}
+		}
+
+		if(actor.pop)
+		{
+			actor.pop();
+
+			if(!this.viewport.actorIsOnScreen(actor))
+			{
+				this.viewport.actors.remove(actor);
+			}
+		}
+	}
+
 	update()
 	{
 		const viewport = this.viewport;

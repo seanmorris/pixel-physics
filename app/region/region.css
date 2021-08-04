@@ -2,7 +2,7 @@
 	--widthPx: calc(1px * var(--width));
 	--heightPx: calc(1px * var(--height));
 
-	width: calc( var(--widthPx));
+	/*width: calc( var(--widthPx));*/
 
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
@@ -15,14 +15,16 @@
 	z-index: 9000000;
 }
 
+.region.region-shade .sprite,
 .region.region-lava .sprite,
 .region.region-water .sprite {
 	position: absolute;
-	width: calc(1px * var(--width));
-	height: calc(1px * var(--height));
+	/*width: calc(1px * var(--width));*/
+	/*height: calc(1px * var(--height));*/
 	pointer-events: none;
 }
 
+.region.region-shade .sprite,
 .region.region-lava .sprite,
 .region.region-water .sprite {
 
@@ -46,6 +48,7 @@
 	z-index: 100001;
 }
 
+.region.region-shade .sprite,
 .region.region-water .sprite {
 	bottom: calc( var(--bottomBoundary));
 	top: calc( calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry))) - 16px);
@@ -61,6 +64,7 @@
 	bottom: 64px;
 }
 
+.region.region-shade .region-color-wrapper,
 .region.region-lava .region-color-wrapper {
 	overflow: hidden;
 	position: absolute;
@@ -89,6 +93,7 @@
 
 }
 
+.region.region-shade .region-filter-wrapper,
 .region.region-water .region-filter-wrapper {
 	overflow: hidden;
 	position: absolute;
@@ -98,6 +103,8 @@
 	bottom: 65px;
 }
 
+.region.region-shade .region-color,
+.region.region-shade .region-filter,
 .region.region-lava .region-color,
 .region.region-lava .region-filter,
 .region.region-water .region-color,

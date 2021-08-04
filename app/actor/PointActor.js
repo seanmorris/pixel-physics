@@ -684,7 +684,14 @@ export class PointActor extends View
 
 	updateStart()
 	{
+		this.lastLayer = null;
+
 		this.args.localCameraMode = null;
+
+		if(this.args.dead)
+		{
+			return;
+		}
 
 		if(this.args.standingLayer && !this.args.static)
 		{
@@ -703,6 +710,16 @@ export class PointActor extends View
 			if(layer && layer.meta.grinding)
 			{
 				this.args.grinding = true;
+				this.args.direction = Math.sign(this.args.xSpeed || this.args.gSpeed);
+			}
+			else
+			{
+				this.args.grinding = false;
+			}
+
+			if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
+			{
+				this.args.grinding = false;
 			}
 		}
 	}
@@ -711,13 +728,13 @@ export class PointActor extends View
 	{
 		if(!this.args.static && this.args.falling)
 		{
-			// if(this.args.standingLayer)
-			// {
-			// 	this.args.xSpeed += this.args.standingLayer.offsetXChanged;
-			// 	this.args.ySpeed += this.args.standingLayer.offsetYChanged;
-			// }
+			if(this.args.standingLayer)
+			{
+				this.args.xSpeed += this.args.standingLayer.offsetXChanged;
+				this.args.ySpeed += this.args.standingLayer.offsetYChanged;
+			}
 
-			// this.args.standingLayer = null;
+			this.args.standingLayer = null;
 		}
 
 		for(const [tag, cssArgs] of this.autoStyle)
@@ -772,6 +789,10 @@ export class PointActor extends View
 				toX = this.def.get('x');
 				toY = this.def.get('y');
 			}
+
+			this.args.standingLayer = null;
+			this.args.standingOn    = null;
+			this.lastLayer = null;
 
 			const xDiff = this.args.x - toX;
 			const yDiff = this.args.y - toY;
@@ -828,7 +849,6 @@ export class PointActor extends View
 			if(!this.args.falling && jumpBlock)
 			{
 				this.die();
-				return;
 			}
 		}
 
@@ -923,6 +943,7 @@ export class PointActor extends View
 
 			if(this.willJump && this.yAxis < 0)
 			{
+				this.args.standingLayer = false;
 				this.args.standingOn = false;
 				this.willJump   = false;
 
@@ -1163,7 +1184,10 @@ export class PointActor extends View
 
 		if(!this.noClip && !this.args.gSpeed && !this.args.xSpeed && !this.args.ySpeed && !this.args.float)
 		{
-			this.args.falling = !this.checkBelow(this.x,this.y);
+			this.args.falling = !this.checkBelow(
+				Number(Number(this.x).toFixed(3))
+				, Number(Number(this.y).toFixed(3))
+			);
 		}
 
 		if(this.noClip)
@@ -1432,6 +1456,8 @@ export class PointActor extends View
 
 		if(Array.isArray(standingOn) && standingOn.length)
 		{
+			this.args.standingLayer = false;
+
 			const groundActors = standingOn.filter(
 				a => a.args !== this.args && a.solid //a.callCollideHandler(this)
 			);
@@ -1492,6 +1518,7 @@ export class PointActor extends View
 			if(falling)
 			{
 				this.args.xSpeed = this.args.gSpeed || this.args.xSpeed;
+				this.args.standingLayer = null;
 			}
 		}
 		else
@@ -1733,6 +1760,8 @@ export class PointActor extends View
 				{
 					const gSpeed = this.public.gSpeed;
 					const gAngle = this.public.groundAngle;
+
+					this.args.standingLayer = null;
 
 					switch(this.public.mode)
 					{
@@ -2164,7 +2193,9 @@ export class PointActor extends View
 			return actor.lastPointA;
 		}
 
-		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+
+		if(solid)
 		{
 			return actor.lastPointA;
 		}
@@ -2204,6 +2235,8 @@ export class PointActor extends View
 	{
 		let xSpeedOriginal = this.public.xSpeed;
 		let ySpeedOriginal = this.public.ySpeed;
+
+		this.args.standingLayer = null;
 
 		const viewport  = this.viewport;
 		const radius    = Math.ceil(this.public.width / 2);
@@ -2249,17 +2282,22 @@ export class PointActor extends View
 			? (this.public.height + this.public.yMargin)
 			: this.public.height) || 1;
 
+		this.upScan = true;
+
 		const upDistance = this.castRay(
-			Math.max(Math.abs(this.public.ySpeed), upMargin) + 1
+			Math.abs(this.public.ySpeed) + upMargin + 1
 			, -Math.PI / 2
 			, this.findSolid
 		);
+
+		this.upScan = false;
 
 		const downDistance = this.castRay(
 			Math.abs(this.public.ySpeed) + 1
 			, Math.PI / 2
 			, this.findSolid
 		);
+
 
 		let hits = [];
 
@@ -2279,6 +2317,17 @@ export class PointActor extends View
 			}
 
 			hits = distances.filter(x => x !== false);
+		}
+
+		if(this.args.ySpeed && upDistance && this.lastLayer && this.lastLayer.offsetYChanged)
+		{
+			this.args.y += this.lastLayer.offsetYChanged + 1;
+
+			this.args.ySpeed = this.lastLayer.offsetYChanged + 1;
+
+			this.lastLayer = null;
+
+			return;
 		}
 
 		if(this.public.ySpeed < 0 && upDistance > 0)
@@ -2400,6 +2449,8 @@ export class PointActor extends View
 			this.args.x = stickX;
 			this.args.y = stickY;
 
+			const solid = this.checkBelow(this.x, this.y);
+
 			blockers = this.getMapSolidAt(this.x + direction, this.y);
 
 			if(Array.isArray(blockers))
@@ -2511,6 +2562,11 @@ export class PointActor extends View
 						this.args.gSpeed = gSpeed;
 					}
 
+					if(typeof solid === 'object')
+					{
+						this.args.standingLayer = solid;
+					}
+
 					this.args.falling = false;
 				}
 
@@ -2563,12 +2619,12 @@ export class PointActor extends View
 		{
 			if(this.args.xSpeed)
 			{
-				this.args.x += this.args.xSpeed;
+				this.args.x = Number(Number(this.args.x) + Number(this.args.xSpeed));
 			}
 
 			if(this.args.ySpeed)
 			{
-				this.args.y += this.args.ySpeed;
+				this.args.y = Number(Number(this.args.y) + Number(this.args.ySpeed));
 			}
 		}
 
@@ -2593,7 +2649,7 @@ export class PointActor extends View
 
 			this.onNextFrame(()=>{
 				this.args.gSpeed += dropBoost
-				if(!this.args.ignore && this.yAxis >= 0)
+				if(this.yAxis >= 0)
 				{
 					this.args.rolling = true;
 				}
@@ -2689,7 +2745,10 @@ export class PointActor extends View
 
 					if(this.public.falling
 						&& Math.abs(this.public.xSpeed > 25)
-						&& !this.getMapSolidAt(this.x, this.y +480)
+						&& !this.getMapSolidAt(
+							Number(Number(this.x).toFixed(3))
+							,Number(Number(this.y) + 480).toFixed(3)
+						)
 					){
 						this.args.cameraMode = 'airplane'
 					}
@@ -2895,12 +2954,6 @@ export class PointActor extends View
 		let xAxis = this.xAxis;
 		let yAxis = this.yAxis;
 
-		if(this.args.ignore !== 0 && this.args.ignore !== -4)
-		{
-			xAxis = 0;
-			yAxis = 0;
-		}
-
 		let gSpeedMax = this.public.gSpeedMax;
 
 		if(this.running)
@@ -2917,7 +2970,7 @@ export class PointActor extends View
 			if(Math.abs(this.public.gSpeed) < 0.01)
 			{
 				this.viewport.onFrameOut(5, ()=>{
-					if(!this.args.ignore && Math.abs(this.public.gSpeed) < 0.01)
+					if(Math.abs(this.public.gSpeed) < 0.01)
 					{
 						this.args.rolling = false
 					}
@@ -2925,7 +2978,7 @@ export class PointActor extends View
 
 				this.args.gSpeed = 0;
 			}
-			else if(!this.args.ignore && this.canRoll && this.yAxis > 0.55)
+			else if(this.canRoll && this.yAxis > 0.55)
 			{
 				this.args.rolling = true;
 			}
@@ -2933,7 +2986,7 @@ export class PointActor extends View
 
 		const drag = this.getLocalDrag();
 
-		if(this.noClip && !this.args.ignore)
+		if(this.noClip)
 		{
 			this.args.xSpeed += xAxis * this.public.airAccel * drag;
 			this.args.ySpeed += yAxis * this.public.airAccel * drag;
@@ -2950,7 +3003,7 @@ export class PointActor extends View
 		}
 		else if(!this.public.falling)
 		{
-			if(!this.args.ignore && xAxis && !this.public.rolling)
+			if(xAxis && !this.public.rolling)
 			{
 				let gSpeed = this.public.gSpeed
 				const axisSign = Math.sign(xAxis);
@@ -2990,7 +3043,7 @@ export class PointActor extends View
 		}
 		else if(this.public.falling && xAxis && Math.abs(this.public.xSpeed) < this.args.xSpeedMax)
 		{
-			if((!this.args.ignore || this.args.ignore === -4) && Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
+			if(Math.abs(this.public.xSpeed) < this.args.flySpeedMax)
 			{
 				this.args.xSpeed += xAxis * this.public.airAccel * drag;
 			}
@@ -3005,12 +3058,12 @@ export class PointActor extends View
 
 		if(xAxis < 0)
 		{
-			if(!this.public.climbing && (!this.args.ignore || this.args.ignore === -4))
+			if(!this.public.climbing)
 			{
 				this.args.facing = 'left';
 			}
 
-			if(!this.args.grinding)
+			if(!this.args.grinding || Math.abs(this.args.gSpeed) < 3)
 			{
 				this.args.direction = -1;
 			}
@@ -3018,12 +3071,12 @@ export class PointActor extends View
 
 		if(xAxis > 0)
 		{
-			if(!this.public.climbing && (!this.args.ignore || this.args.ignore === -4))
+			if(!this.public.climbing)
 			{
 				this.args.facing = 'right';
 			}
 
-			if(!this.args.grinding)
+			if(!this.args.grinding || Math.abs(this.args.gSpeed) < 3)
 			{
 				this.args.direction = 1;
 			}
@@ -3156,8 +3209,11 @@ export class PointActor extends View
 
 		if(actors.length === 0)
 		{
-			if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
-			{
+			if(!tileMap.getSolid(
+				Number(Number(point[0]).toFixed(3))
+				, Number(Number(point[1]).toFixed(3))
+				, actor.args.layer)
+			){
 				return i;
 			}
 		}
@@ -3618,7 +3674,14 @@ export class PointActor extends View
 			return i;
 		}
 
-		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+
+		if(actor.upScan)
+		{
+			actor.lastLayer = solid;
+		}
+
+		if(solid)
 		{
 			return i;
 		}
@@ -3626,7 +3689,14 @@ export class PointActor extends View
 
 	findSolidTile(i, point, actor)
 	{
-		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+
+		if(this.upScan)
+		{
+			actor.lastLayer = solid;
+		}
+
+		if(solid)
 		{
 			return i;
 		}
@@ -3903,7 +3973,11 @@ export class PointActor extends View
 
 		const tileMap = this.viewport.tileMap;
 
-		return tileMap.getSolid(x,y, this.public.layer);
+		return tileMap.getSolid(
+			Number(Number(x).toFixed(3))
+			, Number(Number(y).toFixed(3))
+			, this.public.layer
+		);
 	}
 
 	get canRoll() { return false; }
@@ -3932,44 +4006,28 @@ export class PointActor extends View
 
 		const controller = this.controller;
 
+		this.xAxis = 0;
+		this.yAxis = 0;
 
-		if(!this.args.ignore || this.args.ignore === -4)
+		if(controller.axes[0])
 		{
-			if(controller.axes[0])
-			{
-				this.xAxis = controller.axes[0].magnitude;
-			}
-
-			if(controller.axes[1])
-			{
-				this.yAxis = controller.axes[1].magnitude;
-			}
-		}
-		else
-		{
-			this.xAxis = 0;
-			this.yAxis = 0;
+			this.xAxis = controller.axes[0].magnitude;
 		}
 
-		if(!this.args.ignore)
+		if(controller.axes[1])
 		{
-
-			if(controller.axes[2])
-			{
-				this.aAxis = controller.axes[2].magnitude;
-			}
-
-			if(controller.axes[3])
-			{
-				this.bAxis = controller.axes[3].magnitude;
-			}
-		}
-		else
-		{
-			this.aAxis = 0;
-			this.bAxis = 0;
+			this.yAxis = controller.axes[1].magnitude;
 		}
 
+		if(controller.axes[2])
+		{
+			this.aAxis = controller.axes[2].magnitude;
+		}
+
+		if(controller.axes[3])
+		{
+			this.bAxis = controller.axes[3].magnitude;
+		}
 
 		const buttons = controller.buttons;
 
@@ -4043,8 +4101,6 @@ export class PointActor extends View
 
 			this.args.ySpeed = -this.args.jumpForce * drag * 0.75;
 
-			this.args.ignore = 0;
-
 			this.args.hangingFrom.unhook();
 
 			return;
@@ -4074,7 +4130,7 @@ export class PointActor extends View
 
 	command_1()
 	{
-		if(!this.args.ignore && this.canRoll && this.public.gSpeed)
+		if(this.canRoll && this.public.gSpeed)
 		{
 			this.args.rolling = true;
 		}
@@ -4123,6 +4179,8 @@ export class PointActor extends View
 			});
 
 			this.twister.render(this.sprite);
+
+			this.onRemove(() => this.twistFilter.remove());
 		}
 
 		this.twister.args.scale = warp;
@@ -4152,6 +4210,8 @@ export class PointActor extends View
 			this.args.yOff = 16;
 
 			this.pincherBg.render(this.sprite);
+
+			this.onRemove(() => this.pinchFilterBg.remove());
 		}
 
 		this.pincherBg.args.scale = warpBg;
@@ -4251,12 +4311,21 @@ export class PointActor extends View
 			return;
 		}
 
+		this.args.groundAngle = 0;
+
+		this.args.ySpeed = 0;
+		this.args.xSpeed = 0;
+
 		this.args.jumping = false;
 		this.args.falling = true;
 		this.args.ignore  = -1;
 		this.args.float   = 0;
 
 		this.args.rings = 0;
+
+		this.args.standingLayer = null;
+		this.args.standingOn    = null;
+		this.lastLayer          = null;
 
 		this.args.dead = true;
 		this.noClip = true;
@@ -4279,6 +4348,11 @@ export class PointActor extends View
 
 		this.args.respawning = true;
 		this.args.display    = 'none';
+
+		this.args.standingLayer = null;
+		this.args.standingOn    = null;
+
+		this.lastLayer = null;
 	}
 
 	sleep()
