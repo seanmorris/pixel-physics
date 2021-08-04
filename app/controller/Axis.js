@@ -1,7 +1,5 @@
 export class Axis
 {
-	active    = false;
-
 	magnitude = 0;
 	delta     = 0;
 

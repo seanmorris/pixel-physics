@@ -13,6 +13,7 @@ import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
 import { ExplodingRegion } from './region/ExplodingRegion'
+import { SwitchRegion } from './region/SwitchRegion'
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -35,6 +36,7 @@ import { Cinematic } from './actor/Cinematic';
 import { Flickie } from './actor/Flickie';
 
 import { Bubbles } from './actor/Bubbles';
+import { GuardBot } from './actor/GuardBot';
 import { CrabMeat } from './actor/CrabMeat';
 import { BuzzBomber } from './actor/BuzzBomber';
 import { MechaFroggy } from './actor/MechaFroggy';
@@ -106,6 +108,8 @@ import { Magnet	 } from './actor/Magnet';
 import { Orb } from './actor/Orb';
 
 import { LayerController } from './actor/LayerController';
+import { TilesetSwapper } from './actor/TilesetSwapper';
+import { CutScene } from './actor/CutScene';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -113,6 +117,7 @@ export const ObjectPalette = {
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
 	, 'layer-controller': LayerController
+	, 'tileset-swapper': TilesetSwapper
 	, 'star-post':    StarPost
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
@@ -153,6 +158,7 @@ export const ObjectPalette = {
 	, 'exploding-region': ExplodingRegion
 	, 'boss-region': BossRegion
 	, 'exit-region': ExitRegion
+	, 'switch-region': SwitchRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
@@ -170,6 +176,7 @@ export const ObjectPalette = {
 	, 'sheild-electric-monitor': SheildElectricMonitor
 	, 'flickie': Flickie
 	, 'crabmeat': CrabMeat
+	, 'guard-bot': GuardBot
 	, 'mecha-froggy': MechaFroggy
 	, 'buzz-bomber': BuzzBomber
 	, 'bubbles': Bubbles
@@ -187,4 +194,5 @@ export const ObjectPalette = {
 	, 'spikes': Spikes
 	, 'cone': Cone
 	, 'orb': Orb
+	, 'cut-scene': CutScene
 };

@@ -102,7 +102,10 @@ export class Monitor extends PointActor
 
 		const explosion = new Tag('<div class = "particle-explosion">');
 
-		other.args.score += 100;
+		if(other)
+		{
+			other.args.score += 100;
+		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});
 
@@ -116,19 +119,22 @@ export class Monitor extends PointActor
 
 		this.box.setAttribute('data-animation', 'broken');
 
-		if(other.occupant)
+		if(other)
 		{
-			other = other.occupant;
-		}
+			if(other.occupant)
+			{
+				other = other.occupant;
+			}
 
-		if(other.args.owner)
-		{
-			other = other.args.owner;
-		}
+			if(other.args.owner)
+			{
+				other = other.args.owner;
+			}
 
-		if(other.controllable)
-		{
-			this.effect(other);
+			if(other.controllable)
+			{
+				this.effect(other);
+			}
 		}
 
 		if(viewport.args.audio && this.sample)
@@ -136,19 +142,22 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
-		const ySpeed = other.args.ySpeed;
-
-		if(other.args.falling)
+		if(other)
 		{
-			this.onNextFrame(() => {
-				other.args.ySpeed  = -ySpeed
-				other.args.falling = true;
-			});
-		}
+			const ySpeed = other.args.ySpeed;
 
-		if(this.args.falling && other.args.falling)
-		{
-			this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
+			if(other.args.falling)
+			{
+				this.onNextFrame(() => {
+					other.args.ySpeed  = -ySpeed
+					other.args.falling = true;
+				});
+			}
+
+			if(this.args.falling && other.args.falling)
+			{
+				this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
+			}
 		}
 
 		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });

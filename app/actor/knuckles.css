@@ -78,6 +78,12 @@
 	animation: knuckles-jump steps(5) infinite 128ms;
 }
 
+.actor-item.actor-knuckles[data-animation="grinding"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -736px;
+		animation: knuckles-run steps(4) infinite 192ms;
+}
+
 .actor-item.actor-knuckles[data-animation="spindash"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -320px;

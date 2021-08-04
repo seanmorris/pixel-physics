@@ -119,8 +119,31 @@ export class Sonic extends PointActor
 		}
 	}
 
+	updateStart()
+	{
+		super.updateStart();
+
+		if(this.args.dead)
+		{
+			this.args.animation = 'dead';
+			return;
+		}
+
+		if(this.args.grinding && this.args.falling)
+		{
+			this.args.animation = 'airdash';
+		}
+	}
+
 	update()
 	{
+		if(this.args.dead)
+		{
+			this.args.animation = 'dead';
+			super.update();
+			return;
+		}
+
 		if(this.isSuper)
 		{
 			if(this.viewport.args.frameId % 60 === 0)
@@ -459,9 +482,21 @@ export class Sonic extends PointActor
 			this.args.animation = 'grinding';
 		}
 
+		if(this.yAxis < 0 && this.dashed && [...this.regions].filter(r => r.isWater).length)
+		{
+			this.args.xSpeed = Number(Number(this.args.xSpeed* 0.95).toFixed(4));
+			this.args.ySpeed -= Math.abs(this.args.xSpeed) * 0.05;
+		}
+
+		if(this.yAxis > 0 && this.dashed && [...this.regions].filter(r => r.isWater).length)
+		{
+			this.args.xSpeed += Math.abs(this.args.ySpeed) * 0.05 * Math.sign(this.args.xSpeed);
+			this.args.ySpeed = Number(Number(this.args.ySpeed* 0.95).toFixed(4));
+		}
+
 		super.update();
 
-		if(this.args.grinding && !this.args.falling)
+		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
 		{
 			for(const spark of this.sparks)
 			{
@@ -690,8 +725,6 @@ export class Sonic extends PointActor
 
 					return;
 				}
-
-				console.log('stand!');
 
 				this.args.rolling = false;
 
@@ -1098,7 +1131,7 @@ export class Sonic extends PointActor
 	get solid() { return false; }
 	get canRoll() { return !this.public.wallSticking; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
+	get controllable() { return !this.args.npc; }
 
 
 	get facePoint() {

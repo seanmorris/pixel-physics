@@ -71,15 +71,26 @@ export class Layer extends View
 
 		if(controller)
 		{
+			layerDef['offsetX'] = this.args.offsetX;
+			layerDef['offsetY'] = this.args.offsetY;
+
+			const changedX = (controller.args.xLayer || 0) - this.args.offsetX;
+			const changedY = (controller.args.yLayer || 0) - this.args.offsetY;
+
 			this.args.offsetX = controller.args.xLayer || 0;
 			this.args.offsetY = controller.args.yLayer || 0;
+
+			layerDef[`offsetXChanged`] = changedX;
+			layerDef[`offsetYChanged`] = changedY;
+
+			this[`offsetXChanged`] = changedX;
+			this[`offsetYChanged`] = changedY;
 		}
 		else
 		{
 			this.args.offsetX = 0;
 			this.args.offsetY = 0;
 		}
-
 
 		this.fallspeed = this.fallspeed || 0;
 	}
@@ -96,8 +107,6 @@ export class Layer extends View
 			return;
 		}
 
-		console.log(layers[ this.args.layerId ], controller);
-
 		this.args.bindTo('destroyed', v => {
 			const viewport = this.args.viewport;
 			const layers   = viewport.tileMap.tileLayers;
@@ -106,21 +115,6 @@ export class Layer extends View
 			layerDef.destroyed = !!v;
 
 			controller.args.destroyed = !!v;
-		});
-
-		// controller.args.bindTo('xLayer', v => { this.args.offsetX = v || 0});
-		// controller.args.bindTo('yLayer', v => { this.args.offsetY = v || 0});
-
-		this.args.bindTo(['offsetX', 'offsetY'], (v,k,t,d,p) => {
-
-			const changed = v - (p||0);
-
-			layerDef[k] = v;
-			controller.args[k] = v;
-
-			controller.args[`${k}Changed`] = changed;
-			layerDef[`${k}Changed`] = changed;
-			this[`${k}Changed`] = changed
 		});
 
 	}

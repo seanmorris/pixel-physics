@@ -1,0 +1,38 @@
+.actor-item.actor-guard-bot .sprite {
+	height: 24px;
+	width: 24px;
+}
+
+.actor-item.actor-guard-bot .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/guard-bot.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 24px;
+	width: 24px;
+	z-index: 1;
+}
+
+.actor-item.actor-guard-bot[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-guard-bot[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: crabmeat-walk steps(6) infinite 320ms;
+}
+
+@keyframes crabmeat-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

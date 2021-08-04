@@ -102,6 +102,18 @@ export const CanPop = {
 			});
 		}
 
+		if(this.args.target && this.viewport.actorsById[ this.args.target ])
+		{
+			const target = this.viewport.actorsById[ this.args.target ];
+
+			if(target)
+			{
+				this.viewport.auras.add(target);
+
+				target.activate(other, this);
+			}
+		}
+
 		this.viewport.actors.remove(this);
 
 		this.args.gone = true;

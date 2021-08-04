@@ -1,0 +1,283 @@
+[
+	{
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 1
+    },
+    {
+        "event": "input",
+        "axes":
+        [
+            1,
+            0,
+            0,
+            0
+        ],
+        "time": 50
+    },
+    {
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 50
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Hey Sonic."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Thanks for letting yourself in."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Glad I found you here.",
+            "Youre not gonna believe this."
+        ],
+        "classes": "sonic left talking",
+        "time": 240
+    },
+    {
+        "event": "clear",
+        "time": 40
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Did you just break open a volcano"
+        ],
+        "classes": "knuckles right",
+        "time": 160
+
+    },
+    {
+        "event": "clear",
+        "time": 60
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [],
+        "classes": "sonic left",
+        "time": 60
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Thats not important"
+        ],
+        "classes": "sonic talking smiling left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines": [],
+        "classes": "sonic mugging left",
+        "time": 40
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Everything is dead."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "I was cruising through seaview and",
+            "it looks like Eggman is out there."
+        ],
+        "classes": "sonic left",
+        "time": 200
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "I think hes building something."
+        ],
+        "classes": "sonic left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "I leased him the land."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "clear",
+        "time": 20
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "He just wants to build",
+            " an amusement park."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "clear",
+        "time": 40
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Please just leave him alone."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "clear",
+        "time": 40
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Hes just plotting to steal",
+            "the emeralds again."
+        ],
+        "classes": "sonic left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Thats all hes ever up to."
+        ],
+        "classes": "sonic left",
+        "time": 160
+    },
+    {
+        "event": "clear",
+        "time": 40
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "As if hes the only one..."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "What do you mean"
+        ],
+        "classes": "sonic left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "You dont call me."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "You jump into special",
+            "zone whenever you want"
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "and when I go to the",
+            "shrine in the morning..."
+        ],
+        "classes": "knuckles right",
+        "time": 180
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Theyre just gone."
+        ],
+        "classes": "knuckles right",
+        "time": 200
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "How is that any better"
+        ],
+        "classes": "knuckles right",
+        "time": 200
+    },
+    {
+        "event": "hide",
+        "time": 10
+    },
+    {
+        "event": "message",
+        "message":
+        [
+            "You can now play as knuckles"
+        ],
+        "time": 200
+    },
+    {
+        "event": "message",
+        "message":
+        [
+            "Use the character select in the main menu"
+        ],
+        "time": 200
+    },
+    {
+        "event": "wait",
+        "time": 120
+    }
+]

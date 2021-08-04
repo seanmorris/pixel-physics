@@ -1,0 +1,68 @@
+.dialog-frame {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0.25em;
+}
+
+.dialog-frame.right {
+	flex-direction: row-reverse;
+	align-items: center !important;
+}
+
+.dialog-frame.left {
+	flex-direction: row;
+}
+
+.dialog-frame.left .dialog-icon {
+	transform: scaleX(-1);
+}
+
+.dialog-icon {
+	flex-shrink: 0;
+	background-image: url(/Sonic/dialog-faces.png);
+	width: 32px;
+	height: 32px;
+}
+
+.dialog-frame.sonic .dialog-icon {
+	background-position: -64px -32px;
+}
+
+.dialog-frame.sonic.talking.smiling .dialog-icon {
+	background-position: -96px -32px;
+}
+
+.dialog-frame.sonic.mugging .dialog-icon {
+	background-position: -128px -32px;
+}
+
+.dialog-frame.knuckles .dialog-icon {
+	background-position: -64px 0px;
+}
+
+.dialog-text {
+	margin-left: 0.5em;
+	margin-right: 0.25em;
+	display: flex;
+	flex-direction: column;
+}
+
+.dialog-text .hud-character {
+	animation:
+		dialog-fade-in
+		50ms
+		calc(calc(var(--index, 1) + var(--text-offset, 0)) * 15ms)
+		forwards
+		ease-in;
+	opacity: 0;
+}
+
+@keyframes dialog-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

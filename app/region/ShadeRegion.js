@@ -30,7 +30,7 @@ export class ShadeRegion extends Region
 		this.args.type = 'region region-shade';
 	}
 
-	onAttached()
+	onAttach()
 	{
 		this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
 		this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
@@ -72,6 +72,11 @@ export class ShadeRegion extends Region
 		// 	this.cylinder.args.scale = v;
 		// });
 
+		if(this.args.filter)
+		{
+			this.filters = [this.args.filter];
+		}
+
 		this.rotateFilter();
 	}
 
@@ -107,23 +112,23 @@ export class ShadeRegion extends Region
 
 		if(this.mainElem)
 		{
-			this.args.filter = this.filters[ this.currentFilter++ ];
-
 			if(this.currentFilter >= this.filters.length)
 			{
 				this.currentFilter = 0;
 			}
 
-			this.public.filter && this.mainElem.classList.add(this.public.filter);
+			this.args.filter = this.filters[ this.currentFilter++ ];
 
-			if(this.public.filter)
-			{
-				this.text.remove();
+			this.args.filter && this.mainElem.classList.add(this.args.filter);
 
-				this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
+			// if(this.public.filter)
+			// {
+			// 	this.text.remove();
 
-				this.text.render(this.tags.sprite);
-			}
+			// 	this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
+
+			// 	this.text.render(this.tags.sprite);
+			// }
 
 		}
 	}

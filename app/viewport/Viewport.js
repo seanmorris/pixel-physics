@@ -11,7 +11,6 @@ import { Titlecard } from '../titlecard/Titlecard';
 
 import { Particle3d } from '../particle/Particle3d';
 
-
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 import { ProtoLabrynth } from  '../backdrop/ProtoLabrynth';
 import { MysticCave } from  '../backdrop/MysticCave';
@@ -83,8 +82,11 @@ export class Viewport extends View
 
 		Router.listen(this, { '': () => '' });
 
-		this.objectPalette = ObjectPalette;
+		this.args.screenEffects = [];
+
 		this.meta = {};
+
+		this.objectPalette = ObjectPalette;
 
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
@@ -113,6 +115,9 @@ export class Viewport extends View
 		});
 
 		this.vizi = true;
+
+		this.args.shakeX = 0;
+		this.args.shakeY = 0;
 
 		this.args.level = '';
 
@@ -264,7 +269,8 @@ export class Viewport extends View
 		this.args.timerLabel = new CharacterString({value:'TIME: ',  color: 'yellow'});
 		this.args.ringLabel  = new CharacterString({value:'RINGS: ', color: 'yellow'});
 
-		this.args.actClearLabel = new CharacterString({value:'...', color: 'yellow'});
+		this.args.actClearLabel = new CharacterString({value:'', color: 'yellow'});
+		this.args.dialogLines   = [];
 
 		this.args.perfectBonusLabel = new CharacterString({value:'PERFECT BONUS: ', color: 'yellow'});
 		this.args.perfectBonus      = new CharacterString({value: 0});
@@ -1226,8 +1232,11 @@ export class Viewport extends View
 			y = yMax;
 		}
 
-		this.args.x = x;
-		this.args.y = y;
+		this.args.shakeX *= -0.99;
+		this.args.shakeY *= -0.99;
+
+		this.args.x = x + this.args.shakeX;
+		this.args.y = y + this.args.shakeY;
 	}
 
 	applyMotionBlur()
@@ -1608,7 +1617,11 @@ export class Viewport extends View
 
 					if(spawn.object.onAttach && spawn.object.onAttach() === false)
 					{
-						spawn.object.detach();
+						if(!spawn.object.args.hidden)
+						{
+							spawn.object.detach();
+						}
+
 					}
 
 					if(isRegion)
@@ -1754,6 +1767,17 @@ export class Viewport extends View
 
 	update()
 	{
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			const xDir = Math.sign(layer.x - this.args.x);
+			const yDir = Math.sign(layer.y - this.args.y);
+
+			layer.x = this.args.x;
+			layer.y = this.args.y;
+
+			layer.move(this.tileMap, xDir, yDir);
+		}
+
 		const controller = this.controlActor
 			? this.controlActor.controller
 			: this.controller;
@@ -1795,17 +1819,6 @@ export class Viewport extends View
 			}
 
 			return;
-		}
-
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
-		{
-			const xDir = Math.sign(layer.x - this.args.x);
-			const yDir = Math.sign(layer.y - this.args.y);
-
-			layer.x = this.args.x;
-			layer.y = this.args.y;
-
-			layer.move(this.tileMap, xDir, yDir);
 		}
 
 		if(this.args.frameId % 15 === 0)
@@ -2425,11 +2438,36 @@ export class Viewport extends View
 
 	reset()
 	{
+		this.tileMap.replacements.clear();
+		this.tileMap.tileSetCache.clear();
+		this.tileMap.tileCache.clear();
+
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade = false;
 
 		this.stop();
+
+		const layers = this.tileMap.tileLayers;
+
+		for(const layerDef of layers)
+		{
+			layerDef.offsetX = 0;
+			layerDef.offsetY = 0;
+			layerDef.offsetXChanged = 0;
+			layerDef.offsetYChanged = 0;
+		}
+
+		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		{
+			layer.args.destroyed = false;
+
+			layer.args.offsetX = 0;
+			layer.args.offsetY = 0;
+
+			layer.args.offsetXChanged = 0;
+			layer.args.offsetYChanged = 0;
+		}
 
 		for(const i in this.actors.list)
 		{
@@ -2470,11 +2508,6 @@ export class Viewport extends View
 		// this.args.frameId   = -1;
 
 		this.tags.viewport.focus();
-
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
-		{
-			layer.args.destroyed = false;
-		}
 	}
 
 	quit()
@@ -2931,6 +2964,49 @@ export class Viewport extends View
 			`checkpoints:::${this.tileMap.mapUrl}`
 			, JSON.stringify(this.checkpoints[this.tileMap.mapUrl])
 		);
+	}
+
+	showCenterMessage(message, color)
+	{
+		this.args.centerMessage = new CharacterString({value: message, color});
+	}
+
+	hideCenterMessage()
+	{
+		this.args.centerMessage = false;
+	}
+
+	showDialog(lines = [], classes = '')
+	{
+		this.args.dialog = true;
+
+		this.clearDialog();
+
+		lines = lines.map(t => new CharacterString({value: t}));
+
+		let offset = 0;
+
+		for(const line of lines)
+		{
+			line.offset = offset;
+
+			offset += line.args.value.length;
+		}
+
+		this.args.dialogLines = lines;
+
+		this.args.dialogClasses = classes;
+	}
+
+	hideDialog(message)
+	{
+		this.clearDialog();
+		this.args.dialog = false;
+	}
+
+	clearDialog()
+	{
+		this.args.dialogLines = [];
 	}
 
 	clearAct(message)

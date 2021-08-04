@@ -8,10 +8,12 @@
 	z-index: 1000;
 }
 
+.hud-centered-raised:empty,
 .hud-centered:empty {
 	display: none;
 }
 
+.hud-centered-raised,
 .hud-centered {
 	top: 50%;
 	left:  50%;
@@ -21,6 +23,11 @@
 	flex-direction: column;
 	flex-wrap: wrap;
 	transform-origin: top left;
+}
+
+.hud-centered-raised {
+	top:  25%;
+	width: 30em;
 }
 
 .hud .centered {

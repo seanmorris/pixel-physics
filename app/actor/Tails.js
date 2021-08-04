@@ -211,5 +211,5 @@ export class Tails extends PointActor
 	get canRoll() { return true; }
 	get canFly() { return true; }
 	get isEffect() { return false; }
-	get controllable() { return true; }
+	get controllable() { return !this.args.npc; }
 }

@@ -19,36 +19,51 @@ export class LayerController extends PointActor
 
 		this.args.static = true;
 
-		this.args.xLayerLimit = 0;
-		this.args.yLayerLimit = 0;
+		this.args.hidden = true;
 	}
 
 	update()
 	{
-		if(this.args.activated && this.args.yLayerSpeed < 9)
+		if(this.args.activated && this.args.yLayerSpeed < 18)
 		{
-			this.args.yLayerSpeed += 0.4;
+			this.args.yLayerSpeed += 1;
 		}
 
-		this.args.yLayer += this.args.yLayerSpeed || 0;
+		if(this.args.yLayer < this.args.yLayerLimit)
+		{
+			this.args.yLayer += this.args.yLayerSpeed || 0;
+		}
 
 		if(this.args.yLayer > this.viewport.tileMap.mapData.height * this.viewport.tileMap.mapData.tileheight
-			|| this.args.yLayer > this.args.yLayerLimit
+			&& this.args.yLayer > this.args.yLayerLimit
 		){
 			this.args.yLayerSpeed = 0;
 
 			this.args.yLayer = this.args.yLayerLimit;
+
+			const target = this.viewport.actorsById[ this.args.target ];
+
+			this.viewport.auras.delete(target);
+			this.viewport.auras.delete(this);
 		}
 	}
 
 	activate(other, button)
 	{
+		if(this.args.activated)
+		{
+			return;
+		}
+
+		this.viewport.auras.add(this);
+
+		this.viewport.args.shakeX = 15;
+
 		this.viewport.onFrameOut(60, () => {
-			this.viewport.auras.add(this);
 
 			this.args.activated = true;
 
-			this.args.yLayerLimit = 4096;
+			this.args.yLayerLimit = this.args.yLayerLimit || 4096;
 
 		});
 

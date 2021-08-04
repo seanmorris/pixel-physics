@@ -324,6 +324,24 @@
 				</table>
 			</div>
 
+			<div class = "hud hud-dark hud-centered" cv-if = "centerMessage">
+				[[centerMessage]]
+			</div>
+
+			<div class = "hud hud-dark hud-centered-raised" cv-if = "dialog">
+				<div class = "dialog-frame [[dialogClasses]]">
+					<div class = "dialog-icon">
+					</div>
+					<div cv-each = "dialogLines:line" class = "dialog-text">
+						<span style = "--text-offset:[[line.offset]]">[[line]]</span>
+					</div>
+				</div>
+			</div>
+
+			<div class = "screen-effects" cv-each = "screenEffects:effect">
+				[[effect]]
+			</div>
+
 			<section class = "pause-menu full" cv-if = "paused">[[pauseMenu]]</section>
 
 			[[titlecard]]

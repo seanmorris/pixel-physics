@@ -26,6 +26,8 @@ export class TileMap
 
 		this.mapUrl = mapUrl;
 
+		this.replacements = new Map;
+
 		this.ready = new Promise(accept => {
 
 			fetch(mapUrl).then(r=> r.json()).then(data => {
@@ -235,6 +237,11 @@ export class TileMap
 
 		if(cached !== undefined)
 		{
+			if(this.replacements.has(cached[2]))
+			{
+				cached[2] = this.replacements.get(cached[2]);
+			}
+
 			return cached;
 		}
 
@@ -380,6 +387,11 @@ export class TileMap
 
 		if(cached !== undefined)
 		{
+			if(this.replacements.has(cached.image))
+			{
+				cached.image = this.replacements.get(cached.image);
+			}
+
 			return cached;
 		}
 
@@ -404,12 +416,22 @@ export class TileMap
 					{
 						this.tileSetCache.set(tileNumber, tileset);
 
+						if(this.replacements.has(tileset.image))
+						{
+							tileset.image = this.replacements.get(tileset.image);
+						}
+
 						return tileset;
 					}
 				}
 				else
 				{
 					this.tileSetCache.set(tileNumber, tileset);
+
+					if(this.replacements.has(tileset.image))
+					{
+						tileset.image = this.replacements.get(tileset.image);
+					}
 
 					return tileset;
 				}
