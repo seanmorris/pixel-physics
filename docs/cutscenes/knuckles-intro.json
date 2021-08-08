@@ -68,7 +68,7 @@
         "event": "dialog",
         "lines":
         [
-            "Did you just break open a volcano"
+            "Did you just break open a volcano?"
         ],
         "classes": "knuckles right",
         "time": 160
@@ -204,7 +204,7 @@
         "event": "dialog",
         "lines":
         [
-            "What do you mean"
+            "What do you mean?"
         ],
         "classes": "sonic left",
         "time": 120
@@ -233,10 +233,10 @@
         "lines":
         [
             "and when I go to the",
-            "shrine in the morning..."
+            "shrine in the morning"
         ],
         "classes": "knuckles right",
-        "time": 180
+        "time": 140
     },
     {
         "event": "dialog",
@@ -251,7 +251,7 @@
         "event": "dialog",
         "lines":
         [
-            "How is that any better"
+            "How is that any better?"
         ],
         "classes": "knuckles right",
         "time": 200
@@ -261,23 +261,7 @@
         "time": 10
     },
     {
-        "event": "message",
-        "message":
-        [
-            "You can now play as knuckles"
-        ],
-        "time": 200
-    },
-    {
-        "event": "message",
-        "message":
-        [
-            "Use the character select in the main menu"
-        ],
-        "time": 200
-    },
-    {
         "event": "wait",
-        "time": 120
+        "time": 10
     }
 ]

@@ -30,6 +30,9 @@ export class SwitchRegion extends Region
 			return;
 		}
 
-		target.activate(actor, this);
+		this.viewport.onFrameOut(
+			this.args.delay || 1
+			, ()=>target.activate(actor, this)
+		);
 	}
 }

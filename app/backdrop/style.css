@@ -27,6 +27,30 @@
 	background-color: #1e1659;
 }
 
+.backdrop.west-side-cloudy {
+	background-color: #12173c;
+	filter: brightness(1);
+}
+
+.backdrop.west-side-cloudy.lightening {
+	animation: west-side-lightning 1s ease-out infinite; forwards;
+}
+
+@keyframes west-side-lightning {
+	0% { background-color: #12173c; filter: brightness(1); }
+	5% {
+		background-color: #CCC;
+		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5);
+	}
+	10% { filter: brightness(1); }
+	50% { background-color: #12173c; filter: brightness(1); }
+	100% { background-color: #12173c; filter: brightness(1); }
+}
+
+.backdrop {
+	filter: blur(0.5px);
+}
+
 .backdrop::before {
 	content: ' ';
 	display: block;

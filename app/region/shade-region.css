@@ -187,8 +187,9 @@
 .region.region-shade.lava {
 	/*mix-blend-mode: screen;*/
 	z-index: 10000;
-	opacity: 0.85;
+	opacity: 1;
 	mix-blend-mode: hard-light;
+	mix-blend-mode: color;
 }
 
 .region.region-lava .region-color-wrapper,

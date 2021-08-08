@@ -707,17 +707,31 @@ export class PointActor extends View
 
 			const layer = this.args.standingLayer.layer;
 
-			if(layer && layer.meta.grinding)
+			let grindRegion = false;
+
+			for(const region of this.regions)
+			{
+				if(region.grind)
+				{
+					grindRegion = true;
+				}
+			}
+
+			if(!this.controllable)
+			{
+				this.args.grinding = false;
+			}
+			else if(layer && layer.meta.grinding)
 			{
 				this.args.grinding = true;
 				this.args.direction = Math.sign(this.args.xSpeed || this.args.gSpeed);
 			}
-			else
+			else if(!grindRegion)
 			{
 				this.args.grinding = false;
 			}
 
-			if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
+			if(this.args.grinding && this.args.falling)
 			{
 				this.args.grinding = false;
 			}
@@ -846,9 +860,11 @@ export class PointActor extends View
 				jumpBlock = !!jumpBlock.filter(a => !a.args.platform && !a.isVehicle).length;
 			}
 
-			if(!this.args.falling && jumpBlock)
+			if(!this.args.falling && this.checkBelow(this.x, this.y) && jumpBlock)
 			{
 				this.die();
+
+				return;
 			}
 		}
 
@@ -2284,6 +2300,13 @@ export class PointActor extends View
 
 		this.upScan = true;
 
+		// const upDistanceB = this.castRay(
+		// 	Math.abs(this.public.ySpeed) + upMargin + 1
+		// 	, -Math.PI / 2
+		// 	, [Math.sign(this.args.groundAngle)*3, 0]
+		// 	, this.findSolid
+		// );
+
 		const upDistance = this.castRay(
 			Math.abs(this.public.ySpeed) + upMargin + 1
 			, -Math.PI / 2
@@ -2297,7 +2320,6 @@ export class PointActor extends View
 			, Math.PI / 2
 			, this.findSolid
 		);
-
 
 		let hits = [];
 
@@ -2329,6 +2351,13 @@ export class PointActor extends View
 
 			return;
 		}
+
+		// let upcollisionAngle = false;
+
+		// if(![upDistance, upDistanceB].some(x => x === false))
+		// {
+		// 	upcollisionAngle = Math.atan2(3, upDistance - upDistanceB)
+		// }
 
 		if(this.public.ySpeed < 0 && upDistance > 0)
 		{

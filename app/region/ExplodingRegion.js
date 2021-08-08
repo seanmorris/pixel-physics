@@ -54,6 +54,13 @@ export class ExplodingRegion extends Region
 
 		if(!this.args.active)
 		{
+			if(this.args.target && this.viewport.actorsById[ this.args.target ])
+			{
+				const target = this.viewport.actorsById[ this.args.target ];
+
+				this.viewport.auras.delete(target);
+			}
+			this.viewport.auras.delete(this);
 			return;
 		}
 
@@ -95,7 +102,18 @@ export class ExplodingRegion extends Region
 	activate()
 	{
 		this.args.active = true;
-
+``
 		this.viewport.onFrameOut(250, () => this.args.active = false)
+
+		if(this.args.target && this.viewport.actorsById[ this.args.target ])
+		{
+			this.viewport.onFrameOut(60, () => {
+				const target = this.viewport.actorsById[ this.args.target ];
+
+				this.viewport.auras.add(target);
+
+				target.activate(other, this);
+			});
+		}
 	}
 }

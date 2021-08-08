@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 
 import { ScreenFire } from '../effects/ScreenFire';
+import { BackdropPalette } from '../BackdropPalette';
 
 export class TilesetSwapper extends PointActor
 {
@@ -11,6 +12,10 @@ export class TilesetSwapper extends PointActor
 		this.args.hidden = true;
 
 		const img = new Image('../Sonic/tiles/azure-lake/azure-lake-burnt.png');
+
+		const backdropClass = BackdropPalette[ this.args.backdrop ];
+
+		this.args.backdrop = new backdropClass;
 	}
 
 	activate(other, button)
@@ -27,6 +32,7 @@ export class TilesetSwapper extends PointActor
 
 		this.activated = true;
 
+
 		this.viewport.onFrameOut(15, () => {
 
 			this.viewport.args.screenEffects.push(new ScreenFire);
@@ -35,6 +41,23 @@ export class TilesetSwapper extends PointActor
 				this.viewport.tileMap.replacements.set(
 					'../Sonic/tiles/azure-lake/azure-lake.png'
 					, '../Sonic/tiles/azure-lake/azure-lake-burnt.png'
+				);
+
+				this.viewport.args.backdrop = this.args.backdrop;
+
+				this.viewport.tileMap.replacements.set(
+					'../Sonic/tiles/azure-lake/azure-lake-shapes.png'
+					, '../Sonic/tiles/azure-lake/azure-lake-burnt-shapes.png'
+				);
+
+				this.viewport.tileMap.replacements.set(
+					'../Sonic/tiles/azure-lake/rolling.png'
+					, '../Sonic/tiles/azure-lake/rolling-burnt.png'
+				);
+
+				this.viewport.tileMap.replacements.set(
+					'../Sonic/tiles/azure-lake/giant-loop.png'
+					, '../Sonic/tiles/azure-lake/giant-loop-burnt.png'
 				);
 			});
 		});

@@ -3,9 +3,10 @@
 	top: 0px;
 	left: 0px;
 	width: calc(100% / var(--scale));
-	height: calc(100% / var(--scale));
+	height: calc(calc(100% / var(--scale)) + 128px);
 	transform-origin: top left;
 	transform: scale(var(--scale));
+	backdrop-filter:  blur(0px);
 }
 
 .screen-effects .screen-fire {

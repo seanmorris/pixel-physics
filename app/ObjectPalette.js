@@ -14,6 +14,7 @@ import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
 import { ExplodingRegion } from './region/ExplodingRegion'
 import { SwitchRegion } from './region/SwitchRegion'
+import { RainRegion } from './region/RainRegion'
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -40,6 +41,7 @@ import { GuardBot } from './actor/GuardBot';
 import { CrabMeat } from './actor/CrabMeat';
 import { BuzzBomber } from './actor/BuzzBomber';
 import { MechaFroggy } from './actor/MechaFroggy';
+import { DrainFly } from './actor/DrainFly';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -88,6 +90,7 @@ import { Balloon } from './actor/Balloon';
 import { StarBalloon } from './actor/StarBalloon';
 
 import { Spinner } from './actor/Spinner';
+import { Springboard } from './actor/Springboard';
 
 import { GrapplePoint } from './actor/GrapplePoint';
 import { WoodenCrate } from './actor/WoodenCrate';
@@ -103,11 +106,14 @@ import { Signpost } from './actor/Signpost';
 
 import { RedEyeJet } from './actor/RedEyeJet';
 import { MiniMace } from './actor/MiniMace';
+import { Beelzebub } from './actor/Beelzebub';
 import { Magnet	 } from './actor/Magnet';
 
 import { Orb } from './actor/Orb';
 
+import { BackdropSwapper } from './actor/BackdropSwapper';
 import { LayerController } from './actor/LayerController';
+import { WaterController } from './actor/WaterController';
 import { TilesetSwapper } from './actor/TilesetSwapper';
 import { CutScene } from './actor/CutScene';
 
@@ -117,7 +123,9 @@ export const ObjectPalette = {
 	, spring:         Spring
 	, 'layer-switch': LayerSwitch
 	, 'layer-controller': LayerController
-	, 'tileset-swapper': TilesetSwapper
+	, 'water-controller': WaterController
+	, 'backdrop-swapper': BackdropSwapper
+	, 'tileset-swapper':  TilesetSwapper
 	, 'star-post':    StarPost
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
@@ -159,6 +167,7 @@ export const ObjectPalette = {
 	, 'boss-region': BossRegion
 	, 'exit-region': ExitRegion
 	, 'switch-region': SwitchRegion
+	, 'rain-region': RainRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
@@ -180,15 +189,18 @@ export const ObjectPalette = {
 	, 'mecha-froggy': MechaFroggy
 	, 'buzz-bomber': BuzzBomber
 	, 'bubbles': Bubbles
+	, 'drainfly': DrainFly
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'spinner': Spinner
+	, 'springboard': Springboard
 	, 'wooden-crate': WoodenCrate
 	, 'steel-crate': SteelCrate
 	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
 	, 'signpost': Signpost
 	, 'red-eye-jet': RedEyeJet
+	, 'beelzebub': Beelzebub
 	, 'mini-mace': MiniMace
 	, 'magnet': Magnet
 	, 'spikes': Spikes

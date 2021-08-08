@@ -1,0 +1,13 @@
+.actor-item.actor-springboard .sprite {
+	position: relative;
+	top: 8px;
+	background-position: 0 0;
+	background-image: url(/Sonic/springboard.png);
+	width: 56px;
+	height: 16px;
+	/*animation: spinner-spin steps(2) infinite 50ms;*/
+}
+
+.actor-item.actor-springboard[data-animation=depressed] .sprite {
+	background-position: -56px 0;
+}
