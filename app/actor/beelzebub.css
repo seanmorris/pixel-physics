@@ -1,0 +1,121 @@
+.actor-beelzebub{
+	pointer-events: none;
+	z-index: var(--z);
+}
+
+.actor-beelzebub .sprite {
+	width: 52px;
+	height: 32px;
+}
+
+.actor-beelzebub .sprite:after {
+	background-image: url(/custom/beelzebub.png);
+	width: 96px;
+	height: 96px;
+	content: ' ';
+	position: absolute;
+	top: -10px;
+	left: 0px;
+}
+
+.actor-beelzebub:not([data-phase=dead]):not([data-phase=exploding]):not([data-phase=idle]) .sprite:after {
+	animation:
+		 beelzebub-flap 10ms steps(2) infinite,
+		  beelzebub-boost 60ms steps(2) infinite;
+}
+
+.actor-beelzebub[data-phase=exploding] .sprite:after,
+.actor-beelzebub[data-phase=idle] .sprite:after,
+.actor-beelzebub[data-phase=dead] .sprite:after {
+	background-position-x: -96px;
+}
+
+.actor-beelzebub[data-phase=exploding] .sprite:after,
+.actor-beelzebub[data-phase=dead] .sprite:after,
+.actor-beelzebub[data-phase=idle] .sprite:after {
+	background-position-y: -192px;
+}
+
+.actor-beelzebub[data-phase=exploding] .sprite:after,
+.actor-beelzebub[data-phase=dead] .sprite:after {
+	transition: transform 0.25s ease-out;
+	transform: rotate(180deg) translate(24px, 30px);
+}
+
+.actor-beelzebub[data-phase=exploding] .sprite:before,
+.actor-beelzebub[data-phase=dead] .sprite:before {
+	display: none;
+}
+
+.actor-beelzebub .sprite:before {
+	animation: beelzebub-drill-spin 200ms steps(4) infinite;
+	transition: top 0.3s ease-in;
+	background-image: url(/custom/beelzebub-drill.png);
+	width: 7px;
+	height: 24px;
+	content: ' ';
+	position: absolute;
+	top: 10px;
+	left: 17px;
+}
+
+.actor-beelzebub[data-phase="damaged"] .sprite {
+	animation: boss-damage steps(1) infinite 45ms forwards;
+}
+
+.actor-beelzebub[data-phase="damaged"] .sprite:after{
+	transform: scaleX(-1);
+	filter:  invert(1) hue-rotate(180deg);
+}
+
+.actor-beelzebub[data-phase="damaged"] .sprite:before{
+	transition: top 0.1s ease-in;
+	top: 25px;
+	left: 72px;
+}
+
+.actor-beelzebub[data-phase="alert"] .sprite:before,
+.actor-beelzebub[data-phase="attacking"] .sprite:before {
+	transition: top 0.1s ease-in;
+	top: 40px;
+}
+
+@keyframes beelzebub-flap {
+	from {
+		background-position-x: 0;
+	}
+	to {
+		background-position-x: -192px;
+	}
+}
+
+@keyframes beelzebub-drill-spin {
+	from {
+		background-position-x: 0;
+	}
+	to {
+		background-position-x: -28px;
+	}
+}
+
+@keyframes beelzebub-boost {
+	from {
+		background-position-y: 0;
+	}
+	to {
+		background-position-y: -192px;
+	}
+}
+
+
+@keyframes boss-damage {
+	from{
+		filter: hue-rotate(0deg) invert(0);
+	}
+	50%{
+		filter:  invert(1) hue-rotate(180deg);
+	}
+	to{
+		filter: hue-rotate(0deg) invert(0);
+	}
+}

@@ -54,30 +54,29 @@ export class Orb extends Mixin.from(PointActor)
 
 		const xSpace = this.x - other.x;
 
-		if(this.args.jumping || !this.args.falling)
-		{
-			if(speedSign
-				&& !this.args.mode
-				&& !other.args.mode
-				&& !this.args.groundAngle
-				&& !other.args.groundAngle
-			){
-				if(xSpace < -64)
-				{
-					this.args.gSpeed = speedMag * speedSign * 0.8;
-				}
-
-				if(xSpace < -128)
-				{
-					this.args.gSpeed = speedMag * speedSign;
-				}
-
-				if(xSpace < -176)
-				{
-					this.args.x -= xSpace + 176;
-					this.args.gSpeed = other.args.gSpeed;
-				}
+		if(speedSign
+			&& !this.args.mode
+			&& !other.args.mode
+		){
+			if(xSpace < -64)
+			{
+				this.args.gSpeed = speedMag * speedSign * 0.8;
 			}
+
+			if(xSpace < -128)
+			{
+				this.args.gSpeed = speedMag * speedSign;
+			}
+
+			if(xSpace < -176)
+			{
+				this.args.x -= xSpace + 176;
+				this.args.gSpeed = other.args.gSpeed;
+			}
+		}
+		else if(this.args.mode || other.args.mode)
+		{
+			this.args.gSpeed = Math.max(other.args.gSpeed, this.args.gSpeed);
 		}
 
 		super.update();

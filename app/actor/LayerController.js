@@ -57,15 +57,13 @@ export class LayerController extends PointActor
 
 		this.viewport.auras.add(this);
 
-		this.viewport.args.shakeX = 15;
+		this.viewport.args.shakeY = 15;
 
 		this.viewport.onFrameOut(60, () => {
-
 			this.args.activated = true;
-
-			this.args.yLayerLimit = this.args.yLayerLimit || 4096;
-
 		});
+
+		this.args.yLayerLimit = this.args.yLayerLimit || 4096;
 
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])
 		{

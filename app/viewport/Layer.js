@@ -71,8 +71,11 @@ export class Layer extends View
 
 		if(controller)
 		{
-			layerDef['offsetX'] = this.args.offsetX;
-			layerDef['offsetY'] = this.args.offsetY;
+			if(layerDef)
+			{
+				layerDef['offsetX'] = this.args.offsetX;
+				layerDef['offsetY'] = this.args.offsetY;
+			}
 
 			const changedX = (controller.args.xLayer || 0) - this.args.offsetX;
 			const changedY = (controller.args.yLayer || 0) - this.args.offsetY;

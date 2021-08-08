@@ -265,7 +265,7 @@ export class Viewport extends View
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
 
-		this.args.scoreLabel = new CharacterString({value:'SCORE: ', color: 'yellow'});
+		this.args.scoreLabel = new CharacterString({value:'SCORE:', color: 'yellow'});
 		this.args.timerLabel = new CharacterString({value:'TIME: ',  color: 'yellow'});
 		this.args.ringLabel  = new CharacterString({value:'RINGS: ', color: 'yellow'});
 
@@ -800,8 +800,6 @@ export class Viewport extends View
 			if(!this.playableIterator)
 			{
 				this.playableIterator = this.playable.entries();
-
-				this.playableIterator.next();
 			}
 
 			this.nextControl = Object.values(this.args.actors)[0];
@@ -1256,8 +1254,8 @@ export class Viewport extends View
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 2);
-			const blurAngle = Math.atan2(yMoved, xMoved).toFixed(4);
+			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 3);
+			const blurAngle = Math.atan2(yMoved, xMoved);
 
 			if(blur > 0.5)
 			{
@@ -1543,8 +1541,11 @@ export class Viewport extends View
 			{
 				const checkpoint = this.actorsById[position.checkpointId];
 
-				actor.args.x = checkpoint.x;
-				actor.args.y = checkpoint.y;
+				if(checkpoint)
+				{
+					actor.args.x = checkpoint.x;
+					actor.args.y = checkpoint.y;
+				}
 			}
 		}
 	}
@@ -1817,8 +1818,10 @@ export class Viewport extends View
 			{
 				this.args.paused--;
 			}
-
-			return;
+			else
+			{
+				return;
+			}
 		}
 
 		if(this.args.frameId % 15 === 0)

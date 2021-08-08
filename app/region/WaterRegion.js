@@ -80,6 +80,19 @@ export class WaterRegion extends Region
 			this.tags.sprite.style({'--maskImage': `url(#mask-${this.args.id})`});
 		}
 
+		if(this.args.controller)
+		{
+			const controller = this.viewport.actorsById[ this.args.controller ];
+
+			if(controller)
+			{
+				this.args.height = controller.args.level;
+
+				// console.log(controller.args.level);
+			}
+		}
+
+
 		if(!this.switch && this.public.switch)
 		{
 			this.switch = this.viewport.actorsById[ this.public.switch ]

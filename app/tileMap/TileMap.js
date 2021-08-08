@@ -274,6 +274,9 @@ export class TileMap
 
 	getSolid(xInput, yInput, layerInput = 0)
 	{
+		xInput = Math.trunc(xInput);
+		yInput = Math.trunc(yInput);
+
 		const currentTile = this.coordsToTile(xInput, yInput, layerInput);
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 

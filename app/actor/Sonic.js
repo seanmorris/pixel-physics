@@ -121,17 +121,18 @@ export class Sonic extends PointActor
 
 	updateStart()
 	{
+		if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
+		{
+			this.args.animation = 'airdash';
+			this.args.grinding = false;
+		}
+
 		super.updateStart();
 
 		if(this.args.dead)
 		{
 			this.args.animation = 'dead';
 			return;
-		}
-
-		if(this.args.grinding && this.args.falling)
-		{
-			this.args.animation = 'airdash';
 		}
 	}
 

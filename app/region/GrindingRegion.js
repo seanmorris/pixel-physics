@@ -4,6 +4,8 @@ import { Tag } from 'curvature/base/Tag';
 
 export class GrindingRegion extends Region
 {
+	grind = true;
+
 	constructor(...args)
 	{
 		super(...args);

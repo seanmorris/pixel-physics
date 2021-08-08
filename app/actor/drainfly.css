@@ -1,0 +1,44 @@
+.actor-drainfly{
+	pointer-events: none;
+	z-index: var(--z);
+}
+
+.actor-drainfly .sprite {
+	width: 24px;
+	height: 16px;
+}
+
+.actor-drainfly .sprite:before {
+	content: ' ';
+	will-change: top, left, transform;
+	background-image: url(/Sonic/drainfly-wing.png);
+	position: absolute;
+	height: 8px;
+	width: 24px;
+	left: 0px;
+	transform-origin: center bottom;
+	animation: drainfly-flap 10ms infinite steps(2);
+}
+
+.actor-drainfly .sprite:after {
+	background-image: url(/Sonic/drainfly.png);
+	height: 13px;
+	width: 14px;
+	content: ' ';
+	position: absolute;
+	top: 4px;
+	left: 0px;
+}
+
+@keyframes drainfly-flap {
+	from {
+		transform: scaleY(-1);
+	}
+	50% {
+		transform: scaleY(1);
+	}
+	to {
+		transform: scaleY(1);
+	}
+}
+
