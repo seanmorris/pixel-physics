@@ -55,6 +55,22 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'Seaview Park Zone': {
+						callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/west-side-zone.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							this.parent.args.started = false;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+
 					, 'Sonic Control Tutorial': {
 						subtext: 'Learn the controls for Sonic'
 						, callback: () => {
@@ -116,21 +132,6 @@ export class MainMenu extends Menu
 					, 'Terrain Test': {
 						callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/bendy-bridges.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
-						}
-					}
-					, 'Full Layer Shift Test': {
-						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/west-side-zone.json' });
 
 							this.parent.args.networked = false;
 							this.parent.tileMap = tileMap;

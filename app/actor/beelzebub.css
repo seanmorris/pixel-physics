@@ -4,42 +4,130 @@
 }
 
 .actor-beelzebub .sprite {
+	position: relative;
 	width: 52px;
 	height: 32px;
 }
 
-.actor-beelzebub .sprite:after {
+.actor-beelzebub .body {
 	background-image: url(/custom/beelzebub.png);
 	width: 96px;
 	height: 96px;
-	content: ' ';
 	position: absolute;
 	top: -10px;
-	left: 0px;
+	left: -34px;
+
 }
 
-.actor-beelzebub:not([data-phase=dead]):not([data-phase=exploding]):not([data-phase=idle]) .sprite:after {
+.actor-beelzebub .eye-fore {
+	background-image: url(/custom/beelzebub-eye-fore.png);
+	width: 15px;
+	height: 16px;
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	z-index: 100;
+}
+
+.actor-beelzebub .eye-back {
+	background-image: url(/custom/beelzebub-eye-back.png);
+	width: 13px;
+	height: 16px;
+	position: absolute;
+	top: 10px;
+	right: 8px;
+	z-index: 10;
+}
+
+.actor-beelzebub .nose {
+	width: 13px;
+	height: 27px;
+	content: ' ';
+	position: absolute;
+	top: 12px;
+	top: 20px;
+	right: 15px;
+	z-index: 10;
+	transform-origin: 7px 4px;
+}
+
+.actor-beelzebub .nose {
+	transform: rotate(calc(calc(var(--nose-angle, 0) * 1rad) + 90deg));
+}
+
+.actor-beelzebub[data-facing=left] .nose {
+	transform: scaleX(-1) rotate(calc(calc(var(--nose-angle, 0) * 1rad) + 90deg));
+}
+
+.actor-beelzebub[data-phase=stalking] .nose {
+}
+
+.actor-beelzebub .nose:after {
+	content:  ' ';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url(/custom/beelzebub-nose.png);
+}
+
+.actor-beelzebub .drill {
+	animation: beelzebub-drill-spin 125ms steps(4) infinite;
+	transition: top 0.3s ease-in;
+	background-image: url(/custom/beelzebub-drill.png);
+	width: 7px;
+	height: 24px;
+	content: ' ';
+	position: absolute;
+	left: 3px;
+	top: calc(var(--drill-push, 1) * 27px);
+}
+
+.actor-beelzebub[data-phase=attacking] .body,
+.actor-beelzebub[data-phase=stalking] .body,
+.actor-beelzebub[data-phase=ready] .body,
+.actor-beelzebub[data-phase=alert] .body {
 	animation:
-		 beelzebub-flap 10ms steps(2) infinite,
-		  beelzebub-boost 60ms steps(2) infinite;
+		 beelzebub-flap 40ms steps(3) infinite alternate,
+		  beelzebub-boost 10ms steps(2) infinite;
 }
 
-.actor-beelzebub[data-phase=exploding] .sprite:after,
-.actor-beelzebub[data-phase=idle] .sprite:after,
-.actor-beelzebub[data-phase=dead] .sprite:after {
+.actor-beelzebub[data-phase=alert] .body {
+	animation:
+		 beelzebub-flap 40ms 0.75s steps(3) infinite alternate,
+		  beelzebub-boost 10ms 0.75s steps(2) infinite;
+}
+
+.actor-beelzebub[data-phase=buzzing] .body {
+	animation:
+		 beelzebub-flap 80ms steps(3) infinite alternate,
+		  beelzebub-boost 10ms steps(2) infinite;
+}
+
+.actor-beelzebub[data-phase=exploding] .body,
+.actor-beelzebub[data-phase=exploded] .body,
+.actor-beelzebub[data-phase=dead] .body,
+.actor-beelzebub[data-phase=idle] .body {
 	background-position-x: -96px;
+	background-position-y: -96px;
 }
 
-.actor-beelzebub[data-phase=exploding] .sprite:after,
-.actor-beelzebub[data-phase=dead] .sprite:after,
-.actor-beelzebub[data-phase=idle] .sprite:after {
-	background-position-y: -192px;
+.actor-beelzebub[data-phase=exploding] .eye-back,
+.actor-beelzebub[data-phase=dead] .eye-back,
+.actor-beelzebub[data-phase=idle] .eye-back {
+	background-image: url(/custom/beelzebub-eye-back-inactive.png);
+}
+
+.actor-beelzebub[data-phase=exploding] .eye-fore,
+.actor-beelzebub[data-phase=dead] .eye-fore,
+.actor-beelzebub[data-phase=idle] .eye-fore {
+	background-image: url(/custom/beelzebub-eye-fore-inactive.png);
 }
 
 .actor-beelzebub[data-phase=exploding] .sprite:after,
 .actor-beelzebub[data-phase=dead] .sprite:after {
 	transition: transform 0.25s ease-out;
-	transform: rotate(180deg) translate(24px, 30px);
 }
 
 .actor-beelzebub[data-phase=exploding] .sprite:before,
@@ -47,37 +135,58 @@
 	display: none;
 }
 
-.actor-beelzebub .sprite:before {
-	animation: beelzebub-drill-spin 200ms steps(4) infinite;
-	transition: top 0.3s ease-in;
-	background-image: url(/custom/beelzebub-drill.png);
-	width: 7px;
-	height: 24px;
-	content: ' ';
-	position: absolute;
-	top: 10px;
-	left: 17px;
-}
-
 .actor-beelzebub[data-phase="damaged"] .sprite {
 	animation: boss-damage steps(1) infinite 45ms forwards;
 }
 
-.actor-beelzebub[data-phase="damaged"] .sprite:after{
-	transform: scaleX(-1);
-	filter:  invert(1) hue-rotate(180deg);
+.actor-beelzebub[data-phase="alert"] .drill {
+	transition: top 1.5s 0.5s ease-in;
 }
 
-.actor-beelzebub[data-phase="damaged"] .sprite:before{
-	transition: top 0.1s ease-in;
-	top: 25px;
-	left: 72px;
+.actor-beelzebub[data-phase="damaged"] .drill {
+	transition: top 0.5s ease-in;
 }
 
-.actor-beelzebub[data-phase="alert"] .sprite:before,
-.actor-beelzebub[data-phase="attacking"] .sprite:before {
-	transition: top 0.1s ease-in;
-	top: 40px;
+.actor-beelzebub[data-phase="attacking"] .drill {
+	transition: top 0.3s ease-in;
+}
+
+.actor-beelzebub[data-phase="dead"] .nose {
+	transform: rotate(22.75deg);
+}
+
+.actor-beelzebub[data-phase="exploding"] .drill,
+.actor-beelzebub[data-phase="exploded"] .drill,
+.actor-beelzebub[data-phase="dead"] .drill {
+	animation-play-state: paused;
+	top: 20px;
+}
+
+.actor-beelzebub[data-phase="damaged"] {
+	--nose-angle: -0.78 !important;
+}
+
+.actor-beelzebub[data-phase=damaged][data-facing=right] {
+	--nose-angle: calc(-0.78 * 3) !important;
+}
+
+.actor-beelzebub[data-phase=exploded] .body {
+
+}
+
+.actor-beelzebub[data-phase=exploded] .eye-back {
+	transition: transform 1s ease-out;
+	transform: translateX(-384px);
+}
+
+.actor-beelzebub[data-phase=exploded] .eye-fore {
+	transition: transform 1s ease-out;
+	transform: translateX(384px);
+}
+
+.actor-beelzebub[data-phase=exploded] .nose {
+	transition: transform 1s ease-out;
+	transform: translateX(-256px);
 }
 
 @keyframes beelzebub-flap {
@@ -85,7 +194,7 @@
 		background-position-x: 0;
 	}
 	to {
-		background-position-x: -192px;
+		background-position-x: -288px;
 	}
 }
 

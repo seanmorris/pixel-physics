@@ -25,30 +25,31 @@
 
 .backdrop.west-side {
 	background-color: #1e1659;
+	filter: blur(1px);
 }
 
 .backdrop.west-side-cloudy {
 	background-color: #12173c;
-	filter: brightness(1);
+	filter: blur(0.5px);
 }
 
-.backdrop.west-side-cloudy.lightening {
-	animation: west-side-lightning 1s ease-out infinite; forwards;
+.backdrop.west-side-cloudy.lightning {
+	animation: west-side-lightning 1s ease-out infinite forwards;
 }
 
 @keyframes west-side-lightning {
-	0% { background-color: #12173c; filter: brightness(1); }
+	0% { background-color: #12173c; filter: brightness(1) blur(0.5px);; }
 	5% {
 		background-color: #CCC;
-		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5);
+		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5) blur(0.25px);
 	}
 	10% { filter: brightness(1); }
-	50% { background-color: #12173c; filter: brightness(1); }
-	100% { background-color: #12173c; filter: brightness(1); }
+	50% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
+	100% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
 }
 
 .backdrop {
-	filter: blur(0.5px);
+	/*filter: blur(1.5px);*/
 }
 
 .backdrop::before {

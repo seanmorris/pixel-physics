@@ -1668,77 +1668,79 @@ export class Viewport extends View
 		}
 	}
 
-	actorUpdateStart(nearbyCells)
+	actorUpdateStart(actor)
 	{
-		for(const i in nearbyCells)
+		if(this.updateStarted.has(actor))
 		{
-			const cell   = nearbyCells[i];
-			const actors = cell;
-
-			for(const actor of actors)
-			{
-				if(this.updateStarted.has(actor))
-				{
-					continue;
-				}
-
-				this.updateStarted.add(actor);
-
-				actor.updateStart();
-
-				if(actor.colliding)
-				{
-					actor.colliding = false;
-				}
-
-			}
+			return;
 		}
+
+		this.updateStarted.add(actor);
+
+		actor.updateStart();
+
+		if(actor.colliding)
+		{
+			actor.colliding = false;
+		}
+
+		// for(const i in nearbyCells)
+		// {
+		// 	const cell   = nearbyCells[i];
+		// 	const actors = cell;
+
+		// 	for(const actor of actors)
+		// 	{
+
+		// 	}
+		// }
 	}
 
-	actorUpdate(nearbyCells)
+	actorUpdate(actor)
 	{
-		for(const i in nearbyCells)
+		if(this.updated.has(actor))
 		{
-			const cell   = nearbyCells[i];
-			const actors = cell;
-
-			for(const actor of actors)
-			{
-				if(this.updated.has(actor))
-				{
-					continue;
-				}
-
-				this.updated.add(actor);
-
-				actor.update();
-			}
+			return;
 		}
+
+		this.updated.add(actor);
+
+		actor.update();
+
+		// for(const i in nearbyCells)
+		// {
+		// 	const cell   = nearbyCells[i];
+		// 	const actors = cell;
+
+		// 	for(const actor of actors)
+		// 	{
+		// 	}
+		// }
 	}
 
-	actorUpdateEnd(nearbyCells)
+	actorUpdateEnd(actor)
 	{
-		for(const i in nearbyCells)
+		if(this.updateEnded.has(actor))
 		{
-			const cell   = nearbyCells[i];
-			const actors = cell;
-
-			for(const actor of actors)
-			{
-				if(this.updateEnded.has(actor))
-				{
-					continue;
-				}
-
-				this.updateEnded.add(actor);
-
-				actor.args.colliding = actor.colliding;
-
-				actor.updateEnd();
-
-				this.setColCell(actor);
-			}
+			return;
 		}
+
+		this.updateEnded.add(actor);
+
+		actor.args.colliding = actor.colliding;
+
+		actor.updateEnd();
+
+		this.setColCell(actor);
+		// for(const i in nearbyCells)
+		// {
+		// 	const cell   = nearbyCells[i];
+		// 	const actors = cell;
+
+		// 	for(const actor of actors)
+		// 	{
+		// 	}
+		// }
 	}
 
 	nearbyActors(actor)
@@ -1934,6 +1936,8 @@ export class Viewport extends View
 
 		if(this.args.running)
 		{
+			const updatable = new Set;
+
 			for(const region of this.regions)
 			{
 				if(!this.actorIsOnScreen(region, 768))
@@ -1941,26 +1945,68 @@ export class Viewport extends View
 					continue;
 				}
 
-				region.updateStart();
-				region.update();
-				region.updateEnd();
-
-				this.updated.add(region);
+				updatable.add(region);
 			}
 
 			for(const actor of this.auras)
 			{
-				this.actorUpdateStart([[actor]]);
-				this.actorUpdate([[actor]]);
-				this.actorUpdateEnd([[actor]]);
+				if(actor !== this.controlActor)
+				{
+					updatable.add(actor);
+				}
 
 				const nearbyCells = this.getNearbyColCells(actor);
 
-				this.actorUpdateStart(nearbyCells);
-				this.actorUpdate(nearbyCells);
-				this.actorUpdateEnd(nearbyCells);
+				for(const cell of nearbyCells)
+				{
+					for(const actor of cell)
+					{
+						if(actor !== this.controlActor)
+						{
+							updatable.add(actor);
+						}
+					}
+				}
+			}
 
+			for(const actor of updatable)
+			{
+				this.actorUpdateStart(actor);
+			}
+
+			if(this.controlActor)
+			{
+				this.actorUpdateStart(this.controlActor);
+			}
+
+			for(const actor of updatable)
+			{
+				this.actorUpdate(actor);
+			}
+
+			if(this.controlActor)
+			{
+				this.actorUpdate(this.controlActor);
+			}
+
+			for(const actor of updatable)
+			{
+				this.actorUpdateEnd(actor);
+			}
+
+			if(this.controlActor)
+			{
+				this.actorUpdateEnd(this.controlActor);
+			}
+
+			for(const actor of updatable)
+			{
 				this.setColCell(actor);
+			}
+
+			if(this.controlActor)
+			{
+				this.setColCell(this.controlActor);
 			}
 
 			if(this.collisions)

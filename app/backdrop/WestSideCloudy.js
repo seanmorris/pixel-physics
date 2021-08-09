@@ -188,12 +188,12 @@ export class WestSideCloudy extends Backdrop
 
 			if(Math.random() > 0.995)
 			{
-				this.args.name = 'west-side-cloudy lightening';
-				this.args.ligtening = true;
+				this.args.name = 'west-side-cloudy lightning';
+				this.args.lightning = true;
 
 				this.onTimeout(1000, () => {
 					this.args.name = 'west-side-cloudy';
-					this.args.ligtening = false;
+					this.args.lightning = false;
 				});
 			}
 

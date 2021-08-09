@@ -126,6 +126,7 @@ export class PointActor extends View
 		this.regions   = new Set;
 		this.powerups  = new Set;
 		this.behaviors = new Set;
+
 		this.inventory = new Classifier([
 			Sheild
 			, FireSheild
@@ -4501,5 +4502,15 @@ export class PointActor extends View
 
 			pickup.dropped = false;
 		}
+	}
+
+	angleTo(actor)
+	{
+		return Math.atan2(this.y - actor.y, this.x - actor.x);
+	}
+
+	distanceTo(actor)
+	{
+		return Math.sqrt((this.y - actor.y)**2 + (this.x - actor.x)**2);
 	}
 }
