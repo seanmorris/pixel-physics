@@ -57,8 +57,7 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 				}
 				break;
 
-			case 'attacking':
-
+			case 'attacking': {
 				const drawX = Math.sign(mainChar.x + -this.x);
 				const drawY = Math.sign(mainChar.y + -this.y + -24);
 
@@ -82,6 +81,8 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 				}
 
 				break;
+			}
+
 		}
 
 		// if(!this.args.ySpeed)
