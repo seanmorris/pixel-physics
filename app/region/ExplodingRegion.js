@@ -48,19 +48,26 @@ export class ExplodingRegion extends Region
 
 	update()
 	{
+		super.update();
+
 		const viewport = this.viewport;
 
-		super.update();
+		if(!viewport)
+		{
+			return;
+		}
 
 		if(!this.args.active)
 		{
-			if(this.args.target && this.viewport.actorsById[ this.args.target ])
+			if(this.args.target && viewport.actorsById[ this.args.target ])
 			{
-				const target = this.viewport.actorsById[ this.args.target ];
+				const target = viewport.actorsById[ this.args.target ];
 
-				this.viewport.auras.delete(target);
+				viewport.auras.delete(target);
 			}
-			this.viewport.auras.delete(this);
+
+			viewport.auras.delete(this);
+
 			return;
 		}
 
@@ -102,7 +109,7 @@ export class ExplodingRegion extends Region
 	activate()
 	{
 		this.args.active = true;
-``
+
 		this.viewport.onFrameOut(250, () => this.args.active = false)
 
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])

@@ -33,8 +33,6 @@ export class Beelzebub extends Mixin.from(PointActor)
 		this.args.direction = -1;
 		this.args.facing    = 'left';
 
-		this.noClip = true;
-
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 	}
 
@@ -105,8 +103,6 @@ export class Beelzebub extends Mixin.from(PointActor)
 		{
 			case 'idle':
 
-				this.args.ySpeed = 0;
-
 				this.args.alertTo = this.y - 48;
 
 				if(mainChar.x + -this.x > -136)
@@ -117,10 +113,14 @@ export class Beelzebub extends Mixin.from(PointActor)
 				break;
 
 			case 'damaged':
-				this.args.falling   = true
-				this.args.float     = -1;
-
 				if(this.args.phaseFrameId > 10)
+				{
+					this.args.phase = 'stalking';
+				}
+				break;
+
+			case 'knocked':
+				if(this.args.phaseFrameId > 45)
 				{
 					this.args.phase = 'stalking';
 				}
@@ -128,13 +128,13 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 
 			case 'alert':
-				this.args.falling   = true
-				this.args.float     = -1;
-
-				this.args.drillPush = 1;
 
 				if(this.args.phaseFrameId > 60)
 				{
+					this.args.drillPush = 1;
+					this.args.falling   = true
+					this.args.float     = -1;
+
 					if(this.y > this.args.alertTo)
 					{
 						this.args.ySpeed--;
@@ -155,8 +155,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 			case 'stalking': {
 
-				this.args.falling   = true
-				this.args.float     = -1;
+				// this.args.falling   = true
+				// this.args.float     = -1;
 
 				this.args.noseAngle = (Math.PI/2)*3;
 
@@ -172,7 +172,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 					this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
 				}
 
-				this.args.xSpeed = -xSign * Math.max(1, xDiff/30);
+				this.args.xSpeed = -xSign * Math.max(1, xDiff/10);
 				this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
 
 				this.attractor.x = mainChar.x;
@@ -191,7 +191,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 			case 'buzzing': {
 
 				this.attractor.x = mainChar.x;
-				this.attractor.y = mainChar.y - 64;
+				this.attractor.y = mainChar.y + -mainChar.args.height + -32;
 
 				this.args.falling   = true
 				this.args.float     = -1;
@@ -211,15 +211,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 				}
 
 				this.args.xSpeed = -xSign * Math.max(1, xDiff/10);
-				this.args.ySpeed = -ySign * Math.max(1, yDiff/8);
-
-				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
-
-				if(this.args.phaseFrameId > 85)
-				{
-					this.attractor.x = mainChar.x;
-					this.attractor.y = mainChar.y - 32;
-				}
+				this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
 
 				if(this.args.phaseFrameId > 100)
 				{
@@ -236,6 +228,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 				this.args.drillPush = 0.75;
 
+				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
+
 				this.attractor.x = mainChar.x + 160 * Math.sign(mainChar.xSpeedLast);
 				this.attractor.y = mainChar.y - 160;
 
@@ -243,13 +237,17 @@ export class Beelzebub extends Mixin.from(PointActor)
 				{
 					const dieRoll = Math.random();
 
-					if(dieRoll > 0.6)
+					if(dieRoll > 0.75)
 					{
 						this.args.phase = 'stalking';
 					}
 					else if(dieRoll > 0.5)
 					{
 						this.args.phase = 'buzzing';
+					}
+					else if(dieRoll > 2.5)
+					{
+						this.args.phase = 'swooping';
 					}
 					else
 					{
@@ -286,7 +284,32 @@ export class Beelzebub extends Mixin.from(PointActor)
 				this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
 
 				break;
+			}
 
+			case 'swooping': {
+				this.args.float     = -1;
+				this.args.falling   = true
+
+				if(this.args.phaseFrameId > 180)
+				{
+					this.args.phase = 'stalking';
+				}
+
+				this.attractor.x = mainChar.x;
+				this.attractor.y = mainChar.y - 32;
+
+				this.args.drillPush = 1;
+
+				this.args.float = -1;
+
+				const mainSpeed = mainChar.args.xSpeed || mainChar.args.gSpeed;
+
+				this.args.xSpeed += -xSign * Math.max(1, xDiff/10000);
+				this.args.ySpeed += -ySign * Math.max(1, yDiff/10000);
+
+				this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
+
+				break;
 			}
 
 			case 'exploding':
@@ -358,9 +381,9 @@ export class Beelzebub extends Mixin.from(PointActor)
 		switch(this.args.phase)
 		{
 			case 'attacking':
+			case 'swooping':
 			case 'stalking':
-			case 'ready':
-			case 'damaged': {
+			case 'ready': {
 
 				if(xDiff > 384)
 				{
@@ -372,21 +395,21 @@ export class Beelzebub extends Mixin.from(PointActor)
 					this.args.y = mainChar.y + 192 * ySign;
 				}
 
-				if(!this.args.falling)
-				{
-					this.args.falling = true;
-					this.args.float   = -1;
-					this.args.ySpeed  = 0;
-
-					this.args.y--;
-				}
-
 				if(this.args.hitPoints <= 0)
 				{
 					this.viewport.auras.delete(this);
 					this.args.phase = 'dead';
 					this.noClip = false;
 					this.args.float = 0;
+
+					if(typeof ga === 'function')
+					{
+						ga('send', 'event', {
+							eventCategory: 'boss',
+							eventAction: 'defeated',
+							eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+						});
+					}
 				}
 
 				break;
@@ -407,9 +430,9 @@ export class Beelzebub extends Mixin.from(PointActor)
 		switch(this.args.phase)
 		{
 			case 'attacking':
+			case 'swooping':
 			case 'stalking':
-			case 'ready':
-			case 'damaged': {
+			case 'ready': {
 				if(this.checkBelow(this.x, this.y))
 				{
 					this.args.falling = true;
@@ -425,7 +448,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 	{
 		if(!other.controllable)
 		{
-			return;
+			return true;
 		}
 
 		const xSign = Math.sign(this.x - other.x);
@@ -438,9 +461,17 @@ export class Beelzebub extends Mixin.from(PointActor)
 		{
 			if(!(other.args.jumping || other.args.rolling || other.dashed))
 			{
+				console.log(other.args.rolling);
+
 				this.args.phase = 'stalking';
 
 				other.damage();
+
+				ga('send', 'event', {
+					eventCategory: 'boss',
+					eventAction: 'damaged-player',
+					eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
+				});
 
 				return true;
 			}
@@ -457,9 +488,6 @@ export class Beelzebub extends Mixin.from(PointActor)
 			this.args.phase = 'exploding';
 		}
 
-		this.ignores.set(other, 15);
-
-
 		if(this.args.hitPoints > 1)
 		{
 			this.args.xSpeed = xSign * impactSpeed / 3;
@@ -472,6 +500,11 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		if(type === 1 || type === 3) // Side collisions
 		{
+			if(other.args.falling)
+			{
+				this.ignores.set(other, 15);
+			}
+
 			if(this.viewport.args.audio)
 			{
 				this.hitSound.currentTime = 0;
@@ -479,22 +512,11 @@ export class Beelzebub extends Mixin.from(PointActor)
 				this.hitSound.play();
 			}
 
-			other.args.x = this.x + (this.args.width / 2) * -Math.sign(other.args.xSpeed);
-
 			if(this.args.hitPoints > 0)
 			{
-				if(this.args.hitPoints > 0)
-				{
-					this.args.phase   = 'damaged';
-					other.args.xSpeed = -xSign * impactSpeed;
-					this.args.hitPoints--;
-				}
-				else
-				{
-					this.args.phase = 'dead';
-					other.args.xSpeed = -xSign * 2;
-					other.args.ignore = -2;
-				}
+				this.args.phase   = 'damaged';
+				other.args.xSpeed = -xSign * impactSpeed;
+				this.args.hitPoints--;
 			}
 		}
 
@@ -509,14 +531,21 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 			if(other.args.falling)
 			{
-				this.args.ySpeed = other.args.ySpeed;
+				this.args.ySpeed = other.args.ySpeed * 2;
 
 				other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
 			}
+
+			this.args.phase = 'knocked';
 		}
 
 		if(type === 0) // Collide from top
 		{
+			if(other.args.falling)
+			{
+				this.ignores.set(other, 15);
+			}
+
 			other.args.y    = this.y - this.args.height;
 			const animation = other.args.animation;
 			const ySpeed    = other.args.ySpeed;
@@ -534,15 +563,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 			if(this.args.hitPoints > 0)
 			{
-				if(this.args.hitPoints > 0)
-				{
-					this.args.phase   = 'damaged';
-					this.args.hitPoints--;
-				}
-				else
-				{
-					this.args.phase = 'dead';
-				}
+				this.args.phase   = 'damaged';
+				this.args.hitPoints--;
 			}
 		}
 
@@ -591,7 +613,6 @@ export class Beelzebub extends Mixin.from(PointActor)
 		return true;
 	}
 
-
-	get solid() {return false}
+	get solid() {return true}
 	get rotateLock() {return true}
 }

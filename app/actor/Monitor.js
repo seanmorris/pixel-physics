@@ -142,6 +142,15 @@ export class Monitor extends PointActor
 			this.sample.play();
 		}
 
+		if(typeof ga === 'function')
+		{
+			ga('send', 'event', {
+				eventCategory: 'monitor',
+				eventAction: 'popped',
+				eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+			});
+		}
+
 		if(other)
 		{
 			const ySpeed = other.args.ySpeed;

@@ -16,7 +16,7 @@ export class UnbreakableCrate extends Block
 
 	update()
 	{
-		if(this.args.gate)
+		if(this.viewport && this.args.gate)
 		{
 			const gatekeeper = this.viewport.actorsById[ this.args.gate ];
 

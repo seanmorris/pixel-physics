@@ -25,7 +25,7 @@
 
 .backdrop.west-side {
 	background-color: #1e1659;
-	filter: blur(1px);
+	filter: blur(0.5px);
 }
 
 .backdrop.west-side-cloudy {
@@ -38,12 +38,12 @@
 }
 
 @keyframes west-side-lightning {
-	0% { background-color: #12173c; filter: brightness(1) blur(0.5px);; }
+	0% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
 	5% {
 		background-color: #CCC;
-		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5) blur(0.25px);
+		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5) blur(0.5px);
 	}
-	10% { filter: brightness(1); }
+	10% { filter: brightness(1) blur(0.5px); }
 	50% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
 	100% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
 }
