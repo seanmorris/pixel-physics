@@ -80,7 +80,7 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 			}
 		}
 
-		if(this.args.xSpeed === 0)
+		if(this.args.xSpeed === 0 && this.viewport)
 		{
 			this.viewport.onFrameOut(10, () => {
 				this.attack();

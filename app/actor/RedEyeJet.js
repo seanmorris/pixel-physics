@@ -194,6 +194,15 @@ export class RedEyeJet extends PointActor
 					this.box.setAttribute('data-phase', 'dead');
 					this.args.animation = '';
 					this.args.phase = 'dead';
+
+					if(typeof ga === 'function')
+					{
+						ga('send', 'event', {
+							eventCategory: 'boss',
+							eventAction: 'defeated',
+							eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+						});
+					}
 				}
 
 				this.viewport.onFrameOut(20, () => {

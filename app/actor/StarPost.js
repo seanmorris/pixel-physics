@@ -119,6 +119,15 @@ export class StarPost extends PointActor
 				this.spinning = false;
 			});
 
+			if(typeof ga === 'function')
+			{
+				ga('send', 'event', {
+					eventCategory: 'starpost',
+					eventAction: 'activated',
+					eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+				});
+			}
+
 			// const time  = (this.viewport.args.frameId - this.viewport.args.startFrameId) / 60;
 			// let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
 			// let seconds = String((Math.abs(time) % 60).toFixed(0)).padStart(2,'0');

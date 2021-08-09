@@ -707,10 +707,17 @@ export class Viewport extends View
 			}
 		}
 
-		this.args.zonecard.args.firstLine  = this.meta.titlecard_title_1;
-		this.args.zonecard.args.secondLine = this.meta.titlecard_title_2;
-		this.args.zonecard.args.creditLine = this.meta.titlecard_author;
-		this.args.zonecard.args.actNumber  = this.meta.titlecard_number;
+		const line1  = this.meta.titlecard_title_1;
+		const line2  = this.meta.titlecard_title_2;
+		const author = this.meta.titlecard_author;
+		const number = this.meta.titlecard_number;
+
+		this.args.zonecard.args.firstLine  = line1;
+		this.args.zonecard.args.secondLine = line2;
+		this.args.zonecard.args.creditLine = author;
+		this.args.zonecard.args.actNumber  = number;
+
+		this.args.actName = `${line1} ${line2} ${number}`;
 	}
 
 	fillBackground()
@@ -845,7 +852,16 @@ export class Viewport extends View
 
 			this.args.running = false;
 
-			this.onTimeout(1000, () => {
+			if(typeof ga === 'function')
+			{
+				ga('send', 'event', {
+					eventCategory: 'zone',
+					eventAction: 'started',
+					eventLabel: `${this.args.actName}`
+				});
+			}
+
+			this.onTimeout(500, () => {
 				this.startTime    = Date.now();
 				this.args.running = true;
 			});
@@ -1793,6 +1809,18 @@ export class Viewport extends View
 			this.args.frameId++;
 		}
 
+		if(this.args.frameId % 600 === 0)
+		{
+			ga('set', 'metric1', this.args.frameId / 60);
+
+			ga('send', 'event', {
+				eventCategory: 'fps-check',
+				eventAction: 'fps-check',
+				eventLabel: `${this.args.actName}`,
+				eventValue: Math.trunc(this.args.fps)
+			});
+		}
+
 		if(!this.args.started)
 		{
 			this.startTime = Date.now();
@@ -2352,6 +2380,15 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+
+		if(typeof ga === 'function')
+		{
+			ga('send', 'event', {
+				eventCategory: 'gamepad',
+				eventAction: 'connected',
+				eventLabel: event.gamepad.id
+			});
+		}
 	}
 
 	padRemoved(event)
@@ -2365,6 +2402,12 @@ export class Viewport extends View
 		{
 			this.gamepad = null;
 		}
+
+		ga('send', 'event', {
+			eventCategory: 'gamepad',
+			eventAction: 'disconnected',
+			eventLabel: event.gamepad.id
+		});
 	}
 
 	getColCell(actor)

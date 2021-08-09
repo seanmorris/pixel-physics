@@ -122,6 +122,15 @@ export class Ring extends PointActor
 
 		if(other.collect)
 		{
+			if(typeof ga === 'function')
+			{
+				ga('send', 'event', {
+					eventCategory: 'ring',
+					eventAction: 'collected',
+					eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+				});
+			}
+
 			this.onNextFrame(()=> {
 				other.collect(this);
 			});

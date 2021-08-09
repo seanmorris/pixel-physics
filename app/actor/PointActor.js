@@ -850,7 +850,7 @@ export class PointActor extends View
 
 		if(this.controllable)
 		{
-			const height = Math.max(this.public.height, 32);
+			const height = Math.max(this.public.height, 0);
 
 			const headPoint = this.rotatePoint(0, height * 0.75);
 
@@ -4253,8 +4253,8 @@ export class PointActor extends View
 
 		if(!this.drooperFg)
 		{
-			this.drooperFg = new Droop(
-{				id: 'droop-' + this.args.id
+			this.drooperFg = new Droop({
+			id: 'droop-' + this.args.id
 				, width: this.public.width * 3
 				, height: this.public.height * 3
 				, scale: 64

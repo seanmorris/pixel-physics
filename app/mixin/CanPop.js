@@ -15,6 +15,12 @@ export const CanPop = {
 
 		if(other && other.controllable)
 		{
+			ga('send', 'event', {
+				eventCategory: 'badnik',
+				eventAction: 'damaged-player',
+				eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
+			});
+
 			other.damage(this);
 		}
 
@@ -114,8 +120,18 @@ export const CanPop = {
 			}
 		}
 
+		if(typeof ga === 'function')
+		{
+			ga('send', 'event', {
+				eventCategory: 'badnik',
+				eventAction: 'defeated',
+				eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+			});
+		}
+
 		this.viewport.actors.remove(this);
 
 		this.args.gone = true;
+
 	}
 }

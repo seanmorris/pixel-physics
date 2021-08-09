@@ -48,6 +48,15 @@ export class CompanionBlock extends MarbleBlock
 					}
 				});
 
+				if(typeof ga === 'function')
+				{
+					ga('send', 'event', {
+						eventCategory: 'companion-block',
+						eventAction: 'pushed',
+						eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+					});
+				}
+
 				this.played = true;
 			}
 		}
