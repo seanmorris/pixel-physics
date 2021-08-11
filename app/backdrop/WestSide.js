@@ -25,7 +25,7 @@ export class WestSide extends Backdrop
 				autoscroll: 0
 				, parallax: 0.0005
 				, url:      '/Sonic/backdrop/west-side/water-shine-0.png'
-				, height:   2
+				, height:   3
 			}
 			, {
 				autoscroll: 0

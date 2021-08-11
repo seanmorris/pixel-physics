@@ -34,7 +34,7 @@ export const CanPop = {
 	, pop: function(other) {
 		const viewport = this.viewport;
 
-		if(!viewport || this.args.gone || other.args.owner === this)
+		if(!viewport || this.args.gone || (other && other.args.owner === this))
 		{
 			return;
 		}
@@ -51,7 +51,7 @@ export const CanPop = {
 
 		this.box.setAttribute('data-animation', 'broken');
 
-		if(other.dashed)
+		if(other && other.dashed)
 		{
 			other.args.gSpeed = 0;
 			other.args.xSpeed = 0;
@@ -62,50 +62,53 @@ export const CanPop = {
 			other.dashed = false;
 		}
 
-		if(other.occupant)
+		if(other)
 		{
-			other = other.occupant;
-		}
-
-		if(other.args.owner)
-		{
-			other = other.args.owner;
-		}
-
-		if(other.controllable && typeof this.effect === 'function')
-		{
-			if(this.args.gold)
+			if(other.occupant)
 			{
-				other.args.score += 10000;
-			}
-			else
-			{
-				other.args.score += 100;
+				other = other.occupant;
 			}
 
-			this.effect(other);
-		}
+			if(other.args.owner)
+			{
+				other = other.args.owner;
+			}
 
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
+			if(other.controllable && typeof this.effect === 'function')
+			{
+				if(this.args.gold)
+				{
+					other.args.score += 10000;
+				}
+				else
+				{
+					other.args.score += 100;
+				}
+
+				this.effect(other);
+			}
 
 			if(other.dashed)
 			{
 				other.args.xSpeed /= 4;
 			}
 
+			const ySpeed = other.args.ySpeed;
+
+			if(other.args.falling)
+			{
+				this.onNextFrame(() => {
+					other.args.ySpeed  = Math.min(-ySpeed, -7);
+					other.args.falling = true;
+				});
+			}
+
 			other.dashed = false;
 		}
 
-		const ySpeed = other.args.ySpeed;
-
-		if(other.args.falling)
+		if(viewport.args.audio && this.sample)
 		{
-			this.onNextFrame(() => {
-				other.args.ySpeed  = Math.min(-ySpeed, -7);
-				other.args.falling = true;
-			});
+			this.sample.play();
 		}
 
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])

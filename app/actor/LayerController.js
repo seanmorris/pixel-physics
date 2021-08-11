@@ -24,6 +24,11 @@ export class LayerController extends PointActor
 
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.args.activated && this.args.yLayerSpeed < 18)
 		{
 			this.args.yLayerSpeed += 1;

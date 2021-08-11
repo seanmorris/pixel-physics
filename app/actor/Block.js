@@ -45,15 +45,15 @@ export class Block extends PointActor
 		// this.moving = this.reverse = false;
 		// this.remaining = 0;
 
-		this.ease = new QuintInOut(this.public.period);
+		// this.ease = new QuintInOut(this.public.period);
 
 		// this.args.active = this.args.active ?? -1;
 		this.args.active = -1;
 
-		if(this.args.active)
-		{
-			this.ease.start();
-		}
+		// if(this.args.active)
+		// {
+		// 	this.ease.start();
+		// }
 	}
 
 	onRendered(event)
@@ -219,6 +219,11 @@ export class Block extends PointActor
 
 	onAttach(event)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		this.public.collapse && this.tags.sprite.classList.add('collapse');
 		this.public.platform && this.tags.sprite.classList.add('platform');
 
@@ -277,36 +282,42 @@ export class Block extends PointActor
 
 		if(this.public.float && (this.public.oscillateX || this.public.oscillateY))
 		{
-			const current = this.ease.current();
+			// const current = this.ease.current();
 
-			if(this.ease.done && !this.nextEase)
-			{
-				const reverse = this.ease.reverse;
+			// if(!this.nextEase)
+			// {
+			// 	const reverse = (this.viewport.args.frameId % 360) > 180;
 
-				const Ease = QuintInOut;
+			// 	const Ease = QuintInOut;
 
-				this.nextEase = new Ease(this.public.period, {reverse: !reverse});
-			}
+			// 	this.nextEase = new Ease(this.public.period, {reverse: !reverse});
+			// }
 
-			if(this.nextEase && this.args.active)
-			{
-				this.ease = this.nextEase;
-				this.nextEase = false;
+			// const crossedMod = (this.viewport.args.frameId % 120) < (this.viewport.args.lastFrameId % 120);
 
-				if(this.args.active === -1)
-				{
-					this.viewport.onFrameOut(60, () => {
-						if(this.args.active)
-						{
-							this.ease.start();
-						}
-					});
-				}
-				else
-				{
-					this.args.active = false;
-				}
-			}
+			// if(crossedMod && this.nextEase && this.args.active)
+			// {
+			// 	this.ease.cancel();
+
+			// 	this.ease = this.nextEase;
+			// 	this.nextEase = false;
+
+			// 	if(this.args.active === -1)
+			// 	{
+			// 		this.viewport.onFrameOut(60, () => {
+			// 			if(this.args.active)
+			// 			{
+			// 				this.ease.start();
+			// 			}
+			// 		});
+			// 	}
+			// 	else
+			// 	{
+			// 		this.args.active = false;
+			// 	}
+			// }
+
+			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);
 
 			if(this.public.oscillateX)
 			{
@@ -321,57 +332,11 @@ export class Block extends PointActor
 
 				this.args.y = this.originalY - moveY;
 			}
-
-			// if(this.public.oscillateX && !this.moving)
-			// {
-			// 	this.reverse = !this.reverse;
-
-			// 	this.moving = true;
-
-			// 	this.viewport.onFrameOut(this.public.period, () => {
-			// 		this.args.falling = true;
-			// 		this.args.float   = -1;
-
-			// 		const magnitude = this.public.oscillateX / this.public.period;
-
-			// 		this.args.xSpeed = magnitude * (this.reverse ? -1 : 1);
-
-			// 		this.remaining = this.public.period;
-
-			// 		this.viewport.onFrameOut(this.public.period, () => {
-			// 			this.args.xSpeed = 0;
-			// 			this.moving = false;
-			// 		});
-			// 	});
-			// }
-
-			// if(this.public.oscillateY && !this.moving)
-			// {
-			// 	this.reverse = !this.reverse;
-
-			// 	this.moving = true;
-
-			// 	this.viewport.onFrameOut(this.public.period, () => {
-			// 		this.args.falling = true;
-			// 		this.args.float   = -1;
-
-			// 		const magnitude = this.public.oscillateY / this.public.period;
-
-			// 		this.args.ySpeed = magnitude * (this.reverse ? -1 : 1);
-
-			// 		this.remaining = this.public.period;
-
-			// 		this.viewport.onFrameOut(this.public.period, () => {
-			// 			this.args.ySpeed = 0;
-			// 			this.moving = false;
-			// 		});
-			// 	});
-			// }
 		}
 
 		if(this.args.collapse)
 		{
-			if(!this.reset)
+			if(!this.reset && !this.args.once)
 			{
 				this.reset = true;
 
@@ -429,7 +394,7 @@ export class Block extends PointActor
 		{
 			this.snapBack = this.snapBack || false;
 
-			if(!this.args.colliding && this.args.yForce)
+			if(!this.args.colliding && this.args.yForce && this.viewport)
 			{
 				this.viewport.onFrameOut(4, () => {
 					if(!this.args.colliding)
@@ -479,6 +444,31 @@ export class Block extends PointActor
 		}
 
 		super.update();
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		// if(!this.viewport.collisions.has(this))
+		// {
+		// 	return;
+		// }
+
+		// const collidees = this.viewport.collisions.get(this);
+
+		// for(const [collidee, type] of collidees)
+		// {
+		// 	console.log(type);
+		// }
+	}
+
+	sleep()
+	{
+		if(this.args.collapse && this.args.once && !this.args.float)
+		{
+			this.viewport.actors.remove(this);
+		}
 	}
 
 	popOut(other)

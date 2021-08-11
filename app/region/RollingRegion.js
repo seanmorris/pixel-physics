@@ -60,6 +60,8 @@ export class RollingRegion extends Region
 			other.willJump = false;
 		}
 
+		other.args.ignore = 4;
+
 	}
 
 	collideA(other, type)

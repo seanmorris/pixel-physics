@@ -27,7 +27,7 @@ export class Signpost extends PointActor
 		other.args.rolling = false;
 
 		this.viewport.onFrameOut(120, () => this.box.setAttribute('data-cleared-by', other.args.name));
-		this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH RADICAL CITY ZONE`));
+		this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH ${this.viewport.args.actName}`));
 
 		this.viewport.onFrameOut(540, () => {
 
@@ -51,6 +51,8 @@ export class Signpost extends PointActor
 
 			boss.args.x = this.x + (this.x < 125000 ? 768 : -768);
 			boss.args.y = this.y - 160;
+
+			boss.args.phase = 'intro';
 
 			other.args.clearSpeed = 0;
 		});

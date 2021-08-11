@@ -23,6 +23,8 @@ export class CharacterString extends View
 		const med  = this.args.med;
 		const low  = this.args.low;
 
+		const charToModel = this.characterToModel.bind(this)
+
 		this.args.bindTo('value', v => {
 
 			// if(Math.abs(v) < low)
@@ -50,74 +52,7 @@ export class CharacterString extends View
 			// 	this.args.color = '';
 			// }
 
-			const chars = String(v).split('').map((pos,i) => {
-
-				let original = pos;
-
-				let type = 'number';
-
-				if(pos === ' ' || Number(pos) != pos)
-				{
-					switch(pos)
-					{
-						case '-':
-							pos  = 11;
-							type = 'number';
-							break;
-
-						case ':':
-							pos  = 10;
-							type = 'number';
-							break;
-
-						case '.':
-							pos  = 12;
-							type = 'number';
-							break;
-
-						case '/':
-							pos  = 13;
-							type = 'number';
-							break;
-
-						case ',':
-							pos  = 14;
-							type = 'number';
-							break;
-
-						case '?':
-							pos  = 15;
-							type = 'number';
-							break;
-
-						case '!':
-							pos  = 16;
-							type = 'number';
-							break;
-
-						case ' ':
-							pos  = 17;
-							type = 'number';
-							break;
-
-						default:
-							pos  = String(pos).toLowerCase().charCodeAt(0) - 97;
-							type = 'letter';
-							break;
-					}
-				}
-
-				if(this.args.chars[i])
-				{
-					this.args.chars[i].original = original;
-					this.args.chars[i].type     = type;
-					this.args.chars[i].pos      = pos;
-
-					return this.args.chars[i];
-				}
-
-				return {pos, type, original};
-			});
+			const chars = String(v).split('').map(charToModel);
 
 			if(chars.length !== this.args.chars.length)
 			{
@@ -126,5 +61,74 @@ export class CharacterString extends View
 
 			Object.assign(this.args.chars, chars);
 		});
+	}
+
+	characterToModel(pos,i)
+	{
+		let original = pos;
+
+		let type = 'number';
+
+		if(pos === ' ' || Number(pos) != pos)
+		{
+			switch(pos)
+			{
+				case '-':
+					pos  = 11;
+					type = 'number';
+					break;
+
+				case ':':
+					pos  = 10;
+					type = 'number';
+					break;
+
+				case '.':
+					pos  = 12;
+					type = 'number';
+					break;
+
+				case '/':
+					pos  = 13;
+					type = 'number';
+					break;
+
+				case ',':
+					pos  = 14;
+					type = 'number';
+					break;
+
+				case '?':
+					pos  = 15;
+					type = 'number';
+					break;
+
+				case '!':
+					pos  = 16;
+					type = 'number';
+					break;
+
+				case ' ':
+					pos  = 17;
+					type = 'number';
+					break;
+
+				default:
+					pos  = String(pos).toLowerCase().charCodeAt(0) - 97;
+					type = 'letter';
+					break;
+			}
+		}
+
+		if(this.args.chars[i])
+		{
+			this.args.chars[i].original = original;
+			this.args.chars[i].type     = type;
+			this.args.chars[i].pos      = pos;
+
+			return this.args.chars[i];
+		}
+
+		return {pos, type, original};
 	}
 }

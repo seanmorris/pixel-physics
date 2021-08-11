@@ -121,8 +121,6 @@ export class Switch extends PointActor
 			const layer   = this.viewport.args.layers[ layerId ];
 
 			layer.args.destroyed = true;
-
-			console.log('destroyLayer');
 		}
 
 		if(this.args.water)

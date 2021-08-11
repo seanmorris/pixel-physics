@@ -134,6 +134,7 @@ export class Viewport extends View
 		}
 
 		this.args.startFrameId = 0;
+		this.args.lastFrameId  = -1;
 
 		this.tileMap = new TileMap({ mapUrl });
 		this.sprites = new Bag;
@@ -469,8 +470,7 @@ export class Viewport extends View
 		this.args.isReplaying = false;
 
 		this.replayInputs = [];
-
-		// this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
+		this.replayFrames = new Map;
 
 		this.args.standalone = '';
 		this.args.fullscreen = '';
@@ -812,15 +812,17 @@ export class Viewport extends View
 			this.nextControl = Object.values(this.args.actors)[0];
 			// this.nextControl = this.nextControl || actors[0];
 
-			const storedPosition = this.getCheckpoint(this.nextControl.args.id);
-			const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
-
-
-			if(checkpoint)
+			if(!this.args.isReplaying && !this.args.isRecording)
 			{
-				this.args.startFrameId = this.args.frameId - storedPosition.frames;
-				this.args.x = this.nextControl.args.x = checkpoint.x;
-				this.args.y = this.nextControl.args.y = checkpoint.y;
+				const storedPosition = this.getCheckpoint(this.nextControl.args.id);
+				const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
+
+				if(checkpoint)
+				{
+					this.args.startFrameId = this.args.frameId - storedPosition.frames;
+					this.args.x = this.nextControl.args.x = checkpoint.x;
+					this.args.y = this.nextControl.args.y = checkpoint.y;
+				}
 			}
 		}
 		else if(this.args.networked)
@@ -920,7 +922,7 @@ export class Viewport extends View
 			}
 		}
 
-		if(controller.buttons[1011] && controller.buttons[1011].time === 1)
+		if(controller.buttons[2011] && controller.buttons[2011].time === 1)
 		{
 			this.fullscreen();
 		}
@@ -972,30 +974,27 @@ export class Viewport extends View
 				{
 					this.pauseGame();
 				}
-
-				// if(this.args.paused)
-				// {
-				// 	return;
-				// }
-				// else
-				// {
-				// }
-
 			}
 
-			if(this.controlActor && this.args.isRecording)
+			if(this.args.isRecording)
 			{
 				const frame = this.args.frameId;
 				const input = controller.serialize();
-				const args  = {
-					[this.controlActor.public.id]: {
-						x: this.controlActor.public.x
-						, y: this.controlActor.public.y
-						, gSpeed: this.controlActor.public.gSpeed
-						, xSpeed: this.controlActor.public.xSpeed
-						, ySpeed: this.controlActor.public.ySpeed
-					}
-				};
+
+				let args = {};
+
+				if(this.controlActor)
+				{
+					args = {
+						[this.controlActor.public.id]: {
+							x: this.controlActor.public.x
+							, y: this.controlActor.public.y
+							, gSpeed: this.controlActor.public.gSpeed
+							, xSpeed: this.controlActor.public.xSpeed
+							, ySpeed: this.controlActor.public.ySpeed
+						}
+					};
+				}
 
 				this.replayInputs.push({frame, input, args});
 			}
@@ -1323,64 +1322,9 @@ export class Viewport extends View
 			layer.update(this.tileMap, xDir, yDir);
 		}
 
-		this.tileMap.ready.then(()=>{
-			const xMax = -(this.tileMap.mapData.width * 32);
-			const yMax = -(this.tileMap.mapData.height * 32);
+		// this.tileMap.ready.then();
 
-			for(const [,backdrop] of this.backdrops)
-			{
-				if(!backdrop.view)
-				{
-					let backdropType = '';
-
-					for(const property of backdrop.properties)
-					{
-						if(property.name === 'backdrop')
-						{
-							backdropType = property.value;
-						}
-					}
-
-					if(backdropType === 'protolabrynth')
-					{
-						backdrop.view = new ProtoLabrynth;
-
-						backdrop.view.render( this.tags.backdrops );
-					}
-					else if(backdropType === 'mystic-cave')
-					{
-						backdrop.view = new MysticCave;
-
-						backdrop.view.render( this.tags.backdrops );
-					}
-				}
-
-				const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;
-				const rightIntersect  = -(-backdrop.width + -this.args.x + -backdrop.x);
-				const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
-				const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
-
-				backdrop.view && Object.assign(backdrop.view.args, ({
-					x: this.args.x
-					, xMax: xMax
-					, y: this.args.y + backdrop.y
-					, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
-					, stacked: -backdrop.view.stacked + 'px'
-					, frame: this.args.frameId
-					, top: topIntersect
-					, bottom: bottomIntersect
-				}));
-			}
-
-			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
-				x: this.args.x
-				, y: this.args.y
-				, xMax: xMax
-				, yMax: yMax
-				, frame: this.args.frameId
-				, stacked: -this.args.backdrop.stacked + 'px'
-			}));
-		});
+		this.updateBackdrops();
 
 		this.tags.bgFilters.style({
 			'--x': this.args.x
@@ -1409,6 +1353,66 @@ export class Viewport extends View
 			, '--height': this.args.height
 			, '--scale': this.args.scale
 		});
+	}
+
+	updateBackdrops()
+	{
+		const xMax = -(this.tileMap.mapData.width * 32);
+		const yMax = -(this.tileMap.mapData.height * 32);
+
+		for(const [,backdrop] of this.backdrops)
+		{
+			if(!backdrop.view)
+			{
+				let backdropType = '';
+
+				for(const property of backdrop.properties)
+				{
+					if(property.name === 'backdrop')
+					{
+						backdropType = property.value;
+					}
+				}
+
+				if(backdropType === 'protolabrynth')
+				{
+					backdrop.view = new ProtoLabrynth;
+
+					backdrop.view.render( this.tags.backdrops );
+				}
+				else if(backdropType === 'mystic-cave')
+				{
+					backdrop.view = new MysticCave;
+
+					backdrop.view.render( this.tags.backdrops );
+				}
+			}
+
+			const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;
+			const rightIntersect  = -(-backdrop.width + -this.args.x + -backdrop.x);
+			const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
+			const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
+
+			backdrop.view && Object.assign(backdrop.view.args, ({
+				x: this.args.x
+				, xMax: xMax
+				, y: this.args.y + backdrop.y
+				, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
+				, stacked: -backdrop.view.stacked + 'px'
+				, frame: this.args.frameId
+				, top: topIntersect
+				, bottom: bottomIntersect
+			}));
+		}
+
+		this.args.backdrop && Object.assign(this.args.backdrop.args, ({
+			x: this.args.x
+			, y: this.args.y
+			, xMax: xMax
+			, yMax: yMax
+			, frame: this.args.frameId
+			, stacked: -this.args.backdrop.stacked + 'px'
+		}));
 	}
 
 	populateMap()
@@ -1508,31 +1512,24 @@ export class Viewport extends View
 
 			this.actors.add( actor );
 
-			if(actor instanceof Region)
-			{
-				actor.render(this.tags.actors);
-			}
-			else
-			{
-				actor.render(this.tags.actors);
-			}
-
-			actor.onRendered();
-
-			if(actor.onAttach && actor.onAttach() === false)
-			{
-				actor.detach();
-			}
-
 			if(this.actorIsOnScreen(actor))
 			{
+				actor.render(this.tags.actors);
+
 				actor.args.display = 'initial';
+
+				if(actor.onAttach && actor.onAttach() === false)
+				{
+					actor.detach();
+				}
 			}
 			else
 			{
 				actor.args.display = 'none';
 				actor.detach();
 			}
+
+			// actor.onRendered();
 
 			if(actor.controllable)
 			{
@@ -1806,6 +1803,8 @@ export class Viewport extends View
 			this.callFrameOuts();
 			this.callFrameIntervals();
 
+			this.args.lastFrameId = this.args.frameId;
+
 			this.args.frameId++;
 		}
 
@@ -1854,14 +1853,11 @@ export class Viewport extends View
 			}
 		}
 
-		if(this.args.frameId % 15 === 0)
+		for(const [detachee, detacher] of this.willDetach)
 		{
-			for(const [detachee, detacher] of this.willDetach)
-			{
-				this.willDetach.delete(detachee);
+			this.willDetach.delete(detachee);
 
-				detacher();
-			}
+			detacher();
 		}
 
 		if(!Number(this.args.rings.args.value))
@@ -1910,14 +1906,13 @@ export class Viewport extends View
 			{
 				this.args.focusMe.args.hide = 'hide';
 
-				const replay = this.replayInputs[this.args.frameId];
-
-				if(replay && replay.actors)
+				if(this.replayFrames.has(this.args.frameId))
 				{
-					for(const actorId in replay.actors)
+					const frame = this.replayFrames.get(this.args.frameId);
+
+					for(const actorId in frame.args)
 					{
 						const actor = this.actorsById[actorId];
-						const frame = replay.actors[actorId];
 
 						if(frame.input)
 						{
@@ -1927,7 +1922,7 @@ export class Viewport extends View
 
 						if(frame.args)
 						{
-							Object.assign(actor.args, frame.args);
+							Object.assign(actor.args, frame.args[actorId]);
 						}
 					}
 
@@ -1940,7 +1935,7 @@ export class Viewport extends View
 				}
 				else
 				{
-					this.args.isReplaying = false;
+					// this.args.isReplaying = false;
 				}
 			}
 			else
@@ -2041,7 +2036,7 @@ export class Viewport extends View
 			{
 				for(const [collider, collidees] of this.collisions)
 				{
-					for(const collidee of collidees)
+					for(const [collidee, type] of collidees)
 					{
 						if(!collidee)
 						{
@@ -2057,7 +2052,6 @@ export class Viewport extends View
 			{
 				this.args.score.args.value = String(this.controlActor.args.score).padStart(4, ' ');
 				this.args.rings.args.value = String(this.controlActor.args.rings).padStart(4, ' ');
-				// this.emeralds.args.value = `${this.controlActor.args.emeralds}/7`;
 
 				this.args.hasRings    = !!this.controlActor.args.rings;
 				this.args.hasEmeralds = !!this.controlActor.args.emeralds;
@@ -2066,9 +2060,6 @@ export class Viewport extends View
 
 				if(this.args.debugOsd)
 				{
-					// this.coins.args.value = this.controlActor.args.coins;
-					// this.args.hasCoins    = !!this.controlActor.args.coins;
-
 					this.args.xPos.args.value     = Number(this.controlActor.x).toFixed(3);
 					this.args.yPos.args.value     = Number(this.controlActor.y).toFixed(3);
 
@@ -2115,6 +2106,11 @@ export class Viewport extends View
 			{
 				for(const actor of actorList)
 				{
+					if(!actor.nodes.length)
+					{
+						actor.render(this.tags.actors);
+					}
+
 					const actorIsOnScreen = this.actorIsOnScreen(actor);
 
 					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
@@ -2123,6 +2119,14 @@ export class Viewport extends View
 
 						if(!actor.vizi)
 						{
+							if(!actor.nodes.length)
+							{
+								if(actor.onAttach && actor.onAttach() === false)
+								{
+									actor.detach();
+								}
+							}
+
 							if(!actor.public.hidden)
 							{
 								if(actor instanceof Region)
@@ -2160,13 +2164,9 @@ export class Viewport extends View
 					this.willDetach.set(actor, () => {
 
 						actor.sleep();
-
 						actor.args.display = 'none';
-
 						actor.detach();
-
 						actor.vizi = false;
-
 						actor.willhide = null;
 
 						this.willDetach.delete(actor);
@@ -2193,19 +2193,18 @@ export class Viewport extends View
 			!this.args.networked && this.auras.clear();
 
 			this.controlActor
+				&& this.controlActor.sprite
 				&& this.controlActor.sprite.parentNode
 				&& this.controlActor.sprite.parentNode.classList.remove('actor-selected');
 
 			if(this.controlActor)
 			{
-				this.controlActor.selected = false;
+				this.controlActor.args.selected = false;
 			}
 
 			this.controlActor = this.nextControl;
 
-			this.controlActor.selected = true;
-
-			this.controlActor.sprite.parentNode.classList.add('actor-selected');
+			this.controlActor.args.selected = true;
 
 			this.auras.add(this.controlActor);
 
@@ -2711,17 +2710,35 @@ export class Viewport extends View
 	{
 		this.reset();
 
+		this.args.frameId = 0;
+
 		this.replayInputs = [];
 
 		this.args.isRecording  = true;
 		this.args.hasRecording = true;
+		this.args.paused       = false
+
+		this.startLevel();
 	}
 
 	playback()
 	{
+		this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
+
+		for(const frame of this.replayInputs)
+		{
+			this.replayFrames.set(frame.frame, frame);
+		}
+
 		this.reset();
 
+		this.args.frameId = 0;
+
 		this.args.isReplaying = true;
+
+		this.startLevel();
+
+		this.args.paused = false;
 	}
 
 	stop()
@@ -2779,6 +2796,11 @@ export class Viewport extends View
 
 				if(packet.frame)
 				{
+					if(packet.frame.frame > this.args.frameId)
+					{
+						this.args.frameId = packet.frame.frame;
+					}
+
 					if(packet.frame.input)
 					{
 						actor.controller.replay(packet.frame.input);
@@ -2838,6 +2860,11 @@ export class Viewport extends View
 
 				if(packet.frame)
 				{
+					if(packet.frame.frame > this.args.frameId)
+					{
+						this.args.frameId = packet.frame.frame;
+					}
+
 					if(packet.frame.input)
 					{
 						actor.controller.replay(packet.frame.input);
@@ -2898,6 +2925,7 @@ export class Viewport extends View
 	{
 		if(frames <= 0)
 		{
+			callback();
 			return;
 		}
 
@@ -2938,30 +2966,36 @@ export class Viewport extends View
 
 	callFrameOuts()
 	{
-		if(!this.callFrames.has(this.args.frameId))
+		for(let i = this.args.lastFrameId; i <= this.args.frameId; i++)
 		{
-			return;
+			if(!this.callFrames.has(i))
+			{
+				continue;
+			}
+
+			const callbacks = this.callFrames.get(i);
+
+			for(const callback of callbacks)
+			{
+				callback();
+			}
+
+			this.callFrames.delete(i);
 		}
-
-		const callbacks = this.callFrames.get(this.args.frameId);
-
-		for(const callback of callbacks)
-		{
-			callback();
-		}
-
-		this.callFrames.delete(this.args.frameId);
 	}
 
 	callFrameIntervals()
 	{
-		for(const [interval, callbacks] of this.callIntervals)
+		for(let i = this.args.lastFrameId; i <= this.args.frameId; i++)
 		{
-			if(this.args.frameId % interval === 0)
+			for(const [interval, callbacks] of this.callIntervals)
 			{
-				for(const callback of callbacks)
+				if(i % interval === 0)
 				{
-					callback();
+					for(const callback of callbacks)
+					{
+						callback();
+					}
 				}
 			}
 		}
@@ -3028,7 +3062,6 @@ export class Viewport extends View
 
 	getCheckpoint(actorId)
 	{
-
 		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
 			const checkpointSource = localStorage.getItem(`checkpoints:::${this.tileMap.mapUrl}`) || '{}';
@@ -3103,6 +3136,8 @@ export class Viewport extends View
 
 	clearAct(message)
 	{
+		console.log(message);
+
 		this.args.actClearLabel.args.value = message;
 
 		const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);

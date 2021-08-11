@@ -70,7 +70,11 @@ export class GrapplePoint extends PointActor
 
 		const maxDist = this.args.ropeLength || 64;
 
-		this.chain.style({'--distance':Math.min(dist, maxDist)});
+		if(this.chain)
+		{
+			this.chain.style({'--distance':Math.min(dist, maxDist)});
+		}
+
 
 		this.args.groundAngle = -(angle + Math.PI / 2);
 

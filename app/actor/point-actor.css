@@ -415,7 +415,7 @@
 	opacity: 0.5;
 }
 
-.actor-selected .labels {
+.point-actor[data-selected=true] .labels {
 	display: none;
 }
 

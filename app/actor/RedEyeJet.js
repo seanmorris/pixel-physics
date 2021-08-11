@@ -5,9 +5,9 @@ import { MiniMace } from './MiniMace';
 
 export class RedEyeJet extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.gravity  = 0.4;
 
@@ -17,7 +17,7 @@ export class RedEyeJet extends PointActor
 
 		this.args.float = -1;
 
-		this.args.phase = 'intro';
+		this.args.phase = 'idle';
 
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
@@ -25,6 +25,8 @@ export class RedEyeJet extends PointActor
 		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
 		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 		this.dudSound = new Audio('/Sonic/S2_59.wav');
+
+		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 	}
 
 	collideA(other, type)
@@ -108,7 +110,6 @@ export class RedEyeJet extends PointActor
 		}
 
 		this.ignores.set(other, 15);
-
 
 		if(type === 2)
 		{
@@ -272,30 +273,36 @@ export class RedEyeJet extends PointActor
 
 	update()
 	{
+		this.args.phaseFrameId++;
+		this.args.frameId++;
+
 		if(this.args.phase === 'intro')
 		{
-			this.args.maxSpeed  = 9;
+			this.args.ropeLength = 8;
+			this.args.maxSpeed   = 12;
 
-			for(const mace of this.hanging.get(MiniMace))
+			if(this.args.phaseFrameId > 300)
 			{
-				mace.args.x = this.x
-				mace.args.y = this.y + 16;
-				mace.args.float = -1;
-			}
+				console.log(this.args.phaseFrameId);
 
-			if(Math.abs(this.viewport.controlActor.x - this.x) < 8 && this.y < this.viewport.controlActor.y)
-			{
 				this.args.phase = 'attacking';
 			}
+		}
+		else
+		{
+			this.args.ropeLength = 128;
 		}
 
 		if(this.args.phase === 'attacking')
 		{
 			this.args.maxSpeed  = 9;
 
-			for(const mace of this.hanging.get(MiniMace))
+			if(this.hanging.has(MiniMace))
 			{
-				mace.args.float = 0;
+				for(const mace of this.hanging.get(MiniMace))
+				{
+					mace.args.float = 0;
+				}
 			}
 
 			if(Math.abs(this.viewport.controlActor.x - this.x) > 255)
@@ -347,46 +354,49 @@ export class RedEyeJet extends PointActor
 			this.args.xSpeed *= 0.999;
 		}
 
-		if(this.x - this.viewport.controlActor.x > 0)
+		if(this.box)
 		{
-			if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
+			if(this.x - this.viewport.controlActor.x > 0)
 			{
-				this.box.setAttribute('data-looking', 'far-left');
+				if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
+				{
+					this.box.setAttribute('data-looking', 'far-left');
+				}
+				else if(this.viewport.controlActor.args.direction === -1)
+				{
+					this.box.setAttribute('data-looking', 'far-left');
+				}
+				else
+				{
+					this.box.setAttribute('data-looking', 'left');
+				}
 			}
-			else if(this.viewport.controlActor.args.direction === -1)
+			else if(this.x - this.viewport.controlActor.x < 0)
 			{
-				this.box.setAttribute('data-looking', 'far-left');
+				this.box.setAttribute('data-looking', 'far-right');
+
+				if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
+				{
+					this.box.setAttribute('data-looking', 'far-right');
+				}
+				else if(this.viewport.controlActor.args.direction === 1)
+				{
+					this.box.setAttribute('data-looking', 'far-right');
+				}
+				else
+				{
+					this.box.setAttribute('data-looking', 'right');
+				}
+			}
+
+			if(32 > this.y - this.viewport.controlActor.y)
+			{
+				this.box.setAttribute('data-ducking', 'true');
 			}
 			else
 			{
-				this.box.setAttribute('data-looking', 'left');
+				this.box.setAttribute('data-ducking', 'false');
 			}
-		}
-		else if(this.x - this.viewport.controlActor.x < 0)
-		{
-			this.box.setAttribute('data-looking', 'far-right');
-
-			if(Math.abs(this.x - this.viewport.controlActor.x) > 128)
-			{
-				this.box.setAttribute('data-looking', 'far-right');
-			}
-			else if(this.viewport.controlActor.args.direction === 1)
-			{
-				this.box.setAttribute('data-looking', 'far-right');
-			}
-			else
-			{
-				this.box.setAttribute('data-looking', 'right');
-			}
-		}
-
-		if(32 > this.y - this.viewport.controlActor.y)
-		{
-			this.box.setAttribute('data-ducking', 'true');
-		}
-		else
-		{
-			this.box.setAttribute('data-ducking', 'false');
 		}
 
 		if(this.args.hitPoints)
@@ -411,7 +421,6 @@ export class RedEyeJet extends PointActor
 		{
 			this.args.float = 0;
 		}
-
 
 		if(this.args.phase === 'intro' || this.args.phase === 'attacking')
 		{

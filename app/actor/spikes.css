@@ -1,12 +1,41 @@
 .actor-item.actor-spikes {
 	position: absolute;
-	height: 32px;
 }
 
 .actor-item.actor-spikes .sprite {
 	position: relative;
 	background-position: 0 0;
 	background-image: url(/Sonic/spikes-wide.png);
+}
+
+.actor-item.actor-spikes[data-pointing="2"] .sprite,
+.actor-item.actor-spikes[data-pointing="0"] .sprite {
+	background-image: url(/Sonic/spikes-wide.png);
 	background-repeat: repeat-x;
+	background-position-x: 4px;
 	height: 32px;
+}
+
+.actor-item.actor-spikes[data-pointing="1"] .sprite,
+.actor-item.actor-spikes[data-pointing="3"] .sprite {
+	background-image: url(/Sonic/spikes-wide-horizontal.png);
+	background-repeat: repeat-y;
+	background-position-y: 4px;
+	width: 32px;
+}
+
+.actor-item.actor-spikes[data-pointing="1"] .sprite {
+	transform-origin: center;
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(calc(-1rad* var(--display-angle)))
+		scaleX(-1);
+}
+
+.actor-item.actor-spikes[data-pointing="2"] .sprite {
+	transform-origin: center;
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(calc(-1rad* var(--display-angle)))
+		scaleY(-1);
 }

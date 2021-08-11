@@ -43,17 +43,20 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 	{
 		const direction = this.args.direction;
 
-		if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+		if(this.box)
 		{
-			this.box.setAttribute('data-animation', 'skidding');
-		}
-		else if(this.args.moving && this.args.gSpeed)
-		{
-			this.box.setAttribute('data-animation', 'walking');
-		}
-		else
-		{
-			this.box.setAttribute('data-animation', 'standing');
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+			{
+				this.box.setAttribute('data-animation', 'skidding');
+			}
+			else if(this.args.moving && this.args.gSpeed)
+			{
+				this.box.setAttribute('data-animation', 'walking');
+			}
+			else
+			{
+				this.box.setAttribute('data-animation', 'standing');
+			}
 		}
 
 		super.update();

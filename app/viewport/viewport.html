@@ -11,7 +11,11 @@
 		<defs>
 
 			<filter id="motionBlur">
-				<feGaussianBlur in="SourceGraphic" stdDeviation="0" cv-ref = "blur" />
+				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
+			</filter>
+
+			<filter id="waterBlur">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="0.25,0" />
 			</filter>
 
 			<filter id="dilate">

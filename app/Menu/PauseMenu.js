@@ -24,6 +24,22 @@ export class PauseMenu extends Menu
 				parent.reset();
 				parent.startLevel();
 			} }
+			, Demos:    {
+				children: {
+					record: {
+						callback: () => this.parent.record()
+						, subtext: 'Restart and record your run.'
+					}
+					, stop: {
+						callback: () => this.parent.stop()
+						, subtext: 'Replay your run.'
+					}
+					, replay: {
+						callback: () => this.parent.playback()
+						, subtext: 'Replay your run.'
+					}
+				}
+			}
 			, Settings: SettingsMenu(parent)
 			, Quit: {
 				children: {
@@ -40,7 +56,7 @@ export class PauseMenu extends Menu
 
 	input(controller)
 	{
-		if(controller.buttons[4] && controller.buttons[4].active)
+		if(controller.buttons[1012] && controller.buttons[1012].active)
 		{
 			this.args.hideMenu = 'pause-menu-hide';
 		}
@@ -49,7 +65,7 @@ export class PauseMenu extends Menu
 			this.args.hideMenu = '';
 		}
 
-		if(controller.buttons[5] && controller.buttons[5].time === 1)
+		if(controller.buttons[1011] && controller.buttons[1011 ].time === 1)
 		{
 			this.args.hideMenu = 'pause-menu-hide';
 			this.parent.args.paused = 1;

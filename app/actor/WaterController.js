@@ -48,13 +48,11 @@ export class WaterController extends PointActor
 			return;
 		}
 
-		this.viewport.onFrameOut(90, () => {
-			this.args._levelLimit = this.args.levelLimit || 4096;
+		this.args._levelLimit = this.args.levelLimit || 4096;
 
-			this.viewport.auras.add(this);
+		this.viewport.auras.add(this);
 
-			this.args.activated = true;
-		});
+		this.args.activated = true;
 
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])
 		{

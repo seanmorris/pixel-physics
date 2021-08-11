@@ -1,0 +1,34 @@
+[
+	{
+        "event": "clearAct",
+        "message": "Sonic beat Beelzebot",
+        "time": 10
+    },
+    {
+        "event": "input",
+        "axes":[1],
+        "time": 30
+    },
+    {
+        "event": "input",
+        "axes":[1],
+        "buttons":[1,1],
+        "time": 10
+    },
+    {
+        "event": "superdrop",
+        "time": 1
+    },
+    {
+        "event": "input",
+        "axes":[1],
+        "buttons":[0,1],
+        "time": 120
+    },
+    {
+        "event": "input",
+        "axes":[1],
+        "buttons":[1,0],
+        "time": 120
+    }
+]
