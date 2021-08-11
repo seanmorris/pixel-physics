@@ -4,9 +4,9 @@ import { Block } from './Block';
 
 export class UnbreakableCrate extends Block
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.type   = 'actor-item actor-unbreakable-crate';
 		this.args.width  = 64;

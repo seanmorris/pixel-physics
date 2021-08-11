@@ -112,23 +112,23 @@ export class ShadeRegion extends Region
 
 		if(this.mainElem)
 		{
+			this.args.filter = this.filters[ this.currentFilter++ ];
+
 			if(this.currentFilter >= this.filters.length)
 			{
 				this.currentFilter = 0;
 			}
 
-			this.args.filter = this.filters[ this.currentFilter++ ];
+			this.public.filter && this.mainElem.classList.add(this.public.filter);
 
-			this.args.filter && this.mainElem.classList.add(this.args.filter);
+			if(this.public.filter)
+			{
+				this.text.remove();
 
-			// if(this.public.filter)
-			// {
-			// 	this.text.remove();
+				this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
 
-			// 	this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
-
-			// 	this.text.render(this.tags.sprite);
-			// }
+				this.text.render(this.tags.sprite);
+			}
 
 		}
 	}

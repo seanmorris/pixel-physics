@@ -295,6 +295,7 @@ section.filters {
 
 .viewport-background > div {
 	background-repeat: no-repeat;
+	contain: strict;
 }
 
 .viewport-zoom .blurAngle {
@@ -416,6 +417,7 @@ span.arrow-west {
 	max-width: 3em;
 }
 
+.topLine,
 .focus-me {
 	position: absolute;
 	top: 0;
@@ -448,7 +450,7 @@ span.arrow-west {
 	top: 0;
 	left: 0;
 	width: calc(100% / var(--scale));
-	height: calc(90% / var(--scale));
+	height: calc(100% / var(--scale));
 	transform: scale(var(--scale));
 	transform-origin: top left;
 	display: flex;
@@ -461,8 +463,12 @@ span.arrow-west {
 }
 
 .topLine > .status-message {
-	top: 1em;
-	bottom: 0;
+	align-items: flex-start;
+}
+
+.status-message > .hud-character-string {
+	display: flex;
+	margin:  1rem;
 }
 
 a.github {

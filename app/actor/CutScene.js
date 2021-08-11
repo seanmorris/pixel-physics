@@ -6,14 +6,21 @@ export class CutScene extends PointActor
 	{
 		super(args, parent);
 
-		this.fetcher = fetch('/cutscenes/knuckles-intro.json');
+		if(args.src)
+		{
+			this.fetcher = fetch(args.src).then(r => r.json());
+		}
+		else if(args.frames)
+		{
+			this.fetcher = Promise.resolve(args.frames);
+		}
 
 		this.args.hidden = true;
 	}
 
-	activate(other, button)
+	activate(other, button, force = false)
 	{
-		if(!other.controllable || other.args.falling)
+		if(!other.controllable || (other.args.falling && !force))
 		{
 			return;
 		}
@@ -33,7 +40,7 @@ export class CutScene extends PointActor
 
 		other.controller.zero();
 
-		this.fetcher.then(r => r.json()).then(scene => {
+		this.fetcher.then(scene => {
 
 			let timer = 0;
 
@@ -63,10 +70,17 @@ export class CutScene extends PointActor
 
 							break;
 
+						case 'superdrop':
+							other.dropDashCharge = 30;
+							break;
+
+						case 'clearAct':
+							viewport.clearAct(frame.message);
+							break;
+
 						case 'clear':
 							viewport.clearDialog()
 							break;
-
 
 						case 'message':
 							viewport.showCenterMessage(frame.message)
@@ -85,7 +99,7 @@ export class CutScene extends PointActor
 					}
 				};
 
-				if(frame.time)
+				if(timer)
 				{
 					viewport.onFrameOut(timer, frameCallback);
 				}

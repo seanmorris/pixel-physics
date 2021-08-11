@@ -83,8 +83,11 @@ export class Layer extends View
 			this.args.offsetX = controller.args.xLayer || 0;
 			this.args.offsetY = controller.args.yLayer || 0;
 
-			layerDef[`offsetXChanged`] = changedX;
-			layerDef[`offsetYChanged`] = changedY;
+			if(layerDef)
+			{
+				layerDef[`offsetXChanged`] = changedX;
+				layerDef[`offsetYChanged`] = changedY;
+			}
 
 			this[`offsetXChanged`] = changedX;
 			this[`offsetYChanged`] = changedY;
@@ -105,7 +108,7 @@ export class Layer extends View
 		const layerDef   = layers[ this.args.layerId ];
 		const controller = viewport.actorsById[ this.meta.controller ];
 
-		if(!layerDef || !controller)
+		if(!layerDef)
 		{
 			return;
 		}
@@ -117,7 +120,10 @@ export class Layer extends View
 
 			layerDef.destroyed = !!v;
 
-			controller.args.destroyed = !!v;
+			if(controller)
+			{
+				controller.args.destroyed = !!v;
+			}
 		});
 
 	}
@@ -236,15 +242,16 @@ export class Layer extends View
 					if(blockId !== false && blockId !== 0)
 					{
 						block.style({
-							display: 'initial', 'background-position': blockOffset
+							display: 'initial'
+							, 'background-position': blockOffset
 							, 'background-image': `url(/map/${blockSrc})`
 							, '--screenX': (centerX - ii) / centerX
 							, '--screenY': (j - centerY) / centerY
 						});
 					}
-					else
+					else if(block.node)
 					{
-						block.style({display: 'none'});
+						block.node.style.display = 'none';
 					}
 				}
 
@@ -259,8 +266,10 @@ export class Layer extends View
 		{
 			const background = this.tags.background;
 
-			background.style({'--offsetX': -offsetX % blockSize});
-			background.style({'--offsetY': -offsetY % blockSize});
+			background.style({
+				'--offsetX': -offsetX % blockSize
+				, '--offsetY': -offsetY % blockSize
+			});
 		}
 
 	}

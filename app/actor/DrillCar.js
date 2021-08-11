@@ -20,7 +20,7 @@ export class DrillCar extends Vehicle
 
 		this.removeTimer = null;
 
-		this.args.gSpeedMax = 20;
+		this.args.gSpeedMax = 26;
 		this.args.decel     = 0.30;
 		this.args.accel     = 0.75;
 

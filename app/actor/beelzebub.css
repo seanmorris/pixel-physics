@@ -86,17 +86,13 @@
 
 .actor-beelzebub[data-phase=attacking] .body,
 .actor-beelzebub[data-phase=stalking] .body,
+.actor-beelzebub[data-phase=knocked] .body,
+.actor-beelzebub[data-phase=damaged] .body,
 .actor-beelzebub[data-phase=ready] .body,
 .actor-beelzebub[data-phase=alert] .body {
 	animation:
 		 beelzebub-flap 40ms steps(3) infinite alternate,
 		  beelzebub-boost 10ms steps(2) infinite;
-}
-
-.actor-beelzebub[data-phase=alert] .body {
-	animation:
-		 beelzebub-flap 40ms 0.75s steps(3) infinite alternate,
-		  beelzebub-boost 10ms 0.75s steps(2) infinite;
 }
 
 .actor-beelzebub[data-phase=buzzing] .body {
@@ -135,6 +131,7 @@
 	display: none;
 }
 
+.actor-beelzebub[data-phase="exploding"] .sprite,
 .actor-beelzebub[data-phase="damaged"] .sprite {
 	animation: boss-damage steps(1) infinite 45ms forwards;
 }
@@ -171,22 +168,21 @@
 }
 
 .actor-beelzebub[data-phase=exploded] .body {
-
 }
 
 .actor-beelzebub[data-phase=exploded] .eye-back {
 	transition: transform 1s ease-out;
-	transform: translateX(-384px);
+	transform: translateX(128px);
 }
 
 .actor-beelzebub[data-phase=exploded] .eye-fore {
 	transition: transform 1s ease-out;
-	transform: translateX(384px);
+	transform: translateX(-128px);
 }
 
 .actor-beelzebub[data-phase=exploded] .nose {
 	transition: transform 1s ease-out;
-	transform: translateX(-256px);
+	transform: translateX(64px);
 }
 
 @keyframes beelzebub-flap {

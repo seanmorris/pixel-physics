@@ -4,21 +4,21 @@ import { Button } from './Button';
 const keys = {
 	'Space': 0
 
-	, 'Enter':   0
+	, 'Enter':       0
 	, 'NumpadEnter': 0
 
-	, 'ControlLeft': 1
+	, 'ControlLeft':  1
 	, 'ControlRight': 1
 
-	, 'ShiftLeft':   2
-	, 'ShiftRight':   2
+	, 'ShiftLeft':  2
+	, 'ShiftRight': 2
 
-	, 'KeyZ': 3
-	, 'KeyQ': 4
-	, 'KeyE': 5
+	, 'KeyZ':   3
+	, 'KeyQ':   4
+	, 'KeyE':   5
+
 	, 'Digit1': 6
 	, 'Digit3': 7
-
 
 	, 'KeyW': 12
 	, 'KeyA': 14
@@ -30,7 +30,7 @@ const keys = {
 	, 'KeyK': 114
 	, 'KeyL': 115
 
-	, 'KeyP': 9
+	, 'KeyP':  9
 	, 'Pause': 9
 
 	, 'Tab': 11
@@ -45,10 +45,16 @@ const keys = {
 	, 'Numpad8': 114
 	, 'Numpad6': 115
 
-	, 'Backquote': 1010
+	, 'Backquote':      1010
+	, 'NumpadAdd':      1011
+	, 'NumpadSubtract': 1012
+	, 'NumpadMultiply': 1013
+	, 'NumpadDivide':   1014
+
+	, 'Escape':         1020
 };
 
-[...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 1000 + fn);
+[...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 2000 + fn);
 
 const axisMap = {
 	12:   -1

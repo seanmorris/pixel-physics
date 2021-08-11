@@ -2,6 +2,7 @@ import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
+import { CutScene } from './CutScene';
 
 export class Beelzebub extends Mixin.from(PointActor)
 {
@@ -11,10 +12,12 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		this.args.type = 'actor-item actor-beelzebub';
 
-		this.args.width  = 52;
+		this.args.width  = 64;
 		this.args.height = 32;
 
 		this.args.float = -1;
+
+		this.args.damagers = new Map;
 
 		this.args.phase = 'idle';
 
@@ -34,6 +37,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 		this.args.facing    = 'left';
 
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
+
+		this.clearScene = new CutScene({src: '/cutscenes/clear-seaview.json'});
 	}
 
 	onAttached()
@@ -60,14 +65,14 @@ export class Beelzebub extends Mixin.from(PointActor)
 		this.nose.appendChild(this.drill.node);
 
 		this.attractor = null;
+
+		this.clearScene.viewport = this.viewport;
 	}
 
 	update()
 	{
 		this.args.phaseFrameId++;
 		this.args.frameId++;
-
-		super.update();
 
 		if(!this.viewport)
 		{
@@ -102,34 +107,22 @@ export class Beelzebub extends Mixin.from(PointActor)
 		switch(this.args.phase)
 		{
 			case 'idle':
-
-				this.args.alertTo = this.y - 48;
-
-				if(mainChar.x + -this.x > -136)
-				{
-					this.args.phase = 'alert';
-				}
-
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
 				break;
 
-			case 'damaged':
-				if(this.args.phaseFrameId > 10)
+			case 'intro':
+
+				if(this.args.phaseFrameId > 30)
 				{
 					this.args.phase = 'stalking';
 				}
-				break;
 
-			case 'knocked':
-				if(this.args.phaseFrameId > 45)
-				{
-					this.args.phase = 'stalking';
-				}
 				break;
-
 
 			case 'alert':
 
-				if(this.args.phaseFrameId > 60)
+				if(this.args.phaseFrameId > 4)
 				{
 					this.args.drillPush = 1;
 					this.args.falling   = true
@@ -146,74 +139,109 @@ export class Beelzebub extends Mixin.from(PointActor)
 					}
 				}
 
-				if(this.args.phaseFrameId > 180)
+				if(this.args.phaseFrameId > 0)
 				{
 					this.args.phase = 'stalking';
 				}
 
 				break;
 
+
+			case 'damaged':
+
+				if(this.args.hitPoints > 0)
+				{
+					if(this.args.phaseFrameId > 20)
+					{
+						this.args.phase = 'stalking';
+					}
+				}
+				else
+				{
+					if(this.args.phaseFrameId > 6)
+					{
+						this.args.phase = 'dead';
+					}
+				}
+
+				break;
+
+			case 'knocked':
+
+				this.args.xSpeed = 0;
+
+				if(this.args.phaseFrameId > 30)
+				{
+					this.args.phase = 'stalking';
+				}
+
+				break;
+
+			case 'dead':
+				this.args.float = 0;
+				break;
+
 			case 'stalking': {
 
-				// this.args.falling   = true
-				// this.args.float     = -1;
+				this.args.xSpeed = -xSign * Math.max(1, xDiff/25);
+				this.args.ySpeed = -ySign * Math.max(1, yDiff/25);
+
+				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
+
+				if(this.pointIsSafe(mainChar.x, mainChar.y - 128))
+				{
+					this.attractor.x = mainChar.x;
+					this.attractor.y = mainChar.y - 128;
+				}
 
 				this.args.noseAngle = (Math.PI/2)*3;
 
 				this.args.drillPush = 0;
 
-				if(this.args.phaseFrameId > 220)
-				{
-					this.args.drillPush = 0.5;
-				}
-
-				if(this.args.phaseFrameId > 240)
+				if(this.args.phaseFrameId > 10)
 				{
 					this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
 				}
 
-				this.args.xSpeed = -xSign * Math.max(1, xDiff/10);
-				this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
+				if(this.args.phaseFrameId > 20)
+				{
+					this.args.drillPush = 0.5;
+				}
 
-				this.attractor.x = mainChar.x;
-				this.attractor.y = mainChar.y - 128;
-
-				if(this.args.phaseFrameId > 80)
+				if(this.args.phaseFrameId > 45)
 				{
 					this.args.phase = 'ready';
 				}
-
-				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
 
 				break;
 			}
 
 			case 'buzzing': {
 
-				this.attractor.x = mainChar.x;
-				this.attractor.y = mainChar.y + -mainChar.args.height + -32;
+				if(this.pointIsSafe(mainChar.x, mainChar.y + -mainChar.args.height + -34))
+				{
+					this.attractor.x = mainChar.x;
+					this.attractor.y = mainChar.y + -mainChar.args.height + -34;
+				}
 
-				this.args.falling   = true
-				this.args.float     = -1;
+				this.args.xSpeed = -xSign * Math.max(1, xDiff/15);
+				this.args.ySpeed = -ySign * Math.max(1, yDiff/15);
 
 				this.args.noseAngle = (Math.PI/2)*3;
 
 				this.args.drillPush = 1;
 
-				if(this.args.phaseFrameId > 220)
+				if(this.args.phaseFrameId > 10)
 				{
 					this.args.drillPush = 0.5;
 				}
 
-				if(this.args.phaseFrameId > 240)
+				if(this.args.phaseFrameId > 20)
 				{
 					this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
 				}
 
-				this.args.xSpeed = -xSign * Math.max(1, xDiff/10);
-				this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
-
-				if(this.args.phaseFrameId > 100)
+				if(this.args.phaseFrameId > 30)
 				{
 					this.args.phase = 'ready';
 				}
@@ -223,39 +251,51 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 			case 'ready': {
 
-				this.args.xSpeed = -xSign * Math.max(1, xDiff/5);
-				this.args.ySpeed = -ySign * Math.max(1, yDiff/5);
+				if(this.args.phaseFrameId < 10)
+				{
+					this.readySide = Math.sign(mainChar.xSpeedLast || mainChar.gSpeedLast);
+				}
 
-				this.args.drillPush = 0.75;
+				if(this.pointIsSafe(mainChar.x + 128 * this.readySide, mainChar.y + -mainChar.args.height + -128))
+				{
+					this.attractor.x = mainChar.x + 128 * this.readySide;
+					this.attractor.y = mainChar.y + -mainChar.args.height + -128;
+				}
+
+				this.args.xSpeed = -xSign * Math.max(1, xDiff/15);
+				this.args.ySpeed = -ySign * Math.max(1, yDiff/15);
 
 				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
 
-				this.attractor.x = mainChar.x + 160 * Math.sign(mainChar.xSpeedLast);
-				this.attractor.y = mainChar.y - 160;
+				this.args.drillPush = 0.75;
 
 				if(this.args.phaseFrameId > 40)
 				{
 					const dieRoll = Math.random();
 
-					if(dieRoll > 0.75)
+					if(!mainChar.args.falling)
 					{
-						this.args.phase = 'stalking';
-					}
-					else if(dieRoll > 0.5)
-					{
-						this.args.phase = 'buzzing';
-					}
-					else if(dieRoll > 2.5)
-					{
-						this.args.phase = 'swooping';
+						if(dieRoll > 0.5)
+						{
+							this.args.phase = 'swooping';
+						}
+						else
+						{
+							this.args.phase = 'attacking';
+						}
 					}
 					else
 					{
-						this.args.phase = 'attacking';
+						if(dieRoll > 0.5)
+						{
+							this.args.phase = 'buzzing';
+						}
+						else
+						{
+							this.args.phase = 'stalking';
+						}
 					}
 				}
-
-				this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
 
 				break;
 			}
@@ -269,8 +309,26 @@ export class Beelzebub extends Mixin.from(PointActor)
 					this.args.phase = 'stalking';
 				}
 
-				this.attractor.x = mainChar.x;
-				this.attractor.y = mainChar.y - 32;
+				if(this.args.phaseFrameId < 50)
+				{
+					if(this.pointIsSafe(mainChar.x + 256 * (this.readySide || 1), mainChar.y - 32))
+					{
+						this.attractor.x = mainChar.x + 256 * (this.readySide || 1);
+						this.attractor.y = mainChar.y - 32;
+					}
+
+					this.args.noseAngle = 0;
+				}
+				else
+				{
+					if(this.pointIsSafe(mainChar.x + 256 * (-this.readySide || -1), mainChar.y - 16))
+					{
+						this.attractor.x = mainChar.x + 256 * (-this.readySide || -1);
+						this.attractor.y = mainChar.y - 16;
+					}
+
+					this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
+				}
 
 				this.args.drillPush = 1;
 
@@ -281,34 +339,32 @@ export class Beelzebub extends Mixin.from(PointActor)
 				this.args.xSpeed = -xSign * Math.max(1, xDiff/10) + mainSpeed * 1.1;
 				this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
 
-				this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
-
 				break;
 			}
 
 			case 'swooping': {
-				this.args.float     = -1;
-				this.args.falling   = true
 
-				if(this.args.phaseFrameId > 180)
+				if(this.pointIsSafe(mainChar.x, mainChar.y - 32))
 				{
-					this.args.phase = 'stalking';
+					this.attractor.x = mainChar.x;
+					this.attractor.y = mainChar.y - 32;
 				}
-
-				this.attractor.x = mainChar.x;
-				this.attractor.y = mainChar.y - 32;
-
-				this.args.drillPush = 1;
-
-				this.args.float = -1;
-
-				const mainSpeed = mainChar.args.xSpeed || mainChar.args.gSpeed;
 
 				this.args.xSpeed += -xSign * Math.max(1, xDiff/10000);
 				this.args.ySpeed += -ySign * Math.max(1, yDiff/10000);
 
 				this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
 
+				this.args.drillPush = 1;
+
+				this.args.float = -1;
+
+				if(this.args.phaseFrameId > 180)
+				{
+					this.args.phase = 'stalking';
+				}
+
+				const mainSpeed = mainChar.args.xSpeed || mainChar.args.gSpeed;
 				break;
 			}
 
@@ -316,7 +372,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 				if(this.args.phaseFrameId === 90)
 				{
 					this.args.falling = true;
-					this.args.ySpeed  = -12;
+					this.args.ySpeed  = -14;
 					this.args.xSpeed  = 0;
 					this.args.gSpeed  = 0;
 					this.noClip = true;
@@ -324,6 +380,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 					this.viewport.auras.delete(this);
 
 					this.args.phase = 'exploded';
+
+					this.clearScene.activate(mainChar, this, true);
 
 					if(this.viewport.args.audio)
 					{
@@ -359,11 +417,26 @@ export class Beelzebub extends Mixin.from(PointActor)
 				}
 				break;
 		}
+
+		if(this.args.phase !== 'knocked')
+		{
+			if(this.args.ySpeed < 0 && !this.pointIsSafe(this.x, this.y + -this.args.height + this.args.ySpeed + -1))
+			{
+				this.args.ySpeed = 0;
+			}
+		}
+
+		super.update();
 	}
 
 	updateEnd()
 	{
 		super.updateEnd();
+
+		if(!this.viewport)
+		{
+			return;
+		}
 
 		const mainChar = this.viewport.controlActor;
 
@@ -446,26 +519,34 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 	collideA(other, type)
 	{
-		if(!other.controllable)
+		if(this.args.phase === 'exploded')
+		{
+			return false;
+		}
+
+		if(!other.controllable && !other.hazard)
 		{
 			return true;
+		}
+
+		if(type === -1)
+		{
+			return;
 		}
 
 		const xSign = Math.sign(this.x - other.x);
 		const ySign = Math.sign(this.y - other.y);
 
-		const impactSpeed = Math.min(Math.abs(other.args.xSpeed), 7);
+		const impactSpeed = Math.max(Math.abs(other.args.xSpeed), 5);
 		const impactSign  = Math.sign(other.args.xSpeed);
 
-		if(this.args.hitPoints > 0)
+		if(this.args.hitPoints > 0 && other.controllable)
 		{
 			if(!(other.args.jumping || other.args.rolling || other.dashed))
 			{
-				console.log(other.args.rolling);
-
-				this.args.phase = 'stalking';
-
 				other.damage();
+
+				this.args.phase = 'ready';
 
 				ga('send', 'event', {
 					eventCategory: 'boss',
@@ -488,35 +569,42 @@ export class Beelzebub extends Mixin.from(PointActor)
 			this.args.phase = 'exploding';
 		}
 
-		if(this.args.hitPoints > 1)
-		{
-			this.args.xSpeed = xSign * impactSpeed / 3;
-		}
-		else
-		{
-			this.args.xSpeed  = xSign;
-			other.args.xSpeed = -xSign;
-		}
-
 		if(type === 1 || type === 3) // Side collisions
 		{
 			if(other.args.falling)
 			{
 				this.ignores.set(other, 15);
 			}
-
-			if(this.viewport.args.audio)
+			else
 			{
-				this.hitSound.currentTime = 0;
-				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-				this.hitSound.play();
+				other.args.gSpeed = 4 * -Math.sign(this.x - other.x);
+
+				if(other.args.rolling)
+				{
+					this.onNextFrame(() => {
+						other.args.gSpeed = -Math.sign(this.x - other.x);
+						other.args.rolling = true;
+						other.args.direction = Math.sign(other.args.gSpeed);
+					});
+				}
+			}
+
+			this.args.ySpeed = 0;
+
+			if(this.args.hitPoints > 0)
+			{
+				this.damage(other);
 			}
 
 			if(this.args.hitPoints > 0)
 			{
-				this.args.phase   = 'damaged';
 				other.args.xSpeed = -xSign * impactSpeed;
-				this.args.hitPoints--;
+				this.args.xSpeed  = xSign * impactSpeed;
+			}
+			else
+			{
+				other.args.xSpeed = -xSign;
+				this.args.xSpeed  = xSign;
 			}
 		}
 
@@ -531,12 +619,22 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 			if(other.args.falling)
 			{
-				this.args.ySpeed = other.args.ySpeed * 2;
+				this.args.ySpeed = other.args.ySpeed * 2.5;
 
-				other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
+				if(other.args.controllable)
+				{
+					other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
+				}
 			}
 
-			this.args.phase = 'knocked';
+			this.args.xSpeed = 0;
+
+			if(this.args.hitPoints > 0)
+			{
+				this.args.phase = 'knocked';
+			}
+
+			this.ignores.set(other, 15);
 		}
 
 		if(type === 0) // Collide from top
@@ -546,61 +644,20 @@ export class Beelzebub extends Mixin.from(PointActor)
 				this.ignores.set(other, 15);
 			}
 
-			other.args.y    = this.y - this.args.height;
-			const animation = other.args.animation;
-			const ySpeed    = other.args.ySpeed;
-
-			this.onNextFrame(() => {
-				other.args.ySpeed = -Math.floor(Math.abs(ySpeed)) || -4;
-			});
-
-			if(this.viewport.args.audio)
+			if(other.controllable)
 			{
-				this.hitSound.currentTime = 0;
-				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-				this.hitSound.play();
-			}
+				other.args.y    = this.y - this.args.height;
+				const animation = other.args.animation;
+				const ySpeed    = other.args.ySpeed;
 
-			if(this.args.hitPoints > 0)
-			{
-				this.args.phase   = 'damaged';
-				this.args.hitPoints--;
-			}
-		}
-
-		if(type === 1 || type === 3 || type === 0)
-		{
-			if(!['dead','exploding','damaged','exploded'].includes(this.args.phase))
-			{
-				this.args.ySpeed = 0;
-
-				if(this.args.hitPoints <= 0)
-				{
-					if(['dead', 'exploding', 'exploded'].includes(this.args.phase))
-					{
-						this.args.phase = 'exploding';
-					}
-					else if(!['dead', 'exploding','damaged','exploded'].includes(this.args.phase))
-					{
-						this.args.phase = 'dead';
-					}
-
-					this.args.xSpeed = 0;
-				}
-			}
-
-			const gSpeed = other.args.gSpeed;
-
-			other.args.gSpeed = -0.35 * gSpeed;
-
-			if(other.args.rolling)
-			{
 				this.onNextFrame(() => {
-					other.args.gSpeed = -0.35 * gSpeed;
-					other.args.rolling = true;
-					other.args.direction -Math.sign(gSpeed);
+					other.args.ySpeed = -Math.floor(Math.abs(ySpeed)) || -4;
 				});
 			}
+
+			this.args.xSpeed = 0;
+
+			this.damage(other);
 		}
 
 		other.args.ignore = 1;
@@ -613,6 +670,46 @@ export class Beelzebub extends Mixin.from(PointActor)
 		return true;
 	}
 
-	get solid() {return true}
-	get rotateLock() {return true}
+	damage(other, type = 'normal')
+	{
+		if(this.args.hitPoints <= 0)
+		{
+			return;
+		}
+
+		const lastHit = this.args.damagers.get(other);
+
+		if(this.args.frameId - lastHit < 5)
+		{
+			return;
+		}
+
+		this.args.hitPoints--;
+
+		this.args.damagers.set(other, this.args.frameId);
+
+		this.args.phase = 'damaged';
+
+		if(this.viewport.args.audio)
+		{
+			this.hitSound.currentTime = 0;
+			this.hitSound.volume = 0.35 + (Math.random() * -0.15);
+			this.hitSound.play();
+		}
+	}
+
+	pointIsSafe(x, y)
+	{
+		const hazards = this.viewport.actorsAtPoint(x, y).filter(a => a.hazard);
+
+		if(hazards.length)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	get solid() { return this.args.hitPoints > 0; }
+	get rotateLock() { return true; }
 }

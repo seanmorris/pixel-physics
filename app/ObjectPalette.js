@@ -15,6 +15,7 @@ import { ExitRegion } from './region/ExitRegion';
 import { ExplodingRegion } from './region/ExplodingRegion'
 import { SwitchRegion } from './region/SwitchRegion'
 import { RainRegion } from './region/RainRegion'
+import { WaterfallRegion } from './region/WaterfallRegion'
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -168,6 +169,7 @@ export const ObjectPalette = {
 	, 'exit-region': ExitRegion
 	, 'switch-region': SwitchRegion
 	, 'rain-region': RainRegion
+	, 'waterfall-region': WaterfallRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin

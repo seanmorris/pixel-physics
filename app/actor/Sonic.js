@@ -483,19 +483,25 @@ export class Sonic extends PointActor
 			this.args.animation = 'grinding';
 		}
 
-		if(this.yAxis < 0 && this.dashed && [...this.regions].filter(r => r.isWater).length)
-		{
-			this.args.xSpeed = Number(Number(this.args.xSpeed* 0.95).toFixed(4));
-			this.args.ySpeed -= Math.abs(this.args.xSpeed) * 0.05;
-		}
-
-		if(this.yAxis > 0 && this.dashed && [...this.regions].filter(r => r.isWater).length)
-		{
-			this.args.xSpeed += Math.abs(this.args.ySpeed) * 0.05 * Math.sign(this.args.xSpeed);
-			this.args.ySpeed = Number(Number(this.args.ySpeed* 0.95).toFixed(4));
-		}
-
 		super.update();
+
+		if([...this.regions].filter(r => r.isWater).length
+			&& !this.checkBelow(this.x, this.y+16)
+			&& this.args.falling
+			&& this.dashed
+		){
+			if(this.yAxis < 0)
+			{
+				this.args.xSpeed = this.args.xSpeed* 0.95;
+				this.args.ySpeed -= Math.abs(this.args.xSpeed) * 0.05;
+			}
+
+			if(this.yAxis > 0)
+			{
+				this.args.xSpeed += Math.abs(this.args.ySpeed) * 0.05 * Math.sign(this.args.xSpeed);
+				this.args.ySpeed = this.args.ySpeed* 0.95;
+			}
+		}
 
 		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
 		{
@@ -700,6 +706,11 @@ export class Sonic extends PointActor
 
 	command_1()
 	{
+		if(this.args.ignore)
+		{
+			return;
+		}
+
 		if(this.args.wallSticking)
 		{
 			this.doJump(0);

@@ -34,7 +34,7 @@ export class Cinematic extends PointActor
 	{
 		super.update();
 
-		if(!this.selected)
+		if(!this.args.selected)
 		{
 			return;
 		}

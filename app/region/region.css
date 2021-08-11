@@ -154,8 +154,8 @@
 }
 
 .region.region-rain {
-	opacity: 0.6;
 	filter: blur(0.5px);
+	opacity: 0.6;
 }
 
 .region.region-rain .sprite:before {
@@ -164,17 +164,67 @@
 	top: 0px;
 	bottom: 0px;
 	width: 100%;
-	height: 100%;
+	height: calc(100% + -128px);
 	background: url(/custom/raindrops.png);
 	background-position: 0 0;
 	background-repeat: repeat;
-	background-attachment: local;
 
 	z-index: 1000;
 	animation:
 		rain-drop-fall 0.25s linear infinite
 		, rain-drop-shift 1s linear infinite
 	;
+}
+
+.region.region-waterfall {
+	filter: url(#waterBlur);
+	height: 100%;
+	z-index: -1000;
+}
+
+.region.region-waterfall .sprite:before {
+	content:  ' ';
+	position: absolute;
+	top: 32px;
+	bottom: 0px;
+	width: 100%;
+	height: 100%;
+	background: url(/Sonic/waterfall.png);
+	background-position: 0 0;
+	background-repeat: repeat;
+	background-attachment: local;
+
+	opacity: 0.55;
+
+	filter: blur(0.25px);
+
+	animation: waterfall-fall 650ms steps(4) infinite;
+}
+
+.region.region-waterfall .sprite:after {
+	content: '.';
+	color: transparent;
+	background-image: url(Sonic/waterfall-cap.png);
+	background-position: 0px 0px;
+	position: absolute;
+
+	width: 100%;
+
+	left: 0;
+	height: 16px;
+	top: 32px;
+
+	opacity: 0.65;
+
+	/*animation:  100ms steps(1,end) infinite;
+	background-position-x: 0px;
+	background-position-y: 32px;*/
+	animation-name: waterfall-cap-shift;
+	animation-timing-function: steps(2);
+	animation-iteration-count: infinite;
+	animation-duration: 650ms;
+	animation-direction: alternate;
+	animation-delay: 0ms;
 }
 
 @keyframes rain-drop-fall {
@@ -195,6 +245,24 @@
 	}
 }
 
+@keyframes waterfall-fall {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: 15px;
+	}
+}
+
+@keyframes waterfall-cap-shift {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: 12px;
+	}
+}
+
 @keyframes water-waves-frames {
 	0% {
 		background-position-y: 0px;
@@ -211,4 +279,13 @@
 	100% {
 		background-position-x: 96px;
 	}
+}
+
+
+.region.exit,
+.region.boss,
+.region.rolling,
+.region.grinding,
+.region.corkscrew {
+	display: none !important;
 }

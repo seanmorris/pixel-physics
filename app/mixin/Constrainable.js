@@ -48,6 +48,8 @@ export const Constrainable = {
 			return false;
 		}
 
+		this.args.ropeLength = tiedTo.args.ropeLength;
+
 		this.args.falling = true;
 
 		const xDist = tiedTo.x - this.x;

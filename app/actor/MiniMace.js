@@ -25,14 +25,14 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 
 	updateEnd()
 	{
-		if(!this.viewport.auras.has(this))
+		if(this.viewport && !this.viewport.auras.has(this))
 		{
 			this.viewport.auras.add(this);
 		}
 
 		super.update();
 
-		if(this.args._tiedTo.args.hitPoints)
+		if(this.args._tiedTo && this.args._tiedTo.args.hitPoints)
 		{
 			this.setPos();
 		}

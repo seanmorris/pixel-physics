@@ -95,7 +95,10 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 
 		this.args.ySpeed = this.yAxis;
 
-		this.box.setAttribute('data-animation', 'standing');
+		if(this.box)
+		{
+			this.box.setAttribute('data-animation', 'standing');
+		}
 
 		this.args.falling = true;
 		this.args.flying  = true;

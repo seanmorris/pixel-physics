@@ -43,24 +43,19 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 		this.aiming = false;
 	}
 
-	update()
+	onRendered()
 	{
-		this.args.ySpeed = this.yAxis;
+		super.onRendered();
 
-		if(!this.flame)
-		{
-			this.flame = new Tag('<div class = "buzz-bomber-flame">');
-			this.wings = new Tag('<div class = "buzz-bomber-wings">');
+		this.flame = new Tag('<div class = "buzz-bomber-flame">');
+		this.wings = new Tag('<div class = "buzz-bomber-wings">');
 
-			this.sprite.appendChild(this.flame.node);
-			this.sprite.appendChild(this.wings.node);
-		}
+		this.sprite.appendChild(this.flame.node);
+		this.sprite.appendChild(this.wings.node);
 
 		if(this.aiming)
 		{
 			this.box.setAttribute('data-animation', 'aiming');
-
-			// this.args.x = this.viewport.controlActor.x + (45 * -this.args.direction);
 		}
 		else
 		{
@@ -78,6 +73,16 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 			{
 				this.box.setAttribute('data-animation', 'standing');
 			}
+		}
+	}
+
+	update()
+	{
+		this.args.ySpeed = this.yAxis;
+
+		if(!this.flame)
+		{
+
 		}
 
 		if(this.args.xSpeed === 0 && this.viewport)

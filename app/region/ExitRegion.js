@@ -11,6 +11,11 @@ export class ExitRegion extends Region
 
 	updateActor(other)
 	{
+		if(other.occupant)
+		{
+			other = other.occupant;
+		}
+
 		if(!other.controllable)
 		{
 			return;
@@ -19,6 +24,8 @@ export class ExitRegion extends Region
 		const viewport = this.viewport;
 
 		viewport.args.fade = true;
+
+		viewport.clearCheckpoints(other.args.id);
 
 		viewport.onFrameOut(30, () => {
 			viewport.actors.remove(this);

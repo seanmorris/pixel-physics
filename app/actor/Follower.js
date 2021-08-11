@@ -178,20 +178,16 @@ export class Follower extends PointActor
 
 		if(this.args.ySpeed > 0)
 		{
-			this.onTimeout(250, () => {
+			if(this.args.ySpeed <= 0 || airSpeed < 1.5)
+			{
+				return;
+			}
 
-				if(this.args.ySpeed <= 0 || airSpeed < 1.5)
-				{
-					return;
-				}
-
-				if(this.box)
-				{
-					this.box.classList.add('decending');
-					this.box.classList.remove('ascending');
-				}
-
-			})
+			if(this.box)
+			{
+				this.box.classList.add('decending');
+				this.box.classList.remove('ascending');
+			}
 		}
 		else if(this.box)
 		{
