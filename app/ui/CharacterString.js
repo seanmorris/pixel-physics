@@ -11,9 +11,9 @@ export class CharacterString extends View
 				style      = "--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];"
 			>[[char.original]]</span></div>`;
 
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		super(args, parent);
 
 		this.args.chars = [];
 
@@ -73,6 +73,11 @@ export class CharacterString extends View
 		{
 			switch(pos)
 			{
+				case ' ':
+					pos  = -1;
+					type = 'number';
+					break;
+
 				case '-':
 					pos  = 11;
 					type = 'number';
@@ -108,9 +113,181 @@ export class CharacterString extends View
 					type = 'number';
 					break;
 
-				case ' ':
+				case '@':
 					pos  = 17;
 					type = 'number';
+					break;
+
+				case '#':
+					pos  = 18;
+					type = 'number';
+					break;
+
+				case '$':
+					pos  = 19;
+					type = 'number';
+					break;
+
+				case '%':
+					pos  = 20;
+					type = 'number';
+					break;
+
+				case '^':
+					pos  = 21;
+					type = 'number';
+					break;
+
+				case '&':
+					pos  = 22;
+					type = 'number';
+					break;
+
+				case '*':
+					pos  = 23;
+					type = 'number';
+					break;
+
+				case '(':
+					pos  = 24;
+					type = 'number';
+					break;
+
+				case ')':
+					pos  = 25;
+					type = 'number';
+					break;
+
+				case '⏺':
+					pos  = 0;
+					type = 'symbol2';
+					break;
+
+				case '▶':
+					pos  = 1;
+					type = 'symbol2';
+					break;
+
+				case '⏸':
+					pos  = 2;
+					type = 'symbol2';
+					break;
+
+				case '⏹':
+					pos  = 3;
+					type = 'symbol2';
+					break;
+
+				case '⏮':
+					pos  = 4;
+					type = 'symbol2';
+					break;
+
+				case '⏭':
+					pos  = 5;
+					type = 'symbol2';
+					break;
+
+				case '\'':
+					pos  = 6;
+					type = 'symbol2';
+					break;
+
+				case '"':
+					pos  = 7;
+					type = 'symbol2';
+					break;
+
+				case '"':
+					pos  = 8;
+					type = 'symbol2';
+					break;
+
+				case '=':
+					pos  = 9;
+					type = 'symbol2';
+					break;
+
+				case '+':
+					pos  = 10;
+					type = 'symbol2';
+					break;
+
+				case '[':
+					pos  = 11;
+					type = 'symbol2';
+					break;
+
+				case ']':
+					pos  = 12;
+					type = 'symbol2';
+					break;
+
+				case '{':
+					pos  = 13;
+					type = 'symbol2';
+					break;
+
+				case '}':
+					pos  = 14;
+					type = 'symbol2';
+					break;
+
+				case '\\':
+					pos  = 15;
+					type = 'symbol2';
+					break;
+
+				case ';':
+					pos  = 16;
+					type = 'symbol2';
+					break;
+
+				case '~':
+					pos  = 17;
+					type = 'symbol2';
+					break;
+
+				case '|':
+					pos  = 18;
+					type = 'symbol2';
+					break;
+
+				case '_':
+					pos  = 19;
+					type = 'symbol2';
+					break;
+
+				case '>':
+					pos  = 20;
+					type = 'symbol2';
+					break;
+
+				case '<':
+					pos  = 21;
+					type = 'symbol2';
+					break;
+
+				case '⯇':
+					pos  = 22;
+					type = 'symbol2';
+					break;
+
+				case '⯅':
+					pos  = 23;
+					type = 'symbol2';
+					break;
+
+				case '⯆':
+					pos  = 24;
+					type = 'symbol2';
+					break;
+
+				// ⯈
+
+				case '`':
+					pos  = 25;
+					type = 'symbol2';
 					break;
 
 				default:

@@ -1,4 +1,5 @@
 .actor-item.actor-sonic {
+	transition: opacity 0.5s ease-out;
 }
 
 .actor-item.actor-sonic .sprite {
@@ -15,6 +16,7 @@
 	top: 0;
 	left: 0;
 	background-image: var(--sprite-sheet);
+	opacity: var(--opacity, 1);
 	transition: background-image 0.5s ease-out;
 	background-position-x: var(--sprite-offset-x);
 	background-position-y: var(--sprite-offset-y);
@@ -258,6 +260,10 @@
 
 .actor-item.actor-sonic[data-super="true"] .sprite {
 	animation: super-sonic-flicker steps(10) infinite 1s alternate;
+}
+
+.actor-item.actor-sonic .sheild {
+	opacity: var(--opacity, 0);
 }
 
 @keyframes sonic-animate {

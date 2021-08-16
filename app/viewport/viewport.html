@@ -195,7 +195,6 @@
  		<div class = "viewport-overlay">
 			<div class = "hud hud-top-right hud-table"  cv-if = "debugOsd">
 				<table>
-
 					<tr>
 						<td colspan = "2">[[char]]</td>
 					</tr>
@@ -294,10 +293,19 @@
 				[[trackName]]
 			</div>
 
-			<div class = "hud hud-top-left"  cv-if = "showHud">
-				<div>[[scoreLabel]] [[score]]</div>
-				<div>[[timerLabel]] [[timer]]</div>
-				<div>[[ringLabel]] [[rings]]</div>
+			<div class = "hud hud-top-left hud-table"  cv-if = "showHud">
+				<table>
+					<tr>
+						<td>[[scoreLabel]]</td><td>[[score]]</td>
+					</tr>
+					<tr>
+						<td>[[timerLabel]]</td><td>[[timer]]</td>
+					</tr>
+					<tr>
+						<td>[[ringLabel]]</td><td>[[rings]]</td>
+					</tr>
+				</table>
+				<div class = "demo-hud" cv-if = "demoIndicator">[[demoIndicator]]</div>
 			</div>
 
 			<div class = "hud hud-dark hud-centered" cv-if = "actClear">

@@ -2,7 +2,7 @@
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%) rotate(calc(var(--angle, 0) * 1rad ));
 	filter:url(#motionBlur);
 }
 

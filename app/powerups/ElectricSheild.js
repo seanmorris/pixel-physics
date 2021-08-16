@@ -209,6 +209,8 @@ export class ElectricSheild extends Sheild
 				continue;
 			}
 
+			ring.args.static = false;
+
 			ring.attract = host;
 			ring.noClip  = true;
 

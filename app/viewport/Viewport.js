@@ -233,6 +233,8 @@ export class Viewport extends View
 		this.args.labelX = new CharacterString({value:'x pos: '});
 		this.args.labelY = new CharacterString({value:'y pos: '});
 
+		this.args.demoIndicator = null;
+
 		this.args.labelGround = new CharacterString({value:'Grounded: '});
 		this.args.labelCamera = new CharacterString({value:'Camera: '});
 		this.args.labelAngle  = new CharacterString({value:'Gnd theta: '});
@@ -814,6 +816,8 @@ export class Viewport extends View
 
 			if(!this.args.isReplaying && !this.args.isRecording)
 			{
+				this.args.demoIndicator = null;
+
 				const storedPosition = this.getCheckpoint(this.nextControl.args.id);
 				const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
 
@@ -978,6 +982,11 @@ export class Viewport extends View
 
 			if(this.args.isRecording)
 			{
+				if(!this.args.demoIndicator)
+				{
+					this.args.demoIndicator = new CharacterString({value:'⏺ REC', color: 'red'})
+				}
+
 				const frame = this.args.frameId;
 				const input = controller.serialize();
 
@@ -1016,7 +1025,7 @@ export class Viewport extends View
 		}
 		else
 		{
-			this.cameraBound -= 0.0005;
+			this.cameraBound -= 0.05;
 		}
 
 		let cameraSpeed = 30;
@@ -1044,6 +1053,13 @@ export class Viewport extends View
 
 		switch(this.controlActor.args.cameraMode)
 		{
+			case 'normal':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.75;
+				this.maxCameraBound = 64;
+				cameraSpeed = 15;
+				break;
+
 			case 'airplane': {
 				const xSpeed     = this.controlActor.args.standingOn && this.controlActor.args.standingOn.public.xSpeed;
 				const absSpeed   = Math.abs(xSpeed);
@@ -1069,23 +1085,27 @@ export class Viewport extends View
 				break;
 
 			case 'aerial':
-
 				this.args.xOffsetTarget = 0.5;
 
-				if(!actor.public.flying && (deepJump || highJump) && fallSpeed > 0)
+				cameraSpeed = 30;
+
+				if(!actor.args.flying && (deepJump || highJump))
 				{
-					this.args.yOffsetTarget = 0.1;
-				}
-				else if(!actor.public.flying && (deepJump || highJump) && fallSpeed < 0)
-				{
-					this.args.yOffsetTarget = 0.9;
+					if(fallSpeed < 0)
+					{
+						this.args.yOffsetTarget = 0.9;
+					}
+					else
+					{
+						this.args.yOffsetTarget = 0.25;
+
+						cameraSpeed = 15;
+					}
 				}
 				else
 				{
 					this.args.yOffsetTarget = 0.5;
 				}
-
-				cameraSpeed = 30;
 
 				break;
 
@@ -1120,30 +1140,35 @@ export class Viewport extends View
 
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.80;
-				this.maxCameraBound     = 1;
+				this.maxCameraBound     = 48;
 
 				cameraSpeed = 5;
 
 				break;
 
-			default:
-
+			case 'draggable':
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.5;
+				this.maxCameraBound     = 48;
+				cameraSpeed = 3;
+				break;
 
+			default:
+				this.maxCameraBound = 64;
 				cameraSpeed = 25;
+				break;
 
-			break;
 		}
 
-		if(['normal', 'bridge', 'aerial'].includes(this.controlActor.args.cameraMode))
+		if(['normal', 'bridge', 'airplane'].includes(this.controlActor.args.cameraMode))
 		{
 			const gSpeed     = this.controlActor.public.gSpeed;
-			const absSpeed   = Math.abs(gSpeed);
+			const xSpeed     = this.controlActor.public.xSpeed;
+			const absSpeed   = Math.abs(gSpeed || xSpeed);
 			const shiftSpeed = 15;
-			const speedBias = Math.min(absSpeed / 25, 1) * -Math.sign(gSpeed);
+			const speedBias = Math.min(absSpeed / 15, 1) * -Math.sign(gSpeed);
 
-			switch(this.controlActor.public.mode)
+			switch(this.controlActor.args.mode)
 			{
 				case 0:
 					this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
@@ -1169,32 +1194,24 @@ export class Viewport extends View
 
 		this.args.yOffsetTarget += this.controlActor.args.cameraBias;
 
-		if(this.controlActor.args.cameraBias)
-		{
-			cameraSpeed = 15;
-			cameraSpeed = 15;
-		}
+		// if(this.controlActor.args.cameraBias)
+		// {
+		// 	cameraSpeed = 15;
+		// 	cameraSpeed = 15;
+		// }
 
 		if(cameraSpeed)
 		{
-			const offsetDiff = this.args.yOffsetTarget - this.args.yOffset;
+			const yOffsetDiff = this.args.yOffsetTarget - this.args.yOffset;
+			const xOffsetDiff = this.args.xOffsetTarget - this.args.xOffset;
 
-			this.args.yOffset += offsetDiff / cameraSpeed;
-		}
-		else
-		{
-			this.args.yOffset = this.args.yOffsetTarget;
-		}
-
-		if(cameraSpeed)
-		{
-			const offsetDiff = this.args.xOffsetTarget - this.args.xOffset;
-
-			this.args.xOffset += offsetDiff / cameraSpeed;
+			this.args.xOffset += xOffsetDiff / cameraSpeed;
+			this.args.yOffset += yOffsetDiff / cameraSpeed;
 		}
 		else
 		{
 			this.args.xOffset = this.args.xOffsetTarget;
+			this.args.yOffset = this.args.yOffsetTarget;
 		}
 
 		const center = actor.rotatePoint(0, -actor.public.height / 2);
@@ -1582,7 +1599,8 @@ export class Viewport extends View
 		const actorWidth = actor.args.width;
 
 		const actorTop   = actor.y - actor.args.height;
-		const actorLeft  = actor.x - actorWidth / 2;
+		// const actorLeft  = actor.x - actorWidth / 2;
+		const actorLeft  = actor.x;
 		const actorRight = actor.x + actorWidth + actorWidth / 2;
 
 		if((camLeft < actorRight && camRight > actorLeft)
@@ -1904,6 +1922,11 @@ export class Viewport extends View
 		{
 			if(this.args.isReplaying)
 			{
+				if(!this.args.demoIndicator)
+				{
+					this.args.demoIndicator = new CharacterString({value:'▶ PLAY', color: 'green'})
+				}
+
 				this.args.focusMe.args.hide = 'hide';
 
 				if(this.replayFrames.has(this.args.frameId))
@@ -1926,7 +1949,7 @@ export class Viewport extends View
 						}
 					}
 
-					if(this.replayInputs.length)
+					if(this.args.isReplaying)
 					{
 						this.args.hasRecording = true;
 						this.args.topLine.args.value = ' i cant believe its not canvas. ';
@@ -1951,6 +1974,11 @@ export class Viewport extends View
 					this.controlActor.readInput();
 				}
 			}
+		}
+
+		if(!this.args.isReplaying && !this.args.isRecording)
+		{
+			this.args.demoIndicator = null;
 		}
 
 		this.updateStarted.clear();
@@ -2744,6 +2772,7 @@ export class Viewport extends View
 	stop()
 	{
 		this.args.isReplaying = false;
+		this.args.isRecording = false;
 
 		if(this.args.isRecording)
 		{
@@ -2751,8 +2780,6 @@ export class Viewport extends View
 
 			localStorage.setItem('replay', replay);
 		}
-
-		this.args.isRecording = false;
 
 		this.controlActor && this.controlActor.controller.zero();
 	}

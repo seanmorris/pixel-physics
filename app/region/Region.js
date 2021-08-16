@@ -64,6 +64,8 @@ export class Region extends PointActor
 			, '--viewportHeight': this.viewport.args.height + 'px'
 			, '--leftBoundry':    leftBoundry + 'px'
 			, '--topBoundry':     topBoundry + 'px'
+			, '--vpX':            this.viewport.args.x + 'px'
+			, '--vpY':            this.viewport.args.y + 'px'
 		});
 	}
 

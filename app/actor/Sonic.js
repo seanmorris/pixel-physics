@@ -37,13 +37,15 @@ export class Sonic extends PointActor
 		this.args.type = 'actor-sonic actor-item';
 
 		this.accelNormal = 0.20;
-		this.accelSuper  = 0.70;
+		this.accelSuper  = 0.40;
+
+		this.args.boltCount = 0;
 
 		this.args.accel     = 0.20;
 		this.args.decel     = 0.45;
 
 		this.gSpeedMaxNormal = 18;
-		this.gSpeedMaxSuper  = 25;
+		this.gSpeedMaxSuper  = 23;
 
 		this.jumpForceNormal = 11.5;
 		this.jumpForceSuper  = 16;
@@ -78,6 +80,7 @@ export class Sonic extends PointActor
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
 
 		this.sampleRingLoss = new Audio('/Sonic/ring-loss.wav');
+		this.sampleBoltDash = new Audio('/Sonic/S3K_4E.wav');
 
 		this.args.bindTo('falling', v => {
 
@@ -485,6 +488,62 @@ export class Sonic extends PointActor
 
 		super.update();
 
+		if(this.args.boltDash)
+		{
+			this.dimmer = this.dimmer || new Tag('<div class = "particle particle-dimmer">');
+
+			const boltParticle = new Tag('<div class = "particle particle-bolt">');
+
+			const speed = this.args.falling
+				? this.args.airSpeed
+				: this.args.gSpeed;
+
+			const boltPoint = this.rotatePoint(
+				(speed < 0 ? 8 : -8)
+				, this.args.falling
+					? (this.dashed ? (speed < 0 ? 28 : 32) : 14)
+					: 28
+			);
+
+			this.dimmer.style({
+				'--x': this.x + boltPoint[0]
+				, '--y': this.y + boltPoint[1]
+			});
+
+			this.args.boltCount++;
+
+			const direction = Math.sign(this.args.gSpeed || this.args.xSpeed);
+
+			boltParticle.attr({'data-direction': direction});
+
+			boltParticle.style({
+				'--x': this.x + boltPoint[0]
+				, '--y': this.y + boltPoint[1]
+				, '--index': this.args.boltCount
+				, '--direction': direction
+				, '--mod': this.viewport.args.frameId % 4
+				, '--wipe': Math.abs(speed)
+				, '--angle': this.args.falling
+					? this.args.airAngle
+					: this.realAngle
+				, '--dashCharge': 0
+			});
+
+
+			this.viewport.particles.add(boltParticle);
+
+			if(Math.abs(speed) < 20 && this.args.falling)
+			{
+				this.args.boltDash = false;
+			}
+
+			this.viewport.particles.add(this.dimmer);
+
+			this.viewport.onFrameOut(30, () => {
+				this.viewport.particles.remove(boltParticle);
+			});
+		}
+
 		if([...this.regions].filter(r => r.isWater).length
 			&& !this.checkBelow(this.x, this.y+16)
 			&& this.args.falling
@@ -829,7 +888,7 @@ export class Sonic extends PointActor
 
 			const dustParticle = new Tag('<div class = "particle-spindash-dust">');
 
-			const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
+			const dustPoint = this.rotatePoint(0, 0);
 
 			dustParticle.style({
 				'--x': dustPoint[0] + this.x
@@ -902,7 +961,91 @@ export class Sonic extends PointActor
 			this.lightDash(ring);
 
 			this.lightDashingCoolDown = 9;
+
+			return;
 		}
+	}
+
+	command_2()
+	{
+		this.onNextFrame(() => {
+
+			const speed = this.args.falling
+				? this.args.airSpeed
+				: this.args.gSpeed;
+
+			if(this.isSuper
+				&& !this.lightDashing
+				&& !this.args.boltDash
+				&& Math.abs(speed) > 6
+			){
+				const xSpeed = this.args.xSpeed;
+				const ySpeed = this.args.ySpeed;
+				const gSpeed = this.args.gSpeed;
+
+				if(!this.args.falling)
+				{
+					this.args.gSpeed *= 3;
+					this.args.gSpeed = Math.max(-128, Math.min(this.args.gSpeed, 128));
+
+				}
+				else
+				{
+					this.args.xSpeed = Math.max(-64, Math.min(this.args.xSpeed, 64));
+					this.args.ySpeed = Math.max(-64, Math.min(this.args.ySpeed, 64));
+
+					this.args.float = 5;
+
+					this.args.xSpeed *= 5;
+					this.args.ySpeed *= 5;
+				}
+
+				this.args.boltCount = 0;
+				this.args.boltDash  = true;
+
+				if(this.viewport.args.audio)
+				{
+					this.sampleBoltDash.currentTime = 0;
+					this.sampleBoltDash.play();
+				}
+
+				this.args.opacity = 0;
+
+				this.viewport.onFrameOut(35, () => {
+					this.args.opacity = 1;
+
+					this.args.boltDash = false;
+
+					this.args.xSpeed = this.args.xSpeed ? xSpeed : 0;
+					this.args.ySpeed = this.args.ySpeed ? ySpeed : 0;
+					this.args.gSpeed = this.args.gSpeed ? gSpeed : 0;
+
+					this.dimmer && this.viewport.particles.remove(this.dimmer);
+
+					this.dimmer = false;
+				});
+			}
+		});
+	}
+
+	release_2()
+	{
+		if(this.args.boltDash)
+		{
+			return;
+		}
+
+		this.args.opacity = 1;
+
+		this.args.boltDash = false;
+
+		this.args.xSpeed /= 2;
+		this.args.ySpeed /= 2;
+		this.args.gSpeed /= 3;
+
+		this.dimmer && this.viewport.particles.remove(this.dimmer);
+
+		this.dimmer = false;
 	}
 
 	command_3()
@@ -1046,9 +1189,8 @@ export class Sonic extends PointActor
 
 		this.lightDashing = true;
 
-		this.args.xSpeed  = dashSpeed * Math.cos(angle);
-		this.args.ySpeed  = dashSpeed * Math.sin(angle);
-		this.args.gSpeed  = 0;
+		this.args.xSpeed  = dashSpeed * Math.cos(angle) * 0.5;
+		this.args.ySpeed  = dashSpeed * Math.sin(angle) * 0.5;
 
 		this.lightDashTimeout();
 	}
@@ -1097,7 +1239,11 @@ export class Sonic extends PointActor
 
 	setCameraMode()
 	{
-		if(this.args.wallSticking)
+		if(this.args.boltDash)
+		{
+			this.args.cameraMode = 'draggable'
+		}
+		else if(this.args.wallSticking)
 		{
 			this.args.cameraMode = 'aerial';
 		}
