@@ -118,6 +118,8 @@ export class PointActor extends View
 
 		this.args.mercy = false;
 
+		this.args.opacity = 1;
+
 		this.autoStyle = new Map;
 		this.autoAttr  = new Map;
 		this.hanging   = new Map;
@@ -561,6 +563,7 @@ export class PointActor extends View
 			, '--display-angle':  'groundAngle'
 			, '--ground-angle':   'groundAngle'
 			, '--air-angle':      'airAngle'
+			, '--opacity':        'opacity'
 			, '--height':         'height'
 			, '--width':          'width'
 			, '--x':              'x'
@@ -1057,7 +1060,7 @@ export class PointActor extends View
 			this.public.standingOn.callCollideHandler(this);
 		}
 
-		if(!this.public.float && this.public.falling)
+		if(!this.args.float && this.args.falling)
 		{
 			if(!this.args.standingOn || !this.args.standingOn.isVehicle)
 			{
@@ -1065,17 +1068,18 @@ export class PointActor extends View
 				this.args.landed = false;
 				this.lastAngles  = [];
 
-				if(this.public.jumping && this.public.jumpedAt < this.y)
+				if(this.args.jumping && this.args.jumpedAt < this.y)
 				{
 					this.args.deepJump = true;
 				}
-				else if(this.public.jumping && this.public.jumpedAt > this.y + 160)
+				else if(this.args.jumping && this.args.jumpedAt > this.y + 160)
 				{
 					this.args.highJump = true;
 				}
 				else if(this.public.jumping)
 				{
 					this.args.deepJump = false;
+					this.args.highJump = false;
 				}
 			}
 		}
@@ -2268,6 +2272,8 @@ export class PointActor extends View
 
 		const cSquared  = this.public.xSpeed**2 + this.public.ySpeed**2;
 		const airSpeed  = cSquared ? Math.sqrt(cSquared) : 0;
+
+		this.args.airSpeed = airSpeed;
 
 		if(!airSpeed)
 		{
@@ -3820,21 +3826,21 @@ export class PointActor extends View
 
 	get realAngle()
 	{
-		if(!this.public.falling && this.public.standingOn)
+		if(!this.args.falling && this.args.standingOn)
 		{
 			return this.public.standingOn.realAngle;
 		}
 
-		const groundAngle = Number(this.public.groundAngle);
+		const groundAngle = Number(this.args.groundAngle);
 
-		if(this.public.falling)
+		if(this.args.falling)
 		{
 			return -groundAngle - (Math.PI);
 		}
 
 		let trajectory;
 
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case 0:
 				trajectory = -groundAngle - (Math.PI);
@@ -3855,7 +3861,7 @@ export class PointActor extends View
 
 	get downAngle()
 	{
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				return Math.PI/2;
@@ -3877,7 +3883,7 @@ export class PointActor extends View
 
 	get upAngle()
 	{
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				return -Math.PI/2;
@@ -3899,7 +3905,7 @@ export class PointActor extends View
 
 	get leftAngle()
 	{
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				return Math.PI;
@@ -3921,7 +3927,7 @@ export class PointActor extends View
 
 	get rightAngle()
 	{
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				return 0;
@@ -3943,7 +3949,7 @@ export class PointActor extends View
 
 	get groundPoint()
 	{
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				return [this.x + 0, this.y + 1];

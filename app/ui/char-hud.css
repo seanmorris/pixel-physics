@@ -7,12 +7,14 @@
 
 .hud .char-icon {
 	position: relative;
+	top:  2px;
 	width: 16px;
 	height: 16px;
 	background-color: #AAA;
 	background-color: #000;
 	display: inline-block;
-	margin-left: 5px;
+	margin-left: 3px;
+	margin-right: 2px;
 
 	box-sizing: border-box;
 	background-origin: border-box;

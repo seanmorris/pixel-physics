@@ -89,8 +89,8 @@
 	opacity: 1;
 }
 
-.screen-card-webkit-card.opening,
-.screen-card-debian-card.opening {
+.screen-card-webkit-card.opening > .main-elements-container,
+.screen-card-debian-card.opening > .main-elements-container {
 	opacity: 0;
 	filter: blur(0px);
 }

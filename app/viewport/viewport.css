@@ -199,30 +199,16 @@ section.filters {
 	top: 0px;
 	left: 0px;
 
-	width: 100%;
-	height: 100%;
-
-	/*transition: transform var(--scale-transition);*/
-	transform-origin: top left;
-
-	/*transform: scale(var(--scale));
 	width: calc(100% / var(--scale));
-	height: calc(100% / var(--scale));*/
-
-
-
-	/*--halfScale: calc(max(var(--scale), 2) / 2);
-
-	transform: scale(var(--halfScale));
-	width: calc(100% / var(--halfScale));
-	height: calc(100% / var(--halfScale));*/
+	height: calc(100% / var(--scale));
+	transform-origin: top left;
 }
 
 .viewport-overlay .hud-character-string {
 	pointer-events: initial;
 }
 
-.viewport-overlay > * {
+.viewport-overlay {
 	transform: scale(var(--scale));
 	transition: transform var(--scale-transition);
 }
@@ -276,8 +262,8 @@ section.filters {
 		drop-shadow( var(--outlineWidthNeg) var(--outlineWidthNeg) 0px var(--outlineColor));
 }
 
-.controllable.actor-generic:hover:not(.actor-selected),
-.controllable:not(.actor-generic):hover:not(.actor-selected) .sprite {
+.controllable.actor-generic:hover:not([data-selected=true]),
+.controllable:not(.actor-generic):hover:not([data-selected=true]) .sprite {
 	--outlineColor: white !important;
 	filter:	drop-shadow(1px 1px 0px var(--outlineColor))
 		drop-shadow(-1px 1px 0px var(--outlineColor))
@@ -422,11 +408,10 @@ span.arrow-west {
 	position: absolute;
 	top: 0;
 	left: 0;
-	transform-origin: top left;
 	width: calc(100%);
 	bottom: 0;
-	/*transform: scale(var(--scale));*/
-	transform: scale(1);
+	/*transform: scale(1);*/
+	/*transform: scale(calc(1 / var(--scale)));*/
 	font-size: 2em;
 	z-index: 1000000;
 	color: white;
@@ -449,10 +434,8 @@ span.arrow-west {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: calc(100% / var(--scale));
-	height: calc(100% / var(--scale));
-	transform: scale(var(--scale));
-	transform-origin: top left;
+	width: calc(100%);
+	height: calc(100%);
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
@@ -558,10 +541,10 @@ input[type=number]::-webkit-outer-spin-button {
 .intro-cards {
 	position: absolute;
 	transform-origin: left top;
-	transform: scale(var(--scale));
+	/*transform: scale(var(--scale));*/
 
-	width: calc(100% / var(--scale) );
-	height: calc(100% / var(--scale) );
+	width: calc(100%);
+	height: calc(100%);
 }
 
 .viewport-frame,
@@ -578,8 +561,8 @@ input[type=number]::-webkit-outer-spin-button {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	width: calc(100% / var(--scale) );
-	height: calc(100% / var(--scale) );
+	width: calc(100%);
+	height: calc(100%);
 	transform-origin: top left;
 	background-color: transparent !important;
 }
@@ -597,9 +580,10 @@ input[type=number]::-webkit-outer-spin-button {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: calc(100%);
+	height: calc(100%);
 	z-index: 1001;
+	transform: none;
 }
 
 .viewport .shade[data-fade=true] {

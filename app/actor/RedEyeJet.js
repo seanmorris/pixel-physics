@@ -273,6 +273,11 @@ export class RedEyeJet extends PointActor
 
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		this.args.phaseFrameId++;
 		this.args.frameId++;
 

@@ -96,7 +96,7 @@ export class BreakableBlock extends Block
 				other.args.y = top;
 			}
 
-			this.onNextFrame(()=>this.break(other));
+			this.break(other);
 
 			return false;
 		}

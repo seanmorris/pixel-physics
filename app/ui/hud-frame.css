@@ -1,6 +1,6 @@
 .hud {
-	/*image-rendering: pixelated;*/
-	/*opacity: 0;*/
+	image-rendering: pixelated;
+	opacity: 0;
 }
 
 .viewport-frame.level .hud {
@@ -17,7 +17,7 @@
 .hud-centered {
 	top: 50%;
 	left:  50%;
-	transform: scale(var(--scale)) translate(-50%, -50%) !important;
+	transform: translate(-50%, -50%) !important;
 	min-width: 20em;
 	display: flex;
 	flex-direction: column;
@@ -36,43 +36,35 @@
 }
 
 .hud-top-left {
+	transform-origin: top left;
 	display: block;
 	position: absolute;
-	top: 0.75em;
-	left: 1.25em;
-	right: 0;
+	top: 4px;
+	left: 4px;
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
-	transform-origin: top left;
-	width: 240px;
 }
 
-.hud-top-left.hud-table,
-.hud-top-right.hud-table {
-	margin-top:  5em;
-}
-
-.hud-bottom-left.hud-table,
-.hud-top-left.hud-table {
-	margin-left:  1em;
-}
-
-.hud-bottom-right.hud-table,
-.hud-top-right.hud-table {
-	margin-right:  1em;
+.hud-top-left table {
+	transform: translateZ(10px);
 }
 
 .hud-top-right {
-	display: block;
-	position: absolute;
-	top: 0.75em;
-	right: 0.75em;
+	transform-origin: top right;
 	display: flex;
 	flex-direction: column;
-	transform-origin: top right;
-	justify-content: flex-start;
-	align-items: flex-end;
+	position: absolute;
+	top: 4px;
+	right: 4px;
+}
+
+.hud-top-right.hud-table {
+	top: 32px;
+}
+
+.hud-top-right.hud-table:empty {
+	display: none;
 }
 
 .emerald-hud {
@@ -90,7 +82,7 @@
 .hud-bottom-right {
 	display: block;
 	position: absolute;
-	bottom: 15px;
+	bottom:18px;
 	right: 2px;
 	display: flex;
 	flex-direction: column;
@@ -117,6 +109,7 @@
 	transform: scale(var(--scale)) translateX(-120%) !important;
 	transition: transform 0.5s ease-in, filter 0.75s 0.25s ease-in;
 	transition: transform 0.75s ease-in, filter 0.5s ease-in;
+	display: none;
 }
 
 .hud-bottom-left {
@@ -269,4 +262,12 @@
 	25% {transform: translateY( calc(-1 * var(--distance)) );}
 	50% {transform: translateY( var(--distance) );}
 	75% {transform: translateY( calc(-1 * var(--distance)) );}
+}
+
+.demo-hud:empty {
+	display: none;
+}
+
+.demo-hud {
+	margin-bottom: 2px;
 }

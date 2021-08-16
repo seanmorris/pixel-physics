@@ -21,6 +21,11 @@ export class Ring extends PointActor
 
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if((this.viewport.args.frameId) % 4)
 		{
 			this.noClip = true;

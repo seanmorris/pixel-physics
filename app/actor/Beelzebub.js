@@ -456,6 +456,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 			case 'attacking':
 			case 'swooping':
 			case 'stalking':
+			case 'knocked':
+			case 'damaged':
 			case 'ready': {
 
 				if(xDiff > 384)

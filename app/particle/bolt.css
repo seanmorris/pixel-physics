@@ -1,0 +1,77 @@
+.particle-bolt {
+	backdrop-filter: opacity(0%);
+	background-repeat: repeat;
+	background-image: url(/Sonic/bolt.png);
+	width: calc(calc(1px * var(--wipe)) + 1px);
+	height: 24px;
+}
+
+.particle-bolt[data-direction="-1"] {
+	animation:
+		bolt-scroll 650ms linear infinite,
+		bolt-fade 250ms calc(-200ms * var(--mod)) ease-out infinite forwards;
+}
+
+.particle-bolt[data-direction="1"] {
+	animation:
+		bolt-scroll 650ms linear infinite reverse,
+		bolt-fade 250ms calc(-200ms * var(--mod)) ease-out infinite forwards;
+}
+
+.particle-dimmer {
+	height: 768px;
+	width: 1024px;
+	transform: translate(-50%, -50%) !important;
+	background-color: rgba(0, 0, 0, 0.05);
+	animation: bolt-flicker 0.25s calc(-5ms * var(--mod)) ease-out 1 forwards;
+}
+
+@keyframes bolt-scroll {
+	0% {
+		background-position-x: calc(calc(calc(calc(var(--direction) * var(--index)) * 4px) + calc(var(--wipe) * 1px)) + 64px);
+	}
+	100% {
+		background-position-x: calc(calc(calc(calc(var(--direction) * var(--index)) * 4px) + calc(var(--wipe) * 1px)) + 0px);
+	}
+}
+
+@keyframes bolt-flicker {
+	0% {
+		background-color: rgba(0, 0, 0, 1);
+	}
+	5% {
+		background-color: rgba(0, 0, 0, 0);
+	}
+	20% {
+		background-color: rgba(245, 255, 255, 0.0);
+	}
+	50% {
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+	100% {
+		background-color: rgba(0, 0, 0, 0.00);
+	}
+}
+
+@keyframes bolt-fade {
+	0% {
+		filter: contrast(0.5) brightness(1.5) !important;
+		opacity: 1;
+	}
+	5% {
+		opacity: 0;
+	}
+	10% {
+		filter: contrast(0.5) brightness(1.5) !important;
+		opacity: 1;
+	}
+	20% {
+		opacity: 0.25;
+	}
+	30% {
+		opacity: 1;
+	}
+	75% {
+		opacity: 0.5;
+	}
+}

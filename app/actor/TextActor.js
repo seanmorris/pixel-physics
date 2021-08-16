@@ -18,6 +18,7 @@ export class TextActor extends PointActor
 
 		this.args.bindTo('content', v => {
 			this.text.args.value = v;
+			this.text.args.color = args.color;
 			this.args.width  = v.length * 18;
 			this.args.height = 18;
 		});

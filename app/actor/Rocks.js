@@ -145,7 +145,7 @@ export class Rocks extends PointActor
 
 	collideA(other, type)
 	{
-		if(this.public.gone)
+		if(this.args.gone)
 		{
 			return false;
 		}
@@ -191,17 +191,16 @@ export class Rocks extends PointActor
 		return true;
 	}
 
-	collideB(other)
-	{
-		if(other.args.falling && this.public.gone)
-		{
-			other.args.ySpeed *= -1;
-			other.args.falling = true;
-		}
+	// collideB(other)
+	// {
+	// 	if(other.args.falling && this.public.gone)
+	// 	{
+	// 		other.args.ySpeed *= -1;
+	// 		other.args.falling = true;
+	// 	}
 
-		return false;
-	}
-
+	// 	return false;
+	// }
 
 	pop(other)
 	{
@@ -250,10 +249,10 @@ export class Rocks extends PointActor
 
 		}, 2500);
 
-		viewport.actors.remove( this );
+		this.onNextFrame(() => viewport.actors.remove( this ));
 	}
 
 	get canStick() { return false; }
-	get solid() { return true; }
+	get solid() { return !this.args.gone; }
 }
 

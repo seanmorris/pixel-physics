@@ -275,6 +275,11 @@ export class Block extends PointActor
 
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.public.collapse)
 		{
 			this.args.gSpeed = 0;
@@ -282,41 +287,6 @@ export class Block extends PointActor
 
 		if(this.public.float && (this.public.oscillateX || this.public.oscillateY))
 		{
-			// const current = this.ease.current();
-
-			// if(!this.nextEase)
-			// {
-			// 	const reverse = (this.viewport.args.frameId % 360) > 180;
-
-			// 	const Ease = QuintInOut;
-
-			// 	this.nextEase = new Ease(this.public.period, {reverse: !reverse});
-			// }
-
-			// const crossedMod = (this.viewport.args.frameId % 120) < (this.viewport.args.lastFrameId % 120);
-
-			// if(crossedMod && this.nextEase && this.args.active)
-			// {
-			// 	this.ease.cancel();
-
-			// 	this.ease = this.nextEase;
-			// 	this.nextEase = false;
-
-			// 	if(this.args.active === -1)
-			// 	{
-			// 		this.viewport.onFrameOut(60, () => {
-			// 			if(this.args.active)
-			// 			{
-			// 				this.ease.start();
-			// 			}
-			// 		});
-			// 	}
-			// 	else
-			// 	{
-			// 		this.args.active = false;
-			// 	}
-			// }
-
 			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);
 
 			if(this.public.oscillateX)
@@ -411,7 +381,7 @@ export class Block extends PointActor
 
 			if(Math.abs(this.public.yForce) <= 1)
 			{
-				this.screen.placeholder = `flat.`;
+				// this.screen.placeholder = `flat.`;
 				this.snapBack = false;
 			}
 

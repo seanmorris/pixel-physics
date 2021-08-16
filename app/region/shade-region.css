@@ -30,8 +30,10 @@
 .region.region-shade .region-filter-wrapper,
 .region.region-shade .sprite {
 	position: absolute;
-	width: calc(1px * var(--width));
+	/*width: calc(1px * var(--width));
+	max-width: var(--viewportWidth);*/
 	height: calc(1px * var(--height));
+	max-height: var(--viewportHeight);
 	pointer-events: none;
 	z-index: 5000000;
 }
@@ -43,10 +45,12 @@
 	overflow: hidden;
 }
 
-.region.region-shade .region-color-wrapper,
 .region.region-shade .sprite {
-	top: calc(1px + calc(-1px * var(--height)));
-	left: -16px;
+	position: absolute;
+	top: calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry)))
+}
+
+.region.region-shade .region-color-wrapper {
 	background-attachment: fixed;
 }
 
@@ -205,8 +209,9 @@
 
 .region.region-lava .region-color,
 .region.region-shade.lava .region-color {
-	/*background-blend-mode: hard-light;*/
-	animation: lava-ripple steps(1) infinite 1.5s, lava-flow ease-in-out infinite alternate 4.5s;
+	animation:
+		lava-ripple linear infinite 3.5s
+		, lava-flow ease-in-out infinite alternate 4.5s;
 	background-image: url(Sonic/lava-1.png);
 	background-color: rgba(255,192,0,1);
 	opacity: 0.75;
@@ -386,7 +391,7 @@
 }
 
 @keyframes lava-ripple {
-	/*0% {
+	0% {
 		background-image: url(Sonic/lava-1.png);
 	}
 	33.34% {
@@ -397,15 +402,15 @@
 	}
 	100% {
 		background-image: url(Sonic/lava-1.png);
-	}*/
+	}
 }
 
 
 @keyframes lava-flow {
 	0% {
-		background-position: 0 0;
+		background-position-x: calc(0px + calc(var(--vpX) + min(0.0001px, var(--leftBoundry))));
 	}
 	100% {
-		background-position: 128px 0;
+		background-position-x: calc(128px + calc(var(--vpX) + min(0.0001px, var(--leftBoundry))));
 	}
 }

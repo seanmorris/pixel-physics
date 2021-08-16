@@ -1,0 +1,36 @@
+.region.region-rain {
+	filter: blur(0.65px);
+	opacity: 0.75;
+}
+
+.region.region-rain .sprite {
+	position: absolute;
+	/*bottom:  100% !important;*/
+}
+
+.region.region-rain .region-color-wrapper {
+	/*bottom: 0px !important;*/
+}
+
+.region.region-shade.region-rain .region-color {
+	background: url(/custom/raindrops.png);
+	animation: rain-drop-shift 1s linear infinite, rain-drop-fall 0.25s linear infinite;
+}
+
+@keyframes rain-drop-fall {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: 256px;
+	}
+}
+
+@keyframes rain-drop-shift {
+	0% {
+		background-position-x: calc(-0px + var(--vpX));
+	}
+	100% {
+		background-position-x: calc(-256px + var(--vpX));
+	}
+}

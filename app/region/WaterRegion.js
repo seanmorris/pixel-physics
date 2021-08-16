@@ -50,6 +50,11 @@ export class WaterRegion extends Region
 
 	update()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(!this.filterWrapper && this.tags.sprite)
 		{
 			this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
@@ -97,21 +102,24 @@ export class WaterRegion extends Region
 		{
 			this.switch = this.viewport.actorsById[ this.public.switch ]
 
-			this.switch.args.bindTo('active', v => {
-				if(!v && this.draining > 0)
-				{
-					// this.draining = -1;
-				}
+			if(this.switch)
+			{
+				this.switch.args.bindTo('active', v => {
+					if(!v && this.draining > 0)
+					{
+						// this.draining = -1;
+					}
 
-				if(v)
-				{
-					this.draining = 1;
-				}
-				else
-				{
-					this.draining = -1;
-				}
-			});
+					if(v)
+					{
+						this.draining = 1;
+					}
+					else
+					{
+						this.draining = -1;
+					}
+				});
+			}
 		}
 
 		if(!this.originalHeight)
