@@ -211,7 +211,7 @@
 .region.region-shade.lava .region-color {
 	animation:
 		lava-ripple linear infinite 3.5s
-		, lava-flow ease-in-out infinite alternate 4.5s;
+		, lava-flow linear infinite 11.5s;
 	background-image: url(Sonic/lava-1.png);
 	background-color: rgba(255,192,0,1);
 	opacity: 0.75;
@@ -245,7 +245,9 @@
 
 	z-index: 10000;
 
-	animation: lava-waves steps(1) infinite 1.5s, lava-flow ease-in-out infinite alternate 4.5s;
+	animation:
+		lava-waves steps(1) infinite 1.5s
+		, lava-flow linear infinite 11.5s;
 }
 
 .region.region-lava .region-color-wrapper:after {

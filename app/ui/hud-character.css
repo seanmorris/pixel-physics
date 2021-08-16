@@ -24,8 +24,12 @@
 	color: rgba(0,0,0,0);
 }
 
+.hud-character-string.red-alert .hud-character {
+	animation: redalert 150ms steps(2) infinite;
+	background-image: url(/Sonic/font-red.png);
+}
+
 .hud-character-string.red .hud-character {
-	/*animation: redalert 150ms steps(2) infinite;*/
 	background-image: url(/Sonic/font-red.png);
 }
 

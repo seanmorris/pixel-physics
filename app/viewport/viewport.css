@@ -17,6 +17,10 @@ html, body {
 	display: contents;
 }
 
+.labels:empty {
+	display: none;
+}
+
 .viewport-frame {
 	display: flex;
 	flex-direction: column;
