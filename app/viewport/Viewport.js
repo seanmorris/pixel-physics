@@ -618,6 +618,10 @@ export class Viewport extends View
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 
+		this.buildDetect();
+		this.cpuDetect();
+		this.gpuDetect();
+
 		this.onTimeout(100, () => this.fitScale(false));
 
 		this.onTimeout(21500, () => {
@@ -1832,7 +1836,7 @@ export class Viewport extends View
 
 			ga('send', 'event', {
 				eventCategory: 'fps-check',
-				eventAction: 'fps-check',
+				eventAction: `fps-check::${navigator.platform}::cores_${navigator.hardwareConcurrency}`,
 				eventLabel: `${this.args.actName}`,
 				eventValue: Math.trunc(this.args.fps)
 			});
@@ -1880,7 +1884,7 @@ export class Viewport extends View
 
 		if(!Number(this.args.rings.args.value))
 		{
-			this.args.ringLabel.args.color = 'red';
+			this.args.ringLabel.args.color = 'red-alert';
 		}
 		else
 		{
@@ -3223,5 +3227,61 @@ export class Viewport extends View
 		this.onFrameOut(135, () => this.args.speedBonus.args.value = speedBonus);
 		this.onFrameOut(180, () => this.args.totalBonus.args.value = totalBonus);
 		this.onFrameOut(420, () => this.args.actClear = false);
+	}
+
+	cpuDetect()
+	{
+		try{
+			ga('send', 'event', {
+				eventCategory: 'cpu',
+				eventAction:   'cores',
+				eventLabel:    `core check`,
+				eventValue:    navigator.hardwareConcurrency
+			});
+		}
+		catch (error) {
+			ga && ga('send', 'event', {
+				eventCategory: 'cpu',
+				eventAction:   'core check fail',
+				eventLabel:    `Cpu Detect Failure: ${error}`
+			});
+		}
+	}
+
+	gpuDetect()
+	{
+		try{
+			this.gpuDetector = this.gpuDetector || document.createElement('canvas').getContext('webgl');
+
+			const debug  = this.gpuDetector.getExtension('WEBGL_debug_renderer_info');
+			const vendor = this.gpuDetector.getParameter(debug.UNMASKED_VENDOR_WEBGL);
+			const gpu    = this.gpuDetector.getParameter(debug.UNMASKED_RENDERER_WEBGL);
+
+			ga('send', 'event', {
+				eventCategory: 'gpu',
+				eventAction:   vendor,
+				eventLabel:    gpu
+			});
+		}
+		catch (error) {
+			ga && ga('send', 'event', {
+				eventCategory: 'gpu',
+				eventAction:   'fail',
+				eventLabel:    `Gpu Detect Failure: ${error}`
+			});
+		}
+	}
+
+	buildDetect()
+	{
+		const buildTag = document.head.querySelector('meta[name="x-build-time"]');
+
+		const build = buildTag.getAttribute('content');
+
+		ga && ga('send', 'event', {
+			eventCategory: 'build',
+			eventAction:   'build check',
+			eventLabel:    build
+		});
 	}
 }
