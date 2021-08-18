@@ -15,11 +15,14 @@ export const CanPop = {
 
 		if(other && other.controllable)
 		{
-			ga('send', 'event', {
-				eventCategory: 'badnik',
-				eventAction: 'damaged-player',
-				eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
-			});
+			if(typeof ga === 'function')
+  			{
+				ga('send', 'event', {
+					eventCategory: 'badnik',
+					eventAction: 'damaged-player',
+					eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
+				});
+			}
 
 			other.damage(this);
 		}

@@ -20,7 +20,7 @@
 	background-color: black;
 	color: white;
 
-	transition: opacity 500ms 250ms linear, filter 500ms linear;
+	transition: opacity 500ms 250ms linear, filter 750ms linear;
 
 	pointer-events: initial;
 
@@ -89,14 +89,18 @@
 	opacity: 1;
 }
 
+.screen-card-thank-you-card.opening,
 .screen-card-webkit-card.opening,
 .screen-card-debian-card.opening {
 	opacity: 0;
 	filter: blur(0px);
 }
 
+.screen-card-thank-you-card.closed,
+.screen-card-thank-you-card.closing,
 .screen-card-webkit-card.closed,
 .screen-card-debian-card.closed,
+.screen-card-gamepad-card.closed,
 .screen-card-debian-card.closing {
 	opacity: 0;
 	filter: blur(5px) saturate(0);
@@ -138,6 +142,16 @@
 	width: 128px;
 	height: 128px;
 	content: ' ';
+}
+
+.gamepad-svg {
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url(/ui/genesis-controller.svg);
+	width: 128px;
+	height: 128px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .spindash-charge .chromium-logo {
@@ -198,6 +212,7 @@
 	transform: translateY(0%);
 }
 
+.screen-card-thank-you-card .title-emblem,
 .screen-card-title-screen-card .title-emblem {
 	width: 256px;
 	height: 200px;
@@ -205,6 +220,14 @@
 	margin-bottom: -30px;
 	background-image: url(/Sonic/title-screen-emblem.png);
 	transition: transform 1s 1.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.screen-card-thank-you-card > .main-elements-container {
+	text-align: center;
+}
+
+.screen-card-thank-you-card .title-emblem {
+	filter: saturate(0) opacity(0.25);
 }
 
 .screen-card-title-screen-card.opening .backdrop {
@@ -225,6 +248,25 @@
 	opacity: 0;
 }
 
+.screen-card .player-waving {
+	z-index: 1000;
+	position: absolute;
+	bottom: 24px;
+	right: 25%;
+	animation: player-waving steps(1) infinite 240ms 1000ms forwards;
+	background-image: url(/custom/player.png);
+	transform: scale(2) rotate(-10deg) translateY(64px);
+	background-position-x: -64px;
+	background-position-y: -256px;
+	width: 64px;
+	height: 64px;
+	transition: transform 250ms 1250ms ease-out;
+}
+
+.screen-card.opened .player-waving {
+	transform: scale(2) rotate(-10deg) translateY(0px) ;
+}
+
 @keyframes press-start {
 	from{
 		opacity: 1;
@@ -234,5 +276,18 @@
 	}
 	to{
 		opacity: 1;
+	}
+}
+
+
+@keyframes player-waving {
+	from{
+		background-position-x: -128px;
+	}
+	50% {
+		background-position-x: -64px;
+	}
+	to{
+		background-position-x: -64px;
 	}
 }

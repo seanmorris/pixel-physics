@@ -50,6 +50,11 @@ export class Tails extends PointActor
 	{
 		const falling = this.args.falling;
 
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.viewport.args.audio && this.flyingSound)
 		{
 			if(!this.flyingSound.paused)

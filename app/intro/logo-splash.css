@@ -110,32 +110,32 @@ div.splash.show {
 	background-color: #BBB;
 	background-color: black;
 	color:#11559c;
-	transition: background-color 0.5s;
+	/*transition: background-color 0.5s;*/
 }
 
 div.splash.show div.center:last-child,
 div.splash.done div.center:last-child {
 	opacity: 1;
-	transition: opacity 0.25s;
+	/*transition: opacity 0.25s;*/
 }
 
 div.splash.show div.center span.min,
 div.splash.done div.center span.min {
 	opacity: 1;
-	transition: opacity 1.5s;
+	/*transition: opacity 1.5s;*/
 }
 
 div.splash.show div.center div.sm,
 div.splash.done div.center div.sm {
 	opacity: 1;
-	transition: opacity 0.5s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;
+	/*transition: opacity 0.75s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;*/
 }
 
 div.splash.done {
 	background-color: black;
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.5s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;
+	/*transition: opacity 0.75s ease-in, background-color 0.25s ease-in, filter 0.75s ease-in;*/
 }
 
 span.min {

@@ -550,11 +550,14 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 				this.args.phase = 'ready';
 
-				ga('send', 'event', {
-					eventCategory: 'boss',
-					eventAction: 'damaged-player',
-					eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
-				});
+				if(typeof ga === 'function')
+  				{
+					ga('send', 'event', {
+						eventCategory: 'boss',
+						eventAction: 'damaged-player',
+						eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
+					});
+				}
 
 				return true;
 			}
