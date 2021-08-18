@@ -10,7 +10,9 @@ export class LogoSplash extends View
 
 		this.ringSample.volume = 0.50;
 
-		this.template   = `<div class = "splash [[animation]]" style = "
+		this.template   = `
+		<div class = "player-waving"></div>
+		<div class = "splash [[animation]]" style = "
 			pointer-events: [[pointerEvents]]
 		">
 			<div class = "center">SEAN<span class = "min">MORRIS</span><div class = "sm">SM</div></div>

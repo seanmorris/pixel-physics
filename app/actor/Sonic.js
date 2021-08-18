@@ -1030,7 +1030,7 @@ export class Sonic extends PointActor
 
 	release_2()
 	{
-		if(this.args.boltDash)
+		if(!this.args.boltDash)
 		{
 			return;
 		}

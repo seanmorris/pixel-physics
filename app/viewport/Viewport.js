@@ -19,11 +19,14 @@ import { Series }   from '../intro/Series';
 import { Card }     from '../intro/Card';
 
 import { TitleScreenCard } from '../intro/TitleScreenCard';
+import { ThankYouCard } from    '../intro/ThankYouCard';
 import { LoadingCard } from '../intro/LoadingCard';
 import { BootCard } from    '../intro/BootCard';
 import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
+import { GamepadCard } from '../intro/GamepadCard';
 import { SeanCard } from    '../intro/SeanCard';
+
 import { PauseMenu } from   '../Menu/PauseMenu.js';
 import { MainMenu } from    '../Menu/MainMenu.js';
 
@@ -624,7 +627,7 @@ export class Viewport extends View
 
 		this.onTimeout(100, () => this.fitScale(false));
 
-		this.onTimeout(21500, () => {
+		this.onTimeout(23500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
 
@@ -1834,12 +1837,15 @@ export class Viewport extends View
 		{
 			ga('set', 'metric1', this.args.frameId / 60);
 
-			ga('send', 'event', {
-				eventCategory: 'fps-check',
-				eventAction: `fps-check::${navigator.platform}::cores_${navigator.hardwareConcurrency}`,
-				eventLabel: `${this.args.actName}`,
-				eventValue: Math.trunc(this.args.fps)
-			});
+			if(typeof ga === 'function')
+			{
+				ga('send', 'event', {
+					eventCategory: 'fps-check',
+					eventAction: `fps-check::${navigator.platform}::cores_${navigator.hardwareConcurrency}`,
+					eventLabel: `${this.args.actName}`,
+					eventValue: Math.trunc(this.args.fps)
+				});
+			}
 		}
 
 		if(!this.args.started)
@@ -2434,11 +2440,14 @@ export class Viewport extends View
 			this.gamepad = null;
 		}
 
-		ga('send', 'event', {
-			eventCategory: 'gamepad',
-			eventAction: 'disconnected',
-			eventLabel: event.gamepad.id
-		});
+		if(typeof ga ==='function')
+		{
+			ga('send', 'event', {
+				eventCategory: 'gamepad',
+				eventAction: 'disconnected',
+				eventLabel: event.gamepad.id
+			});
+		}
 	}
 
 	getColCell(actor)
@@ -2706,7 +2715,7 @@ export class Viewport extends View
 
 		const cards = [];
 
-		cards.push(...this.homeCards());
+		cards.push(...this.returnHomeCards());
 
 		this.args.titlecard = new Series({cards}, this);
 
@@ -2721,7 +2730,8 @@ export class Viewport extends View
 			new LoadingCard({timeout: 350, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
 			, new DebianCard({timeout: 4500})
-			, new WebkitCard({timeout: 5500})
+			, new WebkitCard({timeout: 3500})
+			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
 		]
@@ -2738,6 +2748,16 @@ export class Viewport extends View
 		];
 	}
 
+	returnHomeCards()
+	{
+		const titlecard = this.args.zonecard = new Titlecard({}, this);
+
+		return  [
+			new ThankYouCard({timeout: 5000}, this)
+			, ...this.homeCards()
+		];
+	}
+
 	record()
 	{
 		this.reset();
@@ -2747,6 +2767,7 @@ export class Viewport extends View
 		this.replayInputs = [];
 
 		this.args.isRecording  = true;
+		this.args.isReplaying  = false;
 		this.args.hasRecording = true;
 		this.args.paused       = false
 
@@ -2767,6 +2788,7 @@ export class Viewport extends View
 		this.args.frameId = 0;
 
 		this.args.isReplaying = true;
+		this.args.isRecording = false;
 
 		this.startLevel();
 

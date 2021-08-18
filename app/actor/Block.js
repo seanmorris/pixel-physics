@@ -259,13 +259,6 @@ export class Block extends PointActor
 	activate()
 	{
 		this.args.active = true;
-
-		this.viewport.onFrameOut(10, () => {
-			if(this.args.active)
-			{
-				this.ease.start();
-			}
-		});
 	}
 
 	deactivate()
