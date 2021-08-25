@@ -38,7 +38,22 @@ export class MainMenu extends Menu
 
 				, children: {
 
-					'Radical City Zone': {
+					'Sonic Control Tutorial': {
+						subtext: 'Learn the controls for Sonic'
+						, callback: () => {
+							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
+
+							this.parent.args.networked = false;
+							this.parent.tileMap = tileMap;
+
+							tileMap.ready.then(() => {
+								this.parent.startLevel();
+								this.accept();
+							});
+						}
+					}
+
+					, 'Radical City Zone': {
 						subtext: 'Gotta go fast!'
 						, callback: () => {
 							const tileMap = new TileMap({ mapUrl: '/map/empty-zone.json' });
@@ -63,21 +78,6 @@ export class MainMenu extends Menu
 							this.parent.tileMap = tileMap;
 
 							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
-						}
-					}
-
-					, 'Sonic Control Tutorial': {
-						subtext: 'Learn the controls for Sonic'
-						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
 
 							tileMap.ready.then(() => {
 								this.parent.startLevel();
