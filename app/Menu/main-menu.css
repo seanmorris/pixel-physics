@@ -105,7 +105,8 @@
 .screen-card-main-menu .unavailable:focus::after {
 	display: initial;
 
-	font-size: 0.45em;
+	transform: scale(50%);
+	transform-origin: top left;
 
 	position: absolute;
 	left: 0;

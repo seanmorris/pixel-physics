@@ -60,6 +60,8 @@ export class Block extends PointActor
 	{
 		super.onRendered(event);
 
+		this.droop(0);
+
 		if(this.screen)
 		{
 			return;
