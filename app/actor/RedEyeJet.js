@@ -286,7 +286,7 @@ export class RedEyeJet extends PointActor
 			this.args.ropeLength = 8;
 			this.args.maxSpeed   = 12;
 
-			if(this.args.phaseFrameId > 300)
+			if(this.args.phaseFrameId > 100)
 			{
 				console.log(this.args.phaseFrameId);
 
@@ -295,7 +295,7 @@ export class RedEyeJet extends PointActor
 		}
 		else
 		{
-			this.args.ropeLength = 128;
+			this.args.ropeLength = 144;
 		}
 
 		if(this.args.phase === 'attacking')

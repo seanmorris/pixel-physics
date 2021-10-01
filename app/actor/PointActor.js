@@ -109,6 +109,8 @@ export class PointActor extends View
 
 		this[ Bindable.NoGetters ] = true;
 
+		this.defaultDisplay = 'initial';
+
 		this.stepCache = {};
 
 		this.fallTime  = 0;
@@ -636,7 +638,6 @@ export class PointActor extends View
 
 					const frame = this.viewport.serializePlayer();
 
-
 					this.viewport.onFrameOut(5, () => {
 
 						if(frame.input)
@@ -1093,11 +1094,16 @@ export class PointActor extends View
 
 		const drag = this.getLocalDrag();
 
-		const regions = this.viewport.regionsAtPoint(this.x, this.y);
+		let regions = new Set;
 
-		for(const region of this.regions)
+		if(!this.noClip)
 		{
-			region.updateActor(this);
+			regions = this.viewport.regionsAtPoint(this.x, this.y);
+
+			for(const region of this.regions)
+			{
+				region.updateActor(this);
+			}
 		}
 
 		let gSpeedMax = this.public.gSpeedMax;
@@ -1522,12 +1528,15 @@ export class PointActor extends View
 
 				for(const region of regionsBelow)
 				{
-					if(this.y+1 === region.y - region.public.height
+					if((this.broad || this.y+1 === region.y - region.public.height)
 						&& Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed
-						&& !this.args.falling
+						&& (this.broad || !this.args.falling)
 					){
-						this.args.gSpeed = Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) * Math.sign(this.args.gSpeed);
+						const speed = this.args.falling ? Math.abs(this.args.xSpeed) : Math.abs(this.args.gSpeed);
+
+						this.args.gSpeed = speed * Math.sign(this.args.gSpeed || this.args.xSpeed);
 						this.args.skimming = true;
+						this.args.y = region.y - region.public.height + -1;
 						falling = false;
 						region.skim(this);
 						break;
@@ -2033,19 +2042,19 @@ export class PointActor extends View
 
 			wasPaused || this.pause(false);
 
-			if((!this.xAxis || this.args.ignore) && this.public.gSpeed)
+			if((!this.xAxis || this.args.ignore) && this.args.gSpeed)
 			{
-				if(!this.public.grinding && this.public.rolling)
+				if(!this.args.grinding && (this.args.rolling && !this.args.groundAngle))
 				{
-					this.args.gSpeed -= this.public.decel * 1/drag * 0.06125 * Math.sign(this.public.gSpeed);
+					this.args.gSpeed -= this.args.decel * 1/drag * 0.06125 * Math.sign(this.args.gSpeed);
 				}
-				else if(!this.public.grinding)
+				else if(!this.args.grinding && !this.args.rolling)
 				{
-					this.args.gSpeed -= this.public.decel * 1/drag * Math.sign(this.public.gSpeed);
+					this.args.gSpeed -= this.args.decel * 1/drag * Math.sign(this.args.gSpeed);
 				}
 			}
 
-			if((!this.xAxis || this.args.ignore) && Math.abs(this.public.gSpeed) < this.public.decel * 1/drag)
+			if((!this.xAxis || this.args.ignore) && Math.abs(this.args.gSpeed) < this.args.decel * 1/drag)
 			{
 				this.args.gSpeed = 0;
 			}
@@ -2058,7 +2067,7 @@ export class PointActor extends View
 				{
 					case MODE_FLOOR:
 
-						slopeFactor = this.public.groundAngle / (Math.PI/2);
+						slopeFactor = this.args.groundAngle / (Math.PI/2);
 
 						if(direction > 0)
 						{
@@ -2106,7 +2115,7 @@ export class PointActor extends View
 						break;
 				}
 
-				if(this.public.rolling)
+				if(this.args.rolling)
 				{
 					if(slopeFactor < 0)
 					{
@@ -2287,7 +2296,9 @@ export class PointActor extends View
 
 		if(this.controllable || this.isVehicle)
 		{
-			this.args.groundAngle += -Math.sign(this.args.groundAngle) * 0.001 * (this.xAxis ? 25 : 10);
+			const quickSpin = this.xAxis && !this.slowSpin;
+
+			this.args.groundAngle += -Math.sign(this.args.groundAngle) * 0.001 * (quickSpin ? 25 : 10);
 		}
 
 		if(Math.abs(this.args.groundAngle) < 0.01)
@@ -4310,7 +4321,7 @@ export class PointActor extends View
 
 	crossRegionBoundary(region)
 	{
-		if(!region)
+		if(!region || this.args.static)
 		{
 			return;
 		}

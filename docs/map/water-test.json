@@ -666,6 +666,18 @@
                  "width":32,
                  "x":1552,
                  "y":6848
+                }, 
+                {
+                 "gid":2,
+                 "height":16,
+                 "id":385,
+                 "name":"snow-board",
+                 "rotation":0,
+                 "type":"snow-board",
+                 "visible":true,
+                 "width":64,
+                 "x":560,
+                 "y":7168
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -773,7 +785,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":385,
+ "nextobjectid":386,
  "orientation":"orthogonal",
  "properties":[
         {

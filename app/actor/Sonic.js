@@ -418,7 +418,7 @@ export class Sonic extends PointActor
 
 		if(this.public.standingOn && this.public.standingOn.isVehicle)
 		{
-			this.args.animation = 'standing';
+			this.args.animation = this.public.standingOn.ridingAnimation || 'standing';
 		}
 
 		if(this.args.grinding && !this.args.falling)

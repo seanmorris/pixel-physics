@@ -11,14 +11,10 @@ export class ShadeRegion extends Region
 	currentFilter = -1;
 
 	filters = [
-		'studio'
-		, 'western'
+		'western'
 		, 'heat'
 		, 'hydro'
 		, 'lava'
-		, 'frost'
-		, 'eight-bit'
-		, 'corruption'
 		, 'black-hole'
 		, 'normal'
 	];
@@ -32,8 +28,16 @@ export class ShadeRegion extends Region
 
 	onAttach()
 	{
+		super.onAttach();
+
+		this.actorFilterWrapper = new Tag('<div class = "region-filter-wrapper">');
+		this.actorColorWrapper  = new Tag('<div class = "region-color-wrapper">');
+
 		this.filterWrapper = new Tag('<div class = "region-filter-wrapper">');
 		this.colorWrapper  = new Tag('<div class = "region-color-wrapper">');
+
+		this.actorFilter = new Tag('<div class = "region-filter">');
+		this.actorColor  = new Tag('<div class = "region-color">');
 
 		this.filter = new Tag('<div class = "region-filter">');
 		this.color  = new Tag('<div class = "region-color">');
@@ -41,10 +45,18 @@ export class ShadeRegion extends Region
 		this.filterWrapper.appendChild(this.filter.node);
 		this.colorWrapper.appendChild(this.color.node);
 
-		this.mainElem = this.tags.sprite.parentNode;
+		// this.actorFilterWrapper.appendChild(this.actorFilter.node);
+		// this.actorColorWrapper.appendChild(this.actorColor.node);
+
+		// this.actorLayer = new Tag('<div class = "actor-layer">');
+
+		// this.actorLayer.appendChild(this.actorFilterWrapper.node);
+		// this.actorLayer.appendChild(this.actorColorWrapper.node);
+
+		// this.mainElem.appendChild(this.actorLayer.node);
 
 		this.tags.sprite.appendChild(this.filterWrapper.node);
-		this.mainElem.appendChild(this.colorWrapper.node);
+		this.tags.sprite.appendChild(this.colorWrapper.node);
 
 		this.text = new CharacterString({value:''});
 

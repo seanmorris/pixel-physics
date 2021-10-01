@@ -4,6 +4,8 @@ import { LayerSwitch }    from './actor/LayerSwitch';
 
 import { Region }      from './region/Region';
 import { ShadeRegion } from './region/ShadeRegion';
+import { BgShadeRegion } from './region/BgShadeRegion';
+import { FgShadeRegion } from './region/FgShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
@@ -66,6 +68,7 @@ import { Projectile } from './actor/Projectile';
 import { TextActor }  from './actor/TextActor';
 
 import { EggMobile } from './actor/EggMobile';
+import { SnowBoard }  from './actor/SnowBoard';
 import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
@@ -118,6 +121,8 @@ import { WaterController } from './actor/WaterController';
 import { TilesetSwapper } from './actor/TilesetSwapper';
 import { CutScene } from './actor/CutScene';
 
+import { HtmlFrame } from './actor/HtmlFrame';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -140,6 +145,7 @@ export const ObjectPalette = {
 	, 'drill-car':    DrillCar
 	, 'rail-car':     RailCar
 	, 'tornado':      Tornado
+	, 'snow-board':   SnowBoard
 	, 'egg-mobile':   EggMobile
 	, 'rocks-tall':   Rocks
 	, 'rocks-med':    Rocks
@@ -209,4 +215,5 @@ export const ObjectPalette = {
 	, 'cone': Cone
 	, 'orb': Orb
 	, 'cut-scene': CutScene
+	, 'html-frame': HtmlFrame
 };

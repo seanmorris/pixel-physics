@@ -49,7 +49,14 @@ export class Orb extends Mixin.from(PointActor)
 
 		const other = this.viewport.controlActor;
 
-		const speedMag  = Math.max(Math.abs(this.args.gSpeed), Math.abs(other.args.gSpeed), 14);
+		const speedMag = Math.max(
+			Math.abs(this.args.gSpeed)
+			, Math.abs(other.args.gSpeed)
+			, Math.abs(this.args.xSpeed)
+			, Math.abs(other.args.xSpeed)
+			, 8
+		);
+
 		const speedSign = Math.sign(this.args.gSpeed || this.gSpeedLast || other.args.gSpeed);
 
 		const xSpace = this.x - other.x;
@@ -63,20 +70,20 @@ export class Orb extends Mixin.from(PointActor)
 				this.args.gSpeed = speedMag * speedSign * 0.8;
 			}
 
-			if(xSpace < -160)
+			if(xSpace < -144)
 			{
 				this.args.gSpeed = speedMag * speedSign;
 			}
 
-			if(xSpace < -176)
+			if(xSpace < -160)
 			{
-				this.args.x -= xSpace + 176;
-				this.args.gSpeed = other.args.gSpeed;
+				this.args.x -= xSpace + 160;
+				this.args.gSpeed = speedMag * speedSign;
 			}
 		}
 		else if(this.args.mode || other.args.mode)
 		{
-			this.args.gSpeed = Math.max(other.args.gSpeed, this.args.gSpeed);
+			this.args.gSpeed = speedMag * speedSign;
 		}
 
 		super.update();

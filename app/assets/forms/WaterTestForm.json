@@ -1,0 +1,10 @@
+{
+	"level": {
+		"title":  "Water Level"
+		, "type": "number"
+	}
+	, "density": {
+		"title":  "Block Density"
+		, "type": "number"
+	}
+}
