@@ -1,0 +1,26 @@
+.actor-item.actor-html-frame {
+	z-index: calc(-210);
+}
+
+.actor-item.actor-html-frame svg {
+	pointer-events: none;
+}
+
+.actor-html-frame .sprite {
+	transform: scale(0.5);
+}
+
+.actor-html-frame iframe {
+	transform-origin: top left;
+	transform: scale(0.25);
+	z-index: -1000000;
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0;
+	border: 0;
+	width: 400%;
+	height: 400%;
+	max-width: none;
+	pointer-events: initial;
+}

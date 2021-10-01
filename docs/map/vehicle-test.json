@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":512,
  "infinite":false,
  "layers":[
@@ -35,7 +28,7 @@
                  "visible":true,
                  "width":32,
                  "x":200,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -53,7 +46,7 @@
                  "visible":true,
                  "width":32,
                  "x":256,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -71,7 +64,7 @@
                  "visible":true,
                  "width":32,
                  "x":296,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -94,7 +87,7 @@
                  "visible":true,
                  "width":32,
                  "x":336,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -106,7 +99,7 @@
                  "visible":true,
                  "width":40,
                  "x":48,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -118,7 +111,7 @@
                  "visible":true,
                  "width":48,
                  "x":144,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -141,7 +134,7 @@
                  "visible":true,
                  "width":40,
                  "x":96,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -153,7 +146,7 @@
                  "visible":true,
                  "width":32,
                  "x":8,
-                 "y":16096
+                 "y":16080
                 }, 
                 {
                  "gid":2,
@@ -274,7 +267,7 @@
          "value":"TEST ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -305,6 +298,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":2048
 }

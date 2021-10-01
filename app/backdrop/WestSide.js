@@ -10,7 +10,7 @@ export class WestSide extends Backdrop
 
 		this.args.strips = [
 			{
-				autoscroll: 0
+				autoscroll: 0.001
 				, parallax: 0.001
 				, url:      '/Sonic/backdrop/west-side/stars.png'
 				, height:   0
@@ -46,7 +46,7 @@ export class WestSide extends Backdrop
 				, height:   142
 			}
 			, {
-				autoscroll: 0
+				autoscroll: 0.001
 				, parallax: 0.001
 				, url:      '/Sonic/backdrop/west-side/stars-reflected.png'
 				, height:   0

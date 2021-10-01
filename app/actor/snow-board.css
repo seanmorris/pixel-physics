@@ -1,0 +1,12 @@
+.actor-item.actor-snow-board {
+	z-index: var(--z);
+}
+
+.actor-item.actor-snow-board .sprite {
+	top: 8px;
+	will-change: top;
+	transition: top 0.65s ease-in;
+	background-image: url(/Sonic/snow-board.png);
+	height: 16px;
+	width: 64px;
+}

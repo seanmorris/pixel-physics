@@ -9,9 +9,13 @@
 	--animation-steps: 4;
 	--animation-width: 14px;
 
-	animation: particle-animate steps(var(--animation-steps)) infinite 110ms;
+	animation: particle-animate steps(var(--animation-steps)) infinite 400ms;
 
 	opacity: 0.75;
+}
+
+.particle-dust.behind {
+	z-index: -10 !important;
 }
 
 .particle-skim {

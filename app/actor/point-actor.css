@@ -156,6 +156,7 @@
 }
 
 .actor-item.actor-ring {
+	contain: layout style size;
 	z-index: 100000;
 }
 
@@ -300,7 +301,7 @@
 }
 
 .actor-item {
-	position: relative;
+	position: absolute;
 	display: none;
 }
 

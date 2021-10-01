@@ -24,8 +24,10 @@
 }
 
 .backdrop.west-side {
+	/*background: linear-gradient(0deg, rgba(10,194,133,1) 40%, rgba(0,114,255,1) 100%);*/
+	/*background-color: #323292;*/
 	background-color: #1e1659;
-	filter: blur(0.5px);
+	/*filter: blur(0.5px);*/
 }
 
 .backdrop.west-side-cloudy {

@@ -68,6 +68,7 @@ import { Tails } from '../actor/Tails';
 import { Seymour } from '../actor/Seymour';
 import { Chalmers } from '../actor/Chalmers';
 
+const ActorPointCache = Symbol('actor-point-cache');
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
 
@@ -452,7 +453,7 @@ export class Viewport extends View
 		this.colCellCache = new Map;
 		this.colCells = new Map;
 
-		this.actorPointCache = new Map;
+		this[ActorPointCache] = new Map;
 
 		this.startTime = null;
 
@@ -552,15 +553,7 @@ export class Viewport extends View
 
 	fullscreen()
 	{
-		if(document.fullscreenElement)
-		{
-			document.exitFullscreen();
-			this.showStatus(3000, ' hit escape to revert. ');
-			this.showStatus(0, '');
-			this.args.focusMe.args.hide = '';
-			this.args.fullscreen = '';
-			return;
-		}
+		this.exitFullscreen();
 
 		this.args.focusMe.args.hide = 'hide';
 
@@ -577,6 +570,18 @@ export class Viewport extends View
 
 			});
 		}).catch(e =>console.error(e));
+	}
+
+	exitFullscreen()
+	{
+		if(document.fullscreenElement)
+		{
+			document.exitFullscreen();
+			this.showStatus(0, '');
+			this.args.focusMe.args.hide = '';
+			this.args.fullscreen = '';
+			return;
+		}
 	}
 
 	fitScale(fill = false)
@@ -690,6 +695,8 @@ export class Viewport extends View
 		keyboard.listening = true
 
 		keyboard.focusElement = this.tags.viewport.node;
+
+		this.tags.viewport.node.focus();
 
 		if(0 || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches)
 		{
@@ -938,6 +945,11 @@ export class Viewport extends View
 			this.fullscreen();
 		}
 
+		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
+		{
+			this.exitFullscreen();
+		}
+
 		if(!this.args.networked && !this.args.paused)
 		{
 			if(!this.dontSwitch && controller.buttons[11] && controller.buttons[11].time === 1)
@@ -1068,15 +1080,15 @@ export class Viewport extends View
 				break;
 
 			case 'airplane': {
-				const xSpeed     = this.controlActor.args.standingOn && this.controlActor.args.standingOn.public.xSpeed;
+				const xSpeed     = this.controlActor.args.standingOn && this.controlActor.args.standingOn.args.xSpeed;
 				const absSpeed   = Math.abs(xSpeed);
 				const shiftSpeed = 5;
 
 				cameraSpeed = 10;
 
-				const speedBias = Math.min(absSpeed / 40, 0.0001) * -Math.sign(xSpeed);
+				const speedBias = Math.max(absSpeed / 100, 0.35) * -Math.sign(xSpeed);
 
-				this.args.xOffsetTarget = 0.5 + speedBias * 0.5;
+				this.args.xOffsetTarget = 0.5 + speedBias;
 				this.args.yOffsetTarget = 0.5;
 				break;
 
@@ -1167,13 +1179,21 @@ export class Viewport extends View
 
 		}
 
-		if(['normal', 'bridge', 'airplane'].includes(this.controlActor.args.cameraMode))
+		if(['normal', 'bridge', 'aerial'].includes(this.controlActor.args.cameraMode))
 		{
-			const gSpeed     = this.controlActor.public.gSpeed;
-			const xSpeed     = this.controlActor.public.xSpeed;
-			const absSpeed   = Math.abs(gSpeed || xSpeed);
+			let actor = this.controlActor;
+
+			if(actor.args.standingOn)
+			{
+				actor = actor.args.standingOn;
+			}
+
+			const gSpeed     = actor.public.gSpeed;
+			const xSpeed     = actor.public.xSpeed;
+			const grounded   = !actor.public.falling;
+			const absSpeed   = Math.abs(grounded ? gSpeed : xSpeed);
 			const shiftSpeed = 15;
-			const speedBias = Math.min(absSpeed / 15, 1) * -Math.sign(gSpeed);
+			const speedBias = Math.min(absSpeed / 15, 1) * -Math.sign(gSpeed || xSpeed);
 
 			switch(this.controlActor.args.mode)
 			{
@@ -1540,7 +1560,7 @@ export class Viewport extends View
 			{
 				actor.render(this.tags.actors);
 
-				actor.args.display = 'initial';
+				actor.args.display = actor.defaultDisplay || null;
 
 				if(actor.onAttach && actor.onAttach() === false)
 				{
@@ -1561,7 +1581,7 @@ export class Viewport extends View
 
 				// this.auras.add( actor );
 
-				actor.args.display = 'initial';
+				actor.args.display = actor.defaultDisplay || null;
 			}
 		}
 
@@ -1926,7 +1946,7 @@ export class Viewport extends View
 		this.args.rippleFrame = this.args.frameId % 128;
 		this.args.displaceWater = this.args.frameId % 128;
 
-		this.actorPointCache.clear();
+		this[ActorPointCache].clear();
 
 		if(this.controlActor)
 		{
@@ -2153,7 +2173,7 @@ export class Viewport extends View
 
 					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
 					{
-						actor.args.display = 'initial';
+						actor.args.display = actor.defaultDisplay || null;
 
 						if(!actor.vizi)
 						{
@@ -2246,7 +2266,7 @@ export class Viewport extends View
 
 			this.auras.add(this.controlActor);
 
-			this.controlActor.args.display = 'initial';
+			this.controlActor.args.display = this.controlActor.defaultDisplay || null;
 
 			this.controlActor.nodes.map(n => this.tags.actors.append(n));
 
@@ -2359,7 +2379,7 @@ export class Viewport extends View
 	actorsAtPoint(x, y, w = 0, h = 0)
 	{
 		const cacheKey = x + '::' + y;
-		const actorPointCache = this.actorPointCache;
+		const actorPointCache = this[ActorPointCache];
 
 		if(actorPointCache.has(cacheKey))
 		{
@@ -2377,7 +2397,7 @@ export class Viewport extends View
 				// 	continue;
 				// }
 
-				const actorArgs = actor.public;
+				const actorArgs = actor.args;
 
 				const actorX = actorArgs.x;
 				const actorY = actorArgs.y;
@@ -2630,7 +2650,7 @@ export class Viewport extends View
 		}
 
 		this.spawn.clear();
-		this.actorPointCache.clear();
+		this[ActorPointCache].clear();
 
 		this.args.isRecording = false;
 		this.args.isReplaying = false;
@@ -2946,6 +2966,11 @@ export class Viewport extends View
 
 	serializePlayer()
 	{
+		if(!this.controlActor || !this.controlActor.controller)
+		{
+			return {};
+		}
+
 		const frame = this.args.frameId;
 		const input = this.controlActor.controller.serialize();
 		const args  = {

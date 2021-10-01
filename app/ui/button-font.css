@@ -261,16 +261,16 @@
 	top: -0.25em;
 }
 
-.hud-character[data-value="-62"]{
+.hud-character[data-value="9541"]{
 	background-image: url(/ui/numpad-directions.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
-	width: 28px;
-	height: 48px;
-	transform: translateY(-16px);
+	background-size: contain;
+	width: 24px;
+	height: 32px;
 }
 
-.input-generic .hud-character[data-value="-62"]{
+.input-generic .hud-character[data-value="9541"]{
 	background-image: url(/ui/generic-button-rs.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -280,7 +280,7 @@
 	transform: translateY(-0.35em);
 }
 
-.input-xbox .hud-character[data-value="-62"]{
+.input-xbox .hud-character[data-value="9541"]{
 	background-image: url(/ui/xbox-button-rs.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -290,7 +290,7 @@
 	transform: translateY(-0.35em);
 }
 
-.input-playstation .hud-character[data-value="-62"]{
+.input-playstation .hud-character[data-value="9541"]{
 	background-image: url(/ui/playstation-button-rs.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;

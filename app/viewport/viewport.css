@@ -54,7 +54,7 @@ section.filters {
 }
 
 .viewport .viewport-bg-layers {
-	/*contain: size layout;*/
+	contain: size layout;
 }
 
 .viewport.mouse-moved {
@@ -197,7 +197,7 @@ section.filters {
 }
 
 .viewport-overlay {
-	/*contain: strict;*/
+	contain: strict;
 	position: absolute;
 	pointer-events: none;
 	top: 0px;
@@ -253,6 +253,11 @@ section.filters {
 
 /*.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet) canvas,*/
 
+.viewport-content > *,
+.viewport-particles > * {
+	contain: layout size;
+}
+
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block) {
@@ -293,6 +298,7 @@ section.filters {
 }
 .viewport-zoom .blurAngleCancel {
 	transform:rotate(calc(-1rad * var(--blurAngle)));
+	contain: layout size;
 }
 
 span.arrow-east,
@@ -488,7 +494,6 @@ input[type=number]::-webkit-outer-spin-button {
 .viewport-actors,
 .viewport-particles {
 	display: contents;
-	/*contain: strict;*/
 }
 
 .viewport-particles {

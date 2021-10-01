@@ -2,6 +2,10 @@ import { PointActor } from './PointActor';
 
 export class Ring extends PointActor
 {
+	template = `<div class  = "point-actor [[type]]">
+		<div class = "sprite" cv-ref = "sprite"></div>
+	</div>`;
+
 	constructor(...args)
 	{
 		super(...args);
@@ -13,9 +17,6 @@ export class Ring extends PointActor
 		this.args.static = true;
 		this.args.gone   = false;
 		this.args.float  = -1;
-		this.sample = new Audio('/Sonic/ring-collect.wav');
-		this.sample.volume = 0.15 + (Math.random() * -0.05);
-
 		this.args.gravity = 0.24 * 2;
 	}
 
@@ -107,8 +108,14 @@ export class Ring extends PointActor
 
 		this.args.type = 'actor-item actor-ring collected';
 
-		if(this.viewport.args.audio && this.sample)
+		if(this.viewport.args.audio)
 		{
+			if(!this.sample)
+			{
+				this.sample = new Audio('/Sonic/ring-collect.wav');
+				this.sample.volume = 0.15 + (Math.random() * -0.05);
+			}
+
 			this.sample.play();
 		}
 

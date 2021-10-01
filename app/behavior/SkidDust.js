@@ -30,34 +30,40 @@ export class SkidDust extends Behavior
 			return;
 		}
 
-		if(Math.sign(host.public.gSpeed) === Math.sign(direction))
-		{
-			return;
-		}
-
 		if(Math.abs(host.public.gSpeed - direction) < 5)
 		{
 			return;
 		}
 
-		if(!host.skidding)
+		if(!host.alwaysSkidding)
 		{
-			return;
+			if(Math.sign(host.public.gSpeed) === Math.sign(direction))
+			{
+				return;
+			}
+
+			if(!host.skidding)
+			{
+				return;
+			}
 		}
 
 		const viewport  = host.viewport;
+		const dustFreq  = host.distFreq || 2;
 
-		if(viewport.args.frameId % 2 !== 0)
+		if(viewport.args.frameId % dustFreq !== 0)
 		{
 			return;
 		}
 
 		const dustParticle = new Tag(`<div class = "${this.dustType}">`);
 
-		const dustPoint = host.rotatePoint(host.public.gSpeed, 0);
+		const dustDist = Math.sign(host.args.gSpeed) * host.dustDist || 0;
+
+		const dustPoint = host.rotatePoint(host.args.gSpeed, 0);
 
 		dustParticle.style({
-			'--x': dustPoint[0] + host.x
+			'--x': dustPoint[0] + dustDist + host.x
 			, '--y': dustPoint[1] + host.y
 			, 'z-index': 0
 			, opacity: Math.random() * 2
@@ -65,8 +71,8 @@ export class SkidDust extends Behavior
 
 		viewport.particles.add(dustParticle);
 
-		setTimeout(() => {
+		viewport.onFrameOut(20, () => {
 			viewport.particles.remove(dustParticle);
-		}, 350);
+		});
 	}
 }

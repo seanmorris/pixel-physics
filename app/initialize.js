@@ -7,6 +7,10 @@ const viewportA = new Viewport;
 
 document.addEventListener('DOMContentLoaded', function() {
 
+	console.log('Starting...');
+
+	// setTimeout(()=>console.log(window.myfunc(512, 512)), 1500);
+
 	if(navigator.serviceWorker)
 	{
 		navigator.serviceWorker.register('/worker-cache.js');

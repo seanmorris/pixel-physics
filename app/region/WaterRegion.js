@@ -75,11 +75,11 @@ export class WaterRegion extends Region
     			</defs>
 			<svg>`);
 
-			this.filterWrapper.appendChild(this.filter.node);
 			this.colorWrapper.appendChild(this.color.node);
+			this.filterWrapper.appendChild(this.filter.node);
 
-			this.tags.sprite.appendChild(this.filterWrapper.node);
 			this.tags.sprite.appendChild(this.colorWrapper.node);
+			this.tags.sprite.appendChild(this.filterWrapper.node);
 			this.mask.render(this.tags.sprite);
 
 			this.tags.sprite.style({'--maskImage': `url(#mask-${this.args.id})`});

@@ -1,3 +1,4 @@
+import { Tag } from 'curvature/base/Tag';
 import { PointActor } from '../actor/PointActor';
 
 export class Region extends PointActor
@@ -37,6 +38,11 @@ export class Region extends PointActor
 		this.skimmers = new WeakSet;
 	}
 
+	onAttach()
+	{
+		this.mainElem = new Tag(this.tags.sprite.parentNode);
+	}
+
 	skim(actor)
 	{
 		this.skimmers.add(actor);
@@ -59,7 +65,7 @@ export class Region extends PointActor
 		const topBoundry  = -this.viewport.args.y - (this.y - this.args.height);
 		const leftBoundry = -16 + -this.viewport.args.x - this.x;
 
-		this.tags.sprite && this.tags.sprite.style({
+		this.mainElem && this.mainElem.style({
 			'--viewportWidth':    this.viewport.args.width  + 'px'
 			, '--viewportHeight': this.viewport.args.height + 'px'
 			, '--leftBoundry':    leftBoundry + 'px'
