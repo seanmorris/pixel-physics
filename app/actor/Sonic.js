@@ -202,6 +202,8 @@ export class Sonic extends PointActor
 			{
 				this.willStick = false;
 			}
+
+			this.pincherBg.args.scale = 0;
 		}
 
 		if(this.lightDashingCoolDown > 0)
@@ -318,7 +320,7 @@ export class Sonic extends PointActor
 				}
 				else
 				{
-					if(this.yAxis > 0.5)
+					if(this.yAxis > 0.5 && !this.args.ignore)
 					{
 						this.args.animation = 'crouching';
 
@@ -329,7 +331,7 @@ export class Sonic extends PointActor
 							this.args.cameraBias = -0.5;
 						}
 					}
-					else if(this.yAxis < -0.5)
+					else if(this.yAxis < -0.5 && !this.args.ignore)
 					{
 						this.args.animation = 'looking-up';
 
@@ -1050,6 +1052,11 @@ export class Sonic extends PointActor
 
 	command_3()
 	{
+		if(this.args.ignore && !this.isSuper)
+		{
+			return;
+		}
+
 		this.isSuper = !this.isSuper;
 
 		this.onTimeout(150, () =>{

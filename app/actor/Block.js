@@ -60,7 +60,7 @@ export class Block extends PointActor
 	{
 		super.onRendered(event);
 
-		this.droop(0);
+		this.onNextFrame(() => this.droop(0));
 
 		if(this.screen)
 		{
@@ -168,10 +168,19 @@ export class Block extends PointActor
 				return false;
 			}
 
-			const otherTop = other.y - other.public.height;
-			const blockTop = this.y  - this.public.height;
+			const otherTop  = other.y - other.public.height;
+			const blockTop  = this.y  - this.public.height;
+			const halfWidth = this.args.width / 2;
 
-			if((other.y <= blockTop) && (other.public.falling === false || other.args.ySpeed > 0))
+			if(other.args.falling
+				&& other.y - blockTop < 16
+				&& other.args.ySpeed >= 0
+				&& Math.abs(other.x - this.x) < (halfWidth - 16)
+			){
+				other.args.y = blockTop;
+			}
+
+			if((other.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
 			{
 				return true;
 			}

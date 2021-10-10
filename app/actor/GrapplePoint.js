@@ -1,7 +1,9 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
+import { Mixin } from 'curvature/base/Mixin';
+import { Constrainable } from '../mixin/Constrainable';
 
-export class GrapplePoint extends PointActor
+export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 {
 	constructor(...args)
 	{
@@ -22,37 +24,27 @@ export class GrapplePoint extends PointActor
 		this.noClip = true;
 	}
 
-	onAttached()
+	updateEnd()
 	{
-		this.box = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
+		super.update();
 
-		this.chain = new Tag('<div class = "chain">');
-
-		this.sprite.appendChild(this.chain.node);
-	}
-
-	findNextStep()
-	{
-		return false;
-	}
-
-	update()
-	{
 		if(!this.args._tiedTo)
 		{
 			const tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
 
 			this.args._tiedTo = tiedTo;
 
-			tiedTo.hanging.set(this.constructor, this);
+			if(tiedTo)
+			{
+				tiedTo.hanging.set(this.constructor, this);
+			}
 
 			return;
 		}
 
 		const tiedTo = this.args._tiedTo;
 
-		if(!tiedTo.args.falling)
+		if(!tiedTo || !tiedTo.args.falling)
 		{
 			this.args.groundAngle = -1.57;
 			return false;
@@ -60,33 +52,9 @@ export class GrapplePoint extends PointActor
 
 		this.args.falling = true;
 
-		super.update();
-
-		const xDist = tiedTo.x - this.x;
-		const yDist = tiedTo.y - this.y;
-
-		const dist  = Math.sqrt(yDist**2 + xDist**2);
-		const angle = Math.atan2(yDist, xDist);
-
-		const maxDist = this.args.ropeLength || 64;
-
-		if(this.chain)
+		if(this.hooked)
 		{
-			this.chain.style({'--distance':Math.min(dist, maxDist)});
-		}
-
-
-		this.args.groundAngle = -(angle + Math.PI / 2);
-
-		if(dist >= maxDist)
-		{
-			const xNext = tiedTo.x - Math.cos(angle) * maxDist - tiedTo.args.xSpeed;
-			const yNext = tiedTo.y - Math.sin(angle) * maxDist - tiedTo.args.ySpeed;
-
-			this.args.xSpeed -= Math.cos(angle + Math.PI);
-			this.args.ySpeed -= Math.sin(angle + Math.PI);
-
-			if(this.hooked && this.hooked.xAxis && this.args.ySpeed > 0)
+			if(this.hooked.xAxis && this.args.ySpeed > 0)
 			{
 				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
 				{
@@ -94,20 +62,6 @@ export class GrapplePoint extends PointActor
 				}
 			}
 
-			this.args.x = xNext;
-			this.args.y = yNext;
-
-			this.viewport.setColCell(this);
-
-			if(this.x === tiedTo.x && !tiedTo.args.xSpeed)
-			{
-				this.args.ySpeed = 0;
-			}
-		}
-
-
-		if(this.hooked)
-		{
 			this.hooked.args.x = this.x;
 			this.hooked.args.y = this.y + this.hooked.args.height;
 
@@ -122,7 +76,20 @@ export class GrapplePoint extends PointActor
 				this.hooked.args.direction = -1;
 			}
 		}
+
+		super.updateEnd();
+
+		if(this.args._tiedTo)
+		{
+			this.setPos();
+		}
+		else
+		{
+			this.noClip = true;
+		}
 	}
+
+	update(){}
 
 	collideB(other)
 	{

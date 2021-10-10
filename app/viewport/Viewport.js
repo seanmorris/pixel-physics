@@ -71,6 +71,7 @@ import { Chalmers } from '../actor/Chalmers';
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellsNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cell');
+const Run = Symbol('run');
 
 export class Viewport extends View
 {
@@ -209,6 +210,8 @@ export class Viewport extends View
 				i.remove();
 			}
 		});
+
+		this[Run] = 0;
 
 		this.effects = new Bag;
 
@@ -1179,11 +1182,11 @@ export class Viewport extends View
 
 		}
 
-		if(['normal', 'bridge', 'aerial'].includes(this.controlActor.args.cameraMode))
+		if(['normal', 'bridge', 'cliff', 'aerial'].includes(this.controlActor.args.cameraMode))
 		{
 			let actor = this.controlActor;
 
-			if(actor.args.standingOn)
+			if(actor.args.standingOn && (actor.args.standingOn.args.gSpeed || actor.args.standingOn.args.xSpeed || actor.args.standingOn.args.ySpeed))
 			{
 				actor = actor.args.standingOn;
 			}
@@ -1550,6 +1553,8 @@ export class Viewport extends View
 			const objClass = ObjectPalette[objType];
 			const rawActor = objClass.fromDef(objDef);
 
+			rawActor[Run] = this[Run];
+
 			rawActor[ Bindable.NoGetters ] = true;
 
 			const actor = Bindable.make(rawActor);
@@ -1607,7 +1612,7 @@ export class Viewport extends View
 		}
 	}
 
-	actorIsOnScreen(actor, margin = 256)
+	actorIsOnScreen(actor, margin = 512)
 	{
 		if(!actor)
 		{
@@ -1661,7 +1666,11 @@ export class Viewport extends View
 				if(spawn.frame <= this.args.frameId)
 				{
 					this.spawn.delete(spawn);
+
 					spawn.object[ Bindable.NoGetters ] = true;
+
+					spawn.object[Run] = this[Run];
+
 					this.actors.add(Bindable.make(spawn.object));
 
 					const isRegion = spawn.object instanceof Region;
@@ -1699,6 +1708,8 @@ export class Viewport extends View
 				this.spawn.delete(spawn);
 
 				spawn.object[ Bindable.NoGetters ] = true;
+
+				spawn.object[Run] = this[Run];
 
 				this.actors.add(Bindable.make(spawn.object));
 
@@ -1741,17 +1752,6 @@ export class Viewport extends View
 		{
 			actor.colliding = false;
 		}
-
-		// for(const i in nearbyCells)
-		// {
-		// 	const cell   = nearbyCells[i];
-		// 	const actors = cell;
-
-		// 	for(const actor of actors)
-		// 	{
-
-		// 	}
-		// }
 	}
 
 	actorUpdate(actor)
@@ -1764,16 +1764,6 @@ export class Viewport extends View
 		this.updated.add(actor);
 
 		actor.update();
-
-		// for(const i in nearbyCells)
-		// {
-		// 	const cell   = nearbyCells[i];
-		// 	const actors = cell;
-
-		// 	for(const actor of actors)
-		// 	{
-		// 	}
-		// }
 	}
 
 	actorUpdateEnd(actor)
@@ -1790,15 +1780,6 @@ export class Viewport extends View
 		actor.updateEnd();
 
 		this.setColCell(actor);
-		// for(const i in nearbyCells)
-		// {
-		// 	const cell   = nearbyCells[i];
-		// 	const actors = cell;
-
-		// 	for(const actor of actors)
-		// 	{
-		// 	}
-		// }
 	}
 
 	nearbyActors(actor)
@@ -2052,42 +2033,66 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				this.actorUpdateStart(actor);
+				if(actor[Run] === this[Run])
+				{
+					this.actorUpdateStart(actor);
+				}
 			}
 
 			if(this.controlActor)
 			{
-				this.actorUpdateStart(this.controlActor);
+				if(this.controlActor[Run] === this[Run])
+				{
+					this.actorUpdateStart(this.controlActor);
+				}
 			}
 
 			for(const actor of updatable)
 			{
-				this.actorUpdate(actor);
+				if(actor[Run] === this[Run])
+				{
+					this.actorUpdate(actor);
+				}
 			}
 
 			if(this.controlActor)
 			{
-				this.actorUpdate(this.controlActor);
+				if(this.controlActor[Run] === this[Run])
+				{
+					this.actorUpdate(this.controlActor);
+				}
 			}
 
 			for(const actor of updatable)
 			{
-				this.actorUpdateEnd(actor);
+				if(actor[Run] === this[Run])
+				{
+					this.actorUpdateEnd(actor);
+				}
 			}
 
 			if(this.controlActor)
 			{
-				this.actorUpdateEnd(this.controlActor);
+				if(this.controlActor[Run] === this[Run])
+				{
+					this.actorUpdateEnd(this.controlActor);
+				}
 			}
 
 			for(const actor of updatable)
 			{
-				this.setColCell(actor);
+				if(actor[Run] === this[Run])
+				{
+					this.setColCell(actor);
+				}
 			}
 
 			if(this.controlActor)
 			{
-				this.setColCell(this.controlActor);
+				if(this.controlActor[Run] === this[Run])
+				{
+					this.setColCell(this.controlActor);
+				}
 			}
 
 			if(this.collisions)
@@ -2164,6 +2169,11 @@ export class Viewport extends View
 			{
 				for(const actor of actorList)
 				{
+					if(actor[Run] !== this[Run])
+					{
+						continue;
+					}
+
 					if(!actor.nodes.length)
 					{
 						actor.render(this.tags.actors);
@@ -2215,6 +2225,12 @@ export class Viewport extends View
 
 			for(const actor of this.recent)
 			{
+				if(actor[Run] !== this[Run])
+				{
+					this.recent.delete(actor);
+					continue;
+				}
+
 				const actorIsOnScreen = this.actorIsOnScreen(actor);
 
 				if(actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen)
@@ -2590,15 +2606,32 @@ export class Viewport extends View
 
 	reset()
 	{
+		this[Run]++;
+
+		this.stop();
+
 		this.tileMap.replacements.clear();
 		this.tileMap.tileSetCache.clear();
 		this.tileMap.tileCache.clear();
 
+		this.callFrames.clear();
+		this.callIntervals.clear();
+		this.collisions.clear();
+		this.colCellCache.clear();
+		this.colCells.clear();
+		this.regions.clear();
+		this.spawn.clear();
+		this.auras.clear();
+
+		this.updateStarted.clear();
+		this.updateEnded.clear();
+		this.updated.clear();
+
+		this.objectDb.clear()
+
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade = false;
-
-		this.stop();
 
 		const layers = this.tileMap.tileLayers;
 
@@ -2621,23 +2654,15 @@ export class Viewport extends View
 			layer.args.offsetYChanged = 0;
 		}
 
-		for(const i in this.actors.list)
+		for(const actor of this.actors.items())
 		{
-			const actor = this.actors.list[i];
-
 			this.actors.remove(actor);
 		}
 
 		this.controlActor && this.actors.remove(this.controlActor);
+		this.nextControl = null;
 
-		this.callFrames.clear();
-		this.callIntervals.clear();
-		this.collisions.clear();
-		this.colCellCache.clear();
-		this.colCells.clear();
-		this.regions.clear();
-		this.spawn.clear();
-		this.auras.clear();
+		this.actorsById = {};
 
 		for(const effect of this.effects.list)
 		{
@@ -2682,11 +2707,8 @@ export class Viewport extends View
 		this.args.speedBonus.args.value = 0;
 		this.args.totalBonus.args.value = 0;
 
-
-		for(const i in this.actors.list)
+		for(const actor of this.actors.items())
 		{
-			const actor = this.actors.list[i];
-
 			this.actors.remove(actor);
 		}
 
@@ -2694,6 +2716,10 @@ export class Viewport extends View
 		{
 			layer.args.destroyed = false;
 		}
+
+		this.willDetach.clear();
+
+		this.objectDb.clear();
 
 		this.args.isRecording = false;
 		this.args.isReplaying = false;

@@ -39,7 +39,7 @@ export class WoodenCrate extends BreakableBlock
 			return true;
 		}
 
-		if(other.args.rolling)
+		if(other.args.rolling || other.args.bouncing)
 		{
 			this.break();
 			return false;

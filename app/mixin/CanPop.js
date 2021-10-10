@@ -52,7 +52,7 @@ export const CanPop = {
 
 		setTimeout(() => this.screen && this.screen.remove(), 1024);
 
-		this.box.setAttribute('data-animation', 'broken');
+		this.box && this.box.setAttribute('data-animation', 'broken');
 
 		if(other && other.dashed)
 		{
