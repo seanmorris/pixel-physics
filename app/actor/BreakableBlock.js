@@ -122,6 +122,8 @@ export class BreakableBlock extends Block
 
 	break(other)
 	{
+		this.broken = true;
+
 		this.box.classList.add('broken');
 
 		this.box.classList.add('breaking');
@@ -130,9 +132,9 @@ export class BreakableBlock extends Block
 			this.box.classList.remove('breaking');
 		});
 
-		if(other && other.public.mode % 2 === 0)
+		if(other && other.args.mode % 2 === 0)
 		{
-			const x = other.public.xSpeed || other.public.gSpeed;
+			const x = other.args.xSpeed || other.args.gSpeed;
 
 			if(other.isVehicle)
 			{
@@ -148,8 +150,6 @@ export class BreakableBlock extends Block
 		{
 			this.refresher = true;
 		}
-
-		this.broken = true;
 
 		this.args.active = 1;
 	}

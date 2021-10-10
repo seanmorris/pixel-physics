@@ -69,6 +69,11 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 		this.dispatchEvent(after);
 	}
 
+	clear()
+	{
+		this.index.clear();
+	}
+
 	get(key)
 	{
 		return this.index.get(key);

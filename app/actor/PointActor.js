@@ -834,6 +834,8 @@ export class PointActor extends View
 
 				viewport.reset();
 				viewport.startLevel();
+
+				return;
 			}
 
 			this.viewport && this.viewport.setColCell(this);
@@ -859,9 +861,12 @@ export class PointActor extends View
 
 			let jumpBlock = this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]);
 
+			// console.log(jumpBlock);
+
 			if(Array.isArray(jumpBlock))
 			{
-				jumpBlock = !!jumpBlock.filter(a => !a.args.platform && !a.isVehicle).length;
+
+				jumpBlock = !!jumpBlock.filter(a => a.solid && !a.args.platform && !a.isVehicle).length;
 			}
 
 			if(!this.args.falling && this.checkBelow(this.x, this.y) && jumpBlock)
@@ -2700,7 +2705,7 @@ export class PointActor extends View
 
 			this.onNextFrame(()=>{
 				this.args.gSpeed += dropBoost
-				if(this.yAxis >= 0)
+				if(this.yAxis >= 0 && !this.args.ignore)
 				{
 					this.args.rolling = true;
 				}
@@ -3031,7 +3036,7 @@ export class PointActor extends View
 
 				this.args.gSpeed = 0;
 			}
-			else if(this.canRoll && this.yAxis > 0.55)
+			else if(this.canRoll && this.yAxis > 0.55 && !this.args.ignore)
 			{
 				this.args.rolling = true;
 			}
@@ -3112,7 +3117,7 @@ export class PointActor extends View
 			// }
 		}
 
-		if(xAxis < 0)
+		if(xAxis < 0 && (this.args.gSpeed || !this.args.ignore))
 		{
 			if(!this.public.climbing)
 			{
@@ -3125,7 +3130,7 @@ export class PointActor extends View
 			}
 		}
 
-		if(xAxis > 0)
+		if(xAxis > 0 && (this.args.gSpeed || !this.args.ignore))
 		{
 			if(!this.public.climbing)
 			{
@@ -4232,7 +4237,7 @@ export class PointActor extends View
 				});
 			});
 
-			this.twister.render(this.sprite);
+			this.twister.render(this.twistFilter.node);
 
 			this.onRemove(() => this.twistFilter.remove());
 		}
@@ -4263,7 +4268,7 @@ export class PointActor extends View
 
 			this.args.yOff = 16;
 
-			this.pincherBg.render(this.sprite);
+			this.pincherBg.render(this.pinchFilterBg);
 
 			this.onRemove(() => this.pinchFilterBg.remove());
 		}

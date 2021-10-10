@@ -16,16 +16,14 @@ export const Constrainable = {
 
 			this.args._tiedTo = tiedTo;
 
-			if(!tiedTo.hanging.has(this.constructor))
+			if(tiedTo && !tiedTo.hanging.has(this.constructor))
 			{
 				tiedTo.hanging.set(this.constructor, new Set);
+				const hangList = tiedTo.hanging.get(this.constructor);
+				hangList.add(this);
+				this.onRemove(() => hangList.delete(this));
 			}
 
-			const hangList = tiedTo.hanging.get(this.constructor);
-
-			hangList.add(this);
-
-			this.onRemove(() => hangList.delete(this));
 		}
 	}
 
@@ -48,7 +46,7 @@ export const Constrainable = {
 			return false;
 		}
 
-		this.args.ropeLength = tiedTo.args.ropeLength;
+		this.args.ropeLength = this.args.ropeLength || tiedTo.args.ropeLength;
 
 		this.args.falling = true;
 
@@ -60,7 +58,10 @@ export const Constrainable = {
 
 		const maxDist = this.args.ropeLength || 64;
 
-		this.chain.style({'--distance':Math.min(dist, maxDist)});
+		if(this.chain)
+		{
+			this.chain.style({'--distance':Math.min(dist, maxDist)});
+		}
 
 		this.args.groundAngle = -(angle + Math.PI / 2);
 
@@ -77,7 +78,10 @@ export const Constrainable = {
 			this.args.x = xNext - (tiedTo.args.xSpeed / 5);
 			this.args.y = yNext;
 
-			this.viewport.setColCell(this);
+			if(this.viewport)
+			{
+				this.viewport.setColCell(this);
+			}
 
 			if(this.x === tiedTo.x && !tiedTo.args.xSpeed)
 			{
