@@ -93,17 +93,20 @@
 .actor-item.actor-knuckles[data-animation="climbing"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -480px;
+	transform: scaleX(-1);
 }
 
 .actor-item.actor-knuckles[data-animation="climbing-up"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -480px;
+	transform: scaleX(-1);
 	animation: knuckles-climbing steps(3) infinite 256ms;
 }
 
 .actor-item.actor-knuckles[data-animation="climbing-down"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -480px;
+	transform: scaleX(-1);
 	animation: knuckles-climbing steps(3) infinite 256ms reverse;
 }
 

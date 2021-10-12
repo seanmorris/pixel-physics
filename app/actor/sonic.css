@@ -98,13 +98,12 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -512px !important;
 
-	transform: rotate(calc(1rad * var(--ground-angle)));
-
-	animation: sonic-drop steps(1) 1 80ms forwards;
+	animation: sonic-drop steps(3) 1 100ms 100ms forwards;
 }
 
 .actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
 	transform: rotate(calc(1rad * var(--ground-angle))) translateX(32px);
+	left: -32px;
 }
 
 
@@ -325,7 +324,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

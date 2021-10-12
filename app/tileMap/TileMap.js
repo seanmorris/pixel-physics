@@ -187,16 +187,23 @@ export class TileMap
 
 		if(y >= mapData.height || y < 0)
 		{
-			if(layerId !== 0)
+			if(y < 0 || !this.meta.get('wrapY'))
 			{
-				this.tileNumberCache.set(tileKey, false);
+				if(layerId !== 0)
+				{
+					this.tileNumberCache.set(tileKey, false);
 
-				return false;
+					return false;
+				}
+
+				this.tileNumberCache.set(tileKey, 1);
+
+				return 1;
 			}
-
-			this.tileNumberCache.set(tileKey, 1);
-
-			return 1;
+			else
+			{
+				y = y % this.mapData.height;
+			}
 		}
 
 		const tileIndex = (y * mapData.width) + x;

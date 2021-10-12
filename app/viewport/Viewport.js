@@ -1052,7 +1052,12 @@ export class Viewport extends View
 
 		let cameraSpeed = 30;
 
-		const actor     = this.controlActor;
+		let actor = this.controlActor;
+
+		if(actor.args.standingOn && (actor.args.standingOn.isVehicle))
+		{
+			actor = actor.args.standingOn;
+		}
 
 		const highJump  = actor.public.highJump;
 		const deepJump  = actor.public.deepJump;
@@ -1073,17 +1078,17 @@ export class Viewport extends View
 			this.maxCameraBound = 64;
 		}
 
-		switch(this.controlActor.args.cameraMode)
+		switch(actor.args.cameraMode)
 		{
 			case 'normal':
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
 				this.maxCameraBound = 64;
-				cameraSpeed = 15;
+				cameraSpeed = 25;
 				break;
 
 			case 'airplane': {
-				const xSpeed     = this.controlActor.args.standingOn && this.controlActor.args.standingOn.args.xSpeed;
+				const xSpeed     = actor.args.xSpeed;
 				const absSpeed   = Math.abs(xSpeed);
 				const shiftSpeed = 5;
 
@@ -1097,14 +1102,14 @@ export class Viewport extends View
 
 			}
 
-			case 'railcar-aerial':
-			case 'railcar-normal':
-				this.args.xOffsetTarget = 0.5;
-				this.args.yOffsetTarget = 0.5;
-				this.maxCameraBound = 0;
-				cameraSpeed = 0;
+			// case 'railcar-aerial':
+			// case 'railcar-normal':
+			// 	this.args.xOffsetTarget = 0.5;
+			// 	this.args.yOffsetTarget = 0.5;
+			// 	this.maxCameraBound = 0;
+			// 	cameraSpeed = 0;
 
-				break;
+			// 	break;
 
 			case 'aerial':
 				this.args.xOffsetTarget = 0.5;
@@ -1121,7 +1126,7 @@ export class Viewport extends View
 					{
 						this.args.yOffsetTarget = 0.25;
 
-						cameraSpeed = 15;
+						// cameraSpeed = 15;
 					}
 				}
 				else
@@ -1142,7 +1147,7 @@ export class Viewport extends View
 
 			case 'cliff':
 
-				this.args.xOffsetTarget = 0.50 + -0.02 * this.controlActor.public.direction;
+				this.args.xOffsetTarget = 0.50 + -0.02 * actor.args.direction;
 				this.args.yOffsetTarget = 0.45;
 
 				cameraSpeed = 30;
@@ -1182,15 +1187,8 @@ export class Viewport extends View
 
 		}
 
-		if(['normal', 'bridge', 'cliff', 'aerial'].includes(this.controlActor.args.cameraMode))
+		if(['normal', 'bridge', 'cliff', 'aerial'].includes(actor.args.cameraMode))
 		{
-			let actor = this.controlActor;
-
-			if(actor.args.standingOn && (actor.args.standingOn.args.gSpeed || actor.args.standingOn.args.xSpeed || actor.args.standingOn.args.ySpeed))
-			{
-				actor = actor.args.standingOn;
-			}
-
 			const gSpeed     = actor.public.gSpeed;
 			const xSpeed     = actor.public.xSpeed;
 			const grounded   = !actor.public.falling;
@@ -1198,37 +1196,44 @@ export class Viewport extends View
 			const shiftSpeed = 15;
 			const speedBias = Math.min(absSpeed / 15, 1) * -Math.sign(gSpeed || xSpeed);
 
-			switch(this.controlActor.args.mode)
+			switch(actor.args.mode)
 			{
 				case 0:
 					this.args.xOffsetTarget = 0.5 + speedBias * 0.35;
-					this.args.yOffsetTarget = 0.6;
+					this.args.yOffsetTarget = 0.55;
 					break;
 
 				case 1:
-					this.args.xOffsetTarget = 0.25;
+					this.args.xOffsetTarget = 0.33;
 					this.args.yOffsetTarget = 0.50 + speedBias * 0.35;
 					break;
 
 				case 2:
 					this.args.xOffsetTarget = 0.5 - speedBias * 0.35;
-					this.args.yOffsetTarget = 0.3;
+					this.args.yOffsetTarget = 0.45;
 					break;
 
 				case 3:
-					this.args.xOffsetTarget = 0.75;
+					this.args.xOffsetTarget = 0.66;
 					this.args.yOffsetTarget = 0.50 - speedBias * 0.35;
 					break;
 			}
 		}
 
-		this.args.yOffsetTarget += this.controlActor.args.cameraBias;
+		let ySpeedBias = 0;
 
-		// if(this.controlActor.args.cameraBias)
-		// {
-		// 	cameraSpeed = 15;
-		// 	cameraSpeed = 15;
-		// }
+		if(actor.args.falling && actor.args.ySpeed > 20)
+		{
+			ySpeedBias = -0.5 + -(actor.args.ySpeed / actor.args.ySpeedMax);
+		}
+
+		this.args.yOffsetTarget += (actor.args.cameraBias + ySpeedBias);
+
+		if(this.args.wallStick)
+		{
+			cameraBound = Math.abs(actor.y - this.args.y);
+			cameraSpeed *= 3;
+		}
 
 		if(cameraSpeed)
 		{
@@ -1244,13 +1249,16 @@ export class Viewport extends View
 			this.args.yOffset = this.args.yOffsetTarget;
 		}
 
-		const center = actor.rotatePoint(0, -actor.public.height / 2);
+		const center = actor.rotatePoint(0, -actor.args.height / 2);
 
-		const xNext = -actor.x + center[0] + this.args.width  * this.args.xOffset;
-		const yNext = -actor.y + center[1] + this.args.height * this.args.yOffset;
+		const actorX = center[0] + -actor.x;
+		const actorY = center[1] + -actor.y;
 
-		const yDiff = this.args.y - yNext;
-		const xDiff = this.args.x - xNext;
+		const xNext = actorX + center[0] + this.args.width  * this.args.xOffset;
+		const yNext = actorY + center[1] + this.args.height * this.args.yOffset;
+
+		const yDiff = this.args.y + -yNext;
+		const xDiff = this.args.x + -xNext;
 
 		const distance = Math.sqrt(xDiff ** 2 + yDiff ** 2);
 		const angle    = Math.atan2(yDiff, xDiff);
@@ -1274,7 +1282,7 @@ export class Viewport extends View
 			x = 96;
 		}
 
-		if(y > 96)
+		if(y > 96 && !this.meta.wrapY)
 		{
 			y = 96;
 		}
@@ -1287,7 +1295,7 @@ export class Viewport extends View
 			x = xMax;
 		}
 
-		if(y < yMax)
+		if(y < yMax && !this.meta.wrapY)
 		{
 			y = yMax;
 		}

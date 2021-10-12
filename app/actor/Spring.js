@@ -124,8 +124,6 @@ export class Spring extends PointActor
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 
-
-
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
 		if(other.controller)
@@ -157,7 +155,6 @@ export class Spring extends PointActor
 
 		other.args.jumping = false;
 
-
 		other.impulse(
 			this.args.power
 			, rounded
@@ -170,19 +167,19 @@ export class Spring extends PointActor
 			|| other.args.mode !== 0
 		){
 			other.args.falling = true;
+			other.args.gSpeed = 0;
 			other.args.mode = 0;
 		}
 
-		other.args.xSpeed = Math.cos(rounded) * 1;
-		other.args.ySpeed = Math.sin(rounded) * 1;
+		other.args.xSpeed = Number(Number(Math.cos(rounded) * 1).toFixed(3));
+		other.args.ySpeed = Number(Number(Math.sin(rounded) * 1).toFixed(3));
 
-		other.args.ignore = 1;
+		other.args.ignore = -3;
 
 		this.onNextFrame(()=>{
 			other.args.groundAngle = 0;
 			if(!other.args.falling)
 			{
-				other.args.ignore = 8;
 			}
 		});
 	}
