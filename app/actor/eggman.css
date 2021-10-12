@@ -44,7 +44,7 @@
 	transform: translateY(28px);
 	height: 46px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: eggman-jump steps(9) infinite 160ms reverse;
+	animation: eggman-jump steps(8) infinite 160ms reverse;
 }
 
 .actor-item.actor-eggman[data-animation="rolling"] .sprite:after {
@@ -53,7 +53,7 @@
 	transform: translateY(28px);
 	height: 46px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: eggman-jump steps(9) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 128ms);
+	animation: eggman-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 128ms) + 160ms);
 }
 
 .actor-item.actor-eggman[data-animation="crouching"] .sprite:after {
@@ -95,7 +95,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-576px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-512px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

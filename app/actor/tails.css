@@ -55,6 +55,8 @@
 .actor-item.actor-tails[data-animation="flying"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -320px;
+
+	left: 8px;
 }
 
 .actor-item.actor-tails[data-animation="skidding"] .sprite:after {
@@ -160,9 +162,10 @@
 }
 
 .actor-item.actor-tails[data-animation="flying"] .tails-tails {
+	animation: tails-animate steps(var(--animation-steps)) infinite 50ms;
 	--sprite-offset-y: -64px;
 	--animation-steps: 2;
 	top: 24px;
-	left: 8px;
+	left: 16px;
 	transform-origin: 42px 16px;
 }

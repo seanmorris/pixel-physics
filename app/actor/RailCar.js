@@ -15,6 +15,8 @@ export class RailCar extends Vehicle
 
 		this.removeTimer = null;
 
+		this.args.cartSpeed = this.args.cartSpeed || 15;
+
 		this.args.gSpeedMax = 20;
 		this.args.decel     = 0.00;
 		this.args.accel     = 0.75;
@@ -53,16 +55,7 @@ export class RailCar extends Vehicle
 
 	update()
 	{
-		if(this.public.falling)
-		{
-			this.args.cameraMode = 'railcar-aerial';
-		}
-		else
-		{
-			this.args.cameraMode = 'railcar-normal';
-		}
-
-		this.originalSpeed = this.public.gSpeed || this.public.xSpeed;
+		this.originalSpeed = this.args.gSpeed || this.args.xSpeed;
 
 		const lastX = this.x;
 
@@ -70,7 +63,7 @@ export class RailCar extends Vehicle
 
 		const nowX = this.x;
 
-		if(this.public.gSpeed !== 0 || this.public.xSpeed !== 0)
+		if(this.args.gSpeed !== 0 || this.args.xSpeed !== 0)
 		{
 			this.sprite.classList.add('moving');
 
@@ -85,31 +78,35 @@ export class RailCar extends Vehicle
 			{
 				const viewport = this.viewport;
 
-				if(this.public.falling && (!this.public.xSpeed && !this.public.ySpeed))
+				if(this.args.falling && (!this.args.xSpeed && !this.args.ySpeed))
 				{
 					this.breakApart();
 				}
-				else if(!this.public.falling && !this.public.gSpeed)
+				else if(!this.args.falling && !this.args.gSpeed)
 				{
 					this.breakApart();
 				}
 			}
 		}
 
-		if(this.occupant && !this.public.falling)
+		if(this.occupant && !this.args.falling)
 		{
-			if(Math.abs(this.public.gSpeed) < Math.abs(this.public.cartSpeed) || Math.sign(this.public.gSpeed) !== Math.sign(this.public.cartSpeed))
+			if(Math.abs(this.args.gSpeed) < Math.abs(this.args.cartSpeed) || Math.sign(this.public.gSpeed) !== Math.sign(this.public.cartSpeed))
 			{
-				this.args.gSpeed += Math.sign(this.public.cartSpeed) * 0.125;
+				this.args.gSpeed += Math.sign(this.args.cartSpeed) * 0.125;
 			}
 
 			this.args.direction = Math.sign(this.args.gSpeed);
+		}
+		else
+		{
+			this.args.gSpeed = this.args.xSpeed;
 		}
 	}
 
 	breakApart()
 	{
-		if(!this.public.broken)
+		if(!this.args.broken)
 		{
 			const viewport = this.viewport;
 
@@ -141,6 +138,11 @@ export class RailCar extends Vehicle
 	}
 
 	processInputDirect()
+	{
+		// Don't process input at all.
+	}
+
+	jump()
 	{
 		// Don't process input at all.
 	}

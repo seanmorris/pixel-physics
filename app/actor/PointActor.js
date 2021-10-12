@@ -111,6 +111,8 @@ export class PointActor extends View
 
 		this.defaultDisplay = 'initial';
 
+		this.springing = false;
+
 		this.stepCache = {};
 
 		this.fallTime  = 0;
@@ -252,7 +254,7 @@ export class PointActor extends View
 		this.args.xSpeedMax = 512;
 		this.args.ySpeedMax = 512;
 		this.args.gSpeedMax    = WALKING_SPEED;
-		this.args.rollSpeedMax = 34;
+		this.args.rollSpeedMax = 24;
 		this.args.gravity   = 0.65;
 		this.args.decel     = 0.85;
 		this.args.accel     = 0.2;
@@ -264,7 +266,7 @@ export class PointActor extends View
 		this.args.deepJump = false;
 		this.args.highJump = false;
 
-		this.maxStep   = 6;
+		this.maxStep   = 14;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
@@ -791,6 +793,9 @@ export class PointActor extends View
 
 	update()
 	{
+		const startX = this.x;
+		const startY = this.y;
+
 		if(this.viewport && this.args.respawning && !this.viewport.args.isRecording && !this.viewport.args.isReplaying)
 		{
 			const stored = this.viewport.getCheckpoint(this.args.id);
@@ -866,7 +871,7 @@ export class PointActor extends View
 			if(Array.isArray(jumpBlock))
 			{
 
-				jumpBlock = !!jumpBlock.filter(a => a.solid && !a.args.platform && !a.isVehicle).length;
+				jumpBlock = !!jumpBlock.filter(a => !a.args.platform && !a.isVehicle).length;
 			}
 
 			if(!this.args.falling && this.checkBelow(this.x, this.y) && jumpBlock)
@@ -891,10 +896,11 @@ export class PointActor extends View
 
 		this.args.skimming = false;
 
-		this.args.airAngle = this.airAngle;
 
 		if(this.args.falling)
 		{
+			this.args.airAngle = this.airAngle;
+
 			if(this.args.displayAngle !== this.args.groundAngle)
 			{
 				const angleDiff = this.args.groundAngle + -this.args.displayAngle;
@@ -907,6 +913,8 @@ export class PointActor extends View
 		}
 		else
 		{
+			this.args.airAngle = 0;
+
 			this.args.displayAngle = this.args.groundAngle;
 		}
 
@@ -928,14 +936,18 @@ export class PointActor extends View
 			this.args.currentSheild.update(this);
 		}
 
-		if(this.public.rolling)
+		if(this.args.rolling)
 		{
-			this.args.height = this.public.rollingHeight || this.args.height;
+			this.args.height = this.args.rollingHeight || this.args.height;
 		}
-		// else if(this.canRoll)
-		// {
-		// 	this.args.height = this.public.normalHeight || this.args.height;
-		// }
+		else if(this.args.jumping)
+		{
+			this.args.height = this.args.rollingHeight || this.args.height;
+		}
+		else if(this.canRoll)
+		{
+			this.args.height = this.args.normalHeight || this.args.height;
+		}
 
 		if(this.args.dontJump > 0)
 		{
@@ -997,8 +1009,8 @@ export class PointActor extends View
 
 		if(this.impulseMag !== null)
 		{
-			this.args.xSpeed += Math.cos(this.impulseDir) * this.impulseMag;
-			this.args.ySpeed += Math.sin(this.impulseDir) * this.impulseMag;
+			this.args.xSpeed += Number(Number(Math.cos(this.impulseDir) * this.impulseMag).toFixed(3));
+			this.args.ySpeed += Number(Number(Math.sin(this.impulseDir) * this.impulseMag).toFixed(3));
 
 			if(!this.impulseFal)
 			{
@@ -1031,14 +1043,14 @@ export class PointActor extends View
 			this.impulseFal   = null;
 		}
 
-		if(this.public.ignore === -2 && this.public.falling === false)
+		if(this.public.ignore === -2 && (this.public.falling === false || this.args.ySpeed > 64))
 		{
 			this.args.ignore = 0;
 		}
 
 		if(this.public.ignore === -3 && (!this.public.falling || this.public.ySpeed >= 0))
 		{
-			this.args.ignore = 0;
+			this.onNextFrame(() => this.args.ignore = 0);
 		}
 
 		if(this.public.ignore < 1 && this.public.ignore > 0)
@@ -1357,7 +1369,7 @@ export class PointActor extends View
 
 		const tileMap = this.viewport.tileMap;
 
-		if(Math.abs(this.args.gSpeed) <= 1 && !this.args.falling)
+		if(Math.abs(this.args.gSpeed) <= 5 && !this.args.falling)
 		{
 			if(!this.stayStuck && !this.args.climbing)
 			{
@@ -1369,43 +1381,41 @@ export class PointActor extends View
 
 					this.lastAngles = [];
 
-					if(mode === MODE_LEFT && this.args.groundAngle <= 0.1)
+					if(mode === MODE_LEFT && this.args.groundAngle <= (Math.PI / 4))
 					{
-						this.args.xSpeed = 1;
+						this.args.xSpeed = 0;
+
 						this.args.mode = MODE_FLOOR
 						this.args.falling = true;
 						this.args.groundAngle = -Math.PI / 2;
 						this.args.x++;
 
-						if(this.args.gSpeed <= 0)
-						{
-							this.args.gSpeed = 0;
-						}
+						this.args.gSpeed = 0;
 
-						this.args.gSpeed++;
+						this.args.gSpeed += 15;
 
-						this.args.ignore = 15;
+						this.args.ignore = 12;
 
 					}
-					else if(mode === MODE_RIGHT && this.args.groundAngle >= -0.1)
+					else if(mode === MODE_RIGHT && this.args.groundAngle >= -(Math.PI / 4))
 					{
-						this.args.xSpeed = -1;
+						this.args.xSpeed = -0;
+
 						this.args.mode = MODE_FLOOR
 						this.args.falling = true;
 						this.args.groundAngle = Math.PI / 2;
 						this.args.x--;
 
-						if(this.args.gSpeed >= 0)
-						{
-							this.args.gSpeed = 0;
-						}
+						this.args.gSpeed = 0;
 
-						this.args.gSpeed--;
+						this.args.gSpeed -= 15;
 
-						this.args.ignore = 15;
+						this.args.ignore = 12;
 					}
 					else if(mode === MODE_CEILING)
 					{
+						this.args.xSpeed = 0;
+
 						this.args.y++;
 						this.args.ignore = 8;
 						this.args.falling = true;
@@ -1413,19 +1423,23 @@ export class PointActor extends View
 
 						const gSpeed = this.args.gSpeed;
 
+						this.args.groundAngle = Math.PI;
+						this.args.mode = MODE_FLOOR;
+
 						this.onNextFrame(() => {
-							this.willJump = false
 							this.args.groundAngle = Math.PI;
-							this.args.xSpeed = -gSpeed;
 							this.args.mode = MODE_FLOOR;
+
+							this.willJump = false
+							this.args.xSpeed = -gSpeed;
 						});
 
-						if(this.public.direction == -1)
+						if(Math.sign(this.args.xSpeed) === -1)
 						{
 							this.args.facing = 'left'
 							this.args.x++;
 						}
-						else
+						else if(Math.sign(this.args.xSpeed) === 1)
 						{
 							this.args.facing = 'right'
 							this.args.x--;
@@ -1444,14 +1458,27 @@ export class PointActor extends View
 			this.args.y = (this.public.y);
 		}
 
+
 		if(!this.noClip && !this.public.falling && !this.isRegion)
 		{
 			if(this.public.mode === MODE_FLOOR && !this.public.gSpeed && !this.public.xSpeed)
 			{
+				let execs = 0;
+
+				const heading = Math.atan2(startY - this.y, startX - this.x);
+
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
+
 				while(this.getMapSolidAt(this.x, this.y - 1, false))
 				{
-					this.args.ySpeed = 0;
-					this.args.y--;
+					this.args.x += Math.cos(heading);
+					this.args.y += Math.sin(heading);
+
+					if(execs++ > 1000)
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -1540,10 +1567,18 @@ export class PointActor extends View
 						const speed = this.args.falling ? Math.abs(this.args.xSpeed) : Math.abs(this.args.gSpeed);
 
 						this.args.gSpeed = speed * Math.sign(this.args.gSpeed || this.args.xSpeed);
-						this.args.skimming = true;
-						this.args.y = region.y - region.public.height + -1;
-						falling = false;
-						region.skim(this);
+
+						if(this.y - 16 < region.y - region.public.height)
+						{
+							this.args.skimming = true;
+							this.args.y = region.y - region.public.height + -1;
+							falling = false;
+							region.skim(this);
+						}
+						else
+						{
+							this.args.ySpeed--;
+						}
 						break;
 					}
 				}
@@ -1588,6 +1623,7 @@ export class PointActor extends View
 		if(!this.args.falling)
 		{
 			this.checkDropDash();
+			this.args.jumping = false;
 		}
 
 		for(const behavior of this.behaviors)
@@ -1813,44 +1849,38 @@ export class PointActor extends View
 
 							let falling = !!this.public.gSpeed;
 
-							// const regionsBelow = this.viewport.regionsAtPoint(this.groundPoint[0], this.groundPoint[1]+1);
-
-							// for(const region of regionsBelow)
-							// {
-							// 	if(Math.floor(this.y+1) === region.y - region.public.height
-							// 		&& Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed
-							// 	){
-							// 		this.args.gSpeed = Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) * Math.sign(this.args.gSpeed);
-
-							// 		region.skim(this);
-
-							// 		falling = false;
-							// 		break;
-							// 	}
-							// }
-
 							this.args.falling = falling;
 
 							break;
 
 						case MODE_CEILING:
 
+							this.args.y++;
+
 							this.args.float = this.args.float < 0 ? this.args.float : 1;
 
 							this.args.falling = true;
 
-							this.args.y += 2;
+							this.args.mode         = MODE_FLOOR;
+							this.args.groundAngle  = Math.PI;
 
-							this.onNextFrame(() => {
+							this.args.xSpeed       = -gSpeed * Math.cos(gAngle);
+							this.args.ySpeed       = gSpeed * Math.sin(gAngle);
 
-								this.args.xSpeed       = -gSpeed * Math.cos(gAngle);
-								this.args.ySpeed       = gSpeed * Math.sin(gAngle);
+							this.args.displayAngle = Math.PI;
 
-								this.args.mode         = MODE_FLOOR;
+							this.lastAngles.splice(0);
 
-								this.args.groundAngle  = 0; //Math.PI;
-								this.args.displayAngle = Math.PI;
-							});
+							// this.args.direction *= -1;
+
+							// this.args.facing = this.args.facing === 'left' ? 'right' : 'left';
+
+							this.args.ignore = 3;
+
+							// this.onNextFrame(() => {
+							// 	this.args.groundAngle = Math.PI;
+							// 	this.args.mode = MODE_FLOOR;
+							// });
 
 							break;
 
@@ -2047,15 +2077,22 @@ export class PointActor extends View
 
 			wasPaused || this.pause(false);
 
-			if((!this.xAxis || this.args.ignore) && this.args.gSpeed)
-			{
-				if(!this.args.grinding && (this.args.rolling && !this.args.groundAngle))
+			if(!(this.args.direction === Math.sign(this.args.gSpeed)
+				&&(
+					(this.args.gSpeed > 0 && this.args.mode === MODE_LEFT)
+					|| (this.args.gSpeed < 0 && this.args.mode === MODE_RIGHT)
+				)
+			)){
+				if((!this.xAxis || this.args.ignore) && this.args.gSpeed)
 				{
-					this.args.gSpeed -= this.args.decel * 1/drag * 0.06125 * Math.sign(this.args.gSpeed);
-				}
-				else if(!this.args.grinding && !this.args.rolling)
-				{
-					this.args.gSpeed -= this.args.decel * 1/drag * Math.sign(this.args.gSpeed);
+					if(!this.args.grinding && (this.args.rolling && !this.args.groundAngle))
+					{
+						this.args.gSpeed -= this.args.decel * 1/drag * 0.06125 * Math.sign(this.args.gSpeed);
+					}
+					else if(!this.args.grinding && !this.args.rolling)
+					{
+						this.args.gSpeed -= this.args.decel * 1/drag * Math.sign(this.args.gSpeed);
+					}
 				}
 			}
 
@@ -2270,21 +2307,21 @@ export class PointActor extends View
 
 	updateAirPosition()
 	{
-		let xSpeedOriginal = this.public.xSpeed;
-		let ySpeedOriginal = this.public.ySpeed;
+		let xSpeedOriginal = this.args.xSpeed;
+		let ySpeedOriginal = this.args.ySpeed;
 
 		this.args.standingLayer = null;
 
 		const viewport  = this.viewport;
-		const radius    = Math.ceil(this.public.width / 2);
-		const direction = Math.sign(this.public.xSpeed);
+		const radius    = Math.ceil(this.args.width / 2);
+		const direction = Math.sign(this.args.xSpeed);
 
 		let lastPoint  = [this.x, this.y];
 		let lastPointB = [this.x, this.y];
 
 		const tileMap = this.viewport.tileMap;
 
-		const cSquared  = this.public.xSpeed**2 + this.public.ySpeed**2;
+		const cSquared  = this.args.xSpeed**2 + this.args.ySpeed**2;
 		const airSpeed  = cSquared ? Math.sqrt(cSquared) : 0;
 
 		this.args.airSpeed = airSpeed;
@@ -2301,9 +2338,9 @@ export class PointActor extends View
 
 		if(this.controllable || this.isVehicle)
 		{
-			const quickSpin = this.xAxis && !this.slowSpin;
+			const quickSpin = this.springing; //this.xAxis && !this.slowSpin;
 
-			this.args.groundAngle += -Math.sign(this.args.groundAngle) * 0.001 * (quickSpin ? 25 : 10);
+			this.args.groundAngle += -Math.sign(this.args.groundAngle) * 0.001 * (quickSpin ? 125 : 50);
 		}
 
 		if(Math.abs(this.args.groundAngle) < 0.01)
@@ -2325,12 +2362,12 @@ export class PointActor extends View
 
 		this.upScan = true;
 
-		// const upDistanceB = this.castRay(
-		// 	Math.abs(this.public.ySpeed) + upMargin + 1
-		// 	, -Math.PI / 2
-		// 	, [Math.sign(this.args.groundAngle)*3, 0]
-		// 	, this.findSolid
-		// );
+		const upDistanceB = this.castRay(
+			Math.abs(this.public.ySpeed) + upMargin + 1
+			, -Math.PI / 2
+			, [1, 0]
+			, this.findSolid
+		);
 
 		const upDistance = this.castRay(
 			Math.abs(this.public.ySpeed) + upMargin + 1
@@ -2340,11 +2377,18 @@ export class PointActor extends View
 
 		this.upScan = false;
 
-		const downDistance = this.castRay(
-			Math.abs(this.public.ySpeed) + 1
-			, Math.PI / 2
-			, this.findSolid
-		);
+		// const downDistance = this.castRay(
+		// 	Math.abs(this.public.ySpeed) + 1
+		// 	, Math.PI / 2
+		// 	, this.findSolid
+		// );
+
+		// const downDistanceB = this.castRay(
+		// 	Math.abs(this.args.ySpeed) + 1
+		// 	, Math.PI / 2
+		// 	, [Math.sign(this.args.xSpeed), 0]
+		// 	, this.findSolid
+		// );
 
 		let hits = [];
 
@@ -2358,7 +2402,7 @@ export class PointActor extends View
 
 			const distances = [foreDistanceHead, foreDistanceWaist];
 
-			if(this.controllable)
+			if(this.controllable && !this.args.flying && !this.args.rolling)
 			{
 				distances.push(foreDistanceFoot);
 			}
@@ -2384,44 +2428,62 @@ export class PointActor extends View
 		// 	upcollisionAngle = Math.atan2(3, upDistance - upDistanceB)
 		// }
 
-		if(this.public.ySpeed < 0 && upDistance > 0)
-		{
-			this.args.ignore = 1;
+		const willStick = this.willStick || this.args.deepJump;
 
+		if(this.args.ySpeed < 0
+			&& upDistance > 0
+			&& (!this.args.flying || this.canStick)
+			&& (this.args.jumping || this.args.xSpeed)
+		){
+			this.args.ignore = 1;
 			this.args.y     += (upMargin - upDistance);
 			this.args.ySpeed = ySpeedOriginal = 0;
 
-			blockers = this.getMapSolidAt(this.x, this.y);
-
-			if(Array.isArray(blockers) && !this.public.flying)
-			{
-				const stickers = blockers.filter(a => a.canStick);
-
-				if(this.willStick && this.willStick !== 2 && stickers.length)
-				{
-					this.args.gSpeed = Math.floor(-xSpeedOriginal);
-					this.args.mode = MODE_CEILING;
-					this.args.falling = false;
-				}
-			}
-			else if(this.willStick && this.willStick !== 2 && !this.public.flying)
-			{
-				const blockers = this.getMapSolidAt(this.x, this.y-1);
-				const stickers = Array.isArray(blockers) && blockers.filter(a=>a.canStick);
-
-				if(!blockers.length || (blockers.length && stickers.length))
-				{
-					this.args.gSpeed = Math.floor(-xSpeedOriginal);
-					this.args.mode = MODE_CEILING;
-					this.args.falling = false;
-				}
-			}
-
 			return;
 		}
-		else if(!this.willStick && hits.length)
-		{
-			const direction = Math.sign(this.xSpeedLast);
+
+		if(willStick
+			&& this.args.ySpeed < 0
+			&& upDistance > 0
+			&& (!this.args.flying || this.canStick)
+		){
+
+			let upBlockers = this.getMapSolidAt(this.x, this.y);
+
+			if(Array.isArray(upBlockers))
+			{
+				const stickers = upBlockers.filter(a => a.canStick);
+
+				if(willStick && this.willStick !== 2 && stickers.length)
+				{
+					this.args.gSpeed = Math.floor(-xSpeedOriginal) || (Math.sign(upDistance - upDistanceB) * 6);
+					this.args.mode = MODE_CEILING;
+					this.args.falling = false;
+				}
+
+				return;
+			}
+			// else if(willStick && this.willStick !== 2)
+			// {
+			// 	const blockers = this.getMapSolidAt(this.x, this.y-1);
+			// 	const stickers = Array.isArray(blockers) && blockers.filter(a=>a.canStick);
+
+			// 	if(!blockers.length || (blockers.length && stickers.length))
+			// 	{
+			// 		this.args.gSpeed = Math.floor(-xSpeedOriginal) || (Math.sign(upDistance - upDistanceB) * 6);
+			// 		this.args.mode = MODE_CEILING;
+			// 		this.args.falling = false;
+			// 	}
+			// }
+
+		}
+		else if(
+			!this.willStick
+			&& hits.length
+			&& (this.args.jumping && !this.args.deepJump)
+			&& (upDistance < this.args.height)
+		){
+			const direction = Math.sign(xSpeedOriginal);
 
 			const minHit = Math.min(...hits);
 
@@ -2431,13 +2493,16 @@ export class PointActor extends View
 			if(!isNaN(shift))
 			{
 				this.args.x += shift;
+
+				this.args.flySpeed = 0;
+				this.args.xSpeed   = 0;
+				this.args.gSpeed   = 0;
 			}
 
-			this.args.flySpeed = 0;
-			this.args.xSpeed   = 0;
-			this.args.gSpeed   = 0;
-
-			xSpeedOriginal = 0;
+			if(this.args.jumping && !this.args.deepJump)
+			{
+				xSpeedOriginal = 0;
+			}
 		}
 
 		const scanDist = airSpeed + 1;
@@ -2463,7 +2528,7 @@ export class PointActor extends View
 
 		if(![airPoint, airPointB].some(x => x === false))
 		{
-			collisionAngle = Math.atan2(airPoint[1] - airPointB[1], airPoint[0] - airPointB[0])
+			collisionAngle = Math.atan2(airPoint[1] - airPointB[1], airPoint[0] - airPointB[0]);
 		}
 
 		if(airPoint !== false && airPointB !== false)
@@ -2485,23 +2550,36 @@ export class PointActor extends View
 
 			if(!this.willStick)
 			{
-				this.args.gSpeed = xSpeedOriginal || this.args.gSpeed;
+				this.args.gSpeed = -xSpeedOriginal || this.args.gSpeed;
 			}
-
-			this.args.xSpeed = 0;
-			this.args.ySpeed = 0;
 
 			const stickX = airPoint[0];
 			const stickY = airPoint[1];
 
-			if(this.args.flying && !angleIsWall && collisionAngle)
+			let away = false;
+
+			if(!this.args.ySpeed || Math.sign(stickY - this.y) === Math.sign(this.args.ySpeed))
 			{
-				this.args.mode = MODE_CEILING;
-				this.args.xSpeed *= -1;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
+
+				if(this.args.flying && !angleIsWall && collisionAngle)
+				{
+					this.args.mode = MODE_CEILING;
+					this.args.xSpeed *= -1;
+				}
+			}
+			else
+			{
+				this.args.y++;
+				away = true;
 			}
 
-			this.args.x = stickX;
-			this.args.y = stickY;
+			if(!this.args.jumping || this.args.deepJump)
+			{
+				this.args.x = stickX;
+				this.args.y = stickY;
+			}
 
 			const solid = this.checkBelow(this.x, this.y);
 
@@ -2517,44 +2595,37 @@ export class PointActor extends View
 				}
 			}
 
-			if(this.willStick)
-			{
-				if(!this.getMapSolidAt(this.x - direction, this.y)
-					&& !this.getMapSolidAt(this.x - direction, this.y + 1)
-					&& !this.getMapSolidAt(this.x - direction, this.y - this.public.height)
-				){
-					let canStick = true;
+			let canStick = this.stayStuck || this.args.deepJump || collisionAngle <= Math.PI / 2;
 
-					if(Array.isArray(blockers))
-					{
-						canStick = blockers.filter(a => a.canStick).length;
-					}
-
-					if(canStick && isLeft)
-					{
-						this.args.gSpeed = 0;
-						this.args.mode   = MODE_LEFT;
-
-						// this.args.groundAngle = 0;
-					}
-					else if(canStick && isRight)
-					{
-						this.args.gSpeed = 0;
-						this.args.mode   = MODE_RIGHT;
-
-						// this.args.groundAngle = 0;
-					}
-					else if(canStick)
-					{
-						this.args.mode = MODE_FLOOR;
-					}
-				}
-				else
+			if((canStick || this.willStick)
+				&& !this.getMapSolidAt(this.x - direction, this.y)
+				&& !this.getMapSolidAt(this.x - direction, this.y + 1)
+				// && !this.getMapSolidAt(this.x - direction, this.y - this.public.height)
+			){
+				if(Array.isArray(blockers))
 				{
-					this.args.ySpeed = 0;
-					this.args.xSpeed = 0;
+					canStick = blockers.filter(a => a.canStick).length;
+				}
 
-					// this.args.x -= xSpeedOriginal;
+				if(canStick && isLeft)
+				{
+					this.args.gSpeed = 0;
+					this.args.mode = MODE_LEFT;
+
+					this.args.direction = 1;
+					this.args.facing = 'right';
+				}
+				else if(canStick && isRight)
+				{
+					this.args.gSpeed = 0;
+					this.args.mode = MODE_RIGHT;
+
+					this.args.direction = -1;
+					this.args.facing = 'left';
+				}
+				else if(canStick && !away && this.ySpeedLast < 0 && !this.args.jumping)
+				{
+					this.args.mode = MODE_CEILING;
 				}
 			}
 
@@ -2586,9 +2657,9 @@ export class PointActor extends View
 						this.args.angle = this.args.groundAngle = newAngle;
 					}
 
-					const invert = this.public.mode === MODE_FLOOR ? -1 : 1;
+					// const invert = (this.public.mode === MODE_FLOOR || ySpeedOriginal <= 0) ? -1 : -1;
 
-					const slopeDir = invert * Math.sign(this.args.groundAngle);
+					const slopeDir = -Math.sign(this.args.groundAngle);
 
 					let gSpeed = 0;
 
@@ -2606,9 +2677,15 @@ export class PointActor extends View
 						gSpeed += xSpeedOriginal;
 					}
 
-					if(blockers.length)
+					if(blockers && blockers.length)
 					{
 						gSpeed = 0;
+					}
+
+					// if(this.args.mode && this.args.ySpeed > 0)
+					if(this.args.mode)
+					{
+						gSpeed *=-1;
 					}
 
 					if(gSpeed)
@@ -2681,6 +2758,12 @@ export class PointActor extends View
 			if(this.args.ySpeed)
 			{
 				this.args.y = Number(Number(this.args.y) + Number(this.args.ySpeed));
+
+				if(this.public.flying && this.public.ySpeed < 0 && upDistance > 0)
+				{
+					this.args.y += (upMargin - upDistance) + 4;
+					this.args.ySpeed = 0;
+				}
 			}
 		}
 
@@ -2699,7 +2782,7 @@ export class PointActor extends View
 	{
 		if(this.dropDashCharge && this.args.mode === MODE_FLOOR)
 		{
-			const dropBoost = this.dropDashCharge * Math.sign(this.public.xSpeed || this.public.direction);
+			const dropBoost = this.dropDashCharge * Math.sign(this.args.direction);
 
 			this.dropDashCharge = 0;
 
@@ -3490,7 +3573,7 @@ export class PointActor extends View
 
 		const originalMode = this.public.mode;
 
-		switch(this.public.mode)
+		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
 				this.args.y -= 16;
@@ -3498,23 +3581,23 @@ export class PointActor extends View
 
 			case MODE_RIGHT:
 				groundAngle += -Math.PI / 2;
-				this.args.x += -this.public.width / 2;
+				this.args.x += -this.args.width / 2;
 				break;
 
 			case MODE_CEILING:
 				groundAngle += Math.PI;
-				this.args.y += this.public.height;
+				this.args.y += this.args.normalHeight || this.args.height;
 				break;
 
 			case MODE_LEFT:
 				groundAngle += Math.PI / 2;
-				this.args.x += this.public.width / 2;
+				this.args.x += this.args.width / 2;
 				break;
 		}
 
 
-		this.args.xSpeed = this.public.gSpeed * Math.cos(groundAngle);
-		this.args.ySpeed = this.public.gSpeed * Math.sin(groundAngle);
+		this.args.xSpeed = this.args.gSpeed * Math.cos(groundAngle);
+		this.args.ySpeed = this.args.gSpeed * Math.sin(groundAngle);
 
 		const jumpAngle = groundAngle - Math.PI / 2;
 
