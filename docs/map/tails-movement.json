@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":128,
  "infinite":false,
  "layers":[
@@ -16,7 +9,7 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":64,
+                 "height":32,
                  "id":1,
                  "name":"tails",
                  "properties":[
@@ -35,7 +28,7 @@
                  "visible":true,
                  "width":32,
                  "x":1168,
-                 "y":176
+                 "y":144
                 }, 
                 {
                  "gid":2,
@@ -256,7 +249,7 @@
          "value":"TUTORIAL ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -287,6 +280,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":288
 }

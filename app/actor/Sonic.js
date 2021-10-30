@@ -17,6 +17,8 @@ import { ElectricSheild } from '../powerups/ElectricSheild';
 
 import { GrindingRegion } from '../region/GrindingRegion';
 
+import { Marker } from './Marker';
+
 import { SkidDust } from '../behavior/SkidDust';
 
 const MODE_FLOOR   = 0;
@@ -38,15 +40,16 @@ export class Sonic extends PointActor
 
 		this.args.type = 'actor-sonic actor-item';
 
-		this.accelNormal = 0.20;
-		this.accelSuper  = 0.40;
+		this.accelNormal = 0.15;
+		this.accelSuper  = 0.22;
+		this.markers = new Set;
 
 		this.springing = false;
 
 		this.args.boltCount = 0;
 
-		this.args.accel     = 0.20;
-		this.args.decel     = 0.45;
+		this.args.accel     = this.accelNormal;
+		this.args.decel     = 0.40;
 
 		this.gSpeedMaxNormal = 18;
 		this.gSpeedMaxSuper  = 23;
@@ -143,6 +146,13 @@ export class Sonic extends PointActor
 		}
 	}
 
+	updateEnd()
+	{
+		super.updateEnd();
+
+
+	}
+
 	update()
 	{
 		if(this.args.dead)
@@ -184,11 +194,17 @@ export class Sonic extends PointActor
 				}
 
 				this.args.animation = 'wall-dropping';
+
 				this.args.wallDropping = true;
 
 				this.args.groundAngle = 0;
 
 				this.args.ignore = 30;
+			}
+
+			if(this.args.wallDropping)
+			{
+				this.args.groundAngle = 0;
 			}
 
 			this.args.wallSticking = false;
@@ -198,6 +214,13 @@ export class Sonic extends PointActor
 				this.args.groundAngle = 0;
 				this.args.animation = 'dropping';
 			}
+
+			if(this.springing && this.args.ySpeed > 0)
+			{
+				this.args.groundAngle = 0;
+				this.args.animation = 'dropping';
+				this.springing = false;
+			}1
 		}
 		else
 		{
@@ -251,6 +274,7 @@ export class Sonic extends PointActor
 				slip = 0;
 			}
 
+
 			if(this.args.mode === 1)
 			{
 				this.args.facing = 'left';
@@ -278,6 +302,16 @@ export class Sonic extends PointActor
 				{
 					this.args.gSpeed = -slip;
 				}
+			}
+
+			const radius = Math.ceil(this.args.width / 2);
+			const direction = Math.sign(this.args.gSpeed);
+
+			const headPoint = this.rotatePoint(radius * -direction, this.args.height);
+
+			if(this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]))
+			{
+				this.doJump(0);
 			}
 		}
 		else if(this.lightDashing)
@@ -344,7 +378,7 @@ export class Sonic extends PointActor
 
 						if(this.args.lookTime < -45)
 						{
-							this.args.cameraBias = -0.5;
+							this.args.cameraBias = -0.75;
 						}
 					}
 					else if(this.yAxis < -0.5 && !this.args.ignore)
@@ -377,6 +411,7 @@ export class Sonic extends PointActor
 			if(this.dropDashCharge)
 			{
 				this.args.animation = 'spindash';
+				this.args.rolling = true;
 			}
 		}
 		else if(!this.dashed)
@@ -410,7 +445,7 @@ export class Sonic extends PointActor
 			}
 			else
 			{
-				this.viewport.onFrameOut(8, () => this.args.animation = 'rolling');
+				this.viewport.onFrameOut(14, () => this.args.animation = 'rolling');
 				this.args.animation = 'spindash';
 			}
 		}
@@ -478,10 +513,10 @@ export class Sonic extends PointActor
 
 		if(this.pincherBg)
 		{
-			this.pincherBg.args.scale *= 0.875;
+			this.pincherBg.args.scale *= 0.85;
 			// this.pincherFg.args.scale *= 0.875;
 
-			if(Math.abs(this.pincherBg.args.scale) < 0.001)
+			if(Math.abs(this.pincherBg.args.scale) < 0.1)
 			{
 				this.pincherBg.args.scale = 0;
 				// this.pincherFg.args.scale = 0;
@@ -672,6 +707,24 @@ export class Sonic extends PointActor
 			this.args.yOff  = 32;
 
 			this.pinch(-400, 50);
+
+			const marker = new Marker({x:this.x,y:this.y});
+
+			marker.owner = this;
+
+			this.markers.add(marker);
+
+			this.viewport.spawn.add({object:marker});
+
+			const debindX = this.args.bindTo('x', (v,k) => marker.args[k] = v);
+			const debindY = this.args.bindTo('y', (v,k) => marker.args[k] = v + 18);
+
+			this.viewport.onFrameOut(25, () => {
+				this.viewport.actors.remove(marker);
+				debindX();
+				debindY();
+			});
+
 		}
 
 		super.command_0();
@@ -725,7 +778,15 @@ export class Sonic extends PointActor
 		if(this.args.wallSticking && !this.dashed)
 		{
 			this.args.falling = true;
-			this.args.ySpeed  = 0;
+
+			if(this.args.ySpeed > 128)
+			{
+				// this.args.ySpeed = this.args.ySpeed / 4;
+			}
+			else
+			{
+				this.args.ySpeed = 0;
+			}
 
 			const mode = this.args.mode;
 
@@ -810,6 +871,7 @@ export class Sonic extends PointActor
 
 		if(this.args.wallSticking)
 		{
+			this.args.x += this.args.width / 2 * (this.args.mode === 1 ? 1 : -1);
 			this.doJump(0);
 		}
 
@@ -1268,13 +1330,12 @@ export class Sonic extends PointActor
 	{
 		if(this.clearLightDash)
 		{
-			this.clearTimeout(this.clearLightDash);
+			this.clearLightDash();
 
 			this.clearLightDash = false;
 		}
 
-		this.clearLightDash = this.onTimeout(150, () => {
-			this.clearLightDash = false;
+		this.clearLightDash = this.viewport.onFrameOut(9, () => {
 			this.lightDashing   = false;
 			this.args.float     = 0;
 		});
@@ -1310,9 +1371,9 @@ export class Sonic extends PointActor
 		this.onNextFrame(() => this.args.animation = 'dead');
 	}
 
-	loseRings()
+	loseRings(count, age)
 	{
-		super.loseRings();
+		super.loseRings(count, age);
 
 		if(this.viewport.args.audio && this.sampleRingLoss)
 		{

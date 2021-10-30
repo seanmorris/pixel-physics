@@ -15,7 +15,6 @@
 }
 
 .point-actor:before {
-	z-index: 10000;
 	content:  ' ';
 	display: block;
 	height: 64px;

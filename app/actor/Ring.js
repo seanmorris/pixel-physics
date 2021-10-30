@@ -17,7 +17,7 @@ export class Ring extends PointActor
 		this.args.static = true;
 		this.args.gone   = false;
 		this.args.float  = -1;
-		this.args.gravity = 0.24 * 2;
+		this.args.gravity = 0.40;
 	}
 
 	update()
@@ -27,36 +27,61 @@ export class Ring extends PointActor
 			return;
 		}
 
-		if((this.viewport.args.frameId) % 4)
+		const currentFrame = this.viewport.args.frameId;
+		const startFrame = this.startFrame;
+
+		const age = (currentFrame - startFrame);
+
+		if(!this.args.decoration)
+		{
+			if(this.args.ySpeed < 0)
+			{
+				this.noClip = true;
+			}
+			else if(!this.attract)
+			{
+				this.noClip = false;
+			}
+		}
+		else
 		{
 			this.noClip = true;
-		}
-		else if(!this.args.decoration && !this.attract)
-		{
-			this.noClip = false;
 		}
 
 		if(this.args.decoration)
 		{
 			this.args.type = 'actor-item actor-ring decoration';
+			this.args.gravity = 0.36;
 		}
 
-		if(!this.args.falling)
+		if(this.dropped)
 		{
-			// this.args.y += -6;
-			this.args.ySpeed = (-this.ySpeedLast *0.5);
-			this.args.xSpeed = (this.xSpeedLast *0.65);
-			this.args.falling = true;
+			this.args.type = 'actor-item actor-ring dropped';
 		}
 
-		super.update()
+		if(this.dropped && this.viewport && !this.viewport.actorIsOnScreen(this, 256))
+		{
+			this.viewport.actors.remove(this);
+		}
+
+		super.update();
+
+		if(this.dropped && (!this.args.falling || !this.args.ySpeed))
+		{
+			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
+			this.args.ySpeed = -Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75;
+			this.args.x += this.args.xSpeed;
+			this.args.y += this.args.ySpeed;
+			this.args.falling = true;
+			this.args.groundAngle = 0;
+		}
 	}
 
 	callCollideHandler(other)
 	{
 		if(other instanceof Ring)
 		{
-			return;
+			return false;
 		}
 
 		return super.callCollideHandler(other);
@@ -65,6 +90,13 @@ export class Ring extends PointActor
 	collideA(other)
 	{
 		if(this.public.gone || this.args.ignore)
+		{
+			return false;
+		}
+
+		const age = this.viewport.args.frameId - this.startFrame;
+
+		if(this.dropped && age < 64)
 		{
 			return false;
 		}
@@ -89,20 +121,14 @@ export class Ring extends PointActor
 		if(other.controllable)
 		{
 			other.args.rings += 1;
-
-			// const losable = new this.constructor;
-
-			// losable.viewport = this.viewport;
-
-			// losable.render(other.ringDoc);
 		}
 
 		this.args.gone = true;
 
 		this.viewport.auras.delete(this);
 
-		this.args.xSpeed = 0;
-		this.args.ySpeed = 0;
+		// this.args.xSpeed = 0;
+		// this.args.ySpeed = 0;
 		this.args.static = true;
 		this.args.float  = -1;
 
@@ -148,8 +174,8 @@ export class Ring extends PointActor
 			});
 		}
 
-		this.args.xSpeed = 0;
-		this.args.ySpeed = 0;
+		// this.args.xSpeed = 0;
+		// this.args.ySpeed = 0;
 	}
 
 	wakeUp()
@@ -166,4 +192,6 @@ export class Ring extends PointActor
 	}
 
 	get solid() { return false; }
+	get rotateLock() { return true; }
+
 }

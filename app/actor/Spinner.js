@@ -10,6 +10,8 @@ export class Spinner extends PointActor
 
 		this.args.width  = 64;
 		this.args.height = 24;
+
+		this.args.direction = this.args.direction || 1;
 	}
 
 	update()
@@ -22,15 +24,20 @@ export class Spinner extends PointActor
 
 	collideB(other)
 	{
-		const toSpeed = 38;
+		if(other.args.gSpeed === 0)
+		{
+			return;
+		}
+
+		const toSpeed = 40;
 
 		other.args.ignore = 4;
-		other.args.direction = 1;
-		other.args.facing = 'right';
+		other.args.direction = this.args.direction;
+		other.args.facing = this.args.direction > 0 ? 'right' : 'left';
 
-		other.args.gSpeed = other.args.gSpeed > toSpeed
-			? other.args.gSpeed
-			: toSpeed;
+		other.args.gSpeed = Math.abs(other.args.gSpeed) > toSpeed
+			? Math.abs(other.args.gSpeed) * this.args.direction
+			: toSpeed * this.args.direction;
 
 		if(this.viewport.args.audio && this.sample)
 		{

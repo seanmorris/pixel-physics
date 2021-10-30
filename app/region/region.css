@@ -43,7 +43,8 @@
 	height: auto;
 
 	background-attachment: fixed;
-	z-index: 100001;
+
+	z-index: 200000;
 }
 
 .region.region-shade .sprite,

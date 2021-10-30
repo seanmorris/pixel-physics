@@ -5,6 +5,14 @@
 }
 
 .actor-item.actor-spinner .sprite {
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(calc(-1rad * var(--display-angle)))
+		scaleX(var(--direction))
+		!important;
+}
+
+.actor-item.actor-spinner .sprite {
 	position: relative;
 	background-position: 0 0;
 	background-image: url(/Sonic/spinner.png);

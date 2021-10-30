@@ -21,22 +21,20 @@ export class Card extends View
 	{
 		this.onTimeout(50, () => this.args.animation = 'opened');
 
-		return new Promise(accept => {
+		const waitFor = this.args.waitFor || Promise.resolve();
+
+		return waitFor.then(() => {
 			const timeAcc = this.args.timeout;
 
-			if(timeAcc < 0)
+			if(timeAcc > 0)
 			{
-				return;
+				this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
+				this.onTimeout(timeAcc, () => {
+					this.args.animation = 'closed';
+					const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
+					this.accept([done]);
+				});
 			}
-
-			this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
-
-			this.onTimeout(timeAcc, () => {
-				this.args.animation = 'closed';
-				const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
-				this.accept([done]);
-				accept([done]);
-			});
 		});
 	}
 }

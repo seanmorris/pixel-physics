@@ -13,9 +13,12 @@ export class LayerController extends PointActor
 
 		this.args.xLayerSpeed = 0;
 		this.args.yLayerSpeed = 0;
+		this.args.yLayerSpeedMax = this.args.yLayerSpeedMax || 9;
 
 		this.args.xLayerLimit = this.args.xLayerLimit || null;
 		this.args.yLayerLimit = this.args.yLayerLimit || null;
+
+		this.args.yQuake = this.args.yQuake ?? 15;
 
 		this.args.static = true;
 
@@ -29,17 +32,30 @@ export class LayerController extends PointActor
 			return;
 		}
 
-		if(this.args.activated && this.args.yLayerSpeed < 18)
+		if(this.args.activated)
 		{
-			this.args.yLayerSpeed += 1;
+			this.args.yLayerSpeed += 0.25;
+
+			if(this.args.yLayerSpeed > this.args.yLayerSpeedMax
+				&& this.args.yLayerSpeedMax > 0
+			){
+				this.args.yLayerSpeed = this.args.yLayerSpeedMax;
+			}
 		}
 
-		if(this.args.yLayer < this.args.yLayerLimit)
+		if(this.args.yLayerSpeed)
 		{
-			this.args.yLayer += this.args.yLayerSpeed || 0;
+			this.args.yLayer = Math.round(this.args.yLayer + this.args.yLayerSpeed || 0);
 		}
 
-		if(this.args.yLayer > this.viewport.tileMap.mapData.height * this.viewport.tileMap.mapData.tileheight
+		const yMapTiles = this.viewport.tileMap.mapData.height;
+		const tileSize  = this.viewport.tileMap.mapData.tileheight;
+		const mapHeight = this.viewport.tileMap.meta.wrapY
+			? Infinity
+			: yMapTiles * tileSize;
+
+		if(this.args.yLayerLimit > 0
+			&& this.args.yLayer > mapHeight
 			&& this.args.yLayer > this.args.yLayerLimit
 		){
 			this.args.yLayerSpeed = 0;
@@ -62,7 +78,7 @@ export class LayerController extends PointActor
 
 		this.viewport.auras.add(this);
 
-		this.viewport.args.shakeY = 15;
+		this.viewport.args.shakeY = this.args.yQuake;
 
 		this.viewport.onFrameOut(60, () => {
 			this.args.activated = true;

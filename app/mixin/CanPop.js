@@ -101,7 +101,14 @@ export const CanPop = {
 			if(other.args.falling)
 			{
 				this.onNextFrame(() => {
-					other.args.ySpeed  = Math.min(-ySpeed, -7);
+					if(ySpeed > 0)
+					{
+						other.args.ySpeed = Math.min(-ySpeed, -7);
+					}
+					else
+					{
+						other.args.ySpeed += 4;
+					}
 					other.args.falling = true;
 				});
 			}

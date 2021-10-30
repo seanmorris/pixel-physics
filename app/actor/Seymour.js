@@ -24,7 +24,7 @@ export class Seymour extends PointActor
 		this.args.gravity   = 0.5;
 
 		this.args.width  = 18;
-		this.args.height = 44;
+		this.args.height = 32;
 	}
 
 	onAttached()

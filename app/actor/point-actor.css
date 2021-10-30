@@ -4,14 +4,23 @@
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
 
+	/*--position: translate(calc(1px * var(--x)), calc(1px * var(--y)));*/
+
+	/*transform: var(--position);*/
+
 	/*--outlineWidth:    var(--outlineWidth, 0px);*/
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
 }
 
+.point-actor {
+	contain: style;
+}
+
 .point-actor .sprite {
 	z-index: var(--z);
+	contain:  size style;
 }
 
 .point-actor .labels:not(:empty) {
@@ -148,6 +157,17 @@
 	animation: ringSpin steps(4) infinite;
 	animation-duration: calc(1ms * 350);
 	transition: opacity 0.25s ease-in;
+}
+
+.actor-item.actor-ring.dropped .sprite {
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -152px;
+}
+
+.actor-item.actor-ring {
+	left: 0!important;
+	top: 0!important;
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
 }
 
 .actor-item.actor-ring.decoration .sprite {

@@ -41,197 +41,88 @@ export class MainMenu extends Menu
 					'Sonic Control Tutorial': {
 						subtext: 'Learn the controls for Sonic'
 						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/sonic-movement.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
+							this.accept();
 						}
 					}
 
 					, 'Radical City Zone': {
 						subtext: 'Gotta go fast!'
 						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/empty-zone.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
+							this.accept();
 						}
 					}
 
 					, 'Seaview Park Zone': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/west-side-zone.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl:'/map/west-side-zone.json'});
+							this.accept();
 						}
 					}
 
 					, 'Pixel Hill Zone': {
 						subtext: 'Movement Sandbox - all characters'
 						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/pixel-hill-zone.json'});
+							this.accept();
 						}
 					}
 
 					, 'Tails Control Tutorial': {
 						subtext: 'Learn the controls for Tails'
 						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/tails-movement.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
+							this.accept();
 						}
 					}
 					, 'Knuckles Control Tutorial': {
 						subtext: 'Learn the controls for Knuckles'
 						, callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/knuckles-movement.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
+							this.accept();
 						}
 					}
 					, 'Terrain Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/bendy-bridges.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+							this.accept();
 						}
 					}
 					, 'Light Dash Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/light-dash-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
+							this.accept();
 						}
 					}
 					, 'Block Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/block-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/block-test.json'});
+							this.accept();
 						}
 					}
 					, 'Vehicle Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/vehicle-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
+							this.accept();
 						}
 					}
 					, 'Half Pipe Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/half-pipe-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
+							this.accept();
 						}
 					}
 					, 'Flickie Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/flickie-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
+							this.accept();
 						}
 					}
 					, 'Water Test': {
 						callback: () => {
-							const tileMap = new TileMap({ mapUrl: '/map/water-test.json' });
-
-							this.parent.args.networked = false;
-							this.parent.tileMap = tileMap;
-
-							this.parent.args.started = false;
-
-							tileMap.ready.then(() => {
-								this.parent.startLevel();
-								this.accept();
-							});
+							this.parent.loadMap({mapUrl: '/map/water-test.json'});
+							this.accept();
 						}
 					}
 					, 'locked': { available: 'unavailable' }
@@ -286,6 +177,7 @@ export class MainMenu extends Menu
 		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
 
 		this.bgm.volume = 0.5;
+		this.bgm.playbackRate = 1;
 
 		this.onRemove(() => this.bgm.pause());
 

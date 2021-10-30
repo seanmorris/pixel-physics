@@ -2,8 +2,8 @@
 	position: absolute;
 	width: 32px;
 	height: 32px;
-	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 	transform-origin: 0px -16px;
+	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
 .actor-item.actor-spring .sprite {
@@ -39,12 +39,12 @@
 	--sprite-offset-x: -15px;
 }
 
-.actor-item.actor-spring.active .sprite {
+.actor-item.actor-spring[data-active=true] .sprite {
 	--sprite-offset-x: -80px;
 	transition: background 0s steps(2);
 }
 
-.actor-item.actor-spring.active .spring-pad {
+.actor-item.actor-spring[data-active=true] .spring-pad {
 	transition: top 30ms ease-in;
 	z-index: 10;
 	top: -36px;

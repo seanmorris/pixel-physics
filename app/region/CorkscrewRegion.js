@@ -36,10 +36,16 @@ export class CorkscrewRegion extends Region
 			return;
 		}
 
+		if(Math.abs(other.args.xSpeed) < 5)
+		{
+			return;
+		}
+
 		other.args.groundAngle = 0;
 
 		const xDist  = (other.x - this.x) / this.args.width;
-		const yShift = (1 + Math.cos(-Math.PI + xDist * Math.PI * 2)) * this.args.height * 0.5;
+		const shiftFactor = (1 + Math.cos(-Math.PI + xDist * Math.PI * 2))
+		const yShift = shiftFactor * this.args.height * 0.5;
 
 		other.args.y = this.y - yShift + -1;
 
@@ -48,6 +54,9 @@ export class CorkscrewRegion extends Region
 		other.args.gSpeed = other.args.xSpeed;
 		other.args.mode   = 0;
 		other.args.ignore = -2;
+		other.args.cameraMode = 'corkscrew';
+
+		other.args.xSpeed -= Math.sign(other.args.xSpeed) * (-1+Math.abs(shiftFactor)) * 0.10;
 
 		if(xDist > 1 || xDist < 0)
 		{

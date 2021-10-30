@@ -244,7 +244,7 @@ export class Layer extends View
 						block.style({
 							display: 'initial'
 							, 'background-position': blockOffset
-							, 'background-image': `url(/map/${blockSrc})`
+							, 'background-image': `url(${blockSrc})`
 							, '--screenX': (centerX - ii) / centerX
 							, '--screenY': (j - centerY) / centerY
 						});
@@ -271,6 +271,5 @@ export class Layer extends View
 				, '--offsetY': -offsetY % blockSize
 			});
 		}
-
 	}
 }
