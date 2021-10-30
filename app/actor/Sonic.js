@@ -17,6 +17,8 @@ import { ElectricSheild } from '../powerups/ElectricSheild';
 
 import { GrindingRegion } from '../region/GrindingRegion';
 
+import { Marker } from './Marker';
+
 import { SkidDust } from '../behavior/SkidDust';
 
 const MODE_FLOOR   = 0;
@@ -32,17 +34,22 @@ export class Sonic extends PointActor
 	{
 		super(...args);
 
+		window.sonic = this;
+
 		this.behaviors.add(new SkidDust);
 
 		this.args.type = 'actor-sonic actor-item';
 
-		this.accelNormal = 0.20;
-		this.accelSuper  = 0.40;
+		this.accelNormal = 0.15;
+		this.accelSuper  = 0.22;
+		this.markers = new Set;
+
+		this.springing = false;
 
 		this.args.boltCount = 0;
 
-		this.args.accel     = 0.20;
-		this.args.decel     = 0.45;
+		this.args.accel     = this.accelNormal;
+		this.args.decel     = 0.40;
 
 		this.gSpeedMaxNormal = 18;
 		this.gSpeedMaxSuper  = 23;
@@ -89,7 +96,7 @@ export class Sonic extends PointActor
 				return;
 			}
 
-			if(this.willStick && (this.public.mode === 1 || this.public.mode === 3))
+			if(this.willStick && (this.args.mode === 1 || this.args.mode === 3))
 			{
 				this.args.wallSticking = true;
 				this.onNextFrame(()=>{
@@ -139,6 +146,13 @@ export class Sonic extends PointActor
 		}
 	}
 
+	updateEnd()
+	{
+		super.updateEnd();
+
+
+	}
+
 	update()
 	{
 		if(this.args.dead)
@@ -164,36 +178,62 @@ export class Sonic extends PointActor
 			}
 		}
 
-		if(this.public.falling)
+		if(this.args.falling)
 		{
-			if(this.public.wallSticking && !this.dashed)
+			if(this.args.wallSticking && !this.dashed)
 			{
-				if(this.public.mode === 1)
+				if(this.args.mode === 1)
 				{
 					this.args.direction = -1;
 					this.args.facing = 'left';
 				}
-				else if(this.public.mode === 3)
+				else if(this.args.mode === 3)
 				{
 					this.args.direction = 1;
 					this.args.facing = 'right';
 				}
 
 				this.args.animation = 'wall-dropping';
+
 				this.args.wallDropping = true;
 
 				this.args.groundAngle = 0;
 
-				this.args.ignore = -2;
+				this.args.ignore = 30;
+			}
+
+			if(this.args.wallDropping)
+			{
+				this.args.groundAngle = 0;
 			}
 
 			this.args.wallSticking = false;
+
+			if(this.springing && this.args.ySpeed >= 0)
+			{
+				this.args.groundAngle = 0;
+				this.args.animation = 'dropping';
+			}
+
+			if(this.springing && this.args.ySpeed > 0)
+			{
+				this.args.groundAngle = 0;
+				this.args.animation = 'dropping';
+				this.springing = false;
+			}1
 		}
 		else
 		{
+			if(this.springing)
+			{
+				this.args.groundAngle = 0;
+			}
+
+			this.springing = false;
+
 			this.doubleSpin = this.dashed = false;
 
-			if(this.public.mode % 2 === 0)
+			if(this.args.mode % 2 === 0)
 			{
 				this.args.wallSticking = false;
 			}
@@ -216,9 +256,9 @@ export class Sonic extends PointActor
 			this.dashTimer--;
 		}
 
-		const falling = this.public.falling;
+		const falling = this.args.falling;
 
-		if(this.public.wallSticking)
+		if(this.args.wallSticking)
 		{
 			this.args.animation = 'wall-stick';
 
@@ -234,7 +274,8 @@ export class Sonic extends PointActor
 				slip = 0;
 			}
 
-			if(this.public.mode === 1)
+
+			if(this.args.mode === 1)
 			{
 				this.args.facing = 'left';
 				this.args.direction = 1;
@@ -248,7 +289,7 @@ export class Sonic extends PointActor
 					this.args.gSpeed = slip;
 				}
 			}
-			else if(this.public.mode === 3)
+			else if(this.args.mode === 3)
 			{
 				this.args.facing = 'right';
 				this.args.direction = -1;
@@ -262,10 +303,20 @@ export class Sonic extends PointActor
 					this.args.gSpeed = -slip;
 				}
 			}
+
+			const radius = Math.ceil(this.args.width / 2);
+			const direction = Math.sign(this.args.gSpeed);
+
+			const headPoint = this.rotatePoint(radius * -direction, this.args.height);
+
+			if(this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]))
+			{
+				this.doJump(0);
+			}
 		}
 		else if(this.lightDashing)
 		{
-			const direction = Math.sign(this.public.xSpeed) || Math.sign(this.public.gSpeed);
+			const direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
 			if(direction < 0)
 			{
@@ -278,7 +329,7 @@ export class Sonic extends PointActor
 
 			if(falling)
 			{
-				this.args.direction = Math.sign(this.public.xSpeed) || this.args.direction;
+				this.args.direction = Math.sign(this.args.xSpeed) || this.args.direction;
 
 				this.args.mode = MODE_FLOOR;
 			}
@@ -288,9 +339,9 @@ export class Sonic extends PointActor
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
-			const maxSpeed  = this.public.gSpeedMax;
+			const maxSpeed  = this.args.gSpeedMax;
 
-			this.args.height = this.public.normalHeight;
+			this.args.height = this.args.normalHeight;
 
 			if(this.spindashCharge)
 			{
@@ -298,14 +349,13 @@ export class Sonic extends PointActor
 			}
 			else if(!this.args.rolling)
 			{
-
 				if(Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
 				{
 					this.args.animation = 'skidding';
 				}
-				else if(this.public.moving && speed > maxSpeed * 0.45)
+				else if(this.args.moving && speed > maxSpeed * 0.45)
 				{
-					if(this.isSuper && this.public.moving && speed > maxSpeed * 0.95)
+					if(this.isSuper && this.args.moving && speed > maxSpeed * 0.95)
 					{
 						this.args.animation = 'dash';
 					}
@@ -314,7 +364,7 @@ export class Sonic extends PointActor
 						this.args.animation = 'running';
 					}
 				}
-				else if(this.public.moving && this.public.gSpeed)
+				else if(this.args.moving && this.args.gSpeed)
 				{
 					this.args.animation = 'walking';
 				}
@@ -326,9 +376,9 @@ export class Sonic extends PointActor
 
 						this.args.lookTime--;
 
-						if(this.public.lookTime < -45)
+						if(this.args.lookTime < -45)
 						{
-							this.args.cameraBias = -0.5;
+							this.args.cameraBias = -0.75;
 						}
 					}
 					else if(this.yAxis < -0.5 && !this.args.ignore)
@@ -337,7 +387,7 @@ export class Sonic extends PointActor
 
 						this.args.lookTime++;
 
-						if(this.public.lookTime > 45)
+						if(this.args.lookTime > 45)
 						{
 							this.args.cameraBias = 0.25;
 						}
@@ -361,17 +411,18 @@ export class Sonic extends PointActor
 			if(this.dropDashCharge)
 			{
 				this.args.animation = 'spindash';
+				this.args.rolling = true;
 			}
 		}
 		else if(!this.dashed)
 		{
-			this.args.height = this.public.rollingHeight;
+			this.args.height = this.args.rollingHeight;
 
-			if(this.public.jumping)
+			if(this.args.jumping)
 			{
 				this.args.animation = 'jumping';
 			}
-			else if(!this.public.xSpeed && !this.public.ySpeed)
+			else if(!this.args.xSpeed && !this.args.ySpeed)
 			{
 				// this.box.setAttribute('data-animation', 'airdash');
 			}
@@ -381,12 +432,12 @@ export class Sonic extends PointActor
 			this.args.animation = 'dropping';
 		}
 
-		if(this.public.hangingFrom)
+		if(this.args.hangingFrom)
 		{
 			this.args.animation = 'hanging';
 		}
 
-		if(this.public.rolling)
+		if(this.args.rolling)
 		{
 			if(this.args.animation !== 'spindash')
 			{
@@ -394,17 +445,17 @@ export class Sonic extends PointActor
 			}
 			else
 			{
-				this.viewport.onFrameOut(8, () => this.args.animation = 'rolling');
+				this.viewport.onFrameOut(14, () => this.args.animation = 'rolling');
 				this.args.animation = 'spindash';
 			}
 		}
 
-		if(this.skidding && !this.public.rolling && !this.public.falling && !this.spindashCharge)
+		if(this.skidding && !this.args.rolling && !this.args.falling && !this.spindashCharge)
 		{
 			this.args.xOff = 8 * -this.args.direction;
 			this.args.yOff = 32;
 
-			let warp = -this.public.gSpeed * 15;
+			let warp = -this.args.gSpeed * 15;
 
 			if(Math.abs(warp) > 120)
 			{
@@ -418,9 +469,9 @@ export class Sonic extends PointActor
 			this.twister && (this.twister.args.scale = 0);
 		}
 
-		if(this.public.standingOn && this.public.standingOn.isVehicle)
+		if(this.args.standingOn && this.args.standingOn.isVehicle)
 		{
-			this.args.animation = this.public.standingOn.ridingAnimation || 'standing';
+			this.args.animation = this.args.standingOn.ridingAnimation || 'standing';
 		}
 
 		if(this.args.grinding && !this.args.falling)
@@ -431,7 +482,7 @@ export class Sonic extends PointActor
 			sparkEnvelope.appendChild(sparkParticle.node);
 
 			const sparkPoint = this.rotatePoint(
-				-this.public.gSpeed * 1.75 * this.args.direction
+				-this.args.gSpeed * 1.75 * this.args.direction
 				, 8
 			);
 
@@ -462,10 +513,10 @@ export class Sonic extends PointActor
 
 		if(this.pincherBg)
 		{
-			this.pincherBg.args.scale *= 0.875;
+			this.pincherBg.args.scale *= 0.85;
 			// this.pincherFg.args.scale *= 0.875;
 
-			if(Math.abs(this.pincherBg.args.scale) < 0.001)
+			if(Math.abs(this.pincherBg.args.scale) < 0.1)
 			{
 				this.pincherBg.args.scale = 0;
 				// this.pincherFg.args.scale = 0;
@@ -592,14 +643,14 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
-		if(this.dashed || (this.public.ignore && this.public.ignore !== -2))
+		if(this.dashed || (this.args.ignore && this.args.ignore !== -2))
 		{
 			return;
 		}
 
 		let dashSpeed = direction * 13;
 
-		if(this.public.wallSticking)
+		if(this.args.wallSticking)
 		{
 			this.args.x += dashSpeed;
 			dashSpeed = direction * 21;
@@ -609,9 +660,9 @@ export class Sonic extends PointActor
 		this.args.float = 2;
 
 		this.args.rolling = false;
-		this.args.height = this.public.normalHeight;
+		this.args.height = this.args.normalHeight;
 
-		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
+		if(this.args.xSpeed && Math.sign(this.args.xSpeed) !== Math.sign(direction))
 		{
 			dashSpeed = direction * 18;
 			this.args.float  = 6;
@@ -649,13 +700,31 @@ export class Sonic extends PointActor
 	{
 		this.dropDashCharge = 0;
 
-		if(this.public.jumping && !this.dashed && !this.doubleSpin)
+		if(this.args.jumping && !this.dashed && !this.doubleSpin)
 		{
 			this.doubleSpin = true;
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
 
 			this.pinch(-400, 50);
+
+			const marker = new Marker({x:this.x,y:this.y});
+
+			marker.owner = this;
+
+			this.markers.add(marker);
+
+			this.viewport.spawn.add({object:marker});
+
+			const debindX = this.args.bindTo('x', (v,k) => marker.args[k] = v);
+			const debindY = this.args.bindTo('y', (v,k) => marker.args[k] = v + 18);
+
+			this.viewport.onFrameOut(25, () => {
+				this.viewport.actors.remove(marker);
+				debindX();
+				debindY();
+			});
+
 		}
 
 		super.command_0();
@@ -663,7 +732,12 @@ export class Sonic extends PointActor
 
 	command_4()
 	{
-		if(this.public.falling)
+		if(this.args.ignore)
+		{
+			return;
+		}
+
+		if(this.args.falling)
 		{
 			this.airDash(-1);
 
@@ -674,7 +748,12 @@ export class Sonic extends PointActor
 
 	hold_4(button)
 	{
-		if(this.public.jumping || this.dashed)
+		if(this.args.ignore)
+		{
+			return;
+		}
+
+		if(this.args.jumping || this.dashed)
 		{
 			this.dropDashCharge = 0;
 
@@ -696,12 +775,20 @@ export class Sonic extends PointActor
 			this.stayStuck = false;
 		});
 
-		if(this.public.wallSticking && !this.dashed)
+		if(this.args.wallSticking && !this.dashed)
 		{
 			this.args.falling = true;
-			this.args.ySpeed  = 0;
 
-			const mode = this.public.mode;
+			if(this.args.ySpeed > 128)
+			{
+				// this.args.ySpeed = this.args.ySpeed / 4;
+			}
+			else
+			{
+				this.args.ySpeed = 0;
+			}
+
+			const mode = this.args.mode;
 
 			this.airDash(mode === 1 ? 1 : -1);
 
@@ -715,7 +802,12 @@ export class Sonic extends PointActor
 
 	command_5()
 	{
-		if(this.public.falling)
+		if(this.args.ignore)
+		{
+			return;
+		}
+
+		if(this.args.falling)
 		{
 			this.airDash(1);
 
@@ -726,7 +818,12 @@ export class Sonic extends PointActor
 
 	hold_5(button)
 	{
-		if(this.public.jumping || this.dashed && this.args.mode !== 2)
+		if(this.args.ignore)
+		{
+			return;
+		}
+
+		if(this.args.jumping || this.dashed && this.args.mode !== 2)
 		{
 			this.dropDashCharge = 0;
 
@@ -748,12 +845,12 @@ export class Sonic extends PointActor
 			this.stayStuck = false;
 		});
 
-		if(this.public.wallSticking && !this.dashed)
+		if(this.args.wallSticking && !this.dashed)
 		{
 			this.args.falling = true;
 			this.args.ySpeed  = 0;
 
-			const mode = this.public.mode;
+			const mode = this.args.mode;
 
 			this.airDash(mode === 1 ? 1 : -1);
 
@@ -774,6 +871,7 @@ export class Sonic extends PointActor
 
 		if(this.args.wallSticking)
 		{
+			this.args.x += this.args.width / 2 * (this.args.mode === 1 ? 1 : -1);
 			this.doJump(0);
 		}
 
@@ -816,7 +914,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		const direction = this.public.direction;
+		const direction = this.args.direction;
 		let   dashPower = this.spindashCharge / 40;
 
 		if(dashPower > 1)
@@ -852,7 +950,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(this.public.jumping)
+		if(this.args.jumping)
 		{
 			if(this.dropDashCharge < 20)
 			{
@@ -867,7 +965,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(this.args.falling || this.willJump || this.public.gSpeed)
+		if(this.args.falling || this.willJump || this.args.gSpeed)
 		{
 			this.spindashCharge = 0;
 			return;
@@ -895,15 +993,15 @@ export class Sonic extends PointActor
 			dustParticle.style({
 				'--x': dustPoint[0] + this.x
 				, '--y': dustPoint[1] + this.y
-				, '--direction': this.public.direction
+				, '--direction': this.args.direction
 				, '--dashCharge': 0
 			});
 
-			if(this.public.direction < 0)
+			if(this.args.direction < 0)
 			{
 				dustParticle.setAttribute('data-facing', 'left');
 			}
-			else if(this.public.direction > 0)
+			else if(this.args.direction > 0)
 			{
 				dustParticle.setAttribute('data-facing', 'right');
 			}
@@ -925,15 +1023,15 @@ export class Sonic extends PointActor
 		this.args.xOff = 5 * -this.args.direction;
 		this.args.yOff = 32;
 
-		this.twist(120 * dashCharge * this.public.direction);
+		this.twist(120 * dashCharge * this.args.direction);
 
 		this.args.animation = 'spindash';
 
-		if(this.public.direction < 0)
+		if(this.args.direction < 0)
 		{
 			this.args.facing = 'left';
 		}
-		else if(this.public.direction > 0)
+		else if(this.args.direction > 0)
 		{
 			this.args.facing = 'right';
 		}
@@ -941,7 +1039,7 @@ export class Sonic extends PointActor
 
 	hold_2()
 	{
-		if(!this.public.falling)
+		if(!this.args.falling)
 		{
 			return;
 		}
@@ -1105,7 +1203,7 @@ export class Sonic extends PointActor
 				return false;
 			}
 
-			const direction = Math.sign(this.public.xSpeed);
+			const direction = Math.sign(this.args.xSpeed);
 
 			if(direction > 0 && actor.x < this.x)
 			{
@@ -1147,7 +1245,7 @@ export class Sonic extends PointActor
 
 	lightDash(ring)
 	{
-		if(!this.public.falling)
+		if(!this.args.falling)
 		{
 			this.lightDashing = false;
 			return false;
@@ -1181,11 +1279,11 @@ export class Sonic extends PointActor
 
 		const direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
-		if(this.public.direction < 0)
+		if(this.args.direction < 0)
 		{
 			this.args.animation = 'lightdash-back';
 		}
-		else if(this.public.direction > 0)
+		else if(this.args.direction > 0)
 		{
 			this.args.animation = 'lightdash';
 		}
@@ -1232,13 +1330,12 @@ export class Sonic extends PointActor
 	{
 		if(this.clearLightDash)
 		{
-			this.clearTimeout(this.clearLightDash);
+			this.clearLightDash();
 
 			this.clearLightDash = false;
 		}
 
-		this.clearLightDash = this.onTimeout(150, () => {
-			this.clearLightDash = false;
+		this.clearLightDash = this.viewport.onFrameOut(9, () => {
 			this.lightDashing   = false;
 			this.args.float     = 0;
 		});
@@ -1274,9 +1371,9 @@ export class Sonic extends PointActor
 		this.onNextFrame(() => this.args.animation = 'dead');
 	}
 
-	loseRings()
+	loseRings(count, age)
 	{
-		super.loseRings();
+		super.loseRings(count, age);
 
 		if(this.viewport.args.audio && this.sampleRingLoss)
 		{
@@ -1289,19 +1386,22 @@ export class Sonic extends PointActor
 	{
 		if(other instanceof Spring)
 		{
-			this.onNextFrame(()=>this.args.animation = 'springdash');
+			this.onNextFrame(()=>{
+				this.springing = true;
+				this.args.animation = 'springdash'
+			});
 		}
 	}
 
 	get solid() { return false; }
-	get canRoll() { return !this.public.wallSticking; }
+	get canRoll() { return !this.args.wallSticking; }
 	get isEffect() { return false; }
 	get controllable() { return !this.args.npc; }
 
 
 	get facePoint() {
 
-		if(this.public.wallSticking)
+		if(this.args.wallSticking)
 		{
 			return this.rotatePoint(0,-5);
 		}

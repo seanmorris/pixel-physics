@@ -1,9 +1,15 @@
 import { Tag } from 'curvature/base/Tag';
+import { Mixin } from 'curvature/base/Mixin';
+import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 
-export class TileMap
+import { Elicit } from './Elicit';
+
+export class TileMap extends Mixin.with(EventTargetMixin)
 {
-	constructor(args,parent)
+	constructor(args, parent)
 	{
+		super();
+
 		this.heightMask = null;
 
 		this.tileImages      = new Map;
@@ -28,83 +34,131 @@ export class TileMap
 
 		this.replacements = new Map;
 
-		this.ready = new Promise(accept => {
+		const elicit = new Elicit(mapUrl);
 
-			fetch(mapUrl).then(r=> r.json()).then(data => {
-				Object.defineProperty(this, 'mapData', {value: data});
+		elicit.addEventListener('progress', event => {
+			const {received, length, done} = event.detail;
 
-				const layers = data.layers || [];
+			const type = 'map';
 
-				this.objectLayers = layers.filter(l => l.type === 'objectLayers');
-				this.tileLayers   = layers.filter(l => l.type === 'tilelayer');
+			this.dispatchEvent(new CustomEvent(
+				'level-progress', {detail: {length, received, done, url:mapUrl}}
+			));
+		});
 
-				this.collisionLayers = this.tileLayers.filter(l => {
+		this.ready = elicit.stream()
+		.then(response => response.json())
+		.then(data => {
 
-					if(!l.name.match(/^Collision\s\d+/))
-					{
-						return false;
-					}
+			Object.defineProperty(this, 'mapData', {value: data});
 
-					return true;
-				})
+			const layers = data.layers || [];
 
-				this.destructibleLayers = this.tileLayers.filter(l => {
+			this.objectLayers = layers.filter(l => l.type === 'objectLayers');
+			this.tileLayers   = layers.filter(l => l.type === 'tilelayer');
 
-					if(!l.name.match(/^Destructible\s\d+/))
-					{
-						return false;
-					}
+			this.collisionLayers = this.tileLayers.filter(l => {
 
-					return true;
+				if(!l.name.match(/^Collision\s\d+/))
+				{
+					return false;
+				}
+
+				return true;
+			})
+
+			this.destructibleLayers = this.tileLayers.filter(l => {
+
+				if(!l.name.match(/^Destructible\s\d+/))
+				{
+					return false;
+				}
+
+				return true;
+			});
+
+			const fetchImages   = [];
+			const imageProgress = new Map;
+			const imageSize     = new Map;
+
+			for(const i in this.mapData.tilesets)
+			{
+				const tileset = this.mapData.tilesets[i];
+
+				const image = new Image;
+
+				this.tileImages.set(tileset, image);
+
+				const imageUrl = '/map/' + tileset.image;
+
+				tileset.image = imageUrl;
+
+				const fetchImage = new Elicit(imageUrl);
+
+				fetchImage.objectUrl().then(url => {
+
+					tileset.cachedImage = url;
+
+					image.addEventListener('load', event => {
+
+						const heightMask = new Tag('<canvas>');
+
+						heightMask.width  = image.width;
+						heightMask.height = image.height;
+
+						heightMask.getContext('2d').drawImage(
+							image, 0, 0, image.width, image.height
+						);
+
+						this.heightMasks.set(tileset, heightMask);
+
+					}, {once:true});
+
+					image.src = url;
+
 				});
 
-				const fetchImages = [];
+				fetchImage.addEventListener('progress', event => {
+					const {received, length, done} = event.detail;
 
-				for(const i in this.mapData.tilesets)
+					imageProgress.set(fetchImage, received);
+					imageSize.set(fetchImage, length);
+
+					const imagesProgress = [...imageProgress.values()]
+					.reduce((a, b) => Number(a)+Number(b));
+
+					const imagesLength = [...imageSize.values()]
+					.reduce((a, b) => Number(a)+Number(b));
+
+					const imagesDone = imagesProgress / imagesLength;
+
+					console.log(`Textures ${imagesDone*100}% downloaded.`);
+
+					this.dispatchEvent(new CustomEvent(
+						'texture-progress', {detail: {length:imagesLength, received:imagesProgress, done:imagesDone, url:imageUrl}}
+					));
+				});
+
+				fetchImages.push(fetchImage);
+			}
+
+			// const getLengths = fetchImages
+			// .map(fetch => fetch.headers().then(headers => headers.get('Content-length')));
+			// Promise.all(getLengths).then(lengths => console.log(lengths.reduce((a, b) => Number(a)+Number(b))));
+
+			if(this.mapData && this.mapData.properties)
+			{
+				for(const property of this.mapData.properties)
 				{
-					const tileset = this.mapData.tilesets[i];
+					const name = property.name.replace(/-/g, '_');
 
-					const image = new Image;
-
-					this.tileImages.set(tileset, image);
-
-					const fetchImage = new Promise(accept => {
-
-						image.addEventListener('load', event => {
-
-							const heightMask = new Tag('<canvas>');
-
-							heightMask.width  = image.width;
-							heightMask.height = image.height;
-
-							heightMask.getContext('2d').drawImage(
-								image, 0, 0, image.width, image.height
-							);
-
-							this.heightMasks.set(tileset, heightMask);
-
-							accept(image.heightMask);
-						});
-
-					});
-
-					image.src = '/map/' + tileset.image;
-
-					fetchImages.push(fetchImage);
+					this.meta.set(name, property.value);
 				}
+			}
 
-				if(this.mapData && this.mapData.properties)
-				{
-					for(const property of this.mapData.properties)
-					{
-						const name = property.name.replace(/-/g, '_');
+			console.log(fetchImages);
 
-						this.meta.set(name, property.value);
-					}
-				}
-
-				Promise.all(fetchImages).then(accept);
-			});
+			return Promise.all(fetchImages);
 		});
 	}
 
@@ -187,16 +241,23 @@ export class TileMap
 
 		if(y >= mapData.height || y < 0)
 		{
-			if(layerId !== 0)
+			if(y < 0 || !this.meta.get('wrapY'))
 			{
-				this.tileNumberCache.set(tileKey, false);
+				if(layerId !== 0)
+				{
+					this.tileNumberCache.set(tileKey, false);
 
-				return false;
+					return false;
+				}
+
+				this.tileNumberCache.set(tileKey, 1);
+
+				return 1;
 			}
-
-			this.tileNumberCache.set(tileKey, 1);
-
-			return 1;
+			else
+			{
+				y = y % this.mapData.height;
+			}
 		}
 
 		const tileIndex = (y * mapData.width) + x;

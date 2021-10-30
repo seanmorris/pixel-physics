@@ -41,10 +41,7 @@ export class HtmlFrame extends PointActor
 
 		this.args.collapse = args.collapse ?? false;
 
-		this.onTimeout(
-			500
-			, () => this.args.url = 'https://timcast.com/video/police-are-resigning-en-masse-over-vaccine-mandates-but-this-will-lead-to-australian-style-fascism/'
-		);
+		this.args.url = 'https://www.youtube.com/embed/pxIofYrt0kE?controls=0&autoplay=1';
 	}
 
 	onRendered(event)
@@ -58,7 +55,7 @@ export class HtmlFrame extends PointActor
 			return;
 		}
 
-		this.screen = new Tag(`<iframe>`);
+		this.screen = new Tag(`<iframe width="560" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
 		this.sprite.appendChild(this.screen.node);
 
 		this.screen.style({'pointer-events':'initial'});

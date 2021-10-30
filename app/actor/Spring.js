@@ -57,6 +57,8 @@ export class Spring extends PointActor
 
 		this.args.color  = this.args.color  || 0;
 		this.args.static = true;
+
+		this.args.actingOn = new Set;
 	}
 
 	update()
@@ -79,7 +81,7 @@ export class Spring extends PointActor
 
 		super.collideA(other);
 
-		if(this.public.active)
+		if(this.args.actingOn.has(other))
 		{
 			return;
 		}
@@ -94,8 +96,6 @@ export class Spring extends PointActor
 			return;
 		}
 
-		this.args.active = 'active';
-
 		if(this.viewport.args.audio && this.sample)
 		{
 			this.sample.currentTime = 0;
@@ -108,9 +108,13 @@ export class Spring extends PointActor
 			return;
 		}
 
+		this.args.actingOn.add(other)
+		this.args.active = true;
+
 		this.viewport.onFrameOut(5,() => {
 			delete other[WillSpring];
-			this.args.active = null;
+			this.args.active = false;
+			this.args.actingOn.delete(other);
 		});
 
 		if(other.noClip)
@@ -118,13 +122,13 @@ export class Spring extends PointActor
 			return;
 		}
 
+		// other.args.direction = Math.sign(this.args.gSpeed);
+
 		other[WillSpring] = true;
 
 		other.args.gSpeed = 0;
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
-
-
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
@@ -145,11 +149,6 @@ export class Spring extends PointActor
 			});
 		}
 
-		// other.args.direction = Math.sign(this.public.gSpeed);
-
-		other.args.xSpeed = 0;
-		other.args.ySpeed = 0;
-		other.args.gSpeed = 0;
 		other.args.float  = 2;
 
 		other.args.x = this.x + Math.cos(rounded) * 16;
@@ -157,12 +156,13 @@ export class Spring extends PointActor
 
 		other.args.jumping = false;
 
-
-		other.impulse(
-			this.args.power
-			, rounded
-			, ![0, Math.PI].includes(this.args.angle)
-		);
+		this.viewport.onFrameOut(2,()=>{
+			other.impulse(
+				this.args.power
+				, rounded
+				, ![0, Math.PI].includes(this.args.angle)
+			);
+		});
 
 		if(
 			![0, Math.PI].includes(this.args.angle)
@@ -173,23 +173,19 @@ export class Spring extends PointActor
 			other.args.mode = 0;
 		}
 
-		other.args.xSpeed = Math.cos(rounded) * 1;
-		other.args.ySpeed = Math.sin(rounded) * 1;
+		other.args.xSpeed = Number(Number(Math.cos(rounded) * 1).toFixed(3));
+		other.args.ySpeed = Number(Number(Math.sin(rounded) * 1).toFixed(3));
 
-		other.args.ignore = 1;
-
-		this.onNextFrame(()=>{
-			other.args.groundAngle = 0;
-			if(!other.args.falling)
-			{
-				other.args.ignore = 8;
-			}
-		});
+		other.args.airAngle = this.args.angle;
+		other.args.displayAngle = 0;
+		other.args.groundAngle = 0;
 	}
 
 	sleep()
 	{
-		this.args.active = null;
+		this.args.actingOn.clear();
+
+		this.args.active = false;
 	}
 
 	get canStick() { return false; }

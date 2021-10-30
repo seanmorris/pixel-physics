@@ -27,6 +27,7 @@ import { Stopper }    from './actor/Stopper';
 import { Block }          from './actor/Block';
 
 import { Monitor }   from './actor/Monitor';
+import { WebMonitor } from './actor/monitor/WebMonitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
 import { SheildStarMonitor } from './actor/monitor/SheildStarMonitor';
 import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
@@ -34,6 +35,7 @@ import { SheildWaterMonitor } from './actor/monitor/SheildWaterMonitor';
 import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
 
 import { Bumper } from './actor/Bumper';
+import { Flipper } from './actor/Flipper';
 
 import { Cinematic } from './actor/Cinematic';
 
@@ -142,6 +144,7 @@ export const ObjectPalette = {
 	, 'breakable-block': BreakableBlock
 	, 'stopper': Stopper
 	, 'bumper':       Bumper
+	, 'flipper':      Flipper
 	, 'drill-car':    DrillCar
 	, 'rail-car':     RailCar
 	, 'tornado':      Tornado
@@ -186,6 +189,7 @@ export const ObjectPalette = {
 	, 'water-fall':   WaterFall
 	, 'balloon':      Balloon
 	, 'star-balloon': StarBalloon
+	, 'web-monitor': WebMonitor
 	, 'ring-monitor': RingMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
 	, 'sheild-star-monitor': SheildStarMonitor

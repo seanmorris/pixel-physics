@@ -13,7 +13,7 @@ export class Chalmers extends PointActor
 
 		this.args.type      = 'actor-item actor-chalmers';
 
-		this.args.normalHeight = 64;
+		this.args.normalHeight = 45;
 		this.args.rollingHeight = 23;
 
 		this.args.accel     = 0.25;
@@ -23,8 +23,8 @@ export class Chalmers extends PointActor
 		this.args.jumpForce = 11;
 		this.args.gravity   = 0.5;
 
-		this.args.width  = 16;
-		this.args.height = 48;
+		this.args.width  = 18;
+		this.args.height = 32;
 	}
 
 	onAttached()

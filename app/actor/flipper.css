@@ -1,0 +1,25 @@
+.actor-item.actor-flipper .sprite {
+	left: -8px;
+	width: 48px;
+	height: 34px;
+
+	background-image: url(/Sonic/flipper-horizontal.png);
+	background-position: 0px -0px;
+	background-position: 0px -32px;
+	background-position: 0px -64px;
+	animation: flipper-unflip 0.1s steps(2) forwards;
+}
+
+.actor-item.actor-flipper[data-animation=flipping] .sprite {
+	animation: flipper-flip 0.05s steps(2) forwards;
+}
+
+@keyframes flipper-flip {
+	100% { background-position: 0px -0px; }
+	0% { background-position: 0px -64px; }
+}
+
+@keyframes flipper-unflip {
+	0% { background-position: 0px -0px; }
+	100% { background-position: 0px -64px; }
+}

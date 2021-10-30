@@ -15,12 +15,19 @@ export class Follower extends PointActor
 		this.args.width  = 16;
 		this.args.height = 16;
 
+		this.stopSwapZ = 0;
+
 		this.args.z = -1;
 	}
 
 	update()
 	{
 		super.update();
+
+		if(this.stopSwapZ > 0)
+		{
+			this.stopSwapZ--;
+		}
 
 		this.args.standingOn = false;
 
@@ -163,11 +170,15 @@ export class Follower extends PointActor
 			this.args.ySpeed = ySpeed;
 		}
 
-		if(Math.sign(xSpeedRelativeOriginal) && Math.sign(host.args.xSpeed || host.args.gSpeed) !== Math.sign(xSpeedRelativeOriginal))
-		{
+		if(Math.sign(xSpeedRelativeOriginal)
+			&& Math.sign(host.args.xSpeed || host.args.gSpeed) !== Math.sign(xSpeedRelativeOriginal)
+			&& this.stopSwapZ === 0
+		){
 			if(Math.abs(this.x - host.x) > minDistance || Math.abs(this.y - host.y) > minDistance)
 			{
 				this.args.z = this.args.z > -1000 ? -100000 : 100000;
+
+				this.stopSwapZ = 30;
 			}
 		}
 

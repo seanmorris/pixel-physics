@@ -10,3 +10,21 @@
 	height: 16px;
 	width: 64px;
 }
+
+.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="1"] .sprite {
+	transform:
+		translate(calc(-50% - 8px), calc(-100% - 8px))
+		rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
+}
+
+.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="2"] .sprite {
+	transform:
+		translate(-50%, calc(-100% - 16px))
+		rotate(calc( calc( -1rad * var(--display-angle) + 180deg)));
+}
+
+.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="3"] .sprite {
+	transform:
+		translate(calc(-50% + 10px), calc(-100% - 0px))
+		rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
+}

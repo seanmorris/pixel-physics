@@ -23,6 +23,11 @@ export class MarbleBlock extends PointActor
 			return false;
 		}
 
+		if(!this.isPushable)
+		{
+			return true;
+		}
+
 		const otherMag = Math.ceil(Math.abs(other.args.gSpeed || other.args.xSpeed));
 		const otherDir = Math.sign(other.args.gSpeed || other.args.xSpeed);
 
@@ -99,7 +104,10 @@ export class MarbleBlock extends PointActor
 		return true;
 	}
 
-	get isPushable() { return true; }
+	get isPushable() {
+		return !this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1)
+			&& !this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1);
+	}
 	get canStick() { return false; }
 	get solid() { return true; }
 	get rotateLock() { return true; }

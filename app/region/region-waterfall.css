@@ -1,6 +1,6 @@
 .region.region-waterfall {
 	/*filter: url(#waterBlur);*/
-	z-index: 1000;
+	z-index: var(--z);
 }
 
 .region.region-waterfall .sprite:before {

@@ -108,6 +108,7 @@ export class BubbleSheild extends Sheild
 			if(this.args.bouncing && this.args.force)
 			{
 				host.args.gSpeed = 0;
+				host.args.xSpeed = 0;
 
 				this.onNextFrame(()=>{
 					host.args.standingOn = null;

@@ -98,18 +98,17 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -512px !important;
 
-	transform: rotate(calc(1rad * var(--ground-angle)));
-
-	animation: sonic-drop steps(1) 1 80ms forwards;
+	animation: sonic-drop steps(3) 1 150ms 50ms forwards;
 }
 
 .actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
-	transform: rotate(calc(1rad * var(--ground-angle))) translateX(32px);
+	transform: rotate(calc(1rad * var(--ground-angle))) translate(32px, 4px);
+	left: -32px;
 }
 
 
 .actor-item.actor-sonic[data-falling="true"][data-facing="left"][data-animation="wall-dropping"] .sprite:after {
-	transform: rotate(calc(-1rad * var(--ground-angle))) translateX(32px);
+	transform: rotate(calc(-1rad * var(--ground-angle))) translate(32px, 4px);
 }
 
 .actor-item.actor-sonic[data-animation="spindash"] .sprite:after {
@@ -140,7 +139,7 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -448px;
 
-	transform: scale(-1,-1) translateY(-32px) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
+	transform: scale(-1,-1) translate(1px, -32px) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
 
 	animation: sonic-wall-stick steps(2) 1 384ms forwards;
 }
@@ -187,19 +186,49 @@
 	animation: sonic-flicker steps(4) infinite 64ms;;
 }
 
-
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after,
 .actor-item.actor-sonic[data-animation="rolling"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
 	left:  4px;
-/*
-	--sprite-offset-x: -16px;
-	--sprite-offset-y: -224px;
-	height: 32px;
-	width: 32px;
-	top: 32px;
-	transform-origin: center;*/
+	transform: rotate( calc(1rad * var(--ground-angle)) );
+	transform-origin: 50% 75%;
+}
+
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="0"][data-facing=left] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="0"][data-facing=left] .sprite:after {
+	transform: rotate( calc( calc(-1rad * var(--ground-angle)) + 0deg));
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="1"] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="1"] .sprite:after {
+	transform: rotate( calc( calc(1rad * var(--ground-angle)) + 270deg));
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="1"][data-facing=left] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="1"][data-facing=left] .sprite:after {
+	transform: rotate( calc( calc(-1rad * var(--ground-angle)) + 90deg)) translateX(5px);
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="2"] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="2"] .sprite:after {
+	transform: rotate( calc( calc(1rad * var(--ground-angle)) + 180deg)) translateY(-3px);
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="2"][data-facing=left] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="2"][data-facing=left] .sprite:after {
+	transform: rotate( calc( calc(-1rad * var(--ground-angle)) + 180deg)) translate(8px, -3px);
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="3"] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="3"] .sprite:after {
+	transform: rotate( calc( calc(1rad * var(--ground-angle)) + 90deg)) translateX(4px);
+}
+
+.actor-item.actor-sonic[data-animation="jumping"][data-mode="3"][data-facing=left] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-mode="3"][data-facing=left] .sprite:after {
+	transform: rotate( calc( calc(-1rad * var(--ground-angle)) + 270deg)) translateX(2px);
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
@@ -219,7 +248,7 @@
 	--animation-steps: -4;
 	--animation-width: 64px;
 
-	animation: sonic-jump steps(8) infinite 96ms;
+	animation: sonic-jump steps(8) infinite 160ms;
 	/*animation: sonic-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 64ms) + 128ms);*/
 
 	/*animation: sonic-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
@@ -325,7 +354,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

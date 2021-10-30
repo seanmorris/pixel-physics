@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":24,
  "infinite":false,
  "layers":[
@@ -16,7 +9,7 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":64,
+                 "height":40,
                  "id":1,
                  "name":"sonic",
                  "properties":[
@@ -39,7 +32,7 @@
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":360,
+                 "x":384,
                  "y":416
                 }, 
                 {
@@ -51,7 +44,7 @@
                  "type":"marble-block",
                  "visible":true,
                  "width":32,
-                 "x":416,
+                 "x":440,
                  "y":416
                 }, 
                 {
@@ -70,7 +63,7 @@
                  "visible":true,
                  "width":32,
                  "x":480,
-                 "y":458
+                 "y":272
                 }, 
                 {
                  "gid":3145,
@@ -131,7 +124,7 @@
                  "x":424,
                  "y":360
                 }],
-         "opacity":1,
+         "opacity":0.5,
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -142,7 +135,7 @@
          "id":7,
          "name":"regions",
          "objects":[],
-         "opacity":1,
+         "opacity":0.4,
          "type":"objectgroup",
          "visible":false,
          "x":0,
@@ -300,7 +293,7 @@
          "value":"TUTORIAL ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -370,6 +363,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":24
 }

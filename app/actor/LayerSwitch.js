@@ -37,9 +37,12 @@ export class LayerSwitch extends PointActor
 		let back  = !!Number(this.public.back);
 		let roll  = !!Number(this.public.roll);
 
-		const half = this.args.width / 2 + (speed > 0 ? -1 : 0);
+		const invert = (other.args.mode === 2 || other.args.mode === 3) ? -1 : 1;
 
-		if(other.x < this.x + -half || other.x > this.x + half)
+		const radius = this.args.width / 2;
+		const otherRadius = 0; //other.args.width / 2;
+
+		if(other.x < this.x + -radius + otherRadius || other.x > this.x + radius + -otherRadius)
 		{
 			return;
 		}
@@ -79,7 +82,7 @@ export class LayerSwitch extends PointActor
 		}
 		else
 		{
-			this.onNextFrame(()=>{
+			this.viewport.onFrameOut(1,()=>{
 				if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
 				{
 					other.args.layer = toLayer;

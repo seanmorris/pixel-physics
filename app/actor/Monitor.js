@@ -6,8 +6,9 @@ import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { BrokenMonitor } from '../actor/BrokenMonitor';
 
-import { WoodenCrate } from '../actor/WoodenCrate';
-import { SteelCrate } from '../actor/SteelCrate';
+import { Block } from '../actor/Block';
+
+import { Marker } from '../actor/Marker';
 
 export class Monitor extends PointActor
 {
@@ -51,9 +52,19 @@ export class Monitor extends PointActor
 
 	collideA(other, type)
 	{
-		if(other instanceof WoodenCrate || other instanceof SteelCrate)
+		if(!other.args.moving && !other.args.falling)
 		{
 			return false;
+		}
+
+		if(other instanceof Block)
+		{
+			return false;
+		}
+
+		if(other instanceof Marker)
+		{
+			other = other.owner;
 		}
 
 		super.collideA(other, type);
@@ -93,6 +104,8 @@ export class Monitor extends PointActor
 
 	pop(other)
 	{
+		console.log(other);
+
 		const viewport = this.viewport;
 
 		if(!viewport || this.args.gone)
