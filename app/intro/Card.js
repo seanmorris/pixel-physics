@@ -23,18 +23,20 @@ export class Card extends View
 
 		const waitFor = this.args.waitFor || Promise.resolve();
 
-		return waitFor.then(() => {
-			const timeAcc = this.args.timeout;
+		return new Promise(accept => {
+			waitFor.then(() => {
+				const timeAcc = this.args.timeout;
 
-			if(timeAcc > 0)
-			{
-				this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
-				this.onTimeout(timeAcc, () => {
-					this.args.animation = 'closed';
-					const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
-					this.accept([done]);
-				});
-			}
+				if(timeAcc > 0)
+				{
+					this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
+					this.onTimeout(timeAcc, () => {
+						this.args.animation = 'closed';
+						const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
+						accept(this.accept([done]));
+					});
+				}
+			});
 		});
 	}
 }

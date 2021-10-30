@@ -27,7 +27,16 @@ export class Series extends View
 
 		this.startTime = Date.now();
 
-		return Promise.race([early, card.done]).then(done => {
+		const racers = [early, card.done];
+
+		console.log(play);
+
+		if(play)
+		{
+			racers.push(play);
+		}
+
+		return Promise.race(racers).then(done => {
 			if(done)
 			{
 				this.parent.onFrameOut(10, () => {
