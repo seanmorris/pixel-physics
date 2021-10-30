@@ -39,25 +39,25 @@ export class TilesetSwapper extends PointActor
 
 			this.viewport.onFrameOut(45, () => {
 				this.viewport.tileMap.replacements.set(
-					'../Sonic/tiles/azure-lake/azure-lake.png'
-					, '../Sonic/tiles/azure-lake/azure-lake-burnt.png'
+					'/map/../Sonic/tiles/azure-lake/azure-lake.png'
+					, '/map/../Sonic/tiles/azure-lake/azure-lake-burnt.png'
 				);
 
 				this.viewport.args.backdrop = this.args.backdrop;
 
 				this.viewport.tileMap.replacements.set(
-					'../Sonic/tiles/azure-lake/azure-lake-shapes.png'
-					, '../Sonic/tiles/azure-lake/azure-lake-burnt-shapes.png'
+					'/map/../Sonic/tiles/azure-lake/azure-lake-shapes.png'
+					, '/map/../Sonic/tiles/azure-lake/azure-lake-burnt-shapes.png'
 				);
 
 				this.viewport.tileMap.replacements.set(
-					'../Sonic/tiles/azure-lake/rolling.png'
-					, '../Sonic/tiles/azure-lake/rolling-burnt.png'
+					'/map/../Sonic/tiles/azure-lake/rolling.png'
+					, '/map/../Sonic/tiles/azure-lake/rolling-burnt.png'
 				);
 
 				this.viewport.tileMap.replacements.set(
-					'../Sonic/tiles/azure-lake/giant-loop.png'
-					, '../Sonic/tiles/azure-lake/giant-loop-burnt.png'
+					'/map/../Sonic/tiles/azure-lake/giant-loop.png'
+					, '/map/../Sonic/tiles/azure-lake/giant-loop-burnt.png'
 				);
 			});
 		});

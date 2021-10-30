@@ -97,7 +97,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				fetchImage.objectUrl().then(url => {
 
-					tileset.image = url;
+					tileset.cachedImage = url;
 
 					image.addEventListener('load', event => {
 
