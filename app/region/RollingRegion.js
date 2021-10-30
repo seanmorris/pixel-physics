@@ -8,9 +8,13 @@ export class RollingRegion extends Region
 	{
 		super(args, parent);
 
+		this.args.sticky = true;
+
 		this.args.type = 'region rolling';
 
-		this.args.minSpeed = args.minSpeed || 4;
+		this.args.maxSpeed = this.args.maxSpeed ?? -1;
+		this.args.minSpeed = this.args.minSpeed ?? -1;
+		this.args.canJump  = this.args.canJump  ?? false;
 	}
 
 	update()
@@ -50,6 +54,11 @@ export class RollingRegion extends Region
 			other.args.gSpeed = this.args.minSpeed * Math.sign(other.args.gSpeed || other.args.direction);
 		}
 
+		if(this.args.maxSpeed > 0 && Math.abs(other.args.gSpeed) > this.args.maxSpeed)
+		{
+			other.args.gSpeed = this.args.maxSpeed * Math.sign(other.args.gSpeed || other.args.direction);
+		}
+
 		if(!other.public.rolling)
 		{
 			other.args.rolling = true;
@@ -57,11 +66,17 @@ export class RollingRegion extends Region
 
 		if(other.willJump)
 		{
+			if(!this.args.canJump)
+			{
+				other.args.ignore = 4;
+			}
+			else
+			{
+				// other.doJump(18);
+			}
+
 			other.willJump = false;
 		}
-
-		other.args.ignore = 4;
-
 	}
 
 	collideA(other, type)

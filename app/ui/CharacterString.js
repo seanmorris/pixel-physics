@@ -1,4 +1,5 @@
 import { View } from 'curvature/base/View';
+import { Bindable } from 'curvature/base/Bindable';
 
 export class CharacterString extends View
 {
@@ -13,17 +14,21 @@ export class CharacterString extends View
 
 	constructor(args, parent)
 	{
+		args[ Bindable.NoGetters ] = true;
+
 		super(args, parent);
 
-		this.args.chars = [];
+		const chars = [];
+
+		chars[ Bindable.NoGetters ] = true;
+
+		this.args.chars = chars;
 
 		this.args.scale = this.args.scale || 1;
 
 		const high = this.args.high;
 		const med  = this.args.med;
 		const low  = this.args.low;
-
-		const charToModel = this.characterToModel.bind(this)
 
 		this.args.bindTo('value', v => {
 
@@ -52,7 +57,7 @@ export class CharacterString extends View
 			// 	this.args.color = '';
 			// }
 
-			const chars = String(v).split('').map(charToModel);
+			const chars = String(v).split('').map(this.characterToModel.bind(this));
 
 			if(chars.length !== this.args.chars.length)
 			{

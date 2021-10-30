@@ -215,24 +215,24 @@ export class ElectricSheild extends Sheild
 			ring.noClip  = true;
 
 			const xDiff = host.x - ring.x;
-			const yDiff = (host.y - host.args.height/4) - ring.y;
+			const yDiff = (host.y - host.args.height/2) - ring.y;
 
 			const angle = Math.atan2(yDiff, xDiff);
 			const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
 
-			const maxDistance = 384;
+			const maxDistance = 512;
+
+			const xDir = Math.sign(xDiff);
+			const yDir = Math.sign(yDiff);
+
+			const xSame = Math.sign(ring.args.xSpeed||0) === xDir;
+			const ySame = Math.sign(ring.args.ySpeed||0) === yDir;
 
 			if(distance > maxDistance)
 			{
 				ring.args.x = host.x - Math.cos(angle) * maxDistance;
 				ring.args.y = host.y - Math.sin(angle) * maxDistance;
 			}
-
-			const xDir = Math.sign(xDiff);
-			const yDir = Math.sign(yDiff);
-
-			const xSame = Math.sign(ring.args.xSpeed) === xDir;
-			const ySame = Math.sign(ring.args.ySpeed) === yDir;
 
 			host.viewport.setColCell(ring);
 
@@ -248,12 +248,12 @@ export class ElectricSheild extends Sheild
 
 			const fudge = this.magnetism ? Math.random() : 1;
 
-			if(!xSame || Math.abs(ring.args.xSpeed) < 8)
+			if(!xSame || Math.abs(ring.args.xSpeed) < 8 || (distance > maxDistance))
 			{
 				ring.args.xSpeed += xMag * (xDir * fudge);
 			}
 
-			if(!ySame || Math.abs(ring.args.ySpeed) < 8)
+			if(!ySame || Math.abs(ring.args.ySpeed) < 8 || (distance > maxDistance))
 			{
 				ring.args.ySpeed += yMag * (yDir * fudge);
 			}

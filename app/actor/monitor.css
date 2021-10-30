@@ -126,6 +126,13 @@
 	--screen-y: 4;
 }
 
+[data-monitor="web-monitor"] .monitor-screen {
+	background-image: url(https://www.youtube.com/favicon.ico);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 @-webkit-keyframes monitor-flicker{
 	from{
 		opacity: 0;

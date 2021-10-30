@@ -75,7 +75,7 @@
 	left: calc(var(--width, 32) * -0.5px);
 	width: calc(var(--width, 32) * 1px);
 	height: calc(var(--height, 32) * 1px);
-	opacity: 1;;
+	opacity: 1;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsY {
@@ -129,8 +129,8 @@
 }
 
 .actor-item.actor-block {
-	/*z-index: calc(-1 - var(--x));*/
-	z-index: 0;
+	z-index: calc(-1 - var(--));
+	z-index: 10001;
 }
 
 .actor-item.actor-block .sprite.collapse {

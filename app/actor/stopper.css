@@ -1,0 +1,30 @@
+.actor-item.actor-stopper .fragmentsX {
+	position: absolute;
+	transition: transform var(--x-speed) ease-out , opacity var(--y-speed) ease-in;
+	transform: translate(var(--xTarget), -0px);
+	/*opacity: 0.5;*/
+	top:  -32px;
+	left: 0px;
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-stopper .fragmentsY {
+	position: absolute;
+	transform: translate(0, var(--yTarget));
+	transition: transform var(--y-speed) ease-in, opacity var(--y-speed) ease-in;
+	/*opacity: 0.5;*/
+	top:  0px;
+	left: -16px;
+	width: 32px;
+	height: 32px;
+	opacity: 1;
+}
+
+.actor-item.actor-stopper .fragment {
+	position: absolute;
+	/*opacity: 0.5;*/
+	width: 16px;
+	height: 32px;
+	opacity: 1;
+}

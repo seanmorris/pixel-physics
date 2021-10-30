@@ -45,12 +45,6 @@ export class Tornado extends Vehicle
 		this.args.fuelLevel = 100;
 		this.args.thrusterFill = 0;
 		this.args.noThrust = 0;
-	}
-
-	onAttached()
-	{
-		this.box = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
 
 		this.plane     = new Tag('<div class = "plane">');
 		this.fuselage  = new Tag('<div class = "fuselage">');
@@ -59,6 +53,12 @@ export class Tornado extends Vehicle
 		this.fuelMeter = new Tag('<div class = "fuel-meter">');
 		this.frontGear = new Tag('<div class = "front-landing-gear">');
 		this.rearGear  = new Tag('<div class = "rear-landing-gear">');
+	}
+
+	onAttached()
+	{
+		this.box = this.findTag('div');
+		this.sprite = this.findTag('div.sprite');
 
 		this.sprite.appendChild(this.plane.node);
 

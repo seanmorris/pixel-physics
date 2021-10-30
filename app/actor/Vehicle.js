@@ -50,8 +50,8 @@ export class Vehicle extends PointActor
 	{
 		if(!other.controllable)
 		{
-			other.args.ySpeed  = -other.args.ySpeed;
-			other.args.xSpeed  = other.args.xSpeed || (other.args.direction * 5);
+			other.args.ySpeed = -other.args.ySpeed;
+			other.args.xSpeed = other.args.xSpeed || (other.args.direction * 5);
 
 			if(other.args.ySpeed > -5)
 			{

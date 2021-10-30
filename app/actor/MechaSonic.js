@@ -14,7 +14,7 @@ export class MechaSonic extends PointActor
 
 		this.args.type = 'actor-item actor-mecha-sonic';
 
-		this.args.accel     = 0.45;
+		this.args.accel     = 0.1;
 		this.args.decel     = 0.3;
 
 		this.args.skidTraction = 2;
@@ -25,11 +25,11 @@ export class MechaSonic extends PointActor
 
 		this.args.takeoffPlayed = false;
 
-		this.public.rollingHeight = 52;
-		this.public.normalHeight  = 31;
+		this.public.rollingHeight = 18;
+		this.public.normalHeight  = 44;
 
 		this.args.width  = 18;
-		this.args.height = 52;
+		this.args.height = this.public.normalHeight;
 
 		this.args.bindTo('falling', v => {
 			if(!v)
@@ -54,14 +54,14 @@ export class MechaSonic extends PointActor
 
 		const falling = this.args.falling;
 
-		this.args.accel = 0.3;
+		this.args.accel = 0.1;
 
 		const direction = this.public.direction;
 		const gSpeed    = this.public.gSpeed;
 		const speed     = Math.abs(gSpeed);
 		const maxSpeed  = 100;
 		const minRun    = 100 * 0.1;
-		const minRun2   = 0.75 * this.public.gSpeedMax;
+		const minRun2   = 0.5 * this.public.gSpeedMax;
 
 		if(!this.flame)
 		{
@@ -142,7 +142,7 @@ export class MechaSonic extends PointActor
 
 				if(speed > maxSpeed * 0.75)
 				{
-					this.args.accel = 0.01;
+					this.args.accel = 0.03;
 				}
 			}
 			else if(speed >= minRun)
