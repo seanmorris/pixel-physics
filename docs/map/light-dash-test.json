@@ -601,24 +601,6 @@
                  "y":1936
                 }, 
                 {
-                 "gid":2098,
-                 "height":32,
-                 "id":196,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"breakable-block",
-                 "visible":true,
-                 "width":32,
-                 "x":4992,
-                 "y":224
-                }, 
-                {
                  "gid":2,
                  "height":32,
                  "id":201,
@@ -2828,7 +2810,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":504,
+ "nextobjectid":505,
  "orientation":"orthogonal",
  "properties":[
         {

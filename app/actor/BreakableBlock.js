@@ -57,7 +57,7 @@ export class BreakableBlock extends Block
 			if((other.args.falling && !(other.dashed || other.args.jumping))
 				|| (!other.args.falling && type === 0)
 			){
-				return true;
+				return !this.broken;
 			}
 		}
 

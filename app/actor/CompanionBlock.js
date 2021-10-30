@@ -31,7 +31,7 @@ export class CompanionBlock extends MarbleBlock
 			}
 			else
 			{
-				this.public.pushed = 0;
+				this.args.pushed = 0;
 			}
 		}
 

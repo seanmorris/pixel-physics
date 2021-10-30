@@ -80,7 +80,7 @@ export class Titlecard extends View
 
 		this.playing = playing;
 
-		return playing;
+		// return playing;
 	}
 }
 

@@ -61,6 +61,11 @@ export class RailCar extends Vehicle
 
 		super.update();
 
+		if(!this.sprite)
+		{
+			return;
+		}
+
 		const nowX = this.x;
 
 		if(this.args.gSpeed !== 0 || this.args.xSpeed !== 0)

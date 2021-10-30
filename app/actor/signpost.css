@@ -33,6 +33,18 @@
 	background-position-x: calc(-48px * 4);
 }
 
+.actor-item.actor-signpost[data-active=true][data-cleared-by=tails] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+	background-position-y: calc(-48px * 1);
+}
+
+.actor-item.actor-signpost[data-active=true][data-cleared-by=knuckles] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+	background-position-y: calc(-48px * 2);
+}
+
 @keyframes signpost-spin {
 	from{
 		background-position-x: 0;

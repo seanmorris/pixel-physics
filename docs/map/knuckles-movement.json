@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":128,
  "infinite":false,
  "layers":[
@@ -937,6 +930,18 @@
                  "width":64,
                  "x":3136,
                  "y":3808
+                }, 
+                {
+                 "gid":2921,
+                 "height":64,
+                 "id":412,
+                 "name":"breakable-block",
+                 "rotation":0,
+                 "type":"breakable-block",
+                 "visible":true,
+                 "width":64,
+                 "x":336,
+                 "y":3712
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -981,7 +986,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":412,
+ "nextobjectid":413,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -1015,7 +1020,7 @@
          "value":"TUTORIAL ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -1072,6 +1077,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":1024
 }
