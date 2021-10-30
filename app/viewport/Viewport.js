@@ -2973,18 +2973,16 @@ export class Viewport extends View
 	homeCards()
 	{
 		return  [
-			new MainMenu({timeout: -1}, this)
-			//new TitleScreenCard({timeout: 50000}, this)
-			// , new MainMenu({timeout: -1}, this)
-			// , titlecard
+			new TitleScreenCard({timeout: 51000}, this)
+			, new MainMenu({timeout: -1}, this)
 		];
 	}
 
 	returnHomeCards()
 	{
 		return  [
-			// new ThankYouCard({timeout: 5000}, this)
-			...this.homeCards()
+			new ThankYouCard({timeout: 5000}, this)
+			, ...this.homeCards()
 		];
 	}
 
