@@ -1418,7 +1418,7 @@ export class PointActor extends View
 				{
 					this.args.gSpeed = 8;
 				}
-				else if(this.args.mode === MODE_FLOOR && this.args.groundAngle >= (Math.PI / 4))
+				else if(this.args.mode === MODE_FLOOR && this.args.groundAngle >= (Math.PI / 4) && this.args.groundAngle < Math.PI)
 				{
 					this.args.gSpeed = -8;
 				}
@@ -2460,7 +2460,8 @@ export class PointActor extends View
 
 		const willStick = this.willStick || this.args.deepJump;
 
-		if(this.y - this.yLast <= 0
+		if(this.args.ySpeed < 0
+			&& this.y - this.yLast <= 0
 			&& upDistance !== false
 			&& (upDistance) <= upMargin
 			&& (!this.args.flying || this.canStick)
@@ -4271,6 +4272,11 @@ export class PointActor extends View
 
 	release_0()
 	{
+		if(this.args.float)
+		{
+			return;
+		}
+
 		if(this.args.jumping && this.args.ySpeed < -5)
 		{
 			this.args.ySpeed *= 0.5;

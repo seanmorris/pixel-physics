@@ -125,7 +125,7 @@
 .actor-item.actor-knuckles[data-animation="uppercut"] .sprite:after {
 	--sprite-offset-y: -864px;
 	--sprite-offset-x: -0px;
-	animation: knuckles-uppercut steps(5) 1 96ms forwards;
+	animation: knuckles-uppercut steps(5) 1 160ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="kick"] .sprite:after {

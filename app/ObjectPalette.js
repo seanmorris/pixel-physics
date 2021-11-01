@@ -113,6 +113,7 @@ import { Signpost } from './actor/Signpost';
 import { RedEyeJet } from './actor/RedEyeJet';
 import { MiniMace } from './actor/MiniMace';
 import { Beelzebub } from './actor/Beelzebub';
+import { MiniBoss } from './actor/MiniBoss';
 import { Magnet	 } from './actor/Magnet';
 
 import { Orb } from './actor/Orb';
@@ -124,6 +125,8 @@ import { TilesetSwapper } from './actor/TilesetSwapper';
 import { CutScene } from './actor/CutScene';
 
 import { HtmlFrame } from './actor/HtmlFrame';
+
+import { Panel } from './actor/Panel';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -213,6 +216,7 @@ export const ObjectPalette = {
 	, 'signpost': Signpost
 	, 'red-eye-jet': RedEyeJet
 	, 'beelzebub': Beelzebub
+	, 'mini-boss': MiniBoss
 	, 'mini-mace': MiniMace
 	, 'magnet': Magnet
 	, 'spikes': Spikes
@@ -220,4 +224,5 @@ export const ObjectPalette = {
 	, 'orb': Orb
 	, 'cut-scene': CutScene
 	, 'html-frame': HtmlFrame
+	, 'panel': Panel
 };

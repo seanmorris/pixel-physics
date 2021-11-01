@@ -1,0 +1,28 @@
+.actor-item.actor-panel {
+	position: absolute;
+	width: 48px;
+	height: 24px;
+}
+
+.actor-item.actor-panel .sprite {
+}
+
+.actor-item.actor-panel .sprite {
+	position: relative;
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) translateY(2px) !important;
+	top: -2px;
+	background-position: 0 12px;
+	background-image: url(/Sonic/panel.png);
+	width: 48px;
+	height: 24px;
+	animation: panel-flicker steps(2) infinite 128ms;
+}
+
+@keyframes panel-flicker {
+	from{
+		background-position: 0 12px;
+	}
+	to{
+		background-position: -96px 12px;
+	}
+}
