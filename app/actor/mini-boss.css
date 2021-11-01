@@ -1,0 +1,23 @@
+.actor-mini-boss .sprite {
+	background-image: url(/Sonic/mini-boss-ball.png);
+	background-position: -48px;
+	width: 48px;
+	height: 48px;
+}
+
+.actor-mini-boss[data-phase="exploding"] .sprite,
+.actor-mini-boss[data-phase="damaged"] .sprite {
+	animation: mini-boss-damage steps(1) infinite 45ms forwards;
+}
+
+@keyframes mini-boss-damage {
+	from{
+		filter: hue-rotate(0deg) invert(0);
+	}
+	50%{
+		filter:  invert(1) hue-rotate(180deg);
+	}
+	to{
+		filter: hue-rotate(0deg) invert(0);
+	}
+}
