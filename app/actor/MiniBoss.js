@@ -48,7 +48,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 		// this.autoStyle.get(this.box)['--nose-angle'] = 'noseAngle';
 		// this.autoStyle.get(this.box)['--drill-push'] = 'drillPush';
 
-		// this.drill = new Tag(`<div class = "drill">`);
 		// this.body  = new Tag(`<div class = "body">`);
 		// this.nose  = new Tag(`<div class = "nose">`);
 
@@ -565,6 +564,11 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		if(this.args.phase === 'dead')
 		{
+			if(other.args.rolling)
+			{
+				other.args.gSpeed = -xSign * Math.abs(other.args.gSpeed);
+			}
+
 			if(!(other.args.jumping || other.args.rolling || other.dashed))
 			{
 				return true;
@@ -577,7 +581,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 		if(type === 1 || type === 3) // Side collisions
 		{
 			this.onNextFrame(() => {
-				other.args.xSpeed = -Math.sign(other.xSpeedLast) * Math.max(5, Math.abs(other.xSpeedLast));
+				other.args.xSpeed = -xSign * Math.max(5, Math.abs(other.xSpeedLast));
 			});
 
 			if(other.args.falling)
@@ -632,9 +636,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 				if(other.controllable)
 				{
-					other.args.ySpeed = -Math.max(7, Math.abs(other.args.ySpeed));
-
-					console.log(other.args.ySpeed);
+					other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
 				}
 			}
 

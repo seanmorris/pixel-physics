@@ -141,7 +141,7 @@ export class RedEyeJet extends PointActor
 				this.hitSound.play();
 			}
 
-			other.args.x = this.x - (this.args.width / 2);
+			other.args.x = this.x - (this.args.width / 2) * Math.sign(other.x - this.x);
 
 			if(this.args.hitPoints > 0)
 			{
@@ -165,7 +165,7 @@ export class RedEyeJet extends PointActor
 				this.hitSound.play();
 			}
 
-			other.args.x = this.x + (this.args.width / 2);
+			other.args.x = this.x + (this.args.width / 2) * Math.sign(other.x - this.x);
 
 			if(this.args.hitPoints > 0)
 			{

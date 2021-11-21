@@ -41,6 +41,10 @@
 	background-position: -64px 0px;
 }
 
+.dialog-frame.tikal .dialog-icon {
+	background-position: 0 -96px;
+}
+
 .dialog-text {
 	margin-left: 0.5em;
 	margin-right: 0.25em;

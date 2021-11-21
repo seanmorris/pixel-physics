@@ -31,6 +31,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const mapUrl = args.mapUrl;
 
 		this.mapUrl = mapUrl;
+		this.mapData = null;
 
 		this.replacements = new Map;
 
@@ -50,7 +51,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		.then(response => response.json())
 		.then(data => {
 
-			Object.defineProperty(this, 'mapData', {value: data});
+			this.mapData = data;
 
 			const layers = data.layers || [];
 
@@ -91,13 +92,15 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				const imageUrl = '/map/' + tileset.image;
 
-				tileset.image = imageUrl;
+				tileset.original = tileset.image = imageUrl;
 
 				const fetchImage = new Elicit(imageUrl);
 
 				fetchImage.objectUrl().then(url => {
 
 					tileset.cachedImage = url;
+
+					this.replacements.set(imageUrl, url);
 
 					image.addEventListener('load', event => {
 
@@ -132,7 +135,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 					const imagesDone = imagesProgress / imagesLength;
 
-					console.log(`Textures ${imagesDone*100}% downloaded.`);
+					// console.log(`Textures ${imagesDone*100}% downloaded.`);
 
 					this.dispatchEvent(new CustomEvent(
 						'texture-progress', {detail: {length:imagesLength, received:imagesProgress, done:imagesDone, url:imageUrl}}
@@ -156,10 +159,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 			}
 
-			console.log(fetchImages);
-
 			return Promise.all(fetchImages);
 		});
+
+		Object.preventExtensions(this);
 	}
 
 	reset()
@@ -298,9 +301,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(cached !== undefined)
 		{
-			if(this.replacements.has(cached[2]))
+			if(this.replacements.has(cached[3]))
 			{
-				cached[2] = this.replacements.get(cached[2]);
+				cached[2] = this.replacements.get(cached[3]);
 			}
 
 			return cached;
@@ -311,6 +314,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		let x   = 0;
 		let y   = 0;
 		let src = '';
+		let original = '';
 
 		const tileset = this.getTileset(tileNumber);
 		const image   = this.tileImages.get(tileset);
@@ -324,9 +328,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			x = localTileNumber % blocksWide;
 			y = Math.floor(localTileNumber/blocksWide);
 			src = tileset.image;
+			original = tileset.original;
 		}
 
-		const result = [x,y,src];
+		const result = [x,y,src,original];
 
 		this.tileCache.set(tileNumber, result);
 
@@ -451,9 +456,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(cached !== undefined)
 		{
-			if(this.replacements.has(cached.image))
+			if(this.replacements.has(cached.original))
 			{
-				cached.image = this.replacements.get(cached.image);
+				cached.image = this.replacements.get(cached.original);
 			}
 
 			return cached;
@@ -480,9 +485,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					{
 						this.tileSetCache.set(tileNumber, tileset);
 
-						if(this.replacements.has(tileset.image))
+						if(this.replacements.has(tileset.original))
 						{
-							tileset.image = this.replacements.get(tileset.image);
+							tileset.image = this.replacements.get(tileset.original);
 						}
 
 						return tileset;
@@ -492,9 +497,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				{
 					this.tileSetCache.set(tileNumber, tileset);
 
-					if(this.replacements.has(tileset.image))
+					if(this.replacements.has(tileset.original))
 					{
-						tileset.image = this.replacements.get(tileset.image);
+						tileset.image = this.replacements.get(tileset.original);
 					}
 
 					return tileset;

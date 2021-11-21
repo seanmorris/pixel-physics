@@ -18,6 +18,13 @@ export class CutScene extends PointActor
 		this.args.hidden = true;
 	}
 
+	playSample(event)
+	{
+		const tag = new Audio(event.source);
+
+		tag.play();
+	}
+
 	activate(other, button, force = false)
 	{
 		if(!other.controllable || (other.args.falling && !force))
@@ -51,7 +58,11 @@ export class CutScene extends PointActor
 					switch(frame.event)
 					{
 						case 'dialog':
-							viewport.showDialog(frame.lines, frame.classes)
+							viewport.showDialog(frame.lines, frame.classes);
+							break;
+
+						case 'audio':
+							this.playSample(frame);
 							break;
 
 						case 'input':
@@ -108,7 +119,7 @@ export class CutScene extends PointActor
 					frameCallback();
 				}
 
-				timer += frame.time;
+				timer += (frame.time || 0);
 			}
 		});
 	}

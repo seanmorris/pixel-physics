@@ -522,6 +522,28 @@ export class Knuckles extends PointActor
 
 		this.willPunch = false;
 
+		if(!this.args.falling && this.args.gSpeed)
+		{
+			const dustParticle = new Tag(`<div class = "particle-dust">`);
+
+			const dustDist = Math.sign(this.args.gSpeed) * this.dustDist || 0;
+
+			const dustPoint = this.rotatePoint(this.args.gSpeed, 0);
+
+			dustParticle.style({
+				'--x': dustPoint[0] + dustDist + this.x
+				, '--y': dustPoint[1] + this.y
+				, 'z-index': 0
+				, opacity: (Math.random() ** 2) * 0.5 + 0.5
+			});
+
+			viewport.particles.add(dustParticle);
+
+			viewport.onFrameOut(20, () => {
+				viewport.particles.remove(dustParticle);
+			});
+		}
+
 		if(this.throwing || this.args.climbing)
 		{
 			return;

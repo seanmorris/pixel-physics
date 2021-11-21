@@ -26,6 +26,10 @@
 
 }
 
+.screen-card-pause-menu {
+	transition: opacity 100ms 100ms linear, filter 750ms linear;
+}
+
 .screen-card-boot-card {
 	color: white;
 	background-color: black

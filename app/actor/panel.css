@@ -2,6 +2,7 @@
 	position: absolute;
 	width: 48px;
 	height: 24px;
+	z-index: -1;
 }
 
 .actor-item.actor-panel .sprite {

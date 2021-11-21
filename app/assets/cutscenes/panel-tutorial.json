@@ -1,0 +1,55 @@
+[
+    {
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 50
+    },
+    {
+    	"event": "audio",
+    	"source": "/Sonic/adv/1550.wav"
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Tikal:                   "
+            , "Jump on panel number one."
+        ],
+        "classes": "tikal left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "It will take you to panels"
+            , "two and three."
+        ],
+        "classes": "tikal left",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Jump as soon as you land on"
+            , "the panel, or else you'll fall."
+        ],
+        "classes": "tikal left",
+        "time": 240
+    },
+    {
+        "event": "hide",
+        "time": 10
+    },
+    {
+        "event": "wait",
+        "time": 10
+    }
+]
