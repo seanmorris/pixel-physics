@@ -2,7 +2,7 @@
 	background: black;
 }
 
-.viewport-frame:not(.no-intro) .viewport-overlay {
+.viewport-frame.ntsc:not(.no-intro) .viewport-overlay {
 	filter: url(#ntsc);
 }
 

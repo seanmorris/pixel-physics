@@ -307,6 +307,8 @@ export class Viewport extends View
 		this.args.score = new CharacterString({value:0});
 		this.args.timer = new CharacterString({value:'00:00'});
 
+		this.args.ntsc = 'ntsc';
+
 		this.args.frameId = -1;
 
 		this.settings.bindTo('displace',  v => this.args.displacement = v ? 'on' : 'off');
@@ -704,6 +706,8 @@ export class Viewport extends View
 		this.gpuDetect();
 
 		this.onTimeout(100, () => this.fitScale(false));
+
+		this.onTimeout(5500, () => this.args.ntsc = '');
 
 		this.onTimeout(23500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
