@@ -837,8 +837,6 @@ export class Viewport extends View
 	{
 		this.args.fade = true;
 
-		console.log(this.args.frameId);
-
 		refresh && this.setZoneCard();
 
 		this.args.startFrameId = this.args.frameId;
@@ -928,8 +926,6 @@ export class Viewport extends View
 		Keyboard.get().reset();
 
 		this.args.zonecard.played.then(() => {
-
-			console.log('Zone card done!');
 
 			this.args.level = 'level';
 
@@ -1967,6 +1963,10 @@ export class Viewport extends View
 
 			this.args.pauseMenu.input(controller);
 		}
+		else
+		{
+			this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
+		}
 
 		if(this.args.paused === false || this.args.paused > 0 || this.args.networked)
 		{
@@ -2952,7 +2952,7 @@ export class Viewport extends View
 
 		this.args.titlecard = new Series({cards}, this);
 
-		this.args.backdrop = null;
+		this.onTimeout(750, () => this.args.backdrop = null);
 
 		this.args.titlecard.play();
 	}
@@ -2960,7 +2960,7 @@ export class Viewport extends View
 	introCards()
 	{
 		return [
-			new LoadingCard({timeout: 1000, text: 'loading'}, this)
+			new LoadingCard({timeout: 3500, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
 			, new DebianCard({timeout: 4500})
 			, new WebkitCard({timeout: 3500})

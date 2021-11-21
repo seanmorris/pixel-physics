@@ -45,6 +45,11 @@ export class Menu extends Card
 				return;
 			}
 
+			if(this.args.items)
+			{
+				this.currentItem = null;
+			}
+
 			const next = this.findNext(this.currentItem, this.tags.bound.node);
 
 			if(next)
@@ -321,7 +326,7 @@ export class Menu extends Card
 		item.set(item.setting);
 	}
 
-	toggle(event, item)
+	toggle(event, item, $view, $subview, $parent)
 	{
 		event.preventDefault();
 

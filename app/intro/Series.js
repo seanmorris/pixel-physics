@@ -29,8 +29,6 @@ export class Series extends View
 
 		const racers = [early, card.done];
 
-		console.log(play);
-
 		if(play)
 		{
 			racers.push(play);

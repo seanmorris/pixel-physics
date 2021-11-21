@@ -54,6 +54,11 @@ export class Panel extends PointActor
 			return false;
 		}
 
+		if(!other.args.jumping && !this.holding.has(other))
+		{
+			return false;
+		}
+
 		if(this.holding.has(other))
 		{
 			other.args.mode = 0;

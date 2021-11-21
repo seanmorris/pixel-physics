@@ -260,6 +260,12 @@ export class MainMenu extends Menu
 		this.disconnect();
 	}
 
+	focus(element)
+	{
+		element.scrollIntoView({behavior: 'smooth', block: 'center'});
+		super.focus(element);
+	}
+
 	answer()
 	{
 		let offerString = this.args.input;
