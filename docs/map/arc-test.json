@@ -44,7 +44,7 @@
                         {
                          "name":"power",
                          "type":"string",
-                         "value":"50"
+                         "value":"25"
                         }],
                  "rotation":0,
                  "type":"spring",

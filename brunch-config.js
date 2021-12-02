@@ -1,3 +1,5 @@
+const { exec } = require('child_process');
+
 module.exports = {
 	files: {
 		javascripts: {joinTo: 'app.js'}

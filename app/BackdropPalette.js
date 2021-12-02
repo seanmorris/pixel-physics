@@ -4,11 +4,13 @@ import { Industrial     } from 'backdrop/Industrial';
 import { MysticCave     } from 'backdrop/MysticCave';
 import { WestSideCloudy } from 'backdrop/WestSideCloudy';
 import { WestSide       } from 'backdrop/WestSide';
+import { Moon           } from 'backdrop/Moon';
 
 
 export const BackdropPalette = {
 	'west-side-cloudy': WestSideCloudy
 	, 'west-side':      WestSide
+	, 'moon':           Moon
 	, 'proto-labrynth': ProtoLabrynth
 	, 'marble-garden':  MarbleGarden
 	, 'industrial':     Industrial

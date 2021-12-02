@@ -14,6 +14,7 @@
 
 .region.region-shade.region-rain .region-color {
 	background: url(/custom/raindrops.png);
+	height: calc(100% - 64px);
 	animation: rain-drop-shift 1s linear infinite, rain-drop-fall 0.25s linear infinite;
 	top:  0px;
 }
