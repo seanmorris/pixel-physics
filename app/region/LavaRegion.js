@@ -1,5 +1,7 @@
 import { Region } from "./Region";
 
+import { Ring } from "../actor/Ring";
+
 import { Tag } from 'curvature/base/Tag';
 
 export class LavaRegion extends Region
@@ -44,6 +46,29 @@ export class LavaRegion extends Region
 		}
 
 		super.update();
+	}
+
+	updateActor(other)
+	{
+		if(!other.controllable && !(other instanceof Ring))
+		{
+			return;
+		}
+
+		if(other.y < this.y + -this.args.height + 8)
+		{
+			return;
+		}
+
+		if(other.args.ySpeed < 0 || other.args.ignore)
+		{
+			return;
+		}
+
+		other.args.ySpeed = Math.min(-8, -other.args.ySpeed * 1.1);
+		other.args.xSpeed *= -1.1;
+
+		other.damage();
 	}
 
 	collideA(other, type)

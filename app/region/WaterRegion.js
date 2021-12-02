@@ -45,7 +45,7 @@ export class WaterRegion extends Region
 
 		this.viewport.particles.add(splashParticle);
 
-	this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
+		this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
 	}
 
 	update()

@@ -33,7 +33,7 @@ export class Elicit extends Mixin.with(EventTargetMixin, PromiseMixin)
 
 	emitProgressEvent(length, received)
 	{
-		const done = received / length;
+		const done = length ? (received / length) : 0;
 
 		this.dispatchEvent(new CustomEvent(
 			'progress', {detail: {length, received, done}}

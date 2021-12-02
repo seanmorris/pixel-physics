@@ -125,6 +125,18 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
+					, 'Moon Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
+							this.accept();
+						}
+					}
+					, 'Arch Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/arc-test.json'});
+							this.accept();
+						}
+					}
 					, 'locked': { available: 'unavailable' }
 					, 'locked ': { available: 'unavailable' }
 					, 'locked  ': { available: 'unavailable' }

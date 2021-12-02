@@ -126,6 +126,8 @@ export class Spring extends PointActor
 
 		other[WillSpring] = true;
 
+		other.args.ignore = -3;
+
 		other.args.gSpeed = 0;
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;

@@ -37,31 +37,15 @@
                 }, 
                 {
                  "gid":2,
-                 "height":64,
-                 "id":434,
-                 "name":"guard-bot",
-                 "properties":[
-                        {
-                         "name":"animation",
-                         "type":"string",
-                         "value":"dropping"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
+                 "height":51,
+                 "id":435,
+                 "name":"mini-boss",
                  "rotation":0,
-                 "type":"guard-bot",
+                 "type":"mini-boss",
                  "visible":true,
-                 "width":64,
-                 "x":1568,
-                 "y":1104
+                 "width":48,
+                 "x":1608,
+                 "y":1088
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -198,7 +182,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":435,
+ "nextobjectid":436,
  "orientation":"orthogonal",
  "properties":[
         {

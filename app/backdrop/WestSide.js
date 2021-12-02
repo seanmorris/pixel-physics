@@ -57,6 +57,24 @@ export class WestSide extends Backdrop
 				, url:      '/Sonic/backdrop/west-side/island-dark-reflected.png'
 				, height:   0
 			}
+			, {
+				autoscroll: 0
+				, parallax: 0.03
+				, url:      '/Sonic/backdrop/launch-base/bushes-0-night.png'
+				, height:   0
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.05
+				, url:      '/Sonic/backdrop/launch-base/bushes-1-night.png'
+				, height:   0
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.05
+				, url:      '/Sonic/backdrop/launch-base/bushes-2-night.png'
+				, height:   48
+			}
 		];
 	}
 }

@@ -13,7 +13,7 @@ export class ForceRegion extends Region
 		this.args.xForce = this.args.xForce || 0;
 		this.args.yForce = this.args.yForce || -5;
 
-		this.args.active = 1;
+		this.args.active = this.args.active ?? 1;
 	}
 
 	update()
@@ -41,8 +41,13 @@ export class ForceRegion extends Region
 		}
 
 		this.switch.args.bindTo('active', v => {
-			this.args.active = v > 0 ? v : this.args.active;
+			this.args.active = v || this.args.active;
 		});
+	}
+
+	activate()
+	{
+		this.args.active = 1;
 	}
 
 	updateActor(other)
