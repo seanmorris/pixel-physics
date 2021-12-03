@@ -108,7 +108,6 @@
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stacked) / 3)));
 }
 
-
 .backdrop.industrial {
 	/*background-color: rgba(255,255,255,1);*/
 	/*background-color: #4848d8;*/
@@ -120,4 +119,8 @@
 	height: auto;
 	top: max( calc(100% - calc(1px * var(--top))), calc(1% * 0));
 	bottom: max( calc(100% - calc(1px * var(--bottom))), calc(1% * 0));
+}
+
+.backdrop.underground {
+	background-color: #408080;
 }

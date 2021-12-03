@@ -4,6 +4,7 @@ import { Industrial     } from 'backdrop/Industrial';
 import { MysticCave     } from 'backdrop/MysticCave';
 import { WestSideCloudy } from 'backdrop/WestSideCloudy';
 import { WestSide       } from 'backdrop/WestSide';
+import { Underground    } from 'backdrop/Underground';
 import { Moon           } from 'backdrop/Moon';
 
 
@@ -15,4 +16,5 @@ export const BackdropPalette = {
 	, 'marble-garden':  MarbleGarden
 	, 'industrial':     Industrial
 	, 'mystic-cave':    MysticCave
+	, 'underground':    Underground
 }
