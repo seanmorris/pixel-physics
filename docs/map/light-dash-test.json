@@ -2816,7 +2816,7 @@
         {
          "name":"backdrop",
          "type":"string",
-         "value":""
+         "value":"south-ridge"
         }, 
         {
          "name":"theme",

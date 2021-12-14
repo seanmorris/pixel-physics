@@ -42,6 +42,7 @@ export class Sonic extends PointActor
 
 		this.accelNormal = 0.15;
 		this.accelSuper  = 0.22;
+
 		this.markers = new Set;
 
 		this.springing = false;
@@ -86,6 +87,8 @@ export class Sonic extends PointActor
 
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
 
+		this.hyperSheet = 0;
+
 		this.sampleRingLoss = new Audio('/Sonic/ring-loss.wav');
 		this.sampleBoltDash = new Audio('/Sonic/S3K_4E.wav');
 
@@ -114,17 +117,85 @@ export class Sonic extends PointActor
 
 	onAttached(event)
 	{
+		const superColors = {
+			'8080e0': 'e0e080',
+			'6060c0': 'e0e000',
+			'4040a0': 'e0e001',
+			'202080': 'a0a000'
+		};
+
+		const hyperColorsRed = {
+			'8080e0': 'fcfcfc',
+			'6060c0': 'fcfcfc',
+			'4040a0': 'fcd8d8',
+			'202080': 'fcb4b4'
+		};
+
+		const hyperColorsPurple = {
+			'8080e0': 'fcfcfc',
+			'6060c0': 'fcfcfc',
+			'4040a0': 'fcd8fc',
+			'202080': 'd8b4d8'
+		};
+
+		const hyperColorsCyan = {
+			'8080e0': 'd8fcfc',
+			'6060c0': 'fcfcfc',
+			'4040a0': 'b4d8fc',
+			'202080': '90b4fc'
+		};
+
+		const hyperColorsBlue = {
+			'8080e0': 'd8d8ff',
+			'6060c0': 'b4b4d8',
+			'4040a0': 'a4a4d8',
+			'202080': '6c6cb4'
+		};
+
+		const hyperColorsGreen = {
+			'8080e0': 'd8fcfc',
+			'6060c0': 'd8fcd8',
+			'4040a0': 'b4fcb4',
+			'202080': '00fc24'
+		};
+
+		const hyperColorsYellow = {
+			'8080e0': 'd8fcfc',
+			'6060c0': 'd8fcb4',
+			'4040a0': 'd8fc48',
+			'202080': 'd8d800'
+		};
+
+		const hyperColorsWhite = {
+			'8080e0': 'ffffff',
+			'6060c0': 'fcfcfc',
+			'4040a0': 'd8d8d8',
+			'202080': 'b4b4b4'
+		};
+
 		if(!this.superSpriteSheet)
 		{
 			this.png.ready.then(()=>{
-				const newPng = this.png.recolor({
-					'8080e0': 'e0e080',
-					'6060c0': 'e0e000',
-					'4040a0': 'e0e001',
-					'202080': 'a0a000'
-				});
 
-				 this.superSpriteSheet = newPng.toUrl();
+				const newPng = this.png.recolor(superColors);
+
+				this.superSpriteSheet = newPng.toUrl();
+			});
+		}
+
+		if(!this.hyperSpriteSheets)
+		{
+			this.png.ready.then(()=>{
+
+				this.hyperSpriteSheets = [
+					this.png.recolor(hyperColorsRed).toUrl()
+					, this.png.recolor(hyperColorsCyan).toUrl()
+					, this.png.recolor(hyperColorsPurple).toUrl()
+					, this.png.recolor(hyperColorsWhite).toUrl()
+					, this.png.recolor(hyperColorsGreen).toUrl()
+					, this.png.recolor(hyperColorsBlue).toUrl()
+					, this.png.recolor(hyperColorsYellow).toUrl()
+				];
 			});
 		}
 	}
@@ -173,7 +244,21 @@ export class Sonic extends PointActor
 				else
 				{
 					this.isSuper = false;
+					this.isHyper = false;
 					this.setProfile();
+				}
+			}
+		}
+
+		if(this.isHyper)
+		{
+			if(this.viewport.args.frameId % 45 === 0)
+			{
+				this.args.spriteSheet = this.hyperSpriteSheets[ this.hyperSheet++ ];
+
+				if(this.hyperSheet >= this.hyperSpriteSheets.length)
+				{
+					this.hyperSheet = 0;
 				}
 			}
 		}
@@ -209,18 +294,12 @@ export class Sonic extends PointActor
 
 			this.args.wallSticking = false;
 
-			if(this.springing && this.args.ySpeed >= 0)
-			{
-				this.args.groundAngle = 0;
-				this.args.animation = 'dropping';
-			}
-
 			if(this.springing && this.args.ySpeed > 0)
 			{
 				this.args.groundAngle = 0;
 				this.args.animation = 'dropping';
 				this.springing = false;
-			}1
+			}
 		}
 		else
 		{
@@ -264,16 +343,15 @@ export class Sonic extends PointActor
 
 			let slip = 2;
 
-			if(this.yAxis > 0)
-			{
-				slip = 6;
-			}
-			else if(this.yAxis < 0)
+			if(this.yAxis < 0 || this.args.modeTime < 15)
 			{
 				this.stayStuck = true;
 				slip = 0;
 			}
-
+			else if(this.yAxis > 0)
+			{
+				slip = 6;
+			}
 
 			if(this.args.mode === 1)
 			{
@@ -1156,11 +1234,13 @@ export class Sonic extends PointActor
 		}
 
 		this.isSuper = !this.isSuper;
+		this.isHyper = !this.isHyper;
 
 		this.onTimeout(150, () =>{
 			if(this.args.rings === 0)
 			{
 				this.isSuper = false;
+				this.isHyper = false;
 				this.setProfile();
 			};
 		});
@@ -1171,7 +1251,15 @@ export class Sonic extends PointActor
 
 	setProfile()
 	{
-		if(this.isSuper)
+		if(this.isHyper)
+		{
+			this.args.spriteSheet = this.superSpriteSheet;
+
+			this.args.gSpeedMax = this.gSpeedMaxSuper;
+			this.args.jumpForce = this.jumpForceSuper;
+			this.args.accel     = this.accelSuper;
+		}
+		else if(this.isSuper)
 		{
 			this.args.spriteSheet = this.superSpriteSheet;
 

@@ -7,7 +7,7 @@ export const CanPop = {
 		if(!this.args.currentSheild
 			&& !this.args.gone
 			&& this.viewport
-			&& (other.dashed || other.args.jumping || other.args.rolling || other instanceof Projectile)
+			&& (other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
 			this.pop(other);
 			return;

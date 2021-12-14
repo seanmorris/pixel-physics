@@ -10,8 +10,8 @@ export class Region extends PointActor
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
 
-		obj.args.x = obj.originalX = -0 + Math.floor(objDef.x / 32) * 32;
-		obj.args.y = obj.originalY = -0 + Math.floor(objDef.y / 32) * 32;
+		obj.args.x = obj.originalX = -0 + Math.floor(objDef.x);
+		obj.args.y = obj.originalY = -0 + Math.floor(objDef.y);
 
 		this.static = true;
 

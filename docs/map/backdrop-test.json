@@ -44,7 +44,7 @@
         {
          "name":"backdrop",
          "type":"string",
-         "value":"moon"
+         "value":"south-ridge"
         }, 
         {
          "name":"theme",

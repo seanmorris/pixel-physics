@@ -126,15 +126,15 @@ export class Spring extends PointActor
 
 		other[WillSpring] = true;
 
-		other.args.ignore = -3;
+		other.args.ignore = 4;
 
-		other.args.gSpeed = 0;
-		other.args.xSpeed = 0;
+		// other.args.gSpeed = 0;
+		// other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		if(other.controller)
+		if(other.controller && other.controller.rumble)
 		{
 			other.controller.rumble({
 				duration: 120,
@@ -175,8 +175,26 @@ export class Spring extends PointActor
 			other.args.mode = 0;
 		}
 
-		other.args.xSpeed = Number(Number(Math.cos(rounded) * 1).toFixed(3));
-		other.args.ySpeed = Number(Number(Math.sin(rounded) * 1).toFixed(3));
+		const xImpulse = Number(Number(Math.cos(rounded) * 1).toFixed(3));
+		const yImpulse = Number(Number(Math.sin(rounded) * 1).toFixed(3));
+
+		if(Math.abs(other.args.xSpeed) < 3 || Math.sign(other.args.xSpeed) !== Math.sign(xImpulse))
+		{
+			other.args.xSpeed = xImpulse;
+		}
+		else
+		{
+			other.args.xSpeed += xImpulse;
+		}
+
+		if(Math.abs(other.args.ySpeed) < 3 || Math.sign(other.args.ySpeed) !== Math.sign(yImpulse))
+		{
+			other.args.ySpeed = yImpulse;
+		}
+		else
+		{
+			other.args.ySpeed += yImpulse;
+		}
 
 		other.args.airAngle = this.args.angle;
 		other.args.displayAngle = 0;

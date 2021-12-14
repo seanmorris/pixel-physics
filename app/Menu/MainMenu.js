@@ -131,6 +131,12 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
+					, 'Underground Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
+							this.accept();
+						}
+					}
 					, 'Arch Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/arc-test.json'});

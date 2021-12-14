@@ -106,6 +106,7 @@ import { Rocket } from './actor/Rocket';
 
 import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
+import { SpikesSmall } from './actor/SpikesSmall';
 import { Cone } from './actor/Cone';
 
 import { Signpost } from './actor/Signpost';
@@ -220,6 +221,7 @@ export const ObjectPalette = {
 	, 'mini-mace': MiniMace
 	, 'magnet': Magnet
 	, 'spikes': Spikes
+	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
 	, 'orb': Orb
 	, 'cut-scene': CutScene

@@ -521,7 +521,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 	collideA(other, type)
 	{
-		if(this.args.phase === 'exploded')
+		if(this.args.phase === 'exploded' || other.args.mercy)
 		{
 			return false;
 		}
@@ -715,6 +715,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 		return true;
 	}
 
-	get solid() { return this.args.hitPoints > 0; }
+	// get solid() { return this.args.hitPoints > 0; }
+	get solid() { return false; }
 	get rotateLock() { return true; }
 }

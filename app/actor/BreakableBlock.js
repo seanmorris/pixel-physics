@@ -11,6 +11,7 @@ export class BreakableBlock extends Block
 
 		this.args.type = 'actor-item actor-breakable-block';
 		this.args.static = true;
+		this.args.strength = 0 || Number(this.args.strength);
 
 		this.fragmentsX = new Tag('<div class = "fragmentsX">');
 		this.fragmentsY = new Tag('<div class = "fragmentsY">');
@@ -40,6 +41,19 @@ export class BreakableBlock extends Block
 		super.onRendered();
 	}
 
+	update()
+	{
+		if(this.switch)
+		{
+			if(this.switch.args.active)
+			{
+				this.break();
+			}
+		}
+
+		super.update();
+	}
+
 	callCollideHandler(...args)
 	{
 		if(this.broken)
@@ -52,7 +66,7 @@ export class BreakableBlock extends Block
 
 	collideA(other, type)
 	{
-		if(!(other.args.rolling && other.args.mode) && !other.isVehicle)
+		if(!(other.args.rolling && other.args.mode) && !other.isVehicle && !other.args.spinning)
 		{
 			if((other.args.falling && !(other.dashed || other.args.jumping))
 				|| (!other.args.falling && type === 0)
@@ -71,6 +85,11 @@ export class BreakableBlock extends Block
 			return !this.broken;
 		}
 
+		if(this.args.strength === -1)
+		{
+			return true;
+		}
+
 		if(!(other instanceof Orb)
 			&& !other.falling
 			&& !other.isVehicle
@@ -82,9 +101,7 @@ export class BreakableBlock extends Block
 		}
 
 		if((other instanceof Orb)
-			|| other.isVehicle
-			|| other.public.rolling
-			|| other.public.jumping
+			|| other.public.spinning
 			|| other.public.dashed
 			|| other.punching
 		){

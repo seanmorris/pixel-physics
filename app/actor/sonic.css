@@ -291,6 +291,10 @@
 	animation: super-sonic-flicker steps(10) infinite 1s alternate;
 }
 
+.actor-item.actor-sonic[data-hyper="true"] .sprite {
+	animation: hyper-sonic-flicker steps(5) infinite 0.25s alternate;
+}
+
 .actor-item.actor-sonic .sheild {
 	opacity: var(--opacity, 0);
 }
@@ -385,6 +389,15 @@
 	}
 	to{
 		filter: brightness(1.125);
+	}
+}
+
+@keyframes hyper-sonic-flicker {
+	from{
+		filter: brightness(0.70) saturate(1.1) contrast(1.25);
+	}
+	to{
+		filter: brightness(1.25);
 	}
 }
 

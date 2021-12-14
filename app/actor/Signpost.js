@@ -42,6 +42,10 @@ export class Signpost extends PointActor
 			}
 		});
 
+		this.viewport.onFrameOut(30, () => {
+			other.args.ignore = -1;
+		});
+
 		this.viewport.onFrameOut(600, () => {
 
 			const boss = this.viewport.actorsById[ this.args.boss ];
@@ -82,8 +86,6 @@ export class Signpost extends PointActor
 		this.args.xSpeed  = (other.args.gSpeed || other.args.xSpeed) * 1.1;
 		this.args.ySpeed  = -7;
 		this.args.y--;
-
-		other.args.ignore = -1;
 	}
 
 	update()

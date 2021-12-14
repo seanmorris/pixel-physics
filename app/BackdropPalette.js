@@ -6,12 +6,14 @@ import { WestSideCloudy } from 'backdrop/WestSideCloudy';
 import { WestSide       } from 'backdrop/WestSide';
 import { Underground    } from 'backdrop/Underground';
 import { Moon           } from 'backdrop/Moon';
+import { SouthRidge     } from 'backdrop/SouthRidge';
 
 
 export const BackdropPalette = {
 	'west-side-cloudy': WestSideCloudy
 	, 'west-side':      WestSide
 	, 'moon':           Moon
+	, 'south-ridge':    SouthRidge
 	, 'proto-labrynth': ProtoLabrynth
 	, 'marble-garden':  MarbleGarden
 	, 'industrial':     Industrial

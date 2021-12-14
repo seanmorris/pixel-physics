@@ -26,7 +26,7 @@ export class RailCar extends Vehicle
 		this.args.seatHeight = 44;
 
 		this.args.skidTraction = 0.05;
-		this.args.jumpForce = 8;
+		this.args.jumpForce = 12;
 
 		this.dustCount = 0;
 
@@ -142,15 +142,15 @@ export class RailCar extends Vehicle
 		}
 	}
 
-	processInputDirect()
-	{
-		// Don't process input at all.
-	}
+	// processInputDirect()
+	// {
+	// 	// Don't process input at all.
+	// }
 
-	jump()
-	{
-		// Don't process input at all.
-	}
+	// jump()
+	// {
+	// 	// Don't process input at all.
+	// }
 
 	get solid() { return !this.args.broken && !this.occupant; }
 }

@@ -83,6 +83,9 @@
 	animation: fire-sheild-rotate 0.5s steps(19) infinite;
 }
 
+.super-sheild-shine,
+.super-sheild-spark,
+.super-sheild-flare,
 [data-super]:not([data-super=true]) .super-sheild-shine,
 [data-hyper]:not([data-hyper=true]) .super-sheild-spark,
 [data-hyper]:not([data-hyper=true]) .super-sheild-flare {
