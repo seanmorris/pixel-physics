@@ -9,7 +9,8 @@
 	top: 0;
 	left: 0;
 	/*background-image: url(/secret/super-seymour.png);*/
-	background-image: url(/secret/seymour-color-corrected.png);
+	/*background-image: url(/secret/seymour-color-corrected.png);*/
+	background-image: var(--sprite-sheet);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
 	width: 64px;

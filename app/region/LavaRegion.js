@@ -3,6 +3,7 @@ import { Region } from "./Region";
 import { Ring } from "../actor/Ring";
 
 import { Tag } from 'curvature/base/Tag';
+import { Bindable } from 'curvature/base/Bindable';
 
 export class LavaRegion extends Region
 {
@@ -18,7 +19,7 @@ export class LavaRegion extends Region
 
 		this.args.gravity = 0.5;
 		this.args.drag    = 0.85;
-		this.args.density = 10;
+		this.args.density = 15;
 
 		this.skimSpeed = 10;
 	}
@@ -50,6 +51,13 @@ export class LavaRegion extends Region
 
 	updateActor(other)
 	{
+		if(other instanceof Ring)
+		{
+			other.args.ySpeed = -Math.abs(other.args.ySpeed || 6);
+
+			return;
+		}
+
 		if(!other.controllable && !(other instanceof Ring))
 		{
 			return;
@@ -65,15 +73,49 @@ export class LavaRegion extends Region
 			return;
 		}
 
-		other.args.ySpeed = Math.min(-8, -other.args.ySpeed * 1.1);
-		other.args.xSpeed *= -1.1;
+		if(other.immune(this, 'fire'))
+		{
+			return;
+		}
 
-		other.damage();
+		other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
+		other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
+		other.args.falling = true;
+
+		other.args.y = this.y + -this.args.height;
+
+
+		other.damage(this, 'fire');
 	}
 
 	collideA(other, type)
 	{
+		if(other.args.standingOn && other.args.standingOn !== Bindable.make(this))
+		{
+			return false;
+		}
+
 		super.collideA(other, type);
+
+		if(!other.controllable)
+		{
+			return false;
+		}
+
+		if(other.immune(this, 'fire'))
+		{
+			return true;
+		}
+
+		other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
+		other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
+		other.args.falling = true;
+
+		other.args.y = this.y + -this.args.height;
+
+		other.damage(this, 'fire');
+
+		return true;
 	}
 
 	collideB(other, type)
@@ -81,6 +123,6 @@ export class LavaRegion extends Region
 		super.collideA(other, type);
 	}
 
-	get solid() { return false; }
+	get solid() { return true; }
 	get isEffect() { return true; }
 }

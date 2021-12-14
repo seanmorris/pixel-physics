@@ -37,6 +37,12 @@ export class Spikes extends PointActor
 
 	collideA(other, type)
 	{
+		if(this.args.falling && !this.args.float)
+		{
+			other.damage(false);
+			return;
+		}
+
 		if(type === this.args.pointing)
 		{
 			if(this.args.pointing === 3)

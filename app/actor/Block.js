@@ -47,13 +47,16 @@ export class Block extends PointActor
 		this.args.active = -1;
 	}
 
-	onRendered(event)
+	onAttached(event)
 	{
+		if(this.args.switch)
+		{
+			this.switch = this.viewport.actorsById[ this.args.switch ];
+		}
+
 		super.onRendered(event);
 
-		this.droop(-1)
-
-		this.onNextFrame(() => this.droop(0));
+		this.droop(0);
 
 		// if(this.screen)
 		// {
@@ -220,7 +223,7 @@ export class Block extends PointActor
 			}
 			else if(other.args.ySpeed > 0 || other.args.gSpeed)
 			{
-				this.args.float = this.args.float > 0 ? this.args.float : 5;
+				this.args.float = this.args.float > 0 ? this.args.float : 30;
 			}
 		}
 
@@ -257,11 +260,6 @@ export class Block extends PointActor
 			this.args.spriteY = tile[1];
 
 			this.args.spriteSheet = tile[2];
-
-			if(this.args.droop)
-			{
-				this.droop(0);
-			}
 
 		});
 	}

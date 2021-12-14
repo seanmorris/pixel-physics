@@ -42,6 +42,16 @@ export class FireSheild extends Sheild
 		host.addEventListener('damage', invertDamage);
 	}
 
+	immune(host, other, type = 'normal')
+	{
+		if(type === 'fire')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	update(host)
 	{
 		if(!this.initSample)

@@ -11,7 +11,11 @@ export class Seymour extends PointActor
 
 		this.behaviors.add(new SkidDust);
 
-		this.args.type      = 'actor-item actor-seymour';
+		this.args.type = 'actor-item actor-seymour';
+
+		this.args.spriteSheet = this.spriteSheet = '/secret/seymour-color-corrected.png';
+
+		this.superSpriteSheet = '/secret/super-seymour.png';
 
 		this.args.normalHeight = 44;
 		this.args.rollingHeight = 23;
@@ -89,6 +93,42 @@ export class Seymour extends PointActor
 		}
 
 		super.update();
+	}
+
+	command_3()
+	{
+		this.isSuper = !this.isSuper;
+
+		this.onTimeout(150, () =>{
+			if(this.args.rings === 0)
+			{
+				// this.isSuper = false;
+				this.setProfile();
+			};
+		});
+
+
+		this.setProfile();
+	}
+
+	setProfile()
+	{
+		if(this.isSuper)
+		{
+			this.args.spriteSheet = this.superSpriteSheet;
+
+			// this.args.gSpeedMax = this.gSpeedMaxSuper;
+			// this.args.jumpForce = this.jumpForceSuper;
+			// this.args.accel     = this.accelSuper;
+		}
+		else
+		{
+			this.args.spriteSheet = this.spriteSheet;
+
+			// this.args.gSpeedMax = this.gSpeedMaxNormal;
+			// this.args.jumpForce = this.jumpForceNormal;
+			// this.args.accel     = this.accelNormal;
+		}
 	}
 
 	get solid() { return false; }

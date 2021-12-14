@@ -1411,8 +1411,15 @@ export class Viewport extends View
 		this.args.shakeX *= -0.99;
 		this.args.shakeY *= -0.99;
 
-		this.args.x = x + this.args.shakeX;
-		this.args.y = y + this.args.shakeY;
+		if(actor.args.dead && !actor.args.respawning)
+		{
+			this.args.x = x + this.args.shakeX;
+		}
+		else
+		{
+			this.args.x = x + this.args.shakeX;
+			this.args.y = y + this.args.shakeY;
+		}
 	}
 
 	applyMotionBlur()
@@ -1583,6 +1590,8 @@ export class Viewport extends View
 			if(backdrop.view)
 			{
 				backdrop.view.remove();
+
+				backdrop.view = undefined;
 			}
 
 			this.backdrops.delete(id);
@@ -1978,6 +1987,17 @@ export class Viewport extends View
 			this.callFrameIntervals();
 
 			this.args.lastFrameId = this.args.frameId;
+
+			if(this.args.cutScene)
+			{
+				this.args.startFrameId++;
+
+				this.args.showHud = false;
+			}
+			else
+			{
+				this.args.showHud = true;
+			}
 
 			this.args.frameId++;
 
@@ -2579,8 +2599,10 @@ export class Viewport extends View
 
 				const offset = width / 2;
 
-				const otherLeft   = actorX - offset;
-				const otherRight  = actorX + offset;
+				const isRegion = actor.isRegion;
+
+				const otherLeft   = actorX - (isRegion ? 0 : offset);
+				const otherRight  = actorX + (isRegion ? width : offset);
 				const otherTop    = actorY - height ;
 				const otherBottom = actorY;
 

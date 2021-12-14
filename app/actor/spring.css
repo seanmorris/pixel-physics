@@ -1,8 +1,14 @@
+/*1.57*/
+
 .actor-item.actor-spring {
 	position: absolute;
 	width: 32px;
 	height: 32px;
-	transform-origin: 0px -16px;
+	transform-origin: 0px -6px;
+	transition: transform-origin 1s linear,  transform 1s linear;
+}
+
+.actor-item.actor-spring {
 	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 

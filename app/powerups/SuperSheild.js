@@ -7,5 +7,16 @@ export class SuperSheild extends Sheild
 		<div class = "super-sheild-spark"></div>
 		<div class = "super-sheild-flare"></div>
 	</div>`;
+
 	type = 'super';
+
+	immune(host, other, type = 'normal')
+	{
+		if(host.isSuper || host.isHyper)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }
