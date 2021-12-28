@@ -30,6 +30,16 @@
 	height: 32px;
 }
 
+.actor-item.actor-spikes-small.actor-spikes-broken {
+	z-index: 2;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite {
+	background-repeat: round;
+	width: calc(15px + calc(1px * var(--width)) );
+	transition: width 0.75s ease-out;
+}
+
 .actor-item.actor-spikes-small[data-pointing="2"] .sprite {
 	top: 4px;
 	background-position-y: -22px;

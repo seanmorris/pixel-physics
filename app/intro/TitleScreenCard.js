@@ -52,6 +52,7 @@ export class TitleScreenCard extends Card
 
 		this.onRemove(keyBinding);
 
+		backdrop.args.xPan = 0;
 
 		this.start = new Promise(accept => {
 			this.onFrame(()=>{
@@ -61,7 +62,8 @@ export class TitleScreenCard extends Card
 					return;
 				}
 
-				backdrop.args.x -= 24;
+				// backdrop.args.x -= 24;
+				backdrop.args.xPan -= 24;
 				backdrop.args.frame++;
 
 				if(this.startPressed)

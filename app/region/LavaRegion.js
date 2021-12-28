@@ -53,7 +53,7 @@ export class LavaRegion extends Region
 	{
 		if(other instanceof Ring)
 		{
-			other.args.ySpeed = -Math.abs(other.args.ySpeed || 6);
+			other.args.ySpeed = -Math.abs(other.args.ySpeed || -6);
 
 			return;
 		}
@@ -78,9 +78,9 @@ export class LavaRegion extends Region
 			return;
 		}
 
-		other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
-		other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
-		other.args.falling = true;
+		// other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
+		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
+		// other.args.falling = true;
 
 		other.args.y = this.y + -this.args.height;
 
@@ -107,9 +107,9 @@ export class LavaRegion extends Region
 			return true;
 		}
 
-		other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
-		other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
-		other.args.falling = true;
+		// other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
+		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
+		// other.args.falling = true;
 
 		other.args.y = this.y + -this.args.height;
 

@@ -29,7 +29,7 @@ export class Spinner extends PointActor
 			return;
 		}
 
-		const toSpeed = 40;
+		const toSpeed = this.args.toSpeed || 40;
 
 		other.args.ignore = 4;
 		other.args.direction = this.args.direction;

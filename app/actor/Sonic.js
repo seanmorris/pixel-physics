@@ -726,12 +726,13 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		let dashSpeed = direction * 13;
+		let dashSpeed = direction * ((this.isSuper || this.isHyper) ? 13 : 7);
 
 		if(this.args.wallSticking)
 		{
 			this.args.x += dashSpeed;
-			dashSpeed = direction * 21;
+
+			dashSpeed = direction * ((this.isSuper || this.isHyper) ? 18 : 9);
 		}
 
 		this.args.mode = 0;
@@ -742,8 +743,8 @@ export class Sonic extends PointActor
 
 		if(this.args.xSpeed && Math.sign(this.args.xSpeed) !== Math.sign(direction))
 		{
-			dashSpeed = direction * 18;
-			this.args.float  = 6;
+			dashSpeed = direction * 11;
+			this.args.float  = 4;
 			this.args.xSpeed = 0;
 		}
 
@@ -1030,7 +1031,7 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping)
 		{
-			if(this.dropDashCharge < 20)
+			if(this.dropDashCharge < 10)
 			{
 				this.dropDashCharge++;
 
@@ -1475,6 +1476,10 @@ export class Sonic extends PointActor
 		if(other instanceof Spring)
 		{
 			this.onNextFrame(()=>{
+				if(!this.args.falling)
+				{
+					return;
+				}
 				this.springing = true;
 				this.args.animation = 'springdash'
 			});

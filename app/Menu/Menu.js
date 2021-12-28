@@ -2,6 +2,7 @@ import { Card } from '../intro/Card';
 
 import { Cylinder } from '../effects/Cylinder';
 import { Pinch } from '../effects/Pinch';
+import { CharacterString } from '../ui/CharacterString';
 
 export class Menu extends Card
 {
@@ -30,6 +31,10 @@ export class Menu extends Card
 			for(const i in v)
 			{
 				const item = v[i];
+
+				item._title = new CharacterString({
+					value:i, font: 'small-menu-font'
+				});
 
 				if(item.get)
 				{
@@ -212,10 +217,15 @@ export class Menu extends Card
 		if(item.children)
 		{
 			const prev = this.args.items;
-			const back = {callback: () => {
-				this.args.items = prev
-				this.onNextFrame(()=>this.focusFirst());
-			}};
+			const back = {
+				_title: new CharacterString({
+					value:'back', font: 'small-menu-font'
+				})
+				, callback: () => {
+					this.args.items = prev
+					this.onNextFrame(()=>this.focusFirst());
+				}
+			};
 
 			this.args.items = item.children;
 

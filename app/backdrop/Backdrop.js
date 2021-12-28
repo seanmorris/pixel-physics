@@ -42,7 +42,7 @@ export class Backdrop extends View
 
 			if(strip.parallax)
 			{
-				xFormula = `calc(${xFormula} + calc(1px * calc(${strip.parallax} * var(--x))))`;
+				xFormula = `calc(${xFormula} + calc(1px * calc(${strip.parallax} * var(--xPan))))`;
 			}
 
 			if(strip.autoscroll)
@@ -70,12 +70,10 @@ export class Backdrop extends View
 			, 'background-position-x': xPos
 			, 'background-repeat':     'repeat-x'
 			, 'background-image':      url
-			, '--x': this.args.x
-			, '--y': this.args.y
 		});
 
 		this.args.bindTo(
-			['x', 'y', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom']
+			['x', 'y', 'xPan', 'yPan', 'bX', 'bY', 'width', 'height', 'right', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom']
 			, (v,k) => backdrop.style({[`--${k}`]: v})
 		);
 

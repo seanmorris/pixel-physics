@@ -295,7 +295,7 @@ section.filters {
 
 .viewport-zoom .blurAngle {
 	transform:rotate(calc(1rad * var(--blurAngle)));
-	contain: strict style;
+	contain: style;
 }
 .viewport-zoom .blurAngleCancel {
 	transform:rotate(calc(-1rad * var(--blurAngle)));

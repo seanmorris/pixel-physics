@@ -28,8 +28,8 @@ export class ArrowSign extends PointActor
 
 		this.args.type = 'actor-item actor-arrow-sign';
 
-		this.args.float  = -1;
-		this.args.static = true;
+		this.args.float  = this.args.float  ?? -1;
+		this.args.static = this.args.static ?? true;
 
 		this.args.width  = args.width  || 32;
 		this.args.height = args.height || 64;

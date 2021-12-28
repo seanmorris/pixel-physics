@@ -7,7 +7,7 @@
 	<div class = "menu-container">
 		<ul cv-ref = "bound" cv-each = "items:item:title">
 			<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item);" tabindex="0">
-				<span class = "title">[[title]]</span>
+				<span class = "title">[[item._title]]</span>
 				<span class = "subtext">[[item.subtext]]</span>
 				<span cv-if = "item.input" cv-is = "string">
 					: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" /></span>

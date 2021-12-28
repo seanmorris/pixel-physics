@@ -12,6 +12,8 @@ import { SettingsMenu } from './SettingsMenu';
 
 import { TileMap }  from '../tileMap/TileMap';
 
+import { CharacterString } from '../ui/CharacterString';
+
 export class MainMenu extends Menu
 {
 	template = require('./main-menu.html');
@@ -27,6 +29,11 @@ export class MainMenu extends Menu
 		this.args.joinGame  = false;
 		this.args.hostGame  = false;
 		this.args.copy      = 'copy';
+
+		this.args.title = new CharacterString({
+			value:  'Sonic 3000'
+			, font: 'small-menu-font'
+		});
 
 		this.refreshConnection();
 
@@ -48,9 +55,20 @@ export class MainMenu extends Menu
 
 					, 'Radical City Zone': {
 						subtext: 'Gotta go fast!'
-						, callback: () => {
-							this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
-							this.accept();
+						, children: {
+							'Act 1': {
+								callback: () => {
+									this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
+									this.accept();
+								}
+							}
+							, 'Act 2': {
+								subtext: 'Incomplete!!!'
+								, callback: () => {
+									this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
+									this.accept();
+								}
+							}
 						}
 					}
 
@@ -86,6 +104,12 @@ export class MainMenu extends Menu
 					, 'Terrain Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+							this.accept();
+						}
+					}
+					, 'Space Pinball Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
 							this.accept();
 						}
 					}

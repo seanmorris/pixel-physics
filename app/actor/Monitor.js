@@ -52,6 +52,11 @@ export class Monitor extends PointActor
 
 	collideA(other, type)
 	{
+		if(other.args.static)
+		{
+			return true;
+		}
+
 		if(!other.args.moving && !other.args.falling)
 		{
 			return false;
@@ -104,8 +109,6 @@ export class Monitor extends PointActor
 
 	pop(other)
 	{
-		console.log(other);
-
 		const viewport = this.viewport;
 
 		if(!viewport || this.args.gone)
@@ -178,7 +181,7 @@ export class Monitor extends PointActor
 
 			if(this.args.falling && other.args.falling)
 			{
-				this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
+				// this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
 			}
 		}
 

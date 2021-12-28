@@ -59,6 +59,17 @@ export class MarbleBlock extends PointActor
 
 			this.args.pushed = Math.sign(other.public.gSpeed) || this.args.pushed;
 
+			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1))
+			{
+				return true;
+			}
+
+
+			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1))
+			{
+				return true;
+			}
+
 			const tileMap = this.viewport.tileMap;
 
 			const moveBy  = ((type === 1 && 1) || (type === 3 && -1));
@@ -104,12 +115,9 @@ export class MarbleBlock extends PointActor
 		return true;
 	}
 
-	get isPushable() {
-		return !this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1)
-			&& !this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1);
-	}
-	get canStick() { return false; }
-	get solid() { return true; }
+	get isPushable() { return true; }
+	get canStick()   { return false; }
+	get solid()      { return true; }
 	get rotateLock() { return true; }
 }
 

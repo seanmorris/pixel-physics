@@ -102,7 +102,7 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":96,
+                 "height":80,
                  "id":595,
                  "name":"lava-region",
                  "properties":[
@@ -120,7 +120,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":96,
+                 "height":80,
                  "id":1157,
                  "name":"lava-region",
                  "properties":[
@@ -138,7 +138,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":96,
+                 "height":80,
                  "id":1158,
                  "name":"lava-region",
                  "properties":[
@@ -156,7 +156,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":96,
+                 "height":80,
                  "id":1159,
                  "name":"lava-region",
                  "properties":[
@@ -548,7 +548,7 @@
          "y":0
         }],
  "nextlayerid":53,
- "nextobjectid":1174,
+ "nextobjectid":1178,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -5,6 +5,8 @@ import { Pinch } from '../effects/Pinch';
 
 import { Menu } from './Menu';
 import { SettingsMenu } from './SettingsMenu';
+import { CharacterString } from '../ui/CharacterString';
+
 
 export class PauseMenu extends Menu
 {
@@ -16,6 +18,11 @@ export class PauseMenu extends Menu
 
 		this.args.cardName  = 'pause-menu';
 		this.args.animation = '';
+
+		this.args.title = new CharacterString({
+			value:  'Sonic 3000'
+			, font: 'small-menu-font'
+		});
 
 		this.args.items = {
 			Continue: { callback: () => parent.unpauseGame() }

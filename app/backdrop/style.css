@@ -81,8 +81,12 @@
 	*/
 	/*background-image: url(/Sonic/marble-garden-bg.png);
 	background-size: 100% auto;
-	background-position: calc(0.1px * var(--x)) calc(calc(var(--y) / var(--yMax)) * 100%);*/
-	--height: 1024;
+	/*--height: 1024;*/
+}
+
+.backdrops .backdrop .parallax {
+	left: calc(calc(calc(var(--x) + var(--bX)) - var(--xPan)) * 1px);
+	width: calc(calc(var(--width) + var(--xPan)) * 1px);
 }
 
 .backdrop.marble-garden {
@@ -105,7 +109,7 @@
 
 .backdrop.industrial .parallax {
 	height: calc(-1 * var(--stacked));
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stacked) / 3)));
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stacked) / 4)));
 }
 
 .backdrop.industrial {

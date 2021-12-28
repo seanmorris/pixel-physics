@@ -69,7 +69,7 @@ export class Ring extends PointActor
 		if(this.dropped && (!this.args.falling || !this.args.ySpeed))
 		{
 			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
-			this.args.ySpeed = -Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75;
+			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, -3);
 			this.args.x += this.args.xSpeed;
 			this.args.y += this.args.ySpeed;
 			this.args.falling = true;
@@ -133,6 +133,9 @@ export class Ring extends PointActor
 		this.args.float  = -1;
 
 		this.args.type = 'actor-item actor-ring collected';
+
+		this.args.xSpeed = 0;
+		this.args.ySpeed = 0;
 
 		if(this.viewport.args.audio)
 		{

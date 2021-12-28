@@ -36,7 +36,7 @@
 	backdrop-filter: blur(1.25px);
 	border-radius: 5px;
 	border-color: white;
-	text-shadow: 0em 0.15em 0.125em black;
+	/*text-shadow: 0em 0.15em 0.125em black;*/
 }
 
 .screen-card.screen-card-pause-menu .menu-container > div {

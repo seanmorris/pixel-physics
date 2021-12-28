@@ -807,6 +807,31 @@ export class PointActor extends View
 		const startX = this.x;
 		const startY = this.y;
 
+		if(this.noClip && !this.controllable)
+		{
+			if(this.args.xSpeed)
+			{
+				this.args.x += this.args.xSpeed;
+			}
+
+			if(this.args.ySpeed)
+			{
+				this.args.y += this.args.ySpeed;
+			}
+
+			if(!this.args.float && this.args.falling)
+			{
+				this.args.ySpeed += this.args.gravity;
+			}
+
+			if(this.args.float > 0)
+			{
+				this.args.float--;
+			}
+
+			return;
+		}
+
 		if(!this.args.falling && !this.args.rolling)
 		{
 			this.args.spinning = false;
@@ -866,6 +891,8 @@ export class PointActor extends View
 
 				viewport.reset();
 				viewport.startLevel(false);
+
+				viewport.args.paused = false;
 
 				return;
 			}
@@ -997,7 +1024,7 @@ export class PointActor extends View
 
 		if(!this.args.falling)
 		{
-			if(Math.abs(this.args.gSpeed) < 1)
+			if(Math.abs(this.args.gSpeed) < 1 && !this.impulseMag)
 			{
 				this.args.rolling = false
 			}
@@ -1195,29 +1222,45 @@ export class PointActor extends View
 					{
 						const densityRatio = region.args.density / this.args.density;
 
-						const myTop     = this.y - this.args.height;
-						const regionTop = region.y - region.args.height;
+						let blocked = false;
 
-						const depth = Math.min((myTop + -regionTop + 1) / this.args.height, 1);
+						const blockers = (this.getMapSolidAt(this.x, this.y - this.args.height)||[])
+							.filter(x => ![...regions].includes(x));
 
-						this.args.float = 1;
-
-						const force = depth * drag;
-
-						this.args.falling = true;
-
-						if(depth > -1)
+						if(blockers.length)
 						{
-							this.args.ySpeed -= force;
-
-							this.args.ySpeed *= drag;
+							blocked = true;
 						}
-						else if(depth < -1 && this.args.ySpeed < 0)
+
+						if(!blocked)
 						{
-							if(Math.abs(depth) < 0.25 && Math.abs(this.args.ySpeed) < 1)
+							const myTop     = this.y - this.args.height;
+							const regionTop = region.y - region.args.height;
+
+							const depth = Math.min(
+								(myTop + -regionTop + 8) / this.args.height
+								, 1
+							);
+
+							this.args.float = 1;
+
+							const force = depth * drag;
+
+							this.args.falling = true;
+
+							if(depth > -1)
 							{
-								this.args.ySpeed = 0;
-								this.args.y = -1 + regionTop + this.args.height;
+								this.args.ySpeed -= force;
+
+								this.args.ySpeed *= drag;
+							}
+							else if(depth < -1 && this.args.ySpeed < 0)
+							{
+								if(Math.abs(depth) < 0.25 && Math.abs(this.args.ySpeed) < 1)
+								{
+									this.args.ySpeed = 0;
+									this.args.y = -1 + regionTop + this.args.height;
+								}
 							}
 						}
 					}
@@ -1282,19 +1325,7 @@ export class PointActor extends View
 
 		if(!this.args.static)
 		{
-			if(this.noClip)
-			{
-				if(this.args.xSpeed)
-				{
-					this.args.x += this.args.xSpeed;
-				}
-
-				if(this.args.ySpeed)
-				{
-					this.args.y += this.args.ySpeed;
-				}
-			}
-			else if(!this.isRegion && !this.isEffect && this.args.falling && this.viewport)
+			if(!this.isRegion && !this.isEffect && this.args.falling && this.viewport)
 			{
 				if(this.args.grinding)
 				{
@@ -1407,9 +1438,7 @@ export class PointActor extends View
 		if(!this.isGhost && !(skipChecking.some(x => this instanceof x)))
 		{
 			const colls = this.viewport.actorsAtPoint(this.x, this.y, this.args.width, this.args.height)
-				.filter(x =>  x.args !== this.args)
-				.filter(x => !x.isPushable)
-				.filter(x =>  x.callCollideHandler(this));
+				.filter(x => x.args !== this.args && !x.isPushable && x.callCollideHandler(this));
 		}
 
 		if(!this.viewport)
@@ -1822,10 +1851,12 @@ export class PointActor extends View
 						if(Array.isArray(headBlock))
 						{
 							headBlock = headBlock
-								.filter(x =>  x.args !== this.args)
-								.filter(x =>  x.callCollideHandler(this))
-								.filter(x =>  x.solid)
-								.length;
+							.filter(x =>
+								x.args !== this.args
+								&& x.callCollideHandler(this)
+								&& x.solid
+							)
+							.length;
 						}
 
 						if(headBlock)
@@ -1850,9 +1881,11 @@ export class PointActor extends View
 					if(Array.isArray(waistBlock))
 					{
 						waistBlock = waistBlock
-							.filter(x =>  x.args !== this.args)
-							.filter(x =>  x.callCollideHandler(this))
-							.filter(x =>  x.solid)
+							.filter(x =>
+								x.args !== this.args
+								&& x.callCollideHandler(this)
+								&& x.solid
+							)
 							.length;
 					}
 
@@ -1923,11 +1956,16 @@ export class PointActor extends View
 								this.args.xSpeed = 0;
 								this.args.ySpeed = 0;
 								falling = false;
+
+								if(this.canRoll && this.yAxis > 0.55)
+								{
+									this.args.rolling = true;
+								}
 							}
 
 							this.args.falling = falling;
 
-							this.args.ignore = 5;
+							this.args.ignore = 2;
 
 							break;
 
@@ -2333,9 +2371,11 @@ export class PointActor extends View
 		const tileMap  = viewport.tileMap;
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x => x.args !== actor.args)
-			.filter(x => x.callCollideHandler(actor))
-			.filter(x => x.solid);
+			.filter(x =>
+				x.args !== actor.args
+				&& x.callCollideHandler(actor)
+				&& x.solid
+			);
 
 		if(actors.length > 0)
 		{
@@ -2363,9 +2403,11 @@ export class PointActor extends View
 		const tileMap  = viewport.tileMap;
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x => x.args !== actor.args)
-			.filter(x => x.callCollideHandler(actor))
-			.filter(x => x.solid);
+			.filter(x =>
+				x.args !== actor.args
+				&& x.callCollideHandler(actor)
+				&& x.solid
+			);
 
 		if(actors.length > 0)
 		{
@@ -2719,10 +2761,16 @@ export class PointActor extends View
 				else if(!forePosition[2] && !backPosition[2])
 				{
 					// this.args.groundAngle = this.args.angle = newAngle;
-					this.args.groundAngle = newAngle;
+
+					if(this.canRoll && (this.yAxis > 0.55 || this.args.dropDashCharge))
+					{
+						this.args.rolling = true;
+					}
+
 					this.args.falling = false;
+					this.args.groundAngle = newAngle;
 					this.lastAngles.splice(0);
-					this.args.ignore = this.args.ignore || 5;
+					// this.args.ignore = this.args.ignore || 5;
 
 					const slopeDir = -Math.sign(this.args.groundAngle);
 
@@ -2908,6 +2956,12 @@ export class PointActor extends View
 	{
 		if(!this.viewport)
 		{
+			return;
+		}
+
+		if(this.viewport.args.cutScene)
+		{
+			this.args.cameraMode = 'cutScene';
 			return;
 		}
 
@@ -3229,7 +3283,7 @@ export class PointActor extends View
 					{
 						gSpeed += xAxis * this.args.accel * drag;
 					}
-					else
+					else if(!this.args.ignore)
 					{
 						gSpeed += xAxis * this.args.accel * drag * this.args.skidTraction;
 					}
@@ -3270,7 +3324,7 @@ export class PointActor extends View
 			// }
 		}
 
-		if(xAxis < 0 && (this.args.gSpeed || !this.args.ignore))
+		if(xAxis < 0 && this.args.gSpeed && !this.args.ignore)
 		{
 			if(!this.args.climbing)
 			{
@@ -3283,7 +3337,7 @@ export class PointActor extends View
 			}
 		}
 
-		if(xAxis > 0 && (this.args.gSpeed || !this.args.ignore))
+		if(xAxis > 0 && this.args.gSpeed && !this.args.ignore)
 		{
 			if(!this.args.climbing)
 			{
@@ -3370,9 +3424,11 @@ export class PointActor extends View
 		}
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(a => a.args !== actor.args)
-			.filter(a => a.callCollideHandler(actor))
-			.filter(a => a.solid);
+			.filter(a =>
+				a.args !== actor.args
+				&& a.callCollideHandler(actor)
+				&& a.solid
+			);
 
 		if(actors.length > 0)
 		{
@@ -3401,9 +3457,11 @@ export class PointActor extends View
 					|| Math.abs(actor.args.gSpeed) <= region.skimSpeed
 				){
 					const actors = viewport.actorsAtPoint(point[0], point[1])
-						.filter(x => x.args !== actor.args)
-						.filter(a => a.callCollideHandler(actor))
-						.filter(x => x.solid);
+						.filter(x =>
+							x.args !== actor.args
+							&& x.callCollideHandler(actor)
+							&& x.solid
+						);
 
 					if(actors.length === 0)
 					{
@@ -3417,9 +3475,11 @@ export class PointActor extends View
 		}
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x => x.args !== actor.args)
-			.filter(a => a.callCollideHandler(actor))
-			.filter(x => x.solid);
+			.filter(x =>
+				x.args !== actor.args
+				&& x.callCollideHandler(actor)
+				&& x.solid
+			);
 
 		if(actors.length === 0)
 		{
@@ -3832,9 +3892,9 @@ export class PointActor extends View
 
 			this.viewport.onFrameOut(180, () => this.args.mercy = false);
 
+			this.startle();
 			if(!this.args.falling)
 			{
-				this.startle();
 			}
 
 			this.onNextFrame(()=>{
@@ -3902,9 +3962,12 @@ export class PointActor extends View
 		const tileMap  = viewport.tileMap;
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x => x.args !== actor.args)
-			.filter(x => (i <= actor.args.width/2) && x.callCollideHandler(actor))
-			.filter(x => x.solid);
+			.filter(x =>
+				(x.args !== actor.args)
+				&& i <= actor.args.width/2
+				&& x.callCollideHandler(actor)
+				&& x.solid
+			);
 
 		if(actors.length > 0)
 		{
@@ -4186,9 +4249,17 @@ export class PointActor extends View
 		if(actors)
 		{
 			const actors = this.viewport.actorsAtPoint(x,y)
-				.filter(x=>x.args!==this.args)
-				.filter(x=>x.solid)
-				.filter(x=> {
+				.filter(x => {
+					if(x.args === this.args)
+					{
+						return false;
+					}
+
+					if(!x.solid)
+					{
+						return false;
+					}
+
 					if(x.args.platform || x.isVehicle)
 					{
 						if(this.y <= x.y + -x.args.height && this.args.ySpeed >= 0)
@@ -4230,6 +4301,11 @@ export class PointActor extends View
 	get controllable() { return false; }
 	get skidding() { return Math.abs(this.args.gSpeed) && Math.sign(this.args.gSpeed) !== this.args.direction }
 
+	effect(other)
+	{
+
+	}
+
 	readInput()
 	{
 		if(!this.controller)
@@ -4265,6 +4341,12 @@ export class PointActor extends View
 		const buttons = controller.buttons;
 
 		this.buttons = buttons;
+
+		// if(this.args.ignore > 0)
+		// {
+		// 	this.xAxis = 0;
+		// 	this.yAxis = 0;
+		// }
 
 		for(const i in buttons)
 		{
@@ -4577,8 +4659,10 @@ export class PointActor extends View
 		this.args.dead = true;
 		this.noClip = true;
 
+		this.args.gravity = 0.25;
+
 		this.onNextFrame(()=>{
-			this.args.ySpeed = -16;
+			this.args.ySpeed = -10;
 			this.args.xSpeed = 0;
 		});
 
@@ -4636,7 +4720,7 @@ export class PointActor extends View
 
 		this.spawnRings = this.spawnRings || 0;
 
-		const maxSpawn = count || Math.min(this.args.rings, 24);
+		const maxSpawn = count || Math.min(this.args.rings, 32);
 
 		let current = 0;
 		const toSpawn = maxSpawn - this.spawnRings;

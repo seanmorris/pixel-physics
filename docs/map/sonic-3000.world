@@ -1,5 +1,19 @@
 {
     "maps": [
+        {
+            "fileName": "empty-zone.json",
+            "height": 13568,
+            "width": 131072,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "empty-zone-2.json",
+            "height": 13568,
+            "width": 131072,
+            "x": 93280,
+            "y": 13568
+        }
     ],
     "onlyShowAdjacentMaps": false,
     "type": "world"

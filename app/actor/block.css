@@ -36,6 +36,11 @@
 	--spread: 450%;
 }
 
+.actor-item.actor-breakable-block.collapsible-block.broken {
+	/*--y-speed: 1.5s;*/
+	--spread: 10%;
+}
+
 .actor-item.actor-breakable-block > * {
 	z-index: 100;
 }
@@ -47,12 +52,17 @@
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
 	--xTarget: calc(var(--xSpeed) * 24px);
-	--yTarget: 50vh;
 	transform: translate(var(--xTarget), -128px);
+	--yTarget: 50vh;
+}
+
+.actor-item.actor-breakable-block.collapsible-block.broken .fragmentsX {
+	transform: translate(var(--xTarget), 16px);
+	--yTarget: 80vh;
 }
 
 .actor-item.actor-breakable-block.breaking .fragmentsX {
-	filter: brightness(3) saturate(0.25) contrast(2) brightness(3);
+	filter: brightness(1.15) saturate(0.25) contrast(1.25);
 }
 
 .actor-item.actor-breakable-block .fragmentsX {

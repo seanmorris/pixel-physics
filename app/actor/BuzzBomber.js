@@ -135,10 +135,12 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 
 	effect(other)
 	{
-		// this.viewport.spawn.add({object:new Flickie({
-		// 	x: this.args.x,
-		// 	y: this.args.y,
-		// })});
+		super.effect(other);
+
+		this.viewport.spawn.add({object:new Flickie({
+			x: this.args.x,
+			y: this.args.y,
+		})});
 	}
 
 	wakeUp()
@@ -178,12 +180,12 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 
 		this.attacking = true;
 
-		viewport.onFrameOut(15, () => {
+		viewport.onFrameOut(5, () => {
 			this.aiming = true;
 
-			viewport.onFrameOut(10, () => {
+			viewport.onFrameOut(5, () => {
 				let shots = 2;
-				const cancelInterval = viewport.onFrameInterval(15, () => {
+				const cancelInterval = viewport.onFrameInterval(5, () => {
 					this.command_2();
 					shots-- || cancelInterval();
 				});
