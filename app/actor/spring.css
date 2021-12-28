@@ -1,21 +1,26 @@
-/*1.57*/
-
 .actor-item.actor-spring {
 	position: absolute;
 	width: 32px;
 	height: 32px;
 	transform-origin: 0px -6px;
 	transition: transform-origin 1s linear,  transform 1s linear;
+	--display-angle: unset !important;
 }
 
 .actor-item.actor-spring {
 	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
+.actor-item.actor-spring[data-diagonal=true] {
+	transform: translateY(-8px) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+}
+
 .actor-item.actor-spring .sprite {
 	position: relative;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	background-image: url(/Sonic/springs.png);
+	top: -28px;
+	left: -16px;
 	width: 32px;
 	height: 32px;
 	--sprite-offset-x: -16px;

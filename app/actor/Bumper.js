@@ -35,10 +35,14 @@ export class Bumper extends PointActor
 
 	collideA(other)
 	{
-		if(this.ignores.has(other))
+		if(other.static || other.isRegion || this.ignores.has(other))
 		{
 			return;
 		}
+
+		this.args.type = 'actor-item actor-bumper actor-bumper-active';
+
+		this.viewport.onFrameOut(3, () => this.args.type = 'actor-item actor-bumper');
 
 		if(other.args.falling)
 		{
@@ -74,7 +78,7 @@ export class Bumper extends PointActor
 			}
 		}
 
-		this.ignores.set(other, 4);
+		this.ignores.set(other, 8);
 	}
 
 	get canStick() { return false; }

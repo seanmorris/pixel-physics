@@ -30,6 +30,8 @@ export class Knuckles extends PointActor
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
 
+		this.args.punchCharge = 0;
+
 		this.args.width     = 15;
 		this.args.height    = 41;
 
@@ -66,6 +68,12 @@ export class Knuckles extends PointActor
 	onAttached()
 	{
 		this.box = this.findTag('div');
+
+		this.punchAura = new Tag('<div class = "punch-aura">');
+
+		this.punchAura.style({display: 'none'})
+
+		this.sprite.appendChild(this.punchAura.node);
 
 		this.args.bindTo('animation', v => this.box.setAttribute('data-animation', v));
 	}
@@ -117,6 +125,37 @@ export class Knuckles extends PointActor
 		if(this.punchTime && Date.now() - this.punchTime > 128)
 		{
 			this.punching = true;
+		}
+
+		if(Math.abs(this.args.gSpeed) > 15 && this.punched >= 3 && !this.auraVisible)
+		{
+			this.auraVisible = true;
+			this.viewport.onFrameOut(6, () => {
+				this.punchAura.style({display: 'none'})
+				this.auraVisible = false;
+			});
+			this.punchAura.style({display: 'initial'});
+		}
+
+		if(this.willPunch)
+		{
+			if(this.args.punchCharge < 45)
+			{
+				this.args.punchCharge += 1.5;
+			}
+
+			this.punchMomentum = Math.sign(this.punchMomentum) * Math.max(
+				Math.abs(this.punchMomentum)
+				, this.args.punchCharge * (0.2 * Math.min(this.punched, 3))
+			);
+		}
+		else if(!this.punched && this.args.punchCharge > 4)
+		{
+			this.args.punchCharge -= 4;
+		}
+		else if(!this.punched && this.args.punchCharge > 0)
+		{
+			this.args.punchCharge = 0;
 		}
 
 		this.willStick = false;
@@ -420,6 +459,8 @@ export class Knuckles extends PointActor
 				});
 			}
 		}
+
+		this.box.style({'--punchCharge': this.args.punchCharge})
 	}
 
 	doJump(force)
@@ -463,6 +504,11 @@ export class Knuckles extends PointActor
 	command_0()
 	{
 		super.command_0();
+
+		if(!this.args.jumping)
+		{
+			return
+		}
 
 		if(this.willPunch || !this.args.falling)
 		{
@@ -520,9 +566,6 @@ export class Knuckles extends PointActor
 		{
 			this.punchMomentum = Math.abs(this.punchMomentum) * this.xAxis;
 		}
-
-		if(this.willPunch)
-		{}
 
 		this.punchTime = Date.now();
 

@@ -235,9 +235,9 @@ export class Viewport extends View
 		this.args.xOffsetTarget = 0.5;
 		this.args.yOffsetTarget = 0.75;
 
-		this.args.topLine = new CharacterString({value:'', scale: 2});
-		this.args.status  = new CharacterString({value:'', scale: 2});
-		this.args.focusMe = new CharacterString({value:'', scale: 2});
+		this.args.topLine = new CharacterString({value:''});
+		this.args.status  = new CharacterString({value:''});
+		this.args.focusMe = new CharacterString({value:''});
 
 		this.args.labelChar = new CharacterString({value:'Char: '});
 
@@ -709,7 +709,7 @@ export class Viewport extends View
 
 		this.onTimeout(5500, () => this.args.ntsc = '');
 
-		this.onTimeout(23500, () => {
+		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 23500, () => {
 			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
 		});
 
@@ -895,8 +895,7 @@ export class Viewport extends View
 				this.nextControl.args.x = Number(x);
 				this.nextControl.args.y = Number(y);
 			}
-
-			if(!this.args.isReplaying && !this.args.isRecording)
+			else if(!this.args.isReplaying && !this.args.isRecording)
 			{
 				this.args.demoIndicator = null;
 
@@ -929,9 +928,16 @@ export class Viewport extends View
 
 		Keyboard.get().reset();
 
+		this.args.started = false;
+
 		this.args.zonecard.played.then(() => {
 
 			this.args.level = 'level';
+
+			this.args.fade    = false;
+			this.args.started = true;
+			this.args.running = true;
+			this.startTime    = Date.now();
 
 			if(typeof ga === 'function')
 			{
@@ -941,11 +947,6 @@ export class Viewport extends View
 					eventLabel: `${this.args.actName}`
 				});
 			}
-
-			this.args.fade    = false;
-			this.args.started = true;
-			this.args.running = true;
-			this.startTime    = Date.now();
 		});
 	}
 
@@ -1141,6 +1142,13 @@ export class Viewport extends View
 
 		switch(actor.args.cameraMode)
 		{
+			case 'cutScene':
+				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
+				this.args.yOffsetTarget = [0.70, 0.50, 0.45, 0.50][actor.args.mode];
+				this.maxCameraBound = 64;
+				cameraSpeed = 15;
+				break;
+
 			case 'corkscrew':
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
@@ -1150,9 +1158,9 @@ export class Viewport extends View
 
 			case 'normal':
 				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
-				this.args.yOffsetTarget = [0.65, 0.50, 0.45, 0.50][actor.args.mode];
+				this.args.yOffsetTarget = [0.55, 0.50, 0.45, 0.50][actor.args.mode];
 				this.maxCameraBound = 64;
-				cameraSpeed = 25;
+				cameraSpeed = 15;
 				break;
 
 			case 'airplane': {
@@ -1225,9 +1233,9 @@ export class Viewport extends View
 			case 'bridge':
 
 				this.args.xOffsetTarget = 0.50;
-				this.args.yOffsetTarget = 0.55;
+				this.args.yOffsetTarget = 0.40;
 
-				cameraSpeed = 15;
+				cameraSpeed = 5;
 
 				break;
 
@@ -1256,7 +1264,7 @@ export class Viewport extends View
 		}
 
 		if(actor.args.modeTime > 5
-			&& ['normal', 'bridge', 'cliff', 'aerial'].includes(actor.args.cameraMode)
+			&& ['normal', 'bridge', 'cliff', 'aerial', 'cutScene'].includes(actor.args.cameraMode)
 		){
 			const gSpeed     = actor.args.gSpeed;
 			const xSpeed     = actor.args.xSpeed;
@@ -1376,7 +1384,7 @@ export class Viewport extends View
 		const dragDistance = Math.min(maxDistance, distance);
 
 		const snapFactor = Math.abs(dragDistance / maxDistance);
-		const snapFrames = 24;
+		const snapFrames = 12;
 		const snapSpeed  = dragDistance / snapFrames;
 
 		let x = xNext + dragDistance * Math.cos(angle)
@@ -1481,8 +1489,6 @@ export class Viewport extends View
 			controlActor = this.controlActor.standingOn;
 		}
 
-		this.tileMap.ready.then(() => this.updateBackdrops());
-
 		this.tags.bgFilters.style({
 			'--x': this.args.x
 			, '--y': this.args.y
@@ -1506,21 +1512,20 @@ export class Viewport extends View
 		this.tags.foreground.style({transform: `translate( ${xMod}px, ${yMod}px )`});
 
 		this.tags.frame.style({
-			'--width': this.args.width
+			'--width':    this.args.width
 			, '--height': this.args.height
-			, '--scale': this.args.scale
+			, '--scale':  this.args.scale
 		});
 	}
 
 	updateBackdrops()
 	{
-		const xMax = -(this.tileMap.mapData.width * 32);
-		const yMax = -(this.tileMap.mapData.height * 32);
-
 		for(const [,backdrop] of this.backdrops)
 		{
 			if(!backdrop.view)
 			{
+				const args = {};
+
 				let backdropType = '';
 
 				for(const property of backdrop.properties)
@@ -1528,18 +1533,27 @@ export class Viewport extends View
 					if(property.name === 'backdrop')
 					{
 						backdropType = property.value;
+						continue;
 					}
+
+					args[ property.name ] = property.value;
 				}
+
+				args.width  = backdrop.width;
+				args.height = backdrop.height;
+
+				args.bX = backdrop.x;
+				args.bY = backdrop.y;
 
 				if(backdropType === 'protolabrynth')
 				{
-					backdrop.view = new ProtoLabrynth;
+					backdrop.view = new ProtoLabrynth(args, this);
 
 					backdrop.view.render( this.tags.backdrops );
 				}
 				else if(backdropType === 'mystic-cave')
 				{
-					backdrop.view = new MysticCave;
+					backdrop.view = new MysticCave(args, this);
 
 					backdrop.view.render( this.tags.backdrops );
 				}
@@ -1550,8 +1564,12 @@ export class Viewport extends View
 			const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
 			const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
 
+			const xMax = this.tileMap ? -(this.tileMap.mapData.width * 32) : 2 ** 9;
+			const yMax = this.tileMap ? -(this.tileMap.mapData.height * 32) : 2 ** 9;
+
 			backdrop.view && Object.assign(backdrop.view.args, ({
 				x: this.args.x
+				, xPan: this.args.x
 				, xMax: xMax
 				, y: this.args.y + backdrop.y
 				, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
@@ -1562,14 +1580,20 @@ export class Viewport extends View
 			}));
 		}
 
-		this.args.backdrop && Object.assign(this.args.backdrop.args, ({
-			x: this.args.x
-			, y: this.args.y
-			, xMax: xMax
-			, yMax: yMax
-			, frame: this.args.frameId
-			, stacked: -this.args.backdrop.stacked + 'px'
-		}));
+		this.tileMap && this.tileMap.ready.then(() => {
+			const xMax = this.tileMap ? -(this.tileMap.mapData.width * 32) : 2 ** 9;
+			const yMax = this.tileMap ? -(this.tileMap.mapData.height * 32) : 2 ** 9;
+
+			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
+				x: 0
+				, xPan: this.args.x
+				, y: this.args.y + this.args.yOffset
+				, xMax: xMax ?? 0
+				, yMax: yMax ?? 0
+				, frame: this.args.frameId
+				, stacked: -this.args.backdrop.stacked + 'px'
+			}));
+		});
 	}
 
 	populateMap()
@@ -2013,6 +2037,8 @@ export class Viewport extends View
 			this.args.paused--;
 		}
 
+		this.updateBackdrops();
+
 		if(!this.args.started)
 		{
 			return;
@@ -2151,7 +2177,6 @@ export class Viewport extends View
 		{
 			layer.move();
 		}
-
 
 		if(this.args.running)
 		{
@@ -2898,6 +2923,8 @@ export class Viewport extends View
 		// this.args.frameId   = -1;
 
 		this.tags.viewport.focus();
+
+		this.args.paused = true;
 	}
 
 	quit()
@@ -2981,6 +3008,8 @@ export class Viewport extends View
 		this.onTimeout(750, () => this.args.backdrop = null);
 
 		this.args.titlecard.play();
+
+		this.controller.zero();
 	}
 
 	introCards()

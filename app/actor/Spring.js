@@ -20,6 +20,7 @@ export class Spring extends PointActor
 			--y:[[y]];
 		"
 		data-colliding = "[[colliding]]"
+		data-diagonal  = "[[diagonal]]"
 		data-falling   = "[[falling]]"
 		data-facing    = "[[facing]]"
 		data-angle     = "[[angle|rad2deg]]"
@@ -109,7 +110,10 @@ export class Spring extends PointActor
 		}
 
 		this.args.actingOn.add(other)
-		this.args.active = true;
+
+		this.viewport.onFrameOut(2,() => {
+			this.args.active = true;
+		});
 
 		this.viewport.onFrameOut(5,() => {
 			delete other[WillSpring];
@@ -125,8 +129,6 @@ export class Spring extends PointActor
 		// other.args.direction = Math.sign(this.args.gSpeed);
 
 		other[WillSpring] = true;
-
-		other.args.ignore = 4;
 
 		// other.args.gSpeed = 0;
 		// other.args.xSpeed = 0;
@@ -151,32 +153,47 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.float  = 2;
-
 		other.args.x = this.x + Math.cos(rounded) * 16;
 		other.args.y = this.y + Math.sin(rounded) * 16;
 
 		other.args.jumping = false;
+		other.args.ignore = other.args.falling ? 4 : 12;
 
 		this.viewport.onFrameOut(2,()=>{
+
+			other.args.float = 2;
+			other.args.direction = Math.sign(xImpulse);
+
 			other.impulse(
 				this.args.power
 				, rounded
-				, ![0, Math.PI].includes(this.args.angle)
+				, (![0, Math.PI].includes(this.args.angle) && Math.abs(Math.PI - this.args.angle) > 0.01)
 			);
 		});
 
+		this.viewport.onFrameOut(3,()=>{
+		});
+
+		const xImpulse = Number(Number(Math.cos(rounded) * 1).toFixed(3));
+		const yImpulse = Number(Number(Math.sin(rounded) * 1).toFixed(3));
+
+		const isRolling = other.args.rolling;
+
 		if(
-			![0, Math.PI].includes(this.args.angle)
+			(![0, Math.PI].includes(this.args.angle) && Math.abs(Math.PI - this.args.angle) > 0.01)
 			|| other.args.falling
 			|| other.args.mode !== 0
 		){
 			other.args.falling = true;
 			other.args.mode = 0;
 		}
+		else
+		{
+			this.viewport.onFrameOut(3, () => other.args.rolling = isRolling);
+			this.viewport.onFrameOut(2, () => other.args.rolling = isRolling);
+			this.viewport.onFrameOut(1, () => other.args.rolling = isRolling);
+		}
 
-		const xImpulse = Number(Number(Math.cos(rounded) * 1).toFixed(3));
-		const yImpulse = Number(Number(Math.sin(rounded) * 1).toFixed(3));
 
 		if(Math.abs(other.args.xSpeed) < 3 || Math.sign(other.args.xSpeed) !== Math.sign(xImpulse))
 		{

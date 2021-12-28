@@ -17,7 +17,7 @@ export class RedEyeJet extends PointActor
 
 		this.args.float = -1;
 
-		this.args.phase = 'idle';
+		this.args.phase = 'intro';
 
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
@@ -141,7 +141,7 @@ export class RedEyeJet extends PointActor
 				this.hitSound.play();
 			}
 
-			other.args.x = this.x - (this.args.width / 2) * Math.sign(other.x - this.x);
+			// other.args.x = this.x - (this.args.width / 2) * Math.sign(other.x - this.x);
 
 			if(this.args.hitPoints > 0)
 			{
@@ -165,7 +165,7 @@ export class RedEyeJet extends PointActor
 				this.hitSound.play();
 			}
 
-			other.args.x = this.x + (this.args.width / 2) * Math.sign(other.x - this.x);
+			// other.args.x = this.x + (this.args.width / 2) * Math.sign(other.x - this.x);
 
 			if(this.args.hitPoints > 0)
 			{
@@ -207,6 +207,10 @@ export class RedEyeJet extends PointActor
 				}
 
 				this.viewport.onFrameOut(20, () => {
+					if(this.args.phase === 'intro')
+					{
+						return;
+					}
 					if(this.args.hitPoints > 0)
 					{
 						this.args.animation = 'attacking';
@@ -283,10 +287,14 @@ export class RedEyeJet extends PointActor
 
 		if(this.args.phase === 'intro')
 		{
-			this.args.ropeLength = 8;
+			for(const mace of this.hanging.get(MiniMace))
+			{
+				mace.args.ropeLength = 12;
+			}
+
 			this.args.maxSpeed   = 12;
 
-			if(this.args.phaseFrameId > 100)
+			if(this.args.phaseFrameId > 120)
 			{
 				console.log(this.args.phaseFrameId);
 
@@ -295,7 +303,10 @@ export class RedEyeJet extends PointActor
 		}
 		else
 		{
-			this.args.ropeLength = 144;
+			for(const mace of this.hanging.get(MiniMace))
+			{
+				mace.args.ropeLength = 144;
+			}
 		}
 
 		if(this.args.phase === 'attacking')

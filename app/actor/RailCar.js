@@ -75,7 +75,7 @@ export class RailCar extends Vehicle
 			this.args.started = true;
 		}
 
-		if(nowX === lastX)
+		if(nowX === lastX && !this.args.broken)
 		{
 			this.sprite.classList.remove('moving');
 
@@ -115,8 +115,8 @@ export class RailCar extends Vehicle
 		{
 			const viewport = this.viewport;
 
-			viewport.onFrameOut(500, () => viewport && viewport.actors.remove(this));
-			viewport.onFrameOut(200, () => this.sprite.classList.add('broken'));
+			// viewport.onFrameOut(140, () => viewport && viewport.actors.remove(this));
+			// viewport.onFrameOut(120, () => this.sprite.classList.add('broken'));
 
 			if(this.occupant)
 			{
@@ -140,6 +140,24 @@ export class RailCar extends Vehicle
 			this.args.groundAngle = 0;
 			this.args.mode = 0;
 		}
+	}
+
+	sleep()
+	{
+		this.args.x = this.def.get('x');
+		this.args.y = this.def.get('y');
+
+		this.args.gSpeed = 0;
+		this.args.xSpeed = 0;
+		this.args.ySpeed = 0;
+
+		this.sprite.classList.remove('breaking');
+		this.sprite.classList.remove('broken');
+
+		this.args.broken = false;
+		this.args.started = false;
+
+		super.sleep();
 	}
 
 	// processInputDirect()

@@ -158,5 +158,23 @@ export class Switch extends PointActor
 		}
 	}
 
+	sleep()
+	{
+		this.args.x = this.def.get('x');
+		this.args.y = this.def.get('y');
+
+		this.onNextFrame(() => {
+			this.args.x = this.def.get('x');
+			this.args.y = this.def.get('y');
+
+			this.viewport.setColCell(this);
+
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+			this.args.pushed = 0;
+			this.args.float  = 0;
+		});
+	}
+
 	get solid() { return true; }
 }

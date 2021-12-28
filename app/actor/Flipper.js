@@ -12,27 +12,34 @@ export class Flipper extends PointActor
 		this.noClip = true;
 		this.args.float = -1;
 
-		this.args.power = this.args.power ?? 24;
+		this.args.direction = this.args.direction || 1;
+
+		this.args.power = this.args.power ?? 12;
 
 		this.args.type = 'actor-item actor-flipper';
+
+		this.args.bindTo('direction', v => this.args.type = v < 0
+			? 'actor-item actor-flipper actor-flipper-right'
+			: 'actor-item actor-flipper actor-flipper-left'
+		);
 
 		this.flipped = new WeakSet;
 	}
 
 	collideA(other, type)
 	{
-		if(other.args.falling || this.flipped.has(other))
+		if(this.flipped.has(other))
 		{
 			return;
 		}
 
-		const leftBound = this.x - (this.args.width / 2);
+		const leftBound = this.x - this.args.direction * (1+this.args.width / 2);
 
 		other.args.rolling = true;
 
 		other.willJump = false;
 
-		other.args.gSpeed = 1;
+
 
 		// if(other.x < leftBound + (this.args.width / 3))
 		// {
@@ -45,23 +52,30 @@ export class Flipper extends PointActor
 
 			this.args.animation = 'flipping';
 
-			this.viewport.onFrameOut(3, () => this.args.animation = 'unflipping');
-
 			other.args.xSpeed = 0;
 			other.args.ySpeed = 0;
 			other.args.gSpeed = 0;
-			other.args.float  = 2;
-
-			// other.args.jumping = true;
-			other.args.falling = true;
 
 			const flipFactor = (other.x - leftBound) / this.args.width;
+			const flipMagnitude = flipFactor * this.args.direction;
 
-			other.impulse(this.args.power * flipFactor, rounded, true);
+			other.impulse(this.args.power * (flipMagnitude ** 2), rounded, true);
+
+			this.viewport.onFrameOut(3, () => this.args.animation = 'unflipping');
+
+			other.args.jumping = false;
+			other.args.falling = true;
 
 			this.flipped.add(other);
 
+			this.viewport.onFrameOut(1, () => other.willJump = false);
+			this.viewport.onFrameOut(3, () => other.args.jumping = false);
 			this.viewport.onFrameOut(5, () => this.flipped.delete(other));
+
+			return;
 		}
+
+		other.args.gSpeed = Math.min(2, Math.abs(other.args.gSpeed) || 1)
+			* Math.sign(other.args.gSpeed || this.args.direction);
 	}
 }

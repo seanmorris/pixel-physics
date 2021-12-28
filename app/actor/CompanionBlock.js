@@ -16,6 +16,24 @@ export class CompanionBlock extends MarbleBlock
 		this.played = false
 	}
 
+	collideA(other, type)
+	{
+		if(this.args.falling && other.y > 8 + this.y + -this.args.height)
+		{
+			return false;
+		}
+		else if(this.args.falling && other.y > this.y - this.args.height)
+		{
+			other.args.y = this.y - this.args.height
+		}
+		else if(this.args.falling && other.args.modeTime < 3)
+		{
+			other.args.gSpeed = 0;
+		}
+
+		return super.collideA(other, type);
+	}
+
 	update()
 	{
 		if(this.public.pushed)

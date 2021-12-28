@@ -18,7 +18,7 @@ export class LayerController extends PointActor
 		this.args.xLayerLimit = this.args.xLayerLimit || null;
 		this.args.yLayerLimit = this.args.yLayerLimit || null;
 
-		this.args.yQuake = this.args.yQuake ?? 15;
+		this.args.yQuake = this.args.yQuake ?? 5;
 
 		this.args.static = true;
 

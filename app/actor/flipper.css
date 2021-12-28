@@ -1,5 +1,5 @@
 .actor-item.actor-flipper .sprite {
-	left: -8px;
+	left: 0px;
 	width: 48px;
 	height: 34px;
 
@@ -12,6 +12,14 @@
 
 .actor-item.actor-flipper[data-animation=flipping] .sprite {
 	animation: flipper-flip 0.05s steps(2) forwards;
+}
+
+.actor-item.actor-flipper.actor-flipper-right .sprite {
+	left: 0px;
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(calc(-1rad * var(--display-angle)))
+		scaleX(-1) !important;
 }
 
 @keyframes flipper-flip {

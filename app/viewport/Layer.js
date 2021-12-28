@@ -249,9 +249,9 @@ export class Layer extends View
 							, '--screenY': (j - centerY) / centerY
 						});
 					}
-					else if(block.node)
+					else
 					{
-						block.node.style.display = 'none';
+						block.style({display: 'none'});
 					}
 				}
 

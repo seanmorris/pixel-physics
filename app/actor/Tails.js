@@ -159,7 +159,12 @@ export class Tails extends PointActor
 	{
 		super.command_0(button);
 
-		if(!this.public.falling)
+		if(!this.args.jumping)
+		{
+			return
+		}
+
+		if(!this.args.falling)
 		{
 			this.args.tailFlyCoolDown = -80;
 			return;

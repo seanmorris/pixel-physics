@@ -27,6 +27,9 @@ export class StarBalloon extends Balloon
 			}
 		}
 
+
+		this.args.groundAngle = 0;
+
 		super.update();
 	}
 
@@ -47,7 +50,7 @@ export class StarBalloon extends Balloon
 			return false;
 		}
 
-		if(other.args.ySpeed >= 0)
+		if(other.args.ySpeed >= 0 || other.args.spinning)
 		{
 			other.args.ySpeed = -14;
 

@@ -24,6 +24,17 @@
 	color: rgba(0,0,0,0);
 }
 
+.small-menu-font .hud-character {
+	background-image: url(/Sonic/small-menu-font-shadow.png);
+	height: 0.5rem;
+	margin-bottom: 0rem;
+}
+
+li.focused .small-menu-font .hud-character,
+li:focus .small-menu-font .hud-character {
+	background-image: url(/Sonic/small-menu-font-yellow-shadow.png);
+}
+
 .hud-character-string.red-alert .hud-character {
 	animation: redalert 150ms steps(2) infinite;
 	background-image: url(/Sonic/font-red.png);

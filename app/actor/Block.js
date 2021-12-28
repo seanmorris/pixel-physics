@@ -45,6 +45,8 @@ export class Block extends PointActor
 		this.args.collapse = args.collapse ?? false;
 
 		this.args.active = -1;
+
+		this.weighted = false;
 	}
 
 	onAttached(event)
@@ -79,6 +81,11 @@ export class Block extends PointActor
 		if(other.isRegion)
 		{
 			return false;
+		}
+
+		if(other.args.standingOn === this)
+		{
+			this.weighted = true;
 		}
 
 		if(other instanceof this.constructor)
@@ -419,6 +426,11 @@ export class Block extends PointActor
 		super.update();
 	}
 
+	updateStart()
+	{
+		this.weighted = false;
+	}
+
 	updateEnd()
 	{
 		super.updateEnd();
@@ -434,6 +446,19 @@ export class Block extends PointActor
 		// {
 		// 	console.log(type);
 		// }
+
+		if(this.args.settle)
+		{
+			if(this.weighted && this.args.y < this.def.get('y') + this.args.settle)
+			{
+				this.args.y += Math.min(Math.abs(this.args.settle), 64) / 8 * Math.sign(this.args.settle);
+			}
+
+			if(!this.weighted && this.y > this.def.get('y'))
+			{
+				this.args.y -= Math.min(Math.abs(this.args.settle), 32) / 8 * Math.sign(this.args.settle);
+			}
+		}
 	}
 
 	sleep()

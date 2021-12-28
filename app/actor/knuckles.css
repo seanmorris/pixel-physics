@@ -4,6 +4,12 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
+	filter:
+		contrast(calc(100% - calc(5% * calc(0.0 * var(--punchCharge)))))
+		brightness(calc(100% + calc(5% * calc(0.6 * var(--punchCharge)))))
+		saturate(calc(100% + calc(25% * calc(0.3 * var(--punchCharge)))))
+		hue-rotate(calc(30deg * calc(0.02 * var(--punchCharge))));
+	/*filter: invert(100%) hue-rotate(180deg);*/
 }
 
 .actor-item.actor-knuckles .sprite:after {
@@ -302,5 +308,40 @@
 	}
 	to{
 		background-position: -28px 0;
+	}
+}
+
+.actor-item.actor-knuckles .sprite .punch-aura {
+	width: 64px;
+	height: 48px;
+	bottom: 0px;
+	right: 5px;
+	position: absolute;
+	background-image: url(/Sonic/shield-fire-boost.png);
+	background-position: calc(-64px * 0) 0px;
+	animation: knuckles-punch-aura 85ms steps(3) infinite,
+		knuckles-punch-aura-flicker 45ms steps(1) infinite;
+	z-index: 100;
+}
+
+@keyframes knuckles-punch-aura {
+	from{
+		background-position: calc(-64px * 0) 0px;
+		transform: scaleY(0.75);
+		opacity: 1;
+	}
+	to{
+		background-position: calc(-64px * 3) 0px;
+		transform: scaleY(0.333);
+		opacity: 0.5;
+	}
+}
+
+@keyframes knuckles-punch-aura-flicker {
+	from{
+		z-index: -1;
+	}
+	to{
+		z-index: -1;
 	}
 }
