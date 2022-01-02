@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+const Boosted = Symbol('Boosted');
+
 export class Spinner extends PointActor
 {
 	constructor(...args)
@@ -26,12 +28,21 @@ export class Spinner extends PointActor
 	{
 		if(other.args.gSpeed === 0)
 		{
+			// return;
+		}
+
+		if(other.args.falling || other[Boosted])
+		{
 			return;
 		}
 
+		this.viewport.onFrameOut(10, () => delete other[Boosted]);
+
+		other[Boosted] = this;
+
 		const toSpeed = this.args.toSpeed || 40;
 
-		other.args.ignore = 4;
+		other.args.ignore = 2;
 		other.args.direction = this.args.direction;
 		other.args.facing = this.args.direction > 0 ? 'right' : 'left';
 

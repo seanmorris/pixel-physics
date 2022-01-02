@@ -49,6 +49,8 @@ export class RollingRegion extends Region
 			return;
 		}
 
+		other.willStick = false;
+
 		if(Math.abs(other.args.gSpeed) < this.args.minSpeed)
 		{
 			other.args.gSpeed = this.args.minSpeed * Math.sign(other.args.gSpeed || other.args.direction);
@@ -69,13 +71,14 @@ export class RollingRegion extends Region
 			if(!this.args.canJump)
 			{
 				other.args.ignore = 4;
+				other.willJump = false;
 			}
-			else
-			{
-				// other.doJump(18);
-			}
+			// else
+			// {
+			// 	other.doJump(12);
+			// 	other.args.jumping = false;
+			// }
 
-			other.willJump = false;
 		}
 	}
 

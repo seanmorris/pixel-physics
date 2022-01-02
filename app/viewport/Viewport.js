@@ -4,6 +4,7 @@ import { Tag  }     from 'curvature/base/Tag';
 import { View }     from 'curvature/base/View';
 import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
+import { Sequence } from 'curvature/input/Sequence';
 
 import { TileMap }  from '../tileMap/TileMap';
 
@@ -182,6 +183,128 @@ export class Viewport extends View
 		}
 
 		this.args.noIntro = noIntro ? 'no-intro' : '';
+
+		const debugKeys = [
+			'ArrowUp'
+			, 'ArrowUp'
+			, 'ArrowDown'
+			, 'ArrowDown'
+			, 'ArrowUp'
+			, 'ArrowUp'
+			, 'ArrowUp'
+			, 'ArrowUp'
+		];
+
+		const debugSeq = new Sequence({ keys: debugKeys, timing: 750 });
+
+		const konamiKeys = [
+			'ArrowUp'
+			, 'ArrowUp'
+			, 'ArrowDown'
+			, 'ArrowDown'
+			, 'ArrowLeft'
+			, 'ArrowRight'
+			, 'ArrowLeft'
+			, 'ArrowRight'
+			, 'KeyB'
+			, 'KeyA'
+			, 'Enter'
+		];
+
+		const konamiSeq = new Sequence({ keys: konamiKeys, timing: 750 });
+
+		const gravityKeys = [
+			'KeyS'
+			, 'KeyV'
+			, 'KeyG'
+			, 'KeyR'
+			, 'KeyA'
+			, 'KeyV'
+		];
+
+		const gravitySeq = new Sequence({ keys: gravityKeys, timing: 750 });
+
+		this.sequences = [debugSeq, konamiSeq, gravitySeq];
+
+		this.args.debugEnabled  = false;
+		this.args.debugEditMode = false;
+
+		this.args.debugObjectCursor = 0;
+
+		this.args.debugObjectName = new CharacterString({value:''});
+
+		this.debugBank = {};
+
+		debugSeq.addEventListener('complete', event => {
+
+			if(this.args.debugEnabled)
+			{
+				return;
+			}
+
+			this.args.debugEnabled = true;
+
+			console.log('Debug variable set.');
+
+			this.args.topLine.args.value = ' Debug variable set! ';
+			this.args.topLine.args.hide = '';
+
+			this.onTimeout(1750, ()=>{
+				this.args.topLine.args.value = '';
+				this.args.status.args.hide = 'hide';
+			});
+		});
+
+		konamiSeq.addEventListener('complete', event => {
+
+			if(this.args.masterCheat)
+			{
+				return;
+			}
+
+			this.args.masterCheat = true;
+
+			this.args.topLine.args.value = ' Master cheat detected. ';
+			this.args.topLine.args.hide = '';
+
+			console.log('Master cheat detected.');
+
+			this.onTimeout(1750, ()=>{
+				this.args.topLine.args.value = '';
+				this.args.status.args.hide = 'hide';
+			});
+		});
+
+		gravitySeq.addEventListener('complete', event => {
+
+
+			if(!this.controlActor)
+			{
+				return;
+			}
+
+			this.controlActor.gravityCheat = !this.controlActor.gravityCheat;
+
+			this.args.topLine.args.value = ` Gravity cheat ${this.controlActor.gravityCheat?'on':'off'}. `;
+			this.args.topLine.args.hide = '';
+
+			this.onTimeout(1750, ()=>{
+				this.args.topLine.args.value = '';
+				this.args.status.args.hide = 'hide';
+			});
+
+			if(this.controlActor.gravityCheat)
+			{
+				this.controlActor.args.gravity *= 0.5;
+			}
+			else
+			{
+				this.controlActor.args.gravity *= 2;
+			}
+
+		});
+
+		console.log(this.debugSequence);
 
 		this.args.pauseMenu = new PauseMenu({}, this);
 
@@ -771,6 +894,13 @@ export class Viewport extends View
 
 		keyboard.focusElement = this.tags.viewport.node;
 
+		keyboard.codes.bindTo((v,k,t,d) => {
+			if(v === -1)
+			{
+				this.sequences.map(s => s.check(k));
+			}
+		});
+
 		this.tags.viewport.node.focus();
 
 		if(0 || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches)
@@ -840,6 +970,9 @@ export class Viewport extends View
 	startLevel(refresh = true)
 	{
 		this.args.fade = true;
+
+		this.clearDialog();
+		this.hideDialog();
 
 		refresh && this.setZoneCard();
 
@@ -1002,6 +1135,105 @@ export class Viewport extends View
 			}
 		}
 
+		if(this.controlActor && this.args.debugEditMode)
+		{
+			if(controller.buttons[0] && controller.buttons[0].time === 1)
+			{
+				const defKeys = Object.keys(ObjectPalette);
+
+				const debugObjectType = defKeys[ this.args.debugObjectCursor ];
+
+				if(!this.debugBank[debugObjectType])
+				{
+					this.debugBank[debugObjectType] = new ObjectPalette[debugObjectType];
+				}
+
+				const spawnObject = this.debugBank[debugObjectType];
+
+				this.spawn.add({object:spawnObject});
+
+				if(spawnObject.controllable)
+				{
+					spawnObject.args.name = 'SPAWN';
+
+					this.playable.add(spawnObject);
+				}
+
+				spawnObject[Run] = this[Run];
+
+				spawnObject.args.x = this.controlActor.x;
+				spawnObject.args.y = this.controlActor.y;
+
+				delete this.debugBank[debugObjectType];
+			}
+
+			if(controller.buttons[1] && controller.buttons[1].time === 1)
+			{
+				this.args.debugObjectCursor++;
+
+				const defKeys = Object.keys(ObjectPalette);
+
+				if(this.args.debugObjectCursor >= defKeys.length)
+				{
+					this.args.debugObjectCursor = 0;
+				}
+
+				const debugObjectType = defKeys[ this.args.debugObjectCursor ];
+
+				if(!this.debugBank[debugObjectType])
+				{
+					this.debugBank[debugObjectType] = new ObjectPalette[debugObjectType];
+				}
+
+				while(this.tags.spawnPreview.node.firstChild)
+				{
+					this.tags.spawnPreview.node.firstChild.remove();
+				}
+
+				this.debugBank[debugObjectType].render(this.tags.spawnPreview.node);
+
+				this.args.debugObjectName.args.value = debugObjectType;
+			}
+
+			if(controller.buttons[2] && controller.buttons[2].time === 1)
+			{
+				this.args.debugObjectCursor--;
+
+				const defKeys = Object.keys(ObjectPalette);
+
+				if(this.args.debugObjectCursor <= 0)
+				{
+					this.args.debugObjectCursor = defKeys.length - 1;
+				}
+
+				const debugObjectType = defKeys[ this.args.debugObjectCursor ];
+
+				if(!this.debugBank[debugObjectType])
+				{
+					this.debugBank[debugObjectType] = new ObjectPalette[debugObjectType];
+				}
+
+				while(this.tags.spawnPreview.node.firstChild)
+				{
+					this.tags.spawnPreview.node.firstChild.remove();
+				}
+
+				this.debugBank[debugObjectType].render(this.tags.spawnPreview.node);
+
+				this.args.debugObjectName.args.value = debugObjectType;
+			}
+
+		}
+
+		if(this.args.debugEnabled)
+		{
+			if(controller.buttons[8] && controller.buttons[8].time === 1)
+			{
+				this.args.debugEditMode = !this.args.debugEditMode;
+				this.settings.debugOsd = this.args.debugEditMode;
+			}
+		}
+
 		if(controller.buttons[2011] && controller.buttons[2011].time === 1)
 		{
 			this.fullscreen();
@@ -1015,6 +1247,12 @@ export class Viewport extends View
 		if(controller.buttons[2009] && controller.buttons[2009].time === 1)
 		{
 			this.settings.debugOsd = !this.settings.debugOsd;
+		}
+
+		if(controller.buttons[1011] && controller.buttons[1011].time === 1)
+		{
+			this.args.paused = 1;
+			this.focus();
 		}
 
 		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
@@ -1160,7 +1398,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
 				this.args.yOffsetTarget = [0.55, 0.50, 0.45, 0.50][actor.args.mode];
 				this.maxCameraBound = 64;
-				cameraSpeed = 15;
+				cameraSpeed = 24;
 				break;
 
 			case 'airplane': {
@@ -1263,7 +1501,7 @@ export class Viewport extends View
 
 		}
 
-		if(actor.args.modeTime > 5
+		if(actor.args.modeTime > 15
 			&& ['normal', 'bridge', 'cliff', 'aerial', 'cutScene'].includes(actor.args.cameraMode)
 		){
 			const gSpeed     = actor.args.gSpeed;
@@ -1416,8 +1654,8 @@ export class Viewport extends View
 			y = yMax;
 		}
 
-		this.args.shakeX *= -0.99;
-		this.args.shakeY *= -0.99;
+		this.args.shakeX *= -0.95;
+		this.args.shakeY *= -0.95;
 
 		if(actor.args.dead && !actor.args.respawning)
 		{
@@ -2023,7 +2261,10 @@ export class Viewport extends View
 				this.args.showHud = true;
 			}
 
-			this.args.frameId++;
+			if(!this.args.debugEditMode)
+			{
+				this.args.frameId++;
+			}
 
 			this.args.frame.args.value = this.args.frameId;
 		}
@@ -2129,10 +2370,11 @@ export class Viewport extends View
 					}
 
 					this.args.hasRecording = true;
-					this.args.topLine.args.value = ' i cant believe its not canvas. ';
-					this.args.status.args.value = ' click here to exit demo. ';
 
+					this.args.topLine.args.value = ' i cant believe its not canvas. ';
 					this.args.topLine.args.hide = '';
+
+					this.args.status.args.value = ' click here to exit demo. ';
 					this.args.status.args.hide = '';
 				}
 				else
@@ -2150,9 +2392,10 @@ export class Viewport extends View
 					this.args.focusMe.args.hide = 'hide';
 				}
 
+				this.controlActor.controller && this.takeInput(this.controlActor.controller);
+
 				if(!this.args.cutScene)
 				{
-					this.controlActor.controller && this.takeInput(this.controlActor.controller);
 					this.controlActor.readInput();
 				}
 			}
@@ -2178,7 +2421,7 @@ export class Viewport extends View
 			layer.move();
 		}
 
-		if(this.args.running)
+		if(this.args.running && !this.args.debugEditMode)
 		{
 			const updatable = new Set;
 
@@ -2323,6 +2566,22 @@ export class Viewport extends View
 					this.args.mode.args.value = modes[Math.floor(this.controlActor.args.mode)] || Math.floor(this.controlActor.args.mode);
 					this.args.cameraMode.args.value = this.controlActor.args.cameraMode;
 				}
+			}
+		}
+		else if(this.args.running && this.args.debugEditMode)
+		{
+			if(this.controlActor)
+			{
+				this.controlActor.args.x += controller.axes[0].magnitude * 4;
+				this.controlActor.args.y += controller.axes[1].magnitude * 4;
+
+				this.controlActor.args.respawning = false;
+				this.controlActor.args.dead = false;
+				this.controlActor.noClip = false;
+
+				this.controlActor.args.xSpeed = 0;
+				this.controlActor.args.ySpeed = 0;
+				this.controlActor.args.gSpeed = 0;
 			}
 		}
 
@@ -2847,6 +3106,9 @@ export class Viewport extends View
 		this[Run]++;
 
 		this.stop();
+
+		this.clearDialog();
+		this.hideDialog();
 
 		this.tileMap.replacements.clear();
 		this.tileMap.tileSetCache.clear();

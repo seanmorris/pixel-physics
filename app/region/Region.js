@@ -68,10 +68,10 @@ export class Region extends PointActor
 		this.mainElem && this.mainElem.style({
 			'--viewportWidth':    this.viewport.args.width  + 'px'
 			, '--viewportHeight': this.viewport.args.height + 'px'
-			, '--leftBoundry':    leftBoundry + 'px'
-			, '--topBoundry':     topBoundry + 'px'
-			, '--vpX':            this.viewport.args.x + 'px'
-			, '--vpY':            this.viewport.args.y + 'px'
+			, '--leftBoundry':    Math.trunc(leftBoundry) + 'px'
+			, '--topBoundry':     Math.trunc(topBoundry) + 'px'
+			, '--vpX':            Math.trunc(this.viewport.args.x) + 'px'
+			, '--vpY':            Math.trunc(this.viewport.args.y) + 'px'
 		});
 	}
 

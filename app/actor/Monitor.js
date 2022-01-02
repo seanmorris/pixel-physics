@@ -74,6 +74,11 @@ export class Monitor extends PointActor
 
 		super.collideA(other, type);
 
+		if(type === 1 && !other.args.spinning)
+		{
+			return true;
+		}
+
 		if(type === 2 && this.args.float && other.controllable)
 		{
 			other.args.ySpeed *= -1;
@@ -91,6 +96,7 @@ export class Monitor extends PointActor
 			&& (!this.args.falling || this.args.float === -1)
 			&& !this.args.gone
 			&& this.viewport
+			&& other.args.spinning
 		){
 			this.pop(other);
 			return;
@@ -103,7 +109,7 @@ export class Monitor extends PointActor
 			&& this.viewport
 		){
 			this.pop(other);
-			return;
+			return false;
 		}
 	}
 

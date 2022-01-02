@@ -6,10 +6,6 @@ export const Constrainable = {
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
-		this.chain = new Tag('<div class = "chain">');
-
-		this.sprite.appendChild(this.chain.node);
-
 		if(!this.args._tiedTo)
 		{
 			const tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
@@ -21,6 +17,9 @@ export const Constrainable = {
 				tiedTo.hanging.set(this.constructor, new Set);
 				const hangList = tiedTo.hanging.get(this.constructor);
 				hangList.add(this);
+
+				this.chain = new Tag('<div class = "chain">');
+				this.sprite.appendChild(this.chain.node);
 				this.onRemove(() => hangList.delete(this));
 			}
 

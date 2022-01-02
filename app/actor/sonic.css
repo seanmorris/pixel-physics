@@ -65,7 +65,10 @@
 }
 
 .actor-item.actor-sonic[data-animation="standing"] .sprite:after {
-	--sprite-offset-x: 0px;
+	/*animation: sonic-idle steps(3) infinite 1024ms;*/
+	/*--sprite-offset-x: -64px;*/
+	/*--sprite-offset-x: -256px;*/
+	/*--sprite-offset-x: -448px;*/
 	--sprite-offset-y: 0px;
 }
 
@@ -135,6 +138,16 @@
 	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
 }
 
+.actor-item.actor-sonic[data-falling=true][data-animation="dash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-animation="airdash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-animation="lightdash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-animation="springdash"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -384px !important;
+
+	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
+}
+
 .actor-item.actor-sonic[data-animation="wall-stick"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -448px;
@@ -152,6 +165,12 @@
 .actor-item.actor-sonic[data-facing="left"][data-animation="airdash"] .sprite:after,
 .actor-item.actor-sonic[data-facing="left"][data-animation="lightdash"] .sprite:after,
 .actor-item.actor-sonic[data-facing="left"][data-animation="springdash"] .sprite:after {
+	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg))  translateY(-3px);
+}
+
+.actor-item.actor-sonic[data-falling=true][data-facing="left"][data-animation="airdash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-facing="left"][data-animation="lightdash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-facing="left"][data-animation="springdash"] .sprite:after {
 	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg))  translateY(-3px);
 }
 
@@ -305,6 +324,15 @@
 	}
 	to{
 		background-position: calc(calc(var(--animation-steps) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes sonic-idle {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

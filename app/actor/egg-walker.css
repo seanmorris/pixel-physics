@@ -1,0 +1,280 @@
+.actor-item.actor-egg-walker .sprite {
+	position: absolute;
+	width: 96px;
+	height: 96px;
+	z-index: 1;
+}
+
+.actor-item.actor-egg-walker .sprite:not(.sprite-back) {
+}
+
+.actor-item.actor-egg-walker .sprite-back {
+	z-index: -1;
+}
+
+.actor-item.actor-egg-walker .egg-walker-body {
+	background-image: url(/Sonic/egg-walker/body.png);
+	position: absolute;
+	top: 18px;
+	width: 96px;
+	height: 47px;
+	background-position: center;
+	background-repeat: no-repeat;
+	z-index: 0;
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch {
+	position: absolute;
+	top: 31px;
+	left: 73px;
+	height: 20px;
+	background-position: center;
+	background-repeat: repeat-x;
+	z-index: 0;
+	width: 0px;
+	overflow: hidden;
+	transition: width 0.1s 0.1s ease-out;
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch::after {
+	transform: scaleX(1);
+	transition: transform 0.15s ease-out;
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch::before {
+	transform: scaleX(0.25) translateX(0px);
+	transition: transform 0.15s ease-out;
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch::before {
+	transform-origin: right;
+}
+
+/* throw */
+.actor-item.actor-egg-walker[data-punch=true] .egg-walker-punch {
+	transform: scaleX(1) translateX(0px);
+	transition: width 0.1s ease-out;
+	width: 128px;
+}
+.actor-item.actor-egg-walker[data-punch=true] .egg-walker-punch::before {
+	transform: translateX(-8px);
+}
+.actor-item.actor-egg-walker[data-punch=false] .egg-walker-punch::after {
+	transform: scaleX(1);
+}
+
+/* Retract */
+.actor-item.actor-egg-walker[data-punch=false] .egg-walker-punch {
+	width: 0px;
+}
+.actor-item.actor-egg-walker[data-punch=false] .egg-walker-punch::before {
+	transform: scaleX(2) translateX(-8px);
+}
+.actor-item.actor-egg-walker[data-punch=false] .egg-walker-punch::after {
+	transform: scale(1.5, 0.9);
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch::before {
+	content: '';
+	background-image: url(/Sonic/egg-walker/chain.png);
+	position: absolute;
+	left: 0;
+	top: 6px;
+	width: 100%;
+	height: 8px;
+}
+
+.actor-item.actor-egg-walker .egg-walker-punch::after {
+	content: '';
+	background-image: url(/Sonic/egg-walker/glove.png);
+	position: absolute;
+	top: -4px;
+	right: 0px;
+	width: 20px;
+	height: 22px;
+	background-position: center;
+	background-repeat: repeat-x;
+	z-index: 0;
+}
+
+.actor-item.actor-egg-walker .egg-walker-leg {
+	position: absolute;
+	background-image: url(/Sonic/egg-walker/leg-neutral.png);
+	z-index: 1;
+	width: 64px;
+	height: 53px;
+	bottom: 0;
+	left: 0px;
+	--gait: 18px;
+}
+
+.actor-item.actor-egg-walker .egg-walker-leg-back {
+	position: absolute;
+	z-index: 1;
+	left: 28px;
+	--gait: 10px;
+}
+
+.actor-item.actor-egg-walker[data-falling=true] .egg-walker-leg {
+	animation: egg-walker-leg-bob 1s linear reverse infinite;
+	left: 1px;
+}
+
+.actor-item.actor-egg-walker[data-falling=true] .egg-walker-leg-back {
+	animation: egg-walker-leg-bob 1s 0.35s linear reverse infinite;
+	left: 26px;
+}
+
+.actor-item.actor-egg-walker[data-animation=falling] .egg-walker-leg {
+	background-image: url(/Sonic/egg-walker/leg-hanging.png);
+	width: 59px;
+	height: 62px;
+	bottom: -7px;
+}
+
+.actor-item.actor-egg-walker[data-animation=falling] .egg-walker-leg-back {
+	bottom: -15px;
+}
+
+.actor-item.actor-egg-walker[data-animation=falling].egg-walker-boosting .egg-boost {
+	display: initial;
+}
+
+.actor-item.actor-egg-walker .egg-boost {
+	display: none;
+	position: absolute;
+	background-image: url(/Sonic/egg-walker/boost.png);
+	z-index: 1;
+	width: 28px;
+	height: 32px;
+	bottom: -26px;
+	left: 5px;
+	--gait: 16px;
+	animation: egg-walker-boost-flicker 0.10s linear reverse infinite;
+	transform-origin: top;
+}
+
+.actor-item.actor-egg-walker .egg-walker-gun {
+	position: absolute;
+	background-image: url(/Sonic/egg-walker/gun.png);
+	width: 64px;
+	height: 27px;
+	top: 0px;
+	left: 26px;
+	z-index: -2;
+	transition: 0.1s ease-in;
+}
+
+.actor-item.actor-egg-walker[data-shoot=true] .egg-walker-gun {
+	transition: 0s left;
+	left: 22px;
+}
+
+.actor-item.actor-egg-walker .egg-walker-chair {
+	position: absolute;
+	background-image: url(/Sonic/egg-walker/chair.png);
+	width: 28px;
+	height: 10px;
+	top: 22px;
+	left: 20px;
+	z-index: -1;
+}
+
+.actor-item.actor-egg-walker[data-animation=walking] .egg-walker-leg:not(.egg-walker-leg-back) {
+	animation: egg-walker-shuffle 0.6s linear infinite;
+}
+
+.actor-item.actor-egg-walker[data-animation=walking] .egg-walker-leg-back {
+	animation: egg-walker-shuffle-back 0.6s 0.3s linear infinite;
+}
+
+@keyframes egg-walker-shuffle {
+	from {
+		transform: translate(0px, 0px);
+	}
+	15% {
+		transform: translate(calc(var(--gait) / 5), -6px);
+	}
+	40% {
+		transform: translate(var(--gait), -6px);
+	}
+	50% {
+		transform: translate(calc(var(--gait) * 1.25), 0px);
+	}
+	to{
+		transform: translate(0px, 0px);
+	}
+}
+
+@keyframes egg-walker-shuffle-back {
+	from {
+		transform: translate(-8px, 0px);
+	}
+	15% {
+		transform: translate(calc(var(--gait) / 5), -6px);
+	}
+	40% {
+		transform: translate(calc(var(--gait) * 1), -6px);
+	}
+	50% {
+		transform: translate(calc(var(--gait) * 1.25), 0px);
+	}
+	to{
+		transform: translate(-8px, 0px);
+	}
+}
+
+@keyframes egg-walker-boost-flicker {
+	0% {
+		transform: scale(0.3, 1.25);
+	}
+	25% {
+		transform: scale(0.25, 1.25);
+	}
+	50% {
+		transform: scaleX(1);
+	}
+	100% {
+		transform: scale(0.85, 0.75);
+	}
+}
+
+
+@keyframes egg-walker-leg-bob {
+	0% {
+		transform: translateY(-2px);
+	}
+	50% {
+		transform: translateY(3px);
+	}
+	100% {
+		transform: translateY(-2px);
+	}
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-body {
+	transition: 0.05s top ease-out;
+	top: 32px;
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-gun {
+	top: 8px;
+	top: 20px;
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-chair {
+	top: 38px;
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-punch {
+	top: 46px;
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-leg {
+	background-image: url(/Sonic/egg-walker/leg-raised.png);
+	transform: translateX(-6px);
+}
+
+.actor-item.actor-egg-walker[data-animation=crouching] .egg-walker-leg-back {
+	transform: translateX(2px);
+}

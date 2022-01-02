@@ -16,6 +16,8 @@ export class Eggman extends PointActor
 		this.accelNormal = 0.15;
 		this.accelSuper  = 0.30;
 
+		this.args.weight = 200;
+
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 

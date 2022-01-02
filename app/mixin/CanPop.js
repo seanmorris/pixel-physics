@@ -4,6 +4,39 @@ import { Projectile } from '../actor/Projectile';
 
 export const CanPop = {
 	collideA: function(other, type) {
+
+		if(other.knocked)
+		{
+			other.pop(other.knocked);
+			this.pop(other.knocked);
+			return;
+		}
+
+		if(other.punching)
+		{
+			this.args.falling = true;
+
+			if(other.args.falling && other.args.ySpeed < 0)
+			{
+				// this.args.xSpeed = other.args.xSpeed + 10 * Math.sign(other.args.xSpeed);
+				this.args.ySpeed = -10+other.args.ySpeed;
+			}
+			else
+			{
+				this.args.xSpeed = other.args.gSpeed * Math.sign(other.args.gSpeed) * 2;
+				this.args.ySpeed = -2;
+			}
+
+			this.args.float = 15;
+			this.knocked = other;
+			this.noClip = true;
+			this.static = false;
+
+			this.viewport.onFrameOut(30, () => this.pop(other));
+
+			return false;
+		}
+
 		if(!this.args.currentSheild
 			&& !this.args.gone
 			&& this.viewport
@@ -13,7 +46,7 @@ export const CanPop = {
 			return;
 		}
 
-		if(other && other.controllable)
+		if(!this.knocked && other && other.controllable && !other.punching)
 		{
 			if(typeof ga === 'function')
   			{
@@ -23,6 +56,7 @@ export const CanPop = {
 					eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
 				});
 			}
+
 
 			other.damage(this);
 		}
@@ -98,7 +132,7 @@ export const CanPop = {
 
 			const ySpeed = other.args.ySpeed;
 
-			if(other.args.falling)
+			if(other.args.falling && !other.punching)
 			{
 				this.onNextFrame(() => {
 					if(ySpeed > 0)

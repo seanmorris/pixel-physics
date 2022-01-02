@@ -1,0 +1,108 @@
+.actor-item.actor-spikes-small .sprite {
+	background:transparent !important;
+	--breakTime: 0.25s ease-out;
+}
+
+.actor-item.actor-spikes-small .sprite svg {
+	position: relative;
+	left: 0;
+	transition: left var(--breakTime);
+	width: calc(1px * calc(var(--width) * var(--breakSplit)));
+	width: calc(1px * calc(var(--width) * 1));
+	height: calc(3px * var(--height));
+}
+
+.actor-item.actor-spikes-small .sprite svg rect {
+	transition: width var(--breakTime), x var(--breakTime), y 0.4s ease-in;
+	width: calc(1px * var(--width));
+	height: calc(3px * var(--height));
+	/*x: calc(var(--width) / var(--breakSplit));*/
+	x: 0;
+}
+
+.actor-item.actor-spikes-small .sprite svg rect:last-child {
+	/*x: calc(calc(var(--width) / var(--breakSplit)) + -8);*/
+	x: 8;
+}
+
+.actor-item.actor-spikes-small[data-pointing="0"] .sprite svg {
+	bottom: -2.5px;
+}
+
+.actor-item.actor-spikes-small[data-pointing="2"] .sprite svg {
+	bottom: 18px;
+}
+
+.actor-item.actor-spikes-small[data-pointing="2"] .sprite,
+.actor-item.actor-spikes-small[data-pointing="0"] .sprite {
+	background: transparent;
+	/*background-image: url(/Sonic/spikes-small.png);
+	background-repeat: repeat-x;
+	background-position-x: 0px;*/
+	/*height: 10px;*/
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken {
+	z-index: 2;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite {
+	/*background-repeat: round;*/
+	/*width: calc(15px + calc(1px * var(--width)) );*/
+}
+
+.actor-item.actor-spikes-small[data-pointing="2"] .sprite {
+	top: 4px;
+	background-position-y: -22px;
+}
+
+.actor-item.actor-spikes-small[data-pointing="1"] .sprite,
+.actor-item.actor-spikes-small[data-pointing="3"] .sprite {
+	background-image: url(/Sonic/spikes-small-horizontal.png);
+	background-repeat: repeat-y;
+	background-position-y: 4px;
+	width: 32px;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-breaking .sprite {
+	animation: spike-flash 5ms ease-out infinite;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg {
+	width: calc(1px * calc(var(--width) * var(--breakSplit)));
+	left: calc(-50% * calc(0.5 * var(--breakSplit)));
+	height: calc(6px * var(--height));
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect {
+	width: calc(1px * calc(var(--width) * var(--breakSplit)));
+	x:  0;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg image {
+	width: 8;
+	height: 10;
+}
+
+.actor-item.actor-spikes-small.actor-spikes .sprite svg rect {
+	y: 20;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:not(:last-child) {
+	y: 0;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:last-child {
+	y: 40;
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:last-child {
+	x: calc(calc(var(--width) / var(--breakSplit)) * 2);
+}
+
+@keyframes spike-flash {
+	from { filter: opacity(1);  }
+	50% { filter: opacity(1);  }
+	51% { filter: opacity(0.01);  }
+	to { filter: opacity(0.01); }
+}

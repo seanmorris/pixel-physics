@@ -152,6 +152,11 @@ export class Switch extends PointActor
 
 	beep()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.viewport.args.audio && this.sample)
 		{
 			this.sample.play();
@@ -160,6 +165,11 @@ export class Switch extends PointActor
 
 	sleep()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');
 

@@ -24,8 +24,10 @@
 	color: rgba(0,0,0,0);
 }
 
-.small-menu-font .hud-character {
+.small-menu-font .hud-character,
+li .small-menu-font .hud-character {
 	background-image: url(/Sonic/small-menu-font-shadow.png);
+	/*background-image: url(/Sonic/small-menu-font-italic.png);*/
 	height: 0.5rem;
 	margin-bottom: 0rem;
 }
@@ -33,10 +35,22 @@
 li.focused .small-menu-font .hud-character,
 li:focus .small-menu-font .hud-character {
 	background-image: url(/Sonic/small-menu-font-yellow-shadow.png);
+	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
+}
+
+li.unavailable .small-menu-font .hud-character {
+	background-image: url(/Sonic/small-menu-font-grey.png);
+	/*background-image: url(/Sonic/small-menu-font-italic-grey.png);*/
+}
+
+li:focus.unavailable .small-menu-font .hud-character,
+li.focused.unavailable .small-menu-font .hud-character {
+	background-image: url(/Sonic/small-menu-font-yellow-dim.png);
+	/*background-image: url(/Sonic/small-menu-font-italic-red-dim.png);*/
 }
 
 .hud-character-string.red-alert .hud-character {
-	animation: redalert 150ms steps(2) infinite;
+	animation: redalert 450ms steps(2) infinite;
 	background-image: url(/Sonic/font-red.png);
 }
 

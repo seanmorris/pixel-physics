@@ -17,6 +17,18 @@ export class SwitchRegion extends Region
 		return false;
 	}
 
+	activate(actor)
+	{
+		const target = this.viewport.actorsById[ this.args.target ];
+
+		if(!target)
+		{
+			return;
+		}
+
+		target.activate(actor, this);
+	}
+
 	updateActor(actor)
 	{
 		if(this.args.rocket)

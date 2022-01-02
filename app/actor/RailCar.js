@@ -68,14 +68,14 @@ export class RailCar extends Vehicle
 
 		const nowX = this.x;
 
-		if(this.args.gSpeed !== 0 || this.args.xSpeed !== 0)
+		if(this.args.gSpeed !== 0 || this.args.hSpeed !== 0 || this.args.xSpeed !== 0)
 		{
 			this.sprite.classList.add('moving');
 
 			this.args.started = true;
 		}
 
-		if(nowX === lastX && !this.args.broken)
+		if(nowX === lastX && !this.args.broken && !this.args.hSpeed)
 		{
 			this.sprite.classList.remove('moving');
 
@@ -87,7 +87,7 @@ export class RailCar extends Vehicle
 				{
 					this.breakApart();
 				}
-				else if(!this.args.falling && !this.args.gSpeed)
+				else if(!this.args.falling && !this.args.gSpeed && !this.args.hSpeed)
 				{
 					this.breakApart();
 				}
@@ -96,16 +96,32 @@ export class RailCar extends Vehicle
 
 		if(this.occupant && !this.args.falling)
 		{
-			if(Math.abs(this.args.gSpeed) < Math.abs(this.args.cartSpeed) || Math.sign(this.public.gSpeed) !== Math.sign(this.public.cartSpeed))
+			const speed = this.args.hSpeed || this.args.gSpeed;
+
+			if(Math.abs(speed) < Math.abs(this.args.cartSpeed) || Math.sign(speed) !== Math.sign(this.public.cartSpeed))
 			{
-				this.args.gSpeed += Math.sign(this.args.cartSpeed) * 0.125;
+				if(this.args.hSpeed)
+				{
+					this.args.hSpeed += Math.sign(this.args.cartSpeed) * 0.125;
+				}
+				else
+				{
+					this.args.gSpeed += Math.sign(this.args.cartSpeed) * 0.125;
+				}
 			}
 
-			this.args.direction = Math.sign(this.args.gSpeed);
+			this.args.direction = Math.sign(this.args.hSpeed || this.args.gSpeed);
 		}
 		else
 		{
-			this.args.gSpeed = this.args.xSpeed;
+			if(this.args.hSpeed)
+			{
+				this.args.hSpeed = this.args.xSpeed;
+			}
+			else
+			{
+				this.args.gSpeed = this.args.xSpeed;
+			}
 		}
 	}
 

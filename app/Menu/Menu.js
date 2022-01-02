@@ -223,11 +223,14 @@ export class Menu extends Card
 				})
 				, callback: () => {
 					this.args.items = prev
+					this.args.currentKey = prev._title ? prev._title.args.value : '';
 					this.onNextFrame(()=>this.focusFirst());
 				}
 			};
 
 			this.args.items = item.children;
+
+			this.args.currentKey = item._title.args.value;
 
 			this.args.items['back'] = this.args.items['back'] || back;
 

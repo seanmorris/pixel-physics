@@ -4,11 +4,11 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
-	filter:
+	/*filter:
 		contrast(calc(100% - calc(5% * calc(0.0 * var(--punchCharge)))))
 		brightness(calc(100% + calc(5% * calc(0.6 * var(--punchCharge)))))
 		saturate(calc(100% + calc(25% * calc(0.3 * var(--punchCharge)))))
-		hue-rotate(calc(30deg * calc(0.02 * var(--punchCharge))));
+		hue-rotate(calc(30deg * calc(0.02 * var(--punchCharge))));*/
 	/*filter: invert(100%) hue-rotate(180deg);*/
 }
 
@@ -131,7 +131,7 @@
 .actor-item.actor-knuckles[data-animation="uppercut"] .sprite:after {
 	--sprite-offset-y: -864px;
 	--sprite-offset-x: -0px;
-	animation: knuckles-uppercut steps(5) 1 160ms forwards;
+	animation: knuckles-uppercut steps(5) 1 140ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="kick"] .sprite:after {
@@ -315,33 +315,91 @@
 	width: 64px;
 	height: 48px;
 	bottom: 0px;
-	right: 5px;
+	right: 25px;
 	position: absolute;
 	background-image: url(/Sonic/shield-fire-boost.png);
 	background-position: calc(-64px * 0) 0px;
-	animation: knuckles-punch-aura 85ms steps(3) infinite,
-		knuckles-punch-aura-flicker 45ms steps(1) infinite;
-	z-index: 100;
+
+	animation:
+		knuckles-punch-aura 85ms steps(3) infinite,
+		knuckles-punch-aura-press 90ms 40ms ease-out 1 forwards,
+		knuckles-punch-aura-flicker 200ms steps(4) infinite;
+
+	background-position: calc(-64px * 1) 0px;
+}
+
+.actor-item.actor-knuckles[data-animation="uppercut"] .sprite .punch-aura {
+	/*display: initial !important;*/
+	right: -3px !important;
+	bottom: -10px;
+	z-index: 10;
+
+	animation:
+		knuckles-punch-aura-uppercut 85ms steps(3) infinite,
+		knuckles-punch-aura-press 90ms 40ms ease-out 1 forwards,
+		knuckles-punch-aura-flicker 200ms 200ms steps(4) infinite;
+}
+
+.actor-item.actor-knuckles[data-animation="jabbing"] .sprite .punch-aura {
+	z-index: -10;
+	bottom: -2px;
+}
+
+.actor-item.actor-knuckles[data-animation="punching"] .sprite .punch-aura {
+	z-index: 10;
+	bottom: 0px;
 }
 
 @keyframes knuckles-punch-aura {
 	from{
 		background-position: calc(-64px * 0) 0px;
-		transform: scaleY(0.75);
-		opacity: 1;
+		transform: scaleY(0.90);
 	}
 	to{
 		background-position: calc(-64px * 3) 0px;
-		transform: scaleY(0.333);
+		transform: scaleY(0.25);
+	}
+}
+
+@keyframes knuckles-punch-aura-uppercut {
+	from{
+		background-position: calc(-64px * 0) 0px;
+		transform: rotate(-75deg) scaleY(0.75);
+	}
+	to{
+		background-position: calc(-64px * 3) 0px;
+		transform: rotate(-90deg) scale(0.5);
 		opacity: 0.5;
 	}
 }
 
-@keyframes knuckles-punch-aura-flicker {
+@keyframes knuckles-punch-aura-press {
 	from{
-		z-index: -1;
+		right: 35px;
 	}
 	to{
-		z-index: -1;
+		right: 6px;
+	}
+}
+
+
+@keyframes knuckles-punch-aura-press-uppercut {
+	from{
+		bottom: -0px;
+	}
+	to{
+		bottom: -12px;
+	}
+}
+
+@keyframes knuckles-punch-aura-flicker {
+	from {
+		opacity: 0;
+	}
+	25% {
+		opacity: 1;
+	}
+	to {
+		opacity: 0.85;
 	}
 }
