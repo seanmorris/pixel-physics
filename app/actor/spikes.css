@@ -8,12 +8,6 @@
 	background-image: url(/Sonic/spikes-wide.png);
 }
 
-.actor-item.actor-spikes-small .sprite {
-	position: relative;
-	background-position: 0 0;
-	background-image: url(/Sonic/spikes-small.png);
-}
-
 .actor-item.actor-spikes[data-pointing="2"] .sprite,
 .actor-item.actor-spikes[data-pointing="0"] .sprite {
 	background-image: url(/Sonic/spikes-wide.png);
@@ -22,40 +16,9 @@
 	height: 32px;
 }
 
-.actor-item.actor-spikes-small[data-pointing="2"] .sprite,
-.actor-item.actor-spikes-small[data-pointing="0"] .sprite {
-	background-image: url(/Sonic/spikes-small.png);
-	background-repeat: repeat-x;
-	background-position-x: 0px;
-	height: 32px;
-}
-
-.actor-item.actor-spikes-small.actor-spikes-broken {
-	z-index: 2;
-}
-
-.actor-item.actor-spikes-small.actor-spikes-broken .sprite {
-	background-repeat: round;
-	width: calc(15px + calc(1px * var(--width)) );
-	transition: width 0.75s ease-out;
-}
-
-.actor-item.actor-spikes-small[data-pointing="2"] .sprite {
-	top: 4px;
-	background-position-y: -22px;
-}
-
 .actor-item.actor-spikes[data-pointing="1"] .sprite,
 .actor-item.actor-spikes[data-pointing="3"] .sprite {
 	background-image: url(/Sonic/spikes-wide-horizontal.png);
-	background-repeat: repeat-y;
-	background-position-y: 4px;
-	width: 32px;
-}
-
-.actor-item.actor-spikes-small[data-pointing="1"] .sprite,
-.actor-item.actor-spikes-small[data-pointing="3"] .sprite {
-	background-image: url(/Sonic/spikes-small-horizontal.png);
 	background-repeat: repeat-y;
 	background-position-y: 4px;
 	width: 32px;

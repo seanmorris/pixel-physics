@@ -337,6 +337,11 @@ export class Sonic extends PointActor
 
 		const falling = this.args.falling;
 
+		if(falling)
+		{
+			this.args.cameraBias = 0;
+		}
+
 		if(this.args.wallSticking)
 		{
 			this.args.animation = 'wall-stick';
@@ -456,7 +461,7 @@ export class Sonic extends PointActor
 
 						if(this.args.lookTime < -45)
 						{
-							this.args.cameraBias = -0.75;
+							this.args.cameraBias = -0.5;
 						}
 					}
 					else if(this.yAxis < -0.5 && !this.args.ignore)
@@ -839,12 +844,6 @@ export class Sonic extends PointActor
 			this.willStick = 2;
 			this.stayStuck = true;
 		}
-
-		if(this.args.mode === 2)
-		{
-			this.stayStuck = false;
-			this.args.falling = true;
-		}
 	}
 
 	release_4()
@@ -908,12 +907,6 @@ export class Sonic extends PointActor
 
 			this.willStick = 2;
 			this.stayStuck = true;
-		}
-
-		if(this.args.mode === 2)
-		{
-			this.stayStuck = false;
-			this.args.falling = true;
 		}
 	}
 
@@ -1031,7 +1024,7 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping)
 		{
-			if(this.dropDashCharge < 10)
+			if(this.dropDashCharge < 15)
 			{
 				this.dropDashCharge++;
 

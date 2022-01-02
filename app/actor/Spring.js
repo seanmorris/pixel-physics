@@ -111,7 +111,7 @@ export class Spring extends PointActor
 
 		this.args.actingOn.add(other)
 
-		this.viewport.onFrameOut(2,() => {
+		this.viewport.onFrameOut(1, () => {
 			this.args.active = true;
 		});
 
@@ -130,7 +130,7 @@ export class Spring extends PointActor
 
 		other[WillSpring] = true;
 
-		// other.args.gSpeed = 0;
+		other.args.gSpeed = 0;
 		// other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 
@@ -169,9 +169,6 @@ export class Spring extends PointActor
 				, rounded
 				, (![0, Math.PI].includes(this.args.angle) && Math.abs(Math.PI - this.args.angle) > 0.01)
 			);
-		});
-
-		this.viewport.onFrameOut(3,()=>{
 		});
 
 		const xImpulse = Number(Number(Math.cos(rounded) * 1).toFixed(3));

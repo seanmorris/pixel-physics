@@ -74,7 +74,7 @@ export class Signpost extends PointActor
 		const yardsPerFrame = (other.public.gSpeed || other.public.xSpeed) / 32;
 		const feetPerSecond = yardsPerFrame * 60 * 3;
 
-		other.args.clearSpeed = feetPerSecond;
+		other.args.clearSpeed = Math.abs(feetPerSecond);
 
 		this.args.charStrings = [
 			new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`})

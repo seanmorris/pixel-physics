@@ -287,9 +287,12 @@ export class RedEyeJet extends PointActor
 
 		if(this.args.phase === 'intro')
 		{
-			for(const mace of this.hanging.get(MiniMace))
+			if(this.hanging.has(MiniMace))
 			{
-				mace.args.ropeLength = 12;
+				for(const mace of this.hanging.get(MiniMace))
+				{
+					mace.args.ropeLength = 12;
+				}
 			}
 
 			this.args.maxSpeed   = 12;
@@ -301,7 +304,7 @@ export class RedEyeJet extends PointActor
 				this.args.phase = 'attacking';
 			}
 		}
-		else
+		else if(this.hanging.has(MiniMace))
 		{
 			for(const mace of this.hanging.get(MiniMace))
 			{

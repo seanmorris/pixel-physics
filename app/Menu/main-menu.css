@@ -81,9 +81,22 @@
 	color: #999;
 }
 
+.screen-card-pause-menu li::after,
+.screen-card-main-menu li::after,
 .screen-card-pause-menu .subtext,
 .screen-card-main-menu .subtext {
-	display: none;
+	/*display: none;*/
+	transform: scale(0.666);
+
+	transform-origin: top left;
+
+	position: absolute;
+	left: 0;
+	top: 100%;
+
+	opacity: 0;
+
+	transition: opacity 0.25s steps(4);
 }
 
 .screen-card-pause-menu .subtext {
@@ -103,23 +116,12 @@
 .screen-card-main-menu .unavailable.focused::after,
 .screen-card-main-menu .unavailable:focus-within::after,
 .screen-card-main-menu .unavailable:focus::after {
-	display: initial;
-
-	transform: scale(0.666);
-
-	transform-origin: top left;
-
-	position: absolute;
-	left: 0;
-	top: 100%;
+	/*display: initial;*/
+	opacity: 1;
 }
 
-.screen-card-pause-menu .unavailable.focused::after,
-.screen-card-pause-menu .unavailable:focus-within::after,
-.screen-card-pause-menu .unavailable:focus::after,
-.screen-card-main-menu .unavailable.focused::after,
-.screen-card-main-menu .unavailable:focus-within::after,
-.screen-card-main-menu .unavailable:focus::after {
+.screen-card-pause-menu .unavailable::after,
+.screen-card-main-menu .unavailable::after {
 	content: 'not yet implemented';
 }
 
@@ -315,15 +317,23 @@
 }
 
 .screen-card-main-menu ul {
-	height: 11em;
+	max-height: 11em;
 	overflow: auto;
 	scroll-snap-type: y mandatory;
 	margin: 0;
 	/*padding-bottom: 1em;*/
 }
 
+.screen-card-main-menu .menu-container[data-current-menu="Single Player"] ul {
+	max-height: 18em;
+}
+
 .screen-card-main-menu li:first-child {
-	/*margin-top: 1.25em;*/
+	margin-top: 0em;
+}
+
+.screen-card-main-menu li:last-child {
+	margin-bottom: 0em;
 }
 
 .screen-card-main-menu li {

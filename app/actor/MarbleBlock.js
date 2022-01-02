@@ -33,11 +33,6 @@ export class MarbleBlock extends PointActor
 
 		let otherSpeed = otherMag * otherDir;
 
-		if(Math.abs(other.public.ySpeed) > Math.abs(other.public.xSpeed))
-		{
-			return true;
-		}
-
 		if(!this.args.falling && type === 1 && otherSpeed <= 0)
 		{
 			return false;
@@ -59,13 +54,13 @@ export class MarbleBlock extends PointActor
 
 			this.args.pushed = Math.sign(other.public.gSpeed) || this.args.pushed;
 
-			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1))
+			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -3))
 			{
 				return true;
 			}
 
 
-			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1))
+			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -3))
 			{
 				return true;
 			}
@@ -76,7 +71,7 @@ export class MarbleBlock extends PointActor
 
 			const scan = this.scanBottomEdge(moveBy);
 
-			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y);
+			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y + -3);
 
 			if(blockers)
 			{
@@ -98,7 +93,7 @@ export class MarbleBlock extends PointActor
 				const nextCenter = this.findNextStep(moveBy);
 				const nextWall   = this.findNextStep(moveBy + (radius * Math.sign(moveBy)));
 
-				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
+				if(!nextWall[3])
 				{
 					const otherRadius = other.args.width;
 					const myRadius = this.args.width / 2;
@@ -112,7 +107,19 @@ export class MarbleBlock extends PointActor
 			}
 		}
 
+		if(other.public.ySpeed < 0)
+		{
+			return false;
+		}
+
 		return true;
+	}
+
+	onAttach()
+	{
+		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
+
+		this.setTile();
 	}
 
 	get isPushable() { return true; }

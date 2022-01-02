@@ -26,6 +26,8 @@ export class Knuckles extends PointActor
 		this.args.accel     = this.accelNormal;
 		this.args.decel     = 0.4;
 
+		this.args.weight    = 150;
+
 		this.args.gSpeedMax = 18;
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
@@ -108,7 +110,7 @@ export class Knuckles extends PointActor
 
 		this.readying = false;
 
-		if(this.punchTime && Date.now() - this.punchTime > (this.willPunch ? 1536 : 512))
+		if(!this.args.falling && this.punchTime && Date.now() - this.punchTime > (this.willPunch ? 1536 : 384))
 		{
 			this.punchMomentum = 0;
 			this.punchTime = false;
@@ -127,8 +129,16 @@ export class Knuckles extends PointActor
 			this.punching = true;
 		}
 
-		if(Math.abs(this.args.gSpeed) > 15 && this.punched >= 3 && !this.auraVisible)
+		if(this.punching)
 		{
+			this.args.rolling = false;
+		}
+
+		if(this.punched
+			&& Math.abs(this.args.gSpeed) > 5
+			&& !this.auraVisible
+			&& (this.punched >= 3 || Math.abs(this.args.gSpeed) > 15)
+		){
 			this.auraVisible = true;
 			this.viewport.onFrameOut(6, () => {
 				this.punchAura.style({display: 'none'})
@@ -139,14 +149,14 @@ export class Knuckles extends PointActor
 
 		if(this.willPunch)
 		{
-			if(this.args.punchCharge < 45)
+			if(this.args.punchCharge < 10)
 			{
-				this.args.punchCharge += 1.5;
+				this.args.punchCharge += 1;
 			}
 
 			this.punchMomentum = Math.sign(this.punchMomentum) * Math.max(
 				Math.abs(this.punchMomentum)
-				, this.args.punchCharge * (0.2 * Math.min(this.punched, 3))
+				, this.args.punchCharge * (0.3 * Math.min(this.punched, 3))
 			);
 		}
 		else if(!this.punched && this.args.punchCharge > 4)
@@ -270,13 +280,25 @@ export class Knuckles extends PointActor
 			}
 			else if(this.public.jumping)
 			{
-				if(!this.willPunch && this.punched && this.args.ySpeed > 0)
-				{
-					this.args.animation = 'kick';
-				}
-				else if(this.willPunch && this.args.ySpeed < 0)
+				// if(!this.willPunch && this.punched && this.args.ySpeed > 0)
+				// {
+				// 	this.args.animation = 'kick';
+				// }
+				// else
+
+				if(this.willPunch || this.punching)
 				{
 					this.args.animation = 'uppercut';
+
+					this.punched++;
+
+					this.punchAura.style({display: 'initial'});
+					this.auraVisible = true;
+
+					this.viewport.onFrameOut(15, () => {
+						this.punchAura.style({display: 'none'});
+						this.auraVisible = false;
+					});
 				}
 				else if(!this.punched)
 				{
@@ -284,7 +306,7 @@ export class Knuckles extends PointActor
 				}
 			}
 
-			if(this.public.climbing)
+			if(this.public.climbing && !this.args.jumping)
 			{
 				this.args.ySpeed = 0;
 				this.args.xSpeed = 0;
@@ -469,9 +491,10 @@ export class Knuckles extends PointActor
 
 		if(this.willPunch)
 		{
-			this.args.xSpeed = this.xAxis
-				? (Math.abs(this.punchMomentum) * this.xAxis)
-				: this.punchMomentum;
+			// this.args.xSpeed = 0.25 * (this.xAxis
+			// 	? (Math.abs(this.punchMomentum) * this.xAxis)
+			// 	: this.punchMomentum
+			// );
 
 			this.punchTime = Date.now();
 			this.punched++;
@@ -522,6 +545,11 @@ export class Knuckles extends PointActor
 
 	command_1()
 	{
+		if(this.args.flying || this.args.climbing)
+		{
+			return;
+		}
+
 		if(this.punchTime && Date.now() - this.punchTime < 72)
 		{
 			this.punchMomentum = 0;
@@ -548,6 +576,11 @@ export class Knuckles extends PointActor
 
 	release_1()
 	{
+		if(this.args.flying || this.args.climbing)
+		{
+			return;
+		}
+
 		if(this.punchTime && Date.now() - this.punchTime < 96)
 		{
 			this.willPunch = false;
@@ -556,7 +589,7 @@ export class Knuckles extends PointActor
 			return;
 		}
 
-		if(Math.sign(this.xAxis) === Math.sign(this.punchMomentum))
+		if(!this.xAxis || Math.sign(this.xAxis) === Math.sign(this.punchMomentum))
 		{
 			this.args.gSpeed = this.xAxis
 				? (Math.abs(this.punchMomentum) * this.xAxis)
@@ -565,6 +598,29 @@ export class Knuckles extends PointActor
 		else if(this.xAxis)
 		{
 			this.punchMomentum = Math.abs(this.punchMomentum) * this.xAxis;
+
+			this.args.gSpeed = 0.666 * (this.xAxis
+				? (Math.abs(this.punchMomentum) * this.xAxis)
+				: this.punchMomentum
+			);
+		}
+
+		// if(this.xAxis && Math.sign(this.xAxis) !== Math.sign(this.punchMomentum))
+		// {
+		// 	this.punchMomentum *= 0.25;
+
+		// 	this.punchMomentum = Math.abs(this.punchMomentum) * Math.sign(this.xAxis);
+		// }
+
+		this.args.direction = Math.sign(this.punchMomentum);
+
+		if(this.punchMomentum < 0)
+		{
+			this.args.facing = 'left';
+		}
+		else
+		{
+			this.args.facing = 'right';
 		}
 
 		this.punchTime = Date.now();

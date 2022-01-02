@@ -28,6 +28,11 @@ export class Flipper extends PointActor
 
 	collideA(other, type)
 	{
+		if(other.y <= this.y - this.args.height)
+		{
+			return;
+		}
+
 		if(this.flipped.has(other))
 		{
 			return;
@@ -38,8 +43,6 @@ export class Flipper extends PointActor
 		other.args.rolling = true;
 
 		other.willJump = false;
-
-
 
 		// if(other.x < leftBound + (this.args.width / 3))
 		// {
@@ -59,7 +62,7 @@ export class Flipper extends PointActor
 			const flipFactor = (other.x - leftBound) / this.args.width;
 			const flipMagnitude = flipFactor * this.args.direction;
 
-			other.impulse(this.args.power * (flipMagnitude ** 2), rounded, true);
+			other.impulse(this.args.power * flipMagnitude, rounded, true);
 
 			this.viewport.onFrameOut(3, () => this.args.animation = 'unflipping');
 
@@ -75,7 +78,14 @@ export class Flipper extends PointActor
 			return;
 		}
 
-		other.args.gSpeed = Math.min(2, Math.abs(other.args.gSpeed) || 1)
-			* Math.sign(other.args.gSpeed || this.args.direction);
+		if(Math.abs(other.args.gSpeed) < 5)
+		{
+			other.args.gSpeed = Math.min(3, Math.abs(other.args.gSpeed) || 1)
+				* Math.sign(other.args.gSpeed || this.args.direction);
+		}
+		else
+		{
+			other.args.gSpeed *= 0.5;
+		}
 	}
 }

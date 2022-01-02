@@ -165,6 +165,27 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		Object.preventExtensions(this);
 	}
 
+	addMap(url, xOffset = 0, yOffset = 0)
+	{
+		const elicit = new Elicit(mapUrl);
+
+		elicit.addEventListener('progress', event => {
+			const {received, length, done} = event.detail;
+
+			elicit.stream()
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+			});
+
+			// const type = 'map';
+
+			// this.dispatchEvent(new CustomEvent(
+			// 	'level-progress', {detail: {length, received, done, url:mapUrl}}
+			// ));
+		});
+	}
+
 	reset()
 	{
 		for(let i = 0; i < this.tileLayers.length; i++)

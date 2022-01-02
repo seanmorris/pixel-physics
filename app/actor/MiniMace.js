@@ -11,17 +11,30 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		this.args.width  = 32;
 		this.args.height = 32;
 		this.args.type   = 'actor-item actor-mini-mace';
+
+		this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 0;
 	}
 
 	collideB(other)
 	{
+		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
+		{
+			return;
+		}
+
 		if(other.controllable)
 		{
 			other.damage();
 		}
 	}
 
-	update(){}
+	update()
+	{
+		if(!this.args.tiedTo)
+		{
+			super.update();
+		}
+	}
 
 	updateEnd()
 	{
@@ -30,16 +43,20 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 			this.viewport.auras.add(this);
 		}
 
-		super.update();
+		if(this.args.tiedTo)
+		{
+			super.update();
 
-		if(this.args._tiedTo && this.args._tiedTo.args.hitPoints)
-		{
-			this.setPos();
+			if(this.args.tiedTo && this.args._tiedTo.args.hitPoints)
+			{
+				this.setPos();
+			}
+			else
+			{
+				this.noClip = true;
+			}
 		}
-		else
-		{
-			this.noClip = true;
-		}
+
 
 		super.updateEnd();
 	}

@@ -15,6 +15,11 @@ export class Vehicle extends PointActor
 
 	collideA(other, type)
 	{
+		if(other.noClip)
+		{
+			return false;
+		}
+
 		if(other.controllable)
 		{
 			if(other.args.ySpeed > 0)

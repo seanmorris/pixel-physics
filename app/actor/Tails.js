@@ -27,6 +27,8 @@ export class Tails extends PointActor
 		this.args.gSpeedMax = 18;
 		this.args.jumpForce = this.jumpForceNormal;
 
+		this.args.weight    = 80;
+
 		this.args.gravity   = 0.5;
 
 		this.args.width     = 15;

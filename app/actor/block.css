@@ -161,6 +161,7 @@
 	background-repeat: repeat;
 	/*width: 32px;
 	height: 32px;*/
+	background-position-x: calc(1.2px * var(--conveyed));
 }
 
 .actor-item.actor-question-block {

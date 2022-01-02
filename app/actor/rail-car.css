@@ -45,7 +45,7 @@
 }
 
 .actor-item.actor-rail-car .sprite.moving .rail-car-wheel {
-	animation: steel-wheel-spin calc(calc(calc(1 - var(--animation-bias)) * 80ms) + 40ms) steps(4) infinite reverse;
+	animation: steel-wheel-spin calc(500ms - calc(500ms * var(--animation-bias))) steps(4) infinite reverse;
 }
 
 .actor-item.actor-rail-car .sprite .rail-car-wheel-front {

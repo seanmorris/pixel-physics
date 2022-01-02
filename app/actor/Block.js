@@ -13,7 +13,6 @@ export class Block extends PointActor
 
 		obj.args.width  = objDef.width;
 		obj.args.height = objDef.height;
-		obj.args.tileId = objDef.gid;
 
 		// obj.args.x = obj.originalX = objDef.x + Math.floor(objDef.width / 2);
 		obj.args.y = obj.originalY = objDef.y;
@@ -32,6 +31,9 @@ export class Block extends PointActor
 
 		this.args.width  = args.width  || 32;
 		this.args.height = args.height || 32;
+		this.args.convey = args.convey ?? 0;
+
+		this.args.conveyed = 0;
 
 		this.args.ySpeedMax = 16;
 
@@ -47,6 +49,8 @@ export class Block extends PointActor
 		this.args.active = -1;
 
 		this.weighted = false;
+
+		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
 
 	onAttached(event)
@@ -56,9 +60,10 @@ export class Block extends PointActor
 			this.switch = this.viewport.actorsById[ this.args.switch ];
 		}
 
-		super.onRendered(event);
-
-		this.droop(0);
+		if(this.args.match)
+		{
+			this.match = this.viewport.actorsById[ this.args.match ];
+		}
 
 		// if(this.screen)
 		// {
@@ -73,12 +78,20 @@ export class Block extends PointActor
 
 		// this.screen.style({'pointer-events':'initial', 'z-index': 1000});
 
+		if(!this.viewport)
+		{
+			event.preventDefault();
+			return false;
+		}
+
+		this.setTile();
+
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 	}
 
 	collideA(other, type)
 	{
-		if(other.isRegion)
+		if(other.isRegion || other.noClip)
 		{
 			return false;
 		}
@@ -153,20 +166,31 @@ export class Block extends PointActor
 
 		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
+			// if(other.args.y < this.args.y)
+			// {
+			// 	other.args.y = this.y + -this.args.height + this.args.ySpeed + -1
+
+			// 	if(other.args.ySpeed < 0)
+			// 	{
+			// 		other.args.ySpeed = this.args.ySpeed
+			// 	}
+			// 	else
+			// 	{
+			// 		other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
+			// 		other.args.ySpeed = this.args.ySpeed;
+			// 	}
+			// }
+
 			if(other.args.y < this.args.y)
 			{
-				other.args.y = this.y + -this.args.height + this.args.ySpeed + -1;
-
-				if(other.args.ySpeed < 0)
-				{
-					other.args.ySpeed = this.args.ySpeed
-				}
-			}
-			else
-			{
-				other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
+				other.args.y = this.y + -this.args.height + this.args.ySpeed;
 				other.args.ySpeed = this.args.ySpeed;
 			}
+			this.onNextFrame(() => {
+				other.args.y = this.y + -this.args.height;
+				other.args.falling = false;
+			});
+
 			return;
 		}
 
@@ -184,6 +208,7 @@ export class Block extends PointActor
 			if(other.args.falling
 				&& other.y - blockTop < 16
 				&& other.args.ySpeed >= 0
+				&& !other.args.float
 				&& Math.abs(other.x - this.x) < (halfWidth - 16)
 			){
 				other.args.y = -1 + blockTop;
@@ -244,6 +269,8 @@ export class Block extends PointActor
 			return;
 		}
 
+		this.droop(0);
+
 		this.args.collapse && this.tags.sprite.classList.add('collapse');
 		this.args.platform && this.tags.sprite.classList.add('platform');
 
@@ -254,21 +281,7 @@ export class Block extends PointActor
 			return false;
 		}
 
-		this.viewport.tileMap.ready.then(event => {
-
-			const tile = this.viewport.tileMap.getTile(this.args.tileId-1);
-
-			if(!tile)
-			{
-				return;
-			}
-
-			this.args.spriteX = tile[0];
-			this.args.spriteY = tile[1];
-
-			this.args.spriteSheet = tile[2];
-
-		});
+		this.setTile();
 	}
 
 	activate()
@@ -291,6 +304,11 @@ export class Block extends PointActor
 		if(this.args.collapse)
 		{
 			this.args.gSpeed = 0;
+		}
+
+		if(this.match)
+		{
+			this.args.convey = -this.match.args.convey;
 		}
 
 		if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
@@ -423,6 +441,13 @@ export class Block extends PointActor
 			}
 		}
 
+		this.box && this.box.style({'--convey':Math.abs(this.args.convey)});
+		this.box && this.box.style({'--conveyDir':Math.sign(this.args.conveyed)});
+
+		this.args.conveyed += this.args.convey;
+
+		this.box && this.box.style({'--conveyed': this.args.conveyed});
+
 		super.update();
 	}
 
@@ -440,13 +465,6 @@ export class Block extends PointActor
 		// 	return;
 		// }
 
-		// const collidees = this.viewport.collisions.get(this);
-
-		// for(const [collidee, type] of collidees)
-		// {
-		// 	console.log(type);
-		// }
-
 		if(this.args.settle)
 		{
 			if(this.weighted && this.args.y < this.def.get('y') + this.args.settle)
@@ -457,6 +475,70 @@ export class Block extends PointActor
 			if(!this.weighted && this.y > this.def.get('y'))
 			{
 				this.args.y -= Math.min(Math.abs(this.args.settle), 32) / 8 * Math.sign(this.args.settle);
+			}
+		}
+
+		if(!this.viewport || !this.viewport.collisions.has(this))
+		{
+			return;
+		}
+
+		const collidees = this.viewport.collisions.get(this);
+
+		if(this.args.treadmill)
+		{
+			this.args.convey = 0;
+
+			let speedCount = 0;
+			let speedSum = 0;
+
+			for(const [collidee, type] of collidees)
+			{
+				if(collidee.args.standingOn !== this)
+				{
+					continue;
+				}
+
+				if(collidee.args.gSpeed)
+				{
+					speedCount++;
+					speedSum += collidee.args.gSpeed;
+				}
+			}
+
+			if(speedCount)
+			{
+				this.args.convey = -speedSum / speedCount;
+			}
+		}
+
+		if(this.args.convey)
+		{
+			for(const [collidee, type] of collidees)
+			{
+				if(!collidee.controllable || collidee.args.falling)
+				{
+					continue;
+				}
+
+				const conveyTo = collidee.findNextStep(this.args.convey);
+
+				if(conveyTo[3])
+				{
+					continue;
+				}
+
+				if(conveyTo[2])
+				{
+					collidee.args.xSpeed  = this.args.convey;
+					collidee.args.ySpeed  = 0;
+					collidee.args.falling = true;
+
+					collidee.args.y = -1 + this.y - this.args.height;
+				}
+
+				collidee.args.x += conveyTo[0];
+				collidee.args.y += conveyTo[1];
 			}
 		}
 	}

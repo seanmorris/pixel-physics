@@ -1,0 +1,61 @@
+.actor-item.actor-see-saw .sprite::before {
+	content: '';
+	position: absolute;
+	top: 28px;
+	left: 50%;
+	background-position: 0 0;
+	background-image: url(/Sonic/see-saw-wide.png);
+	width: 96px;
+	height: 16px;
+	/*animation: spinner-spin steps(2) infinite 50ms;*/
+	transition: transform 20ms steps(3);
+	transform-origin: 50% 12px;
+	z-index: 1000;
+}
+
+.actor-item.actor-see-saw .sprite::before {
+	/*background-image: url(/Sonic/see-saw-grey-wide.png);
+	transform-origin: 50% 16px;
+	height: 24px;*/
+}
+
+.actor-item.actor-see-saw .sprite {
+	position: absolute;
+	z-index: 0;
+}
+
+.actor-item.actor-see-saw .see-saw-hub {
+	content: '';
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	/*background-image: url(/Sonic/see-saw-hub.png);*/
+	background-image: url(/Sonic/see-saw-hub-small.png);
+	/*background-position: 0 -16px;*/
+	/*width: 16px;*/
+	width: 6px;
+	height: 12px;
+	bottom: 0px;
+	z-index: 1;
+}
+
+.actor-item.actor-see-saw .see-saw-hub {
+	/*background-image: url(/Sonic/see-saw-grey-wide-hub.png);
+	width: 18px;
+	height: 18px;
+	bottom: 2px;
+	z-index: 100;*/
+}
+
+.actor-item.actor-see-saw .sprite::before,
+.actor-item.actor-see-saw.tilt-none .sprite::before {
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(0deg) !important;
+}
+
+.actor-item.actor-see-saw.tilt-left .sprite::before {
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(-22.5deg) !important;
+}
+
+.actor-item.actor-see-saw.tilt-right .sprite::before {
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(22.5deg) !important;
+}

@@ -1,0 +1,61 @@
+.actor-pulley {
+	z-index: 1000000;
+}
+
+.actor-pulley .sprite {
+	top: 2px;
+	width: 64px;
+	height: 64px;
+}
+
+.actor-pulley .sprite::before {
+	content: ' ';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 64px;
+	height: 64px;
+	background-image: url(/Sonic/pulley-hub.png);
+	z-index: 1;
+}
+
+.actor-pulley .sprite::after {
+	position: absolute;
+	left: 0px;
+	content: ' ';
+	background-image: url(/Sonic/pulley.png);
+	transform: rotate(calc(3.158deg * calc(var(--conveyed))));
+	width: 64px;
+	height: 64px;
+}
+
+.actor-pulley-small {
+	z-index: 1000000;
+}
+
+.actor-pulley-small .sprite {
+	top: 3px;
+	width: 32px;
+	height: 32px;
+}
+
+.actor-pulley-small .sprite::before {
+	content: ' ';
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 32px;
+	height: 32px;
+	background-image: url(/Sonic/pulley-small-hub.png);
+	z-index: 1;
+}
+
+.actor-pulley-small .sprite::after {
+	position: absolute;
+	left: 0px;
+	content: ' ';
+	background-image: url(/Sonic/pulley-small.png);
+	transform: rotate(calc(3.158deg * calc(var(--conveyed))));
+	width: 32px;
+	height: 32px;
+}

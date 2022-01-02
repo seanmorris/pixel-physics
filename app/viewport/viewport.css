@@ -260,7 +260,8 @@ section.filters {
 
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
-.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block) {
+.viewport .point-actor.actor-egg-walker .sprite,
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker) {
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
@@ -598,4 +599,31 @@ input[type=number]::-webkit-outer-spin-button {
 
 .viewport .shade[data-fade=true] {
 	background-color: rgba(0,0,0,1);
+}
+
+.viewport-overlay .debug-spawn {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.viewport-overlay .debug-spawn .point-actor {
+	display: initial;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.viewport-overlay .debug-spawn > .hud-character-string {
+	position: absolute;
+	left: 50%;
+	bottom: 1rem;
+	transform: translate(-50%, 0);
+	z-index: 10000000;
+}
+
+.viewport-overlay .debug-spawn .point-actor .sprite{
+	transform: translate(-50%, -50%);
 }

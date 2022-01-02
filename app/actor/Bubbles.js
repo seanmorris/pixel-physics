@@ -93,7 +93,7 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 			this.args.currentSheild = this.args.currentSheild ? null : this.shield;
 		}
 
-		this.args.ySpeed = this.yAxis;
+		// this.args.ySpeed = this.yAxis;
 
 		if(this.box)
 		{

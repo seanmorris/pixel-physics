@@ -49,7 +49,7 @@ export class Spikes extends PointActor
 			{
 				const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
 
-				if(speed < 0)
+				if(speed <= 0)
 				{
 					other.damage(this);
 				}
@@ -58,7 +58,7 @@ export class Spikes extends PointActor
 			{
 				const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
 
-				if(speed > 0)
+				if(speed >= 0)
 				{
 					other.damage(this);
 				}
@@ -67,7 +67,7 @@ export class Spikes extends PointActor
 			{
 				const speed = other.args.ySpeed || (other.args.gSpeed * (other.args.mode === 1 ? -1:1));
 
-				if(speed < 0)
+				if(speed <= 0)
 				{
 					other.damage(this);
 				}

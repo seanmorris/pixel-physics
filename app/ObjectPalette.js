@@ -36,6 +36,7 @@ import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
 
 import { Bumper } from './actor/Bumper';
 import { Flipper } from './actor/Flipper';
+import { SeeSaw } from './actor/SeeSaw';
 
 import { Cinematic } from './actor/Cinematic';
 
@@ -74,6 +75,7 @@ import { SnowBoard }  from './actor/SnowBoard';
 import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
+import { EggWalker }  from './actor/EggWalker';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
@@ -116,6 +118,8 @@ import { MiniMace } from './actor/MiniMace';
 import { Beelzebub } from './actor/Beelzebub';
 import { MiniBoss } from './actor/MiniBoss';
 import { Magnet	 } from './actor/Magnet';
+import { Pulley } from './actor/Pulley';
+import { PulleySmall } from './actor/PulleySmall';
 
 import { Orb } from './actor/Orb';
 
@@ -128,6 +132,8 @@ import { CutScene } from './actor/CutScene';
 import { HtmlFrame } from './actor/HtmlFrame';
 
 import { Panel } from './actor/Panel';
+import { Tester } from './actor/Tester';
+import { Cursor } from './actor/Cursor';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -149,9 +155,11 @@ export const ObjectPalette = {
 	, 'stopper': Stopper
 	, 'bumper':       Bumper
 	, 'flipper':      Flipper
+	, 'see-saw':      SeeSaw
 	, 'drill-car':    DrillCar
 	, 'rail-car':     RailCar
 	, 'tornado':      Tornado
+	, 'egg-walker':   EggWalker
 	, 'snow-board':   SnowBoard
 	, 'egg-mobile':   EggMobile
 	, 'rocks-tall':   Rocks
@@ -220,6 +228,8 @@ export const ObjectPalette = {
 	, 'mini-boss': MiniBoss
 	, 'mini-mace': MiniMace
 	, 'magnet': Magnet
+	, 'pulley': Pulley
+	, 'pulley-small': PulleySmall
 	, 'spikes': Spikes
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
@@ -227,4 +237,5 @@ export const ObjectPalette = {
 	, 'cut-scene': CutScene
 	, 'html-frame': HtmlFrame
 	, 'panel': Panel
+	, 'tester': Tester
 };
