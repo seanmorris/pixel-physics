@@ -3239,7 +3239,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":32,
+                 "height":120,
                  "id":1277,
                  "name":"switch-region",
                  "properties":[
@@ -3251,9 +3251,9 @@
                  "rotation":0,
                  "type":"switch-region",
                  "visible":true,
-                 "width":128,
-                 "x":4384,
-                 "y":3432
+                 "width":24,
+                 "x":4432,
+                 "y":3520
                 }, 
                 {
                  "gid":2,

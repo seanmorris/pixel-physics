@@ -1372,9 +1372,14 @@ export class PointActor extends View
 			return;
 		}
 
+		if(this.noClip)
+		{
+			this.args.falling = true;
+		}
+
 		if(!this.args.static)
 		{
-			if(!this.isRegion && !this.isEffect && this.args.falling && this.viewport)
+			if(this.noClip || (!this.isRegion && !this.isEffect && this.args.falling && this.viewport))
 			{
 				if(this.args.grinding)
 				{
@@ -1393,7 +1398,7 @@ export class PointActor extends View
 					this.args.animationBias = 1;
 				}
 			}
-			else if(this.args.standingLayer || (!this.isRegion &&!this.isEffect && !this.args.falling))
+			else if(!this.noClip || this.args.standingLayer || (!this.isRegion &&!this.isEffect && !this.args.falling))
 			{
 				this.args.xSpeed = 0;
 				this.args.ySpeed = 0;

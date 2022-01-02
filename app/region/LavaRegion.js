@@ -58,6 +58,11 @@ export class LavaRegion extends Region
 			return;
 		}
 
+		if(other.noClip)
+		{
+			return;
+		}
+
 		if(!other.controllable && !(other instanceof Ring))
 		{
 			return;
@@ -90,6 +95,11 @@ export class LavaRegion extends Region
 
 	collideA(other, type)
 	{
+		if(other.noClip)
+		{
+			return;
+		}
+
 		if(other.args.standingOn && other.args.standingOn !== Bindable.make(this))
 		{
 			return false;
@@ -120,6 +130,11 @@ export class LavaRegion extends Region
 
 	collideB(other, type)
 	{
+		if(other.noClip)
+		{
+			return;
+		}
+
 		super.collideA(other, type);
 	}
 
