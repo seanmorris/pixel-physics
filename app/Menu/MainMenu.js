@@ -113,39 +113,21 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
-					, 'Light Dash Test': {
+					, 'Belt and Wheel Test': {
 						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
+							this.parent.loadMap({mapUrl: '/map/belt-test.json'});
 							this.accept();
 						}
 					}
-					, 'Block Test': {
+					, 'See-Saw Test': {
 						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/block-test.json'});
+							this.parent.loadMap({mapUrl: '/map/see-saw.json'});
 							this.accept();
 						}
 					}
 					, 'Vehicle Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
-							this.accept();
-						}
-					}
-					, 'Half Pipe Test': {
-						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
-							this.accept();
-						}
-					}
-					, 'Flickie Test': {
-						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
-							this.accept();
-						}
-					}
-					, 'Water Test': {
-						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/water-test.json'});
 							this.accept();
 						}
 					}
@@ -158,6 +140,38 @@ export class MainMenu extends Menu
 					, 'Underground Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
+							this.accept();
+						}
+					}
+					, 'Flickie Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Light Dash Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
+							this.accept();
+						}
+					}
+					, 'Block Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/block-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Half Pipe Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
+							this.accept();
+						}
+					}
+					, 'Water Test': {
+						callback: () => {
+							this.parent.loadMap({mapUrl: '/map/water-test.json'});
 							this.accept();
 						}
 					}
