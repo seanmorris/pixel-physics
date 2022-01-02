@@ -121,7 +121,7 @@ export class MainMenu extends Menu
 					}
 					, 'See-Saw Test': {
 						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/see-saw.json'});
+							this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
 							this.accept();
 						}
 					}
