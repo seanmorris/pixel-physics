@@ -1,6 +1,7 @@
 import { Region } from "./Region";
 
 import { Ring } from "../actor/Ring";
+import { MarbleBlock } from "../actor/MarbleBlock";
 
 import { Tag } from 'curvature/base/Tag';
 import { Bindable } from 'curvature/base/Bindable';
@@ -21,7 +22,7 @@ export class LavaRegion extends Region
 		this.args.drag    = 0.85;
 		this.args.density = 15;
 
-		this.skimSpeed = 10;
+		this.skimSpeed = 0;
 	}
 
 	update()
@@ -78,7 +79,7 @@ export class LavaRegion extends Region
 			return;
 		}
 
-		if(other.immune(this, 'fire'))
+		if(other.args.mercy || other.immune(this, 'fire'))
 		{
 			return;
 		}
@@ -87,10 +88,9 @@ export class LavaRegion extends Region
 		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
 		// other.args.falling = true;
 
-		other.args.y = this.y + -this.args.height;
+		// other.args.y = this.y + -this.args.height;
 
-
-		other.damage(this, 'fire');
+		// other.damage(this, 'fire');
 	}
 
 	collideA(other, type)
@@ -98,6 +98,11 @@ export class LavaRegion extends Region
 		if(other.noClip)
 		{
 			return;
+		}
+
+		if(other instanceof MarbleBlock)
+		{
+			return false;
 		}
 
 		if(other.args.standingOn && other.args.standingOn !== Bindable.make(this))
@@ -112,7 +117,7 @@ export class LavaRegion extends Region
 			return false;
 		}
 
-		if(other.immune(this, 'fire'))
+		if(other.args.mercy || other.immune(this, 'fire'))
 		{
 			return true;
 		}
@@ -121,11 +126,11 @@ export class LavaRegion extends Region
 		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
 		// other.args.falling = true;
 
-		other.args.y = this.y + -this.args.height;
+		other.args.y = this.y + -this.args.height + -32;
 
 		other.damage(this, 'fire');
 
-		return true;
+		return false;
 	}
 
 	collideB(other, type)

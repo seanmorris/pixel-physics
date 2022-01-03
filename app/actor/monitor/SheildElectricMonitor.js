@@ -8,7 +8,7 @@ export class SheildElectricMonitor extends Monitor
 	{
 		super.onRendered(event);
 
-		this.box.attr({'data-monitor':'sheild-electric'});
+		this.box && this.box.attr({'data-monitor':'sheild-electric'});
 	}
 
 	effect(other)

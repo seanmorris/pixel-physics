@@ -246,7 +246,7 @@ export class BreakableBlock extends Block
 		}
 
 		this.viewport.onFrameOut(4, () => {
-			this.box.classList.remove('breaking');
+			this.box && this.box.classList.remove('breaking');
 		});
 
 		if(!this.args.collapse && other && other.args.mode % 2 === 0)

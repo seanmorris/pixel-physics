@@ -36,50 +36,62 @@ export class CompanionBlock extends MarbleBlock
 
 	update()
 	{
-		if(this.public.pushed)
-		{
-			const tileMap = this.viewport.tileMap;
-
-			if(!tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y))
-			{
-				if(this.args.falling)
-				{
-					this.args.x += this.public.pushed;
-				}
-			}
-			else
-			{
-				this.args.pushed = 0;
-			}
-		}
+		let isInLava = false;
 
 		for(const region of this.regions)
 		{
-			if(!this.played && region instanceof LavaRegion)
+			if(region instanceof LavaRegion)
 			{
-				this.onTimeout(50, () => {
-					if(this.viewport.args.audio)
-					{
-						this.sample.volume = 0.15 + (Math.random() * -0.05);
+				isInLava = true;
 
-						this.sample.play();
-					}
-				});
-
-				if(typeof ga === 'function')
+				if(!this.played)
 				{
-					ga('send', 'event', {
-						eventCategory: 'companion-block',
-						eventAction: 'pushed',
-						eventLabel: `${this.viewport.args.actName}::${this.args.id}`
-					});
-				}
+					this.onTimeout(50, () => {
+						if(this.viewport.args.audio)
+						{
+							this.sample.volume = 0.15 + (Math.random() * -0.05);
 
-				this.played = true;
+							this.sample.play();
+						}
+					});
+
+					if(typeof ga === 'function')
+					{
+						ga('send', 'event', {
+							eventCategory: 'companion-block',
+							eventAction: 'pushed',
+							eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+						});
+					}
+
+					this.played = true;
+				}
 			}
 		}
 
+		const preX = this.args.x;
+
 		super.update();
+
+		if(this.public.pushed)
+		{
+			if(isInLava)
+			{
+				const tileMap = this.viewport.tileMap;
+
+				const solid = tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y);
+
+				if(!solid)
+				{
+					this.args.x = preX + this.public.pushed;
+				}
+				else
+				{
+					this.args.pushed = 0;
+				}
+			}
+		}
+
 	}
 
 	sleep()

@@ -311,6 +311,9 @@ export class Block extends PointActor
 			this.args.convey = -this.match.args.convey;
 		}
 
+		this.xLast = this.args.x;
+		this.yLast = this.args.y;
+
 		if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
 		{
 			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);

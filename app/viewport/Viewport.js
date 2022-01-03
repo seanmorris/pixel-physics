@@ -6,6 +6,8 @@ import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
 import { Sequence } from 'curvature/input/Sequence';
 
+import { QuadCell } from '../QuadCell';
+
 import { TileMap }  from '../tileMap/TileMap';
 
 import { Titlecard } from '../titlecard/Titlecard';
@@ -97,6 +99,8 @@ export class Viewport extends View
 		this.meta = {};
 
 		this.objectPalette = ObjectPalette;
+
+		// this.quadCell = null;
 
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
@@ -522,6 +526,10 @@ export class Viewport extends View
 			{
 				i.viewport = this;
 
+				// this.quadCell.insert(i, i.args);
+				// this.quadCell.insert(i, {x: i.args.x - i.args.width / 2, y: i.args.y});
+				// this.quadCell.insert(i, {x: i.args.x + i.args.width / 2, y: i.args.y});
+
 				this.setColCell(i);
 
 				if(i instanceof Region)
@@ -560,6 +568,8 @@ export class Viewport extends View
 
 				delete this.actorsById[i.args.id];
 				delete i[ColCell];
+
+				// this.quadCell.remove(i);
 
 				this.objectDb.remove(i);
 			}
@@ -1841,6 +1851,14 @@ export class Viewport extends View
 			return;
 		}
 
+		const mapWidth  = this.tileMap.mapData.width * 32 + 64;
+		const mapHeight = this.tileMap.mapData.height * 32 + 64;
+
+		// this.quadCell = new QuadCell(
+		// 	{x: mapWidth/2, y: mapHeight/2}
+		// 	, {x: mapWidth, y: mapHeight}
+		// );
+
 		this.args.populated = true;
 
 		const objDefs = this.tileMap.getObjectDefs();
@@ -2169,10 +2187,21 @@ export class Viewport extends View
 		actor.updateEnd();
 
 		this.setColCell(actor);
+
+		// this.quadCell.remove(actor, actor.args);
+
+		// this.quadCell.insert(actor, actor.args);
+
+		// this.quadCell.insert(actor, {x: actor.args.x - actor.args.width / 2, y: actor.args.y});
+		// this.quadCell.insert(actor, {x: actor.args.x + actor.args.width / 2, y: actor.args.y});
 	}
 
 	nearbyActors(actor)
 	{
+		// const nearbyActors = this.quadCell.select(actor.x, actor.y, x, y);
+
+		// return nearbyActors;
+
 		const nearbyCells = this.getNearbyColCells(actor);
 
 		const width  = this.args.width;
@@ -2189,6 +2218,11 @@ export class Viewport extends View
 
 			for(const actor of actors)
 			{
+				if(actor.removed)
+				{
+					continue;
+				}
+
 				result.add(actor);
 			}
 		}
@@ -2442,16 +2476,13 @@ export class Viewport extends View
 					updatable.add(actor);
 				}
 
-				const nearbyCells = this.getNearbyColCells(actor);
+				const nearbyActors = this.nearbyActors(actor);
 
-				for(const cell of nearbyCells)
+				for(const actor of nearbyActors)
 				{
-					for(const actor of cell)
+					if(actor !== this.controlActor)
 					{
-						if(actor !== this.controlActor)
-						{
-							updatable.add(actor);
-						}
+						updatable.add(actor);
 					}
 				}
 			}
@@ -2857,45 +2888,44 @@ export class Viewport extends View
 
 		const actors = [];
 
-		for(const cell of this.getNearbyColCells({x,y}))
+		const nearbyActors = this.nearbyActors({x,y});
+
+		for(const actor of nearbyActors)
 		{
-			for(const actor of cell)
+			if(actor[Run] !== this[Run])
 			{
-				if(actor[Run] !== this[Run])
+				continue;
+			}
+
+			const actorArgs = actor.args;
+
+			const actorX = actorArgs.x;
+			const actorY = actorArgs.y;
+
+			const width  = actorArgs.width;
+			const height = actorArgs.height;
+
+			const myRadius = Math.max(Math.floor(w / 2), 0);
+
+			const myLeft   = x - myRadius;
+			const myRight  = x + myRadius;
+			const myTop    = y - Math.max(h, 0);
+			const myBottom = y;
+
+			const offset = width / 2;
+
+			const isRegion = actor.isRegion;
+
+			const otherLeft   = actorX - (isRegion ? 0 : offset);
+			const otherRight  = actorX + (isRegion ? width : offset);
+			const otherTop    = actorY - height ;
+			const otherBottom = actorY;
+
+			if(myRight >= otherLeft && otherRight > myLeft)
+			{
+				if(otherBottom >= myTop && myBottom >= otherTop)
 				{
-					continue;
-				}
-
-				const actorArgs = actor.args;
-
-				const actorX = actorArgs.x;
-				const actorY = actorArgs.y;
-
-				const width  = actorArgs.width;
-				const height = actorArgs.height;
-
-				const myRadius = Math.max(Math.floor(w / 2), 0);
-
-				const myLeft   = x - myRadius;
-				const myRight  = x + myRadius;
-				const myTop    = y - Math.max(h, 0);
-				const myBottom = y;
-
-				const offset = width / 2;
-
-				const isRegion = actor.isRegion;
-
-				const otherLeft   = actorX - (isRegion ? 0 : offset);
-				const otherRight  = actorX + (isRegion ? width : offset);
-				const otherTop    = actorY - height ;
-				const otherBottom = actorY;
-
-				if(myRight >= otherLeft && otherRight > myLeft)
-				{
-					if(otherBottom >= myTop && myBottom >= otherTop)
-					{
-						actors.push( actor );
-					}
+					actors.push( actor );
 				}
 			}
 		}
@@ -3208,6 +3238,8 @@ export class Viewport extends View
 		this.args.ringBonus.args.value  = 0;
 		this.args.speedBonus.args.value = 0;
 		this.args.totalBonus.args.value = 0;
+
+		this.meta = {};
 
 		for(const actor of this.actors.items())
 		{
