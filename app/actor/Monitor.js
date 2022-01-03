@@ -31,7 +31,7 @@ export class Monitor extends PointActor
 
 		this.screen = new Tag(`<div class = "monitor-screen">`);
 
-		this.sprite.appendChild(this.screen.node);
+		this.sprite && this.sprite.appendChild(this.screen.node);
 	}
 
 	update()
@@ -139,7 +139,7 @@ export class Monitor extends PointActor
 
 		this.args.gone = true;
 
-		this.box.setAttribute('data-animation', 'broken');
+		this.box && this.box.setAttribute('data-animation', 'broken');
 
 		if(other)
 		{

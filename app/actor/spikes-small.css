@@ -52,7 +52,7 @@
 }
 
 .actor-item.actor-spikes-small[data-pointing="2"] .sprite {
-	top: 4px;
+	top: 1px;
 	background-position-y: -22px;
 }
 

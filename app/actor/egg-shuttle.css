@@ -1,0 +1,48 @@
+.actor-egg-shuttle {
+	position: relative;
+	z-index: 1000;
+}
+
+.actor-egg-shuttle .sprite {
+	background-image: url(/Sonic/shuttle.png);
+	position: absolute;
+	height: 338px !important;
+	width:  181px !important;
+	left: -20px !important;
+	z-index: 1;
+}
+
+.actor-egg-shuttle .shuttle-windshield {
+	background-image: url(/Sonic/shuttle-windshield.png);
+	position: absolute;
+	top: 0px;
+	left: 60px;
+	width: 42px;
+	height: 90px;
+	transform-origin: bottom left;
+	transition: transform 0.1s ease-out;
+	transform: rotate(-45deg);
+}
+
+.actor-egg-shuttle-occupied .shuttle-windshield {
+	transform: rotate(0deg);
+	transition: transform 1s ease-in;
+}
+
+.actor-egg-shuttle[data-falling=true] .shuttle-boost {
+	animation: shuttle-boost-flash 40ms infinite steps(2);
+	background-image: url(/Sonic/shuttle-boost.png);
+	position: absolute;
+	bottom: -32px;
+	left: 40px;
+	width: 84px;
+	height: 39px;
+	z-index: 0;
+}
+
+@keyframes shuttle-boost-flash {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	51% { opacity: 0; }
+	100% { opacity: 0; }
+}

@@ -76,6 +76,7 @@ import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
 import { EggWalker }  from './actor/EggWalker';
+import { EggShuttle }  from './actor/EggShuttle';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
@@ -162,6 +163,7 @@ export const ObjectPalette = {
 	, 'egg-walker':   EggWalker
 	, 'snow-board':   SnowBoard
 	, 'egg-mobile':   EggMobile
+	, 'egg-shuttle':  EggShuttle
 	, 'rocks-tall':   Rocks
 	, 'rocks-med':    Rocks
 	, 'rocks-short':  Rocks

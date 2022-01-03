@@ -1,3 +1,6 @@
+.viewport.none .viewport-bg-layers [data-name="Moving 0"],
+.viewport.none .viewport-bg-layers [data-name="Moving 1"],
+.viewport.none .viewport-bg-layers [data-name="Moving 2"],
 .viewport.none .viewport-bg-layers [data-name^="Collision"] {
 	display: none;
 }
