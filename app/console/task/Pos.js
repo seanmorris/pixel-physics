@@ -8,6 +8,11 @@ export class Pos extends Task
 
 	init(x, y)
 	{
+		if(!Pos.viewport.controlActor)
+		{
+			return;
+		}
+
 		const actor = Pos.viewport.controlActor;
 
 		this.print(`Character is at ${actor.x}, ${actor.y}.`);

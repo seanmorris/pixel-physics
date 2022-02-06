@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 import { Tag } from 'curvature/base/Tag';
 
+import { Ring } from './Ring';
+
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
 
@@ -194,7 +196,7 @@ export class Block extends PointActor
 			return;
 		}
 
-		if(this.args.platform)
+		if(this.args.platform && !(other instanceof Ring))
 		{
 			if(other.willStick)
 			{
@@ -449,7 +451,7 @@ export class Block extends PointActor
 
 		this.args.conveyed += this.args.convey;
 
-		this.box && this.box.style({'--conveyed': this.args.conveyed});
+		this.box && this.box.style({'--conveyed': this.args.conveyed*0.8});
 
 		super.update();
 	}

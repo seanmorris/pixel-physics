@@ -28,11 +28,11 @@
                          "type":"string",
                          "value":"1"
                         }],
-                 "rotation":180,
+                 "rotation":0,
                  "type":"sonic",
                  "visible":true,
                  "width":32,
-                 "x":19952,
+                 "x":19920,
                  "y":1952
                 }, 
                 {
@@ -156,12 +156,12 @@
          "columns":13,
          "firstgid":378,
          "image":"..\/Sonic\/tiles\/wing-fortress\/industrial.png",
-         "imageheight":512,
+         "imageheight":576,
          "imagewidth":416,
          "margin":0,
          "name":"industrial",
          "spacing":0,
-         "tilecount":208,
+         "tilecount":234,
          "tileheight":32,
          "tilewidth":32
         }],

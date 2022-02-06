@@ -4,7 +4,7 @@
 }
 
 .actor-egg-shuttle .sprite {
-	background-image: url(/Sonic/shuttle.png);
+	background-image: url(/Sonic/shuttle-2.png);
 	position: absolute;
 	height: 338px !important;
 	width:  181px !important;
@@ -29,7 +29,7 @@
 	transition: transform 1s ease-in;
 }
 
-.actor-egg-shuttle[data-falling=true] .shuttle-boost {
+.actor-egg-shuttle[data-falling=true] .shuttle-boost[data-active=true] {
 	animation: shuttle-boost-flash 40ms infinite steps(2);
 	background-image: url(/Sonic/shuttle-boost.png);
 	position: absolute;

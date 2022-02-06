@@ -348,14 +348,20 @@ export class Sonic extends PointActor
 
 			let slip = 2;
 
-			if(this.yAxis < 0 || this.args.modeTime < 15)
+			if(this.yAxis < 0)
 			{
+				this.args.animation = 'wall-stick-brake';
 				this.stayStuck = true;
 				slip = 0;
 			}
 			else if(this.yAxis > 0)
 			{
 				slip = 6;
+			}
+
+			if(this.args.modeTime < 15)
+			{
+				slip = 0;
 			}
 
 			if(this.args.mode === 1)
@@ -436,11 +442,23 @@ export class Sonic extends PointActor
 				{
 					this.args.animation = 'skidding';
 				}
-				else if(this.args.moving && speed > maxSpeed * 0.45)
+				else if(this.args.moving && speed > maxSpeed * 0.75)
 				{
-					if(this.isSuper && this.args.moving && speed > maxSpeed * 0.95)
+					if(this.isSuper && this.args.moving && speed > maxSpeed * 1.85)
 					{
 						this.args.animation = 'dash';
+					}
+					else if(this.args.moving && speed > maxSpeed * 2.25)
+					{
+						this.args.animation = 'running-4';
+					}
+					else if(this.args.moving && speed > maxSpeed * 1.75)
+					{
+						this.args.animation = 'running-3';
+					}
+					else if(this.args.moving && speed > maxSpeed * 1.25)
+					{
+						this.args.animation = 'running-2';
 					}
 					else
 					{
@@ -450,6 +468,10 @@ export class Sonic extends PointActor
 				else if(this.args.moving && this.args.gSpeed)
 				{
 					this.args.animation = 'walking';
+				}
+				else if(this.args.moving && this.args.gSpeed)
+				{
+					this.args.pushing = true;
 				}
 				else
 				{
@@ -731,7 +753,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		let dashSpeed = direction * ((this.isSuper || this.isHyper) ? 13 : 7);
+		let dashSpeed = direction * ((this.isSuper || this.isHyper) ? 13 : 8);
 
 		if(this.args.wallSticking)
 		{
@@ -748,7 +770,7 @@ export class Sonic extends PointActor
 
 		if(this.args.xSpeed && Math.sign(this.args.xSpeed) !== Math.sign(direction))
 		{
-			dashSpeed = direction * 11;
+			dashSpeed = direction * Math.abs(dashSpeed);
 			this.args.float  = 4;
 			this.args.xSpeed = 0;
 		}
@@ -984,6 +1006,11 @@ export class Sonic extends PointActor
 		if(!this.spindashCharge)
 		{
 			return;
+		}
+
+		if(this.spindashCharge < 5 && this.args.modeTime < 25)
+		{
+			this.spindashCharge = 15;
 		}
 
 		const direction = this.args.direction;

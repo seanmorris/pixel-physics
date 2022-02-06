@@ -208,7 +208,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 					this.args.drillPush = 0.5;
 				}
 
-				if(this.args.phaseFrameId > 45)
+				if(this.args.phaseFrameId > 25)
 				{
 					this.args.phase = 'ready';
 				}
@@ -269,7 +269,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 				this.args.drillPush = 0.75;
 
-				if(this.args.phaseFrameId > 40)
+				if(this.args.phaseFrameId > 30)
 				{
 					const dieRoll = Math.random();
 

@@ -180,6 +180,8 @@ export class ElectricSheild extends Sheild
 			this.jumps = 3;
 		}
 
+		let ringsMoved = 0;
+
 		for(const ring of this.attract)
 		{
 			if(ring.args.gone)
@@ -230,13 +232,20 @@ export class ElectricSheild extends Sheild
 
 			if(distance > maxDistance)
 			{
+				if(ringsMoved > 45)
+				{
+					continue;
+				}
+
 				ring.args.x = host.x - Math.cos(angle) * maxDistance;
 				ring.args.y = host.y - Math.sin(angle) * maxDistance;
 			}
 
 			host.viewport.setColCell(ring);
 
-			const force = this.magnetism || 0.55;
+			ringsMoved++;
+
+			const force = (this.magnetism || 0.55) * 2;
 
 			const xMag = Math.max(force, xSame ? 0.35 : 0.45);
 			const yMag = Math.max(force, ySame ? 0.25 : 0.35);
@@ -250,12 +259,12 @@ export class ElectricSheild extends Sheild
 
 			if(!xSame || Math.abs(ring.args.xSpeed) < 8 || (distance > maxDistance))
 			{
-				ring.args.xSpeed += xMag * (xDir * fudge);
+				ring.args.xSpeed += Math.max(0.1, xMag * fudge) * xDir;
 			}
 
 			if(!ySame || Math.abs(ring.args.ySpeed) < 8 || (distance > maxDistance))
 			{
-				ring.args.ySpeed += yMag * (yDir * fudge);
+				ring.args.ySpeed += Math.max(0.1, yMag * fudge) * yDir;
 			}
 
 			ring.args.falling = true;

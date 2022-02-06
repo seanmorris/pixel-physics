@@ -12,6 +12,11 @@ export class Impulse extends Task
 
 	init(magnitude, angle)
 	{
+		if(!Impulse.viewport.controlActor)
+		{
+			return;
+		}
+
 		// this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
 		const actor = Impulse.viewport.controlActor;
 

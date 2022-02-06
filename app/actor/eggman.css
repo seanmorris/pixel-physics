@@ -60,7 +60,13 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -320px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: eggman-crouch steps(1) 1 128ms forwards;
+	animation: eggman-crouch steps(1) 1 56ms forwards;
+}
+
+.actor-item.actor-eggman[data-animation="lookingUp"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -448px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 }
 
 @-webkit-keyframes eggman-animate {

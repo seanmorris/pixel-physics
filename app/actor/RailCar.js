@@ -108,6 +108,11 @@ export class RailCar extends Vehicle
 				{
 					this.args.gSpeed += Math.sign(this.args.cartSpeed) * 0.125;
 				}
+
+				if(Math.abs(this.args.gSpeed) < 1)
+				{
+					this.args.gSpeed = Math.sign(this.args.gSpeed);
+				}
 			}
 
 			this.args.direction = Math.sign(this.args.hSpeed || this.args.gSpeed);
@@ -163,6 +168,7 @@ export class RailCar extends Vehicle
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');
 
+		this.args.groundAngle = 0;
 		this.args.gSpeed = 0;
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;

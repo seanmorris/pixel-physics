@@ -95,10 +95,20 @@ export class MarbleBlock extends PointActor
 
 				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
 				{
-					const otherRadius = other.args.width;
+					const otherRadius = other.args.width / 2;
 					const myRadius = this.args.width / 2;
 
-					this.args.x = other.args.x + (moveBy * (myRadius + otherRadius));
+					if(Math.abs(this.x - other.x) <= otherRadius + myRadius)
+					{
+						this.args.x = other.args.x + (moveBy * (myRadius + otherRadius));
+
+						other.args.pushing = true;
+						other.args.rolling = false;
+
+						const weightRatio = this.args.weight / other.args.weight;
+
+						other.args.gSpeed -= weightRatio * 0.005 * Math.sign(other.args.gSpeed);
+					}
 
 					return scan === 0;
 				}

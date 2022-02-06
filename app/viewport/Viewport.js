@@ -55,6 +55,7 @@ import { Impulse as ImpulseTask } from '../console/task/Impulse';
 import { Settings as SettingsTask } from '../console/task/Settings';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
+import { Spawn as SpawnTask } from '../console/task/Spawn';
 
 // import { RtcClientTask } from '../network/RtcClientTask';
 // import { RtcServerTask } from '../network/RtcServerTask';
@@ -382,6 +383,7 @@ export class Viewport extends View
 		this.args.labelLayer  = new CharacterString({value:'Layer: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
 		this.args.labelFrame  = new CharacterString({value:'Frame ID: '});
+		this.args.labelIgnore = new CharacterString({value:'Ignore: '});
 		this.args.labelFps    = new CharacterString({value:'FPS: '});
 
 		this.args.labelAirAngle  = new CharacterString({value:'Air theta: '});
@@ -397,6 +399,7 @@ export class Viewport extends View
 		this.args.ySpeed = new CharacterString({value:0});
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
+		this.args.ignore = new CharacterString({value:0});
 
 		this.args.cameraMode = new CharacterString({value:0});
 
@@ -659,6 +662,7 @@ export class Viewport extends View
 							, 'impulse': ImpulseTask
 							, 'pos': PosTask
 							, 'set': SettingsTask
+							, 'spawn': SpawnTask
 						}
 					});
 
@@ -833,6 +837,7 @@ export class Viewport extends View
 		InputTask.viewport = this;
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
+		SpawnTask.viewport = this;
 
 		this.buildDetect();
 		this.cpuDetect();
@@ -1099,11 +1104,11 @@ export class Viewport extends View
 
 		keyboard.update();
 
-		if(!this.gamepad)
+		if(!this.gamepad && !this.args.cutScene)
 		{
 			controller.readInput({keyboard});
 		}
-		else
+		else if(!this.args.cutScene)
 		{
 			const gamepads = navigator.getGamepads();
 
@@ -1261,7 +1266,7 @@ export class Viewport extends View
 
 		if(controller.buttons[1011] && controller.buttons[1011].time === 1)
 		{
-			this.args.paused = 1;
+			this.args.paused = 0;
 			this.focus();
 		}
 
@@ -1511,9 +1516,8 @@ export class Viewport extends View
 
 		}
 
-		if(actor.args.modeTime > 15
-			&& ['normal', 'bridge', 'cliff', 'aerial', 'cutScene'].includes(actor.args.cameraMode)
-		){
+		if(['normal', 'bridge', 'cliff', 'aerial', 'cutScene'].includes(actor.args.cameraMode))
+		{
 			const gSpeed     = actor.args.gSpeed;
 			const xSpeed     = actor.args.xSpeed;
 			const grounded   = !actor.args.falling;
@@ -1524,11 +1528,11 @@ export class Viewport extends View
 			switch(actor.args.mode)
 			{
 				case 0:
-					this.args.xOffsetTarget += speedBias * 0.3;
+					this.args.xOffsetTarget += speedBias * 0.4;
 					break;
 
 				case 1:
-					this.args.yOffsetTarget += speedBias * 0.3;
+					this.args.yOffsetTarget += speedBias * 0.4;
 					break;
 
 				case 2:
@@ -1536,7 +1540,7 @@ export class Viewport extends View
 	 				break;
 
 				case 3:
-					this.args.yOffsetTarget -= speedBias * 0.3;
+					this.args.yOffsetTarget -= speedBias * 0.4;
 					break;
 			}
 
@@ -2307,7 +2311,8 @@ export class Viewport extends View
 		{
 			return;
 		}
-		else if(this.args.paused > 0)
+
+		if(this.args.paused > 0)
 		{
 			this.args.paused--;
 		}
@@ -2591,6 +2596,8 @@ export class Viewport extends View
 
 					this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 					this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
+
+					this.args.ignore.args.value   = this.controlActor.args.ignore;
 
 					const modes = ['FLOOR (0)', 'L-WALL (1)', 'CEILING (2)', 'R-WALL (3)'];
 
@@ -2878,7 +2885,7 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y, w = 0, h = 0)
 	{
-		const cacheKey = x + '::' + y;
+		const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		const actorPointCache = this[ActorPointCache];
 
 		if(actorPointCache.has(cacheKey))
@@ -3711,8 +3718,13 @@ export class Viewport extends View
 		return currentCheckpoint;
 	}
 
-	clearCheckpoints(actorId)
+	clearCheckpoints(actorId = null)
 	{
+		if(actorId === null)
+		{
+			actorId = this.controlActor.args.id;
+		}
+
 		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
 			this.checkpoints[this.tileMap.mapUrl] = {};

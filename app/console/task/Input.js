@@ -14,6 +14,15 @@ export class Input extends Task
 	{
 		let frame, intervalId, onDone = () => {};
 
+		if(!Input.viewport.controlActor)
+		{
+			return;
+		}
+
+		const actor = Input.viewport.controlActor;
+
+		const controller = actor.controller;
+
 		if(inputId[0] === 'a')
 		{
 			const axisId = inputId.substring(1);
@@ -23,15 +32,14 @@ export class Input extends Task
 			frame = {axes: { [axisId]: magnitude }};
 
 			intervalId = setInterval(() => {
-
-				controller.tilt(axisId, magnitude);
+				controller.replay(frame);
 				actor.readInput();
 
 			}, 16);
 
 			onDone = () => {
-
-				controller.tilt(axisId, 0);
+				frame.axes[axisId] = 0;
+				controller.replay(frame);
 				actor.readInput();
 
 				clearInterval(intervalId);
@@ -70,10 +78,6 @@ export class Input extends Task
 		{
 			return;
 		}
-
-		const actor = Input.viewport.controlActor;
-
-		const controller = actor.controller;
 
 		controller.replay(frame);
 		actor.readInput();

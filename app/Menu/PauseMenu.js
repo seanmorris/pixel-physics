@@ -26,11 +26,27 @@ export class PauseMenu extends Menu
 
 		this.args.items = {
 			Continue: { callback: () => parent.unpauseGame() }
-			, Reset: { callback: () => {
-				parent.unpauseGame();
-				parent.reset();
-				parent.startLevel();
-			} }
+			, Reset:    {
+				children: {
+					'Last Checkpoint': {
+						subtext: 'Restart and record your run.'
+						, callback: () => {
+							parent.unpauseGame();
+							parent.reset();
+							parent.startLevel();
+						}
+					}
+					, 'Level Start': {
+						subtext: 'Restart and record your run.'
+						, callback: () => {
+							parent.clearCheckpoints();
+							parent.unpauseGame();
+							parent.reset();
+							parent.startLevel();
+						}
+					}
+				}
+			}
 			, Demos:    {
 				children: {
 					record: {

@@ -13,8 +13,8 @@ export class EggShuttle extends Vehicle
 		this.args.decel     = 0.8;
 
 		this.args.gSpeedMax = 15;
-		this.args.xSpeedMax = 45;
-		this.args.ySpeedMax = 45;
+		this.args.xSpeedMax = 150;
+		this.args.ySpeedMax = 50;
 
 		this.args.jumpForce = 3;
 		this.args.gravity   = 0.6;
@@ -31,6 +31,14 @@ export class EggShuttle extends Vehicle
 
 		this.args.seatHeight = 270;
 		this.args.seatAngle = Math.PI / 2;
+
+		this.args.thrustAngle = -Math.PI / 2;
+
+		this.args.bindTo('boosting', v => {
+			if(!this.boost) { return };
+
+			this.boost.setAttribute('data-active', !!v);
+		});
 	}
 
 	update()
@@ -60,22 +68,55 @@ export class EggShuttle extends Vehicle
 
 		super.update();
 
+		if(this.args.falling)
+		{
+			this.args.cameraMode = 'aerial';
+			this.args.cameraBias = Math.max(-0.125, (-this.args.ySpeed / this.args.ySpeedMax) + -0.25);
+
+			this.args.thrustAngle += 0.01 * this.xAxis;
+
+			this.args.groundAngle = -(this.args.thrustAngle + Math.PI / 2);
+		}
+		else
+		{
+			this.args.cameraMode = 'normal';
+			this.args.cameraBias = 0;
+			this.args.boosting = false;
+
+			this.args.thrustAngle = -Math.PI / 2;
+		}
+
 	}
+
 
 	processInputDirect(){};
 
-	hold_0()
-	{
-		// this.args.ySpeed -= 0.6;
-		// this.args.ySpeed -= 0.7;
-		this.args.ySpeed -= 3;
+	command_0(button)
+	{}
 
+	release_0(button)
+	{
+		this.args.boosting = false;
+	}
+
+	hold_0(button)
+	{
 		this.args.x += this.viewport.args.frameId % 2 ? -1 : 1;
 
-		if(this.args.ySpeed < -20)
+		if(!this.args.falling && button.time < 60)
 		{
-			this.args.ySpeed = -20;
+			return;
 		}
+
+		this.args.falling = true;
+
+		const impulse = this.args.gravity * (1 + (0.002 * Math.min(-60 + button.time, 150)));
+
+		this.args.xSpeed += impulse * Math.cos(this.args.thrustAngle);
+		this.args.ySpeed += impulse * Math.sin(this.args.thrustAngle);
+
+		this.args.boosting = true;
+
 	}
 
 	get solid() { return !this.occupant; }

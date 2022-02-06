@@ -42,7 +42,8 @@ import { Cinematic } from './actor/Cinematic';
 
 import { Flickie } from './actor/Flickie';
 
-import { Bubbles } from './actor/Bubbles';
+import { Bubbles  } from './actor/Bubbles';
+import { Redz     } from './actor/Redz';
 import { GuardBot } from './actor/GuardBot';
 import { CrabMeat } from './actor/CrabMeat';
 import { BuzzBomber } from './actor/BuzzBomber';
@@ -211,6 +212,7 @@ export const ObjectPalette = {
 	, 'sheild-electric-monitor': SheildElectricMonitor
 	, 'flickie': Flickie
 	, 'crabmeat': CrabMeat
+	, 'redz': Redz
 	, 'guard-bot': GuardBot
 	, 'mecha-froggy': MechaFroggy
 	, 'buzz-bomber': BuzzBomber

@@ -38,7 +38,7 @@ export class Flipper extends PointActor
 			return;
 		}
 
-		const leftBound = this.x - this.args.direction * (1+this.args.width / 2);
+		const leftBound = this.x - this.args.direction * this.args.width;
 
 		other.args.rolling = true;
 
@@ -59,7 +59,7 @@ export class Flipper extends PointActor
 			other.args.ySpeed = 0;
 			other.args.gSpeed = 0;
 
-			const flipFactor = (other.x - leftBound) / this.args.width;
+			const flipFactor = ((other.x - leftBound) / this.args.width) * 0.5;
 			const flipMagnitude = flipFactor * this.args.direction;
 
 			other.impulse(this.args.power * flipMagnitude, rounded, true);

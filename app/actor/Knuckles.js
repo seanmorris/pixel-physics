@@ -119,7 +119,7 @@ export class Knuckles extends PointActor
 			this.punched = 0;
 		}
 
-		if(this.punchTime && Date.now() - this.punchTime > 384)
+		if(this.punchTime && Date.now() - this.punchTime > 256)
 		{
 			this.readying = true;
 		}
@@ -194,14 +194,19 @@ export class Knuckles extends PointActor
 			{
 				if(this.public.climbing)
 				{
-					if(this.yAxis < 0)
+					if(this.args.modeTime < 2 || this.yAxis === 0)
+					{
+						this.args.animation = 'climbing';
+						this.args.gSpeed = 0;
+					}
+					else if(this.yAxis < 0)
 					{
 						this.args.animation = 'climbing-up';
 
 						if(Math.abs(this.args.gSpeed) < 4)
 						{
 							this.args.direction = this.public.mode === 1 ? 1 : -1;
-							this.args.gSpeed -= this.public.direction;
+							this.args.gSpeed += -this.public.direction;
 						}
 					}
 					else if(this.yAxis > 0)
@@ -213,11 +218,6 @@ export class Knuckles extends PointActor
 							this.args.direction = this.public.mode === 1 ? 1 : -1;
 							this.args.gSpeed += this.public.direction;
 						}
-					}
-					else
-					{
-						this.args.animation = 'climbing';
-						this.args.gSpeed = 0;
 					}
 				}
 				else if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
@@ -232,6 +232,10 @@ export class Knuckles extends PointActor
 				{
 					this.args.animation = 'throw-bomb';
 				}
+				else if(this.readying || this.willPunch)
+				{
+					this.args.animation = 'readying';
+				}
 				else if(!this.readying && this.punched)
 				{
 					if(this.punched % 2)
@@ -242,10 +246,6 @@ export class Knuckles extends PointActor
 					{
 						this.args.animation = 'punching';
 					}
-				}
-				else if(this.readying || this.willPunch)
-				{
-					this.args.animation = 'readying';
 				}
 				else if(speed > maxSpeed * 0.75)
 				{
@@ -543,14 +543,16 @@ export class Knuckles extends PointActor
 		this.args.willJump = false;
 	}
 
-	command_1()
+	readyStart(inputDirection = 0, button = 1)
 	{
-		if(this.args.flying || this.args.climbing)
+		if(this.args.flying || this.args.climbing || this.args.falling)
 		{
 			return;
 		}
 
-		if(this.punchTime && Date.now() - this.punchTime < 72)
+		this.readyButton = button;
+
+		if(this.punchTime && Date.now() - this.punchTime < 108)
 		{
 			this.punchMomentum = 0;
 			this.args.ignore = 16;
@@ -562,26 +564,47 @@ export class Knuckles extends PointActor
 
 		this.willPunch = true;
 
+		const direction = Math.sign(this.xAxis || inputDirection || this.args.direction);
+
+		this.args.direction = Math.sign(direction || this.punchMomentum);
+
+		if(direction < 0)
+		{
+			this.args.facing = 'left';
+		}
+		else
+		{
+			this.args.facing = 'right';
+		}
+
 		if(this.punchTime)
 		{
 			this.args.ignore = 15;
 			this.args.gSpeed = 0;
+			this.punchTime   = false;
 			return;
 		}
 
-		this.punchMomentum = this.punchMomentum || this.args.gSpeed || (4 * this.args.direction);
+		this.punchMomentum = Math.abs(this.punchMomentum || this.args.gSpeed || 4) * Math.sign(direction || this.xAxis);
 		this.args.ignore = 15;
 		this.args.gSpeed = 0;
 	}
 
-	release_1()
+	readyStop(inputDirection, button)
 	{
-		if(this.args.flying || this.args.climbing)
+		if(this.readyButton !== button)
+		{
+			console.log(this.readyButton, button);
+
+			return;
+		}
+
+		if(this.args.flying || this.args.climbing || this.args.falling)
 		{
 			return;
 		}
 
-		if(this.punchTime && Date.now() - this.punchTime < 96)
+		if(this.punchTime && Date.now() - this.punchTime < 64)
 		{
 			this.willPunch = false;
 			this.punchMomentum = 0;
@@ -589,18 +612,20 @@ export class Knuckles extends PointActor
 			return;
 		}
 
-		if(!this.xAxis || Math.sign(this.xAxis) === Math.sign(this.punchMomentum))
+		const direction = Math.sign(this.xAxis || inputDirection || this.args.direction);
+
+		if(!direction || Math.sign(direction) === Math.sign(this.punchMomentum))
 		{
-			this.args.gSpeed = this.xAxis
-				? (Math.abs(this.punchMomentum) * this.xAxis)
+			this.args.gSpeed = direction
+				? (Math.abs(this.punchMomentum) * direction)
 				: this.punchMomentum;
 		}
-		else if(this.xAxis)
+		else if(direction)
 		{
-			this.punchMomentum = Math.abs(this.punchMomentum) * this.xAxis;
+			this.punchMomentum = Math.abs(this.punchMomentum) * direction;
 
-			this.args.gSpeed = 0.666 * (this.xAxis
-				? (Math.abs(this.punchMomentum) * this.xAxis)
+			this.args.gSpeed = 1 * (direction
+				? (Math.abs(this.punchMomentum) * direction)
 				: this.punchMomentum
 			);
 		}
@@ -612,9 +637,9 @@ export class Knuckles extends PointActor
 		// 	this.punchMomentum = Math.abs(this.punchMomentum) * Math.sign(this.xAxis);
 		// }
 
-		this.args.direction = Math.sign(this.punchMomentum);
+		this.args.direction = Math.sign(direction || this.punchMomentum);
 
-		if(this.punchMomentum < 0)
+		if(direction < 0)
 		{
 			this.args.facing = 'left';
 		}
@@ -655,6 +680,36 @@ export class Knuckles extends PointActor
 		}
 
 		this.punched++;
+	}
+
+	command_1()
+	{
+		this.readyStart(0, 1);
+	}
+
+	release_1()
+	{
+		this.readyStop(0, 1);
+	}
+
+	command_4()
+	{
+		this.readyStart(-1, 4);
+	}
+
+	release_4()
+	{
+		this.readyStop(-1, 4);
+	}
+
+	command_5()
+	{
+		this.readyStart(1, 5);
+	}
+
+	release_5()
+	{
+		this.readyStop(1, 5);
 	}
 
 	command_2()

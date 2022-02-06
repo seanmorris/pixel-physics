@@ -5,6 +5,15 @@ import { SkidDust } from '../behavior/SkidDust';
 
 export class Eggman extends PointActor
 {
+	static fromDef(objDef)
+	{
+		const instance = super.fromDef(objDef);
+
+		instance.args.name = 'Robotnik'
+
+		return instance;
+	}
+
 	constructor(...args)
 	{
 		super(...args);
@@ -41,6 +50,8 @@ export class Eggman extends PointActor
 		this.args.width  = 18;
 		this.args.height = 57;
 
+		this.args.lookingUp = false;
+
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/eggman.png';
 
 		this.superSpriteSheet = '/Sonic/eggman-super.png';
@@ -60,14 +71,31 @@ export class Eggman extends PointActor
 			super.update();
 			return;
 		}
-
-		else if(this.yAxis > 0)
+		else if(this.yAxis > 0.5 && !this.args.ignore)
 		{
 			this.args.crouching = true;
+
+			this.args.lookTime--;
+
+			if(this.args.lookTime < -45)
+			{
+				this.args.cameraBias = -0.5;
+			}
+		}
+		else if(this.yAxis < -0.5 && !this.args.ignore)
+		{
+			this.args.lookingUp = true;
+
+			this.args.lookTime++;
+
+			if(this.args.lookTime > 45)
+			{
+				this.args.cameraBias = 0.25;
+			}
 		}
 		else
 		{
-			this.args.crouching = false;
+			this.args.lookingUp = this.args.crouching = false;
 		}
 
 		const direction = this.args.direction;
@@ -117,6 +145,10 @@ export class Eggman extends PointActor
 			else if(this.args.moving && gSpeed)
 			{
 				this.box.setAttribute('data-animation', 'walking');
+			}
+			else if(this.args.lookingUp)
+			{
+				this.box.setAttribute('data-animation', 'lookingUp');
 			}
 			else if(this.args.crouching || (this.args.standingOn && this.args.standingOn.isVehicle))
 			{

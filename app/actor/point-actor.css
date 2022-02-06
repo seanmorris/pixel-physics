@@ -168,6 +168,8 @@
 	animation: ringSpin steps(4) infinite;
 	animation-duration: calc(1ms * 350);
 	transition: opacity 0.25s ease-in;
+	width: 32px;
+	height: 32px;
 }
 
 .actor-item.actor-ring.dropped .sprite {

@@ -11,49 +11,49 @@ export class Moon extends Backdrop
 		this.args.strips = [
 			{
 				autoscroll:  0
-				, parallax:  0.019
+				, parallax:  0.0019
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-0a.png'
 				, height:    13
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.016
+				, parallax:  0.0016
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-0b.png'
 				, height:    13
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.015
+				, parallax:  0.0015
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-1.png'
 				, height:    12
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.013
+				, parallax:  0.0013
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-2.png'
 				, height:    12
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.010
+				, parallax:  0.0010
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-3.png'
 				, height:    8
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.009
-				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-4.png  '
+				, parallax:  0.0009
+				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-4.png'
 				, height:    5
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.007
+				, parallax:  0.0007
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-5.png'
 				, height:    14
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.005
+				, parallax:  0.0005
 				, url:       '/Sonic/backdrop/doomsday/backdrop-inverted-0-6.png'
 				, height:    140
 			}

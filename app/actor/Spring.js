@@ -158,6 +158,7 @@ export class Spring extends PointActor
 
 		other.args.jumping = false;
 		other.args.ignore = other.args.falling ? 4 : 12;
+		other.args.float = 2;
 
 		this.viewport.onFrameOut(2,()=>{
 
@@ -213,6 +214,7 @@ export class Spring extends PointActor
 		other.args.airAngle = this.args.angle;
 		other.args.displayAngle = 0;
 		other.args.groundAngle = 0;
+		other.args.airAngle = -Math.PI / 2;
 	}
 
 	sleep()

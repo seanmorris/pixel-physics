@@ -78,11 +78,11 @@ export class RedEyeJet extends PointActor
 				viewport.clearAct(`${other.args.name} BEAT THE MINI-MACE`);
 			});
 
-			viewport.onFrameOut(200, () => {
+			viewport.onFrameOut(100, () => {
 				this.viewport.args.cutScene = true;
 			});
 
-			viewport.onFrameOut(205, () => {
+			viewport.onFrameOut(150, () => {
 				this.viewport.controlActor.controller.replay({axes: [1,0,0,1]});
 				this.viewport.controlActor.readInput();
 			});

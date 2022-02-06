@@ -55,7 +55,7 @@
                  "type":"pulley",
                  "visible":true,
                  "width":64,
-                 "x":408,
+                 "x":416,
                  "y":799
                 }, 
                 {
@@ -88,7 +88,7 @@
                  "type":"pulley",
                  "visible":true,
                  "width":64,
-                 "x":600,
+                 "x":608,
                  "y":799
                 }, 
                 {
@@ -121,7 +121,7 @@
                  "type":"block",
                  "visible":true,
                  "width":192,
-                 "x":440,
+                 "x":448,
                  "y":736
                 }, 
                 {
@@ -154,7 +154,7 @@
                  "type":"block",
                  "visible":true,
                  "width":192,
-                 "x":440,
+                 "x":448,
                  "y":799
                 }, 
                 {

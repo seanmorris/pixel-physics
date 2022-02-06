@@ -6,6 +6,8 @@ export class Ring extends PointActor
 		<div class = "sprite" cv-ref = "sprite"></div>
 	</div>`;
 
+	float = -1
+
 	constructor(...args)
 	{
 		super(...args);
@@ -16,7 +18,6 @@ export class Ring extends PointActor
 		this.args.height  = 32;
 		this.args.static  = this.args.static  ?? true;
 		this.args.dropped = this.args.dropped ?? true;
-		this.args.float   = this.args.float   ?? -1;
 		this.args.gone    = false;
 		this.args.gravity = 0.40;
 	}
