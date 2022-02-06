@@ -344,8 +344,8 @@
 	content: ' ';
 	transform: translate(-50%, calc(-100% + 1px));
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: calc(0 * 1px);
+	left: calc(0 * 1px);
 	height: calc(1px * var(--height));
 	width: calc(1px * var(--width));
 }
