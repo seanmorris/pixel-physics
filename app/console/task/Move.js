@@ -11,6 +11,11 @@ export class Move extends Task
 
 	init(x, y)
 	{
+		if(!Move.viewport.controlActor)
+		{
+			return;
+		}
+
 		this.print(`Moving character to x, y...`);
 
 		const actor = Move.viewport.controlActor;

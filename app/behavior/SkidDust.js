@@ -60,13 +60,14 @@ export class SkidDust extends Behavior
 
 		const dustDist = Math.sign(host.args.gSpeed) * host.dustDist || 0;
 
-		const dustPoint = host.rotatePoint(host.args.gSpeed, 0);
+		// const dustPoint = host.rotatePoint(host.args.gSpeed, 0);
+		const dustPoint = host.groundPoint;
 
 		dustParticle.style({
-			'--x': dustPoint[0] + dustDist + host.x
-			, '--y': dustPoint[1] + host.y
+			'--x': dustPoint[0] + dustDist
+			, '--y': dustPoint[1]
 			, 'z-index': 0
-			, opacity: Math.random() * 2
+			, opacity: Math.random() * 0.25 + 0.5
 		});
 
 		viewport.particles.add(dustParticle);

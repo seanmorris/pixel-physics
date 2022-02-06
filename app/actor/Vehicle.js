@@ -22,8 +22,15 @@ export class Vehicle extends PointActor
 
 		if(other.controllable)
 		{
-			if(other.args.ySpeed > 0)
+			if(other.args.falling && this.y + -other.y + 24 <= this.args.seatHeight)
 			{
+				return false;
+			}
+			else if(other.args.ySpeed > 0)
+			{
+				const seatHeight  = this.args.seatHeight || 0;
+				other.args.ySpeed = 0;
+				other.args.y = this.y + -seatHeight + -1;
 				return true;
 			}
 			else

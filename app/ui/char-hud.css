@@ -56,6 +56,7 @@
 	background-position: -32px -16px;
 }
 
+.hud .char-icon.robotnik,
 .hud .char-icon.eggman {
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -0px -80px;

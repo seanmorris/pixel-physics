@@ -71,7 +71,7 @@
                  "visible":true,
                  "width":32,
                  "x":96,
-                 "y":144
+                 "y":176
                 }],
          "opacity":1,
          "properties":[
@@ -182,7 +182,7 @@
                  "visible":true,
                  "width":32,
                  "x":16,
-                 "y":192
+                 "y":224
                 }, 
                 {
                  "gid":2,
@@ -338,7 +338,7 @@
                  "visible":true,
                  "width":32,
                  "x":128,
-                 "y":184
+                 "y":224
                 }],
          "opacity":0.31,
          "type":"objectgroup",

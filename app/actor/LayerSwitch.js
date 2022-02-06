@@ -29,6 +29,7 @@ export class LayerSwitch extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
+		this.static = true;
 	}
 
 	collideA(other, type)

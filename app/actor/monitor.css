@@ -73,6 +73,7 @@
 	--screen-y: 1;
 }
 
+[data-monitor="life-robotnik"] .monitor-screen,
 [data-monitor="life-eggman"] .monitor-screen {
 	--screen-x: 3;
 	--screen-y: 1;

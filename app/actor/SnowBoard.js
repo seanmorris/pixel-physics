@@ -14,8 +14,8 @@ export class SnowBoard extends Vehicle
 
 		this.args.type = 'actor-item actor-snow-board';
 
-		this.args.width  = 32;
-		this.args.height = 8;
+		this.args.width  = 24;
+		this.args.height = 32;
 
 		this.removeTimer = null;
 

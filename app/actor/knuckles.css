@@ -50,19 +50,19 @@
 .actor-item.actor-knuckles[data-animation="jabbing"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -544px;
-	animation: knuckles-jab steps(1) 1 84ms forwards;
+	animation: knuckles-jab steps(1) 1 72ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -352px;
-	animation: knuckles-punch steps(3) 1 112ms forwards;
+	animation: knuckles-punch steps(3) 1 96ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="last-punching"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -544px;
-	animation: knuckles-last-punch steps(2) 1 48ms forwards;
+	animation: knuckles-last-punch steps(2) 1 72ms forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="walking"] .sprite:after {

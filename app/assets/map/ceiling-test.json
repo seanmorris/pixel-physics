@@ -118,7 +118,7 @@
                         {
                          "name":"power",
                          "type":"float",
-                         "value":64
+                         "value":68
                         }],
                  "rotation":0,
                  "type":"spring",
@@ -269,7 +269,7 @@
                         {
                          "name":"power",
                          "type":"float",
-                         "value":64
+                         "value":68
                         }],
                  "rotation":0,
                  "type":"spring",
