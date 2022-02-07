@@ -1857,6 +1857,30 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 	transform: translateX(2px);
 }
 
+.actor-item.actor-egg .sprite {
+	width:  15px;
+	height: 20px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+	--sprite-sheet:  url('/DBurraki/chao-egg-normal.png');
+}
+
+.actor-item.actor-egg .sprite:after {
+	content: '';
+	position: absolute;
+	top:  0;
+	left: 0;
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	width:  15px;
+	height: 20px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+}
+
 .actor-item.actor-eggman .sprite {
 	height: 64px;
 	width: 64px;
@@ -4547,15 +4571,6 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 	transform: scale(-3,2) translateX(2px);
 }
 
-.actor-item.actor-sonic[data-animation="standing"] .sprite:after {
-	/*--sprite-offset-x: -64px;*/
-	/*--sprite-offset-x: -256px;*/
-	/*--sprite-offset-x: -448px;*/
-
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-}
-
 .actor-item.actor-sonic[data-animation="idle"] .sprite:after {
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: -0px;
@@ -4612,6 +4627,9 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 .actor-item.actor-sonic[data-animation="crouching"] .sprite:after {
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: -576px;
+	--animation-width: -64px;
+	--animation-steps: 1;
+	animation: sonic-animate steps(1) 1 80ms forwards;
 }
 
 .actor-item.actor-sonic[data-animation="looking-up"] .sprite:after {
@@ -4928,6 +4946,75 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 
 .actor-item.actor-sonic .sheild {
 	opacity: var(--opacity, 0);
+}
+
+.actor-item.actor-sonic[data-animation="standing"] {
+	z-index: 100;
+}
+
+.actor-item.actor-sonic[data-animation="holding"] .sprite:after {
+	/*--sprite-offset-x: -64px;*/
+	/*--sprite-offset-x: -256px;*/
+	/*--sprite-offset-x: -448px;*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	--sprite-offset-x: -256px;
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -640px;
+	--animation-width: 64px;
+	--animation-steps: -4;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-animation="standing"],
+.actor-item.actor-sonic[data-carrying=true][data-animation="jumping"],
+.actor-item.actor-sonic[data-carrying=true][data-animation="walking"] {
+	z-index: 100;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-animation="walking"] .sprite:after {
+	--sprite-offset-x: -256px !important;
+	--sprite-offset-y: -640px !important;
+	--animation-width: 64px  !important;
+	--animation-steps: -4 !important;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-animation="standing"] .sprite:after,
+.actor-item.actor-sonic[data-carrying=true][data-animation="jumping"] .sprite:after,
+.actor-item.actor-sonic[data-carrying=true][data-animation="standing"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -640px !important;
+	--animation-width: 64px  !important;
+	--animation-steps: -4 !important;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-animation="jumping"] .sprite:after {
+	animation: none;
+}
+.actor-item.actor-sonic[data-carrying=true][data-animation="walking"] .sprite:after{
+	animation: sonic-animate steps(4) infinite 560ms;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-animation="standing"] .rear-arm,
+.actor-item.actor-sonic[data-carrying=true][data-animation="jumping"] .rear-arm,
+.actor-item.actor-sonic[data-carrying=true][data-animation="walking"] .rear-arm {
+	position: absolute;
+	width: 64px;
+	height: 64px;
+	left:  -32px;
+	top:  -67px;
+	background-image: var(--sprite-sheet);
+	background-position-x: -256px;
+	background-position-y: -578px;
+	--sprite-offset-x: -256px;
+	--sprite-offset-y: -578px;
+	--animation-width: 64px;
+	--animation-steps: -4;
+	/*animation: sonic-animate steps(4) infinite 900ms;*/
+	z-index: -1 !important;
+}
+
+.actor-item.actor-sonic[data-carrying=true][data-facing=right] .rear-arm {
+	transform: scale(-1,1);
 }
 
 @keyframes sonic-animate {

@@ -1880,6 +1880,11 @@ export class PointActor extends View
 		else
 		{
 			this.args.idleTime++;
+
+			if(this.yAxis || this.xAxis)
+			{
+				this.args.idleTime = 0;
+			}
 		}
 	}
 

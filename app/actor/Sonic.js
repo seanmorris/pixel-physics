@@ -200,6 +200,15 @@ export class Sonic extends PointActor
 		}
 	}
 
+	onRendered()
+	{
+		super.onRendered();
+
+		const arm = new Tag(`<div class = "rear-arm">`);
+
+		this.box.appendChild(arm.node);
+	}
+
 	updateStart()
 	{
 		if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
@@ -513,7 +522,7 @@ export class Sonic extends PointActor
 					}
 					else
 					{
-						if(this.args.idleTime > 60*30)
+						if(this.args.idleTime > 60*300)
 						{
 							this.args.animation = 'idle-3';
 						}
@@ -1052,7 +1061,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(this.spindashCharge < 5 && this.args.modeTime < 25)
+		if(this.spindashCharge < 5 && this.args.modeTime < 45)
 		{
 			this.spindashCharge = 15;
 		}
@@ -1088,6 +1097,15 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
+		if(this.skidding)
+		{
+			if(this.args.modeTime < 45)
+			{
+				this.args.gSpeed *= 0.85;
+			}
+			return;
+		}
+
 		if(this.args.ignore)
 		{
 			return;
@@ -1126,6 +1144,11 @@ export class Sonic extends PointActor
 		if(this.spindashCharge === 0)
 		{
 			this.spindashCharge = 1;
+
+			if(this.yAxis > 0.5)
+			{
+				this.spindashCharge = 10;
+			}
 
 			const viewport = this.viewport;
 
@@ -1211,6 +1234,26 @@ export class Sonic extends PointActor
 
 	command_2()
 	{
+		console.log(this, this.viewport.collisions, this.viewport.collisions.get(this));
+
+		if(this.viewport.collisions.has(this))
+		{
+			const objects = this.viewport.collisions.get(this);
+
+			console.log(objects);
+
+			for(const object of objects.keys())
+			{
+				console.log(object);
+
+				if(typeof object.lift === 'function')
+				{
+					object.lift(this);
+					return;
+				}
+			}
+		}
+
 		this.onNextFrame(() => {
 
 			const speed = this.args.falling
