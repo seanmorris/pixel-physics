@@ -2440,6 +2440,8 @@ export class Viewport extends View
 			}
 		}
 
+		this.collisions = new Map;
+
 		this.updateStarted.clear();
 		this.updated.clear();
 		this.updateEnded.clear();
@@ -2831,8 +2833,6 @@ export class Viewport extends View
 		}
 
 		this.spawnActors();
-
-		this.collisions = new Map;
 	}
 
 	click(event)
