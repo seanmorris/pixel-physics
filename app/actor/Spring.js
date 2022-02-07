@@ -1,3 +1,4 @@
+import { LayerSwitch } from './LayerSwitch';
 import { PointActor } from './PointActor';
 import { Region }     from '../region/Region';
 
@@ -76,6 +77,11 @@ export class Spring extends PointActor
 	collideA(other)
 	{
 		if(other instanceof this.constructor)
+		{
+			return false;
+		}
+
+		if(other instanceof LayerSwitch)
 		{
 			return false;
 		}

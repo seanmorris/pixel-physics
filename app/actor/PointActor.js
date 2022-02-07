@@ -319,6 +319,7 @@ export class PointActor extends View
 		this.args.bindTo(['x','y'], (v, k, t) => {
 			isNaN(v) && console.trace(k, v)
 			this.stepCache = {};
+			this.args.idleTime = 0;
 		});
 
 		this.args.bindTo('gSpeed', v => {
@@ -1876,6 +1877,10 @@ export class PointActor extends View
 			this.args.rolling = false;
 			this.fallTime++;
 		}
+		else
+		{
+			this.args.idleTime++;
+		}
 	}
 
 	popOut(other)
@@ -2343,7 +2348,6 @@ export class PointActor extends View
 			}
 			else
 			{
-				console.log(headBlock);
 				this.args.pushing = Math.sign(this.args.gSpeed);
 				this.args.gSpeed  = 0;
 			}
@@ -2380,10 +2384,22 @@ export class PointActor extends View
 
 				if(!this.args.climbing && this.args.gSpeed && (!pushFoward || this.args.rolling))
 				{
-					if(this.args.grinding || this.args.rolling)
+					if(this.args.grinding)
+					{
+						if(this.yAxis > 0.5)
+						{
+							// this.args.gSpeed -= decel * 1/drag * 0.06125 * Math.sign(this.args.gSpeed);
+						}
+						else
+						{
+							this.args.gSpeed -= decel * 1/drag * 0.125 * Math.sign(this.args.gSpeed);
+						}
+					}
+					else if(this.args.rolling)
 					{
 						this.args.gSpeed -= decel * 1/drag * 0.06125 * Math.sign(this.args.gSpeed);
 					}
+
 					else if(!this.args.grinding && !this.args.rolling && (!this.xAxis || pushBack))
 					{
 						this.args.gSpeed -= decel * 1/drag * Math.sign(this.args.gSpeed);
@@ -4176,8 +4192,8 @@ export class PointActor extends View
 		this.args.float  = 1;
 
 		this.viewport.onFrameOut(1, () => {
-			this.args.xSpeed = -2.75 * direction;
-			this.args.ySpeed = -4.00;
+			this.args.xSpeed = -2.25 * direction;
+			this.args.ySpeed = -8.00;
 
 			this.args.standingOn = false;
 

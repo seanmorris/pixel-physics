@@ -3243,7 +3243,7 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 }
 
 .point-actor[data-mercy=true] {
-	animation: mercy-flicker 350ms infinite steps(1);
+	animation: mercy-flicker 250ms 500ms infinite steps(1) forwards;
 }
 
 .point-actor[data-mode="1"] .labels {
@@ -4548,11 +4548,65 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 }
 
 .actor-item.actor-sonic[data-animation="standing"] .sprite:after {
-	/*animation: sonic-idle steps(3) infinite 1024ms;*/
 	/*--sprite-offset-x: -64px;*/
 	/*--sprite-offset-x: -256px;*/
 	/*--sprite-offset-x: -448px;*/
+
+	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
+}
+
+.actor-item.actor-sonic[data-animation="idle"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -0px;
+	left: -4px;
+}
+
+.actor-item.actor-sonic[data-animation="idle-2"] .sprite:after {
+	--sprite-offset-x: -128px;
+	--sprite-offset-y: -0px;
+
+	--animation-width: 64px;
+	--animation-steps: -2;
+
+	left: -4px;
+
+	animation: sonic-animate steps(2) infinite 900ms;
+}
+
+.actor-item.actor-sonic[data-animation="idle-3"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -0px;
+
+	--animation-width: 64px;
+	--animation-steps: -2;
+
+	left: -4px;
+
+	animation: sonic-animate steps(2) infinite 800ms;
+}
+
+.actor-item.actor-sonic[data-animation="idle-4"] .sprite:after {
+	--sprite-offset-x: -448px;
+	--sprite-offset-y: -0px;
+
+	--animation-width: 64px;
+	--animation-steps: -3;
+
+	left: -4px;
+
+	animation: sonic-animate steps(3) infinite 800ms;
+}
+
+.actor-item.actor-sonic[data-animation="startle"] .sprite:after {
+	--sprite-offset-x: -128px;
+	--sprite-offset-y: 256px;
+
+	--animation-width: -64px;
+	--animation-steps: 3;
+
+	animation: sonic-animate steps(3) 1 256ms
+		, sonic-animate-echo steps(2) infinite 192ms 256ms;
 }
 
 .actor-item.actor-sonic[data-animation="crouching"] .sprite:after {
@@ -4606,13 +4660,24 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 
 .actor-item.actor-sonic:not([data-pushing=false]) .sprite:after {}
 
+.actor-item.actor-sonic[data-falling="true"][data-animation="dropping-start"] .sprite:after,
+.actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping-start"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -512px !important;
+	--animation-steps: 1;
+	animation: sonic-drop steps(3) 1 150ms 50ms forwards;
+}
+
 /*.actor-item.actor-sonic .sprite:after,*/
 .actor-item.actor-sonic[data-falling="true"][data-animation="dropping"] .sprite:after,
 .actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -512px !important;
+	--animation-steps: 1;
 
-	animation: sonic-drop steps(3) 1 150ms 50ms forwards;
+	--animation-width: -64px;
+	--sprite-offset-x: -192px;
+	animation: sonic-animate-echo steps(2) infinite 96ms;
 }
 
 .actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping"] .sprite:after {
@@ -4834,7 +4899,14 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 
 .actor-item.actor-sonic[data-animation="grinding"] .sprite:after {
 	top: 2px;
-	/*--sprite-offset-x: -0px;*/
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
+	animation: sonic-run steps(4) infinite 128ms forwards;
+}
+
+.actor-item.actor-sonic[data-animation="grinding-crouching"] .sprite:after {
+	top: 2px;
+	--sprite-offset-x: -256px;
 	--sprite-offset-y: -832px;
 	animation: sonic-run steps(4) infinite 128ms forwards;
 }
@@ -4864,6 +4936,15 @@ animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias
 	}
 	to{
 		background-position-x: calc(calc(var(--animation-steps) * var(--animation-width)) + var(--sprite-offset-x));
+	}
+}
+
+@keyframes sonic-animate-echo {
+	from{
+		background-position-x: calc(calc(calc(1 * var(--animation-width)) + var(--sprite-offset-x)) + calc(var(--animation-width) * calc(var(--animation-steps) - 1)));
+	}
+	to{
+		background-position-x: calc(calc(calc(1 * var(--animation-width)) + var(--sprite-offset-x)) + calc(var(--animation-width) * calc(var(--animation-steps) - 3)));
 	}
 }
 
