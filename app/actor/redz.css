@@ -1,0 +1,39 @@
+.actor-item.actor-redz .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-redz .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/redz.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+	animation: redz-walk steps(3) infinite 500ms alternate;
+}
+
+.actor-item.actor-redz[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-redz[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: redz-walk steps(6) infinite 320ms;
+}
+
+@keyframes redz-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

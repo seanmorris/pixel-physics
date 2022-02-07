@@ -278,7 +278,14 @@ export class Sonic extends PointActor
 					this.args.facing = 'right';
 				}
 
-				this.args.animation = 'wall-dropping';
+				this.args.animation = 'wall-dropping-start';
+
+				this.onTimeout(150, () => {
+					if(this.args.falling && this.args.wallDropping)
+					{
+						this.args.animation = 'wall-dropping';
+					}
+				});
 
 				this.args.wallDropping = true;
 
@@ -297,8 +304,15 @@ export class Sonic extends PointActor
 			if(this.springing && this.args.ySpeed > 0)
 			{
 				this.args.groundAngle = 0;
-				this.args.animation = 'dropping';
+				this.args.animation = 'dropping-start';
 				this.springing = false;
+
+				this.onTimeout(150, () => {
+					if(this.args.falling)
+					{
+						this.args.animation = 'dropping';
+					}
+				});
 			}
 		}
 		else
@@ -499,7 +513,23 @@ export class Sonic extends PointActor
 					}
 					else
 					{
-						this.args.animation = 'standing';
+						if(this.args.idleTime > 60*30)
+						{
+							this.args.animation = 'idle-3';
+						}
+						else if(this.args.idleTime > 250)
+						{
+							this.args.animation = 'idle-2';
+						}
+						else if(this.args.idleTime > 200)
+						{
+							this.args.animation = 'idle';
+						}
+						else
+						{
+							this.args.animation = 'standing';
+						}
+
 						this.args.cameraBias = 0;
 						this.args.lookTime = 0;
 					}
@@ -535,6 +565,13 @@ export class Sonic extends PointActor
 		else if(falling && !this.args.jumping && this.isSuper && this.args.ySpeed > 0)
 		{
 			this.args.animation = 'dropping';
+
+			this.onTimeout(150, () => {
+				if(this.args.falling)
+				{
+					this.args.animation = 'dropping';
+				}
+			});
 		}
 
 		if(this.args.hangingFrom)
@@ -641,7 +678,14 @@ export class Sonic extends PointActor
 		{
 			this.args.rolling = false;
 
-			this.args.animation = 'grinding';
+			if(this.yAxis > 0.5)
+			{
+				this.args.animation = 'grinding-crouching';
+			}
+			else
+			{
+				this.args.animation = 'grinding';
+			}
 		}
 
 		super.update();
@@ -1470,7 +1514,7 @@ export class Sonic extends PointActor
 	{
 		super.startle();
 
-		this.onNextFrame(() => this.args.animation = 'skidding');
+		this.onNextFrame(() => this.args.animation = 'startle');
 	}
 
 	die()

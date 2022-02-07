@@ -46,7 +46,7 @@
 }
 
 .point-actor[data-mercy=true] {
-	animation: mercy-flicker 350ms infinite steps(1);
+	animation: mercy-flicker 250ms 500ms infinite steps(1) forwards;
 }
 
 .point-actor[data-mode="1"] .labels {
