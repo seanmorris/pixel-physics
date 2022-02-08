@@ -140,6 +140,8 @@ export class PointActor extends View
 		this.lastPointA = [];
 		this.lastPointB = [];
 
+		this.carrying = new Set;
+
 		this.inventory = new Classifier([
 			Sheild
 			, FireSheild
@@ -609,6 +611,7 @@ export class PointActor extends View
 			, 'data-respawning':'respawning'
 			, 'data-mercy':     'mercy'
 			, 'data-selected':  'selected'
+			, 'data-carrying':  'carrying'
 			, 'data-falling':   'falling'
 			, 'data-moving':    'moving'
 			, 'data-pushing':   'pushing'
@@ -1885,6 +1888,19 @@ export class PointActor extends View
 			{
 				this.args.idleTime = 0;
 			}
+		}
+
+		this.args.carrying = !!this.carrying.size;
+
+		if(this.args.carrying)
+		{
+			if(Math.abs(this.args.gSpeed) > 8)
+			{
+				this.args.gSpeed = 8 * Math.sign(this.args.gSpeed);
+			}
+
+			this.args.idleTime = 0;
+			this.args.rolling = false;
 		}
 	}
 
@@ -5122,5 +5138,12 @@ export class PointActor extends View
 			this.args.gSpeed = hSpeed;
 			this.args.hSpeed = 0;
 		});
+	}
+
+	setAutoAttr(property, attribute)
+	{
+		const attrMap = this.autoAttr.get(this.box);
+
+		attrMap[attribute] = property;
 	}
 }

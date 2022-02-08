@@ -124,7 +124,11 @@ import { Pulley } from './actor/Pulley';
 import { PulleySmall } from './actor/PulleySmall';
 
 import { Orb } from './actor/Orb';
+
 import { Egg } from './actor/Egg';
+import { Chao } from './actor/Chao';
+import { EggShellTop } from './actor/EggShellTop';
+import { EggShellBottom } from './actor/EggShellBottom';
 
 import { BackdropSwapper } from './actor/BackdropSwapper';
 import { LayerController } from './actor/LayerController';
@@ -239,7 +243,10 @@ export const ObjectPalette = {
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
 	, 'orb': Orb
+	, 'chao': Chao
 	, 'egg': Egg
+	, 'egg-shell-top': EggShellTop
+	, 'egg-shell-bottom': EggShellBottom
 	, 'cut-scene': CutScene
 	, 'html-frame': HtmlFrame
 	, 'panel': Panel

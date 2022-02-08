@@ -493,8 +493,8 @@
 	position: absolute;
 	width: 64px;
 	height: 64px;
-	left:  -32px;
-	top:  -67px;
+	left:  -33px;
+	top:  -64px;
 	background-image: var(--sprite-sheet);
 	background-position-x: -256px;
 	background-position-y: -578px;
