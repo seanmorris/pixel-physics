@@ -1234,18 +1234,12 @@ export class Sonic extends PointActor
 
 	command_2()
 	{
-		console.log(this, this.viewport.collisions, this.viewport.collisions.get(this));
-
 		if(this.viewport.collisions.has(this))
 		{
 			const objects = this.viewport.collisions.get(this);
 
-			console.log(objects);
-
 			for(const object of objects.keys())
 			{
-				console.log(object);
-
 				if(typeof object.lift === 'function')
 				{
 					object.lift(this);

@@ -1,0 +1,183 @@
+.actor-item.actor-chao .sprite {
+	width:  24px;
+	height: 24px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	z-index: 1;
+	top: 1px;
+}
+
+.actor-item.actor-chao .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	width:  24px;
+	height: 24px;
+	z-index: 1;
+
+	--animation-width: 24px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+
+	/*animation: chao-animate steps(8) infinite 700ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -0px;*/
+
+	/*animation: chao-animate steps(8) infinite 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -24px;*/
+
+	/*animation: chao-animate steps(8) infinite 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -48px;*/
+
+	/*animation: chao-animate steps(7) infinite alternate 700ms;
+	--animation-steps: -7;
+	--sprite-offset-y: -72px;*/
+
+	/*animation: chao-animate steps(8) infinite alternate 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -96px;*/
+
+	/*animation: chao-animate steps(8) infinite alternate 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -120px;*/
+
+	/*animation: chao-animate steps(14) infinite 1400ms;
+	--animation-steps: -14;
+	--sprite-offset-y: -144px;*/
+}
+
+.actor-item.actor-chao[data-direction="-1"] .sprite:after,
+.actor-item.actor-chao[data-direction="-1"] .sprite:before {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-chao[data-animation=standing] .sprite:after {
+	--animation-steps: -8;
+	--sprite-offset-x: -192px;
+	--sprite-offset-y: -0px;
+}
+
+.actor-item.actor-chao[data-animation=thinking] .sprite:after {
+	--animation-steps: -8;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -0px;
+}
+
+.actor-item.actor-chao[data-animation=walking] .sprite:after {
+	animation: chao-animate steps(8) infinite 700ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -0px;
+}
+
+.actor-item.actor-chao[data-animation=flying] .sprite:after {
+	animation: chao-animate steps(8) infinite 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -24px;
+}
+
+.actor-item.actor-chao[data-animation=sitting] .sprite:after {
+	animation: chao-animate steps(7) infinite alternate 700ms;
+	--animation-steps: -7;
+	--sprite-offset-y: -72px;
+}
+
+.actor-item.actor-chao[data-animation=searching] .sprite:after {
+	animation: chao-animate steps(8) infinite alternate 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -96px;
+}
+
+.actor-item.actor-chao[data-animation=swimming] .sprite:after {
+	animation: chao-animate steps(8) infinite alternate 800ms;
+	--animation-steps: -8;
+	--sprite-offset-y: -120px;
+}
+
+.actor-item.actor-chao[data-animation=flying-looking] .sprite:after {
+	animation: chao-animate steps(14) infinite 1400ms;
+	--animation-steps: -14;
+	--sprite-offset-y: -144px;
+}
+
+.actor-item.actor-chao .sprite:before {
+	content: '';
+	position: absolute;
+	top: -16px;
+	left: 1px;
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
+	width:  24px;
+	height: 24px;
+	z-index: 1;
+
+	--animation-width: 24px;
+
+	--sprite-offset-x: calc(-216px + -0px);
+	--sprite-offset-y: -24px;
+
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
+	animation: chao-ball-bob steps(5) infinite alternate 700ms;
+}
+
+.actor-item.actor-chao[data-alignment=hero][data-emote=normal] .sprite:before {
+	--sprite-offset-x: calc(-216px + -96px);
+	--sprite-offset-y: -24px;
+}
+
+
+.actor-item.actor-chao[data-alignment=dark][data-emote=normal] .sprite:before {
+	--sprite-offset-x: calc(-216px + -72px);
+	--sprite-offset-y: -24px;
+}
+
+.actor-item.actor-chao[data-emote=alert] .sprite:before {
+	--sprite-offset-x: calc(-216px + -24px);
+	--sprite-offset-y: -24px;
+}
+
+.actor-item.actor-chao[data-emote=inquire] .sprite:before {
+	--sprite-offset-x: calc(-216px + -48px);
+	--sprite-offset-y: -24px;
+}
+
+.actor-item.actor-chao[data-emote=like] .sprite:before {
+	--sprite-offset-x: calc(-216px + -0px);
+	--sprite-offset-y: -48px;
+}
+
+.actor-item.actor-chao[data-emote=love] .sprite:before {
+	--sprite-offset-x: calc(-216px + -24px);
+	--sprite-offset-y: -48px;
+}
+
+.actor-item.actor-chao[data-emote=angry] .sprite:before {
+	--sprite-offset-x: calc(-216px + -72px);
+	--sprite-offset-y: -48px;
+	left: 3px;
+}
+
+@keyframes chao-animate {
+	from{
+		background-position-x: var(--sprite-offset-x);
+	}
+	to{
+		background-position-x: calc(calc(var(--animation-steps) * var(--animation-width)) + var(--sprite-offset-x));
+	}
+}
+
+@keyframes chao-ball-bob {
+	from{
+		transform: translateY(-3px);
+	}
+	to{
+		transform: translateY(0px);
+	}
+}
