@@ -20,7 +20,7 @@ export class Monitor extends PointActor
 
 		this.args.width  = 30;
 		this.args.height = 32;
-		this.args.decel  = 5;
+		this.args.decel  = 0.25;
 
 		this.args.gone = false;
 	}

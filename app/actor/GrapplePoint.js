@@ -1,5 +1,6 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
+import { Spring } from './Spring';
 import { Mixin } from 'curvature/base/Mixin';
 import { Constrainable } from '../mixin/Constrainable';
 
@@ -19,36 +20,36 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.ignoreOthers = new Set;
 
-		// this.args.gravity = 0.01;
+		this.args.gravity = 0.6;
 
 		this.noClip = true;
+		this[Spring.WontSpring] = true;
 	}
 
 	updateEnd()
 	{
 		super.update();
 
-		if(!this.args._tiedTo)
-		{
-			const tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
-
-			this.args._tiedTo = tiedTo;
-
-			if(tiedTo)
-			{
-				tiedTo.hanging.set(this.constructor, this);
-			}
-
-			return;
-		}
-
 		const tiedTo = this.args._tiedTo;
 
-		if(!tiedTo || !tiedTo.args.falling)
+		if(tiedTo)
 		{
-			this.args.groundAngle = -1.57;
-			return false;
+			this.setPos();
 		}
+		else
+		{
+			this.noClip = true;
+		}
+
+		if(!tiedTo || !tiedTo.args.float)
+		{
+			this.unhook();
+		}
+
+		// if(!tiedTo || !tiedTo.args.falling)
+		// {
+		// 	return false;
+		// }
 
 		this.args.falling = true;
 
@@ -58,12 +59,19 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			{
 				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
 				{
-					this.args.xSpeed += this.hooked.xAxis * 0.5;
+					if(this.y > tiedTo.y)
+					{
+						this.args.xSpeed += this.hooked.xAxis * 0.5;
+					}
+					else
+					{
+						this.args.xSpeed -= this.hooked.xAxis * 0.5;
+					}
 				}
 			}
 
 			this.hooked.args.x = this.x;
-			this.hooked.args.y = this.y + this.hooked.args.height;
+			this.hooked.args.y = this.y + this.hooked.args.height + -5;
 
 			if(this.hooked.xAxis>0)
 			{
@@ -75,27 +83,21 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 				this.hooked.args.facing = 'left';
 				this.hooked.args.direction = -1;
 			}
+
+			this.hooked.args.cameraMode = 'hooked';
 		}
 
 		super.updateEnd();
-
-		if(this.args._tiedTo)
-		{
-			this.setPos();
-		}
-		else
-		{
-			this.noClip = true;
-		}
 	}
 
-	update(){}
+	update()
+	{}
 
 	collideB(other)
 	{
 		const tiedTo = this.args._tiedTo;
 
-		if(!tiedTo || !tiedTo.args.falling)
+		if(!tiedTo || !tiedTo.args.falling || tiedTo.noClip)
 		{
 			return false;
 		}
@@ -167,12 +169,17 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 					this.args.y = this.def.get('y');
 
 					this.viewport.setColCell(this);
-
 				}
 			};
 
-			this.viewport.onFrameOut(tiedTo.args.flightTime ?? 85, drop);
+			if(tiedTo.args.flightTime)
+			{
+				this.viewport.onFrameOut(tiedTo.args.flightTime, drop);
+			}
+
 			tiedTo.onRemove(drop);
+
+			tiedTo.addEventListener('exploded', drop);
 		}
 	}
 
@@ -193,8 +200,8 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		hooked.args.y++;
 
-		hooked.args.xSpeed += this.xSpeedLast ?? 0;
-		hooked.args.ySpeed += this.ySpeedLast ?? 0;
+		hooked.args.xSpeed += tiedTo.xSpeedLast || this.xSpeedLast || 0;
+		hooked.args.ySpeed += tiedTo.ySpeedLast || this.ySpeedLast || 0;
 
 		hooked.args.groundAngle = 0;
 

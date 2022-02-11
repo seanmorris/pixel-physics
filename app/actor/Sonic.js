@@ -369,7 +369,7 @@ export class Sonic extends PointActor
 		{
 			this.args.animation = 'wall-stick';
 
-			let slip = 2;
+			let slip = 3;
 
 			if(this.yAxis < 0)
 			{
@@ -1099,10 +1099,6 @@ export class Sonic extends PointActor
 	{
 		if(this.skidding)
 		{
-			if(this.args.modeTime < 45)
-			{
-				this.args.gSpeed *= 0.85;
-			}
 			return;
 		}
 

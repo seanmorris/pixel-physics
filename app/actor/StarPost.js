@@ -82,11 +82,11 @@ export class StarPost extends PointActor
 
 			this.viewport.args.audio && this.sample && this.sample.play();
 
-			let throwSpeed = (other.args.gSpeed || other.args.xSpeed) / 2;
+			let throwSpeed = (other.args.gSpeed || other.args.xSpeed);
 
-			if(Math.abs(throwSpeed) > 5)
+			if(Math.abs(throwSpeed) > 8)
 			{
-				throwSpeed = 5 * Math.sign(throwSpeed);
+				throwSpeed = 8 * Math.sign(throwSpeed);
 			}
 
 			const monitorClasses = other.args.rings > 50

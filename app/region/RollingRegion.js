@@ -59,6 +59,21 @@ export class RollingRegion extends Region
 		if(this.args.maxSpeed > 0 && Math.abs(other.args.gSpeed) > this.args.maxSpeed)
 		{
 			other.args.gSpeed = this.args.maxSpeed * Math.sign(other.args.gSpeed || other.args.direction);
+
+			if(other.args.mode === 1)
+			{
+				other.args.gSpeed = other.ySpeedLast;
+			}
+
+			if(other.args.mode === 3)
+			{
+				other.args.gSpeed = -other.ySpeedLast;
+			}
+		}
+
+		if(!other.args.gSpeed)
+		{
+			other.args.gSpeed = 2 * Math.sign(other.args.gSpeed || other.args.direction);
 		}
 
 		if(!other.public.rolling)

@@ -47,19 +47,22 @@ export class BreakableBlock extends Block
 		super.onRendered();
 	}
 
-	update()
+	updateStart()
 	{
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/0A3H.wav');
-		}
-
 		if(this.switch)
 		{
 			if(this.switch.args.active && !this.broken)
 			{
 				this.break();
 			}
+		}
+	}
+
+	update()
+	{
+		if(this.viewport && this.viewport.args.audio && !this.sample)
+		{
+			this.sample = new Audio('/Sonic/0A3H.wav');
 		}
 
 		super.update();

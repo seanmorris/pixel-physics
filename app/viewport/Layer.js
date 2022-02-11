@@ -202,7 +202,7 @@ export class Layer extends View
 					const transY = blockSize * j;
 
 					block.style({
-						transform: `translate(${transX}px, ${transY}px) scale(1.01, 1.01)`
+						transform: `translate(${transX}px, ${transY}px) scale(1.02, 1.02)`
 						, position: 'absolute'
 						, left: 0
 						, top: 0

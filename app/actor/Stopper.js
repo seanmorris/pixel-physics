@@ -20,18 +20,20 @@ export class Stopper extends BreakableBlock
 
 		if((!this.broken && type === 2) || Math.abs(other.args.ySpeed) > 20 && type === 0)
 		{
-			if(other.args.ySpeed > 0)
+			if(other.args.ySpeed > 0 || other.ySpeedLast > 0)
 			{
 				other.args.groundAngle = 0;
 				other.args.x       = this.args.x;
 				other.args.ySpeed  = Math.abs(other.args.gSpeed);
 				other.args.falling = true;
 				other.args.mode    = 0;
+
+				this.break();
+
+				return false;
 			}
 
-			this.break();
-
-			return false;
+			return true;
 		}
 		else if((other.args.jumping && other.args.ySpeed > 0) || other.args.rolling)
 		{

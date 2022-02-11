@@ -9,10 +9,10 @@
         },
         {
             "fileName": "empty-zone-2.json",
-            "height": 13568,
-            "width": 131072,
-            "x": 93280,
-            "y": 13568
+            "height": 13664,
+            "width": 81632,
+            "x": 131072,
+            "y": 12000
         }
     ],
     "onlyShowAdjacentMaps": false,

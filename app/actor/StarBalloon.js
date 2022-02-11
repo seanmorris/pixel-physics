@@ -1,4 +1,5 @@
 import { Balloon } from './Balloon';
+import { Spring } from './Spring';
 
 export class StarBalloon extends Balloon
 {
@@ -9,10 +10,16 @@ export class StarBalloon extends Balloon
 		this.args.type = 'actor-item actor-balloon actor-star-balloon';
 
 		this.args.target = this.args.target || 0;
+
+		this.args.gravity = 0.475;
+
+		this[Spring.WontSpring] = true;
 	}
 
 	update()
 	{
+		super.update();
+
 		if(!this.popped)
 		{
 			if(!this.launched)
@@ -23,14 +30,12 @@ export class StarBalloon extends Balloon
 			{
 				const maxSpeed = this.args.target - this.y;
 
-				this.args.ySpeed = Math.min(16, Math.abs(maxSpeed)) * Math.sign(maxSpeed);
+				this.args.ySpeed = Math.min(8, Math.abs(maxSpeed)) * Math.sign(maxSpeed);
 			}
 		}
 
-
 		this.args.groundAngle = 0;
 
-		super.update();
 	}
 
 	activate()
@@ -75,6 +80,13 @@ export class StarBalloon extends Balloon
 		this.args.falling = true;
 
 		this.viewport.setColCell(this);
+
+		this.noClip = false;
+	}
+
+	damage()
+	{
+		this.pop();
 	}
 
 	pop()
@@ -83,6 +95,8 @@ export class StarBalloon extends Balloon
 
 		this.popped = true;
 
-		this.args.float = 1;
+		this.args.float = 0;
+
+		this.noClip = true;
 	}
 }
