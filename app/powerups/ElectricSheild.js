@@ -245,10 +245,10 @@ export class ElectricSheild extends Sheild
 
 			ringsMoved++;
 
-			const force = (this.magnetism || 0.55) * 2;
+			const force = (this.magnetism || 0.75) * 2;
 
-			const xMag = Math.max(force, xSame ? 0.35 : 0.45);
-			const yMag = Math.max(force, ySame ? 0.25 : 0.35);
+			const xMag = Math.max(force, xSame ? 0.45 : 0.55);
+			const yMag = Math.max(force, ySame ? 0.45 : 0.45);
 
 			// const xMag = Math.max(this.magnetism, xDiff === xDir ? 0.35 : 0.35);
 			// const yMag = Math.max(this.magnetism, yDiff === yDir ? 0.125 : 0.135);

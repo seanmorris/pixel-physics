@@ -13,6 +13,8 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		this.args.type   = 'actor-item actor-mini-mace';
 
 		this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 0;
+
+		this.args.gravity = 0.6;
 	}
 
 	collideB(other)

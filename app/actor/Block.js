@@ -57,11 +57,6 @@ export class Block extends PointActor
 
 	onAttached(event)
 	{
-		if(this.args.switch)
-		{
-			this.switch = this.viewport.actorsById[ this.args.switch ];
-		}
-
 		if(this.args.match)
 		{
 			this.match = this.viewport.actorsById[ this.args.match ];
@@ -301,6 +296,11 @@ export class Block extends PointActor
 		if(!this.viewport)
 		{
 			return;
+		}
+
+		if(this.args.switch && !this.switch)
+		{
+			this.switch = this.viewport.actorsById[ this.args.switch ];
 		}
 
 		if(this.args.collapse)

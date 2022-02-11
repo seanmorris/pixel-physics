@@ -5,25 +5,40 @@ export const Constrainable = {
 	onAttached: function() {
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
+	}
+
+	, wakeUp: function() {
 
 		if(!this.args._tiedTo)
 		{
-			const tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
-
-			this.args._tiedTo = tiedTo;
-
-			if(tiedTo && !tiedTo.hanging.has(this.constructor))
-			{
-				tiedTo.hanging.set(this.constructor, new Set);
-				const hangList = tiedTo.hanging.get(this.constructor);
-				hangList.add(this);
-
-				this.chain = new Tag('<div class = "chain">');
-				this.sprite.appendChild(this.chain.node);
-				this.onRemove(() => hangList.delete(this));
-			}
-
+			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
 		}
+
+		const _tiedTo = this.args._tiedTo;
+
+		if(_tiedTo && !_tiedTo.hanging.has(this.constructor))
+		{
+			_tiedTo.hanging.set(this.constructor, new Set);
+			const hangList = _tiedTo.hanging.get(this.constructor);
+			hangList.add(this);
+
+			this.chain = new Tag('<div class = "chain">');
+			this.sprite.appendChild(this.chain.node);
+			this.onRemove(() => hangList.delete(this));
+		}
+	}
+
+	, sleep: function() {
+
+		this.viewport.onFrameOut(5, () => {
+			this.args.x = this.def.get('x');
+			this.args.y = this.def.get('y');
+
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+
+			this.viewport.setColCell(this);
+		});
 	}
 
 	, findNextStep: function() {
@@ -36,12 +51,6 @@ export const Constrainable = {
 
 		if(!tiedTo)
 		{
-			return false;
-		}
-
-		if(!tiedTo.args.falling)
-		{
-			this.args.groundAngle = -1.57;
 			return false;
 		}
 
@@ -64,17 +73,21 @@ export const Constrainable = {
 
 		this.args.groundAngle = -(angle + Math.PI / 2);
 
-		const gravityAngle = angle + Math.PI;
+		const gravityAngle = angle;
 
-		if(dist >= maxDist)
+		if(dist > maxDist)
 		{
-			const xNext = tiedTo.x - Math.cos(angle) * maxDist;// - tiedTo.args.xSpeed;
-			const yNext = tiedTo.y - Math.sin(angle) * maxDist;// - tiedTo.args.ySpeed;
+			const overshot = dist - maxDist;
 
-			this.args.xSpeed -= Math.cos(gravityAngle);
-			this.args.ySpeed -= Math.sin(gravityAngle);
+			const xMove = Math.cos(angle) * maxDist;
+			const yMove = Math.sin(angle) * maxDist;
+			const xNext = tiedTo.x - xMove;
+			const yNext = tiedTo.y - yMove;
 
-			this.args.x = xNext - (tiedTo.args.xSpeed / 5);
+			this.args.xSpeed += Math.cos(gravityAngle) * overshot;
+			this.args.ySpeed += Math.sin(gravityAngle) * overshot;
+
+			this.args.x = xNext;
 			this.args.y = yNext;
 
 			if(this.viewport)
@@ -87,6 +100,11 @@ export const Constrainable = {
 				this.args.ySpeed = 0;
 			}
 		}
-	}
 
+		if(tiedTo.args.ySpeed > 0 && !tiedTo.args.xSpeed && !this.args.xSpeed)
+		{
+			this.args.x = tiedTo.x;
+			this.args.y = tiedTo.y + this.args.ropeLength;
+		}
+	}
 };

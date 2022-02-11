@@ -3,9 +3,12 @@ import { PointActor } from './PointActor';
 import { Region }     from '../region/Region';
 
 const WillSpring = Symbol('WillSpring');
+const WontSpring = Symbol('WontSpring');
 
 export class Spring extends PointActor
 {
+	static WontSpring = WontSpring;
+
 	float = -1;
 
 	template = `<div
@@ -76,6 +79,11 @@ export class Spring extends PointActor
 
 	collideA(other)
 	{
+		if(other[WontSpring])
+		{
+			return false;
+		}
+
 		if(other instanceof this.constructor)
 		{
 			return false;
@@ -137,7 +145,7 @@ export class Spring extends PointActor
 		other[WillSpring] = true;
 
 		other.args.gSpeed = 0;
-		// other.args.xSpeed = 0;
+		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
@@ -233,4 +241,3 @@ export class Spring extends PointActor
 	get canStick() { return false; }
 	get solid() { return false; }
 }
-

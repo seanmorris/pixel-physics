@@ -442,7 +442,7 @@
 }
 
 .actor-item.actor-sonic[data-animation="standing"] {
-	z-index: 100;
+	/*z-index: 100;*/
 }
 
 .actor-item.actor-sonic[data-animation="holding"] .sprite:after {

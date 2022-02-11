@@ -5,10 +5,11 @@
 }
 
 .actor-star-post {
+	z-index: -1;
 }
 
 .star-post-head-box {
-	z-index:1;
+	z-index: -1;
 	position: absolute;
 	top: -62px;
 	left: -8px;

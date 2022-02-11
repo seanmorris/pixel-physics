@@ -105,6 +105,7 @@ import { Springboard } from './actor/Springboard';
 import { GrapplePoint } from './actor/GrapplePoint';
 import { WoodenCrate } from './actor/WoodenCrate';
 import { SteelCrate } from './actor/SteelCrate';
+import { ChaoCrate } from './actor/ChaoCrate';
 import { UnbreakableCrate } from './actor/UnbreakableCrate';
 import { Rocket } from './actor/Rocket';
 
@@ -229,6 +230,7 @@ export const ObjectPalette = {
 	, 'springboard': Springboard
 	, 'wooden-crate': WoodenCrate
 	, 'steel-crate': SteelCrate
+	, 'chao-crate': ChaoCrate
 	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
 	, 'signpost': Signpost

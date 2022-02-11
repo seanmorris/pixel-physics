@@ -10,7 +10,7 @@ export class Rocket extends PointActor
 		// this.args.width  = this.public.width  || 32;
 		// this.args.height = this.public.height || 32;
 
-		this.args.width  = 32;
+		this.args.width  = 64;
 		this.args.height = 16;
 
 		this.args.xMax = this.args.xMax ?? 24;
@@ -19,6 +19,11 @@ export class Rocket extends PointActor
 		this.args.type   = 'actor-item actor-rocket';
 
 		this.args.launched = false;
+
+		this.args.bindTo(['xSpeed', 'ySpeed'], v => {
+			if(v || !this.args.launched) { return };
+			this.explode();
+		});
 	}
 
 	update()
@@ -109,15 +114,15 @@ export class Rocket extends PointActor
 
 		this.args.launched = false;
 
-		this.args.xSpeed = 0;
-		this.args.ySpeed = 0;
+		// this.args.xSpeed = 0;
+		// this.args.ySpeed = 0;
 
-		this.args.x = this.def.get('x');
-		this.args.y = this.def.get('y');
+		// this.args.x = this.def.get('x');
+		// this.args.y = this.def.get('y');
 
 		this.viewport.setColCell(this);
 
-		this.onNextFrame(() => {
+		this.viewport.onFrameOut(10, () => {
 			this.args.launched = false;
 
 			this.args.xSpeed = 0;
@@ -131,6 +136,8 @@ export class Rocket extends PointActor
 			this.viewport.auras.delete(this);
 		});
 
+		const exploded = new CustomEvent('exploded', {detail: {actor:this}});
 
+		this.dispatchEvent(exploded);
 	}
 }

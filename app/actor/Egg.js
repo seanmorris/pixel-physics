@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Bindable } from 'curvature/base/Bindable';
 import { EggShellTop } from './EggShellTop';
 import { Chao } from './Chao';
 
@@ -17,7 +18,7 @@ export class Egg extends PointActor
 
 		this.args.bindTo('falling', falling => {
 			const impact = this.ySpeedLast;
-			if(falling || this.broken || impact < 16) { return };
+			if(falling || this.broken || impact < 12) { return };
 
 			this.args.type = 'actor-item actor-egg actor-egg-shell-bottom';
 

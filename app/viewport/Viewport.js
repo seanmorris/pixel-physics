@@ -997,8 +997,11 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-			const sonic = new Chalmers({name:'Player 1', x: 1500, y: 1600}, this);
-			const tails = new Seymour({name:'Player 2', x: 1400, y: 1600}, this);
+			const sonic = new Chalmers({name:'Player 1', x: 50, y: 50}, this);
+			const tails = new Seymour({name:'Player 2', x: 80, y: 50}, this);
+
+			this.spawn.add({object: sonic});
+			this.spawn.add({object: tails});
 
 			this.auras.add(sonic);
 			this.auras.add(tails);
@@ -1006,13 +1009,13 @@ export class Viewport extends View
 			this.actors.add(sonic);
 			this.actors.add(tails);
 
-			sonic.render(this.tags.actors);
-			sonic.onRendered();
-			sonic.onAttached && sonic.onAttached();
+			// sonic.render(this.tags.actors);
+			// sonic.onRendered();
+			// sonic.onAttached && sonic.onAttached();
 
-			tails.render(this.tags.actors);
-			tails.onRendered();
-			tails.onAttached && tails.onAttached();
+			// tails.render(this.tags.actors);
+			// tails.onRendered();
+			// tails.onAttached && tails.onAttached();
 		}
 
 		this.populateMap();
@@ -1038,8 +1041,6 @@ export class Viewport extends View
 			{
 				const [x = 128, y = 128] = Router.query.start.split(',');
 
-				console.log(x,y);
-
 				this.nextControl.args.x = Number(x);
 				this.nextControl.args.y = Number(y);
 			}
@@ -1047,14 +1048,17 @@ export class Viewport extends View
 			{
 				this.args.demoIndicator = null;
 
-				const storedPosition = this.getCheckpoint(this.nextControl.args.id);
-				const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
-
-				if(checkpoint)
+				if(this.nextControl)
 				{
-					this.args.startFrameId = this.args.frameId - storedPosition.frames;
-					this.args.x = this.nextControl.args.x = checkpoint.x;
-					this.args.y = this.nextControl.args.y = checkpoint.y;
+					const storedPosition = this.getCheckpoint(this.nextControl.args.id);
+					const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
+
+					if(checkpoint)
+					{
+						this.args.startFrameId = this.args.frameId - storedPosition.frames;
+						this.args.x = this.nextControl.args.x = checkpoint.x;
+						this.args.y = this.nextControl.args.y = checkpoint.y;
+					}
 				}
 			}
 		}
@@ -1465,6 +1469,20 @@ export class Viewport extends View
 
 				break;
 
+			case 'hooked':
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.60;
+				this.maxCameraBound     = 1;
+				cameraSpeed = 30;
+				break;
+
+			case 'tube':
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.50;
+				this.maxCameraBound     = 45;
+				cameraSpeed = 45;
+				break;
+
 			case 'cinematic':
 
 				this.args.xOffsetTarget = 0.50;
@@ -1516,10 +1534,16 @@ export class Viewport extends View
 
 		}
 
-		if(['normal', 'bridge', 'cliff', 'aerial', 'cutScene'].includes(actor.args.cameraMode))
+		let gSpeed = actor.args.gSpeed;
+		let xSpeed = actor.args.xSpeed;
+
+		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene'].includes(actor.args.cameraMode))
 		{
-			const gSpeed     = actor.args.gSpeed;
-			const xSpeed     = actor.args.xSpeed;
+			if(actor.args.cameraMode === 'hooked')
+			{
+				xSpeed = actor.x - actor.xLast;
+			}
+
 			const grounded   = !actor.args.falling;
 			const absSpeed   = Math.abs(grounded ? gSpeed : xSpeed);
 			const shiftSpeed = 17;
@@ -1528,7 +1552,7 @@ export class Viewport extends View
 			switch(actor.args.mode)
 			{
 				case 0:
-					this.args.xOffsetTarget += speedBias * 0.4;
+					this.args.xOffsetTarget += speedBias * 0.35;
 					break;
 
 				case 1:
@@ -1536,7 +1560,7 @@ export class Viewport extends View
 					break;
 
 				case 2:
-					this.args.xOffsetTarget -= speedBias * 0.4;
+					this.args.xOffsetTarget -= speedBias * 0.35;
 	 				break;
 
 				case 3:
@@ -1599,6 +1623,11 @@ export class Viewport extends View
 			}
 
 			ySpeedBias += (ySpeed / ySpeedMax);
+		}
+
+		if(actor.args.cameraMode === 'hooked')
+		{
+			ySpeedBias += 0.2 * Math.sign(actor.y - actor.yLast);
 		}
 
 		this.args.yOffsetTarget += actor.args.cameraBias - ySpeedBias;
@@ -1918,33 +1947,33 @@ export class Viewport extends View
 				continue;
 			}
 
-			if(this.args.networked)
-			{
-				if(![
-					'layer-switch'
-					, 'ring'
-					, 'companion-block'
-					, 'region'
-					, 'force-region'
-					, 'shade-region'
-					, 'rolling-region'
-					, 'water-region'
-					, 'lava-region'
-					, 'block'
-					, 'switch'
-					, 'base-region'
-					, 'water-region'
-					, 'force-region'
-					, 'rolling-region'
-					, 'lava-region'
-					, 'q-block'
-					, 'sheild-fire-monitor'
-					, 'sheild-water-monitor'
-					, 'sheild-electric-monitor'
-				].includes(objType)){
-					continue;
-				}
-			}
+			// if(this.args.networked)
+			// {
+			// 	if(![
+			// 		'layer-switch'
+			// 		, 'ring'
+			// 		, 'companion-block'
+			// 		, 'region'
+			// 		, 'force-region'
+			// 		, 'shade-region'
+			// 		, 'rolling-region'
+			// 		, 'water-region'
+			// 		, 'lava-region'
+			// 		, 'block'
+			// 		, 'switch'
+			// 		, 'base-region'
+			// 		, 'water-region'
+			// 		, 'force-region'
+			// 		, 'rolling-region'
+			// 		, 'lava-region'
+			// 		, 'q-block'
+			// 		, 'sheild-fire-monitor'
+			// 		, 'sheild-water-monitor'
+			// 		, 'sheild-electric-monitor'
+			// 	].includes(objType)){
+			// 		continue;
+			// 	}
+			// }
 
 			const objClass = ObjectPalette[objType];
 			const rawActor = objClass.fromDef(objDef);
@@ -2444,6 +2473,12 @@ export class Viewport extends View
 
 		this.updateStarted.clear();
 		this.updated.clear();
+
+		if(this.controlActor)
+		{
+			this.controlActor.setCameraMode();
+		}
+
 		this.updateEnded.clear();
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
@@ -2628,8 +2663,8 @@ export class Viewport extends View
 		this.updated.forEach(actor => {
 			if(actor.args.standingLayer)
 			{
-				actor.args.x += actor.args.standingLayer.offsetXChanged;
-				actor.args.y += actor.args.standingLayer.offsetYChanged;
+				actor.args.x += actor.args.standingLayer.offsetXChanged || 0;
+				actor.args.y += actor.args.standingLayer.offsetYChanged || 0;
 			}
 		});
 
@@ -2784,8 +2819,6 @@ export class Viewport extends View
 
 		if(this.controlActor)
 		{
-			this.controlActor.setCameraMode();
-
 			this.moveCamera();
 
 			this.applyMotionBlur();
@@ -3437,7 +3470,7 @@ export class Viewport extends View
 				{
 					if(packet.frame.frame > this.args.frameId)
 					{
-						this.args.frameId = packet.frame.frame;
+						this.args.frameId = -1 + packet.frame.frame;
 					}
 
 					if(packet.frame.input)
@@ -3501,7 +3534,7 @@ export class Viewport extends View
 				{
 					if(packet.frame.frame > this.args.frameId)
 					{
-						this.args.frameId = packet.frame.frame;
+						this.args.frameId = -1 + packet.frame.frame;
 					}
 
 					if(packet.frame.input)

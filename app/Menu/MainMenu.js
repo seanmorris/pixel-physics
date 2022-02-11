@@ -430,16 +430,9 @@ export class MainMenu extends Menu
 		const client = this.client;
 
 		const onOpen  = event => {
-			const tileMap = new TileMap({ mapUrl: '/map/pixel-hill-zone.json' });
-
-			this.parent.args.networked = true;
-			this.parent.tileMap = tileMap;
-
-			tileMap.ready.then(() => {
-				this.parent.startLevel();
-				this.accept();
-				console.log('Peer connection opened!');
-			});
+			this.parent
+			.loadMap({mapUrl: '/map/p2p-test.json', networked: true})
+			.then(() => console.log('Peer connection opened!'));
 		};
 		const onClose = event => this.disconnect();
 

@@ -78,9 +78,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				return true;
 			});
 
-			const fetchImages   = [];
-			const imageProgress = new Map;
-			const imageSize     = new Map;
+			const setHeightMasks = [];
+			const imageProgress  = new Map;
+			const imageSize      = new Map;
 
 			for(const i in this.mapData.tilesets)
 			{
@@ -96,31 +96,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				const fetchImage = new Elicit(imageUrl);
 
-				fetchImage.objectUrl().then(url => {
-
-					tileset.cachedImage = url;
-
-					this.replacements.set(imageUrl, url);
-
-					image.addEventListener('load', event => {
-
-						const heightMask = new Tag('<canvas>');
-
-						heightMask.width  = image.width;
-						heightMask.height = image.height;
-
-						heightMask.getContext('2d').drawImage(
-							image, 0, 0, image.width, image.height
-						);
-
-						this.heightMasks.set(tileset, heightMask);
-
-					}, {once:true});
-
-					image.src = url;
-
-				});
-
 				fetchImage.addEventListener('progress', event => {
 					const {received, length, done} = event.detail;
 
@@ -135,14 +110,38 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 					const imagesDone = imagesProgress / imagesLength;
 
-					// console.log(`Textures ${imagesDone*100}% downloaded.`);
-
 					this.dispatchEvent(new CustomEvent(
 						'texture-progress', {detail: {length:imagesLength, received:imagesProgress, done:imagesDone, url:imageUrl}}
 					));
 				});
 
-				fetchImages.push(fetchImage);
+				const heightMask = fetchImage.objectUrl().then(url => new Promise(accept => {
+
+					tileset.cachedImage = url;
+
+					image.addEventListener('load', event => {
+
+						this.replacements.set(imageUrl, url);
+
+						const heightMask = new Tag('<canvas>');
+
+						heightMask.width  = image.width;
+						heightMask.height = image.height;
+
+						heightMask.getContext('2d').drawImage(
+							image, 0, 0, image.width, image.height
+						);
+
+						this.heightMasks.set(tileset, heightMask);
+
+						accept(heightMask);
+
+					}, {once:true});
+
+					image.src = url;
+				}));
+
+				setHeightMasks.push(heightMask);
 			}
 
 			// const getLengths = fetchImages
@@ -159,7 +158,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 			}
 
-			return Promise.all(fetchImages);
+			return Promise.all(setHeightMasks);
 		});
 
 		Object.preventExtensions(this);
