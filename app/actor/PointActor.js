@@ -1454,8 +1454,7 @@ export class PointActor extends View
 
 				for(const region of regionsBelow)
 				{
-					if(
-						(this.broad || this.y + 1 === region.y - region.args.height || this.y + 0 === region.y - region.args.height)
+					if((this.broad || this.y + 1 === region.y - region.args.height || this.y + 0 === region.y - region.args.height)
 						&& !this.args.falling
 					){
 						if(Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed)
@@ -1487,9 +1486,10 @@ export class PointActor extends View
 
 				this.args.standingOn = null;
 				// this.args.falling = falling || this.args.falling;
-				this.args.falling = falling;
 
-				if(falling)
+				this.args.falling = this.args.ySpeed >= 0 ? falling : this.args.falling;
+
+				if(this.args.falling)
 				{
 					this.args.xSpeed = this.args.xSpeed || this.args.gSpeed;
 					this.args.standingLayer = null;
@@ -1824,6 +1824,11 @@ export class PointActor extends View
 				if(typeof standingOn === 'object')
 				{
 					this.args.standingLayer = standingOn;
+
+					if(this.args.modeTime < 1 && standingOn.xLayerSpeed)
+					{
+						this.args.gSpeed = 0;
+					}
 				}
 				else
 				{
@@ -1998,7 +2003,7 @@ export class PointActor extends View
 
 		if(this.args.pushing && this.args.pushing === Math.sign(this.args.gSpeed))
 		{
-			this.args.gSpeed = 0;
+			// this.args.gSpeed = 0;
 			return;
 		}
 
@@ -2427,8 +2432,8 @@ export class PointActor extends View
 			if(
 				this.args.mode === MODE_FLOOR
 				|| this.args.mode === MODE_CEILING
-				|| (this.args.gSpeed > 0 && this.args.mode === MODE_LEFT)
-				|| (this.args.gSpeed < 0 && this.args.mode === MODE_RIGHT)
+				|| (this.args.gSpeed < 0 && this.args.mode === MODE_LEFT)
+				|| (this.args.gSpeed > 0 && this.args.mode === MODE_RIGHT)
 			){
 				const pushBack = this.xAxis && (Math.sign(this.xAxis) !== Math.sign(this.args.gSpeed));
 				const decel    = this.args.decel * ((this.args.rolling && pushBack) ? 3 : 0.75);
@@ -2542,14 +2547,14 @@ export class PointActor extends View
 				{
 					const speed = Math.abs(this.args.gSpeed);
 
-					const direction = this.args.direction || this.xSpeedLast || 1;
+					const direction = Math.sign(this.args.gSpeed || this.xSpeedLast || 1);
 
 					this.args.direction = direction;
 
-					if(Math.sign(this.args.gSpeed) !== Math.sign(this.args.direction))
-					{
-						this.args.gSpeed = 0;
-					}
+					// if(Math.sign(this.args.gSpeed) !== Math.sign(this.args.direction))
+					// {
+					// 	this.args.gSpeed = 0;
+					// }
 
 					if(speed < 6)
 					{
@@ -2929,9 +2934,17 @@ export class PointActor extends View
 			const isLeft  = angleIsWall && xSpeedOriginal < 0;
 			const isRight = angleIsWall && xSpeedOriginal > 0;
 
+			const solid = this.checkBelow(...airPoint);
+
 			if(!this.willStick)
 			{
-				this.args.gSpeed = xSpeedOriginal || this.args.gSpeed;
+				// this.args.gSpeed = xSpeedOriginal || this.args.gSpeed;
+				this.args.gSpeed = xSpeedOriginal;
+
+				if(solid && typeof solid === 'object' && solid.offsetXChanged)
+				{
+					this.args.gSpeed -= solid.offsetXChanged;
+				}
 			}
 
 			const stickX = airPoint[0];
@@ -2961,8 +2974,6 @@ export class PointActor extends View
 			// }
 			this.args.x = stickX;
 			this.args.y = stickY;
-
-			const solid = this.checkBelow(this.x, this.y);
 
 			blockers = this.getMapSolidAt(this.x + direction, this.y);
 
@@ -3073,7 +3084,11 @@ export class PointActor extends View
 						this.args.rolling = true;
 					}
 
-					this.args.falling = false;
+					if(this.args.startled < 175)
+					{
+						this.args.falling = false;
+					}
+
 					this.args.groundAngle = newAngle;
 					this.lastAngles.splice(0);
 					// this.args.ignore = this.args.ignore || 5;
@@ -3108,25 +3123,32 @@ export class PointActor extends View
 					// 	gSpeed *= 0.75;
 					// }
 
+					if(typeof solid === 'object')
+					{
+						this.args.standingLayer = solid;
+
+						if(solid.offsetXChanged)
+						{
+							gSpeed -= solid.offsetXChanged;
+
+							this.args.x += solid.offsetXChanged;
+						}
+					}
+
 					if(gSpeed)
 					{
 						this.args.gSpeed = gSpeed;
 					}
 
-					if(typeof solid === 'object')
-					{
-						this.args.standingLayer = solid;
-					}
-
 					// this.args.x += gSpeed < 0 ? backPosition[0] : forePosition[0];
 					// this.args.y += gSpeed < 0 ? backPosition[1] : forePosition[1];
 
-
 					// this.args.xSpeed = 0;
 					// this.args.ySpeed = 0;
-
 				}
-				else if(!this.args.dead && ((forePosition[2] && !backPosition[3]) || (!forePosition[3] && backPosition[2])))
+				else if(!this.args.dead
+					&& this.args.startled < 175
+					&& ((forePosition[2] && !backPosition[3]) || (!forePosition[3] && backPosition[2])))
 				{
 					this.args.falling = false;
 					this.args.gSpeed = xSpeedOriginal;
@@ -3193,7 +3215,7 @@ export class PointActor extends View
 			{
 				const edgeTest = this.getMapSolidAt(
 					this.x + (1+radius) * Math.sign(this.args.xSpeed)
-					, this.y + this.args.height / 2
+					, this.y - this.args.height / 2
 				);
 
 				if(!edgeTest)
@@ -3595,7 +3617,7 @@ export class PointActor extends View
 		}
 		else if(!this.args.falling)
 		{
-			if(xAxis && !this.args.rolling)
+			if(xAxis && !this.args.rolling && !this.yAxis && !this.spindashCharge)
 			{
 				const axisSign = Math.sign(xAxis);
 				const sign     = Math.sign(gSpeed);
@@ -4219,32 +4241,25 @@ export class PointActor extends View
 			return;
 		}
 
-		this.args.mercy = true;
+		this.args.y -= 8;
 
 		this.viewport.onFrameOut(180, () => this.args.mercy = false);
-
-		const shield = this.args.currentSheild;
 
 		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
 
 		if(!this.dispatchEvent(damageEvent))
 		{
+			this.startle(other);
+			this.args.mercy = true;
 			return;
 		}
 
 		if(this.args.rings)
 		{
+			this.loseRings();
+			this.args.rings = 0;
 			this.startle(other);
-
-
-			this.onNextFrame(()=>{
-
-				if(!shield || !shield.protect)
-				{
-					this.loseRings();
-					this.args.rings = 0;
-				}
-			});
+			this.args.mercy = true;
 		}
 		else if(this.controllable)
 		{
@@ -4259,31 +4274,25 @@ export class PointActor extends View
 			return;
 		}
 
-		this.args.jumping  = false;
-		this.args.startled = 180;
-		this.args.ignore   = 30;
-
 		const direction = Math.sign(this.args.xSpeed || this.args.gSpeed || this.args.direction);
 
+		this.args.jumping  = false;
+		this.args.falling  = true;
+		this.args.startled = 180;
+		this.args.ignore   = 30;
+		this.args.float    = 1;
+
+		this.args.xSpeed = -2.25 * direction;
+		this.args.ySpeed = -8.00;
 		this.args.gSpeed = 0;
-		this.args.float  = 1;
 
-		this.viewport.onFrameOut(1, () => {
-			this.args.xSpeed = -2.25 * direction;
-			this.args.ySpeed = -8.00;
+		this.args.standingOn = false;
 
-			this.args.standingOn = false;
-
-			if(this.args.mode === MODE_CEILING)
-			{
-				this.args.xSpeed *= -1;
-				this.args.ySpeed *= -1;
-			}
-
-			this.args.gSpeed = 0;
-
-			this.args.falling = true;
-		});
+		if(this.args.mode === MODE_CEILING)
+		{
+			this.args.xSpeed *= -1;
+			this.args.ySpeed *= -1;
+		}
 	}
 
 	findSolid(i, point, actor)
@@ -4634,7 +4643,11 @@ export class PointActor extends View
 	get point() { return [this.args.x, this.args.y] }
 	get rotateLock() { return false; }
 	get controllable() { return false; }
-	get skidding() { return Math.abs(this.args.gSpeed) && Math.sign(this.args.gSpeed) !== this.args.direction }
+	get skidding() {
+		return Math.abs(this.args.gSpeed)
+			&& !this.args.grinding
+			&& Math.sign(this.args.gSpeed) !== this.args.direction
+	}
 
 	effect(other)
 	{

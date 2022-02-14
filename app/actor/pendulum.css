@@ -8,3 +8,9 @@
 	background-image: url(/Sonic/chain-link.png);
 	background-position: bottom;
 }
+
+
+[data-bg="wood"] .actor-item .chain {
+	background-image: url(/Sonic/rope.png);
+	background-repeat: repeat-y;
+}

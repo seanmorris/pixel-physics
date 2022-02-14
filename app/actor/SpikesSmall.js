@@ -72,7 +72,7 @@ export class SpikesSmall extends Spikes
 
 	collideA(other, type)
 	{
-		if(this.args.broken)
+		if(this.args.broken || other instanceof Spikes || other.args.static)
 		{
 			return false;
 		}
@@ -93,8 +93,8 @@ export class SpikesSmall extends Spikes
 			this.viewport.onFrameOut(7, () => {
 				this.args.falling = true;
 
-				this.args.xSpeed  = other.args.hSpeed * 0.25 + 1 * Math.random();
-				this.args.ySpeed  = -6 + -3 * Math.random();
+				this.args.xSpeed  = other.args.hSpeed * 0.25 + 1 * Math.random() ** 2;
+				this.args.ySpeed  = -5 + -5 * Math.random() ** 2;
 
 				this.args.type = 'actor-item actor-spikes actor-spikes-small actor-spikes-broken';
 
@@ -122,5 +122,5 @@ export class SpikesSmall extends Spikes
 		this.noClip = true;
 	}
 
-	get solid() {return !this.args.broken;}
+	get solid() {return !this.args.broken && !this.noClip;}
 }

@@ -623,7 +623,7 @@
                         {
                          "name":"power",
                          "type":"string",
-                         "value":"10"
+                         "value":"12.5"
                         }],
                  "rotation":0,
                  "type":"spring",

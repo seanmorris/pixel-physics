@@ -1,9 +1,13 @@
 .actor-item.actor-grapple-point .sprite {
 	background-image: url(/Sonic/hook.png);
-	background-position: center -4px;
+	background-position: -20px -4px;
 	height: calc(var(--height) * 1px);
 	width: 22px;
 	position: absolute;
 	z-index: -100;
 
+}
+
+[data-bg="wood"] .actor-item.actor-grapple-point .sprite {
+	background-position: -85px -4px;
 }

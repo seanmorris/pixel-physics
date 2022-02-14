@@ -309,20 +309,6 @@ export class Sonic extends PointActor
 			}
 
 			this.args.wallSticking = false;
-
-			if(this.springing && this.args.ySpeed > 0)
-			{
-				this.args.groundAngle = 0;
-				this.args.animation = 'dropping-start';
-				this.springing = false;
-
-				this.onTimeout(150, () => {
-					if(this.args.falling)
-					{
-						this.args.animation = 'dropping';
-					}
-				});
-			}
 		}
 		else
 		{
@@ -698,6 +684,22 @@ export class Sonic extends PointActor
 		}
 
 		super.update();
+
+		if(this.args.falling && this.springing && this.args.ySpeed >= 0)
+		{
+			this.args.groundAngle = 0;
+			this.args.animation = 'dropping-start';
+			this.springing = false;
+
+			this.onTimeout(150, () => {
+				if(!this.args.falling || this.args.animation !== 'dropping-start')
+				{
+					return;
+				}
+
+				this.args.animation = 'dropping';
+			});
+		}
 
 		if(this.args.boltDash)
 		{
