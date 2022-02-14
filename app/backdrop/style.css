@@ -23,7 +23,7 @@
 	background-color: #323292;
 }
 
-.backdrop.west-side {
+.backdrop.west-side .parallax {
 	/*background: linear-gradient(0deg, rgba(10,194,133,1) 40%, rgba(0,114,255,1) 100%);*/
 	/*background-color: #323292;*/
 	background-color: #1e1659;
@@ -103,6 +103,11 @@
 }
 
 .backdrop.marble-garden .parallax {
+	height: 632px;
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
+}
+
+.backdrop.wood .parallax {
 	height: 632px;
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
 }

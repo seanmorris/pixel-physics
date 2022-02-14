@@ -980,6 +980,7 @@ export class Viewport extends View
 		}
 
 		this.args.theme = this.meta.theme || 'construct';
+		this.args.bg = this.meta.backdrop;
 	}
 
 	startLevel(refresh = true)
@@ -1152,6 +1153,10 @@ export class Viewport extends View
 					this.args.inputType = '';
 				}
 			}
+		}
+		else
+		{
+			this.controlActor.args.idleTime = 0;
 		}
 
 		if(this.controlActor && this.args.debugEditMode)
@@ -1447,7 +1452,7 @@ export class Viewport extends View
 			case 'aerial':
 				this.args.xOffsetTarget = 0.5;
 
-				cameraSpeed = 30;
+				cameraSpeed = 25;
 
 				if(!actor.args.flying && (deepJump || highJump))
 				{
@@ -1473,7 +1478,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.60;
 				this.maxCameraBound     = 1;
-				cameraSpeed = 30;
+				cameraSpeed = 10;
 				break;
 
 			case 'tube':
@@ -1537,11 +1542,16 @@ export class Viewport extends View
 		let gSpeed = actor.args.gSpeed;
 		let xSpeed = actor.args.xSpeed;
 
-		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene'].includes(actor.args.cameraMode))
+		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube'].includes(actor.args.cameraMode))
 		{
 			if(actor.args.cameraMode === 'hooked')
 			{
 				xSpeed = actor.x - actor.xLast;
+			}
+
+			if(actor.args.standingLayer)
+			{
+				gSpeed += actor.args.standingLayer.offsetXChanged;
 			}
 
 			const grounded   = !actor.args.falling;
@@ -1552,7 +1562,7 @@ export class Viewport extends View
 			switch(actor.args.mode)
 			{
 				case 0:
-					this.args.xOffsetTarget += speedBias * 0.35;
+					this.args.xOffsetTarget += speedBias * 0.4;
 					break;
 
 				case 1:
@@ -1560,7 +1570,7 @@ export class Viewport extends View
 					break;
 
 				case 2:
-					this.args.xOffsetTarget -= speedBias * 0.35;
+					this.args.xOffsetTarget -= speedBias * 0.4;
 	 				break;
 
 				case 3:
@@ -1826,16 +1836,11 @@ export class Viewport extends View
 				args.bX = backdrop.x;
 				args.bY = backdrop.y;
 
-				if(backdropType === 'protolabrynth')
-				{
-					backdrop.view = new ProtoLabrynth(args, this);
+				const backdropClass = BackdropPalette[backdropType];
 
-					backdrop.view.render( this.tags.backdrops );
-				}
-				else if(backdropType === 'mystic-cave')
+				if(backdropClass)
 				{
-					backdrop.view = new MysticCave(args, this);
-
+					backdrop.view = new backdropClass(args, this);
 					backdrop.view.render( this.tags.backdrops );
 				}
 			}

@@ -78,9 +78,9 @@ export class Flipper extends PointActor
 			return;
 		}
 
-		if(Math.abs(other.args.gSpeed) < 5)
+		if(Math.abs(other.args.gSpeed) < 3)
 		{
-			other.args.gSpeed = Math.min(3, Math.abs(other.args.gSpeed) || 1)
+			other.args.gSpeed = Math.min(2, Math.abs(other.args.gSpeed) || 1)
 				* Math.sign(other.args.gSpeed || this.args.direction);
 		}
 		else

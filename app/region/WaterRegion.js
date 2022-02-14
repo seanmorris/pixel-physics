@@ -37,7 +37,7 @@ export class WaterRegion extends Region
 		const splashPoint = actor.rotatePoint(actor.public.gSpeed, 0);
 
 		splashParticle.style({
-			'--x': splashPoint[0] + actor.x
+			'--x': splashPoint[0] + actor.x + actor.args.gSpeed
 			, '--y': splashPoint[1] + actor.y
 			, 'z-index': 0
 			, '--flip': `${actor.args.direction}`

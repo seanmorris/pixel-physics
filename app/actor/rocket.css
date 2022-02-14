@@ -12,6 +12,7 @@
 	z-index: -100;
 	animation: rocket-thrust steps(2) infinite 10ms;
 	transform: translate(-32px) rotate(calc( var(--air-angle, 0) * 1rad ));
+	opacity:  var(--opacity);
 
 }
 

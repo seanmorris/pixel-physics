@@ -123,7 +123,7 @@ export class RailCar extends Vehicle
 			{
 				this.args.hSpeed = this.args.xSpeed;
 			}
-			else
+			else if(this.args.xSpeed)
 			{
 				this.args.gSpeed = this.args.xSpeed;
 			}
@@ -141,17 +141,7 @@ export class RailCar extends Vehicle
 
 			if(this.occupant)
 			{
-				const occupant = this.occupant
-
-				occupant.args.standingOn = false;
-
-				occupant.startle();
-
-				this.args.falling = true;
-
-				this.onNextFrame(()=>{
-					occupant.args.xSpeed  = -4 * Math.sign(this.gSpeedLast || this.xSpeedLast);
-				});
+				this.occupant.startle();
 			}
 
 			this.sprite.classList.add('breaking');

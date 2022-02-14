@@ -123,7 +123,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.viewport.auras.add(this);
 
-		this.args.xSpeed = other.args.xSpeed;
+		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed ;
 		this.args.ySpeed = other.args.ySpeed;
 
 		other.args.xSpeed = 0;
@@ -162,8 +162,6 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 					this.unhook();
 					tiedTo.explode();
-					this.args.ignore = 30;
-					this.args.float = 60;
 
 					this.args.x = this.def.get('x');
 					this.args.y = this.def.get('y');
@@ -202,6 +200,8 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		hooked.args.xSpeed += tiedTo.xSpeedLast || this.xSpeedLast || 0;
 		hooked.args.ySpeed += tiedTo.ySpeedLast || this.ySpeedLast || 0;
+
+		hooked.args.ySpeed += -3;
 
 		hooked.args.groundAngle = 0;
 
