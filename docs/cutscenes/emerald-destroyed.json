@@ -1,0 +1,213 @@
+[
+	{
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 1
+    },
+    {
+        "event": "hide",
+        "time": 15
+    },
+    {
+        "event": "face",
+        "direction": -1
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "WHAT THE HELL?"
+        ],
+        "classes": "knuckles right",
+        "time": 60
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "SONIC?"
+        ],
+        "classes": "knuckles right",
+        "time": 50
+    },
+    {
+        "event": "hide",
+        "time": 10
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "WHAT THE HELL!"
+        ],
+        "classes": "knuckles yellow right",
+        "time": 60
+    },
+	{
+        "event": "hide",
+        "time": 10
+    },
+    {
+        "event": "face",
+        "direction": 1
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "SONIC!"
+        ],
+        "classes": "knuckles right",
+        "time": 30
+    },
+    {
+        "event": "hide",
+        "time": 5
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "WHAT THE HELL IS",
+            "WRONG WITH YOU!"
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "input",
+        "axes":
+        [
+            1,
+            0,
+            0,
+            0
+        ],
+        "time": 25
+    },
+        {
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 1
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Oh hey knuckles.",
+            "Glad I found you here..."
+        ],
+        "classes": "sonic left talking",
+        "time": 240
+    },
+    {
+        "event": "input",
+        "axes":
+        [
+            0,
+            0,
+            0,
+            0
+        ],
+        "time": 1
+    },
+    {
+        "event": "hide",
+        "time": 60
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "By the way, Where'd you",
+            "get that fake emerald?"
+        ],
+        "classes": "sonic left talking",
+        "time": 200
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "..."
+        ],
+        "classes": "knuckles right",
+        "time": 120
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "How'd you know it was a fake?"
+        ],
+        "classes": "knuckles right",
+        "time": 140
+    },
+     {
+        "event": "hide",
+        "time": 20
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "You just told me!"
+        ],
+        "classes": "sonic smiling left talking",
+        "time": 240
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Damnit, sonic..."
+        ],
+        "classes": "knuckles right",
+        "time": 60
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Hey, if the emerald was fake",
+            "How come the altar fell apart?"
+        ],
+        "classes": "sonic smiling left talking",
+        "time": 240
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Probably because you slammed",
+            "into it at 100 miles an hour."
+        ],
+        "classes": "knuckles right",
+        "time": 240
+    },
+    {
+        "event": "dialog",
+        "lines":
+        [
+            "Oh."
+        ],
+        "classes": "sonic left talking",
+        "time": 220
+    },
+    {
+        "event": "wait",
+        "time": 60
+    }
+]

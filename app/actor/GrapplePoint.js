@@ -41,7 +41,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			this.noClip = true;
 		}
 
-		if(!tiedTo || !tiedTo.args.float)
+		if(!tiedTo)
 		{
 			this.unhook();
 		}
@@ -61,17 +61,22 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 				{
 					if(this.y > tiedTo.y)
 					{
-						this.args.xSpeed += this.hooked.xAxis * 0.5;
+						this.args.xSpeed += this.hooked.xAxis * 0.25;
 					}
 					else
 					{
-						this.args.xSpeed -= this.hooked.xAxis * 0.5;
+						this.args.xSpeed -= this.hooked.xAxis * 0.25;
 					}
 				}
 			}
 
 			this.hooked.args.x = this.x;
 			this.hooked.args.y = this.y + this.hooked.args.height + -5;
+
+			this.hooked.args.xSpeed = 0;
+			this.hooked.args.ySpeed = 0;
+
+			this.hooked.args.groundAngle = 0;
 
 			if(this.hooked.xAxis>0)
 			{
@@ -97,7 +102,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	{
 		const tiedTo = this.args._tiedTo;
 
-		if(!tiedTo || !tiedTo.args.falling || tiedTo.noClip)
+		if(!tiedTo || tiedTo.noClip)
 		{
 			return false;
 		}
@@ -121,6 +126,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.hooked = other;
 
+
 		this.viewport.auras.add(this);
 
 		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed ;
@@ -132,6 +138,9 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		other.args.ignore = -4;
 		other.args.float =  -1;
+
+		other.xLast = other.x;
+		other.yLast = other.y;
 
 		other.args.x = this.x;
 		other.args.y = this.y + other.args.height;
@@ -156,11 +165,12 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 					return;
 				}
 
+				this.unhook();
+
 				if(tiedTo.explode)
 				{
-					this.hooked.args.gSpeed = 0;
+					this.hooked && (this.hooked.args.gSpeed = 0);
 
-					this.unhook();
 					tiedTo.explode();
 
 					this.args.x = this.def.get('x');
@@ -201,7 +211,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		hooked.args.xSpeed += tiedTo.xSpeedLast || this.xSpeedLast || 0;
 		hooked.args.ySpeed += tiedTo.ySpeedLast || this.ySpeedLast || 0;
 
-		hooked.args.ySpeed += -3;
+		hooked.args.ySpeed += -2;
 
 		hooked.args.groundAngle = 0;
 

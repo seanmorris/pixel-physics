@@ -29,6 +29,8 @@ export class Block extends PointActor
 		this.args.yForce = 0;
 		this.args.yLean  = 0;
 
+		this.args.z = this.args.z ?? 100;
+
 		this.args.type = 'actor-item actor-block';
 
 		this.args.width  = args.width  || 32;
@@ -42,7 +44,7 @@ export class Block extends PointActor
 		this.originalX = this.args.x;
 		this.originalY = this.args.y;
 
-		this.args.solid = true;
+		this.args.solid = this.args.solid ?? true;
 
 		this.args.gravity = 0.4;
 
@@ -57,6 +59,11 @@ export class Block extends PointActor
 
 	onAttached(event)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.args.match)
 		{
 			this.match = this.viewport.actorsById[ this.args.match ];
@@ -84,6 +91,20 @@ export class Block extends PointActor
 		this.setTile();
 
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
+
+		this.droop(0);
+
+		this.args.collapse && this.tags.sprite.classList.add('collapse');
+		this.args.platform && this.tags.sprite.classList.add('platform');
+
+		if(this.args.hidden)
+		{
+			event && event.preventDefault();
+
+			return false;
+		}
+
+		this.setTile();
 	}
 
 	collideA(other, type)
@@ -98,7 +119,7 @@ export class Block extends PointActor
 			this.weighted = true;
 		}
 
-		if(other instanceof this.constructor)
+		if(other instanceof this.constructor && !other.args.falling)
 		{
 			return false;
 		}
@@ -193,10 +214,10 @@ export class Block extends PointActor
 
 		if(this.args.platform && !(other instanceof Ring))
 		{
-			if(other.willStick)
-			{
-				return false;
-			}
+			// if(other.willStick)
+			// {
+			// 	return false;
+			// }
 
 			const otherTop  = other.y - other.args.height;
 			const blockTop  = this.y  - this.args.height;
@@ -208,12 +229,24 @@ export class Block extends PointActor
 				&& !other.args.float
 				&& Math.abs(other.x - this.x) < (halfWidth - 16)
 			){
-				other.args.y = -1 + blockTop;
+				if(other.controllable)
+				{
+					other.args.y = -1 + blockTop;
+				}
+				else
+				{
+					other.args.y = blockTop;
+				}
 			}
 
 			if((other.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
 			{
 				return true;
+			}
+
+			if(other.args.npc && !other.args.falling && this.args.falling && !this.args.float)
+			{
+				other.startle();
 			}
 
 			return false;
@@ -224,7 +257,7 @@ export class Block extends PointActor
 			return true;
 		}
 
-		if(this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
+		if(!this.switch && this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
 		{
 			if(other.args.ySpeed > 15)
 			{
@@ -252,7 +285,7 @@ export class Block extends PointActor
 			}
 			else if(other.args.ySpeed > 0 || other.args.gSpeed)
 			{
-				this.args.float = this.args.float > 0 ? this.args.float : 30;
+				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 			}
 		}
 
@@ -261,24 +294,7 @@ export class Block extends PointActor
 
 	onAttach(event)
 	{
-		if(!this.viewport)
-		{
-			return;
-		}
 
-		this.droop(0);
-
-		this.args.collapse && this.tags.sprite.classList.add('collapse');
-		this.args.platform && this.tags.sprite.classList.add('platform');
-
-		if(this.args.hidden)
-		{
-			event && event.preventDefault();
-
-			return false;
-		}
-
-		this.setTile();
 	}
 
 	activate()
@@ -306,6 +322,16 @@ export class Block extends PointActor
 		if(this.args.collapse)
 		{
 			this.args.gSpeed = 0;
+
+			if(this.switch && this.switch.args.active)
+			{
+				this.args.float  = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
+
+				if(!this.args.float)
+				{
+					this.args.ySpeed = this.args.ySpeed || 12;
+				}
+			}
 		}
 
 		if(this.match)
@@ -335,7 +361,7 @@ export class Block extends PointActor
 			}
 		}
 
-		if(this.args.collapse)
+		if(!this.switch && this.args.collapse)
 		{
 			if(!this.reset && !this.args.once)
 			{
@@ -470,7 +496,7 @@ export class Block extends PointActor
 		// 	return;
 		// }
 
-		if(this.args.settle)
+		if(this.args.float && this.args.settle)
 		{
 			if(this.weighted && this.args.y < this.def.get('y') + this.args.settle)
 			{
@@ -568,6 +594,6 @@ export class Block extends PointActor
 
 	get rotateLock() { return true; }
 	get canStick() { return !this.args.platform; }
-	get solid() { return (!this.args.collapse || (this.args.float !== 0 || !this.args.goBack)); }
+	get solid() { return this.args.solid && (!this.args.collapse || (this.args.float !== 0 || !this.args.goBack)); }
 }
 

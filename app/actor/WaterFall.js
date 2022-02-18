@@ -29,8 +29,10 @@ export class WaterFall extends PointActor
 		this.args.static = true;
 	}
 
-	onAttach()
+	onRendered()
 	{
+		super.onRendered();
+
 		this.autoAttr.get(this.box)['data-upward'] = 'upward';
 
 		if(!this.viewport || !this.args.switch)

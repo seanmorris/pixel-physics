@@ -244,7 +244,7 @@ export class BreakableBlock extends Block
 		if(this.sample && !this.broken)
 		{
 			this.sample.volume = 0.7 + (Math.random() * -0.2);
-			this.sample.currentTime = 0.3 + (Math.random() * -0.1);
+			this.sample.currentTime = 0.4 + (Math.random() * -0.1);
 			this.sample.play();
 		}
 

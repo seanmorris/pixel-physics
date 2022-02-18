@@ -139,8 +139,7 @@
 }
 
 .actor-item.actor-block {
-	z-index: calc(-1 - var(--));
-	z-index: 10001;
+	z-index: var(--z);
 }
 
 .actor-item.actor-block .sprite.collapse {

@@ -12,7 +12,8 @@ export class LayerController extends PointActor
 		this.args.yLayer = 0;
 
 		this.args.xLayerSpeed = 0;
-		this.args.xLayerSpeed = 0;
+		this.args.yLayerSpeed = 0;
+
 		this.args.yLayerSpeedMax = this.args.yLayerSpeedMax || 9;
 
 		this.args.fall = this.args.fall ?? true;

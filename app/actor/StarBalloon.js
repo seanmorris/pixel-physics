@@ -91,6 +91,10 @@ export class StarBalloon extends Balloon
 
 	pop()
 	{
+		const exploded = new CustomEvent('exploded', {detail: {actor:this}});
+
+		this.dispatchEvent(exploded);
+
 		this.tags.sprite.classList.add('popped');
 
 		this.popped = true;

@@ -79,6 +79,30 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'Misty Ruins Test Zone': {
+						subtext: 'Testing art, layout and physics for Misty Ruins Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/ruins-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Underground Test': {
+						subtext: 'Testing art, layout and physics for Underground Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Terrain Test': {
+						subtext: 'Testing different terrain types'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+							this.accept();
+						}
+					}
+
 					, 'Pixel Hill Zone': {
 						subtext: 'Movement Sandbox - all characters'
 						, callback: () => {
@@ -101,12 +125,13 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
-					, 'Terrain Test': {
+					, 'Moon Test': {
 						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
 							this.accept();
 						}
 					}
+
 					, 'Space Pinball Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
@@ -131,18 +156,7 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
-					, 'Moon Test': {
-						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
-							this.accept();
-						}
-					}
-					, 'Underground Test': {
-						callback: () => {
-							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
-							this.accept();
-						}
-					}
+
 					, 'Flickie Test': {
 						callback: () => {
 							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});

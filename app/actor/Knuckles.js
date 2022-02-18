@@ -501,6 +501,13 @@ export class Knuckles extends PointActor
 		}
 	}
 
+	startle()
+	{
+		super.startle();
+
+		this.onNextFrame(() => this.args.animation = 'startle');
+	}
+
 	dropBomb()
 	{
 		if(this.public.falling)

@@ -1,0 +1,9 @@
+.actor-bell .sprite {
+	background-image: url(/custom/bell.png);
+	width: 64px;
+	height: 64px;
+}
+
+.actor-bell {
+	z-index: 100001;
+}

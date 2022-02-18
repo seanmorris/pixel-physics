@@ -52,7 +52,7 @@ export class ForceRegion extends Region
 
 	updateActor(other)
 	{
-		if(other.args.static)
+		if(other instanceof Region || other.args.static)
 		{
 			return;
 		}

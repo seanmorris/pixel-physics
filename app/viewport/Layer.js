@@ -147,7 +147,7 @@ export class Layer extends View
 		}
 
 		const blockSize  = this.args.blockSize;
-		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 1;
+		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 2;
 		const blocksHigh = Math.ceil((this.args.height / blockSize)) + 1;
 		const blocksXY   = this.blocksXY;
 		const centerX    = blocksWide / 2;
@@ -160,7 +160,7 @@ export class Layer extends View
 
 		const layerId = this.args.layerId;
 
-		let startColumn = 0;
+		let startColumn = -1;
 		let endColumn   = blocksWide;
 
 		let ii = 0;
@@ -192,7 +192,7 @@ export class Layer extends View
 
 				if(!blocksXY.has(xy))
 				{
-					block = new Tag('<div>');
+					block = new Tag(document.createElement('div'));
 
 					blocksXY.set(xy, block);
 
@@ -202,7 +202,7 @@ export class Layer extends View
 					const transY = blockSize * j;
 
 					block.style({
-						transform: `translate(${transX}px, ${transY}px) scale(1.02, 1.02)`
+						transform: `translate(${transX}px, ${transY}px) scale(1.01, 1.01)`
 						, position: 'absolute'
 						, left: 0
 						, top: 0

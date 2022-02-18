@@ -1,5 +1,3 @@
-import { PointActor } from './PointActor';
-
 import { Block } from './Block';
 import { BreakableBlock } from './BreakableBlock';
 

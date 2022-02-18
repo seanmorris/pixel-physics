@@ -309,7 +309,7 @@ export class Viewport extends View
 
 		});
 
-		console.log(this.debugSequence);
+		// console.log(this.debugSequence);
 
 		this.args.pauseMenu = new PauseMenu({}, this);
 
@@ -520,7 +520,8 @@ export class Viewport extends View
 		this.auras   = new Set;
 		this.recent  = new Set;
 
-		this.actorsById = {};
+		this.actorsByName = {};
+		this.actorsById   = {};
 
 		this.playable = new Set;
 
@@ -545,7 +546,8 @@ export class Viewport extends View
 					this.playable.add(i);
 				}
 
-				this.actorsById[i.args.id] = i;
+				this.actorsByName[i.args.name] = i;
+				this.actorsById[i.args.id]     = i;
 
 				this.objectDb.add(i);
 			}
@@ -569,7 +571,9 @@ export class Viewport extends View
 
 				this.auras.delete(i);
 
+				delete this.actorsById[i.args.name];
 				delete this.actorsById[i.args.id];
+
 				delete i[ColCell];
 
 				// this.quadCell.remove(i);
@@ -966,6 +970,11 @@ export class Viewport extends View
 
 	fillBackground()
 	{
+		if(this.meta.backdrop && this.args.bg === this.meta.backdrop)
+		{
+			return;
+		}
+
 		const backdropClass = BackdropPalette[ this.meta.backdrop ];
 
 		delete this.args.backdrop;
@@ -980,6 +989,7 @@ export class Viewport extends View
 		}
 
 		this.args.theme = this.meta.theme || 'construct';
+
 		this.args.bg = this.meta.backdrop;
 	}
 
@@ -1040,10 +1050,23 @@ export class Viewport extends View
 
 			if(Router.query.start)
 			{
-				const [x = 128, y = 128] = Router.query.start.split(',');
+				const start = Router.query.start;
 
-				this.nextControl.args.x = Number(x);
-				this.nextControl.args.y = Number(y);
+				if(start.match(/\d+,\d+/))
+				{
+					const [x = 128, y = 128] = start.split(',');
+
+					this.nextControl.args.x = Number(x);
+					this.nextControl.args.y = Number(y);
+				}
+				else if(this.defsByName.has(start))
+				{
+					const point = this.defsByName.get(start);
+
+					this.nextControl.args.x = Number(point.x);
+					this.nextControl.args.y = Number(point.y);
+				}
+
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording)
 			{
@@ -1057,8 +1080,12 @@ export class Viewport extends View
 					if(checkpoint)
 					{
 						this.args.startFrameId = this.args.frameId - storedPosition.frames;
-						this.args.x = this.nextControl.args.x = checkpoint.x;
-						this.args.y = this.nextControl.args.y = checkpoint.y;
+
+						this.nextControl.args.x = checkpoint.x;
+						this.nextControl.args.y = checkpoint.y;
+
+						this.args.xOffset = 0.5;
+						this.args.yOffset = 0.5;
 					}
 				}
 			}
@@ -1385,7 +1412,7 @@ export class Viewport extends View
 		}
 		else
 		{
-			this.cameraBound -= 0.05;
+			this.cameraBound -= 0.05 * this.cameraBound;
 		}
 
 		let cameraSpeed = 30;
@@ -1397,16 +1424,43 @@ export class Viewport extends View
 			actor = actor.args.standingOn;
 		}
 
+		if(actor.focused)
+		{
+			if(this.cameraMode !== 'panning' && actor.args.cameraMode === 'panning')
+			{
+				const focus = actor.focused;
+
+				this.cameraBound = this.maxCameraBound = Math.max(Math.abs(focus.x - actor.x), Math.abs(focus.y - actor.y));
+
+				this.args.x -= actor.x - focus.x;
+				this.args.y -= actor.y - focus.y;
+			}
+
+			this.cameraMode = actor.args.cameraMode;
+
+			actor = actor.focused;
+		}
+		else
+		{
+			this.cameraMode = actor.args.cameraMode;
+		}
+
 		const highJump  = actor.args.highJump;
 		const deepJump  = actor.args.deepJump;
 		const falling   = actor.args.falling;
 		const fallSpeed = actor.args.ySpeed;
 
-		switch(actor.args.cameraMode)
+		switch(this.cameraMode)
 		{
+			case 'panning':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.85;
+				cameraSpeed = 8;
+				break;
+
 			case 'cutScene':
 				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
-				this.args.yOffsetTarget = [0.70, 0.50, 0.45, 0.50][actor.args.mode];
+				this.args.yOffsetTarget = [0.75, 0.50, 0.25, 0.50][actor.args.mode];
 				this.maxCameraBound = 64;
 				cameraSpeed = 15;
 				break;
@@ -1414,7 +1468,7 @@ export class Viewport extends View
 			case 'corkscrew':
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.75;
-				this.maxCameraBound = 192;
+				this.maxCameraBound = 96;
 				cameraSpeed = 64;
 				break;
 
@@ -1458,7 +1512,7 @@ export class Viewport extends View
 				{
 					if(fallSpeed < 0)
 					{
-						this.args.yOffsetTarget = 0.9;
+						this.args.yOffsetTarget = 0.75;
 					}
 					else
 					{
@@ -1478,18 +1532,17 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.60;
 				this.maxCameraBound     = 1;
-				cameraSpeed = 10;
+				cameraSpeed = 25;
 				break;
 
 			case 'tube':
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.50;
-				this.maxCameraBound     = 45;
+				this.maxCameraBound     = 64;
 				cameraSpeed = 45;
 				break;
 
 			case 'cinematic':
-
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.50;
 				this.maxCameraBound     = 1;
@@ -1498,7 +1551,6 @@ export class Viewport extends View
 				break;
 
 			case 'cliff':
-
 				this.args.xOffsetTarget = 0.50 + -0.02 * actor.args.direction;
 				this.args.yOffsetTarget = 0.45;
 
@@ -1507,16 +1559,14 @@ export class Viewport extends View
 				break;
 
 			case 'bridge':
-
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.40;
 
-				cameraSpeed = 5;
+				cameraSpeed = 18;
 
 				break;
 
 			case 'boss':
-
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.72;
 				this.maxCameraBound     = 0;
@@ -1542,11 +1592,11 @@ export class Viewport extends View
 		let gSpeed = actor.args.gSpeed;
 		let xSpeed = actor.args.xSpeed;
 
-		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube'].includes(actor.args.cameraMode))
+		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube', 'hooked', 'corkscrew'].includes(this.cameraMode))
 		{
-			if(actor.args.cameraMode === 'hooked')
+			if(actor.args.hangingFrom)
 			{
-				xSpeed = actor.x - actor.xLast;
+				xSpeed = actor.args.hangingFrom.args.xSpeed;
 			}
 
 			if(actor.args.standingLayer)
@@ -1557,7 +1607,7 @@ export class Viewport extends View
 			const grounded   = !actor.args.falling;
 			const absSpeed   = Math.abs(grounded ? gSpeed : xSpeed);
 			const shiftSpeed = 17;
-			const speedBias = Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed);
+			const speedBias  = Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed);
 
 			switch(actor.args.mode)
 			{
@@ -1589,7 +1639,7 @@ export class Viewport extends View
 
 			if(deepJump || highJump)
 			{
-				this.maxCameraBound = 12;
+				cameraSpeed *= 0.75;
 			}
 		}
 
@@ -1597,7 +1647,7 @@ export class Viewport extends View
 		let ySpeedMax  = 512;
 		let ySpeed     = 0;
 
-		if(actor.args.cameraMode !== 'boss')
+		if(this.cameraMode !== 'boss')
 		{
 			if(!actor.args.falling && actor.args.mode === 1)
 			{
@@ -1626,18 +1676,23 @@ export class Viewport extends View
 				{
 					ySpeedBias += actor.args.ySpeed > 24 ? 0.5 : 0;
 				}
-				// else
-				// {
-				// 	ySpeedBias += (actor.args.deepJump || actor.args.ySpeed < -24) ? -0.5 : 0;
-				// }
+				else
+				{
+					ySpeedBias += (actor.args.deepJump || actor.args.ySpeed < -24) ? -0.5 : 0;
+				}
+			}
+
+			if(actor.args.hangingFrom)
+			{
+				ySpeed = actor.args.ySpeed;
 			}
 
 			ySpeedBias += (ySpeed / ySpeedMax);
-		}
 
-		if(actor.args.cameraMode === 'hooked')
-		{
-			ySpeedBias += 0.2 * Math.sign(actor.y - actor.yLast);
+			if(actor.args.hangingFrom)
+			{
+				ySpeedBias += 0.2;
+			}
 		}
 
 		this.args.yOffsetTarget += actor.args.cameraBias - ySpeedBias;
@@ -1675,7 +1730,7 @@ export class Viewport extends View
 		const dragDistance = Math.min(maxDistance, distance);
 
 		const snapFactor = Math.abs(dragDistance / maxDistance);
-		const snapFrames = 12;
+		const snapFrames = this.cameraMode === 'panning' ? 6 : 12;
 		const snapSpeed  = dragDistance / snapFrames;
 
 		let x = xNext + dragDistance * Math.cos(angle)
@@ -1694,8 +1749,10 @@ export class Viewport extends View
 			y = 96;
 		}
 
+		const playableHeight = this.meta.deathLine || (this.tileMap.mapData.height * 32 + 96);
+
 		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width - 96;
-		const yMax = -(this.tileMap.mapData.height * 32) + this.args.height - 96;
+		const yMax = -playableHeight + this.args.height;
 
 		if(x < xMax && !this.meta.wrapX)
 		{
@@ -1901,7 +1958,8 @@ export class Viewport extends View
 
 		const objDefs = this.tileMap.getObjectDefs();
 
-		this.objDefs = new Map;
+		this.defsByName = new Map;
+		this.objDefs    = new Map;
 
 		for(const [id,backdrop] of this.backdrops)
 		{
@@ -1945,6 +2003,7 @@ export class Viewport extends View
 				continue;
 			}
 
+			this.defsByName.set(objDef.name, objDef);
 			this.objDefs.set(objDef.id, objDef);
 
 			if(!ObjectPalette[objType])
@@ -1991,21 +2050,21 @@ export class Viewport extends View
 
 			this.actors.add( actor );
 
-			if(this.actorIsOnScreen(actor))
+			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
 				actor.render(this.tags.actors);
-
 				actor.args.display = actor.defaultDisplay || null;
+			}
 
-				if(actor.onAttach && actor.onAttach() === false)
-				{
-					actor.detach();
-				}
+			if((actor.onAttach && actor.onAttach() === false) || actor.args.hidden)
+			{
+				actor.args.display = 'none';
+				actor.detach();
 			}
 			else
 			{
 				actor.args.display = 'none';
-				actor.detach();
+				// actor.detach();
 			}
 
 			// actor.onRendered();
@@ -2125,7 +2184,6 @@ export class Viewport extends View
 
 					spawn.object.render(doc);
 					spawn.object.onRendered();
-					spawn.object.onAttached && spawn.object.onAttached()
 
 					if(spawn.object.onAttach && spawn.object.onAttach() === false)
 					{
@@ -2693,7 +2751,14 @@ export class Viewport extends View
 			let wakeActors = false;
 			let wakeRegions = false;
 
-			const nearbyActors = this.nearbyActors(this.controlActor) || [];
+			let focusedActor = this.controlActor;
+
+			if(this.controlActor.focused)
+			{
+				focusedActor = this.controlActor.focused;
+			}
+
+			const nearbyActors = this.nearbyActors(focusedActor) || [];
 
 			for(const actorList of [nearbyActors, this.regions])
 			{
@@ -2704,7 +2769,7 @@ export class Viewport extends View
 						continue;
 					}
 
-					if(!actor.nodes.length)
+					if(!actor.args.hidden && !actor.nodes.length)
 					{
 						actor.render(this.tags.actors);
 					}
@@ -3178,6 +3243,8 @@ export class Viewport extends View
 
 	reset()
 	{
+		console.clear();
+
 		this[Run]++;
 
 		this.stop();
@@ -3207,6 +3274,9 @@ export class Viewport extends View
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade = false;
+
+		this.args.xOffset = 0.5;
+		this.args.yOffset = 0.5;
 
 		const layers = this.tileMap.tileLayers;
 

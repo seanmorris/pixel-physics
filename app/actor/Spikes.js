@@ -35,8 +35,16 @@ export class Spikes extends PointActor
 		this.autoAttr.get(this.box)['data-pointing'] = 'pointing';
 	}
 
+	startle(){}
+	damage(){}
+
 	collideA(other, type)
 	{
+		if(other.isRegion)
+		{
+			return;
+		}
+
 		if(this.args.falling && !this.args.float)
 		{
 			other.damage(false);

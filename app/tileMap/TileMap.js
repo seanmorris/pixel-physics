@@ -1,5 +1,6 @@
 import { Tag } from 'curvature/base/Tag';
 import { Mixin } from 'curvature/base/Mixin';
+import { Bindable } from 'curvature/base/Bindable';
 import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 
 import { Elicit } from './Elicit';
@@ -53,7 +54,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			this.mapData = data;
 
-			const layers = data.layers || [];
+			const layers = (data.layers || []).map(layer => Bindable.make(layer));
 
 			this.objectLayers = layers.filter(l => l.type === 'objectLayers');
 			this.tileLayers   = layers.filter(l => l.type === 'tilelayer');
@@ -366,14 +367,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const currentTile = this.coordsToTile(xInput, yInput, layerInput);
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
-		if(layerInput === 1 || layerInput ===  2)
+		const solidLayerCount = this.collisionLayers.length;
+
+		if(layerInput > 0  && layerInput < solidLayerCount)
 		{
 			if(this.getSolid(xInput, yInput, 0))
 			{
 				return this.tileLayers[0];
 			}
 
-			for(let i = 3; i < this.tileLayers.length; i++)
+			for(let i = 1 + solidLayerCount; i < this.tileLayers.length; i++)
 			{
 				const layer = this.tileLayers[i];
 
@@ -407,7 +410,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 		}
 
-		if(layerInput <= 2)
+		if(layerInput <= 3)
 		{
 			if(tileNumber === 0)
 			{
@@ -420,8 +423,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 		}
 
-		const tileSet = this.getTileset(tileNumber);
-
+		const tileSet   = this.getTileset(tileNumber);
 		const mapData   = this.mapData;
 		const blockSize = mapData.tilewidth;
 

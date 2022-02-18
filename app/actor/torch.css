@@ -1,0 +1,23 @@
+.actor-torch {
+	z-index: -101;
+}
+
+.actor-torch .sprite {
+	background-image: url(/Sonic/torch.png);
+	width: 16px;
+	height: 32px;
+
+	animation: torch-animate 240ms steps(3) infinite forwards;
+
+	background-position-y: -0px;
+
+}
+
+@keyframes torch-animate {
+	from{
+		background-position-x: 0;
+	}
+	to{
+		background-position-x: -48px;
+	}
+}

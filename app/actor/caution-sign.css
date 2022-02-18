@@ -1,0 +1,5 @@
+.actor-caution-sign .sprite {
+	background-image: url(/custom/caution-sign.png);
+	width: 16px;
+	height: 32px;
+}

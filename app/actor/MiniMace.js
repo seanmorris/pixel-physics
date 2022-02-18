@@ -17,19 +17,6 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		this.args.gravity = 0.6;
 	}
 
-	collideB(other)
-	{
-		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
-		{
-			return;
-		}
-
-		if(other.controllable)
-		{
-			other.damage();
-		}
-	}
-
 	update()
 	{
 		if(!this.args.tiedTo)
@@ -61,5 +48,18 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 
 
 		super.updateEnd();
+	}
+
+	collideB(other)
+	{
+		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
+		{
+			return;
+		}
+
+		if(other.controllable)
+		{
+			other.damage();
+		}
 	}
 }

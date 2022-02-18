@@ -1,5 +1,3 @@
-import { PointActor } from './PointActor';
-
 import { BreakableBlock } from './BreakableBlock';
 
 export class WoodenCrate extends BreakableBlock
