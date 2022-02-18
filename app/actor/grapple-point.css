@@ -5,7 +5,6 @@
 	width: 22px;
 	position: absolute;
 	z-index: -100;
-
 }
 
 [data-bg="wood"] .actor-item.actor-grapple-point .sprite {

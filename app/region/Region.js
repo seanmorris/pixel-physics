@@ -38,9 +38,11 @@ export class Region extends PointActor
 		this.skimmers = new WeakSet;
 	}
 
-	onAttach()
+	onRendered()
 	{
 		this.mainElem = new Tag(this.tags.sprite.parentNode);
+
+		super.onRendered();
 	}
 
 	skim(actor)
@@ -51,16 +53,23 @@ export class Region extends PointActor
 	updateStart()
 	{
 		this.skimmers = new WeakSet;
+
+		super.updateStart();
 	}
 
 	update()
 	{
-		super.update();
-
 		if(!this.viewport)
 		{
 			return;
 		}
+
+		if(!this.focus && this.args.focus)
+		{
+			this.focus = this.viewport.actorsById[ this.args.focus ];
+		}
+
+		super.update();
 
 		const topBoundry  = -this.viewport.args.y - (this.y - this.args.height);
 		const leftBoundry = -16 + -this.viewport.args.x - this.x;

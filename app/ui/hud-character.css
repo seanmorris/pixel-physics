@@ -49,19 +49,23 @@ li.focused.unavailable .small-menu-font .hud-character {
 	/*background-image: url(/Sonic/small-menu-font-italic-red-dim.png);*/
 }
 
+.dialog-frame.red-alert .hud-character,
 .hud-character-string.red-alert .hud-character {
 	animation: redalert 450ms steps(2) infinite;
 	background-image: url(/Sonic/font-red.png);
 }
 
+.dialog-frame.red .hud-character,
 .hud-character-string.red .hud-character {
 	background-image: url(/Sonic/font-red.png);
 }
 
+.dialog-frame.yellow .hud-character,
 .hud-character-string.yellow .hud-character {
 	background-image: url(/Sonic/font-yellow.png);
 }
 
+.dialog-frame.orange .hud-character,
 .hud-character-string.orange .hud-character {
 	background-image: url(/Sonic/font-orange.png);
 }

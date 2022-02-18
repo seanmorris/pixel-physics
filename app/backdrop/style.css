@@ -118,9 +118,22 @@
 }
 
 .backdrop.industrial {
+	/*background-color: rgba(255, 255,255,1);*/
 	/*background-color: rgba(255,255,255,1);*/
-	/*background-color: #4848d8;*/
-	background-color: rgba(95,60,70,1);
+	/*background-color: rgba(0, 100, 140, 1);*/
+	background-color: rgba(95, 60, 70, 1);
+	background-color: rgba(0, 100, 140, 1);
+
+	transition: background-position-y 1200ms ease-out, background-image 1200ms ease-out;
+
+	background-image: linear-gradient(rgba(100, 170, 220, 1) 10%, rgba(95, 60, 70, 1) 50%);
+
+	background-size: 100% 150%;
+
+	background-position-y: calc(-288px * 0.50);
+	background-position-y: calc(-288px * 0.25);
+	background-position-y: calc(-288px * 0.00);
+	background-position-y: calc(-288px * 0.75);
 }
 
 .backdrop.mystic-cave .parallax,

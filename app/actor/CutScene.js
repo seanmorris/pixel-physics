@@ -65,6 +65,11 @@ export class CutScene extends PointActor
 							this.playSample(frame);
 							break;
 
+						case 'face':
+							other.args.direction = frame.direction;
+							other.args.facing    = frame.direction > 0 ? 'right' : 'left';
+							break;
+
 						case 'input':
 
 							if(frame.axes)

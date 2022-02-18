@@ -12,7 +12,7 @@ export class EggWalker extends Vehicle
 
 		this.args.type = 'actor-item actor-egg-walker';
 
-		this.args.width  = 64;
+		this.args.width  = 32;
 		this.args.height = 64;
 
 		this.args.weight = 1500;

@@ -22,8 +22,9 @@ import { WaterfallRegion } from './region/WaterfallRegion'
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
 import { MarbleBlock }    from './actor/MarbleBlock';
-import { BreakableBlock }    from './actor/BreakableBlock';
-import { Stopper }    from './actor/Stopper';
+import { BreakableBlock } from './actor/BreakableBlock';
+import { Stopper }        from './actor/Stopper';
+import { Zipline }        from './actor/Zipline';
 import { Block }          from './actor/Block';
 
 import { Monitor }   from './actor/Monitor';
@@ -54,6 +55,7 @@ import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
 import { ArrowSign }  from './actor/ArrowSign';
 import { Emerald }   from './actor/Emerald';
+import { FakeEmerald }   from './actor/FakeEmerald';
 import { Window }    from './actor/Window';
 import { Spring }    from './actor/Spring';
 
@@ -113,6 +115,11 @@ import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
 import { Cone } from './actor/Cone';
+import { CautionSign } from './actor/CautionSign';
+
+import { Bell } from './actor/Bell';
+
+import { Torch } from './actor/Torch';
 
 import { Signpost } from './actor/Signpost';
 
@@ -142,6 +149,7 @@ import { HtmlFrame } from './actor/HtmlFrame';
 import { Panel } from './actor/Panel';
 import { Tester } from './actor/Tester';
 import { Cursor } from './actor/Cursor';
+import { Spawner } from './actor/Spawner';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -161,6 +169,7 @@ export const ObjectPalette = {
 	, 'companion-block': CompanionBlock
 	, 'breakable-block': BreakableBlock
 	, 'stopper': Stopper
+	, 'zipline': Zipline
 	, 'bumper':       Bumper
 	, 'flipper':      Flipper
 	, 'see-saw':      SeeSaw
@@ -186,6 +195,7 @@ export const ObjectPalette = {
 	, 'switch':       Switch
 	, 'window':       Window
 	, 'emerald':      Emerald
+	, 'fake-emerald': FakeEmerald
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
@@ -244,6 +254,9 @@ export const ObjectPalette = {
 	, 'spikes': Spikes
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
+	, 'caution-sign': CautionSign
+	, 'bell': Bell
+	, 'torch': Torch
 	, 'orb': Orb
 	, 'chao': Chao
 	, 'egg': Egg
@@ -253,4 +266,5 @@ export const ObjectPalette = {
 	, 'html-frame': HtmlFrame
 	, 'panel': Panel
 	, 'tester': Tester
+	, 'spawner': Spawner
 };

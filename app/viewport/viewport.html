@@ -7,13 +7,18 @@
 	</div>
 	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
 
-		<svg height="100" width="100">
+		<svg height="32" width="32">
 		<defs>
 
-			<filter id="motionBlur">
+			<filter id="motionBlur" x="0%"
+ y="0%" width="100%" height="100%">
 				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
 			</filter>
+		</defs>
+		</svg>
 
+		<svg height="100" width="100">
+		<defs>
 			<filter id="waterBlur">
 				<feGaussianBlur in="SourceGraphic" stdDeviation="0.25,0" />
 			</filter>

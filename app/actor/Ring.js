@@ -20,6 +20,7 @@ export class Ring extends PointActor
 		this.args.dropped = this.args.dropped ?? true;
 		this.args.gone    = false;
 		this.args.gravity = 0.40;
+		this.args.delay   = this.args.delay ?? 64;
 	}
 
 	update()
@@ -59,6 +60,8 @@ export class Ring extends PointActor
 		if(this.dropped)
 		{
 			this.args.type = 'actor-item actor-ring dropped';
+
+			this.args.height = 14;
 		}
 
 		if(this.dropped && this.viewport && !this.viewport.actorIsOnScreen(this, 256))
@@ -92,14 +95,14 @@ export class Ring extends PointActor
 
 	collideA(other)
 	{
-		if(this.public.gone || this.args.ignore)
+		if(!this.viewport || this.public.gone || this.args.ignore)
 		{
 			return false;
 		}
 
 		const age = this.viewport.args.frameId - this.startFrame;
 
-		if(this.dropped && age < 64)
+		if(this.dropped && age < this.args.delay)
 		{
 			return false;
 		}
@@ -186,7 +189,7 @@ export class Ring extends PointActor
 
 	wakeUp()
 	{
-		if(this.restore)
+		if(this.def && this.restore)
 		{
 			this.args.x = this.def.get('x');
 			this.args.y = this.def.get('y');

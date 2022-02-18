@@ -32,6 +32,11 @@
 	--sprite-offset-y: 0px;
 }
 
+.actor-item.actor-knuckles[data-animation="startle"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -928px;
+}
+
 .actor-item.actor-knuckles[data-animation="hold-bomb"] .sprite:after {
 	--sprite-offset-y: -416px;
 }

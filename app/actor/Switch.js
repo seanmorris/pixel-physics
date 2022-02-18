@@ -16,6 +16,7 @@ export class Switch extends PointActor
 		this.removeTimer = null;
 
 		this.args.active = false;
+		this.args.latch  = this.args.latch || false;
 
 		this.activator = null;
 
@@ -33,6 +34,11 @@ export class Switch extends PointActor
 		if(this.ignore > 0)
 		{
 			this.ignore--;
+			return;
+		}
+
+		if(this.args.latch)
+		{
 			return;
 		}
 
@@ -70,7 +76,7 @@ export class Switch extends PointActor
 			return false;
 		}
 
-		if(this.public.active && other.y < this.y)
+		if(this.args.active && other.y < this.y)
 		{
 			return true;
 		}
@@ -153,6 +159,11 @@ export class Switch extends PointActor
 	beep()
 	{
 		if(!this.viewport)
+		{
+			return;
+		}
+
+		if(this.args.silent)
 		{
 			return;
 		}

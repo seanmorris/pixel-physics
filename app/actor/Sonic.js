@@ -185,18 +185,15 @@ export class Sonic extends PointActor
 
 		if(!this.hyperSpriteSheets)
 		{
-			this.png.ready.then(()=>{
-
-				this.hyperSpriteSheets = [
-					this.png.recolor(hyperColorsRed).toUrl()
-					, this.png.recolor(hyperColorsCyan).toUrl()
-					, this.png.recolor(hyperColorsPurple).toUrl()
-					, this.png.recolor(hyperColorsWhite).toUrl()
-					, this.png.recolor(hyperColorsGreen).toUrl()
-					, this.png.recolor(hyperColorsBlue).toUrl()
-					, this.png.recolor(hyperColorsYellow).toUrl()
-				];
-			});
+			this.png.ready.then(() => this.hyperSpriteSheets = [
+				this.png.recolor(hyperColorsRed).toUrl()
+				, this.png.recolor(hyperColorsCyan).toUrl()
+				, this.png.recolor(hyperColorsPurple).toUrl()
+				, this.png.recolor(hyperColorsWhite).toUrl()
+				, this.png.recolor(hyperColorsGreen).toUrl()
+				, this.png.recolor(hyperColorsBlue).toUrl()
+				, this.png.recolor(hyperColorsYellow).toUrl()
+			]);
 		}
 	}
 

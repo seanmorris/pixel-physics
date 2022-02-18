@@ -66,10 +66,10 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 	{
 		super.effect(other);
 
-		this.viewport.spawn.add({object:new Flickie({
-			x: this.args.x,
-			y: this.args.y,
-		})});
+		// this.viewport.spawn.add({object:new Flickie({
+		// 	x: this.args.x,
+		// 	y: this.args.y,
+		// })});
 	}
 
 	get solid() { return false; }

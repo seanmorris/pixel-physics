@@ -30,6 +30,11 @@ export const Constrainable = {
 
 	, sleep: function() {
 
+		if(this.args.stay)
+		{
+			return;
+		}
+
 		this.viewport.onFrameOut(5, () => {
 			this.args.x = this.def.get('x');
 			this.args.y = this.def.get('y');
