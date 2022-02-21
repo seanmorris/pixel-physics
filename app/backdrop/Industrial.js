@@ -1,4 +1,5 @@
 import { Backdrop } from './Backdrop';
+import { Tag } from 'curvature/base/Tag'
 
 export class Industrial extends Backdrop
 {
@@ -7,6 +8,12 @@ export class Industrial extends Backdrop
 		super(args, parent);
 
 		this.args.name = 'industrial';
+
+		this.args.sunrise = 0;
+
+		this.args.bindTo('sunrise', (v) => {
+			this.nodes[1] && this.nodes[1].style.setProperty('--sunrise', v);
+		});
 
 		this.args.strips = [
 			{

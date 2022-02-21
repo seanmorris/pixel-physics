@@ -211,8 +211,6 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		hooked.args.xSpeed += tiedTo.xSpeedLast || this.xSpeedLast || 0;
 		hooked.args.ySpeed += tiedTo.ySpeedLast || this.ySpeedLast || 0;
 
-		hooked.args.ySpeed += -2;
-
 		hooked.args.groundAngle = 0;
 
 		hooked.args.hangingFrom = null;

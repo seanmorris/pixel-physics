@@ -61,9 +61,9 @@
 
 .screen-card-main-menu li {
 	display: flex;
-	margin-bottom: 1em;
+	margin-bottom: 1.25em;
 	user-select: none;
-	margin-top: 1em;
+	margin-top: 1.25em;
 	cursor: pointer;
 	color: #CCC;
 }
@@ -95,7 +95,11 @@
 	top: 100%;
 
 	opacity: 0;
-
+}
+.screen-card-pause-menu li::after:focus,
+.screen-card-main-menu li::after:focus,
+.screen-card-pause-menu .subtext,
+.screen-card-main-menu .subtext {
 	transition: opacity 0.25s steps(4);
 }
 
@@ -317,7 +321,7 @@
 }
 
 .screen-card-main-menu ul {
-	max-height: 11em;
+	/*max-height: 11em;*/
 	overflow: auto;
 	scroll-snap-type: y mandatory;
 	margin: 0;
@@ -325,7 +329,7 @@
 }
 
 .screen-card-main-menu .menu-container[data-current-menu="Single Player"] ul {
-	max-height: 18em;
+	max-height: 19em;
 }
 
 .screen-card-main-menu li:first-child {
@@ -337,7 +341,7 @@
 }
 
 .screen-card-main-menu li {
-	scroll-snap-align: center;
+	scroll-snap-align: top;
 	position: relative;
 }
 

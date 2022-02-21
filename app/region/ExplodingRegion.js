@@ -85,7 +85,9 @@ export class ExplodingRegion extends Region
 
 		for(let i = 0; i < 1; i++)
 		{
-			const explosion = new Tag('<div class = "particle-explosion">');
+			const explosionTag = document.createElement('div');
+			explosionTag.classList.add('particle-explosion');
+			const explosion = new Tag(explosionTag);
 			const xOff = this.args.width * Math.random();
 			const yOff = this.args.height * Math.random();
 

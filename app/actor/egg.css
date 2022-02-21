@@ -1,35 +1,72 @@
 .actor-item.actor-egg-shell-top .sprite,
 .actor-item.actor-egg-shell-bottom .sprite,
 .actor-item.actor-egg .sprite {
+	--sprite-sheet:  url('/DBurraki/chao-egg-normal.png');
+
 	width:  15px;
 	height: 20px;
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
 	z-index: 1;
-	--sprite-sheet:  url('/DBurraki/chao-egg-normal.png');
 }
 
 .actor-item.actor-egg-shell-top .sprite:after,
-.actor-item.actor-egg-shell-bottom .sprite:after,
-.actor-item.actor-egg .sprite:after {
+.actor-item.actor-egg-shell-bottom .sprite:before,
+.actor-item.actor-egg .sprite:before {
 	content: '';
+
 	position: absolute;
 	left: 0;
+	top: 0;
+
 	background-image: var(--sprite-sheet);
 	transition: background-image 0.5s ease-out;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
 	width:  15px;
 	height: 20px;
-	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
-	z-index: 1;
+
+	opacity: 0.25;
+
 }
 
-.actor-item.actor-egg-shell-top .sprite:after {
-	top:  9px;
-	--sprite-offset-y: 40px;
+.actor-item.actor-egg .sprite:after {
+	content: '';
+
+	position: absolute;
+	left: 0;
+	top: 0;
+
+	background-image: var(--sprite-sheet);
+	transition: background-image 0.5s ease-out;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
+	background-position-x: -16px;
+	width:  15px;
+	height: 20px;
+	z-index: 1;
+
+	animation:
+		chao-egg-sparkle-fade 600ms infinite linear,
+		chao-egg-sparkle      250ms infinite steps(4);
 }
 
 .actor-item.actor-egg-shell-bottom .sprite:after {
 	--sprite-offset-y: 20px;
+}
+
+@keyframes chao-egg-sparkle {
+	0% {
+		background-position-y: 0;
+	}
+	100% {
+		background-position-y: -80px;
+	}
+}
+
+@keyframes chao-egg-sparkle-fade {
+	0% {
+		opacity: 0.75;
+	}
+	100% {
+		opacity: 0;
+	}
 }

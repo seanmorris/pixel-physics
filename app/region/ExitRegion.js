@@ -7,6 +7,7 @@ export class ExitRegion extends Region
 		super(...args);
 
 		this.args.type = 'region exit';
+		this.args.hidden = true;
 	}
 
 	updateActor(other)

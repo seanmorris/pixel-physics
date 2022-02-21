@@ -226,12 +226,15 @@ export class Sonic extends PointActor
 	updateEnd()
 	{
 		super.updateEnd();
-
-
 	}
 
 	update()
 	{
+		if(this.args.falling && this.isHyper && this.dashed && this.yAxis < -0.5)
+		{
+			this.args.ySpeed -= 0.6;
+		}
+
 		if(this.args.dead)
 		{
 			this.args.animation = 'dead';
@@ -610,8 +613,16 @@ export class Sonic extends PointActor
 
 		if(this.args.grinding && !this.args.falling)
 		{
-			const sparkParticle = new Tag(`<div class = "particle-sparks">`);
-			const sparkEnvelope = new Tag(`<div class = "envelope-sparks">`);
+			// `<div class = "particle-sparks">`
+
+			const sparkTag = document.createElement('div');
+			sparkTag.classList.add('particle-sparks');
+			const sparkParticle = new Tag(sparkTag);
+
+			// `<div class = "envelope-sparks">`
+			const envelopeTag = document.createElement('div');
+			envelopeTag.classList.add('envelope-sparks');
+			const sparkEnvelope = new Tag(envelopeTag);
 
 			sparkEnvelope.appendChild(sparkParticle.node);
 
@@ -831,12 +842,10 @@ export class Sonic extends PointActor
 
 		const finalSpeed = this.args.xSpeed + dashSpeed;
 
-		const space = this.scanForward(dashSpeed * direction, 0.5);
-
-		if(space && Math.abs(finalSpeed) > Math.abs(space))
-		{
-			dashSpeed = space * Math.sign(finalSpeed);
-		}
+		// if(Math.abs(finalSpeed) > Math.abs(space))
+		// {
+		// 	dashSpeed = space * Math.sign(finalSpeed);
+		// }
 
 		this.args.animation = 'rolling';
 
@@ -1021,7 +1030,7 @@ export class Sonic extends PointActor
 			this.doJump(0);
 		}
 
-		if(this.args.gSpeed && !this.args.falling && !this.args.rolling)
+		if(this.args.gSpeed && !this.args.falling && !this.args.rolling && Math.sign(this.args.gSpeed) === this.args.direction)
 		{
 			this.args.rolling = true;
 
@@ -1060,7 +1069,7 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		if(this.spindashCharge < 5 && this.args.modeTime < 45)
+		if(this.spindashCharge < 5 && (this.args.modeTime < 45 || this.args.skidding))
 		{
 			this.spindashCharge = 15;
 		}
@@ -1077,7 +1086,7 @@ export class Sonic extends PointActor
 
 		const dashBoost = dashPower * 32;
 
-		if(Math.sign(direction) !== Math.sign(dashBoost))
+		if(Math.sign(direction) !== Math.sign(this.args.gSpeed))
 		{
 			this.args.gSpeed = dashBoost * Math.sign(direction);
 		}
@@ -1085,6 +1094,9 @@ export class Sonic extends PointActor
 		{
 			this.args.gSpeed += dashBoost * Math.sign(direction);
 		}
+
+		this.args.ignore = 1;
+		this.args.rolling = true;
 
 		this.spindashCharge = 0;
 
@@ -1096,12 +1108,12 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
-		if(this.skidding)
-		{
-			return;
-		}
+		// if(this.skidding)
+		// {
+		// 	return;
+		// }
 
-		if(this.args.ignore)
+		if(this.args.ignore || this.args.rolling)
 		{
 			return;
 		}
@@ -1116,14 +1128,22 @@ export class Sonic extends PointActor
 			}
 		}
 
+		if(this.args.modeTime === 0)
+		{
+			return;
+		}
+
 		if(this.dropDashCharge)
 		{
 			return;
 		}
 
-		if(this.args.falling || this.willJump || this.args.gSpeed)
+		if(this.args.falling || this.willJump || (this.args.gSpeed && !this.skidding))
 		{
-			this.spindashCharge = 0;
+			if(!this.skidding)
+			{
+				this.spindashCharge = 0;
+			}
 			return;
 		}
 

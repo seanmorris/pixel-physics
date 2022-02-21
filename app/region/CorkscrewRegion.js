@@ -27,6 +27,7 @@ export class CorkscrewRegion extends Region
 		super(...args);
 
 		this.args.type = 'region corkscrew';
+		this.args.hidden = true;
 	}
 
 	updateActor(other)

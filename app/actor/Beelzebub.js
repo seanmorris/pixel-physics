@@ -445,11 +445,11 @@ export class Beelzebub extends Mixin.from(PointActor)
 			return;
 		}
 
-		const xDiff = Math.abs(this.x - mainChar.x);
-		const yDiff = Math.abs(this.y - mainChar.y);
+		const xDiff = Math.abs(this.args.x - mainChar.x);
+		const yDiff = Math.abs(this.args.y - mainChar.y);
 
-		const xSign = Math.sign(this.x - mainChar.x);
-		const ySign = Math.sign(this.y - mainChar.y);
+		const xSign = Math.sign(this.args.x - mainChar.x);
+		const ySign = Math.sign(this.args.y - mainChar.y);
 
 		switch(this.args.phase)
 		{

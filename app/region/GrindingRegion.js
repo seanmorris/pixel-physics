@@ -11,6 +11,8 @@ export class GrindingRegion extends Region
 		super(...args);
 
 		this.args.type = 'region grinding';
+
+		this.args.hidden = true;
 	}
 
 	update()

@@ -110,7 +110,7 @@
             "Glad I found you here..."
         ],
         "classes": "sonic left talking",
-        "time": 240
+        "time": 180
     },
     {
         "event": "input",
@@ -166,7 +166,7 @@
             "You just told me!"
         ],
         "classes": "sonic smiling left talking",
-        "time": 240
+        "time": 120
     },
     {
         "event": "dialog",

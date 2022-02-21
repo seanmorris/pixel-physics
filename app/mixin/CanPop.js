@@ -75,8 +75,9 @@ export const CanPop = {
 		{
 			return;
 		}
-
-		const explosion = new Tag('<div class = "particle-explosion">');
+		const explosionTag = document.createElement('div');
+		explosionTag.classList.add('particle-explosion');
+		const explosion = new Tag(explosionTag);
 
 		explosion.style({'--x': this.x, '--y': this.y-16});
 

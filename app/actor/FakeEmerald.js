@@ -32,9 +32,11 @@ export class FakeEmerald extends BreakableBlock
 	{
 		if(!this.breakable)
 		{
-			return true;
+			return false;
 		}
 
 		return super.collideA(other, type);
 	}
+
+	get solid() { return this.breakable }
 }

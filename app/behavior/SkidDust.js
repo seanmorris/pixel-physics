@@ -13,7 +13,7 @@ export class SkidDust extends Behavior
 
 	update(host)
 	{
-		if(host.public.falling || host.public.rolling)
+		if(host.public.falling || host.public.rolling || host.spindashCharge)
 		{
 			return;
 		}
@@ -56,7 +56,9 @@ export class SkidDust extends Behavior
 			return;
 		}
 
-		const dustParticle = new Tag(`<div class = "${this.dustType}">`);
+		const dustParticle = new Tag(document.createElement('div'));
+
+		dustParticle.classList.add(this.dustType);
 
 		const dustDist = Math.sign(host.args.gSpeed) * host.dustDist || 0;
 

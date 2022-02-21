@@ -124,16 +124,13 @@
 	background-color: rgba(95, 60, 70, 1);
 	background-color: rgba(0, 100, 140, 1);
 
-	transition: background-position-y 1200ms ease-out, background-image 1200ms ease-out;
+	transition: background-position-y 1800ms ease-out, background-image 3600ms ease-out;
 
-	background-image: linear-gradient(rgba(100, 170, 220, 1) 10%, rgba(95, 60, 70, 1) 50%);
+	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 85%);
 
-	background-size: 100% 150%;
+	background-size: 100% 300%;
 
-	background-position-y: calc(-288px * 0.50);
-	background-position-y: calc(-288px * 0.25);
-	background-position-y: calc(-288px * 0.00);
-	background-position-y: calc(-288px * 0.75);
+	background-position-y: calc(50% * calc(2 * var(--sunrise)));
 }
 
 .backdrop.mystic-cave .parallax,

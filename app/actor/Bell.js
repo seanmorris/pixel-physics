@@ -27,6 +27,9 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 
 	update()
 	{
+		this.xLast = this.x;
+		this.yLast = this.y;
+
 		super.update();
 
 		if(this.cooldown > 0)
@@ -45,10 +48,19 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 
 		this.args.falling = true;
 
+		const moved = this.x - this.xLast
+
+		if(Math.abs(moved) > 1)
+		{
+			this.args.animation = ['ring-left', '', 'ring-right'][1 + Math.sign(this.x - this.xLast)];
+		}
+		else
+		{
+			this.args.animation = '';
+		}
+
 		if(!this.cooldown && (Math.abs(this.args.xSpeed) > 2 || Math.abs(this.args.ySpeed) > 6))
 		{
-			console.log(this.cooldown);
-
 			const ring = new Ring({x:this.x, y:this.y});
 
 			ring.dropped = true;
@@ -117,5 +129,7 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 
 		this.args.xSpeed = other.args.xSpeed;
 		this.args.ySpeed = other.args.ySpeed;
+
+		this.viewport.args.backdrop.args.sunrise = 1;
 	}
 }

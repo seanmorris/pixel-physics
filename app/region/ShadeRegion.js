@@ -26,9 +26,9 @@ export class ShadeRegion extends Region
 		this.args.type = 'region region-shade';
 	}
 
-	onAttach()
+	onRendered()
 	{
-		super.onAttach();
+		super.onRendered();
 
 		this.actorFilterWrapper = new Tag('<div class = "region-filter-wrapper">');
 		this.actorColorWrapper  = new Tag('<div class = "region-color-wrapper">');
