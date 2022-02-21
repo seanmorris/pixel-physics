@@ -65,7 +65,7 @@ export class StarBalloon extends Balloon
 
 	sleep()
 	{
-		this.tags.sprite.classList.remove('popped');
+		this.tags.sprite && this.tags.sprite.classList.remove('popped');
 
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');

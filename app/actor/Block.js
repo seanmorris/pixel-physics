@@ -376,7 +376,7 @@ export class Block extends PointActor
 				});
 			}
 
-			if(this.args.goBack)
+			if(!this.args.worm && this.args.goBack)
 			{
 				this.args.float = -1;
 

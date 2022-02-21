@@ -2379,10 +2379,6 @@ export class Viewport extends View
 
 			this.args.pauseMenu.input(controller);
 		}
-		else
-		{
-			this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
-		}
 
 		if(this.args.paused === false || this.args.paused > 0 || this.args.networked)
 		{
@@ -3073,6 +3069,11 @@ export class Viewport extends View
 		if(!this.gamepad)
 		{
 			return;
+		}
+
+		if(this.args.started)
+		{
+			this.pauseGame();
 		}
 
 		if(this.gamepad.index === event.gamepad.index)
