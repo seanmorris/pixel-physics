@@ -242,6 +242,10 @@ export class MainMenu extends Menu
 				available: 'unavailable'
 			}
 			, Settings: SettingsMenu(parent)
+
+			, 'Back': {
+				callback: () => parent.quit(true)
+			}
 		};
 
 		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
@@ -332,8 +336,9 @@ export class MainMenu extends Menu
 
 	focus(element)
 	{
-		element.scrollIntoView({behavior: 'smooth', block: 'center'});
 		super.focus(element);
+
+		element.scrollIntoView({behavior: 'smooth', block: 'center'});
 	}
 
 	answer()

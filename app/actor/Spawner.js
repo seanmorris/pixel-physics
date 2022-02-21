@@ -31,8 +31,6 @@ export class Spawner extends PointActor
 
 		const spawned = new type({x: point.x, y: point.y});
 
-		console.log(this.def);
-
 		for(const [property,value] of this.def)
 		{
 			if(property === 'point' || property === 'type')

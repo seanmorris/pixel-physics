@@ -16,6 +16,24 @@ export class WaterController extends PointActor
 		this.args.hidden = true;
 	}
 
+	updateStart()
+	{
+		super.updateStart();
+
+		if(this.args.switch && !this.switch)
+		{
+			this.switch = this.viewport.actorsById[ this.args.switch ];
+		}
+
+		if(this.switch)
+		{
+			if(this.switch.args.active > 0)
+			{
+				this.activate(this.switch.activator, this.switch);
+			}
+		}
+	}
+
 	update()
 	{
 		// if(this.args.activated && this.args.levelSpeed < 18)
@@ -43,6 +61,8 @@ export class WaterController extends PointActor
 
 	activate(other, button)
 	{
+		console.log(other, button);
+
 		if(this.args.activated)
 		{
 			return;

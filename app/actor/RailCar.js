@@ -87,7 +87,7 @@ export class RailCar extends Vehicle
 				{
 					this.breakApart();
 				}
-				else if(!this.args.falling && !this.args.gSpeed && !this.args.hSpeed)
+				else if(!this.args.falling && this.args.pushing)
 				{
 					this.breakApart();
 				}
@@ -172,10 +172,10 @@ export class RailCar extends Vehicle
 		super.sleep();
 	}
 
-	// processInputDirect()
-	// {
-	// 	// Don't process input at all.
-	// }
+	processInputDirect()
+	{
+		// Don't process input at all.
+	}
 
 	// jump()
 	// {

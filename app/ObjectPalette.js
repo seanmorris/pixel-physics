@@ -115,7 +115,10 @@ import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
 import { Cone } from './actor/Cone';
+import { Fountain } from './actor/Fountain';
+
 import { CautionSign } from './actor/CautionSign';
+import { RollingSign } from './actor/RollingSign';
 
 import { Bell } from './actor/Bell';
 
@@ -254,7 +257,9 @@ export const ObjectPalette = {
 	, 'spikes': Spikes
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
+	, 'fountain': Fountain
 	, 'caution-sign': CautionSign
+	, 'rolling-sign': RollingSign
 	, 'bell': Bell
 	, 'torch': Torch
 	, 'orb': Orb

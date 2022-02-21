@@ -1,9 +1,39 @@
 .actor-bell .sprite {
-	background-image: url(/custom/bell.png);
 	width: 64px;
 	height: 64px;
 }
 
 .actor-bell {
 	z-index: 100001;
+}
+
+.actor-bell .sprite::after {
+	content:  ' ';
+	position: absolute;
+	left: 0;
+	background-image: url(/custom/bell.png);
+	width: 64px;
+	height: 64px;
+	z-index: 1;
+}
+
+.actor-bell .sprite::before {
+	content:  ' ';
+	width: 20px;
+	height: 20px;
+	background-image: url(/custom/striker.png);
+	position: absolute;
+	bottom: -12px;
+	z-index: -1;
+	left: 8px;
+	transform: translateX(14px);
+	transition: transform 500ms 100ms ease-out;
+}
+
+.actor-bell[data-animation="ring-left"] .sprite::before {
+	transform: translate(28px, -4px);
+}
+
+.actor-bell[data-animation="ring-right"] .sprite::before {
+	transform: translate(0px, -4px);
 }

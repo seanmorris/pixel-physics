@@ -30,7 +30,7 @@ export const Constrainable = {
 
 	, sleep: function() {
 
-		if(this.args.stay)
+		if(!this.viewport || this.args.stay)
 		{
 			return;
 		}

@@ -54,10 +54,20 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			this.mapData = data;
 
-			const layers = (data.layers || []).map(layer => Bindable.make(layer));
+			const layers = data.layers || [];
 
-			this.objectLayers = layers.filter(l => l.type === 'objectLayers');
-			this.tileLayers   = layers.filter(l => l.type === 'tilelayer');
+			data.layers.forEach(layer => {
+				layer.offsetX        = false;
+				layer.offsetY        = false;
+				layer.offsetXChanged = false;
+				layer.offsetYChanged = false;
+				layer.destroyed      = false;
+				layer.layer          = null;
+				Object.preventExtensions(layer);
+			});
+
+			this.objectLayers = data.layers.filter(l => l.type === 'objectLayers');
+			this.tileLayers   = data.layers.filter(l => l.type === 'tilelayer');
 
 			this.collisionLayers = this.tileLayers.filter(l => {
 

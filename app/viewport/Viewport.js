@@ -995,7 +995,7 @@ export class Viewport extends View
 
 	startLevel(refresh = true)
 	{
-		this.args.fade = true;
+		// this.args.fade = true;
 
 		this.clearDialog();
 		this.hideDialog();
@@ -1111,6 +1111,8 @@ export class Viewport extends View
 		this.args.started = false;
 
 		this.args.zonecard.played.then(() => {
+
+			this.args.startFrameId = this.args.frameId;
 
 			this.args.level = 'level';
 
@@ -1300,12 +1302,6 @@ export class Viewport extends View
 			this.settings.debugOsd = !this.settings.debugOsd;
 		}
 
-		if(controller.buttons[1011] && controller.buttons[1011].time === 1)
-		{
-			this.args.paused = 0;
-			this.focus();
-		}
-
 		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
 		{
 			if(!this.args.fullscreen)
@@ -1316,6 +1312,12 @@ export class Viewport extends View
 			}
 
 			this.exitFullscreen();
+		}
+
+		if(controller.buttons[1011] && controller.buttons[1011].time > 0)
+		{
+			this.args.pauseMenu.input(controller);
+			// this.args.paused = 1;
 		}
 
 		if(!this.args.networked && !this.args.paused)
@@ -1569,9 +1571,9 @@ export class Viewport extends View
 			case 'boss':
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.72;
-				this.maxCameraBound     = 0;
+				this.maxCameraBound     = 64;
 
-				cameraSpeed = 3;
+				cameraSpeed = 24;
 
 				break;
 
@@ -1586,13 +1588,14 @@ export class Viewport extends View
 				this.maxCameraBound = 64;
 				cameraSpeed = 25;
 				break;
-
 		}
 
 		let gSpeed = actor.args.gSpeed;
 		let xSpeed = actor.args.xSpeed;
 
-		if(['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube', 'hooked', 'corkscrew'].includes(this.cameraMode))
+		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube', 'hooked', 'corkscrew'];
+
+		if(biasModes.includes(this.cameraMode))
 		{
 			if(actor.args.hangingFrom)
 			{
@@ -1633,7 +1636,7 @@ export class Viewport extends View
 
 		this.args.xOffsetTarget = Math.max(0,Math.min(1,this.args.xOffsetTarget));
 
-		if(actor.args.jumping)
+		if(actor.args.jumping && actor.args.fallTime > 15)
 		{
 			this.maxCameraBound = 128;
 
@@ -1739,19 +1742,19 @@ export class Viewport extends View
 		x = x - snapFactor * Math.cos(angle) * snapSpeed;
 		y = y - snapFactor * Math.sin(angle) * snapSpeed / 2;
 
-		if(x > 96 && !this.meta.wrapX)
+		if(x > 0 && !this.meta.wrapX)
 		{
-			x = 96;
+			x = 0;
 		}
 
-		if(y > 96 && !this.meta.wrapY)
+		if(y > 0 && !this.meta.wrapY)
 		{
-			y = 96;
+			y = 0;
 		}
 
-		const playableHeight = this.meta.deathLine || (this.tileMap.mapData.height * 32 + 96);
+		const playableHeight = this.meta.deathLine || (this.tileMap.mapData.height * 32);
 
-		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width - 96;
+		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width;
 		const yMax = -playableHeight + this.args.height;
 
 		if(x < xMax && !this.meta.wrapX)
@@ -2050,10 +2053,16 @@ export class Viewport extends View
 
 			this.actors.add( actor );
 
+			actor.render(this.tags.actors);
+
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
-				actor.render(this.tags.actors);
 				actor.args.display = actor.defaultDisplay || null;
+			}
+			else
+			{
+				actor.args.display = 'none';
+				actor.detach();
 			}
 
 			if((actor.onAttach && actor.onAttach() === false) || actor.args.hidden)
@@ -2061,11 +2070,8 @@ export class Viewport extends View
 				actor.args.display = 'none';
 				actor.detach();
 			}
-			else
-			{
-				actor.args.display = 'none';
-				// actor.detach();
-			}
+
+			/* */
 
 			// actor.onRendered();
 
@@ -2328,6 +2334,11 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.args.paused > 0)
+		{
+			this.args.paused--;
+		}
+
 		const controller = this.controlActor
 			? this.controlActor.controller
 			: this.controller;
@@ -2404,12 +2415,10 @@ export class Viewport extends View
 			return;
 		}
 
-		if(this.args.paused > 0)
+		if(this.tileMap && this.tileMap.mapData)
 		{
-			this.args.paused--;
+			this.updateBackdrops();
 		}
-
-		this.updateBackdrops();
 
 		if(!this.args.started)
 		{
@@ -3334,11 +3343,11 @@ export class Viewport extends View
 		this.args.paused = true;
 	}
 
-	quit()
+	quit(quick = false)
 	{
 		this.args.actClear = false;
 		this.args.cutScene = false;
-		this.args.fade = false;
+		this.args.fade     = true;
 
 		this.callFrames.clear();
 		this.callIntervals.clear();
@@ -3410,11 +3419,21 @@ export class Viewport extends View
 
 		const cards = [];
 
-		cards.push(...this.returnHomeCards());
+		if(quick)
+		{
+			cards.push(...this.returnHomeCards());
+		}
+		else
+		{
+			cards.push(...this.homeCards());
+		}
+
 
 		this.args.titlecard = new Series({cards}, this);
 
-		this.onTimeout(750, () => this.args.backdrop = null);
+		this.args.bg = this.args.backdrop = null;
+
+		Keyboard.get().reset();
 
 		this.args.titlecard.play();
 

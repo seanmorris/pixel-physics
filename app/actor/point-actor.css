@@ -25,6 +25,11 @@
 	contain:  size style;
 }
 
+[data-paused="0"] .point-actor .sprite:after,
+[data-paused="-1"] .point-actor .sprite:after {
+	animation-play-state: paused !important;
+}
+
 .point-actor .labels:not(:empty) {
 	z-index: 1000000;
 	min-width: 100%;

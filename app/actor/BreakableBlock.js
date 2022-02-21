@@ -49,6 +49,8 @@ export class BreakableBlock extends Block
 
 	updateStart()
 	{
+		super.updateStart();
+
 		if(this.switch)
 		{
 			if(this.switch.args.active && !this.broken)

@@ -18,7 +18,7 @@ export class Menu extends Card
 
 		this.currentItem = null;
 
-		this.include = 'a, button, input, textarea, select, details,[tabindex]';
+		this.include = 'a, button, input, textarea, select, details, [tabindex]';
 		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
@@ -74,9 +74,7 @@ export class Menu extends Card
 			return;
 		}
 
-		const bounds = this.tags.bound;
-
-		const element = this.findNext(null, bounds);
+		const element = this.findNext(null, this.tags.bound);
 
 		element && this.focus(element);
 	}
@@ -186,7 +184,7 @@ export class Menu extends Card
 		}
 		else if(controller.buttons[15] && controller.buttons[15].time === 1)
 		{
-			this.expand(this.currentItem);
+			this.currentItem && this.expand(this.currentItem);
 		}
 
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
@@ -212,8 +210,6 @@ export class Menu extends Card
 			this.zeroMe.zero();
 		}
 
-		item.callback && this.onTimeout(100, () => item.callback());
-
 		if(item.children)
 		{
 			const prev = this.args.items;
@@ -235,6 +231,11 @@ export class Menu extends Card
 			this.args.items['back'] = this.args.items['back'] || back;
 
 			this.onNextFrame(()=>this.focusFirst());
+		}
+
+		if(item.callback)
+		{
+			item.callback();
 		}
 	}
 

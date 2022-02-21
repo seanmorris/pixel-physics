@@ -25,6 +25,7 @@ export class BossRegion extends Region
 		super(...args);
 
 		this.args.type = 'region boss';
+		this.args.hidden = true;
 	}
 
 	updateActor(other)

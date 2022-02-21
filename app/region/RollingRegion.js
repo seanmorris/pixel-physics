@@ -15,6 +15,7 @@ export class RollingRegion extends Region
 		this.args.maxSpeed = this.args.maxSpeed ?? -1;
 		this.args.minSpeed = this.args.minSpeed ?? -1;
 		this.args.canJump  = this.args.canJump  ?? false;
+		this.args.hidden   = true;
 	}
 
 	update()

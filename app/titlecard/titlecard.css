@@ -11,8 +11,8 @@
 }
 
 .titlecard {
-	--timer: 100;
-	--timer2: 100;
+	--timer: 101;
+	--timer2: 101;
 
 	--zMax: 240;
 
@@ -82,7 +82,7 @@
 
 .titlecard-title-line-1,
 .titlecard-title-line-2 {
-	transform: translateX(100%);
+	transform: translateX(calc(100% + 1px));
 	transition: transform var(--tFunc), opacity var(--tFunc);
 	padding-right: 18pt;
 }

@@ -51,6 +51,13 @@ export class Layer extends View
 
 			layerDef.layer = this;
 		}
+
+		this.offsetXChanged = 0;
+		this.offsetYChanged = 0;
+
+		this.fallSpeed      = 0;
+
+		Object.preventExtensions(this);
 	}
 
 	move()
@@ -98,7 +105,7 @@ export class Layer extends View
 			this.args.offsetY = 0;
 		}
 
-		this.fallspeed = this.fallspeed || 0;
+		this.fallSpeed = this.fallSpeed || 0;
 	}
 
 	onAttach(event)
@@ -200,9 +207,10 @@ export class Layer extends View
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
+					const scale  = '1.02';
 
 					block.style({
-						transform: `translate(${transX}px, ${transY}px) scale(1.01, 1.01)`
+						transform: `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
 						, position: 'absolute'
 						, left: 0
 						, top: 0
