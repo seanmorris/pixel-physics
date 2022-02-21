@@ -1,0 +1,16 @@
+.actor-fountain .sprite {
+	background-image: url(/Sonic/fountain.png);
+	background-position-x: 0;
+	width: 72px;
+	height: 120px;
+	animation: fountain-animate steps(4) 400ms infinite forwards;
+}
+
+@keyframes fountain-animate {
+	0% {
+		background-position-x: 0;
+	}
+	100% {
+		background-position-x: -288px;
+	}
+}

@@ -1,0 +1,35 @@
+.actor-rolling-sign {
+	z-index: -1000;
+}
+
+.actor-rolling-sign .sprite {
+	width: 20px;
+	background-image: url(/custom/roll-sign-face.png);
+	background-repeat: no-repeat;
+}
+
+.actor-rolling-sign .sprite::before {
+	content: ' ';
+	position: absolute;
+	left: 9px;
+	bottom: 0;
+	z-index: 1;
+	width: 20px;
+
+	height: calc(100% - 20px);
+	background-image: url(/custom/sign-post-post.png);
+	background-repeat: repeat-y;
+	z-index: -1;
+}
+
+.actor-rolling-sign .sprite::after {
+	content: ' ';
+	position: absolute;
+	bottom: 0;
+	width: 8px;
+	height: 8px;
+	left: 6px;
+
+	background-image: url(/custom/sign-post-base.png);
+	background-repeat:  no-repeat;
+}

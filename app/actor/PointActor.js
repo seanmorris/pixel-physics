@@ -1809,7 +1809,7 @@ export class PointActor extends View
 
 					this.args.x += this.args.width/2;
 
-					this.args.ignore = 30;
+					this.args.ignore = -this.args.ySpeed * 2;
 
 				}
 				else if(mode === MODE_RIGHT && (this.args.groundAngle > -Math.PI * 0.15))
@@ -1823,7 +1823,7 @@ export class PointActor extends View
 					// this.args.groundAngle = Math.PI / 2;
 					this.args.x -= this.args.width/2;
 
-					this.args.ignore = 30;
+					this.args.ignore = -this.args.ySpeed * 2;
 				}
 				else if(mode === MODE_CEILING)
 				{
@@ -3044,7 +3044,7 @@ export class PointActor extends View
 		Object.assign(this.lastPointA, [this.x, this.y].map(Math.trunc));
 		Object.assign(this.lastPointB, [this.x, this.y].map(Math.trunc));
 
-		const scanDist = Math.ceil(airSpeed);
+		const scanDist = 1 + Math.ceil(airSpeed);
 
 		const airPoint = this.castRay(
 			scanDist
@@ -3201,21 +3201,27 @@ export class PointActor extends View
 			const backPosition = this.findNextStep(-sensorSpread * 0.5);
 			const forePosition = this.findNextStep(sensorSpread * 0.5);
 
-			if(this.xSpeedLast > 0 && forePosition[3])
+			if(this.xSpeedLast > 0 && forePosition && forePosition[3])
 			{
 				this.args.x -= this.args.width;
 			}
-			else if(this.xSpeedLast < 0 && backPosition[3])
+			else if(this.xSpeedLast < 0 && backPosition && backPosition[3])
 			{
 				this.args.x += this.args.width;
 			}
-			else if((forePosition[0] !== false && forePosition[1] !== false)
-				|| (backPosition[0] !== false && backPosition[1] !== false)
+			else if((!forePosition || forePosition[0] !== false && forePosition[1] !== false)
+				|| (!backPosition || backPosition[0] !== false && backPosition[1] !== false)
 			){
-				const newAngle = (ySpeedOriginal < 0 ? -1 : 1) * Number(Math.atan2(
-					(forePosition[1]??0) - (backPosition[1]??0)
-					, (forePosition[0]??0) - (backPosition[0]??0)
-				));
+				let newAngle = 0;
+
+				if(forePosition && backPosition)
+				{
+					newAngle = (ySpeedOriginal < 0 ? -1 : 1) * Number(Math.atan2(
+						(forePosition[1]??0) - (backPosition[1]??0)
+						, (forePosition[0]??0) - (backPosition[0]??0)
+					));
+				}
+
 
 				if(isNaN(newAngle))
 				{
@@ -3242,7 +3248,7 @@ export class PointActor extends View
 				// 	this.args.groundAngle = 0;
 				// }
 				// else
-				if(!forePosition[2] && !backPosition[2] && !(forePosition[3] && backPosition[3]))
+				if(forePosition && backPosition && !forePosition[2] && !backPosition[2] && !(forePosition[3] && backPosition[3]))
 				{
 					// this.args.groundAngle = this.args.angle = newAngle;
 
@@ -3307,8 +3313,10 @@ export class PointActor extends View
 				}
 				else if(!this.args.dead
 					&& this.args.startled < 175
-					&& ((forePosition[2] && !backPosition[3]) || (!forePosition[3] && backPosition[2])))
-				{
+					&& ( (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) )
+						|| ( (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
+					)
+				){
 					this.args.falling = false;
 					this.args.gSpeed  = xSpeedOriginal;
 

@@ -100,7 +100,14 @@ export class BreakableBlock extends Block
 
 				if(!other.args.falling)
 				{
-					this.delayedBreak(25);
+					if(this.args.worm)
+					{
+						this.delayedBreak(5);
+					}
+					else
+					{
+						this.delayedBreak(25);
+					}
 				}
 
 				return true;
@@ -192,6 +199,11 @@ export class BreakableBlock extends Block
 
 	sleep()
 	{
+		if(this.args.dontRestore)
+		{
+			return;
+		}
+
 		if(this.args.collapse)
 		{
 			this.args.static = true;
@@ -205,24 +217,28 @@ export class BreakableBlock extends Block
 			this.box.classList.remove('broken');
 			this.box.classList.remove('breaking');
 
-			this.args.x = this.def.get('x');
-			this.args.y = this.def.get('y') + 1;
-
 			this.broken = false;
 		}
 
-		if(this.args.dontRestore)
+		if(this.args.worm)
 		{
-			return;
+			this.args.x += this.args.worm;
+		}
+		else
+		{
+			this.args.x = this.def.get('x');
 		}
 
-		this.box.classList.remove('broken');
-		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y') + 1;
+
+		this.box.classList.remove('broken');
+		// this.args.y = this.def.get('y') + 1;
 
 		this.args.active = 0;
 
 		this.broken = false;
+
+		this.viewport.setColCell(this);
 	}
 
 	delayedBreak(delay = 30, other = null)
@@ -280,7 +296,7 @@ export class BreakableBlock extends Block
 			const left  = this.viewport.actorsAtPoint(this.x - this.args.width, this.y);
 			const right = this.viewport.actorsAtPoint(this.x + this.args.width, this.y);
 
-			if(Array.isArray(left))
+			if(Array.isArray(left) && !Math.sign(this.args.worm))
 			{
 				for(const actor of left)
 				{
@@ -303,7 +319,7 @@ export class BreakableBlock extends Block
 				}
 			}
 
-			if(Array.isArray(right))
+			if(Array.isArray(right) && !Math.sign(this.args.worm))
 			{
 				for(const actor of right)
 				{

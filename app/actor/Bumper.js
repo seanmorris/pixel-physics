@@ -35,7 +35,7 @@ export class Bumper extends PointActor
 
 	collideA(other)
 	{
-		if(other.static || other.isRegion || this.ignores.has(other))
+		if(other.static || other.isRegion || this.ignores.has(other) || other.noClip)
 		{
 			return;
 		}
