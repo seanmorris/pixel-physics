@@ -8,11 +8,13 @@ import { Twist } from '../effects/Twist';
 
 import { Menu } from './Menu';
 
+import { SavestateMenu } from './SavestateMenu';
 import { SettingsMenu } from './SettingsMenu';
 
 import { TileMap }  from '../tileMap/TileMap';
 
 import { CharacterString } from '../ui/CharacterString';
+import { CharacterPreview } from './CharacterPreview';
 
 export class MainMenu extends Menu
 {
@@ -37,7 +39,34 @@ export class MainMenu extends Menu
 
 		this.refreshConnection();
 
-		this.args.items = {
+		const Character = {
+			input: 'select'
+			, options: [
+				'Sonic'
+				, 'Tails'
+				, 'Knuckles'
+				, 'Robotnik'
+				, 'EggRobo'
+				, 'Mecha-Sonic'
+				, 'Seymour'
+				, 'Chalmers'
+				, 'Sean'
+			]
+			, locked: [
+				'Robotnik'
+				, 'EggRobo'
+				, 'Mecha-Sonic'
+				, 'Seymour'
+				, 'Chalmers'
+				, 'Sean'
+			]
+			, set: value => this.parent.args.selectedChar = value
+			, get: () => this.parent.args.selectedChar
+		};
+
+		Character.prefix = new CharacterPreview(Character);
+
+		this.items = this.args.items = {
 
 			'Single Player': {
 
@@ -45,16 +74,38 @@ export class MainMenu extends Menu
 
 				, children: {
 
-					'Sonic Control Tutorial': {
+					Character
+
+					, 'Sonic Control Tutorial': {
 						subtext: 'Learn the controls for Sonic'
+						, characters: ['Sonic']
 						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
 							this.accept();
 						}
 					}
 
+					, 'Tails Control Tutorial': {
+						subtext: 'Learn the controls for Tails'
+						, characters: ['Tails']
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
+							this.accept();
+						}
+					}
+
+					, 'Knuckles Control Tutorial': {
+						subtext: 'Learn the controls for Knuckles'
+						, characters: ['Knuckles']
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
+							this.accept();
+						}
+					}
+
 					, 'Radical City Zone': {
 						subtext: 'Gotta go fast!'
+						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, children: {
 							'Act 1': {
 								callback: () => {
@@ -73,14 +124,16 @@ export class MainMenu extends Menu
 					}
 
 					, 'Seaview Park Zone': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/west-side-zone.json'});
 							this.accept();
 						}
 					}
 
 					, 'Misty Ruins Test Zone': {
-						subtext: 'Testing art, layout and physics for Misty Ruins Zone'
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Misty Ruins Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/ruins-test.json'});
 							this.accept();
@@ -88,7 +141,8 @@ export class MainMenu extends Menu
 					}
 
 					, 'Underground Test': {
-						subtext: 'Testing art, layout and physics for Underground Zone'
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Underground Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
 							this.accept();
@@ -96,108 +150,104 @@ export class MainMenu extends Menu
 					}
 
 					, 'Terrain Test': {
-						subtext: 'Testing different terrain types'
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing different terrain types'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
 							this.accept();
 						}
 					}
 
-					, 'Pixel Hill Zone': {
-						subtext: 'Movement Sandbox - all characters'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/pixel-hill-zone.json'});
-							this.accept();
-						}
-					}
+					// , 'Pixel Hill Zone': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Movement Sandbox - all characters'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/pixel-hill-zone.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Tails Control Tutorial': {
-						subtext: 'Learn the controls for Tails'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
-							this.accept();
-						}
-					}
-					, 'Knuckles Control Tutorial': {
-						subtext: 'Learn the controls for Knuckles'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
-							this.accept();
-						}
-					}
 					, 'Moon Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
 							this.accept();
 						}
 					}
 
 					, 'Space Pinball Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
 							this.accept();
 						}
 					}
 					, 'Belt and Wheel Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/belt-test.json'});
 							this.accept();
 						}
 					}
 					, 'See-Saw Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
 							this.accept();
 						}
 					}
 					, 'Vehicle Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
 							this.accept();
 						}
 					}
 
 					, 'Flickie Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
 							this.accept();
 						}
 					}
 
 					, 'Light Dash Test': {
-						callback: () => {
+						characters: ['Sonic']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
 							this.accept();
 						}
 					}
 					, 'Block Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/block-test.json'});
 							this.accept();
 						}
 					}
 
 					, 'Half Pipe Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
 							this.accept();
 						}
 					}
 					, 'Water Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/water-test.json'});
 							this.accept();
 						}
 					}
 					, 'Arch Test': {
-						callback: () => {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/arc-test.json'});
 							this.accept();
 						}
 					}
-					, 'locked': { available: 'unavailable' }
-					, 'locked ': { available: 'unavailable' }
-					, 'locked  ': { available: 'unavailable' }
 				}
 
 
@@ -242,6 +292,8 @@ export class MainMenu extends Menu
 				available: 'unavailable'
 			}
 			, Settings: SettingsMenu(parent)
+
+			// , Load: SavestateMenu(parent)
 
 			, 'Back': {
 				callback: () => parent.quit(true)
@@ -471,5 +523,12 @@ export class MainMenu extends Menu
 		done.then(() => this.onTimeout(250, () => this.remove()));
 
 		return done;
+	}
+
+	change(event)
+	{
+		super.change(event);
+
+		// Object.keys(this.args.items)
 	}
 }

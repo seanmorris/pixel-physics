@@ -417,8 +417,14 @@ span.arrow-west {
 	max-width: 3em;
 }
 
+.topLine  .hud-character-string,
+.focus-me .hud-character-string {
+	pointer-events: none;
+}
+
 .topLine,
 .focus-me {
+	pointer-events: none;
 	position: absolute;
 	top: 0;
 	left: 0;

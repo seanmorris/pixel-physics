@@ -9,6 +9,8 @@ export class Tails extends PointActor
 	{
 		super(...args);
 
+		this.args.canonical = 'Tails';
+
 		this.behaviors.add(new SkidDust);
 
 		this.args.type      = 'actor-item actor-tails';
@@ -31,11 +33,11 @@ export class Tails extends PointActor
 
 		this.args.gravity   = 0.5;
 
-		this.args.width     = 15;
-		this.args.height    = 32;
+		this.args.width  = 16;
+		this.args.height = 32;
 
 		this.args.normalHeight  = 32;
-		this.args.rollingHeight = 23;
+		this.args.rollingHeight = 28;;
 
 		this.willStick = false;
 		this.stayStuck = false;

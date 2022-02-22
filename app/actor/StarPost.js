@@ -103,7 +103,7 @@ export class StarPost extends PointActor
 				, y:       this.y - 48
 			});
 
-			this.viewport.storeCheckpoint(other.args.id, this.args.id);
+			this.viewport.storeCheckpoint(other.args.canonical, this.args.id);
 
 			this.viewport.spawn.add({object:monitor});
 

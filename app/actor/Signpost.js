@@ -55,6 +55,11 @@ export class Signpost extends PointActor
 			boss.args.x = this.x + (this.x < 125000 ? 768 : -768);
 			boss.args.y = this.y - 160;
 
+			if(this.viewport.controlActor && this.viewport.controlActor.args.jumpForce < 10.5)
+			{
+				boss.args.y += 48;
+			}
+
 			boss.args.phase = 'intro';
 
 			other.args.clearSpeed = 0;

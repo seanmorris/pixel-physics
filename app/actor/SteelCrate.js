@@ -1,5 +1,6 @@
 import { Block } from './Block';
 import { BreakableBlock } from './BreakableBlock';
+import { Projectile } from './Projectile';
 
 export class SteelCrate extends BreakableBlock
 {
@@ -10,7 +11,7 @@ export class SteelCrate extends BreakableBlock
 		this.args.type   = 'actor-item actor-breakable-block actor-steel-crate';
 		this.args.width  = 64;
 		this.args.height = 64;
-		this.args.static = false;
+		this.args.static = this.args.static ?? false;
 	}
 
 	collideA(other, type)
@@ -20,10 +21,22 @@ export class SteelCrate extends BreakableBlock
 			return true;
 		}
 
+		if(other instanceof Projectile && !this.broken)
+		{
+			this.break();
+			return true;
+		}
+
 		if(other.args.bouncing && !this.broken)
 		{
 			this.break();
 			return true;
+		}
+
+		if(other.punching && !this.broken)
+		{
+			this.break();
+			return false;
 		}
 
 		if(other.args.rolling && !this.broken)

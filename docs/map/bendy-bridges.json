@@ -8,29 +8,6 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":2,
-                 "height":40,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":32,
-                 "y":488
-                }, 
-                {
                  "gid":6109,
                  "height":32,
                  "id":20,
@@ -761,6 +738,18 @@
                  "width":64,
                  "x":2112,
                  "y":64
+                }, 
+                {
+                 "height":0,
+                 "id":382,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":48,
+                 "y":640
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -984,7 +973,7 @@
          "y":0
         }],
  "nextlayerid":15,
- "nextobjectid":382,
+ "nextobjectid":383,
  "orientation":"orthogonal",
  "properties":[
         {

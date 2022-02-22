@@ -32,6 +32,11 @@ export class CutScene extends PointActor
 			return;
 		}
 
+		if(other.args.canonical !== 'Sonic')
+		{
+			return;
+		}
+
 		const viewport = this.viewport;
 
 		if(!viewport || this.args.running)

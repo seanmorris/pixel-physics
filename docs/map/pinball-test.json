@@ -9,29 +9,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":40,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":752,
-                 "y":2240
-                }, 
-                {
-                 "gid":2,
                  "height":34,
                  "id":24,
                  "name":"flipper",
@@ -289,47 +266,6 @@
                  "width":96,
                  "x":1088,
                  "y":1856
-                }, 
-                {
-                 "gid":2,
-                 "height":48,
-                 "id":61,
-                 "name":"knuckles",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"knuckles",
-                 "visible":true,
-                 "width":32,
-                 "x":144,
-                 "y":2240
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
-                 "id":62,
-                 "name":"tails",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"-1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"tails",
-                 "visible":true,
-                 "width":32,
-                 "x":192,
-                 "y":2240
                 }, 
                 {
                  "gid":1180,
@@ -1327,6 +1263,18 @@
                  "width":96,
                  "x":360,
                  "y":1208
+                }, 
+                {
+                 "height":0,
+                 "id":139,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":744,
+                 "y":1480
                 }],
          "opacity":0.48,
          "type":"objectgroup",
@@ -1753,7 +1701,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":139,
+ "nextobjectid":140,
  "orientation":"orthogonal",
  "properties":[
         {

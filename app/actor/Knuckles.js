@@ -11,6 +11,8 @@ export class Knuckles extends PointActor
 	{
 		super(args, parent);
 
+		this.args.canonical = 'Knuckles';
+
 		window.knuckles = this;
 
 		this.behaviors.add(new SkidDust);
@@ -38,7 +40,7 @@ export class Knuckles extends PointActor
 		this.args.height    = 41;
 
 		this.args.normalHeight = 41;
-		this.args.rollingHeight = 23;
+		this.args.rollingHeight = 28;
 
 		this.punchTime = 0;
 		this.punched  = 0;

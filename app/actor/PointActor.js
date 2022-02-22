@@ -365,6 +365,8 @@ export class PointActor extends View
 		this.debindGroundY = null;
 		this.debindGroundL = null;
 
+		this.args.name = this.args.name ?? '';
+
 		if(this.controllable)
 		{
 			this.controller = new Controller({deadZone: 0.2});
@@ -994,7 +996,7 @@ export class PointActor extends View
 			&& !this.viewport.args.isRecording
 			&& !this.viewport.args.isReplaying
 		){
-			const stored = this.viewport.getCheckpoint(this.args.id);
+			const stored = this.viewport.getCheckpoint(this.args.canonical);
 
 			let toX, toY;
 
@@ -1009,6 +1011,13 @@ export class PointActor extends View
 			{
 				toX = this.def.get('x');
 				toY = this.def.get('y');
+			}
+			else if(this.viewport.defsByName.has('player-start'))
+			{
+				const startDef = this.viewport.defsByName.get('player-start');
+
+				toX = startDef.x;
+				toY = startDef.y;
 			}
 
 			this.args.standingLayer = null;
@@ -1311,7 +1320,7 @@ export class PointActor extends View
 			this.args.ignore = 0;
 		}
 
-		if(this.args.ignore === -3 && (!this.args.falling || this.args.ySpeed >= 0))
+		if(this.args.ignore === -3 && (!this.args.falling || this.args.ySpeed >= -10))
 		{
 			this.onNextFrame(() => this.args.ignore = 0);
 		}
@@ -1809,7 +1818,7 @@ export class PointActor extends View
 
 					this.args.x += this.args.width/2;
 
-					this.args.ignore = -this.args.ySpeed * 2;
+					this.args.ignore = 30;
 
 				}
 				else if(mode === MODE_RIGHT && (this.args.groundAngle > -Math.PI * 0.15))
@@ -1823,7 +1832,7 @@ export class PointActor extends View
 					// this.args.groundAngle = Math.PI / 2;
 					this.args.x -= this.args.width/2;
 
-					this.args.ignore = -this.args.ySpeed * 2;
+					this.args.ignore = 30;
 				}
 				else if(mode === MODE_CEILING)
 				{
@@ -2369,7 +2378,7 @@ export class PointActor extends View
 									}
 									else
 									{
-										this.args.ignore = 15;
+										this.args.ignore = -3;
 										this.args.x += radius;
 										// this.args.y += hRadius;
 									}
@@ -2411,7 +2420,7 @@ export class PointActor extends View
 									}
 									else
 									{
-										this.args.ignore = 15;
+										this.args.ignore = -3;
 										this.args.x -= radius;
 										// this.args.y += hRadius;
 									}

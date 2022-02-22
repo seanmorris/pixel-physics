@@ -1,4 +1,5 @@
 import { BreakableBlock } from './BreakableBlock';
+import { Projectile } from './Projectile';
 
 export class WoodenCrate extends BreakableBlock
 {
@@ -20,6 +21,12 @@ export class WoodenCrate extends BreakableBlock
 			// return super.collideA(other, type);
 		}
 
+		if(other instanceof Projectile && !this.broken)
+		{
+			this.break();
+			return true;
+		}
+
 		if(other.spindashCharge)
 		{
 			this.break();
@@ -38,6 +45,12 @@ export class WoodenCrate extends BreakableBlock
 		}
 
 		if(other.args.rolling || type === 2)
+		{
+			this.break();
+			return false;
+		}
+
+		if(other.punching && !this.broken)
 		{
 			this.break();
 			return false;

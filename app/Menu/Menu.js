@@ -22,6 +22,8 @@ export class Menu extends Card
 		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
+
+		this.tickSample = new Audio('/Sonic/switch-activated.wav');
 	}
 
 	onRendered(event)
@@ -171,20 +173,56 @@ export class Menu extends Card
 		if(controller.buttons[12] && controller.buttons[12].time === 1)
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node, true);
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 		}
 		else if(controller.buttons[13] && controller.buttons[13].time === 1)
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node);
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 
 			this.focus(next);
 		}
 		else if(controller.buttons[14] && controller.buttons[14].time === 1)
 		{
 			this.currentItem && this.contract(this.currentItem);
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 		}
 		else if(controller.buttons[15] && controller.buttons[15].time === 1)
 		{
 			this.currentItem && this.expand(this.currentItem);
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 		}
 
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
@@ -192,22 +230,45 @@ export class Menu extends Card
 			this.currentItem && this.currentItem.click();
 
 			this.args.last = 'A';
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 		}
 		else if(controller.buttons[1] && controller.buttons[1].time === 1)
 		{
 			this.back();
 
 			this.args.last = 'B';
+
+			if(this.parent.args.audio)
+			{
+				this.tickSample.currentTime = 0;
+
+				this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+				this.tickSample.play();
+			}
 		}
 
 		next && this.onTimeout(100, ()=> this.focus(next));
 	}
 
-	run(item)
+	run(item, event)
 	{
 		if(this.zeroMe)
 		{
 			this.zeroMe.zero();
+		}
+
+		if(item.available === 'unavailable')
+		{
+			return;
 		}
 
 		if(item.children)
@@ -267,12 +328,16 @@ export class Menu extends Card
 				item.setting = item.max;
 			}
 
-			item.set(item.setting);
+			item.set && item.set(item.setting);
 		}
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
-			item.set(item.setting);
+			item.set && item.set(item.setting);
+		}
+		else if(item && item.input === 'select')
+		{
+			this.cycleSelect(item, 1);
 		}
 		else if(input)
 		{
@@ -296,12 +361,16 @@ export class Menu extends Card
 				item.setting = item.min;
 			}
 
-			item.set(item.setting);
+			item.set && item.set(item.setting);
 		}
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
-			item.set(item.setting);
+			item.set && item.set(item.setting);
+		}
+		else if(item && item.input === 'select')
+		{
+			this.cycleSelect(item, -1);
 		}
 		else
 		{
@@ -309,20 +378,39 @@ export class Menu extends Card
 		}
 	}
 
-	keyup(event)
+	keyup(event, item)
 	{
-		if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
-		{
-			event.preventDefault();
-			event.stopPropagation();
+		// if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
+		// {
+		// 	const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
 
-			const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
+		// 	event.preventDefault();
+		// 	event.stopPropagation();
+		// 	event.stopImmediatePropagation();
 
-			if(next)
-			{
-				this.focus(next);
-			}
-		}
+		// 	if(next)
+		// 	{
+		// 		this.focus(next);
+		// 		return;
+		// 	}
+		// }
+
+		// if(item && item.input === 'select')
+		// {
+		// 	event.preventDefault();
+		// 	event.stopPropagation();
+		// 	event.stopImmediatePropagation();
+
+		// 	if(event.key === 'ArrowLeft')
+		// 	{
+		// 		this.cycleSelect(item, -1);
+		// 	}
+
+		// 	if(event.key === 'ArrowRight')
+		// 	{
+		// 		this.cycleSelect(item, 1);
+		// 	}
+		// }
 	}
 
 	change(event)
@@ -337,6 +425,8 @@ export class Menu extends Card
 
 		item.setting = event.target.value;
 
+		this.selectListChanged(item);
+
 		item.set(item.setting);
 	}
 
@@ -347,5 +437,144 @@ export class Menu extends Card
 		item.setting = !item.setting;
 
 		item.set(item.setting);
+	}
+
+	cycleSelect(item, direction = 1)
+	{
+		let found = false;
+		let first = undefined;
+		let last  = undefined;
+
+		const options = [];
+
+		Object.assign(options, item.options);
+
+		if(direction === -1)
+		{
+			options.reverse();
+		}
+		else if(direction !== 1)
+		{
+			return;
+		}
+
+		for(const option of options)
+		{
+			first = first ?? option;
+
+			if(option === item.setting)
+			{
+				found = true;
+				continue;
+			}
+
+			if(found)
+			{
+				item.setting = option;
+				last = undefined;
+				break;
+			}
+
+			last = option;
+		}
+
+		if(last !== undefined)
+		{
+			item.setting = first;
+		}
+
+		this.selectListChanged(item, true);
+
+		item.set(item.setting);
+	}
+
+	cycle(event, item, $view, $subview, $parent)
+	{
+
+	}
+
+	selectListRendered(event, item, $view, $subview, $parent)
+	{
+		// if(!item._inputBind)
+		// {
+		// 	item._inputBind = item.bindTo('_setting', v => {
+		// 		item.setting = v;
+		// 		item.set(v);
+		// 	});
+		// }
+
+		if(item.input === 'select')
+		{
+			item.setting = (item.get ? item.get() : 'Sonic') ?? 'Sonic';
+
+			let selectedIndex = 0;
+
+			console.log(item.options);
+
+			for(const i in item.options)
+			{
+				console.log(item.setting, item.options[i]);
+
+				if(item.options[i] === item.setting)
+				{
+					selectedIndex = i;
+				}
+			}
+
+			const selectTag = $subview.findTag('select');
+			const optionTag = $subview.findTag('option');
+
+			selectTag.selectedIndex = selectedIndex;
+
+			if(item.input === 'select')
+			{
+				item._value = new CharacterString({
+					value:item.setting, font: 'small-menu-font'
+				});
+
+				item._value.args.value = item.setting;
+
+				this.selectListChanged(item, true);
+			}
+		}
+	}
+
+	selectListChanged(item, silent = false)
+	{
+		if(item._value)
+		{
+			if(item.locked && item.locked.includes(item.setting))
+			{
+				item._value.args.value = 'Locked';
+			}
+			else
+			{
+				item._value.args.value = item.setting;
+			}
+		}
+
+		for(const _item of Object.values(this.args.items))
+		{
+			_item._available = _item._available ?? _item.available ?? 'available';
+
+
+			if(_item.characters && !_item.characters.includes(item.setting))
+			{
+				_item.available = 'unavailable';
+			}
+			else
+			{
+				_item.available = _item._available;
+			}
+		}
+
+		if(this.parent.args.audio && !silent)
+		{
+			this.tickSample.currentTime = 0;
+
+			this.tickSample.volume = 0.2 + 0.2 * Math.random();
+
+			this.tickSample.play();
+		}
 	}
 }

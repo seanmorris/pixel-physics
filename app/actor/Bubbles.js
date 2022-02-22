@@ -68,7 +68,7 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
-		if(!this.viewport)
+		if(!this.viewport || !this.viewport.controlActor)
 		{
 			return;
 		}
