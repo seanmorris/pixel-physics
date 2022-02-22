@@ -175,7 +175,7 @@ export class Eggrobo extends PointActor
 				this.args.rocketCoolDown = 3;
 			}
 
-			this.args.ySpeed = 0;
+			this.args.ySpeed = this.args.ySpeed * 0.999;
 			this.args.float  = 4;
 		}
 	}
@@ -229,7 +229,7 @@ export class Eggrobo extends PointActor
 			, YSpeed: this.args.YSpeed
 		});
 
-		projectile.impulse(18, trajectory + (direction < 0 ? Math.PI : 0), true);
+		projectile.impulse(24, trajectory + (direction < 0 ? Math.PI : 0), true);
 
 		projectile.update();
 

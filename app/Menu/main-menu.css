@@ -7,9 +7,9 @@
 	width: 100%;
 	align-items: center;
 	filter:
-		drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
-		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
-		drop-shadow(0px 0px 1px rgba(0,0,0,0.75));
+		drop-shadow(-1px 1px 0.0px rgba(0,0,0,0.5))
+		drop-shadow(1px 1px 0.0px rgba(0,0,0,0.5))
+		drop-shadow(0px 0px 0.0px rgba(0,0,0,0.5));
 }
 
 .screen-card.screen-card-main-menu .menu-container > * {
@@ -45,6 +45,10 @@
 	resize: none;
 }
 
+.screen-card-main-menu select {
+	/*text-align: center;*/
+}
+
 .screen-card-main-menu :focus .title,
 .screen-card-main-menu li:focus-within .title,
 .screen-card-main-menu .focused .title {
@@ -61,9 +65,9 @@
 
 .screen-card-main-menu li {
 	display: flex;
-	margin-bottom: 1.25em;
+	margin-bottom: 0.5em;
 	user-select: none;
-	margin-top: 1.25em;
+	margin-top: 0.5em;
 	cursor: pointer;
 	color: #CCC;
 }
@@ -126,7 +130,7 @@
 
 .screen-card-pause-menu .unavailable::after,
 .screen-card-main-menu .unavailable::after {
-	content: 'not yet implemented';
+	content: 'unavailable';
 }
 
 .screen-card-main-menu {
@@ -248,7 +252,7 @@
 	background-image:  url(/ui/close.svg);
 	background-size:   0.5em 0.5rem;
 	background-color:  black;
-	box-shadow: 0em 0.25em 0.25em rgba(0,0,0,0.333);
+	box-shadow: 0em 0.25em 0.125em rgba(0,0,0,0.333);
 	color: white;
 	position: absolute;
 	top: -0.75em;
@@ -283,8 +287,7 @@
 .screen-card-pause-menu [data-wraps=select]::before,
 .screen-card-main-menu [data-wraps=select]::before {
 	position: relative;
-	top: -0.5em;
-	padding-right: 0.5em;
+	padding-right: 0.75em;
 	font-size: 0.5em;
 	content: '◀︎';
 }
@@ -294,8 +297,7 @@
 .screen-card-pause-menu [data-wraps=select]::after,
 .screen-card-main-menu [data-wraps=select]::after {
 	position: relative;
-	top: -0.5em;
-	padding-left: 0.5em;
+	padding-left: 0.75em;
 	font-size: 0.5em;
 	content: '▶';
 }
@@ -329,7 +331,7 @@
 }
 
 .screen-card-main-menu .menu-container[data-current-menu="Single Player"] ul {
-	max-height: 19em;
+	max-height: 23em;
 }
 
 .screen-card-main-menu li:first-child {
@@ -352,12 +354,188 @@ input::-webkit-inner-spin-button {
 	margin: 0;
 }
 
-[data-wraps="select"] {
+[data-wraps="select"] > select {
+	text-align: center;
+}
+
+[data-title=Character] [data-wraps="select"] {
 	position: relative;
-	width: 18rem;
+	display: flex;
+	margin-top: 0.5rem;
+}
+
+[data-title=Character] [data-wraps="select"] > select {
+	position: absolute;
+	width: 100%;
+	opacity: 0;
+}
+
+[data-wraps="select"] > select option {
+	color: black;
+	padding: 0.5rem;
+}
+
+[data-wraps="select"] .hud-character-string {
+	flex: 1;
+	text-align: center;
+}
+
+[data-wraps] > input {
+	font-family: '04b11';
 }
 
 [data-wraps="select"] > select {
-	left: 0;
-	right: 0;
+	font-family: '04b11';
+	text-transform: uppercase;
+	margin: auto
+}
+
+.screen-card-main-menu li[data-title=Character] {
+	display: block;
+}
+
+.character-preview[data-character] {
+	position: relative;
+	top: -8px;
+	height: 54px;
+}
+
+.character-preview[data-character=Sonic] .emeralds,
+.character-preview[data-character=Tails] .emeralds,
+.character-preview[data-character=Knuckles] .emeralds,
+.character-preview[data-character=Sean] .emeralds {
+	top: 44px;
+}
+
+.character-preview .character {
+	height: 64px;
+	width: 64px;
+
+	margin: auto;
+
+	--color-filter: invert(1) contrast(0) brightness(100);
+
+	filter:
+		var(--color-filter)
+		drop-shadow( 1px 1px 0px black)
+		drop-shadow( -1px 1px 0px black)
+		drop-shadow( 1px -1px 0px black)
+		drop-shadow( -1px -1px 0px black);
+}
+
+.character-preview[data-character=Sonic] .character {
+	background-image: url(/Sonic/sonic.png);
+	background-position-y: -896px;
+	background-position-y: -128px;
+	animation: character-animate 90ms steps(4) infinite;
+}
+
+.character-preview[data-character=Tails] .character {
+	background-image: url(/Sonic/tails.png);
+	background-position-y: -128px;
+	animation: character-animate 60ms steps(4) infinite;
+}
+
+.character-preview[data-character=Knuckles] .character {
+	background-image: url(/Sonic/knuckles.png);
+	background-position-y: -128px;
+	animation: character-animate 140ms steps(4) infinite;
+}
+
+.character-preview[data-character=Mecha-Sonic] .character {
+	background-image: url(/Sonic/mecha-sonic.png);
+	animation: character-animate-2 32ms steps(2) infinite;
+	background-position-y: -704px;
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview[data-character=EggRobo] .character {
+	background-image: url(/Sonic/eggrobo.png);
+	animation: character-animate 200ms steps(4) infinite;
+	background-position-y: -64px;
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview[data-character=Robotnik] .character {
+	background-image: url(/Sonic/eggman.png);
+	animation: character-animate-3 160ms steps(3) infinite;
+	background-position-y: -64px;
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview[data-character=Seymour] .character {
+	background-image: url(/secret/seymour-color-corrected.png);
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview[data-character=Chalmers] .character {
+	background-image: url(/secret/chalmers.png);
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview[data-character=Sean] .character {
+	background-image: url(/custom/player.png);
+	background-position-y: -128px;
+	animation: character-animate-3 190ms steps(3) infinite;
+	--color-filter: invert(1) contrast(0) brightness(0);
+}
+
+.character-preview {
+	position: relative;
+	z-index: 0;
+}
+
+.character-preview .emeralds {
+	position: absolute;
+	left: -6px;
+	top: 32px;
+	width: 100%;
+	text-align: center;
+}
+
+.emeralds img {
+	position: absolute;
+	transform: translate(calc(var(--x) * 28px), calc(var(--y) * 8px));
+	z-index: calc(var(--y) * 10);
+
+	filter:
+		drop-shadow( 1px 1px 0px black)
+		drop-shadow( -1px 1px 0px black)
+		drop-shadow( 1px -1px 0px black)
+		drop-shadow( -1px -1px 0px black);
+}
+
+.character-preview[data-character=Robotnik] .emeralds img {
+	transform: translate(calc(var(--x) * 40px), calc(var(--y) * 8px));
+}
+
+.character-preview[data-character=EggRobo] .emeralds img {
+	transform: translate(calc(var(--x) * 48px), calc(var(--y) * 8px));
+}
+
+@keyframes character-animate {
+	0% {
+		background-position-x: 0;
+	}
+	100% {
+		background-position-x: -256px;
+	}
+}
+
+@keyframes character-animate-3 {
+	0% {
+		background-position-x: 0;
+	}
+	100% {
+		background-position-x: -192px;
+	}
+}
+
+@keyframes character-animate-2 {
+	0% {
+		background-position-x: 0;
+	}
+	100% {
+		background-position-x: -128px;
+	}
 }

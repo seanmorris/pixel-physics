@@ -9,24 +9,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":48,
-                 "id":36,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":688,
-                 "y":96
-                }, 
-                {
-                 "gid":2,
                  "height":64,
                  "id":59,
                  "name":"pulley",
@@ -1134,6 +1116,18 @@
                  "width":96,
                  "x":1152,
                  "y":992
+                }, 
+                {
+                 "height":0,
+                 "id":113,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":704,
+                 "y":144
                 }],
          "opacity":0.27,
          "type":"objectgroup",
@@ -1190,7 +1184,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":113,
+ "nextobjectid":114,
  "orientation":"orthogonal",
  "properties":[
         {

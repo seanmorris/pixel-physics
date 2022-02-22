@@ -9,77 +9,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":48,
-                 "id":1,
-                 "name":"sonic",
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":192,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":40,
-                 "id":67,
-                 "name":"tails",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"tails",
-                 "visible":true,
-                 "width":32,
-                 "x":336,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":48,
-                 "id":68,
-                 "name":"knuckles",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"knuckles",
-                 "visible":true,
-                 "width":32,
-                 "x":448,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":64,
-                 "id":69,
-                 "name":"seymour",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"seymour",
-                 "visible":true,
-                 "width":32,
-                 "x":568,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
                  "height":16,
                  "id":297,
                  "name":"flickie",
@@ -653,6 +582,18 @@
                  "width":16,
                  "x":304,
                  "y":3680
+                }, 
+                {
+                 "height":0,
+                 "id":477,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":208,
+                 "y":3808
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -697,7 +638,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":477,
+ "nextobjectid":478,
  "orientation":"orthogonal",
  "properties":[
         {

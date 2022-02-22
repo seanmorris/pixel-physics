@@ -61,8 +61,6 @@ export class WaterController extends PointActor
 
 	activate(other, button)
 	{
-		console.log(other, button);
-
 		if(this.args.activated)
 		{
 			return;

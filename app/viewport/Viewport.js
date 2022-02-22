@@ -69,6 +69,7 @@ import { ChatBox } from '../network/ChatBox';
 
 import { Sonic } from '../actor/Sonic';
 import { Tails } from '../actor/Tails';
+import { Knuckles } from '../actor/Knuckles';
 import { Seymour } from '../actor/Seymour';
 import { Chalmers } from '../actor/Chalmers';
 
@@ -98,6 +99,12 @@ export class Viewport extends View
 		this.args.screenEffects = [];
 
 		this.meta = {};
+
+		this.characters = {
+			'Sonic':      Sonic
+			, 'Tails':    Tails
+			, 'Knuckles': Knuckles
+		};
 
 		this.objectPalette = ObjectPalette;
 
@@ -709,6 +716,8 @@ export class Viewport extends View
 	{
 		const tileMap = new TileMap({ mapUrl });
 
+		this.currentMap = mapUrl;
+
 		this.args.networked = networked;
 
 		this.tileMap = tileMap;
@@ -1045,7 +1054,11 @@ export class Viewport extends View
 				this.playableIterator = this.playable.entries();
 			}
 
-			this.nextControl = Object.values(this.args.actors)[0];
+			if(Object.values(this.args.actors)[0] && Object.values(this.args.actors)[0].controllable)
+			{
+				this.nextControl = Object.values(this.args.actors)[0];
+			}
+
 			// this.nextControl = this.nextControl || actors[0];
 
 			if(Router.query.start)
@@ -1074,18 +1087,25 @@ export class Viewport extends View
 
 				if(this.nextControl)
 				{
-					const storedPosition = this.getCheckpoint(this.nextControl.args.id);
-					const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
+					const storedPosition = this.getCheckpoint(this.nextControl.args.canonical);
 
-					if(checkpoint)
+					if(storedPosition)
 					{
-						this.args.startFrameId = this.args.frameId - storedPosition.frames;
+						// const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
+						const checkpointDef = this.objDefs.get(storedPosition.checkpointId);
 
-						this.nextControl.args.x = checkpoint.x;
-						this.nextControl.args.y = checkpoint.y;
+						console.log(checkpointDef);
 
-						this.args.xOffset = 0.5;
-						this.args.yOffset = 0.5;
+						if(checkpointDef)
+						{
+							this.args.startFrameId = this.args.frameId - storedPosition.frames;
+
+							this.nextControl.args.x = checkpointDef.x;
+							this.nextControl.args.y = checkpointDef.y;
+
+							this.args.xOffset = 0.5;
+							this.args.yOffset = 0.5;
+						}
 					}
 				}
 			}
@@ -1990,6 +2010,24 @@ export class Viewport extends View
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
+
+			if(objType === 'player-start')
+			{
+				const selectedChar = String(this.args.selectedChar || Router.query.char || 'Sonic').toLowerCase();
+				const charClass = ObjectPalette[selectedChar] || Sonic;
+
+				const character = new charClass({
+					name: selectedChar
+					, x: objDef.x
+					, y: objDef.y
+				}, this);
+
+				this.spawn.add({object:character});
+				this.auras.add(character)
+				this.actors.add(character);
+
+				this.nextControl = character;
+			}
 
 			if(objType === 'particle')
 			{
@@ -3422,11 +3460,11 @@ export class Viewport extends View
 
 		if(quick)
 		{
-			cards.push(...this.returnHomeCards());
+			cards.push(...this.homeCards());
 		}
 		else
 		{
-			cards.push(...this.homeCards());
+			cards.push(...this.returnHomeCards());
 		}
 
 
@@ -3815,7 +3853,7 @@ export class Viewport extends View
 		return String(string).replace(/\s/g, '-').toLowerCase();
 	}
 
-	storeCheckpoint(actorId, checkpointId)
+	storeCheckpoint(name, checkpointId)
 	{
 		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
@@ -3824,7 +3862,7 @@ export class Viewport extends View
 
 		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
 
-		checkpointsByActor[actorId] = {checkpointId, frames: this.args.frameId - this.args.startFrameId};
+		checkpointsByActor[name] = {checkpointId, frames: this.args.frameId - this.args.startFrameId};
 
 		localStorage.setItem(
 			`checkpoints:::${this.tileMap.mapUrl}`
@@ -3832,7 +3870,7 @@ export class Viewport extends View
 		);
 	}
 
-	getCheckpoint(actorId)
+	getCheckpoint(name)
 	{
 		if(!this.checkpoints[this.tileMap.mapUrl])
 		{
@@ -3841,16 +3879,24 @@ export class Viewport extends View
 		}
 
 		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
-		const currentCheckpoint  = checkpointsByActor[actorId];
+		const currentCheckpoint  = checkpointsByActor[name];
 
 		return currentCheckpoint;
 	}
 
-	clearCheckpoints(actorId = null)
+	setCheckpoint(mapUrl, storedCheckpoint)
 	{
-		if(actorId === null)
+		const checkpointSource = localStorage.setItem(
+			`checkpoints:::${mapUrl}`
+			, JSON.stringify(storedCheckpoint)
+		);
+	}
+
+	clearCheckpoints(name = null)
+	{
+		if(name === null)
 		{
-			actorId = this.controlActor.args.id;
+			name = this.controlActor.args.canonical;
 		}
 
 		if(!this.checkpoints[this.tileMap.mapUrl])
@@ -3860,7 +3906,7 @@ export class Viewport extends View
 
 		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
 
-		delete checkpointsByActor[actorId];
+		delete checkpointsByActor[name];
 
 		localStorage.setItem(
 			`checkpoints:::${this.tileMap.mapUrl}`

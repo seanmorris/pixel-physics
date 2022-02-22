@@ -38,14 +38,19 @@ li:focus .small-menu-font .hud-character {
 	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
 }
 
+li.available .small-menu-font .hud-character,
 li.unavailable .small-menu-font .hud-character {
-	background-image: url(/Sonic/small-menu-font-grey.png);
-	/*background-image: url(/Sonic/small-menu-font-italic-grey.png);*/
+	transition: background-image 0.10s ease-out;
+}
+
+li.unavailable .small-menu-font .hud-character {
+	/*background-image: url(/Sonic/small-menu-font-grey.png);*/
+	background-image: url(/Sonic/small-menu-font-italic-grey.png);
 }
 
 li:focus.unavailable .small-menu-font .hud-character,
 li.focused.unavailable .small-menu-font .hud-character {
-	background-image: url(/Sonic/small-menu-font-yellow-dim.png);
+	background-image: url(/Sonic/small-menu-font-italic-red-dim.png);
 	/*background-image: url(/Sonic/small-menu-font-italic-red-dim.png);*/
 }
 

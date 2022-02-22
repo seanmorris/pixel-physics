@@ -38,6 +38,8 @@ export class Sonic extends PointActor
 
 		this.behaviors.add(new SkidDust);
 
+		this.args.canonical = 'Sonic';
+
 		this.args.type = 'actor-sonic actor-item';
 
 		this.accelNormal = 0.15;

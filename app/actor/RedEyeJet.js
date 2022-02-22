@@ -1,6 +1,7 @@
 import { Tag } from 'curvature/base/Tag';
 
 import { PointActor } from './PointActor';
+import { Projectile } from './Projectile';
 import { MiniMace } from './MiniMace';
 
 export class RedEyeJet extends PointActor
@@ -31,16 +32,21 @@ export class RedEyeJet extends PointActor
 
 	collideA(other, type)
 	{
-		if(!other.controllable)
+		if(!other.controllable && !(other instanceof Projectile))
 		{
 			return;
 		}
 
+		if(other instanceof Projectile)
+		{
+
+		}
+
 		if(this.args.hitPoints > 0)
 		{
-			if(!(other.args.jumping || other.args.rolling || other.dashed))
+			if(!(other.args.jumping || other.args.rolling || other.dashed) && !(other instanceof Projectile))
 			{
-				other.args.xSpeed = -other.args.xSpeed * 1.5;
+				// other.args.xSpeed = -other.args.xSpeed * 1.5;
 
 				other.damage();
 
@@ -181,7 +187,7 @@ export class RedEyeJet extends PointActor
 			}
 		}
 
-		if(type === 1 || type === 3 || type === 0)
+		if(other instanceof Projectile || type === 1 || type === 3 || type === 0)
 		{
 			if(!['dead','exploding','damaged','done'].includes(this.args.phase))
 			{

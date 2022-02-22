@@ -21,6 +21,11 @@
 						<option value = "0">off</option>
 					</select></span>
 				</span>
+				<span cv-if = "item.input" cv-is = "select">
+					: <span data-wraps = "select"><select cv-on = "change(event)" cv-ref = "select" cv-bind = "item.setting" tabindex="-1" cv-each = "options:option:o">
+						<option value = "[[o]]">[[o]]</option>
+					</select></span>
+				</span>
 			</li>
 		</ul>
 	</div>

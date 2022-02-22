@@ -111,6 +111,7 @@ import { ChaoCrate } from './actor/ChaoCrate';
 import { UnbreakableCrate } from './actor/UnbreakableCrate';
 import { Rocket } from './actor/Rocket';
 
+import { WindStone } from './actor/WindStone';
 import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
@@ -191,6 +192,7 @@ export const ObjectPalette = {
 	, 'tails':        Tails
 	, 'knuckles':     Knuckles
 	, 'eggman':       Eggman
+	, 'robotnik':     Eggman
 	, 'eggrobo':      Eggrobo
 	, 'seymour':      Seymour
 	, 'chalmers':     Chalmers
@@ -257,6 +259,7 @@ export const ObjectPalette = {
 	, 'spikes': Spikes
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
+	, 'wind-stone': WindStone
 	, 'fountain': Fountain
 	, 'caution-sign': CautionSign
 	, 'rolling-sign': RollingSign

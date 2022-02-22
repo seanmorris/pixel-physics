@@ -84,6 +84,11 @@ export class Spring extends PointActor
 			return false;
 		}
 
+		if(other.args.static)
+		{
+			return false;
+		}
+
 		if(other instanceof this.constructor)
 		{
 			return false;

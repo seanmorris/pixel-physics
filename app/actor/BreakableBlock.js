@@ -199,6 +199,11 @@ export class BreakableBlock extends Block
 
 	sleep()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.args.dontRestore)
 		{
 			return;

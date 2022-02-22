@@ -5,6 +5,7 @@ import { Pinch } from '../effects/Pinch';
 
 import { Menu } from './Menu';
 import { SettingsMenu } from './SettingsMenu';
+import { SaveMenu } from './SaveMenu';
 import { CharacterString } from '../ui/CharacterString';
 
 
@@ -64,6 +65,7 @@ export class PauseMenu extends Menu
 				}
 			}
 			, Settings: SettingsMenu(parent)
+			// , Save: SaveMenu(parent)
 			, Quit: {
 				children: {
 					'No': { callback: () => this.args.items.back.callback() }
