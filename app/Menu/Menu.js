@@ -337,7 +337,7 @@ export class Menu extends Card
 		}
 		else if(item && item.input === 'select')
 		{
-			this.cycleSelect(item, 1);
+			this.cycleSelect(item, title, 1);
 		}
 		else if(input)
 		{
@@ -370,7 +370,7 @@ export class Menu extends Card
 		}
 		else if(item && item.input === 'select')
 		{
-			this.cycleSelect(item, -1);
+			this.cycleSelect(item, title, -1);
 		}
 		else
 		{
@@ -439,7 +439,7 @@ export class Menu extends Card
 		item.set(item.setting);
 	}
 
-	cycleSelect(item, direction = 1)
+	cycleSelect(item, title, direction = 1)
 	{
 		let found = false;
 		let first = undefined;
@@ -483,7 +483,7 @@ export class Menu extends Card
 			item.setting = first;
 		}
 
-		this.selectListChanged(item, true);
+		this.selectListChanged(item, title);
 
 		item.set(item.setting);
 	}
