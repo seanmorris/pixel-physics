@@ -498,8 +498,6 @@ export class Menu extends Card
 
 			for(const i in item.options)
 			{
-				console.log(item.options[i], item.setting);
-
 				if(item.options[i] === item.setting)
 				{
 					selectedIndex = i;
