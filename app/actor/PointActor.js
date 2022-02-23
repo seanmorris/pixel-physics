@@ -1694,6 +1694,11 @@ export class PointActor extends View
 				}
 			}
 
+			if(this.args.rolling && this.args.pushing)
+			{
+				this.args.gSpeed = 0;
+			}
+
 			if(!this.viewport)
 			{
 				return;
@@ -2196,11 +2201,6 @@ export class PointActor extends View
 		const radius = Math.ceil(this.args.width / 2);
 
 		const wasPaused = this.paused;
-
-		if(this.args.pushing)
-		{
-			this.args.rolling = false;
-		}
 
 		if(this.args.gSpeed)
 		{

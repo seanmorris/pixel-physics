@@ -265,7 +265,7 @@
 	align-items: center;
 	justify-content: center;
 	font-size: 0.75rem;
-	font-weight: bold;
+	font-weight: bold;;
 }
 
 .screen-card-main-menu .close:hover {
@@ -329,6 +329,10 @@
 	scroll-snap-type: y mandatory;
 	margin: 0;
 	/*padding-bottom: 1em;*/
+}
+
+.screen-card-main-menu .menu-container ul {
+	max-width: 200px;
 }
 
 .screen-card-main-menu .menu-container[data-current-menu="Single Player"] ul {
@@ -406,16 +410,16 @@ input::-webkit-inner-spin-button {
 }
 
 .character-preview[data-character] {
-	width: 100%;
 	position: relative;
 	margin-bottom: 8px;
+	box-sizing: border-box;
 }
 
 .character-preview[data-character=Sonic] .emeralds,
 .character-preview[data-character=Tails] .emeralds,
 .character-preview[data-character=Knuckles] .emeralds,
 .character-preview[data-character=Sean] .emeralds {
-	/*top: 44px;*/
+
 }
 
 .character-preview .character {
@@ -458,13 +462,17 @@ input::-webkit-inner-spin-button {
 	animation: character-animate-2 32ms steps(2) infinite;
 	background-position-y: -704px;
 	--color-filter: invert(1) contrast(0) brightness(0);
+	position: relative;
+	left: 8px;
 }
 
 .character-preview[data-character=EggRobo] .character {
 	background-image: url(/Sonic/eggrobo.png);
 	animation: character-animate 200ms steps(4) infinite;
 	background-position-y: -64px;
-	--color-filter: invert(1) contrast(0) brightness(0);
+	--color-filter: invert(1) contrast(0) brightness(0);;
+	position: relative;
+	left: 4px;
 }
 
 .character-preview[data-character=Robotnik] .character {
@@ -494,12 +502,14 @@ input::-webkit-inner-spin-button {
 .character-preview {
 	position: relative;
 	z-index: 0;
+	width: 100%;
+	margin-top: 1em;
 }
 
 .character-preview .emeralds {
 	position: absolute;
 	left: -6px;
-	top: 32px;
+	bottom: 20px;
 	width: 100%;
 	text-align: center;
 }
@@ -516,12 +526,25 @@ input::-webkit-inner-spin-button {
 		drop-shadow( -1px -1px 0px black);
 }
 
+.character-preview[data-character=Seymour] .emeralds img,
+.character-preview[data-character=Chalmers] .emeralds img{
+	transform: translate(calc(var(--x) * 36px), calc(var(--y) * 8px));
+	bottom: 8px;
+}
+
 .character-preview[data-character=Robotnik] .emeralds img {
 	transform: translate(calc(var(--x) * 40px), calc(var(--y) * 8px));
+	bottom: 0px;
 }
 
 .character-preview[data-character=EggRobo] .emeralds img {
+	transform: translate(calc(var(--x) * 44px), calc(var(--y) * 8px));
+	bottom: 0px;
+}
+
+.character-preview[data-character=Mecha-Sonic] .emeralds img {
 	transform: translate(calc(var(--x) * 48px), calc(var(--y) * 8px));
+	bottom: 0px;
 }
 
 @keyframes character-animate {
