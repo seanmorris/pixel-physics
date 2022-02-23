@@ -88,8 +88,6 @@ export class Block extends PointActor
 			return false;
 		}
 
-		this.setTile();
-
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 
 		this.droop(0);

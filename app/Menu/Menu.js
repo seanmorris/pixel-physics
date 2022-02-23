@@ -413,19 +413,19 @@ export class Menu extends Card
 		// }
 	}
 
-	change(event)
+	change(event, title)
 	{
 		if(!this.currentItem)
 		{
 			return;
 		}
 
-		const title  = this.currentItem.getAttribute('data-title');
+		// const title  = this.currentItem.getAttribute('data-title');
 		const item   = this.args.items[ title ];
 
 		item.setting = event.target.value;
 
-		this.selectListChanged(item);
+		this.selectListChanged(item, title);
 
 		item.set(item.setting);
 	}
@@ -488,32 +488,17 @@ export class Menu extends Card
 		item.set(item.setting);
 	}
 
-	cycle(event, item, $view, $subview, $parent)
+	selectListRendered(event, item, title, $view, $subview, $parent)
 	{
-
-	}
-
-	selectListRendered(event, item, $view, $subview, $parent)
-	{
-		// if(!item._inputBind)
-		// {
-		// 	item._inputBind = item.bindTo('_setting', v => {
-		// 		item.setting = v;
-		// 		item.set(v);
-		// 	});
-		// }
-
 		if(item.input === 'select')
 		{
 			item.setting = (item.get ? item.get() : 'Sonic') ?? 'Sonic';
 
 			let selectedIndex = 0;
 
-			console.log(item.options);
-
 			for(const i in item.options)
 			{
-				console.log(item.setting, item.options[i]);
+				console.log(item.options[i], item.setting);
 
 				if(item.options[i] === item.setting)
 				{
@@ -526,6 +511,8 @@ export class Menu extends Card
 
 			selectTag.selectedIndex = selectedIndex;
 
+			console.log(selectTag);
+
 			if(item.input === 'select')
 			{
 				item._value = new CharacterString({
@@ -534,12 +521,12 @@ export class Menu extends Card
 
 				item._value.args.value = item.setting;
 
-				this.selectListChanged(item, true);
+				this.selectListChanged(item, title, true);
 			}
 		}
 	}
 
-	selectListChanged(item, silent = false)
+	selectListChanged(item, title, silent = false)
 	{
 		if(item._value)
 		{
@@ -553,18 +540,21 @@ export class Menu extends Card
 			}
 		}
 
-		for(const _item of Object.values(this.args.items))
+		if(title === 'Character')
 		{
-			_item._available = _item._available ?? _item.available ?? 'available';
+			for(const _item of Object.values(this.args.items))
+			{
+				_item._available = _item._available ?? _item.available ?? 'available';
 
 
-			if(_item.characters && !_item.characters.includes(item.setting))
-			{
-				_item.available = 'unavailable';
-			}
-			else
-			{
-				_item.available = _item._available;
+				if(_item.characters && !_item.characters.includes(item.setting))
+				{
+					_item.available = 'unavailable';
+				}
+				else
+				{
+					_item.available = _item._available;
+				}
 			}
 		}
 

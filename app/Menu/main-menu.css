@@ -65,6 +65,7 @@
 
 .screen-card-main-menu li {
 	display: flex;
+	flex-wrap: wrap;
 	margin-bottom: 0.5em;
 	user-select: none;
 	margin-top: 0.5em;
@@ -168,7 +169,7 @@
 
 @keyframes menu-bg-scroll {
 	0%   { background-position-x: 0px; }
-	100% { background-position-x: 96px; }
+	100% { background-position-x: -96px; }
 }
 
 
@@ -358,26 +359,36 @@ input::-webkit-inner-spin-button {
 	text-align: center;
 }
 
-[data-title=Character] [data-wraps="select"] {
+[data-title=Character] [data-wraps="select"],
+[data-title=Follower] [data-wraps="select"] {
 	position: relative;
-	display: flex;
-	margin-top: 0.5rem;
+	display: inline-flex;
 }
 
-[data-title=Character] [data-wraps="select"] > select {
-	position: absolute;
-	width: 100%;
-	opacity: 0;
+[data-title=Character] > span:last-child,
+[data-title=Follower] > span:last-child {
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+	flex: 1;
+}
+
+[data-title=Character] [data-wraps="select"] > select,
+[data-title=Follower] [data-wraps="select"] > select {
+	display: none;
+}
+
+[data-wraps="select"] {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
 }
 
 [data-wraps="select"] > select option {
 	color: black;
 	padding: 0.5rem;
-}
-
-[data-wraps="select"] .hud-character-string {
-	flex: 1;
-	text-align: center;
 }
 
 [data-wraps] > input {
@@ -391,20 +402,20 @@ input::-webkit-inner-spin-button {
 }
 
 .screen-card-main-menu li[data-title=Character] {
-	display: block;
+	/*display: block;*/
 }
 
 .character-preview[data-character] {
+	width: 100%;
 	position: relative;
-	top: -8px;
-	height: 54px;
+	margin-bottom: 8px;
 }
 
 .character-preview[data-character=Sonic] .emeralds,
 .character-preview[data-character=Tails] .emeralds,
 .character-preview[data-character=Knuckles] .emeralds,
 .character-preview[data-character=Sean] .emeralds {
-	top: 44px;
+	/*top: 44px;*/
 }
 
 .character-preview .character {

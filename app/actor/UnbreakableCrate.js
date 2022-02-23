@@ -33,4 +33,9 @@ export class UnbreakableCrate extends Block
 	{
 		return true;
 	}
+
+	damage(other, type)
+	{
+		return true;
+	}
 }

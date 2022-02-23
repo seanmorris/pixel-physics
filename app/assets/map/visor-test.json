@@ -8,144 +8,15 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":2,
-                 "height":48,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"-1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
+                 "height":0,
+                 "id":287,
+                 "name":"player-start",
+                 "point":true,
                  "rotation":0,
-                 "type":"sonic",
+                 "type":"player-start",
                  "visible":true,
-                 "width":32,
-                 "x":200,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":40,
-                 "id":67,
-                 "name":"tails",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"tails",
-                 "visible":true,
-                 "width":32,
-                 "x":256,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":48,
-                 "id":68,
-                 "name":"knuckles",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"knuckles",
-                 "visible":true,
-                 "width":32,
-                 "x":296,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":64,
-                 "id":69,
-                 "name":"seymour",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"seymour",
-                 "visible":true,
-                 "width":32,
-                 "x":336,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":55,
-                 "id":279,
-                 "name":"eggman",
-                 "rotation":0,
-                 "type":"eggman",
-                 "visible":true,
-                 "width":40,
-                 "x":48,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":57,
-                 "id":280,
-                 "name":"eggrobo",
-                 "rotation":0,
-                 "type":"eggrobo",
-                 "visible":true,
-                 "width":48,
-                 "x":144,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":63,
-                 "id":281,
-                 "name":"mecha-sonic",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"mecha-sonic",
-                 "visible":true,
-                 "width":40,
-                 "x":96,
-                 "y":3808
-                }, 
-                {
-                 "gid":2,
-                 "height":64,
-                 "id":282,
-                 "name":"chalmers",
-                 "rotation":0,
-                 "type":"chalmers",
-                 "visible":true,
-                 "width":32,
-                 "x":8,
+                 "width":0,
+                 "x":80,
                  "y":3808
                 }],
          "opacity":1,
@@ -167,7 +38,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":287,
+ "nextobjectid":288,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -201,7 +72,7 @@
          "value":"TEST ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -232,6 +103,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":2048
 }

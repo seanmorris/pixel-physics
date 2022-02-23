@@ -603,8 +603,6 @@ export class Knuckles extends PointActor
 	{
 		if(this.readyButton !== button)
 		{
-			console.log(this.readyButton, button);
-
 			return;
 		}
 

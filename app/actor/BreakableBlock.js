@@ -351,7 +351,11 @@ export class BreakableBlock extends Block
 		this.broken = true;
 	}
 
-	get solid() { return !this.broken; }
+	damage(other, type = 'normal')
+	{
+		this.break(other);
+	}
 
+	get solid() { return !this.broken; }
 }
 

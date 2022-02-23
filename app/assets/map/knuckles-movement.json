@@ -9,18 +9,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":48,
-                 "id":68,
-                 "name":"knuckles",
-                 "rotation":0,
-                 "type":"knuckles",
-                 "visible":true,
-                 "width":32,
-                 "x":128,
-                 "y":3776
-                }, 
-                {
-                 "gid":2,
                  "height":80,
                  "id":303,
                  "name":"rocks-tall",
@@ -1086,6 +1074,18 @@
                  "width":32,
                  "x":1248,
                  "y":3696
+                }, 
+                {
+                 "height":0,
+                 "id":425,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":144,
+                 "y":3808
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1154,7 +1154,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":425,
+ "nextobjectid":426,
  "orientation":"orthogonal",
  "properties":[
         {

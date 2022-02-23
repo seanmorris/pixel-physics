@@ -482,7 +482,7 @@ export class Sonic extends PointActor
 				}
 				else if(this.args.moving && this.args.gSpeed)
 				{
-					this.args.pushing = true;
+					this.args.pushing = Math.sign(this.args.gSpeed);
 				}
 				else
 				{

@@ -50,6 +50,11 @@ export class RollingRegion extends Region
 			return;
 		}
 
+		if(other.args.falling)
+		{
+			return;
+		}
+
 		other.willStick = false;
 
 		const gSpeedLast = other.args.modeTime > 5 ? other.gSpeedLast : 0;
