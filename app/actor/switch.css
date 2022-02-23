@@ -1,7 +1,7 @@
 .actor-item.actor-switch .sprite {
 	content: ' ';
 	display: block;
-	height: 16px;
+	height: 15px;
 	width: 32px;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
@@ -11,5 +11,14 @@
 }
 
 .actor-item.actor-switch[data-active=true] .sprite {
+	--sprite-offset-x: -32px;
+}
+
+.actor-item.actor-switch.actor-heavy-duty-switch .sprite {
+	background-image: url(/custom/heavy-switch.png);
+	height: 18px;
+}
+
+.actor-item.actor-switch.actor-heavy-duty-switch[data-active=true] .sprite {
 	--sprite-offset-x: -32px;
 }

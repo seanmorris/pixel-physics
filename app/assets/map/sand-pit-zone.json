@@ -8,34 +8,6 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":1073741826,
-                 "height":48,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"animation",
-                         "type":"string",
-                         "value":"dropping"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"gSpeed",
-                         "type":"string",
-                         "value":"1"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":19920,
-                 "y":1952
-                }, 
-                {
                  "gid":2,
                  "height":16,
                  "id":2,
@@ -64,6 +36,18 @@
                  "width":64,
                  "x":12528,
                  "y":1240
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":19936,
+                 "y":1960
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -107,7 +91,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":12,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.1",

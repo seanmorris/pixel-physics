@@ -21,18 +21,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":55,
-                 "id":4,
-                 "name":"eggman",
-                 "rotation":0,
-                 "type":"eggman",
-                 "visible":true,
-                 "width":40,
-                 "x":1712,
-                 "y":768
-                }, 
-                {
-                 "gid":2,
                  "height":64,
                  "id":2,
                  "name":"spikes",
@@ -262,6 +250,18 @@
                  "width":32,
                  "x":312,
                  "y":656
+                }, 
+                {
+                 "height":0,
+                 "id":19,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":1728,
+                 "y":768
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -270,7 +270,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":19,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "properties":[
         {

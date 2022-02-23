@@ -26,11 +26,15 @@ export class Vehicle extends PointActor
 			{
 				return false;
 			}
-			else if(other.args.ySpeed > 0)
+			else if(other.args.ySpeed > 0 && !this.occupant)
 			{
 				const seatHeight  = this.args.seatHeight || 0;
 				other.args.ySpeed = 0;
-				other.args.y = this.y + -seatHeight + -1;
+				other.args.y = this.y + -seatHeight + 1;
+				other.args.x = this.x;
+
+				other.args.standingOn = this;
+
 				return true;
 			}
 			else

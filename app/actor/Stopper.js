@@ -24,6 +24,7 @@ export class Stopper extends BreakableBlock
 			{
 				other.args.groundAngle = 0;
 				other.args.x       = this.args.x;
+				other.args.xSpeed  = 0;
 				other.args.ySpeed  = Math.abs(other.args.gSpeed);
 				other.args.falling = true;
 				other.args.mode    = 0;
@@ -44,10 +45,16 @@ export class Stopper extends BreakableBlock
 				other.args.groundAngle = 0;
 				other.args.falling   = true;
 				other.args.animation = 'rolling';
+
+				other.args.x       = this.args.x;
+				other.args.gSpeed  = 0;
+				other.args.xSpeed  = 0;
+				other.args.ySpeed  = Math.abs(other.args.gSpeed);
 			});
 
 			if(other.args.jumping)
 			{
+				other.args.gSpeed = 0;
 				other.args.xSpeed = 0;
 				other.args.ySpeed = 0;
 
@@ -55,6 +62,7 @@ export class Stopper extends BreakableBlock
 				other.args.float  = 30;
 
 				this.viewport.onFrameOut(30, () => {
+					other.args.xSpeed = 0;
 					other.args.ySpeed = 10;
 				});
 			}

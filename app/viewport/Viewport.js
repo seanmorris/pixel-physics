@@ -1015,10 +1015,21 @@ export class Viewport extends View
 
 		this.fillBackground();
 
+		this.populateMap();
+
 		if(this.args.networked)
 		{
-			const sonic = new Chalmers({name:'Player 1', x: 50, y: 50}, this);
-			const tails = new Seymour({name:'Player 2', x: 80, y: 50}, this);
+
+			const sonic = new Chalmers({name:'Player 1'}, this);
+			const tails = new Seymour({name:'Player 2'}, this);
+
+			const startDef = this.defsByName.get('player-start');
+
+			sonic.args.x = startDef.x;
+			sonic.args.y = startDef.y;
+
+			tails.args.x = startDef.x;
+			tails.args.y = startDef.y;
 
 			this.spawn.add({object: sonic});
 			this.spawn.add({object: tails});
@@ -1029,6 +1040,17 @@ export class Viewport extends View
 			this.actors.add(sonic);
 			this.actors.add(tails);
 
+			if(this.args.playerId === 1)
+			{
+				this.nextControl  = sonic;
+				this.remotePlayer = tails;
+			}
+			else if(this.args.playerId === 2)
+			{
+				this.remotePlayer = sonic;
+				this.nextControl  = tails;
+			}
+
 			// sonic.render(this.tags.actors);
 			// sonic.onRendered();
 			// sonic.onAttached && sonic.onAttached();
@@ -1037,8 +1059,6 @@ export class Viewport extends View
 			// tails.onRendered();
 			// tails.onAttached && tails.onAttached();
 		}
-
-		this.populateMap();
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
@@ -1080,6 +1100,13 @@ export class Viewport extends View
 					this.nextControl.args.y = Number(point.y);
 				}
 
+				if(this.nextControl.follower)
+				{
+					this.nextControl.follower.args.x = this.nextControl.x;
+					this.nextControl.follower.args.y = this.nextControl.y;
+
+					this.setColCell(this.nextControl.follower);
+				}
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording)
 			{
@@ -1103,18 +1130,22 @@ export class Viewport extends View
 							this.nextControl.args.x = checkpointDef.x;
 							this.nextControl.args.y = checkpointDef.y;
 
+							console.log(this.nextControl.follower);
+
+							if(this.nextControl.follower)
+							{
+								this.nextControl.follower.args.x = checkpointDef.x;
+								this.nextControl.follower.args.y = checkpointDef.y;
+
+								this.setColCell(this.nextControl.follower);
+							}
+
 							this.args.xOffset = 0.5;
 							this.args.yOffset = 0.5;
 						}
 					}
 				}
 			}
-		}
-		else if(this.args.networked)
-		{
-			const actors = this.actors.list;
-
-			this.nextControl = this.nextControl || actors[-1 + this.args.playerId];
 		}
 
 		if(this.nextControl && this.nextControl.controller)
@@ -1334,7 +1365,7 @@ export class Viewport extends View
 			this.exitFullscreen();
 		}
 
-		if(controller.buttons[1011] && controller.buttons[1011].time > 0)
+		if(!this.args.networked && controller.buttons[1011] && controller.buttons[1011].time > 0)
 		{
 			this.args.pauseMenu.input(controller);
 			// this.args.paused = 1;
@@ -2006,28 +2037,15 @@ export class Viewport extends View
 			}
 		}
 
+		const selectedChar = String(this.args.selectedChar || Router.query.char || 'Sonic').toLowerCase();
+		const charClass = ObjectPalette[selectedChar] || Sonic;
+
+		const character = new charClass({name: selectedChar}, this);
+
 		for(let i in objDefs)
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
-
-			if(objType === 'player-start')
-			{
-				const selectedChar = String(this.args.selectedChar || Router.query.char || 'Sonic').toLowerCase();
-				const charClass = ObjectPalette[selectedChar] || Sonic;
-
-				const character = new charClass({
-					name: selectedChar
-					, x: objDef.x
-					, y: objDef.y
-				}, this);
-
-				this.spawn.add({object:character});
-				this.auras.add(character)
-				this.actors.add(character);
-
-				this.nextControl = character;
-			}
 
 			if(objType === 'particle')
 			{
@@ -2122,6 +2140,58 @@ export class Viewport extends View
 				actor.args.display = actor.defaultDisplay || null;
 			}
 		}
+
+		if(!this.args.networked)
+		{
+			let startType = 'player-start';
+
+			if(character.args.height > 44 && this.defsByName.has('wide-player-start'))
+			{
+				startType = 'wide-player-start';
+			}
+
+			const startDef = this.defsByName.get(startType);
+
+			character.args.x = startDef.x;
+			character.args.y = startDef.y;
+			character.args.z = startDef.z = 10;
+
+			this.spawn.add({object:character});
+			this.auras.add(character)
+			this.actors.add(character);
+
+			this.nextControl = character;
+
+
+			const followerChar = String(this.args.followerChar || Router.query.follower || '').toLowerCase();
+
+			if(followerChar)
+			{
+				const charClass = ObjectPalette[followerChar] || Tails;
+
+				const follower = new charClass({
+					following: true
+					, name:   followerChar
+					, x: character.args.x
+					, y: character.args.y
+					, z: character.args.z - 1
+				}, this);
+
+				this.spawn.add({object:follower});
+				this.auras.add(follower);
+				this.actors.add(follower);
+
+				character.follower = follower;
+			}
+		}
+
+		this.onFrameOut(1, () => {
+			if(character.follower)
+			{
+				character.follower.args.x = character.args.x;
+				character.follower.args.y = character.args.y;
+			}
+		});
 
 		for(const actor of this.actors.list)
 		{
@@ -3594,10 +3664,10 @@ export class Viewport extends View
 		const onMessage = event => {
 			const actors = this.actors.list;
 
-			if(actors[1])
+			if(this.remotePlayer)
 			{
 				const packet = JSON.parse(event.detail);
-				const actor = actors[1];
+				const actor = this.remotePlayer;
 
 				if(packet.frame)
 				{
@@ -3658,10 +3728,10 @@ export class Viewport extends View
 		const onMessage = event => {
 			const actors = this.actors.list;
 
-			if(actors[0])
+			if(this.remotePlayer)
 			{
 				const packet = JSON.parse(event.detail);
-				const actor = actors[0];
+				const actor = this.remotePlayer;
 
 				if(packet.frame)
 				{

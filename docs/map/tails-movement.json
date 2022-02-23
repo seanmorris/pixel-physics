@@ -10,29 +10,6 @@
                 {
                  "gid":2,
                  "height":32,
-                 "id":1,
-                 "name":"tails",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"-1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"tails",
-                 "visible":true,
-                 "width":32,
-                 "x":1168,
-                 "y":144
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
                  "id":4,
                  "name":"",
                  "properties":[
@@ -195,6 +172,18 @@
                  "width":32,
                  "x":3456,
                  "y":4064
+                }, 
+                {
+                 "height":0,
+                 "id":60,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":1184,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -239,7 +228,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":60,
+ "nextobjectid":61,
  "orientation":"orthogonal",
  "properties":[
         {

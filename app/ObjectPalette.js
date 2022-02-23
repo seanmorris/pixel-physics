@@ -98,6 +98,8 @@ import { Sean } from './actor/Sean';
 
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
+import { HeavyDutySwitch } from './actor/HeavyDutySwitch';
+
 import { Balloon } from './actor/Balloon';
 import { StarBalloon } from './actor/StarBalloon';
 
@@ -198,6 +200,7 @@ export const ObjectPalette = {
 	, 'chalmers':     Chalmers
 	, 'sean':         Sean
 	, 'switch':       Switch
+	, 'heavy-duty-switch': HeavyDutySwitch
 	, 'window':       Window
 	, 'emerald':      Emerald
 	, 'fake-emerald': FakeEmerald

@@ -83,10 +83,16 @@ export class MarbleBlock extends PointActor
 			if(moveBy > 0 && scan === 0)
 			{
 				this.args.falling = true;
+
+				other.args.ignore = other.args.ignore || 1;
+				other.args.gSpeed = 0;
 			}
 			else if(moveBy < 0 && scan === 0)
 			{
 				this.args.falling = true;
+
+				other.args.ignore = other.args.ignore || 1;
+				other.args.gSpeed = 0;
 			}
 			else if(!this.args.falling || scan > 0)
 			{
@@ -102,8 +108,13 @@ export class MarbleBlock extends PointActor
 					{
 						this.args.x = other.args.x + (moveBy * (myRadius + otherRadius));
 
-						other.args.pushing = true;
-						other.args.rolling = false;
+						const direction = Math.sign(other.args.gSpeed);
+
+						if(Math.sign(this.x - other.x) === direction)
+						{
+							other.args.pushing = direction;
+							// other.args.rolling = false;
+						}
 
 						const weightRatio = this.args.weight / other.args.weight;
 

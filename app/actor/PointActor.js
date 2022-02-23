@@ -620,6 +620,7 @@ export class PointActor extends View
 			, 'data-respawning':'respawning'
 			, 'data-mercy':     'mercy'
 			, 'data-selected':  'selected'
+			, 'data-following': 'following'
 			, 'data-carrying':  'carrying'
 			, 'data-falling':   'falling'
 			, 'data-moving':    'moving'
@@ -680,6 +681,8 @@ export class PointActor extends View
 
 		this.listen('click', ()=>{
 
+			return;
+
 			const now = Date.now();
 
 			const timeSince = now - PointActor.lastClick;
@@ -694,36 +697,36 @@ export class PointActor extends View
 				return;
 			}
 
-			if(timeSince < 1000)
-			{
-				this.viewport.auras.add(this);
+			// if(timeSince < 1000)
+			// {
+			// 	this.viewport.auras.add(this);
 
-				const clear = this.viewport.onFrameInterval(1, () => {
+			// 	const clear = this.viewport.onFrameInterval(1, () => {
 
-					const frame = this.viewport.serializePlayer();
+			// 		const frame = this.viewport.serializePlayer();
 
-					this.viewport.onFrameOut(5, () => {
+			// 		this.viewport.onFrameOut(5, () => {
 
-						if(frame.input)
-						{
-							this.controller && this.controller.replay(frame.input);
-							this.readInput();
-						}
+			// 			if(frame.input)
+			// 			{
+			// 				this.controller && this.controller.replay(frame.input);
+			// 				this.readInput();
+			// 			}
 
-						if(frame.args)
-						{
-							Object.assign(this.args, frame.args);
+			// 			if(frame.args)
+			// 			{
+			// 				Object.assign(this.args, frame.args);
 
-							this.viewport.setColCell(this);
-						}
-					});
+			// 				this.viewport.setColCell(this);
+			// 			}
+			// 		});
 
-				});
+			// 	});
 
-				this.onRemove(clear);
+			// 	this.onRemove(clear);
 
-				return;
-			}
+			// 	return;
+			// }
 
 			PointActor.lastClick = now;
 
@@ -868,6 +871,36 @@ export class PointActor extends View
 
 			tag.attr(attrs);
 		}
+
+		if(this.follower)
+		{
+			const frame = this.viewport.serializePlayer();
+			const follower = this.follower;
+
+			this.viewport.onFrameOut(5, () => {
+
+				if(frame.input)
+				{
+					follower.controller && follower.controller.replay(frame.input);
+					follower.readInput();
+				}
+
+				if(frame.args)
+				{
+					Object.assign(follower.args, frame.args);
+
+					follower.viewport && follower.viewport.setColCell(this);
+				}
+			});
+
+			if(this.follower.args.dead)
+			{
+				this.follower.args.dead = false;
+
+				this.follower.args.x = this.x;
+				this.follower.args.y = this.y;
+			}
+		}
 	}
 
 	update()
@@ -893,8 +926,10 @@ export class PointActor extends View
 			this.age = this.viewport.args.frameId - this.startFrame
 		}
 
-		if(this.args.rolling)
-		{
+		if(!this.xAxis
+			|| Math.sign(this.args.gSpeed) !== this.args.pushing
+			|| Math.sign(this.xAxis) !== this.args.pushing
+		){
 			this.args.pushing = false;
 		}
 
@@ -1012,6 +1047,13 @@ export class PointActor extends View
 				toX = this.def.get('x');
 				toY = this.def.get('y');
 			}
+			else if((this.args.width > 20 || this.args.height > 44) && this.viewport.defsByName.get('wide-player-start'))
+			{
+				const startDef = this.viewport.defsByName.get('wide-player-start');
+
+				toX = startDef.x;
+				toY = startDef.y;
+			}
 			else if(this.viewport.defsByName.has('player-start'))
 			{
 				const startDef = this.viewport.defsByName.get('player-start');
@@ -1048,14 +1090,24 @@ export class PointActor extends View
 			if(Math.abs(xDiff) <= xPanSpeed && Math.abs(yDiff) <= yPanSpeed)
 			{
 				this.viewport.onFrameOut(60, () => {
-					// this.args.dead       = false;
-					// this.noClip          = false;
-					// this.args.respawning = false;
-					// this.args.display    = 'initial';
-					// this.args.ignore     = this.args.ignore || 4;
 
-					viewport.reset();
-					viewport.startLevel(false);
+					if(this.viewport.args.networked)
+					{
+						this.args.dead       = false;
+						this.noClip          = false;
+						this.args.respawning = false;
+						this.args.display    = 'initial';
+						this.args.ignore     = 4;
+
+						this.args.xSpeed = 0;
+						this.args.ySpeed = -3;
+					}
+					else
+					{
+						viewport.reset();
+						viewport.startLevel(false);
+
+					}
 
 					viewport.args.paused = false;
 				});
@@ -2145,13 +2197,10 @@ export class PointActor extends View
 
 		const wasPaused = this.paused;
 
-		if(this.args.pushing && this.args.pushing === Math.sign(this.args.gSpeed))
+		if(this.args.pushing)
 		{
-			// this.args.gSpeed = 0;
-			return;
+			this.args.rolling = false;
 		}
-
-		this.args.pushing = false;
 
 		if(this.args.gSpeed)
 		{
@@ -2173,6 +2222,8 @@ export class PointActor extends View
 				{
 					if(this.args.height > 8 && this.args.modeTime > 1)
 					{
+						this.args.pushing = false;
+
 						if(!this.args.rolling)
 						{
 							const headPoint = this.rotatePoint(
@@ -2204,8 +2255,6 @@ export class PointActor extends View
 								}
 
 								this.args.pushing = Math.sign(this.args.gSpeed);
-
-								this.args.gSpeed = 0;
 								break;
 							}
 						}
@@ -2218,13 +2267,12 @@ export class PointActor extends View
 
 							if(Array.isArray(waistBlock))
 							{
-								waistBlock = waistBlock
-									.filter(x =>
-										x.args !== this.args
-										&& x.callCollideHandler(this)
-										&& x.solid
-									)
-									.length;
+								waistBlock = waistBlock.filter(x =>
+									x.args !== this.args
+									&& x.callCollideHandler(this)
+									&& x.solid
+								)
+								.length;
 							}
 
 							if(waistBlock)
@@ -2238,8 +2286,6 @@ export class PointActor extends View
 								}
 
 								this.args.pushing = Math.sign(this.args.gSpeed);
-
-								this.args.gSpeed = 0;
 								break;
 							}
 						}
@@ -2556,7 +2602,7 @@ export class PointActor extends View
 			else
 			{
 				this.args.pushing = Math.sign(this.args.gSpeed);
-				this.args.gSpeed  = 0;
+				// this.args.gSpeed  = 0;
 			}
 
 			const hRadius = Math.round(this.args.height / 2);
@@ -2575,7 +2621,7 @@ export class PointActor extends View
 					this.args.x--;
 				}
 			}
-
+// 14434,3647
 			wasPaused || this.pause(false);
 
 			const pushFoward = this.xAxis && (Math.sign(this.xAxis) === Math.sign(this.args.gSpeed));
@@ -3028,7 +3074,6 @@ export class PointActor extends View
 			&& (upDistance === false || upDistance < this.args.height)
 		){
 			const xDirection = Math.sign(this.args.xSpeed);
-			// const xDirection = Math.sign(xMove);
 
 			const maxHit = -1 + Math.max(...hits);
 			const minHit = -1 + Math.min(...hits);
@@ -3048,6 +3093,21 @@ export class PointActor extends View
 				this.args.gSpeed   = 0;
 				this.args.mode     = MODE_FLOOR;
 			}
+
+			this.viewport.actorsAtPoint(
+				this.x + (0+radius) * xDirection
+				, this.y
+				, this.args.width
+				, this.args.height
+			).forEach(actor => {
+
+				if(actor === this)
+				{
+					return;
+				}
+
+				actor.callCollideHandler(this, xDirection < 0 ? 1 : 3);
+			});
 		}
 
 		Object.assign(this.lastPointA, [this.x, this.y].map(Math.trunc));
@@ -3723,7 +3783,7 @@ export class PointActor extends View
 
 		if(Array.isArray(below))
 		{
-			below = below.filter(x => x.solid && x.callCollideHandler(this)).length;
+			below = below.filter(x => x.callCollideHandler(this)).length;
 		}
 
 		return below;
@@ -5409,9 +5469,11 @@ export class PointActor extends View
 
 	setTile()
 	{
-		this.viewport.tileMap.ready.then(event => {
+		const tileMap = this.viewport.tileMap;
 
-			const tile = this.viewport.tileMap.getTile(this.args.tileId-1);
+		tileMap.ready.then(event => {
+
+			const tile = tileMap.getTile(this.args.tileId-1);
 
 			if(!tile)
 			{

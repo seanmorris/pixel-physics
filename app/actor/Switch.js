@@ -9,7 +9,7 @@ export class Switch extends PointActor
 		this.args.type = 'actor-item actor-switch';
 
 		this.args.width  = 32;
-		this.args.height = 10;
+		this.args.height = this.height = 16;
 
 		// this.args.float  = -1;
 
@@ -24,12 +24,23 @@ export class Switch extends PointActor
 			this.box && this.box.setAttribute('data-active', v ? 'true' : 'false');
 		});
 
+		this.args.threshold = this.args.threshold ?? 100;
+
 		this.ignore = 0;
 	}
 
 	update()
 	{
 		super.update();
+
+		if(this.args.active)
+		{
+			this.args.height = this.height + -6;
+		}
+		else
+		{
+			this.args.height = this.height;
+		}
 
 		if(this.ignore > 0)
 		{
@@ -85,6 +96,17 @@ export class Switch extends PointActor
 		{
 			return;
 		}
+
+		if(other.y > this.y - this.args.height + 0)
+		{
+			return false;
+		}
+
+		if(this.args.threshold && other.args.weight < this.args.threshold)
+		{
+			return true;
+		}
+
 
 		other.onRemove(()=> this.activator = null);
 

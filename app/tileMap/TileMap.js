@@ -386,7 +386,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				return this.tileLayers[0];
 			}
 
-			for(let i = 1 + solidLayerCount; i < this.tileLayers.length; i++)
+			for(let i = 0 + solidLayerCount; i < this.tileLayers.length; i++)
 			{
 				const layer = this.tileLayers[i];
 

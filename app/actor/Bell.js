@@ -130,6 +130,8 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 		this.args.xSpeed = other.args.xSpeed;
 		this.args.ySpeed = other.args.ySpeed;
 
+		other.args.xSpeed *= 0.99;
+
 		this.viewport.args.backdrop.args.sunrise = 1;
 	}
 }

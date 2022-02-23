@@ -61,10 +61,36 @@ export class MainMenu extends Menu
 				, 'Sean'
 			]
 			, set: value => this.parent.args.selectedChar = value
-			, get: () => this.parent.args.selectedChar
+			, get: () => this.parent.args.selectedChar ?? 'Sonic'
+		};
+
+		const Follower = {
+			input: 'select'
+			, options: [
+				'Sonic'
+				, 'Tails'
+				, 'Knuckles'
+				// , 'Robotnik'
+				// , 'EggRobo'
+				// , 'Mecha-Sonic'
+				// , 'Seymour'
+				// , 'Chalmers'
+				// , 'Sean'
+			]
+			, locked: [
+				'Robotnik'
+				, 'EggRobo'
+				, 'Mecha-Sonic'
+				, 'Seymour'
+				, 'Chalmers'
+				, 'Sean'
+			]
+			, set: value => this.parent.args.followerChar = value
+			, get: () => this.parent.args.followerChar ?? 'Tails'
 		};
 
 		Character.prefix = new CharacterPreview(Character);
+		// Follower.prefix = new CharacterPreview(Follower);
 
 		this.items = this.args.items = {
 
@@ -75,6 +101,8 @@ export class MainMenu extends Menu
 				, children: {
 
 					Character
+
+					// , Follower
 
 					, 'Sonic Control Tutorial': {
 						subtext: 'Learn the controls for Sonic'
@@ -502,7 +530,7 @@ export class MainMenu extends Menu
 
 		const onOpen  = event => {
 			this.parent
-			.loadMap({mapUrl: '/map/p2p-test.json', networked: true})
+			.loadMap({mapUrl: '/map/empty-zone-2.json', networked: true})
 			.then(() => console.log('Peer connection opened!'));
 		};
 		const onClose = event => this.disconnect();
@@ -523,12 +551,5 @@ export class MainMenu extends Menu
 		done.then(() => this.onTimeout(250, () => this.remove()));
 
 		return done;
-	}
-
-	change(event)
-	{
-		super.change(event);
-
-		// Object.keys(this.args.items)
 	}
 }

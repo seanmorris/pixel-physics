@@ -8,8 +8,6 @@ import { Spring } from './Spring';
 
 export class Projectile extends PointActor
 {
-	float = -1;
-
 	constructor(...args)
 	{
 		super(...args);
@@ -49,10 +47,28 @@ export class Projectile extends PointActor
 			return false;
 		}
 
+		if(other.args.gone)
+		{
+			return false;
+		}
+
+		if(other.args.currentSheild)
+		{
+			const angleTo = Math.atan2(this.x - other.x, this.y - other.y);
+
+			this.impulse(this.args.airSpeed / 2, angleTo, true);
+
+			return;
+		}
+
 		if(!other.solid && !other.controllable)
 		{
 			return false;
 		}
+
+		this.args.xSpeed = 0;
+		this.args.ySpeed = 0;
+		this.args.float  = -1;
 
 		if(this.args.owner && !this.args.owner.args.gone)
 		{
@@ -85,7 +101,6 @@ export class Projectile extends PointActor
 		setTimeout(() => viewport.particles.remove(particle), 350);
 
 		this.viewport.actors.remove( this );
-		this.remove();
 	}
 
 	get canStick() { return false; }
