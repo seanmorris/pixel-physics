@@ -32,6 +32,7 @@ import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
 import { SheildStarMonitor } from './actor/monitor/SheildStarMonitor';
+import { SheildNormalMonitor } from './actor/monitor/SheildNormalMonitor';
 import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
 import { SheildWaterMonitor } from './actor/monitor/SheildWaterMonitor';
 import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
@@ -233,6 +234,7 @@ export const ObjectPalette = {
 	, 'web-monitor': WebMonitor
 	, 'ring-monitor': RingMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
+	, 'sheild-normal-monitor': SheildNormalMonitor
 	, 'sheild-star-monitor': SheildStarMonitor
 	, 'sheild-water-monitor': SheildWaterMonitor
 	, 'sheild-electric-monitor': SheildElectricMonitor

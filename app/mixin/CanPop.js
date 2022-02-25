@@ -37,10 +37,13 @@ export const CanPop = {
 			return false;
 		}
 
-		if(!this.args.currentSheild
+		const shield = this.args.currentSheild;
+		const immune = other.immune(this, shield ? shield.type : 'normal');
+
+		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
+			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
 			this.pop(other);
 			return;
@@ -58,7 +61,7 @@ export const CanPop = {
 			}
 
 
-			other.damage(this);
+			other.damage(this, shield ? shield.type : 'normal');
 		}
 
 		return false;
