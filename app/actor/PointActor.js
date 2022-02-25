@@ -205,11 +205,11 @@ export class PointActor extends View
 
 		});
 
-		Object.defineProperty(this, 'public', {value: {}});
+		// Object.defineProperty(this, 'public', {value: {}});
 
-		this.args.bindTo((v,k) => {
-			this.public[k] = v;
-		});
+		// this.args.bindTo((v,k) => {
+		// 	this.public[k] = v;
+		// });
 
 		this.args.type = 'actor-generic';
 		this.args.modeTime = 0;
@@ -4017,7 +4017,7 @@ export class PointActor extends View
 			for(const region of regions)
 			{
 				if(actor.args.mode === MODE_FLOOR
-					&& -1 + point[1] === region.y + -region.public.height
+					&& -1 + point[1] === region.y + -region.args.height
 					&& Math.abs(actor.args.gSpeed) >= region.skimSpeed
 				){
 					return -1 + i;

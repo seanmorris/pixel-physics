@@ -169,21 +169,21 @@ export class BreakableBlock extends Block
 		if(!(other instanceof Orb)
 			&& !other.falling
 			&& !other.isVehicle
-			&& !other.public.gSpeed
-			&& !other.public.xSpeed
-			&& !other.public.ySpeed
+			&& !other.args.gSpeed
+			&& !other.args.xSpeed
+			&& !other.args.ySpeed
 		){
 			return !this.broken;
 		}
 
 		if((other instanceof Orb)
-			|| other.public.spinning
-			|| other.public.dashed
+			|| other.args.spinning
+			|| other.args.dashed
 			|| other.punching
 		){
-			const top = this.y - this.public.height;
+			const top = this.y - this.args.height;
 
-			if(this.public.bounceBack && other.public.jumping && other.y < top)
+			if(this.args.bounceBack && other.args.jumping && other.y < top)
 			{
 				other.args.ySpeed *= -bounceBack;
 				other.args.y = top;

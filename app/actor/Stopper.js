@@ -6,9 +6,9 @@ export class Stopper extends BreakableBlock
 	{
 		super(args, parent);
 
-		this.args.type = 'actor-item actor-breakable-block actor-stopper';
-
+		this.args.type   = 'actor-item actor-breakable-block actor-stopper';
 		this.args.height = 16;
+		this.args.float  = -1;
 	}
 
 	collideA(other, type)

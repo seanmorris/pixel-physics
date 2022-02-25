@@ -177,7 +177,7 @@
 	--sprite-offset-y: -512px !important;
 	--animation-steps: 1;
 
-	animation: sonic-drop steps(3) 1 150ms 50ms forwards;
+	animation: sonic-drop steps(3) 1 96ms 50ms forwards;
 
 	left: -4px;
 }
@@ -192,7 +192,7 @@
 	--animation-width: -64px;
 	--sprite-offset-x: -192px;
 
-	animation: sonic-animate-echo steps(2) infinite 192ms;
+	animation: sonic-animate-echo steps(2) infinite 96ms;
 
 	left: -4px;
 }

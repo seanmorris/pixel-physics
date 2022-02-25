@@ -7,8 +7,8 @@ export class Rocket extends PointActor
 	{
 		super(...args);
 
-		// this.args.width  = this.public.width  || 32;
-		// this.args.height = this.public.height || 32;
+		// this.args.width  = this.args.width  || 32;
+		// this.args.height = this.args.height || 32;
 
 		this.args.width  = 64;
 		this.args.height = 16;

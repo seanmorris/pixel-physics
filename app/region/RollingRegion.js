@@ -37,7 +37,7 @@ export class RollingRegion extends Region
 
 		if(!this.originalHeight)
 		{
-			this.originalHeight = this.public.height;
+			this.originalHeight = this.args.height;
 		}
 
 		super.update();
@@ -84,7 +84,7 @@ export class RollingRegion extends Region
 			other.args.gSpeed = 2 * Math.sign(gSpeedLast || other.args.direction);
 		}
 
-		if(!other.public.rolling)
+		if(!other.args.rolling)
 		{
 			other.args.rolling = true;
 		}

@@ -77,9 +77,9 @@ export class Switch extends PointActor
 			return true;
 		}
 
-		if(other.public.ySpeed < 0)
+		if(other.args.ySpeed < 0)
 		{
-			if(other.public.ySpeed === 0 && other.y > this.y)
+			if(other.args.ySpeed === 0 && other.y > this.y)
 			{
 				return true;
 			}
@@ -112,7 +112,7 @@ export class Switch extends PointActor
 
 		if(other.y <= this.y - this.args.height)
 		{
-			if(!this.public.active)
+			if(!this.args.active)
 			{
 				this.activate(other);
 			}

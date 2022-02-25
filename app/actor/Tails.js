@@ -1,6 +1,8 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
+import { Spring } from './Spring';
+
 import { SkidDust } from '../behavior/SkidDust';
 
 export class Tails extends PointActor
@@ -85,12 +87,12 @@ export class Tails extends PointActor
 			return;
 		}
 
-		if(this.public.tailFlyCoolDown > 0)
+		if(this.args.tailFlyCoolDown > 0)
 		{
 			this.args.tailFlyCoolDown--;
 		}
 
-		if(this.public.tailFlyCoolDown < 0)
+		if(this.args.tailFlyCoolDown < 0)
 		{
 			this.args.tailFlyCoolDown++;
 		}
@@ -112,7 +114,7 @@ export class Tails extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(!this.public.rolling)
+			if(!this.args.rolling)
 			{
 				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 				{
@@ -150,10 +152,15 @@ export class Tails extends PointActor
 				this.box.setAttribute('data-animation', 'flying');
 			}
 		}
-		else if(this.public.jumping)
+		else if(this.args.jumping)
 		{
 			this.flyingSound.pause();
 			this.box.setAttribute('data-animation', 'jumping');
+		}
+
+		if(this.args.hangingFrom)
+		{
+			this.args.animation = 'hanging';
 		}
 
 		super.update();
@@ -161,6 +168,12 @@ export class Tails extends PointActor
 
 	command_0(button)
 	{
+		if(this.args.hangingFrom)
+		{
+			super.command_0();
+			return;
+		}
+
 		super.command_0(button);
 
 		if(!this.args.jumping)
@@ -180,7 +193,7 @@ export class Tails extends PointActor
 			return;
 		}
 
-		if(this.public.ySpeed > 0)
+		if(this.args.ySpeed > 0)
 		{
 			this.args.ySpeed = 0;
 		}
@@ -199,7 +212,7 @@ export class Tails extends PointActor
 
 	hold_0(button)
 	{
-		if(this.public.flying)
+		if(this.args.flying)
 		{
 			if(this.args.ySpeed > 0)
 			{

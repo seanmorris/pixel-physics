@@ -70,12 +70,12 @@ export class Follower extends PointActor
 
 		if(distance < minDistance)
 		{
-			if(Math.abs(this.public.xSpeed) < minSpeed)
+			if(Math.abs(this.args.xSpeed) < minSpeed)
 			{
 				this.args.xSpeed = minSpeed * Math.sign(-0.5 + Math.random());
 			}
 
-			if(Math.abs(this.public.ySpeed) < minSpeed)
+			if(Math.abs(this.args.ySpeed) < minSpeed)
 			{
 				this.args.ySpeed = minSpeed * Math.sign(-0.5 + Math.random());
 			}
@@ -119,7 +119,7 @@ export class Follower extends PointActor
 		{
 			const step = xMag * xDir * fudge;
 
-			// if(!this.swapZ && this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(step))
+			// if(!this.swapZ && this.args.xSpeed && Math.sign(this.args.xSpeed) !== Math.sign(step))
 			// {
 			// 	this.swapZ = this.viewport.onFrameOut(1, () => {
 
@@ -129,9 +129,9 @@ export class Follower extends PointActor
 
 			let xSpeed = this.args.xSpeed + step;
 
-			if(Math.abs(this.public.xSpeed) > maxSpeed)
+			if(Math.abs(this.args.xSpeed) > maxSpeed)
 			{
-				xSpeed = maxSpeed * Math.sign(this.public.xSpeed);
+				xSpeed = maxSpeed * Math.sign(this.args.xSpeed);
 			}
 
 			this.args.xSpeed = xSpeed;
@@ -149,7 +149,7 @@ export class Follower extends PointActor
 			}
 		}
 
-		if(!facing && this.public.xSpeed < 0)
+		if(!facing && this.args.xSpeed < 0)
 		{
 			facing = 'left';
 		}
@@ -158,9 +158,9 @@ export class Follower extends PointActor
 			facing = 'right';
 		}
 
-		if(!ySame || Math.abs(this.public.ySpeed) < maxSpeed)
+		if(!ySame || Math.abs(this.args.ySpeed) < maxSpeed)
 		{
-			let ySpeed = this.public.ySpeed + yMag * yDir;
+			let ySpeed = this.args.ySpeed + yMag * yDir;
 
 			if(Math.abs(this.args.ySpeed) > maxSpeed)
 			{

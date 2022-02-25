@@ -11,7 +11,7 @@ export const Pushable = {
 
 		let otherSpeed = otherMag * otherDir;
 
-		if(Math.abs(other.public.ySpeed) > Math.abs(other.public.xSpeed))
+		if(Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
 		{
 			return true;
 		}

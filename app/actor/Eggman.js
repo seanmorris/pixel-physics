@@ -30,8 +30,8 @@ export class Eggman extends PointActor
 		this.args.accel     = 0.15;
 		this.args.decel     = 0.3;
 
-		this.args.normalHeight = 40;
-		this.args.rollingHeight = 32;
+		this.args.normalHeight  = 40;
+		this.args.rollingHeight = 28;
 
 		this.gSpeedMaxNormal = 18;
 		this.gSpeedMaxSuper  = 28;
@@ -105,18 +105,18 @@ export class Eggman extends PointActor
 
 		if(falling)
 		{
-			if(this.public.jumping)
+			if(this.args.jumping)
 			{
 				this.box.setAttribute('data-animation', 'jumping');
 			}
-			this.args.height = this.public.rollingHeight;
+			this.args.height = this.args.rollingHeight;
 		}
-		else if(this.public.rolling)
+		else if(this.args.rolling)
 		{
-			this.args.height = this.public.rollingHeight;
-			if(this.public.direction !== Math.sign(this.public.gSpeed))
+			this.args.height = this.args.rollingHeight;
+			if(this.args.direction !== Math.sign(this.args.gSpeed))
 			{
-				this.args.direction = Math.sign(this.public.gSpeed);
+				this.args.direction = Math.sign(this.args.gSpeed);
 
 				if(this.args.direction < 0)
 				{
@@ -132,7 +132,7 @@ export class Eggman extends PointActor
 		}
 		else
 		{
-			this.args.height = this.public.normalHeight;
+			this.args.height = this.args.normalHeight;
 
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{

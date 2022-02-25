@@ -151,6 +151,27 @@
 	animation: knuckles-run steps(4) infinite 192ms;
 }
 
+.actor-item.actor-knuckles[data-animation="hanging"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -992px;
+	top: 24px;
+}
+
+.actor-item.actor-knuckles[data-animation="springdash"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -800px;
+	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
+}
+
+.actor-item.actor-knuckles[data-facing="left"][data-animation="springdash"] .sprite:after {
+	transform: scale(1,1) rotate(calc(calc(-1rad * var(--air-angle)) + 180deg))  translateY(-3px);
+}
+
+.actor-item.actor-knuckles[data-animation="dropping"] .sprite:after {
+	--sprite-offset-x: -128px;
+	--sprite-offset-y: -800px;
+}
+
 /*.actor-item.actor-knuckles[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -256px;

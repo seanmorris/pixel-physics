@@ -1,4 +1,14 @@
 .actor-item.actor-text-actor .sprite {
 	height: 24px;
-	width: 32px;
+	width: auto;
+
+	position: relative;
+	left: -64px;
+}
+
+.input-keyboard .actor-item.actor-text-actor .sprite .hud-character[data-value="10005"],
+.input-keyboard .actor-item.actor-text-actor .sprite .hud-character[data-value="10006"],
+.input-keyboard .actor-item.actor-text-actor .sprite .hud-character[data-value="9374"],
+.input-keyboard .actor-item.actor-text-actor .sprite .hud-character[data-value="9913"] {
+	transform: translateY(1px);
 }

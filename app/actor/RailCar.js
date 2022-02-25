@@ -98,7 +98,7 @@ export class RailCar extends Vehicle
 		{
 			const speed = this.args.hSpeed || this.args.gSpeed;
 
-			if(Math.abs(speed) < Math.abs(this.args.cartSpeed) || Math.sign(speed) !== Math.sign(this.public.cartSpeed))
+			if(Math.abs(speed) < Math.abs(this.args.cartSpeed) || Math.sign(speed) !== Math.sign(this.args.cartSpeed))
 			{
 				if(this.args.hSpeed)
 				{

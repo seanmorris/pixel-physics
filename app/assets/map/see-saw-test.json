@@ -45,85 +45,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":48,
-                 "id":36,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":512,
-                 "y":768
-                }, 
-                {
-                 "gid":2,
-                 "height":48,
-                 "id":35,
-                 "name":"knuckles",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"titlecard-author",
-                         "type":"string",
-                         "value":"SEAN MORRIS - SONIC 3000"
-                        }, 
-                        {
-                         "name":"titlecard-number",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"titlecard-title-1",
-                         "type":"string",
-                         "value":"SEE-SAW"
-                        }, 
-                        {
-                         "name":"titlecard-title-2",
-                         "type":"string",
-                         "value":"TEST ZONE"
-                        }],
-                 "rotation":0,
-                 "type":"knuckles",
-                 "visible":true,
-                 "width":32,
-                 "x":320,
-                 "y":768
-                }, 
-                {
-                 "gid":2,
-                 "height":40,
-                 "id":23,
-                 "name":"tails",
-                 "properties":[
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"left"
-                        }],
-                 "rotation":0,
-                 "type":"tails",
-                 "visible":true,
-                 "width":32,
-                 "x":120,
-                 "y":768
-                }, 
-                {
-                 "gid":2,
                  "height":16,
                  "id":33,
                  "name":"see-saw",
@@ -174,18 +95,6 @@
                  "visible":true,
                  "width":96,
                  "x":616,
-                 "y":768
-                }, 
-                {
-                 "gid":2,
-                 "height":55,
-                 "id":41,
-                 "name":"eggman",
-                 "rotation":0,
-                 "type":"eggman",
-                 "visible":true,
-                 "width":40,
-                 "x":688,
                  "y":768
                 }, 
                 {
@@ -329,6 +238,97 @@
                  "width":0,
                  "x":1040,
                  "y":512
+                }, 
+                {
+                 "gid":2,
+                 "height":48,
+                 "id":84,
+                 "name":"sonic",
+                 "properties":[
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"left"
+                        }],
+                 "rotation":0,
+                 "type":"sonic",
+                 "visible":true,
+                 "width":32,
+                 "x":512,
+                 "y":768
+                }, 
+                {
+                 "gid":2,
+                 "height":48,
+                 "id":85,
+                 "name":"knuckles",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"right"
+                        }, 
+                        {
+                         "name":"titlecard-author",
+                         "type":"string",
+                         "value":"SEAN MORRIS - SONIC 3000"
+                        }, 
+                        {
+                         "name":"titlecard-number",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"titlecard-title-1",
+                         "type":"string",
+                         "value":"SEE-SAW"
+                        }, 
+                        {
+                         "name":"titlecard-title-2",
+                         "type":"string",
+                         "value":"TEST ZONE"
+                        }],
+                 "rotation":0,
+                 "type":"knuckles",
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":768
+                }, 
+                {
+                 "gid":2,
+                 "height":40,
+                 "id":86,
+                 "name":"tails",
+                 "properties":[
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"left"
+                        }],
+                 "rotation":0,
+                 "type":"tails",
+                 "visible":true,
+                 "width":32,
+                 "x":120,
+                 "y":768
+                }, 
+                {
+                 "gid":2,
+                 "height":55,
+                 "id":87,
+                 "name":"eggman",
+                 "rotation":0,
+                 "type":"eggman",
+                 "visible":true,
+                 "width":40,
+                 "x":688,
+                 "y":768
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -337,7 +337,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":84,
+ "nextobjectid":88,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -13,31 +13,31 @@ export class SkidDust extends Behavior
 
 	update(host)
 	{
-		if(host.public.falling || host.public.rolling || host.spindashCharge)
+		if(host.args.falling || host.args.rolling || host.spindashCharge)
 		{
 			return;
 		}
 
-		if(host.public.wallSticking || host.public.climbing)
+		if(host.args.wallSticking || host.args.climbing)
 		{
 			return;
 		}
 
-		const direction = host.public.direction;
+		const direction = host.args.direction;
 
-		if(!Math.sign(host.public.gSpeed) || !Math.sign(direction))
+		if(!Math.sign(host.args.gSpeed) || !Math.sign(direction))
 		{
 			return;
 		}
 
-		if(Math.abs(host.public.gSpeed - direction) < 5)
+		if(Math.abs(host.args.gSpeed - direction) < 5)
 		{
 			return;
 		}
 
 		if(!host.alwaysSkidding)
 		{
-			if(Math.sign(host.public.gSpeed) === Math.sign(direction))
+			if(Math.sign(host.args.gSpeed) === Math.sign(direction))
 			{
 				return;
 			}

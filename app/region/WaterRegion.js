@@ -34,7 +34,7 @@ export class WaterRegion extends Region
 		}
 
 		const splashParticle = new Tag(`<div class = "particle-skim">`);
-		const splashPoint = actor.rotatePoint(actor.public.gSpeed, 0);
+		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 0);
 
 		splashParticle.style({
 			'--x': splashPoint[0] + actor.x + actor.args.gSpeed
@@ -63,26 +63,12 @@ export class WaterRegion extends Region
 			this.filter = new Tag('<div class = "region-filter">');
 			this.color  = new Tag('<div class = "region-color">');
 
-			this.mask = View.from(`<svg style = "width: 100vw;height: 100vh">
-				<defs>
-					<clipPath id = "mask-${this.args.id}" clipPathUnits="userSpaceOnUse">
-	    				<path d="
-	    					M 0 0 L 0 ${32 * 17} L ${32 * 17} ${32 * 17} L ${32 * 17} 0 z
-	    					M ${32 * 17} 150 L ${32 * 17} 200 L ${32 * 17/2} 175 L ${32 * 17/2} 175 z"
-
-	    				/>
-    				</clipPath>
-    			</defs>
-			<svg>`);
 
 			this.colorWrapper.appendChild(this.color.node);
 			this.filterWrapper.appendChild(this.filter.node);
 
 			this.tags.sprite.appendChild(this.colorWrapper.node);
 			this.tags.sprite.appendChild(this.filterWrapper.node);
-			this.mask.render(this.tags.sprite);
-
-			this.tags.sprite.style({'--maskImage': `url(#mask-${this.args.id})`});
 		}
 
 		if(this.args.controller)
@@ -92,15 +78,12 @@ export class WaterRegion extends Region
 			if(controller)
 			{
 				this.args.height = controller.args.level;
-
-				// console.log(controller.args.level);
 			}
 		}
 
-
-		if(!this.switch && this.public.switch)
+		if(!this.switch && this.args.switch)
 		{
-			this.switch = this.viewport.actorsById[ this.public.switch ]
+			this.switch = this.viewport.actorsById[ this.args.switch ]
 
 			if(this.switch)
 			{
@@ -124,21 +107,21 @@ export class WaterRegion extends Region
 
 		if(!this.originalHeight)
 		{
-			this.originalHeight = this.public.height;
+			this.originalHeight = this.args.height;
 		}
 
 		if(this.draining)
 		{
-			if(this.draining > 0 && this.public.height >= 32)
+			if(this.draining > 0 && this.args.height >= 32)
 			{
 				this.args.height -= 3.5;
 			}
-			else if(this.draining < 0 && this.public.height < this.originalHeight)
+			else if(this.draining < 0 && this.args.height < this.originalHeight)
 			{
 				this.args.height += 3.5;
 			}
 
-			if(this.public.height <= 0)
+			if(this.args.height <= 0)
 			{
 				this.args.display = 'none';
 
@@ -206,12 +189,12 @@ export class WaterRegion extends Region
 				const x = other.x + point[0];
 				const y = other.y + point[1];
 
-				if(other.y < this.y - this.public.height)
+				if(other.y < this.y - this.args.height)
 				{
 					bubble.style({display: 'none'});
 				}
 
-				if(y < this.y - this.public.height)
+				if(y < this.y - this.args.height)
 				{
 					bubble.style({display: 'none'});
 				}

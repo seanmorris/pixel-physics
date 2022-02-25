@@ -14,7 +14,7 @@ export class TextActor extends PointActor
 
 		this.text = new CharacterString({value:''});
 
-		this.args.x = args.x - 48;
+		// this.args.x = args.x - 48;
 
 		this.args.bindTo('content', v => {
 			this.text.args.value = v;

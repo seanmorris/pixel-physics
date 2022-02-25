@@ -437,7 +437,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const mapData   = this.mapData;
 		const blockSize = mapData.tilewidth;
 
-		const tilePos = this.getTile(tileNumber).map(coord => coord * blockSize);
+		const tileCoords = this.getTile(tileNumber);
+		const tilePos = [tileCoords[0] * blockSize, tileCoords[1] * blockSize];
 
 		const x = (Number(xInput) % blockSize);
 		const y = (Number(yInput) % blockSize);

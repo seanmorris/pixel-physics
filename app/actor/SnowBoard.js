@@ -47,7 +47,7 @@ export class SnowBoard extends Vehicle
 
 	update()
 	{
-		this.originalSpeed = this.public.gSpeed || this.public.xSpeed;
+		this.originalSpeed = this.args.gSpeed || this.args.xSpeed;
 
 		super.update();
 
@@ -56,7 +56,7 @@ export class SnowBoard extends Vehicle
 			this.args.z = this.occupant.args.z - 1;
 		}
 
-		if(this.public.gSpeed !== 0 || this.public.xSpeed !== 0)
+		if(this.args.gSpeed !== 0 || this.args.xSpeed !== 0)
 		{
 			this.sprite.classList.add('moving');
 

@@ -203,9 +203,11 @@ export class Sonic extends PointActor
 	{
 		super.onRendered();
 
-		const arm = new Tag(`<div class = "rear-arm">`);
-
-		this.box.appendChild(arm.node);
+		if(!this.arm)
+		{
+			this.arm = new Tag(`<div class = "rear-arm">`);
+			this.box.appendChild(this.arm.node);
+		}
 	}
 
 	updateStart()
@@ -333,7 +335,7 @@ export class Sonic extends PointActor
 				this.willStick = false;
 			}
 
-			this.pincherBg.args.scale = 0;
+			// this.pincherBg.args.scale = 0;
 		}
 
 		if(this.lightDashingCoolDown > 0)
@@ -665,13 +667,13 @@ export class Sonic extends PointActor
 
 			if(Math.abs(this.pincherBg.args.scale) < 0.1)
 			{
-				this.pincherBg.args.scale = 0;
+				// this.pincherBg.args.scale = 0;
 				// this.pincherFg.args.scale = 0;
 			}
 		}
 		else
 		{
-			this.pinch(0, 0);
+			// this.pinch(0, 0);
 		}
 
 		if(!this.twister)
@@ -875,7 +877,7 @@ export class Sonic extends PointActor
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
 
-			this.pinch(-400, 50);
+			this.pinch(-600, 50);
 
 			const marker = new Marker({x:this.x,y:this.y});
 

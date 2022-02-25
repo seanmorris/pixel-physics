@@ -1,0 +1,57 @@
+.region.region-dark .sprite {
+	position: absolute;
+	/*bottom:  100% !important;*/
+}
+
+.region.region-dark .region-color-wrapper {
+		overflow: hidden;
+		position: absolute;
+		left:   0;
+		right:  0;
+		top:    0px;
+		bottom: 0px;
+}
+
+.region.region-shade.region-dark .region-color {
+	/*background: url(/custom/raindrops.png);*/
+	background-color: rgba(0,0,0,0.0);
+	height: calc(100% - 64px);
+	top:  0px;
+}
+
+.region.region-shade.region-dark .region-filter-wrapper {
+	top:  0px;
+}
+
+.region.region-shade.region-dark .region-filter {
+	background-color: rgba(0, 0, 0, 0.5);
+	filter: saturate(0.2) brightness(0.95) contrast(150%);
+	backdrop-filter: invert(0);
+}
+
+.region.region-shade.region-dark .region-filter-wrapper {
+	top:  -1px;
+	left: -1px;
+}
+
+.region.region-dark .sprite {
+	clip-path: var(--maskImage);
+}
+
+@keyframes rain-drop-fall {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: 256px;
+	}
+}
+
+@keyframes rain-drop-shift {
+	0% {
+		background-position-x: calc(-0px + var(--vpX));
+	}
+	100% {
+		background-position-x: calc(-256px + var(--vpX));
+	}
+}

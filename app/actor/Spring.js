@@ -79,6 +79,11 @@ export class Spring extends PointActor
 
 	collideA(other)
 	{
+		if(other.args.hangingFrom)
+		{
+			other.args.hangingFrom.unhook();
+		}
+
 		if(other[WontSpring])
 		{
 			return false;

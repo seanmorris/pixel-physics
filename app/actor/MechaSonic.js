@@ -25,11 +25,11 @@ export class MechaSonic extends PointActor
 
 		this.args.takeoffPlayed = false;
 
-		this.public.rollingHeight = 18;
-		this.public.normalHeight  = 44;
+		this.args.rollingHeight   = 28;
+		this.args.normalHeight  = 44;
 
 		this.args.width  = 18;
-		this.args.height = this.public.normalHeight;
+		this.args.height = this.args.normalHeight;
 
 		this.args.bindTo('falling', v => {
 			if(!v)
@@ -56,12 +56,12 @@ export class MechaSonic extends PointActor
 
 		this.args.accel = 0.1;
 
-		const direction = this.public.direction;
-		const gSpeed    = this.public.gSpeed;
+		const direction = this.args.direction;
+		const gSpeed    = this.args.gSpeed;
 		const speed     = Math.abs(gSpeed);
 		const maxSpeed  = 100;
 		const minRun    = 100 * 0.1;
-		const minRun2   = 0.5 * this.public.gSpeedMax;
+		const minRun2   = 0.5 * this.args.gSpeedMax;
 
 		if(!this.flame)
 		{
@@ -107,7 +107,7 @@ export class MechaSonic extends PointActor
 			this.dashed = false;
 		}
 
-		if(!this.public.rolling && !falling)
+		if(!this.args.rolling && !falling)
 		{
 			if(this.yAxis > 0)
 			{
@@ -118,7 +118,7 @@ export class MechaSonic extends PointActor
 				this.args.crouching = false;
 			}
 
-			if(Math.sign(this.public.gSpeed) !== direction && Math.abs(this.public.gSpeed - direction) > 5)
+			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
 				this.scrapeSound && this.scrapeSound.play();
 
@@ -132,7 +132,7 @@ export class MechaSonic extends PointActor
 
 				this.thrusterSound && this.thrusterSound.play();
 
-				if(!this.public.takeoffPlayed)
+				if(!this.args.takeoffPlayed)
 				{
 					this.args.takeoffPlayed = true;
 					this.takeoffSound && this.takeoffSound.play();
@@ -205,7 +205,7 @@ export class MechaSonic extends PointActor
 				this.closeThruster();
 			}
 		}
-		else if(this.public.rolling)
+		else if(this.args.rolling)
 		{
 			this.scrapeSound && this.scrapeSound.pause();
 
@@ -217,7 +217,7 @@ export class MechaSonic extends PointActor
 				this.args.animation = 'crouching';
 
 				this.onTimeout(200, ()=>{
-					if(this.public.rolling)
+					if(this.args.rolling)
 					{
 						this.args.animation = 'rolling';
 
@@ -245,13 +245,13 @@ export class MechaSonic extends PointActor
 				this.onTimeout(200, ()=>{
 					this.thrusterCloseSound && this.thrusterCloseSound.play();
 
-					if(this.public.falling)
+					if(this.args.falling)
 					{
 						if(this.dashed)
 						{
 							this.args.animation = 'running2';
 						}
-						else if(this.public.jumping)
+						else if(this.args.jumping)
 						{
 							this.args.animation = 'jumping';
 						}
@@ -260,7 +260,7 @@ export class MechaSonic extends PointActor
 					}
 				});
 			}
-			else if(!this.public.jumping)
+			else if(!this.args.jumping)
 			{
 				this.args.animation = 'crouching';
 			}
@@ -293,7 +293,7 @@ export class MechaSonic extends PointActor
 
 	command_5()
 	{
-		if(this.public.falling)
+		if(this.args.falling)
 		{
 			this.airDash(1);
 		}
@@ -301,7 +301,7 @@ export class MechaSonic extends PointActor
 
 	command_4()
 	{
-		if(this.public.falling)
+		if(this.args.falling)
 		{
 			this.airDash(-1);
 		}
@@ -309,7 +309,7 @@ export class MechaSonic extends PointActor
 
 	airDash(direction)
 	{
-		if(this.dashed || (this.public.ignore && this.public.ignore !== -2))
+		if(this.dashed || (this.args.ignore && this.args.ignore !== -2))
 		{
 			return;
 		}
@@ -333,9 +333,9 @@ export class MechaSonic extends PointActor
 		this.args.float = 2;
 
 		this.args.rolling = false;
-		this.args.height = this.public.normalHeight;
+		this.args.height = this.args.normalHeight;
 
-		if(this.public.xSpeed && Math.sign(this.public.xSpeed) !== Math.sign(direction))
+		if(this.args.xSpeed && Math.sign(this.args.xSpeed) !== Math.sign(direction))
 		{
 			dashSpeed = direction * 11;
 			this.args.float  = 6;
@@ -357,7 +357,7 @@ export class MechaSonic extends PointActor
 			finalSpeed
 			, finalSpeed > 0 ? 0 : Math.PI
 			, (i, point) => {
-				if(this.getMapSolidAt(...point, this.public.layer))
+				if(this.getMapSolidAt(...point, this.args.layer))
 				{
 					return i;
 				}

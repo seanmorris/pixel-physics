@@ -5,35 +5,49 @@
 	[[pinch]]
 	[[twist]]
 
+	<section class = "buttons">
+		<span>[[select]]</span>
+		<span>[[ok]]</span>
+		<span>[[back]]</span>
+	</section>
+
 	<section class = "contents" cv-if = "!connected">
 		<div class = "menu-container" data-current-menu = "[[currentKey]]">
 
-			<div>[[title]]</div>
+			<div>
+				[[title]]
+			</div>
 
 			<div>
 
 				<ul cv-ref = "bound" cv-each = "items:item:title">
 
-					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item, event); keyup(event, item)" tabindex="0">
+					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item, event); keyup(event, item):c" tabindex="0">
 						[[item.prefix]]
 						<span class = "title">[[item._title]]</span>
 						<span class = "subtext">[[item.subtext]]</span>
-						<span cv-if = "item.input" cv-is = "string">
-							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" /></span>
+						<span cv-if = "item.input" cv-is = "string" class = "field">
+							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event, title)" tabindex="-1" /></span>
 						</span>
-						<span cv-if = "item.input" cv-is = "number">
-							: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
+						<span cv-if = "item.input" cv-is = "number" class = "field">
+							: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event, title)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
 						</span>
-						<span cv-if = "item.input" cv-is = "boolean">
-							: <span data-wraps = "select"><select cv-on = "mousedown:toggle(event, item, $view, $subview, $parent); change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
+						<span cv-if = "item.input" cv-is = "boolean" class = "field">
+							:
+							<span data-wraps = "select">
+								[[item._boolValue]]
+								<select
+									cv-on    = "cvDomAttached:selectListRendered(event, item, title, $view, $subview, $parent);mousedown:toggle(event, item, $view, $subview, $parent); input:change(event, title)" cv-ref = "boolean"
+									cv-bind = "item.setting"
+									tabindex="-1">
 								<option value = "1">on</option>
 								<option value = "0">off</option>
 							</select></span>
 						</span>
-						<span cv-if = "item.input" cv-is = "select">
+						<span cv-if = "item.input" cv-is = "select" class = "field">
 							:
 							<span data-wraps = "select">
-								[[item._value]]
+								[[item._selectValue]]
 								<select
 									cv-on    = "input:change(event, title); listRendered:selectListRendered(event, item, title, $view, $subview, $parent);"
 									cv-ref   = "options"
@@ -53,7 +67,6 @@
 			</div>
 
 		</div>
-
 	</section>
 
 	<section class = "contents" cv-if = "!connected">

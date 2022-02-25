@@ -201,7 +201,7 @@ export class EggWalker extends Vehicle
 		// }
 
 		const projectile = new Projectile({
-			direction: this.public.direction
+			direction: this.args.direction
 			, x: this.args.x + offset[0] + (this.args.xSpeed || this.args.gSpeed)
 			, y: this.args.y + offset[1] - (this.crouching ? -20 : 0)
 			, owner: this
