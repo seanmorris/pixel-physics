@@ -17,12 +17,6 @@
 	width: calc(1px * var(--width));
 	height: calc(3px * var(--height));
 	/*x: calc(var(--width) / var(--breakSplit));*/
-	x: 0;
-}
-
-.actor-item.actor-spikes-small .sprite svg rect:last-child {
-	/*x: calc(calc(var(--width) / var(--breakSplit)) + -8);*/
-	x: 8;
 }
 
 .actor-item.actor-spikes-small[data-pointing="0"] .sprite svg {
@@ -74,31 +68,39 @@
 	height: calc(6px * var(--height));
 }
 
-.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect {
-	width: calc(1px * calc(var(--width) * var(--breakSplit)));
-	x:  0;
-}
-
 .actor-item.actor-spikes-small.actor-spikes-broken .sprite svg image {
 	width: 8;
 	height: 10;
 }
 
+.actor-item.actor-spikes-small .sprite svg rect {
+	/* clean-css ignore:start */x: 0;/* clean-css ignore:end */
+}
+.actor-item.actor-spikes-small .sprite svg rect:last-child {
+	/* clean-css ignore:start */x: 8;/* clean-css ignore:end */
+}
+
+.actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect {
+	width: calc(1px * calc(var(--width) * var(--breakSplit)));
+	/* clean-css ignore:start */x: 0;/* clean-css ignore:end */
+}
+
 .actor-item.actor-spikes-small.actor-spikes .sprite svg rect {
-	y: 20;
+	/* clean-css ignore:start */y: 20;/* clean-css ignore:end */
 }
 
 .actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:not(:last-child) {
-	y: 0;
+	/* clean-css ignore:start */y: 20;/* clean-css ignore:end */
 }
 
 .actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:last-child {
-	y: 40;
+	/* clean-css ignore:start */y: 40;/* clean-css ignore:end */
 }
 
 .actor-item.actor-spikes-small.actor-spikes-broken .sprite svg rect:last-child {
 	x: calc(calc(var(--width) / var(--breakSplit)) * 2);
 }
+/* clean-css ignore:end */
 
 @keyframes spike-flash {
 	from { filter: opacity(1);  }

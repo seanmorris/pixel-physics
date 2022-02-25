@@ -139,7 +139,7 @@ export class StarPost extends PointActor
 			// 	minutes = Number(minutes);
 			// }
 
-			// const yardsPerFrame = other.public.gSpeed / 32;
+			// const yardsPerFrame = other.args.gSpeed / 32;
 			// const feetPerSecond = yardsPerFrame * 60 * 3;
 
 			// this.args.charStrings = [

@@ -24,8 +24,8 @@ export class Region extends PointActor
 
 		this.args.type = 'region';
 
-		this.args.width  = this.public.width  || 32;
-		this.args.height = this.public.height || 32;
+		this.args.width  = this.args.width  || 32;
+		this.args.height = this.args.height || 32;
 
 		this.args.density = 1;
 		this.args.gravity = 1;
@@ -72,15 +72,15 @@ export class Region extends PointActor
 		super.update();
 
 		const topBoundry  = -this.viewport.args.y - (this.y - this.args.height);
-		const leftBoundry = -16 + -this.viewport.args.x - this.x;
+		const leftBoundry = -this.viewport.args.x - this.x;
 
 		this.mainElem && this.mainElem.style({
 			'--viewportWidth':    this.viewport.args.width  + 'px'
 			, '--viewportHeight': this.viewport.args.height + 'px'
-			, '--leftBoundry':    Math.trunc(leftBoundry) + 'px'
-			, '--topBoundry':     Math.trunc(topBoundry) + 'px'
-			, '--vpX':            Math.trunc(this.viewport.args.x) + 'px'
-			, '--vpY':            Math.trunc(this.viewport.args.y) + 'px'
+			, '--leftBoundry':    (leftBoundry) + 'px'
+			, '--topBoundry':     (topBoundry) + 'px'
+			, '--vpX':            (this.viewport.args.x) + 'px'
+			, '--vpY':            (this.viewport.args.y) + 'px'
 		});
 	}
 

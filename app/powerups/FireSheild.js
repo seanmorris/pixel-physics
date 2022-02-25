@@ -68,7 +68,7 @@ export class FireSheild extends Sheild
 			}
 		}
 
-		if(!host.public.falling)
+		if(!host.args.falling)
 		{
 			this.power = 15;
 		}

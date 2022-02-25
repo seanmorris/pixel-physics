@@ -32,10 +32,29 @@ export class MainMenu extends Menu
 		this.args.hostGame  = false;
 		this.args.copy      = 'copy';
 
+		this.font = 'small-menu-font';
+		// this.font = 'font';
+
 		this.args.title = new CharacterString({
 			value:  'Sonic 3000'
-			, font: 'small-menu-font'
+			, font: this.font
 		});
+
+		this.args.ok = new CharacterString({
+			value:  '⓿ ok'
+			, font: this.font
+		});
+
+		this.args.back = new CharacterString({
+			value:  '❶ back'
+			, font: this.font
+		});
+
+		this.args.select = new CharacterString({
+			value:  '✚ select'
+			, font: this.font
+		});
+
 
 		this.refreshConnection();
 
@@ -224,10 +243,19 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
+
 					, 'Vehicle Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Spotlight Test': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/visor-test.json'});
 							this.accept();
 						}
 					}

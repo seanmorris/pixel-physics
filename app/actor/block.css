@@ -47,7 +47,7 @@
 
 .actor-item.actor-breakable-block.broken .sprite {
 	background-image: none !important;
-	opacity: 0;
+	opacity: 0 !important;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsX {

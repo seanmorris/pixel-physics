@@ -12,6 +12,9 @@ export class Menu extends Card
 	{
 		super(args,parent);
 
+		this.font = 'small-menu-font';
+		// this.font = 'font';
+
 		this.args.cardName = 'menu';
 
 		this.args.items = {};
@@ -35,12 +38,27 @@ export class Menu extends Card
 				const item = v[i];
 
 				item._title = new CharacterString({
-					value:i, font: 'small-menu-font'
+					value:i, font: this.font
+				});
+
+				item._value = new CharacterString({
+					value: ''
+					, font: this.font
 				});
 
 				if(item.get)
 				{
 					item.setting = item.get();
+				}
+
+				if(item.input === 'boolean')
+				{
+					item._value.args.value = item.setting ? 'ON' : 'OFF';
+					item._boolValue = item._value;
+				}
+				else if(item.input === 'select')
+				{
+					item._selectValue = item._value;
 				}
 			}
 		});
@@ -271,6 +289,12 @@ export class Menu extends Card
 			return;
 		}
 
+		if(item.input)
+		{
+			event.currentTarget.focus();
+			this.focus(event.currentTarget);
+		}
+
 		if(item.children)
 		{
 			const prev = this.args.items;
@@ -333,6 +357,7 @@ export class Menu extends Card
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
+			item._value.args.value = item.setting ? 'ON' : 'OFF';
 			item.set && item.set(item.setting);
 		}
 		else if(item && item.input === 'select')
@@ -366,6 +391,7 @@ export class Menu extends Card
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
+			item._value.args.value = item.setting ? 'ON' : 'OFF';
 			item.set && item.set(item.setting);
 		}
 		else if(item && item.input === 'select')
@@ -380,20 +406,23 @@ export class Menu extends Card
 
 	keyup(event, item)
 	{
-		// if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
-		// {
-		// 	const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
+		if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 
-		// 	event.preventDefault();
-		// 	event.stopPropagation();
-		// 	event.stopImmediatePropagation();
+			if(event.currentTarget.tagName === 'INPUT')
+			{
+				const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
 
-		// 	if(next)
-		// 	{
-		// 		this.focus(next);
-		// 		return;
-		// 	}
-		// }
+				if(next)
+				{
+					this.focus(next);
+					return;
+				}
+			}
+		}
 
 		// if(item && item.input === 'select')
 		// {
@@ -415,10 +444,10 @@ export class Menu extends Card
 
 	change(event, title)
 	{
-		if(!this.currentItem)
-		{
-			return;
-		}
+		// if(!this.currentItem)
+		// {
+		// 	return;
+		// }
 
 		// const title  = this.currentItem.getAttribute('data-title');
 		const item   = this.args.items[ title ];
@@ -434,9 +463,15 @@ export class Menu extends Card
 	{
 		event.preventDefault();
 
-		item.setting = !item.setting;
+		// item.setting = !item.setting;
 
-		item.set(item.setting);
+		// this.selectListChanged(item, title);
+
+		// item.set(item.setting);
+
+		item.setting = !item.setting;
+		item._value.args.value = item.setting ? 'ON' : 'OFF';
+		item.set && item.set(item.setting);
 	}
 
 	cycleSelect(item, title, direction = 1)
@@ -490,6 +525,8 @@ export class Menu extends Card
 
 	selectListRendered(event, item, title, $view, $subview, $parent)
 	{
+		console.log(item.input);
+
 		if(item.input === 'select')
 		{
 			item.setting = (item.get ? item.get() : 'Sonic') ?? 'Sonic';
@@ -509,32 +546,37 @@ export class Menu extends Card
 
 			selectTag.selectedIndex = selectedIndex;
 
-			console.log(selectTag);
+			item._value.args.value = item.setting;
 
-			if(item.input === 'select')
-			{
-				item._value = new CharacterString({
-					value:item.setting, font: 'small-menu-font'
-				});
-
-				item._value.args.value = item.setting;
-
-				this.selectListChanged(item, title, true);
-			}
+			this.selectListChanged(item, title, true);
+		}
+		else if(item.input === 'boolean')
+		{
+			item.element.selectedIndex = item.setting ? 0 : 1;
+			item._value.args.value     = item.setting ? 'ON' : 'OFF';
 		}
 	}
 
 	selectListChanged(item, title, silent = false)
 	{
-		if(item._value)
+		if(item.input === 'boolean')
 		{
-			if(item.locked && item.locked.includes(item.setting))
+			item._value.args.value = item.setting ? 'ON' : 'OFF';
+
+			this.selectListChanged(item, title, true);
+		}
+		else if(item.input === 'select')
+		{
+			if(item._value)
 			{
-				item._value.args.value = 'Locked';
-			}
-			else
-			{
-				item._value.args.value = item.setting;
+				if(item.locked && item.locked.includes(item.setting))
+				{
+					item._value.args.value = 'Locked';
+				}
+				else
+				{
+					item._value.args.value = item.setting;
+				}
 			}
 		}
 

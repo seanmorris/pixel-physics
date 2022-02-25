@@ -10,8 +10,8 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	{
 		super(...args);
 
-		// this.args.width  = this.public.width  || 32;
-		// this.args.height = this.public.height || 32;
+		// this.args.width  = this.args.width  || 32;
+		// this.args.height = this.args.height || 32;
 
 		this.args.width  = 22;
 		this.args.height = 32;

@@ -75,8 +75,8 @@ export class Projectile extends PointActor
 			other.controllable && other.damage();
 		}
 
-		// this.args.x += Math.cos(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
-		// this.args.y += Math.sin(this.public.angle) * (other.args.width / 2) * Math.sign(this.public.xSpeed);
+		// this.args.x += Math.cos(this.args.angle) * (other.args.width / 2) * Math.sign(this.args.xSpeed);
+		// this.args.y += Math.sin(this.args.angle) * (other.args.width / 2) * Math.sign(this.args.xSpeed);
 
 		this.explode();
 

@@ -1192,6 +1192,8 @@ export class Viewport extends View
 		if(!this.gamepad && !this.args.cutScene)
 		{
 			controller.readInput({keyboard});
+
+			this.args.inputType = 'input-keyboard';
 		}
 		else if(!this.args.cutScene)
 		{
@@ -1230,7 +1232,7 @@ export class Viewport extends View
 				{
 					this.args.inputName = 'keyboard';
 
-					this.args.inputType = '';
+					this.args.inputType = 'input-keyboard';
 				}
 			}
 		}
@@ -1646,7 +1648,7 @@ export class Viewport extends View
 
 		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube', 'hooked', 'corkscrew'];
 
-		if(biasModes.includes(this.cameraMode))
+		if(biasModes.includes(this.cameraMode) && !actor.args.pushing  && actor.args.modeTime > 0)
 		{
 			if(actor.args.hangingFrom)
 			{
@@ -1701,7 +1703,7 @@ export class Viewport extends View
 		let ySpeedMax  = 512;
 		let ySpeed     = 0;
 
-		if(this.cameraMode !== 'boss')
+		if(this.cameraMode !== 'boss' && actor.args.modeTime > 0)
 		{
 			if(!actor.args.falling && actor.args.mode === 1)
 			{
@@ -2836,14 +2838,6 @@ export class Viewport extends View
 			}
 		}
 
-		this.updated.forEach(actor => {
-			if(actor.args.standingLayer)
-			{
-				actor.args.x += actor.args.standingLayer.offsetXChanged || 0;
-				actor.args.y += actor.args.standingLayer.offsetYChanged || 0;
-			}
-		});
-
 		const width  = this.args.width;
 		const height = this.args.height;
 		const margin = 16;
@@ -3033,6 +3027,29 @@ export class Viewport extends View
 				this.args.secret = '';
 			}
 		}
+
+		this.updated.forEach(actor => {
+			if(actor.args.standingLayer)
+			{
+				const groundShift = actor.args.standingLayer.offsetXChanged;
+
+				if(groundShift)
+				{
+					const spaceLeft = actor.scanForward(groundShift);
+
+					if(spaceLeft === false)
+					{
+						actor.args.x += groundShift || 0;
+					}
+					else
+					{
+						actor.args.x += spaceLeft * Math.sign(groundShift);
+					}
+				}
+
+				actor.args.y += actor.args.standingLayer.offsetYChanged || 0;
+			}
+		});
 
 		if(this.args.networked && this.controlActor)
 		{

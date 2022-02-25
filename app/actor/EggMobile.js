@@ -69,9 +69,9 @@ export class EggMobile extends Vehicle
 
 		if(!this.xAxis)
 		{
-			if(Math.abs(this.public.xSpeed) <= 1)
+			if(Math.abs(this.args.xSpeed) <= 1)
 			{
-				this.public.xSpeed = 0;
+				this.args.xSpeed = 0;
 			}
 
 			if(this.args.xSpeed > 0)

@@ -20,7 +20,7 @@ export class ForceRegion extends Region
 	{
 		if(!this.originalHeight)
 		{
-			this.originalHeight = this.public.height;
+			this.originalHeight = this.args.height;
 		}
 
 		super.update();
@@ -65,8 +65,8 @@ export class ForceRegion extends Region
 		if(other.args.falling)
 		{
 			this.onNextFrame(()=>{
-				other.args.xSpeed += Math.sign(this.public.xForce);
-				other.args.ySpeed += Math.sign(this.public.yForce);
+				other.args.xSpeed += Math.sign(this.args.xForce);
+				other.args.ySpeed += Math.sign(this.args.yForce);
 				other.args.animation = 'springdash';
 				other.args.groundAngle = 0;
 			});
@@ -78,27 +78,27 @@ export class ForceRegion extends Region
 		{
 			case 0:
 
-				other.args.gSpeed += Math.sign(this.public.xForce);
+				other.args.gSpeed += Math.sign(this.args.xForce);
 
 				break;
 
 
 			case 1:
 
-				other.args.gSpeed += Math.sign(this.public.yForce);
+				other.args.gSpeed += Math.sign(this.args.yForce);
 
 				break;
 
 			case 2:
 
-				other.args.gSpeed -= Math.sign(this.public.xForce);
+				other.args.gSpeed -= Math.sign(this.args.xForce);
 
 				break;
 
 
 			case 3:
 
-				other.args.gSpeed -= Math.sign(this.public.yForce);
+				other.args.gSpeed -= Math.sign(this.args.yForce);
 
 				break;
 		}

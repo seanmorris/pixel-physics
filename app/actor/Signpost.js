@@ -76,7 +76,7 @@ export class Signpost extends PointActor
 			minutes = Number(minutes);
 		}
 
-		const yardsPerFrame = (other.public.gSpeed || other.public.xSpeed) / 32;
+		const yardsPerFrame = (other.args.gSpeed || other.args.xSpeed) / 32;
 		const feetPerSecond = yardsPerFrame * 60 * 3;
 
 		other.args.clearSpeed = Math.abs(feetPerSecond);

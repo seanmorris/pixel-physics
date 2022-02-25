@@ -110,7 +110,7 @@ export class Eggrobo extends PointActor
 		{
 			this.args.crouching = false;
 
-			if(this.public.jumping)
+			if(this.args.jumping)
 			{
 				this.box.setAttribute('data-animation', 'jumping');
 			}
@@ -221,7 +221,7 @@ export class Eggrobo extends PointActor
 		}
 
 		const projectile = new Projectile({
-			direction: this.public.direction
+			direction: this.args.direction
 			, x: this.args.x + offset[0] + (this.args.xSpeed || this.args.gSpeed)
 			, y: this.args.y + offset[1]
 			, owner: this

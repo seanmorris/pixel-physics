@@ -24,7 +24,6 @@ module.exports = {
 	, watcher: {
 		awaitWriteFinish: true
 	}
-	, sourceMaps: 'inline'
 };
 
 exports.hooks = {

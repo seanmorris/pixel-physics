@@ -44,7 +44,7 @@ export class LavaRegion extends Region
 
 		if(!this.originalHeight)
 		{
-			this.originalHeight = this.public.height;
+			this.originalHeight = this.args.height;
 		}
 
 		super.update();

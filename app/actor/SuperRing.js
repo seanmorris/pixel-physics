@@ -188,32 +188,32 @@
 
 // 				this.args.speed++;
 
-// 				caught.args.x = this.public.x;
-// 				caught.args.y = this.public.y - 16;
+// 				caught.args.x = this.args.x;
+// 				caught.args.y = this.args.y - 16;
 // 			}
 // 			else
 // 			{
-// 				const toX = this.public.x;
-// 				const toY = this.public.y - 16;
+// 				const toX = this.args.x;
+// 				const toY = this.args.y - 16;
 
 // 				const speed = 12;
 
-// 				if(caught.public.x !== toX)
+// 				if(caught.args.x !== toX)
 // 				{
-// 					caught.args.x += Math.sign(toX - caught.public.x) * this.args.speed;
+// 					caught.args.x += Math.sign(toX - caught.args.x) * this.args.speed;
 // 				}
 
-// 				if(caught.public.y !== toY)
+// 				if(caught.args.y !== toY)
 // 				{
-// 					caught.args.y += Math.sign(toY - caught.public.y) * this.args.speed;
+// 					caught.args.y += Math.sign(toY - caught.args.y) * this.args.speed;
 // 				}
 
-// 				if(Math.abs(caught.public.x - toX) < speed)
+// 				if(Math.abs(caught.args.x - toX) < speed)
 // 				{
 // 					caught.args.x = toX;
 // 				}
 
-// 				if(Math.abs(caught.public.y - toY) < speed)
+// 				if(Math.abs(caught.args.y - toY) < speed)
 // 				{
 // 					caught.args.y = toY;
 // 				}
@@ -281,7 +281,7 @@
 // 	{
 // 		super.collideA(other);
 
-// 		if(!other.controllable || other.public.flying)
+// 		if(!other.controllable || other.args.flying)
 // 		{
 // 			if(this.leaving.delete(other))
 // 			{
@@ -297,7 +297,7 @@
 
 // 		if(this.caught)
 // 		{
-// 			this.caught.args.xSpeed = (Math.sign(other.public.xSpeed) * 3) || 3;
+// 			this.caught.args.xSpeed = (Math.sign(other.args.xSpeed) * 3) || 3;
 
 // 			this.leaving.add(this.caught);
 // 		}

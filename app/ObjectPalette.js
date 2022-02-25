@@ -7,6 +7,7 @@ import { ShadeRegion } from './region/ShadeRegion';
 import { BgShadeRegion } from './region/BgShadeRegion';
 import { FgShadeRegion } from './region/FgShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
+import { DarkRegion } from './region/DarkRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
@@ -207,6 +208,7 @@ export const ObjectPalette = {
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
+	, 'dark-region':  DarkRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
 	, 'corkscrew-region': CorkscrewRegion

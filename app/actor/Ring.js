@@ -95,7 +95,7 @@ export class Ring extends PointActor
 
 	collideA(other)
 	{
-		if(!this.viewport || this.public.gone || this.args.ignore)
+		if(!this.viewport || this.args.gone || this.args.ignore)
 		{
 			return false;
 		}
@@ -109,7 +109,7 @@ export class Ring extends PointActor
 
 		super.collideA(other);
 
-		if(other.public.owner)
+		if(other.args.owner)
 		{
 			other = other.args.owner;
 		}
@@ -119,7 +119,7 @@ export class Ring extends PointActor
 			other = other.occupant;
 		}
 
-		if(!other.controllable && !other.occupant && !other.public.owner)
+		if(!other.controllable && !other.occupant && !other.args.owner)
 		{
 			return false;
 		}

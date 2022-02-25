@@ -69,7 +69,7 @@ export class ElectricSheild extends Sheild
 				this.sample.play();
 			}
 
-			if(host.xAxis && Math.sign(host.xAxis) !== Math.sign(host.public.xSpeed))
+			if(host.xAxis && Math.sign(host.xAxis) !== Math.sign(host.args.xSpeed))
 			{
 				host.args.xSpeed = 1 * host.xAxis;
 			}
@@ -148,7 +148,7 @@ export class ElectricSheild extends Sheild
 
 	update(host)
 	{
-		if(!host.public.falling && !this.magnetTimeout)
+		if(!host.args.falling && !this.magnetTimeout)
 		{
 			this.magnetTimeout = this.onTimeout(100, () => {
 				this.magnetTimeout = false;
@@ -175,7 +175,7 @@ export class ElectricSheild extends Sheild
 			return;
 		}
 
-		if(!host.public.falling)
+		if(!host.args.falling)
 		{
 			this.jumps = 3;
 		}

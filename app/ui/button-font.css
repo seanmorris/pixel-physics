@@ -1,10 +1,9 @@
-.hud-character[data-value="9913"] {
-	background-image: url(/ui/arrow-keys.svg);
+.input-keyboard .hud-character[data-value="9913"] {
+	background-image: url(/ui/arrow-keys-beveled.svg);
 	background-position: 50% 50% !important;
 	background-size: 100% 100%;
-	width: 28px;
-	/*height: 20px;
-	transform: translateY(-8px);*/
+	width: 26px;
+	height: 20px;
 }
 
 .input-generic .hud-character[data-value="9913"] {
@@ -23,28 +22,27 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
-	transform: translateY(-4px);
+	transform: translateY(3px);
 }
 
 .input-playstation .hud-character[data-value="9913"]{
 	background-image: url(/ui/playstation-dpad.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
-	background-size: 80% 80%;
+	background-size: 100% 100%;
 	width: 1.1em;
 	height: 1.25em;
-	transform: translateY(-4px);
+	transform: translateY(2px);
 }
 
-.hud-character[data-value="9374"] {
-	background-image: url(/ui/space.png);
+.input-keyboard .hud-character[data-value="9374"] {
+	background-image: url(/ui/space.svg) !important;
 	background-position: 50% 50% !important;
 	background-size: 100% 100%;
 	width: 26px;
 	height: 16px;
-	transform: translateY(-2px);
+	/*transform: translateY(2px);*/
 }
-
 .input-generic .hud-character[data-value="9374"]{
 	background-image: url(/ui/generic-button-0.svg);
 	background-position: 50% 50% !important;
@@ -63,6 +61,7 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(2px);
 }
 
 .input-playstation .hud-character[data-value="9374"]{
@@ -72,15 +71,16 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(2px);
 }
 
-.hud-character[data-value="10005"] {
-	background-image: url(/ui/ctrl.png);
+.input-keyboard .hud-character[data-value="10005"] {
+	background-image: url(/ui/ctrl.svg);
 	background-position: 50% 50% !important;
 	background-size: 100% 100%;
 	width: 26px;
 	height: 16px;
-	transform: translateY(-2px);
+	/*transform: translateY(2px);*/
 }
 
 .input-generic .hud-character[data-value="10005"]{
@@ -101,6 +101,7 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(2px);
 }
 
 .input-playstation .hud-character[data-value="10005"]{
@@ -110,10 +111,11 @@
 	background-size: 80% 80%;
 	width: 1.1em;
 	height: 1.25em;
+	transform: translateY(2px);
 }
 
-.hud-character[data-value="10006"] {
-	background-image: url(/ui/shift.png);
+.input-keyboard .hud-character[data-value="10006"] {
+	background-image: url(/ui/shift.svg);
 	background-position: 50% 50% !important;
 	background-size: 100% 100%;
 	width: 26px;
@@ -149,7 +151,7 @@
 	background-size: 80% 80%;
 	width: 1.5em;
 	height: 1.25em;
-	margin-top: -0.125em;
+	top: 0.25em;
 }
 
 .hud-character[data-value="10007"] {
@@ -211,6 +213,7 @@
 	width: 1.5em;
 	height: 1.25em;
 	margin-top: -0.125em;
+	transform: translateY(1px);
 }
 
 .input-playstation .hud-character[data-value="10008"]{
@@ -221,7 +224,7 @@
 	width: 1.5em;
 	height: 1.25em;
 	position: relative;
-	top: -0.25em;
+	top: 0.25em;
 }
 
 .hud-character[data-value="10009"]{
@@ -248,6 +251,7 @@
 	width: 1.5em;
 	height: 1.25em;
 	margin-top: -0.125em;
+	transform: translateY(1px);
 }
 
 .input-playstation .hud-character[data-value="10009"]{
@@ -258,10 +262,10 @@
 	width: 1.5em;
 	height: 1.25em;
 	position: relative;
-	top: -0.25em;
+	top: 0.25em;
 }
 
-.hud-character[data-value="9541"]{
+.input-keyboard .hud-character[data-value="9541"]{
 	background-image: url(/ui/numpad-directions.svg);
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -287,7 +291,7 @@
 	background-size: 80% 80%;
 	width: 1.75em !important;
 	height: 1.75em !important;
-	transform: translateY(-0.35em);
+	transform: translateY(4px);
 }
 
 .input-playstation .hud-character[data-value="9541"]{

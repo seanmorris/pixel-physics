@@ -103,7 +103,7 @@ export class BubbleSheild extends Sheild
 			return;
 		}
 
-		if(!host.public.falling)
+		if(!host.args.falling)
 		{
 			if(this.args.bouncing && this.args.force)
 			{

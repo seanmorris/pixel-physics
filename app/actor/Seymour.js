@@ -62,7 +62,7 @@ export class Seymour extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(this.public.rolling)
+			if(this.args.rolling)
 			{
 				this.box.setAttribute('data-animation', 'rolling');
 			}

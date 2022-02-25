@@ -73,17 +73,17 @@ export class CompanionBlock extends MarbleBlock
 
 		super.update();
 
-		if(this.public.pushed)
+		if(this.args.pushed)
 		{
 			if(isInLava)
 			{
 				const tileMap = this.viewport.tileMap;
 
-				const solid = tileMap.getSolid(this.x + this.public.width / 2 * (this.public.pushed || 0), this.y);
+				const solid = tileMap.getSolid(this.x + this.args.width / 2 * (this.args.pushed || 0), this.y);
 
 				if(!solid)
 				{
-					this.args.x = preX + this.public.pushed;
+					this.args.x = preX + this.args.pushed;
 				}
 				else
 				{

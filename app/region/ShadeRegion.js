@@ -98,9 +98,9 @@ export class ShadeRegion extends Region
 
 		this.args.scale = 175 - Math.abs(Math.sin(Date.now() / 200) * 25)
 
-		if(!this.switch && this.public.switch)
+		if(!this.switch && this.args.switch)
 		{
-			this.switch = this.viewport.actorsById[ this.public.switch ]
+			this.switch = this.viewport.actorsById[ this.args.switch ]
 
 			if(this.switch)
 			{
@@ -117,9 +117,9 @@ export class ShadeRegion extends Region
 
 	rotateFilter()
 	{
-		if(this.mainElem && this.public.filter)
+		if(this.mainElem && this.args.filter)
 		{
-			this.mainElem.classList.remove(this.public.filter);
+			this.mainElem.classList.remove(this.args.filter);
 		}
 
 		if(this.mainElem)
@@ -131,13 +131,13 @@ export class ShadeRegion extends Region
 				this.currentFilter = 0;
 			}
 
-			this.public.filter && this.mainElem.classList.add(this.public.filter);
+			this.args.filter && this.mainElem.classList.add(this.args.filter);
 
-			if(this.public.filter)
+			if(this.args.filter)
 			{
 				this.text.remove();
 
-				this.text = new CharacterString({value:`${this.currentFilter}: ${this.public.filter}`});
+				this.text = new CharacterString({value:`${this.currentFilter}: ${this.args.filter}`});
 
 				this.text.render(this.tags.sprite);
 			}

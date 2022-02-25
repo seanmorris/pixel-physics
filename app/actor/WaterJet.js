@@ -20,8 +20,8 @@ export class WaterJet extends PointActor
 	{
 		super(...args);
 
-		this.args.width  = this.public.width  || 32;
-		this.args.height = this.public.height || 64;
+		this.args.width  = this.args.width  || 32;
+		this.args.height = this.args.height || 64;
 		this.args.type   = 'actor-item actor-water-jet';
 	}
 

@@ -165,7 +165,7 @@ export class Rocks extends PointActor
 			&& other.args.ySpeed > 0
 			&& other.y < this.y
 			&& this.viewport
-			&& !this.public.gone
+			&& !this.args.gone
 		){
 			if(this.args.falling && Math.abs(other.args.ySpeed) > 0)
 			{
@@ -181,7 +181,7 @@ export class Rocks extends PointActor
 			(type === 1 || type === 3)
 			&& other instanceof Projectile
 			&& this.viewport
-			&& !this.public.gone
+			&& !this.args.gone
 		){
 			this.pop(other);
 
@@ -193,7 +193,7 @@ export class Rocks extends PointActor
 
 	// collideB(other)
 	// {
-	// 	if(other.args.falling && this.public.gone)
+	// 	if(other.args.falling && this.args.gone)
 	// 	{
 	// 		other.args.ySpeed *= -1;
 	// 		other.args.falling = true;

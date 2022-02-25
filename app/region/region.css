@@ -33,7 +33,7 @@
 	--bottomBoundary: -1px;
 
 	top: calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry)));
-	bottom: calc( var(--bottomBoundary) + 1px);
+	bottom: calc( var(--bottomBoundary) + 0px);
 	left: max(0.00001px, var(--leftBoundry));
 
 	width: calc(var(--widthPx) - max(0px, var(--leftBoundry)));
@@ -52,7 +52,6 @@
 .region.region-water .sprite {
 	bottom: calc( var(--bottomBoundary));
 	top: calc( calc( calc(-1px * var(--height)) + max(0.00001px, var(--topBoundry))) - 16px);
-	/*clip-path: var(--maskImage);*/
 }
 
 .region.region-shade.water .sprite .region-color-wrapper,
