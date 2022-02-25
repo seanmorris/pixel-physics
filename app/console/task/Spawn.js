@@ -22,12 +22,13 @@ export class Spawn extends Task
 			return;
 		}
 
-		const type = palette[typeName];
-
-		if(!type)
+		if(!(typeName in palette))
 		{
-			this.print('Type not found: "${typeName}".');
+			this.print(`Type not found: "${typeName}".`);
+			return;
 		}
+
+		const type = palette[typeName];
 
 		Spawn.viewport.spawn.add({object: new type({
 			x: actor.x + 128

@@ -27,11 +27,19 @@ export class ElectricSheild extends Sheild
 				return;
 			}
 
+			console.log(event);
+
 			event.preventDefault();
 
 			const other = event.detail.other;
 
-			other && other.pop && other.pop(host);
+			if(this.immune(host, other, event.detail.type))
+			{
+				event.detail.immune = true;
+				return;
+			}
+
+			other && other.damage && other.damage(host, 'electric');
 
 			this.onNextFrame(() => {
 				host.args.currentSheild = null;
@@ -44,6 +52,16 @@ export class ElectricSheild extends Sheild
 		};
 
 		host.addEventListener('damage', invertDamage);
+	}
+
+	immune(host, other, type = 'normal')
+	{
+		if(type === 'electric')
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	command_0(host, button)

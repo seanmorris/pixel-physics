@@ -1,3 +1,22 @@
+.normal-sheild {
+	position: absolute;
+	z-index: 100;
+	left: 4px;
+	bottom: -6px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/shield-normal.png);
+	background-position: 0 0;
+	animation: normal-sheild-rotate 150ms steps(3) infinite;
+	opacity: 0.75 !important;
+	/*animation: bubble-sheild-flicker 0.5s steps(2) infinite,
+		sheild-flip calc(0.5s * 2) infinite;*/
+}
+
+[data-animation=jumping] .normal-sheild {
+	left: 8px;
+}
+
 .bubble-sheild {
 	position: absolute;
 	z-index: 100;
@@ -300,6 +319,15 @@
 .star-sheild .star-sheild-stars {
 	animation: star-shield-rotate 0.15s steps(5) infinite;
 	background-image: url(/Sonic/invincibility-stars.png);
+}
+
+@keyframes normal-sheild-rotate {
+	from{
+		background-position: calc(-48px * 0) 0;
+	}
+	to{
+		background-position: calc(-48px * 3) 0;
+	}
 }
 
 @keyframes electric-sheild-rotate {

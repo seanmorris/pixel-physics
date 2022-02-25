@@ -14,8 +14,9 @@ import { Controller } from '../controller/Controller';
 
 import { Sheild }         from '../powerups/Sheild';
 import { FireSheild }     from '../powerups/FireSheild';
-import { SuperSheild }     from '../powerups/SuperSheild';
+import { SuperSheild }    from '../powerups/SuperSheild';
 import { BubbleSheild }   from '../powerups/BubbleSheild';
+import { NormalSheild }   from '../powerups/NormalSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
 
 import { LayerSwitch } from './LayerSwitch';
@@ -147,6 +148,7 @@ export class PointActor extends View
 			, FireSheild
 			, BubbleSheild
 			, ElectricSheild
+			, NormalSheild
 		]);
 
 		this.noClip = false;
@@ -3963,6 +3965,10 @@ export class PointActor extends View
 			{
 				this.args.currentSheild = [...this.inventory.get(ElectricSheild)][0];
 			}
+			else
+			{
+				this.args.currentSheild = '';
+			}
 		}
 
 		if(this.aAxis > +0.75)
@@ -3970,6 +3976,10 @@ export class PointActor extends View
 			if(this.inventory.has(FireSheild))
 			{
 				this.args.currentSheild = [...this.inventory.get(FireSheild)][0];
+			}
+			else
+			{
+				this.args.currentSheild = '';
 			}
 		}
 
@@ -3979,11 +3989,22 @@ export class PointActor extends View
 			{
 				this.args.currentSheild = [...this.inventory.get(BubbleSheild)][0];
 			}
+			else
+			{
+				this.args.currentSheild = '';
+			}
 		}
 
 		if(this.bAxis > +0.75)
 		{
-			this.args.currentSheild = '';
+			if(this.inventory.has(NormalSheild))
+			{
+				this.args.currentSheild = [...this.inventory.get(NormalSheild)][0];
+			}
+			else
+			{
+				this.args.currentSheild = '';
+			}
 		}
 	}
 
@@ -4503,11 +4524,18 @@ export class PointActor extends View
 
 		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
 
-		if(!this.dispatchEvent(damageEvent))
+		if(!this.immune(other, type))
 		{
-			this.startle(other);
-			this.args.mercy = true;
-			return;
+			if(!this.dispatchEvent(damageEvent))
+			{
+				if(!damageEvent.detail.immune)
+				{
+					this.startle(other);
+					this.args.mercy = true;
+				}
+
+				return;
+			}
 		}
 
 		if(this.args.rings)

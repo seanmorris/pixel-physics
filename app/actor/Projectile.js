@@ -27,6 +27,13 @@ export class Projectile extends PointActor
 			return;
 		}
 
+		if(!this.args.falling)
+		{
+			this.args.gSpeed = 0;
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+		}
+
 		super.update();
 
 		if(!this.args.xSpeed && !this.args.ySpeed)
@@ -57,6 +64,8 @@ export class Projectile extends PointActor
 			const angleTo = Math.atan2(this.x - other.x, this.y - other.y);
 
 			this.impulse(this.args.airSpeed / 2, angleTo, true);
+
+			this.args.falling = true;
 
 			return;
 		}
