@@ -33,6 +33,12 @@
 	--screen-y: 2;
 }
 
+.sheild-hud .sheild-icon.sheild-normal {
+	transform: scaleY(-1) translateY(calc(-0px + 100%));
+	--screen-x: 1;
+	--screen-y: 6;
+}
+
 .sheild-hud .sheild-icon.sheild-water {
 	transform: scaleY(-1) translateY(calc(0px + 0%));
 	--screen-x: 2;
@@ -49,9 +55,15 @@
 	background-image: none;
 }
 
+.sheild-hud.normal .sheild-icon.sheild-normal {
+	transform: scaleY(-1) translateY(0%);
+	filter: saturate(1) contrast(2);
+	opacity: 1;
+}
+
 .sheild-hud.fire .sheild-icon.sheild-fire {
 	transform: scaleY(-1) translateX(-100%);
-	filter: saturate(15) contrast(2);
+	filter: saturate(1) contrast(2);
 	opacity: 1;
 }
 
@@ -64,5 +76,21 @@
 .sheild-hud.water .sheild-icon.sheild-water {
 	transform: scaleY(-1) translateY(100%);
 	filter: none;
+	opacity: 1;
+}
+
+.sheild-hud.hasWater .sheild-icon.sheild-water {
+	opacity: 1;
+}
+
+.sheild-hud.hasFire .sheild-icon.sheild-fire {
+	opacity: 1;
+}
+
+.sheild-hud.hasElectric .sheild-icon.sheild-electric {
+	opacity: 1;
+}
+
+.sheild-hud.hasNormal .sheild-icon.sheild-normal {
 	opacity: 1;
 }

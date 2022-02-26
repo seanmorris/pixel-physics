@@ -629,6 +629,13 @@ input::-webkit-inner-spin-button {
 	bottom: 0px;
 }
 
+.screen-card-main-menu .buttons .hud-character[data-value="10005"],
+.screen-card-main-menu .buttons .hud-character[data-value="10006"],
+.screen-card-main-menu .buttons .hud-character[data-value="9374"],
+.screen-card-main-menu .buttons .hud-character[data-value="9913"] {
+	transform: translateY(0px);
+}
+
 @keyframes character-animate {
 	0% {
 		background-position-x: 0;

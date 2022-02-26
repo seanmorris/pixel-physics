@@ -5,9 +5,14 @@ import { Projectile } from '../actor/Projectile';
 export const CanPop = {
 	collideA: function(other, type) {
 
+		if(other.args.mercy)
+		{
+			return;
+		}
+
 		if(other.knocked)
 		{
-			other.pop(other.knocked);
+			other.pop && other.pop(other.knocked);
 			this.pop(other.knocked);
 			return;
 		}
@@ -45,7 +50,8 @@ export const CanPop = {
 			&& this.viewport
 			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
-			this.pop(other);
+			const otherShield = other.args.currentSheild;
+			this.damage(other, otherShield ? otherShield.type : 'normal');
 			return;
 		}
 
@@ -60,7 +66,6 @@ export const CanPop = {
 				});
 			}
 
-
 			other.damage(this, shield ? shield.type : 'normal');
 		}
 
@@ -68,7 +73,16 @@ export const CanPop = {
 	}
 
 	, damage: function(other, type) {
-		this.pop(other);
+		const shield = this.args.currentSheild;
+		const immune = other.immune(this, shield ? shield.type : 'normal');
+
+		if((!shield || immune)
+			&& !this.args.gone
+			&& this.viewport
+			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
+		){
+			this.pop(other);
+		}
 	}
 
 	, pop: function(other) {
@@ -152,6 +166,23 @@ export const CanPop = {
 			}
 
 			other.dashed = false;
+
+			if(other && other.controller && other.controller.rumble)
+			{
+				other.controller.rumble({
+					duration: 40,
+					strongMagnitude: 0.0,
+					weakMagnitude: 1.0
+				});
+
+				this.viewport.onTimeout(40, () => {
+					other.controller.rumble({
+						duration: 110,
+						strongMagnitude: 0.75,
+						weakMagnitude: 1.0
+					});
+				});
+			}
 		}
 
 		if(viewport.args.audio && this.sample)

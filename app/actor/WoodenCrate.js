@@ -23,19 +23,19 @@ export class WoodenCrate extends BreakableBlock
 
 		if(other instanceof Projectile && !this.broken)
 		{
-			this.break();
+			this.break(other);
 			return true;
 		}
 
 		if(other.spindashCharge)
 		{
-			this.break();
+			this.break(other);
 			return true;
 		}
 
 		if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
 		{
-			this.break();
+			this.break(other);
 			return false;
 		}
 
@@ -46,13 +46,13 @@ export class WoodenCrate extends BreakableBlock
 
 		if(other.args.rolling || type === 2)
 		{
-			this.break();
+			this.break(other);
 			return false;
 		}
 
 		if(other.punching && !this.broken)
 		{
-			this.break();
+			this.break(other);
 			return false;
 		}
 

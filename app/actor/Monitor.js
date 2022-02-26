@@ -192,6 +192,23 @@ export class Monitor extends PointActor
 		}
 
 		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
+
+		if(other.controller && other.controller.rumble)
+		{
+			other.controller.rumble({
+				duration: 40,
+				strongMagnitude: 0.0,
+				weakMagnitude: 1.0
+			});
+
+			this.viewport.onTimeout(40, () => {
+				other.controller.rumble({
+					duration: 110,
+					strongMagnitude: 0.75,
+					weakMagnitude: 1.0
+				});
+			});
+		}
 	}
 
 	effect()

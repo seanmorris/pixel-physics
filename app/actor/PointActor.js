@@ -167,6 +167,12 @@ export class PointActor extends View
 
 			this.powerups.add(item);
 
+			if(this.controllable)
+			{
+				const hasKey = `has${item.type[0].toUpperCase() + item.type.substr(1)}`;
+				this.viewport.args[hasKey] = hasKey;
+			}
+
 			item.acquire && item.acquire(this);
 
 			this.args.currentSheild = item;
@@ -175,8 +181,16 @@ export class PointActor extends View
 		});
 
 		this.inventory.addEventListener('removing', event => {
+
 			const item = event.detail.object;
+
 			this.powerups.delete(item);
+
+			if(this.controllable)
+			{
+				const hasKey = `has${item.type[0].toUpperCase() + item.type.substr(1)}`;
+				this.viewport.args[hasKey] = null;
+			}
 
 			if(Bindable.make(item) === this.args.currentSheild)
 			{
@@ -1063,6 +1077,8 @@ export class PointActor extends View
 				toX = startDef.x;
 				toY = startDef.y;
 			}
+
+			this.args.animation = 'dropping';
 
 			this.args.standingLayer = null;
 			this.args.standingOn    = null;
@@ -3331,6 +3347,12 @@ export class PointActor extends View
 					if(this.args.startled < 175)
 					{
 						this.args.falling = false;
+
+						// this.controller.rumble && this.controller.rumble({
+						// 	duration: 80,
+						// 	strongMagnitude: 0.0,
+						// 	weakMagnitude: Math.max(40, Math.min(Math.abs(this.args.ySpeed),10)) / 40
+						// });
 					}
 
 					this.args.groundAngle = newAngle;
@@ -4532,6 +4554,12 @@ export class PointActor extends View
 				{
 					this.startle(other);
 					this.args.mercy = true;
+
+					this.controller.rumble({
+						duration: 350,
+						strongMagnitude: 1.0,
+						weakMagnitude: 1.0
+					});
 				}
 
 				return;
@@ -4544,10 +4572,30 @@ export class PointActor extends View
 			this.args.rings = 0;
 			this.startle(other);
 			this.args.mercy = true;
+
+			this.controller.rumble({
+				duration: 350,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
+
+			this.onTimeout(350, () => {
+				this.controller.rumble({
+					duration: 150,
+					strongMagnitude: 0.5,
+					weakMagnitude: 1.0
+				});
+			});
 		}
 		else if(this.controllable)
 		{
 			this.die();
+
+			this.controller.rumble({
+				duration: 450,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
 		}
 	}
 

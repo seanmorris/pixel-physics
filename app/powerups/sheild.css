@@ -1,20 +1,65 @@
 .normal-sheild {
 	position: absolute;
 	z-index: 100;
-	left: 4px;
-	bottom: -6px;
+	left: 6px;
+	bottom: -5px;
 	width: 48px;
 	height: 48px;
 	background-image: url(/Sonic/shield-normal.png);
-	background-position: 0 0;
-	animation: normal-sheild-rotate 150ms steps(3) infinite;
-	opacity: 0.75 !important;
+	background-position-y: -48px;
+	--size:  48px;
+	--steps: 5;
+	animation: normal-sheild-rotate 225ms steps(var(--steps)) infinite;
+	opacity: 0.333 !important;
 	/*animation: bubble-sheild-flicker 0.5s steps(2) infinite,
 		sheild-flip calc(0.5s * 2) infinite;*/
 }
 
+.normal-sheild::after {
+	content: ' ';
+	position: absolute;
+	z-index: 100;
+	left: 0px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/shield-normal.png);
+	background-position-x: -240px;
+	background-position-y: -48px;
+	opacity: 0.5;
+}
+
+.normal-sheild::before {
+	content: ' ';
+	position: absolute;
+	z-index: 100;
+	left: 0px;
+	width: 48px;
+	height: 48px;
+	background-image: url(/Sonic/shield-normal.png);
+	background-position-x: 0px;
+	background-position-y: 0px;
+	animation: none;
+	left: 0px;
+	bottom: 0px;
+	opacity: 0.1 !important;
+	--steps: 3;
+	animation: normal-sheild-rotate 100ms steps(var(--steps)) infinite;
+}
+
+[data-animation=wall-stick] .normal-sheild {
+	bottom: -16px;
+}
+
+[data-animation=springdash] .normal-sheild,
+[data-animation=lightdash] .normal-sheild,
+[data-animation=airdash] .normal-sheild {
+	bottom: 8px;
+}
+
+[data-animation=rolling] .normal-sheild,
 [data-animation=jumping] .normal-sheild {
 	left: 8px;
+	bottom: -7px;
 }
 
 .bubble-sheild {
@@ -297,7 +342,7 @@
 .star-sheild-stars {
 	position: absolute;
 	z-index: 300001;
-	left: -3px;
+	left: 0px;
 	top: 10px;
 	width: 64px;
 	height: 64px;
@@ -323,10 +368,19 @@
 
 @keyframes normal-sheild-rotate {
 	from{
-		background-position: calc(-48px * 0) 0;
+		background-position-x: calc(calc(-1 * var(--size)) * 0);
 	}
 	to{
-		background-position: calc(-48px * 3) 0;
+		background-position-x: calc(calc(-1 * var(--size)) * var(--steps));
+	}
+}
+
+@keyframes normal-sheild-pulse {
+	from{
+		opacity: 0.5;
+	}
+	to{
+		opacity: 0.75;
 	}
 }
 
