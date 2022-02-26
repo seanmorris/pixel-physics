@@ -20,6 +20,8 @@ export class StarSheild extends Sheild
 			return;
 		}
 
+		const previous = host.args.currentSheild;
+
 		const invertDamage = event => {
 
 			event.preventDefault();
@@ -38,6 +40,7 @@ export class StarSheild extends Sheild
 
 			host.removeEventListener('damage', invertDamage);
 
+			host.args.currentSheild = previous;
 		});
 	}
 
@@ -62,7 +65,7 @@ export class StarSheild extends Sheild
 		const dashed = host.dashed || host.args.animation === 'springdash';
 
 		particle.style({
-			'--x': point[0] + host.x + -4 + host.args.xSpeed
+			'--x': point[0] + host.x + -3 + host.args.xSpeed
 			, '--y': point[1] + host.y + (dashed ? -18 : 0) + host.args.ySpeed
 			, '--frame': this.frame++
 			, 'z-index': -1

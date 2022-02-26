@@ -53,6 +53,11 @@
 	--screen-y: 0;
 }
 
+[data-monitor="sheild-normal"] .monitor-screen {
+	--screen-x: 1;
+	--screen-y: 6;
+}
+
 [data-monitor="speed-shoes"] .monitor-screen {
 	--screen-x: 1;
 	--screen-y: 0;
@@ -80,6 +85,11 @@
 
 	--screen-x: 0;
 	--screen-y: 5;
+}
+
+[data-monitor="sheild-electric"] .monitor-screen {
+	--screen-x: 0;
+	--screen-y: 2;
 }
 
 [data-monitor="sheild-electric"] .monitor-screen {

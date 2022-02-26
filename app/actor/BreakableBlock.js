@@ -349,6 +349,23 @@ export class BreakableBlock extends Block
 		}
 
 		this.broken = true;
+
+		if(other && other.controller && other.controller.rumble)
+		{
+			other.controller && other.controller.rumble && other.controller.rumble({
+				duration: 140,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
+
+			this.onTimeout(140, () => {
+				other.controller.rumble({
+					duration: 100,
+					strongMagnitude: 0.0,
+					weakMagnitude: 0.25
+				});
+			});
+		}
 	}
 
 	damage(other, type = 'normal')

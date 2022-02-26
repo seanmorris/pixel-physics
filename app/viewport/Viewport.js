@@ -688,6 +688,39 @@ export class Viewport extends View
 			}
 		});
 
+		this.args.bindTo('shakeY', (v,k,t,d,p) => {
+
+			if(!this.controlActor || !this.controlActor.controller || !this.controlActor.controller.rumble)
+			{
+				return;
+			}
+
+			if(Math.abs(v) > 40 && Math.abs(v) > Math.abs(p))
+			{
+				this.controlActor.controller && this.controlActor.controller.rumble({
+					duration: 4*v,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
+				});
+			}
+			else if(Math.abs(v) > 20 && Math.abs(v) > Math.abs(p))
+			{
+				this.controlActor.controller && this.controlActor.controller.rumble({
+					duration: 8*v,
+					strongMagnitude: v/20,
+					weakMagnitude: 1.0
+				});
+			}
+			else if(Math.abs(v) > 1)
+			{
+				this.controlActor.controller && this.controlActor.controller.rumble({
+					duration: 16*v,
+					strongMagnitude: 0.1,
+					weakMagnitude: 1.0
+				});
+			}
+		});
+
 		this.args.bindTo('showConsole', v => {
 
 			if(!this.args.subspace)
@@ -2157,6 +2190,8 @@ export class Viewport extends View
 			character.args.x = startDef.x;
 			character.args.y = startDef.y;
 			character.args.z = startDef.z = 10;
+
+			character.args.animation = 'dropping';
 
 			this.spawn.add({object:character});
 			this.auras.add(character)

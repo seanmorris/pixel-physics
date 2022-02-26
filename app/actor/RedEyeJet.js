@@ -139,6 +139,8 @@ export class RedEyeJet extends PointActor
 			this.args.xSpeed = 0;
 		}
 
+		let damaged = false;
+
 		if(type === 1)
 		{
 			if(this.viewport.args.audio)
@@ -146,6 +148,8 @@ export class RedEyeJet extends PointActor
 				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
 				this.hitSound.play();
 			}
+
+			damaged = true;
 
 			// other.args.x = this.x - (this.args.width / 2) * Math.sign(other.x - this.x);
 
@@ -171,6 +175,8 @@ export class RedEyeJet extends PointActor
 				this.hitSound.play();
 			}
 
+			damaged = true;
+
 			// other.args.x = this.x + (this.args.width / 2) * Math.sign(other.x - this.x);
 
 			if(this.args.hitPoints > 0)
@@ -185,6 +191,23 @@ export class RedEyeJet extends PointActor
 				other.args.xSpeed = 2;
 				other.args.ignore = -2;
 			}
+		}
+
+		if(damaged && other && other.controller && other.controller.rumble)
+		{
+			other.controller.rumble({
+				duration: 120,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
+
+			this.onTimeout(100, () => {
+				other.controller.rumble({
+					duration: 100,
+					strongMagnitude: 0.0,
+					weakMagnitude: 0.5
+				});
+			});
 		}
 
 		if(other instanceof Projectile || type === 1 || type === 3 || type === 0)
@@ -301,7 +324,7 @@ export class RedEyeJet extends PointActor
 				}
 			}
 
-			this.args.maxSpeed   = 12;
+			this.args.maxSpeed = 12;
 
 			if(this.args.phaseFrameId > 120)
 			{
@@ -312,10 +335,12 @@ export class RedEyeJet extends PointActor
 		}
 		else if(this.hanging.has(MiniMace))
 		{
-			for(const mace of this.hanging.get(MiniMace))
-			{
-				mace.args.ropeLength = 144;
-			}
+			this.viewport.onFrameOut(45, () => {
+				for(const mace of this.hanging.get(MiniMace))
+				{
+					mace.args.ropeLength = 144;
+				}
+			});
 		}
 
 		if(this.args.phase === 'attacking')

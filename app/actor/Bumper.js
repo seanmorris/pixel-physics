@@ -79,6 +79,24 @@ export class Bumper extends PointActor
 		}
 
 		this.ignores.set(other, 8);
+
+		if(other && other.controller && other.controller.rumble)
+		{
+			other.controller.rumble({
+				duration: 120,
+				strongMagnitude: 1.0,
+				weakMagnitude: 1.0
+			});
+
+			this.onTimeout(120, () => {
+				other.controller.rumble({
+					duration: 120,
+					strongMagnitude: 0.0,
+					weakMagnitude: 1.0
+				});
+			});
+		}
+
 	}
 
 	get canStick() { return false; }
