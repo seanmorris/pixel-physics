@@ -348,9 +348,7 @@ export class BreakableBlock extends Block
 			}
 		}
 
-		this.broken = true;
-
-		if(other && other.controller && other.controller.rumble)
+		if(!this.broken && other && other.controller && other.controller.rumble)
 		{
 			other.controller && other.controller.rumble && other.controller.rumble({
 				duration: 140,
@@ -366,6 +364,8 @@ export class BreakableBlock extends Block
 				});
 			});
 		}
+
+		this.broken = true;
 	}
 
 	damage(other, type = 'normal')

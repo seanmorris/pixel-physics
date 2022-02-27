@@ -49,9 +49,11 @@ import { Bubbles  } from './actor/Bubbles';
 import { Redz     } from './actor/Redz';
 import { GuardBot } from './actor/GuardBot';
 import { CrabMeat } from './actor/CrabMeat';
-import { BuzzBomber } from './actor/BuzzBomber';
+import { BuzzBomber  } from './actor/BuzzBomber';
 import { MechaFroggy } from './actor/MechaFroggy';
-import { DrainFly } from './actor/DrainFly';
+import { DrainFly    } from './actor/DrainFly';
+import { GohlaBall   } from './actor/GohlaBall';
+import { Voltorb     } from './actor/Voltorb';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -246,6 +248,8 @@ export const ObjectPalette = {
 	, 'buzz-bomber': BuzzBomber
 	, 'bubbles': Bubbles
 	, 'drainfly': DrainFly
+	, 'gohla-ball': GohlaBall
+	, 'voltorb': Voltorb
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'spinner': Spinner

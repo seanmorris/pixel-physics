@@ -160,6 +160,18 @@ export class Eggman extends PointActor
 			}
 		}
 
+		if(this.args.grinding)
+		{
+			this.args.rolling = false;
+
+			this.args.animation = 'grinding';
+		}
+
+		if(this.args.hangingFrom)
+		{
+			this.args.animation = 'hanging';
+		}
+
 		super.update();
 	}
 

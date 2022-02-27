@@ -11,32 +11,33 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 	{
 		super();
 
-		this.heightMask = null;
+		this.meta = new Map;
 
+		this.heightMask      = null;
 		this.tileImages      = new Map;
 		this.tileNumberCache = new Map;
 		this.tileSetCache    = new Map;
 		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
-		this.solidCache = new Map;
-
-		this.meta = new Map;
-
-		this.collisionLayers = [];
-		this.destructibleLayers = [];
+		this.solidCache      = new Map;
 
 		this.tileLayers  = [];
+
+		this.destructibleLayers = [];
+		this.collisionLayers = [];
 		this.objectLayers = [];
 
-		const mapUrl = args.mapUrl;
+		const url = args.mapUrl;
 
-		this.mapUrl = mapUrl;
 		this.mapData = null;
+		this.mapUrl  = url;
+
+		this.maps = new Map;
 
 		this.replacements = new Map;
 
-		const elicit = new Elicit(mapUrl);
+		const elicit = new Elicit(url);
 
 		elicit.addEventListener('progress', event => {
 			const {received, length, done} = event.detail;
@@ -44,124 +45,19 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			const type = 'map';
 
 			this.dispatchEvent(new CustomEvent(
-				'level-progress', {detail: {length, received, done, url:mapUrl}}
+				'level-progress', { detail: {length, received, done, url}}
 			));
 		});
 
 		this.ready = elicit.stream()
 		.then(response => response.json())
-		.then(data => {
+		.then(tilemapData => {
 
-			this.mapData = data;
+			this.mapData = tilemapData;
 
-			const layers = data.layers || [];
-
-			data.layers.forEach(layer => {
-				layer.offsetX        = false;
-				layer.offsetY        = false;
-				layer.offsetXChanged = false;
-				layer.offsetYChanged = false;
-				layer.destroyed      = false;
-				layer.layer          = null;
-				Object.preventExtensions(layer);
-			});
-
-			this.objectLayers = data.layers.filter(l => l.type === 'objectLayers');
-			this.tileLayers   = data.layers.filter(l => l.type === 'tilelayer');
-
-			this.collisionLayers = this.tileLayers.filter(l => {
-
-				if(!l.name.match(/^Collision\s\d+/))
-				{
-					return false;
-				}
-
-				return true;
-			})
-
-			this.destructibleLayers = this.tileLayers.filter(l => {
-
-				if(!l.name.match(/^Destructible\s\d+/))
-				{
-					return false;
-				}
-
-				return true;
-			});
-
-			const setHeightMasks = [];
-			const imageProgress  = new Map;
-			const imageSize      = new Map;
-
-			for(const i in this.mapData.tilesets)
+			if(tilemapData && tilemapData.properties)
 			{
-				const tileset = this.mapData.tilesets[i];
-
-				const image = new Image;
-
-				this.tileImages.set(tileset, image);
-
-				const imageUrl = '/map/' + tileset.image;
-
-				tileset.original = tileset.image = imageUrl;
-
-				const fetchImage = new Elicit(imageUrl);
-
-				fetchImage.addEventListener('progress', event => {
-					const {received, length, done} = event.detail;
-
-					imageProgress.set(fetchImage, received);
-					imageSize.set(fetchImage, length);
-
-					const imagesProgress = [...imageProgress.values()]
-					.reduce((a, b) => Number(a)+Number(b));
-
-					const imagesLength = [...imageSize.values()]
-					.reduce((a, b) => Number(a)+Number(b));
-
-					const imagesDone = imagesProgress / imagesLength;
-
-					this.dispatchEvent(new CustomEvent(
-						'texture-progress', {detail: {length:imagesLength, received:imagesProgress, done:imagesDone, url:imageUrl}}
-					));
-				});
-
-				const heightMask = fetchImage.objectUrl().then(url => new Promise(accept => {
-
-					tileset.cachedImage = url;
-
-					image.addEventListener('load', event => {
-
-						this.replacements.set(imageUrl, url);
-
-						const heightMask = new Tag('<canvas>');
-
-						heightMask.width  = image.width;
-						heightMask.height = image.height;
-
-						heightMask.getContext('2d').drawImage(
-							image, 0, 0, image.width, image.height
-						);
-
-						this.heightMasks.set(tileset, heightMask);
-
-						accept(heightMask);
-
-					}, {once:true});
-
-					image.src = url;
-				}));
-
-				setHeightMasks.push(heightMask);
-			}
-
-			// const getLengths = fetchImages
-			// .map(fetch => fetch.headers().then(headers => headers.get('Content-length')));
-			// Promise.all(getLengths).then(lengths => console.log(lengths.reduce((a, b) => Number(a)+Number(b))));
-
-			if(this.mapData && this.mapData.properties)
-			{
-				for(const property of this.mapData.properties)
+				for(const property of tilemapData.properties)
 				{
 					const name = property.name.replace(/-/g, '_');
 
@@ -169,29 +65,154 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 			}
 
-			return Promise.all(setHeightMasks);
+			this.loadLayers(tilemapData)
+
+			return this.loadTilesets(tilemapData.tilesets);
 		});
 
 		Object.preventExtensions(this);
 	}
 
+	loadTilesets(tilesetUrls)
+	{
+		const setHeightMasks = [];
+		const imageProgress  = new Map;
+		const imageSize      = new Map;
+
+		for(const i in tilesetUrls)
+		{
+			const tileset = this.mapData.tilesets[i];
+
+			const image = new Image;
+
+			this.tileImages.set(tileset, image);
+
+			const imageUrl = '/map/' + tileset.image;
+
+			tileset.original = tileset.image = imageUrl;
+
+			const fetchImage = new Elicit(imageUrl);
+
+			fetchImage.addEventListener('progress', event => {
+				const {received, length, done} = event.detail;
+
+				imageProgress.set(fetchImage, received);
+				imageSize.set(fetchImage, length);
+
+				const imagesProgress = [...imageProgress.values()]
+				.reduce((a, b) => Number(a)+Number(b));
+
+				const imagesLength = [...imageSize.values()]
+				.reduce((a, b) => Number(a)+Number(b));
+
+				const imagesDone = imagesProgress / imagesLength;
+
+				this.dispatchEvent(new CustomEvent(
+					'texture-progress', { detail: {
+						length:imagesLength
+						, received:imagesProgress
+						, done:imagesDone
+						, url:imageUrl
+					}}
+				));
+			});
+
+			const heightMask = fetchImage.objectUrl().then(url => new Promise(accept => {
+
+				tileset.cachedImage = url;
+
+				image.addEventListener('load', event => {
+
+					this.replacements.set(imageUrl, url);
+
+					const heightMask = new Tag('<canvas>');
+
+					heightMask.width  = image.width;
+					heightMask.height = image.height;
+
+					heightMask.getContext('2d').drawImage(
+						image, 0, 0, image.width, image.height
+					);
+
+					this.heightMasks.set(tileset, heightMask);
+
+					accept(heightMask);
+
+				}, {once:true});
+
+				image.src = url;
+			}));
+
+			setHeightMasks.push(heightMask);
+		}
+
+		return Promise.all(setHeightMasks);
+	}
+
+	loadLayers(tilemapData)
+	{
+		const layerGroup = {};
+
+		const layers = tilemapData.layers || [];
+
+		tilemapData.layers.forEach(layer => {
+			layer.offsetX        = false;
+			layer.offsetY        = false;
+			layer.offsetXChanged = false;
+			layer.offsetYChanged = false;
+			layer.destroyed      = false;
+			layer.layer          = null;
+			Object.preventExtensions(layer);
+		});
+
+		this.objectLayers = tilemapData.layers.filter(l => l.type === 'objectLayers');
+		this.tileLayers   = tilemapData.layers.filter(l => l.type === 'tilelayer');
+
+		// layerGroup.objectLayers = this.objectLayers;
+		layerGroup.tileLayers   = this.tileLayers;
+
+		this.collisionLayers = this.tileLayers.filter(l => {
+
+			if(!l.name.match(/^Collision\s\d+/))
+			{
+				return false;
+			}
+
+			return true;
+		})
+
+		this.destructibleLayers = this.tileLayers.filter(l => {
+
+			if(!l.name.match(/^Destructible\s\d+/))
+			{
+				return false;
+			}
+
+			return true;
+		});
+
+		layerGroup.destructibleLayers = this.destructibleLayers;
+		layerGroup.collisionLayers    = this.collisionLayers;
+	}
+
 	addMap(url, xOffset = 0, yOffset = 0)
 	{
-		const elicit = new Elicit(mapUrl);
+		const elicit = new Elicit(url);
+
+		elicit.stream()
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+		});
 
 		elicit.addEventListener('progress', event => {
 			const {received, length, done} = event.detail;
 
-			elicit.stream()
-			.then(response => response.json())
-			.then(data => {
-				console.log(data);
-			});
 
 			// const type = 'map';
 
 			// this.dispatchEvent(new CustomEvent(
-			// 	'level-progress', {detail: {length, received, done, url:mapUrl}}
+			// 	'level-progress', {detail: {length, received, done, url}}
 			// ));
 		});
 	}
@@ -210,7 +231,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	coordsToTile(x, y, layerId)
 	{
-		const blockSize = this.mapData.tilewidth;
+		const blockSize = this.blockSize;
 
 		let offsetX = 0;
 		let offsetY = 0;
@@ -420,7 +441,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 		}
 
-		if(layerInput <= 3)
+		if(1||layerInput <= 3)
 		{
 			if(tileNumber === 0)
 			{
@@ -505,8 +526,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		for(const i in this.mapData.tilesets)
 		{
 			const tileset = this.mapData.tilesets[i];
-
-			// console.log(tileNumber, tileset.firstgid);
 
 			if(tileNumber + 1 >= tileset.firstgid)
 			{
