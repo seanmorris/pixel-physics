@@ -69,6 +69,13 @@
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 }
 
+.actor-item.actor-eggman[data-animation="hanging"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -512px;
+	top: 8px;
+	left: 8px;
+}
+
 @-webkit-keyframes eggman-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);

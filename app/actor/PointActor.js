@@ -4540,8 +4540,6 @@ export class PointActor extends View
 			return;
 		}
 
-		this.args.y -= 8;
-
 		this.viewport.onFrameOut(180, () => this.args.mercy = false);
 
 		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
@@ -4552,6 +4550,7 @@ export class PointActor extends View
 			{
 				if(!damageEvent.detail.immune)
 				{
+					this.args.y -= 8;
 					this.startle(other);
 					this.args.mercy = true;
 
@@ -4564,6 +4563,10 @@ export class PointActor extends View
 
 				return;
 			}
+		}
+		else
+		{
+			return;
 		}
 
 		if(this.args.rings)

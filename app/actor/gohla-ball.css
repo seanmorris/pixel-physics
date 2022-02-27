@@ -1,0 +1,44 @@
+.actor-item.actor-gohla-ball .sprite {
+	height: 16px;
+	width: 32px;
+}
+
+.actor-item.actor-gohla-ball .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 8px;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/gohla-ball.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 16px;
+	width: 16px;
+	z-index: 1;
+}
+
+.actor-item.actor-gohla-ball.actor-voltorb .sprite:after {
+	--sprite-offset-y: -32px;
+}
+
+.actor-item.actor-gohla-ball.actor-voltorb[data-animation=sparking] .sprite:before {
+	content:  ' ';
+	position: absolute;
+	top: 0px;
+	right: 24px;
+	height: 8px;
+	width: 24px;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/spark.png);
+	animation: spark-animate 100ms steps(3) infinite;
+	z-index: 10000;
+	transform-origin: right center;
+	transform: rotate(10deg);
+}
+
+@keyframes spark-animate {
+	  0% { background-position-y: calc( 0px + var(--sprite-offset-y)); }
+	100% { background-position-y: calc(24px + var(--sprite-offset-y)); }
+}

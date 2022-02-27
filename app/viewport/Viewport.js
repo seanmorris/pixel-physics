@@ -360,6 +360,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
+		this.args.maxFps = 120;
 		this.args.maxFps = 60;
 
 		this.args.currentActor = '';
@@ -801,6 +802,11 @@ export class Viewport extends View
 		});
 
 		tileMap.ready.then(() => load.args.text = `starting level`);
+
+		if(mapUrl === '/map/see-saw-test.json')
+		{
+			tileMap.addMap('/map/appended-map.json');
+		}
 
 		this.args.titlecard = new Series({cards:[load]}, this);
 

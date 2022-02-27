@@ -1,29 +1,84 @@
 <head>
-	<style>
-		head {
-			display: flex;
+
+<style>
+	body {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: 0;
+		padding-top: 2rem;
+		box-sizing: border-box;
+	}
+
+	article {
+		width: 560px;
+		margin-left: auto;
+		margin-right: auto;
+		flex: 1;
+	}
+
+	article > iframe
+	, article > video
+	, article > img {
+		background: #999;
+	}
+
+	img.avatar {
+		background: none;
+		image-rendering: pixelated;
+
+	}
+
+	section.nav {
+		width: 560px;
+		margin: 1rem;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	@media (min-width: 830px) {
+		section.nav {
+			position: fixed;
+			top: 1rem;
+			right: 1rem;
+			width: auto;
 		}
-		body {
-			max-width: 550px;
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 4em;
-			margin-bottom: 4em;
-		}
-	</style>
-	<title>Rendering Sonic in HTML</title>
+	}
+
+	section.footer {
+		background: black;
+		color: white;
+		margin-top: 4rem;
+		padding: 1rem;
+		min-height: 8rem;
+		text-align: right;
+		font-size: 0.8rem;
+	}
+
+</style>
+
+<title>Rendering Sonic in HTML</title>
+
 </head>
 <body>
+
+<section class = "nav">
+	<a target = "_blank" href = "https://pixel-physics.seanmorr.is/">Play Now</a>
+</section>
+
+<article>
 
 <a target = "_blank" href = "./about/underground-zone.png">
 	<img width="560" src = "./about/underground-zone.png" />
 </a>
 
-<h1 id="rendering-sonic-in-html">Rendering Sonic in HTML</h1>
+<h1 id="rendering-sonic-in-html">
+	Rendering Sonic in HTML
+</h1>
 
 <p>(NOT canvas)</p>
 
-<p>This project is insane. That is on purpose. Its a Sonic engine, written completely from scratch, rendered in HTML. Yes, Sonic is a <code>DIV</code> box. I only started this project to stress test a web framework I created, and to stress test my knowledge of the browser in general. Things went <strong>very</strong> well, so I may have gotten a bit extreme with this “test project.”</p>
+<p>This project is insane. That is on purpose. Its a Sonic engine, written completely from scratch, rendered in HTML. Yes, Sonic is a <code>&lt;DIV&gt;</code> box. I only started this project to stress test a web framework I created, and to stress test my knowledge of the browser in general. Things went <strong>very</strong> well, so I may have gotten a bit extreme with this “test project.”</p>
 
 <p>When normal people want to make a browser game, they’ll use canvas, and usually Web GL, allowing the developer to make use of the GPU. However, CSS also allows for access to the GPU. Once I realized the performance level allowed for simple games to be expressed, I started wondering: “How far can I really take this?”</p>
 
@@ -31,7 +86,7 @@
 
 <p>Then hardware accellerated CSS came out. I spent time learning it, and over the years it got better, and I kept at it. I wrote my own web framework for Javascript and needed a project to use as a stress test. So I thought “What could be better at stressing the browser than taking a Sonic game and making everthing in it an HTML element?”</p>
 
-<p>The goal was originally to clone the 8 bit games, that were released for the handheld GameGear. The reason was that they were a little simpler and much less graphically intense than the mainline Genesis games. Once I got the physics right and saw how it ran, I immediately decided not only to try to match the Genesis games, but attempt to build on them. I believe I’ve succeeded at that.</p>
+<p>So I created Sonic 3000 (the game) and Pixel Physics (the engine). The goal was originally to clone the 8 bit games, that were released for the handheld GameGear. The reason was that they were a little simpler and much less graphically intense than the mainline Genesis games. Once I got the physics right and saw how it ran, I immediately decided not only to try to match the Genesis games, but attempt to build on them. I believe I’ve succeeded at that.</p>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/l8dx7AeaXV8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -61,7 +116,9 @@
 
 <p>SVG is used in a lot of different ways in this project, which is relatively unexpected since 16 bit Genesis games are raster graphics, and SVG is generally concerned with vector images. However, it came in handy with its <code>clip-path</code> to generate a simple spotlight effect. Even more powerfully, its able to generate displacement effects using color maps, which I used to create the wave effect for underwater areas. You’ll notice that although Sonic’s sprite is a single HTML element, the effect is only applied to the area with the water region. You can also see displacement effects when Sonic is skidding or charging a spindash, when you double tap the jump button and perform a doublespin, or when he’s standing on a bridge.</p>
 
-<video width="560" src = "./about/underwater-loop.mp4" loop autoplay muted></video>
+<a target = "_blank" href = "./about/water-effect.webm">
+	<video width="560" src = "./about/water-effect.webm" loop autoplay muted></video>
+</a>
 
 <p>The directional motion blur effect is something I’m especially proud of. Directional blur in HTML/CSS is supposed to be impossible. You only get one <code>blur()</code> filter in CSS, and it’s omnidirectional (all directions at once). SVG takes it one step further by allowing for a <code>blur-x</code> and <code>blur-y</code>, but applying both of these equally will not be equivalent to a 45-degree motion blur. It works by nesting the entire tile layer in an element that is rotated so that the desired direction is displayed as horizontal. Another nested element applies a simple <code>blur-x</code>, and a third nested element cancels out the original rotation. Thus allowing for an ‘impossible’ blur effect. The blur is applied only to the ground and not the actual game objects as a courtesy to the player.</p>
 
@@ -94,7 +151,7 @@
 
 <p>The menu system makes use of the above input model to shift focus from one element to another around the page. CSS selectors are used to show which element is currently active, and the browser’s tendency to scroll that element to center upon focus is exploited to create a scrolling menu.</p>
 <p>The character select in the “single player” menu is little more than a select box with some decorative trim. The sillouette above is actually rendered with the same graphics used for the player in-game. It has a CSS filter applied to remove the details. This ensures that the player graphic is loaded before any level starts. The settings menu is implemented in a simpler way, also with select boxes. The outline width input is simply an <code>&lt;INPUT&gt;</code> with its <code>type</code> set to <code>number</code>.</p>
-<p>The system will also detect if the player is using a playstation, xbox, or generic gamepad vs the keyboard and display appropriate graphics when referring to controls. The system has a miniature font engine built in. It works by rendering some text as a series of <code>&lt;SPAN&gt;</code> tags, one for each character. Normal text uses a spritesheet like game objects, but they’re not animated.</p>
+<p>The system will also detect if the player is using a playstation, xbox, or generic gamepad vs the keyboard and display appropriate graphics when referring to controls. The system has a miniature font engine built in. It works by rendering some text as a series of <code>&lt;SPAN&gt;</code> tags, one for each character. Normal text uses a spritesheet like game objects, but the elements are not animated.</p>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Tx_gi5uR3dE?mute=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -111,8 +168,16 @@
 <p>Like most web pages, the game makes use of Google Analytics. I was able to get a pretty high level of detail from it. I can see in real time when a user starts a level, connects a game controller, takes damage and even whenever a ring is collected. The game reports all this information via GA Events. It also logs and transmits the current framerate after every 10 seconds of gameplay, so I can take statistics and ensure my optimizations actually improve things.</p>
 
 <h1 id="closing">Closing</h1>
-<p>I would not have taken things to such an extreme degree had they not gone so well. I did have to apply some optimizations back to the original framework but the effort was minimal, and the benefits were massive. I learned a lot doing this project, and I’ve got an engine I can abstract out and share with other developers. I plan to submit the project to SAGE 2022, and hopefully one day other developers will be able to use the underlying engine to do the same.</p>
+<p>I would not have taken things to such an extreme degree had they not gone so well. I did have to apply some optimizations back to the original framework but the effort was minimal, and the benefits were massive. I learned a lot doing this project, and I’ve got an engine I can abstract out and share with other developers. I plan to abstract out the input, menu and svg effect code into their own libraries and publish them on NPM. I also plan to submit Sonic 3000 to SAGE 2022(Sonic Amateur Games Expp), and hopefully one day other developers will be able to use the underlying engine to do the same.</p>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/u3CPntRj0uU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+</article>
+
+<section class = "footer">
+
+	&copy 2022 Sean Morris
+
+</section>
 
 </body>
