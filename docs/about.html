@@ -138,7 +138,8 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ryDuU0-ggBo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <p>The slope of the ground is determined by sampling a few pixels ahead and behind the player’s current position. To prevent jarring changes, the value is averaged with the values from the last few frames. This list is cleared if Sonic jumps or otherwise leaves the ground. When Sonic lands, this angle is used to calculate how much of his vertical momentum should be translated into horizontal momentum.</p>
-<p>A 2d ray is cast along the direction of motion whenver an object moves. It length is eqivalent to the object’s speed. If any of these pixels are solid, the object stops. If another object is on that pixel, the objects collide. This ensures the system won’t miss collision when objects are moving at high speeds.</p>
+
+<p>A 2d ray is cast along the direction of motion whenver an object moves. It length is eqivalent to the object’s speed. If any of these pixels are solid, the object stops. If another object is on that pixel, the objects collide. This ensures the system won’t miss collision when objects are moving at high speeds. When Sonic lands, A few more rays are cast to determine the shape of the ground, and then his momentum is altered accordingly.</p>
 
 <h1 id="input">Input</h1>
 
