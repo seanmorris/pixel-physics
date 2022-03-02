@@ -21,7 +21,7 @@ export class StarPost extends PointActor
 
 		this.args.width  = 16;
 		this.args.height = 48;
-		this.args.active = false;
+		this.args.active = this.args.active ?? false;
 		this.args.static = true;
 
 		this.spinning = false;
