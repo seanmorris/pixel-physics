@@ -1,12 +1,16 @@
+.actor-item.actor-grapple-point {
+	z-index: calc(var(--z) + 10000);
+}
+
 .actor-item.actor-grapple-point .sprite {
 	background-image: url(/Sonic/hook.png);
 	background-position: -20px -4px;
 	height: calc(var(--height) * 1px);
 	width: 22px;
 	position: absolute;
-	z-index: -100;
 }
 
 [data-bg="wood"] .actor-item.actor-grapple-point .sprite {
+	z-index: calc(var(--z) + 100);
 	background-position: -85px -4px;
 }

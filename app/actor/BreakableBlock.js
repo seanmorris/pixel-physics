@@ -129,13 +129,22 @@ export class BreakableBlock extends Block
 			return true;
 		}
 
+		if(this.args.strength === 1 && other.args.name === 'knuckles')
+		{
+			if(other.args.falling || Math.abs(other.args.gSpeed) > 4)
+			{
+				this.broken || this.break(other);
+				return false;
+			}
+		}
+
 		if(this.args.strength === 1)
 		{
-			if(other.name !== 'knuckles' && !other.isVehicle)
+			if(other.args.name !== 'knuckles' && !other.isVehicle)
 			{
 				return true;
 			}
-			else if(other.name !== 'knuckles' || other.args.falling || Math.abs(other.args.gSpeed) > 4)
+			else if(other.args.name !== 'knuckles' || other.args.falling || Math.abs(other.args.gSpeed) > 4)
 			{
 				this.broken || this.break(other);
 

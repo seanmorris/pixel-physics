@@ -1122,8 +1122,24 @@ export class Viewport extends View
 			{
 				this.nextControl = Object.values(this.args.actors)[0];
 			}
+		}
 
-			// this.nextControl = this.nextControl || actors[0];
+		if(this.nextControl && this.nextControl.controller)
+		{
+			this.nextControl.controller.zero();
+		}
+		else if(this.controller)
+		{
+			this.controller.zero();
+		}
+
+		Keyboard.get().reset();
+
+		this.args.started = false;
+
+		this.args.zonecard.played.then(() => {
+
+			this.args.startFrameId = this.args.frameId;
 
 			if(Router.query.start)
 			{
@@ -1162,24 +1178,21 @@ export class Viewport extends View
 
 					if(storedPosition)
 					{
-						// const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
-						const checkpointDef = this.objDefs.get(storedPosition.checkpointId);
+						const checkpoint = storedPosition ? this.actorsById[storedPosition.checkpointId] : null;
 
-						console.log(checkpointDef);
-
-						if(checkpointDef)
+						if(checkpoint)
 						{
 							this.args.startFrameId = this.args.frameId - storedPosition.frames;
 
-							this.nextControl.args.x = checkpointDef.x;
-							this.nextControl.args.y = checkpointDef.y;
+							checkpoint.args.active = true;
 
-							console.log(this.nextControl.follower);
+							this.nextControl.args.x = checkpoint.x;
+							this.nextControl.args.y = checkpoint.y;
 
 							if(this.nextControl.follower)
 							{
-								this.nextControl.follower.args.x = checkpointDef.x;
-								this.nextControl.follower.args.y = checkpointDef.y;
+								this.nextControl.follower.args.x = checkpoint.x;
+								this.nextControl.follower.args.y = checkpoint.y;
 
 								this.setColCell(this.nextControl.follower);
 							}
@@ -1190,24 +1203,6 @@ export class Viewport extends View
 					}
 				}
 			}
-		}
-
-		if(this.nextControl && this.nextControl.controller)
-		{
-			this.nextControl.controller.zero();
-		}
-		else if(this.controller)
-		{
-			this.controller.zero();
-		}
-
-		Keyboard.get().reset();
-
-		this.args.started = false;
-
-		this.args.zonecard.played.then(() => {
-
-			this.args.startFrameId = this.args.frameId;
 
 			this.args.level = 'level';
 
@@ -2229,6 +2224,15 @@ export class Viewport extends View
 			this.auras.add(character)
 			this.actors.add(character);
 
+			if(startDef.properties)
+			{
+				for(const property of startDef.properties)
+				{
+					character.args[property.name] = property.value;
+				}
+			}
+
+
 			this.nextControl = character;
 		}
 
@@ -2252,6 +2256,8 @@ export class Viewport extends View
 			if(position && position.checkpointId)
 			{
 				const checkpoint = this.actorsById[position.checkpointId];
+
+				checkpoint.args.active = true;
 
 				if(checkpoint)
 				{

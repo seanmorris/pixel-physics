@@ -25,8 +25,6 @@ export class PauseMenu extends Menu
 			, font: 'small-menu-font'
 		});
 
-		this.args.bindTo('hideMenu', v => v && (this.args.items = this.items));
-
 		this.items = this.args.items = {
 			Continue: { callback: () => parent.unpauseGame() }
 			, Reset:    {
@@ -91,16 +89,7 @@ export class PauseMenu extends Menu
 
 	input(controller)
 	{
-		if(!this.args.hideMenu)
-		{
-			super.input(controller);
-		}
-		else if(controller.buttons[9] && controller.buttons[9].active)
-		{
-			this.args.hideMenu = '';
-		}
-
-		if(controller.buttons[1011] && controller.buttons[1011].time > 0)
+		if(controller.buttons[1011] && controller.buttons[1011].active)
 		{
 			const time = controller.buttons[1011].time;
 
@@ -111,8 +100,19 @@ export class PauseMenu extends Menu
 				this.args.hideMenu = 'pause-menu-hide';
 			}
 		}
-		else if(controller.buttons[1012] && controller.buttons[1012].time > 0)
+
+		if(!this.args.hideMenu)
 		{
+			super.input(controller);
+		}
+		else if(controller.buttons[9] && controller.buttons[9].active)
+		{
+			this.args.hideMenu = '';
+		}
+
+		if(controller.buttons[1012] && controller.buttons[1012].time > 0)
+		{
+			this.parent.focus();
 			this.args.hideMenu = 'pause-menu-hide';
 		}
 		else if(controller.buttons[1012] && controller.buttons[1012].time < 0)
