@@ -30,11 +30,14 @@ export class LayerSwitch extends PointActor
 		this.args.width  = 32;
 		this.args.height = 32;
 		this.static = true;
+
+		this.args.fromLayer = this.args.fromLayer ?? 1;
+		this.args.toLayer   = this.args.toLayer   ?? 2;
 	}
 
 	collideA(other, type)
 	{
-		let speed = other.args.gSpeed || other.args.direction || other.xAxis;
+		let speed = other.args.gSpeed || other.args.xSpeed ||other.args.direction || other.xAxis;
 		let back  = !!Number(this.args.back);
 		let roll  = !!Number(this.args.roll);
 
@@ -55,7 +58,7 @@ export class LayerSwitch extends PointActor
 
 		if(roll && (!other.args.rolling || other.args.height > 28))
 		{
-			other.args.layer = toLayer === 1 ? 2 : 1;
+			other.args.layer = toLayer === this.args.fromLayer ? this.args.toLayer : this.args.fromLayer;
 			return false;
 		}
 
@@ -69,12 +72,12 @@ export class LayerSwitch extends PointActor
 
 		if(speed > 0)
 		{
-			toLayer = back ? 1 : 2;
+			toLayer = back ? this.args.fromLayer : this.args.toLayer;
 		}
 
 		if(speed < 0)
 		{
-			toLayer = back ? 2 : 1;
+			toLayer = back ? this.args.toLayer : this.args.fromLayer;
 		}
 
 		if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))

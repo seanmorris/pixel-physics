@@ -13,15 +13,14 @@ export class EggShuttle extends Vehicle
 		this.args.decel     = 0.8;
 
 		this.args.gSpeedMax = 15;
-		this.args.xSpeedMax = 150;
-		this.args.ySpeedMax = 50;
+		this.args.xSpeedMax = 15;
+		this.args.ySpeedMax = 15;
 
 		this.args.jumpForce = 3;
 		this.args.gravity   = 0.6;
 
 		this.args.width  = 96;
-		// this.args.height = 308;
-		this.args.height = 260;
+		this.args.height = 308;
 
 		this.args.yMargin = 42;
 
@@ -29,7 +28,8 @@ export class EggShuttle extends Vehicle
 		this.args.flying = true;
 		this.args.float = -1;
 
-		this.args.seatHeight = 270;
+		this.args.seatHeight = this.args.height - 40;
+		this.args.seatForward = -16;
 		this.args.seatAngle = Math.PI / 2;
 
 		this.args.thrustAngle = -Math.PI / 2;
@@ -39,6 +39,60 @@ export class EggShuttle extends Vehicle
 
 			this.boost.setAttribute('data-active', !!v);
 		});
+
+		this.args.crashAngle = 0;
+
+		this.args.bindTo('falling', v => {
+			if(Math.abs(this.args.groundAngle) < Math.PI / 4)
+			{
+				return;
+			}
+
+			this.args.crashAngle = this.args.groundAngle;
+		});
+	}
+
+	onRendered(event)
+	{
+		super.onRendered(event);
+
+		this.autoStyle.get(this.box)['--crash-angle'] = 'crashAngle';
+	}
+
+	updateStart()
+	{
+		super.updateStart();
+
+		if(this.args.falling)
+		{
+			this.args.groundAngle = -(this.args.thrustAngle + Math.PI / 2);
+		}
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		if(!this.args.falling)
+		{
+			this.args.groundAngle = 0;
+		}
+
+		if(this.args.crashAngle)
+		{
+			this.args.groundAngle = this.args.crashAngle;
+
+			if(this.occupant)
+			{
+				const occupant = this.occupant;
+
+				occupant.args.standingOn = false;
+				occupant.args.falling    = true;
+				occupant.args.xSpeed     = Math.sign(this.xSpeedLast) * 2;
+				occupant.args.ySpeed     = -12;
+				occupant.args.y         += -12;
+			}
+		}
 	}
 
 	update()
@@ -70,12 +124,23 @@ export class EggShuttle extends Vehicle
 
 		if(this.args.falling)
 		{
-			this.args.cameraMode = 'aerial';
-			this.args.cameraBias = Math.max(-0.125, (-this.args.ySpeed / this.args.ySpeedMax) + -0.25);
+			this.args.cameraMode = 'rocket';
 
-			this.args.thrustAngle += 0.01 * this.xAxis;
+			// const maxBias = 0.06125;
+			// this.args.cameraBias = Math.max(-maxBias, Math.min(maxBias, (this.args.ySpeed / this.args.ySpeedMax) * -maxBias));
+			// console.log(this.args.cameraBias);
 
-			this.args.groundAngle = -(this.args.thrustAngle + Math.PI / 2);
+			this.args.thrustAngle += 0.02 * this.xAxis;
+
+			if(this.args.thrustAngle < -Math.PI * 7/8)
+			{
+				this.args.thrustAngle = -Math.PI * 7/8;
+			}
+
+			if(this.args.thrustAngle > -Math.PI * 1/8)
+			{
+				this.args.thrustAngle = -Math.PI * 1/8;
+			}
 		}
 		else
 		{
@@ -115,9 +180,29 @@ export class EggShuttle extends Vehicle
 		this.args.xSpeed += impulse * Math.cos(this.args.thrustAngle);
 		this.args.ySpeed += impulse * Math.sin(this.args.thrustAngle);
 
+		if(Math.abs(this.args.xSpeed) > this.args.xSpeedMax)
+		{
+			this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
+		}
+
+		if(Math.abs(this.args.ySpeed) > this.args.ySpeedMax)
+		{
+			this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
+		}
+
 		this.args.boosting = true;
 
 	}
 
-	get solid() { return !this.occupant; }
+	collideA(other, type)
+	{
+		if(this.args.crashAngle)
+		{
+			return false;
+		}
+
+		super.collideA(other, type);
+	}
+
+	get solid() { return !this.args.crashAngle && !this.occupant; }
 }

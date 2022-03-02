@@ -3,6 +3,7 @@ import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
 import { Projectile } from './Projectile';
 import { MiniMace } from './MiniMace';
+import { MegaMace } from './MegaMace';
 
 export class RedEyeJet extends PointActor
 {
@@ -32,6 +33,17 @@ export class RedEyeJet extends PointActor
 
 	collideA(other, type)
 	{
+		let name;
+
+		if(this.hanging.has(MiniMace))
+		{
+			name = 'MINI-MACE';
+		}
+		else if(this.hanging.has(MegaMace))
+		{
+			name = 'MEGA-MACE';
+		}
+
 		if(!other.controllable && !(other instanceof Projectile))
 		{
 			return;
@@ -81,7 +93,7 @@ export class RedEyeJet extends PointActor
 			});
 
 			viewport.onFrameOut(100, () => {
-				viewport.clearAct(`${other.args.name} BEAT THE MINI-MACE`);
+				viewport.clearAct(`${other.args.name} BEAT THE ${name}`);
 			});
 
 			viewport.onFrameOut(100, () => {
@@ -195,19 +207,23 @@ export class RedEyeJet extends PointActor
 
 		if(damaged && other && other.controller && other.controller.rumble)
 		{
-			other.controller.rumble({
-				duration: 120,
-				strongMagnitude: 1.0,
-				weakMagnitude: 1.0
-			});
 
-			this.onTimeout(100, () => {
+			if(this.viewport.settings.rumble)
+			{
 				other.controller.rumble({
-					duration: 100,
-					strongMagnitude: 0.0,
-					weakMagnitude: 0.5
+					duration: 120,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
 				});
-			});
+
+				this.onTimeout(100, () => {
+					other.controller.rumble({
+						duration: 100,
+						strongMagnitude: 0.0,
+						weakMagnitude: 0.5
+					});
+				});
+			}
 		}
 
 		if(other instanceof Projectile || type === 1 || type === 3 || type === 0)
@@ -320,7 +336,15 @@ export class RedEyeJet extends PointActor
 			{
 				for(const mace of this.hanging.get(MiniMace))
 				{
-					mace.args.ropeLength = 12;
+					mace.args.ropeLength = 80;
+				}
+			}
+
+			if(this.hanging.has(MegaMace))
+			{
+				for(const mace of this.hanging.get(MegaMace))
+				{
+					mace.args.ropeLength = 96;
 				}
 			}
 
@@ -342,6 +366,15 @@ export class RedEyeJet extends PointActor
 				}
 			});
 		}
+		else if(this.hanging.has(MegaMace))
+		{
+			this.viewport.onFrameOut(45, () => {
+				for(const mace of this.hanging.get(MegaMace))
+				{
+					mace.args.ropeLength = 192;
+				}
+			});
+		}
 
 		if(this.args.phase === 'attacking')
 		{
@@ -350,6 +383,14 @@ export class RedEyeJet extends PointActor
 			if(this.hanging.has(MiniMace))
 			{
 				for(const mace of this.hanging.get(MiniMace))
+				{
+					mace.args.float = 0;
+				}
+			}
+
+			if(this.hanging.has(MegaMace))
+			{
+				for(const mace of this.hanging.get(MegaMace))
 				{
 					mace.args.float = 0;
 				}

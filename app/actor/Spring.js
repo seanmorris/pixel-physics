@@ -160,7 +160,7 @@ export class Spring extends PointActor
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		if(other.controller && other.controller.rumble)
+		if(this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{
 			other.controller.rumble({
 				duration: 120,

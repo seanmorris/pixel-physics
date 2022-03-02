@@ -24,7 +24,8 @@ export class StarBalloon extends Balloon
 		{
 			if(!this.launched)
 			{
-				this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
+				this.args.ySpeed = 0;
+				// this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
 			}
 			else
 			{

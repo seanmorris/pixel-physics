@@ -379,6 +379,7 @@ export class PointActor extends View
 
 		this.debindGroundX = null;
 		this.debindGroundY = null;
+		this.debindGroundA = null;
 		this.debindGroundL = null;
 
 		this.args.name = this.args.name ?? '';
@@ -396,6 +397,7 @@ export class PointActor extends View
 
 		this.debindGroundX = new Set;
 		this.debindGroundY = new Set;
+		this.debindGroundA = new Set;
 		this.debindGroundL = new Set;
 
 		this.args.bindTo(['mode', 'falling'], () => {
@@ -424,6 +426,13 @@ export class PointActor extends View
 			for(const debind of this.debindGroundY)
 			{
 				this.debindGroundY.delete(debind);
+
+				debind();
+			}
+
+			for(const debind of this.debindGroundA)
+			{
+				this.debindGroundA.delete(debind);
 
 				debind();
 			}
@@ -494,12 +503,29 @@ export class PointActor extends View
 					this.args.y = yRot + vv;
 				});
 
+				// const debindGroundA = groundObject.args.bindTo('groundAngle', (vv,kk) => {
+
+				// 	if(this.args.jumping)
+				// 	{
+				// 		return;
+				// 	}
+
+				// 	const x = groundObject.args.direction * groundObject.args.seatForward || 0;
+				// 	const y = groundObject.args.seatHeight || groundObject.args.height || 0;
+
+				// 	const [xRot, yRot] = groundObject.rotatePoint(x, y);
+
+				// 	this.args.x = xRot + groundObject.x;
+				// 	this.args.y = yRot + groundObject.y;
+				// });
+
 				const debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
 					this.args.layer = vv;
 				});
 
 				this.debindGroundX.add(debindGroundX);
 				this.debindGroundY.add(debindGroundY);
+				// this.debindGroundA.add(debindGroundA);
 				this.debindGroundL.add(debindGroundL);
 
 				const occupant = groundObject.occupant;
@@ -644,6 +670,7 @@ export class PointActor extends View
 			, 'data-facing':    'facing'
 			, 'data-filter':    'filter'
 			, 'data-angle':     'angleDeg'
+			, 'data-driving':   'driving'
 			, 'data-active':    'active'
 			, 'data-layer':     'layer'
 			, 'data-mode':      'mode'
@@ -814,6 +841,7 @@ export class PointActor extends View
 			{
 				this.args.grinding = false;
 			}
+
 		}
 
 		if(!this.args.falling)
@@ -1303,6 +1331,8 @@ export class PointActor extends View
 			}
 		}
 
+		this.args.driving = false;
+
 		if(this.args.standingOn && this.args.standingOn.isVehicle && !this.isVehicle)
 		{
 			const vehicle = this.args.standingOn;
@@ -1310,6 +1340,7 @@ export class PointActor extends View
 			this.args.falling = true;
 			this.args.flying  = false;
 			this.args.jumping = false;
+			this.args.driving = true;
 
 			this.processInput();
 
@@ -1701,6 +1732,11 @@ export class PointActor extends View
 				this.args.ySpeed = 0;
 				this.xLast = this.args.x;
 				this.yLast = this.args.y;
+
+				if(this.args.grinding && !this.args.gSpeed)
+				{
+					this.args.gSpeed = Math.sign(this.args.direction || this.axis);
+				}
 
 				this.updateGroundPosition();
 
@@ -4554,11 +4590,15 @@ export class PointActor extends View
 					this.startle(other);
 					this.args.mercy = true;
 
-					this.controller.rumble({
-						duration: 350,
-						strongMagnitude: 1.0,
-						weakMagnitude: 1.0
-					});
+					if(this.viewport.settings.rumble)
+					{
+						this.controller.rumble({
+							duration: 350,
+							strongMagnitude: 1.0,
+							weakMagnitude: 1.0
+						});
+					}
+
 				}
 
 				return;
@@ -4576,29 +4616,36 @@ export class PointActor extends View
 			this.startle(other);
 			this.args.mercy = true;
 
-			this.controller.rumble({
-				duration: 350,
-				strongMagnitude: 1.0,
-				weakMagnitude: 1.0
-			});
-
-			this.onTimeout(350, () => {
+			if(this.viewport.settings.rumble)
+			{
 				this.controller.rumble({
-					duration: 150,
-					strongMagnitude: 0.5,
+					duration: 350,
+					strongMagnitude: 1.0,
 					weakMagnitude: 1.0
 				});
-			});
+
+				this.onTimeout(350, () => {
+					this.controller.rumble({
+						duration: 150,
+						strongMagnitude: 0.5,
+						weakMagnitude: 1.0
+					});
+				});
+			}
+
 		}
 		else if(this.controllable)
 		{
 			this.die();
 
-			this.controller.rumble({
-				duration: 450,
-				strongMagnitude: 1.0,
-				weakMagnitude: 1.0
-			});
+			if(this.viewport.settings.rumble)
+			{
+				this.controller.rumble({
+					duration: 450,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
+				});
+			}
 		}
 	}
 
@@ -5026,6 +5073,11 @@ export class PointActor extends View
 
 		this.xAxis = 0;
 		this.yAxis = 0;
+
+		if(!controller.axes)
+		{
+			return;
+		}
 
 		if(controller.axes[0])
 		{

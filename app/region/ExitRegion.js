@@ -29,8 +29,17 @@ export class ExitRegion extends Region
 		viewport.clearCheckpoints(other.args.id);
 
 		viewport.onFrameOut(30, () => {
+
 			viewport.actors.remove(this);
 			viewport.quit();
+
+			if(this.args.nextStage)
+			{
+				viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});
+			}
+			else
+			{
+			}
 		});
 	}
 

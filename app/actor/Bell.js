@@ -67,9 +67,9 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 			ring.delay   = 15;
 
 			ring.args.static = false;
-			ring.args.ignore = 20;
+			ring.args.ignore = 10;
 
-			ring.args.xSpeed = this.args.xSpeed;
+			ring.args.xSpeed = this.args.xSpeed * 0.75;
 			ring.args.ySpeed = this.args.ySpeed;
 
 			const spawnOffset = this.rotatePoint(0, 32);

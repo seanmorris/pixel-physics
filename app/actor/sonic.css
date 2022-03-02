@@ -249,6 +249,10 @@
 	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
 }
 
+.actor-item.actor-sonic[data-falling=true][data-animation="lightdash"] .sprite:after {
+	animation: sonic-flicker steps(4) infinite 96ms, sonic-animate steps(3) infinite 96ms;
+}
+
 .actor-item.actor-sonic[data-animation="wall-stick"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -448px;

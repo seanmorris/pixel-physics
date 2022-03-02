@@ -80,7 +80,7 @@ export class Bumper extends PointActor
 
 		this.ignores.set(other, 8);
 
-		if(other && other.controller && other.controller.rumble)
+		if(this.viewport.settings.rumble && other && other.controller && other.controller.rumble)
 		{
 			other.controller.rumble({
 				duration: 120,

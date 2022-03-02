@@ -44,6 +44,11 @@ export class StarSheild extends Sheild
 		});
 	}
 
+	immune()
+	{
+		return true;
+	}
+
 	drop(host)
 	{
 		console.log(this, host);

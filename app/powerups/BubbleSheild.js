@@ -126,11 +126,14 @@ export class BubbleSheild extends Sheild
 					this.sample.play();
 				}
 
-				host.controller.rumble({
-					duration: 200,
-					strongMagnitude: 1.0,
-					weakMagnitude: 1.0
-				});
+				if(host.viewport.settings.rumble)
+				{
+					host.controller.rumble({
+						duration: 200,
+						strongMagnitude: 1.0,
+						weakMagnitude: 1.0
+					});
+				}
 
 			}
 

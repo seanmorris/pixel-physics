@@ -59,6 +59,26 @@ export class Tails extends PointActor
 		this.flyingSound.loop   = true;
 	}
 
+	startle()
+	{
+		super.startle();
+
+		this.args.animation = 'startle';
+
+		this.onNextFrame(() => this.args.animation = 'startle');
+	}
+
+	updateStart()
+	{
+		super.updateStart();
+
+		if(this.args.dead)
+		{
+			this.args.animation = 'dead';
+			return;
+		}
+	}
+
 	update()
 	{
 		const falling = this.args.falling;
@@ -138,7 +158,7 @@ export class Tails extends PointActor
 				this.box.setAttribute('data-animation', 'rolling');
 			}
 		}
-		else if(this.args.flying)
+		else if(this.args.flying && !this.args.startled)
 		{
 			if(this.yAxis > 0)
 			{
@@ -162,6 +182,16 @@ export class Tails extends PointActor
 		{
 			this.args.animation = 'hanging';
 		}
+
+		if(!this.args.startled)
+		{
+		}
+		else
+		{
+			this.flyingSound.pause();
+			this.args.flying = false;
+		}
+
 
 		super.update();
 	}

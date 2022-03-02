@@ -29,7 +29,7 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
-		this.args.width     = 18;
+		this.args.width     = 24;
 		this.args.height    = 32;
 
 		this.willStick = false;

@@ -348,7 +348,7 @@ export class BreakableBlock extends Block
 			}
 		}
 
-		if(!this.broken && other && other.controller && other.controller.rumble)
+		if(this.viewport.settings.rumble && !this.broken && other && other.controller && other.controller.rumble)
 		{
 			other.controller && other.controller.rumble && other.controller.rumble({
 				duration: 140,

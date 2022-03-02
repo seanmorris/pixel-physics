@@ -135,6 +135,7 @@ import { Signpost } from './actor/Signpost';
 
 import { RedEyeJet } from './actor/RedEyeJet';
 import { MiniMace } from './actor/MiniMace';
+import { MegaMace } from './actor/MegaMace';
 import { Beelzebub } from './actor/Beelzebub';
 import { MiniBoss } from './actor/MiniBoss';
 import { Magnet	 } from './actor/Magnet';
@@ -264,6 +265,7 @@ export const ObjectPalette = {
 	, 'beelzebub': Beelzebub
 	, 'mini-boss': MiniBoss
 	, 'mini-mace': MiniMace
+	, 'mega-mace': MegaMace
 	, 'magnet': Magnet
 	, 'pulley': Pulley
 	, 'pulley-small': PulleySmall

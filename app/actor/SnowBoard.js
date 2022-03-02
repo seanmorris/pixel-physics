@@ -10,7 +10,7 @@ export class SnowBoard extends Vehicle
 	{
 		super(...args);
 
-		this.behaviors.add(new SkidDust('particle-dust behind'));
+		this.behaviors.add(new SkidDust('particle-dust'));
 
 		this.args.type = 'actor-item actor-snow-board';
 

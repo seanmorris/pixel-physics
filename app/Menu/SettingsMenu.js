@@ -55,6 +55,13 @@ export const SettingsMenu = (parent) => { return {
 			}
 		}
 
+		, 'Rumble': {
+			input: 'boolean'
+			, subtext: 'Enable/Disable controller vibration'
+			, set: value => parent.settings.rumble = value
+			, get: () => parent.settings.rumble
+		}
+
 		, Network: {
 			children: {
 				'Username': {
