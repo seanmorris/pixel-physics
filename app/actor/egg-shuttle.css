@@ -3,13 +3,15 @@
 	z-index: 1000;
 }
 
-.actor-egg-shuttle .sprite {
+.actor-item.actor-egg-shuttle .sprite {
 	background-image: url(/Sonic/shuttle-2.png);
 	position: absolute;
 	height: 338px !important;
 	width:  181px !important;
-	left: -20px !important;
+	/*top: 20px !important;*/
+	/*left: -20px;*/
 	z-index: 1;
+	/*transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * calc(var(--display-angle) + var(--crash-angle) ) ) ) !important;*/
 }
 
 .actor-egg-shuttle .shuttle-windshield {

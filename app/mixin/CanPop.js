@@ -167,21 +167,24 @@ export const CanPop = {
 
 			other.dashed = false;
 
-			if(other && other.controller && other.controller.rumble)
+			if(this.viewport.settings.rumble)
 			{
-				other.controller.rumble({
-					duration: 40,
-					strongMagnitude: 0.0,
-					weakMagnitude: 1.0
-				});
-
-				this.viewport.onTimeout(40, () => {
+				if(other && other.controller && other.controller.rumble)
+				{
 					other.controller.rumble({
-						duration: 110,
-						strongMagnitude: 0.75,
+						duration: 40,
+						strongMagnitude: 0.0,
 						weakMagnitude: 1.0
 					});
-				});
+
+					this.viewport.onTimeout(40, () => {
+						other.controller.rumble({
+							duration: 110,
+							strongMagnitude: 0.75,
+							weakMagnitude: 1.0
+						});
+					});
+				}
 			}
 		}
 

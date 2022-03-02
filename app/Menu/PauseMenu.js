@@ -25,7 +25,9 @@ export class PauseMenu extends Menu
 			, font: 'small-menu-font'
 		});
 
-		this.args.items = {
+		this.args.bindTo('hideMenu', v => v && (this.args.items = this.items));
+
+		this.items = this.args.items = {
 			Continue: { callback: () => parent.unpauseGame() }
 			, Reset:    {
 				children: {
@@ -77,6 +79,14 @@ export class PauseMenu extends Menu
 				}
 			}
 		};
+	}
+
+	run(event, item)
+	{
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+
+		super.run(item);
 	}
 
 	input(controller)

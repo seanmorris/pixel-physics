@@ -20,8 +20,11 @@
 	contain: style;
 }
 
-.point-actor .sprite {
+.point-actor.controllable:not([data-driving=true]) {
 	z-index: var(--z);
+}
+
+.point-actor .sprite {
 	contain:  size style;
 }
 

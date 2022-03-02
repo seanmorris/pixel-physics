@@ -220,9 +220,11 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		hooked.args.falling = true;
 		hooked.args.jumping = true;
 
-		this.viewport.onFrameOut(15, () => {
+		const viewport = this.viewport;
+
+		viewport.onFrameOut(15, () => {
 			this.ignoreOthers.delete(hooked);
-			this.viewport.auras.delete(this);
+			viewport.auras.delete(this);
 		});
 	}
 }

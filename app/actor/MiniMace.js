@@ -36,6 +36,11 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		{
 			super.update();
 
+			if(!this.args._tiedTo)
+			{
+				this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+			}
+
 			if(this.args.tiedTo && this.args._tiedTo.args.hitPoints)
 			{
 				this.setPos();
@@ -50,8 +55,21 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 		super.updateEnd();
 	}
 
+	collideA(other)
+	{
+		if(this.args._tiedTo && !this.args._tiedTo === other)
+		{
+			return false;
+		}
+	}
+
 	collideB(other)
 	{
+		if(this.args._tiedTo && !this.args._tiedTo === other)
+		{
+			return false;
+		}
+
 		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
 		{
 			return;

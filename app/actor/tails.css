@@ -3,7 +3,6 @@
 	width: 64px;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
-	z-index: 1;
 }
 
 .actor-item.actor-tails .sprite:after {
@@ -17,7 +16,7 @@
 	width: 64px;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
-	z-index: 1;
+	/*z-index: 1;*/
 }
 
 .actor-item.actor-tails[data-animation="standing"] .sprite:after {
@@ -59,6 +58,26 @@
 	left: 8px;
 }
 
+.actor-item.actor-tails[data-animation="hanging"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -448px;
+	top: 32px;
+}
+
+.actor-item.actor-tails[data-animation="dead"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -512px;
+}
+
+.actor-item.actor-tails[data-animation="startle"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -512px;
+	--animation-width: 64px;
+	--animation-steps: 2;
+
+	animation: tails-animate steps(var(--animation-steps)) infinite 960ms;
+}
+
 .actor-item.actor-tails[data-animation="skidding"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -256px;
@@ -70,10 +89,12 @@
 
 @keyframes tails-animate {
 	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+		background-position-x: var(--sprite-offset-x);
+		background-position-y: var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position-x: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x));
+		background-position-y: var(--sprite-offset-y);
 	}
 }
 

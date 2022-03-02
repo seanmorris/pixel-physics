@@ -772,6 +772,11 @@ export class Viewport extends View
 		tileMap.addEventListener('texture-progress', event => {
 			const {received, length, done} = event.detail;
 			load.args.text = `loading textures ... ${(done*100).toFixed(4)}%`;
+
+			if(done === 1)
+			{
+				load.args.text = `initializing...`;
+			}
 		});
 
 		tileMap.ready.then(() => {
@@ -801,12 +806,12 @@ export class Viewport extends View
 			}
 		});
 
-		tileMap.ready.then(() => load.args.text = `starting level`);
+		// tileMap.ready.then(() => load.args.text = `starting level`);
 
-		if(mapUrl === '/map/see-saw-test.json')
-		{
-			tileMap.addMap('/map/appended-map.json');
-		}
+		// if(mapUrl === '/map/see-saw-test.json')
+		// {
+		// 	tileMap.addMap('/map/appended-map.json');
+		// }
 
 		this.args.titlecard = new Series({cards:[load]}, this);
 
@@ -1486,7 +1491,7 @@ export class Viewport extends View
 					};
 				}
 
-				this.replayFrames.set(frame, {frame, input, args});
+				this.replayInputs[frame] = {frame, input, args};
 			}
 		}
 
@@ -1742,7 +1747,7 @@ export class Viewport extends View
 		let ySpeedMax  = 512;
 		let ySpeed     = 0;
 
-		if(this.cameraMode !== 'boss' && actor.args.modeTime > 0)
+		if(this.cameraMode !== 'boss' && this.cameraMode !== 'rocket' && actor.args.modeTime > 0)
 		{
 			if(!actor.args.falling && actor.args.mode === 1)
 			{
@@ -2199,13 +2204,6 @@ export class Viewport extends View
 
 			character.args.animation = 'dropping';
 
-			this.spawn.add({object:character});
-			this.auras.add(character)
-			this.actors.add(character);
-
-			this.nextControl = character;
-
-
 			const followerChar = String(this.args.followerChar || Router.query.follower || '').toLowerCase();
 
 			if(followerChar)
@@ -2226,6 +2224,12 @@ export class Viewport extends View
 
 				character.follower = follower;
 			}
+
+			this.spawn.add({object:character});
+			this.auras.add(character)
+			this.actors.add(character);
+
+			this.nextControl = character;
 		}
 
 		this.onFrameOut(1, () => {
@@ -2636,23 +2640,31 @@ export class Viewport extends View
 
 				this.args.focusMe.args.hide = 'hide';
 
-				if(this.replayFrames.has(this.args.frameId))
+				if(this.args.frameId < this.replayInputs.length)
 				{
-					const frame = this.replayFrames.get(this.args.frameId);
+					const frame = this.replayInputs[this.args.frameId];
 
-					for(const actorId in frame.args)
+					if(frame)
 					{
-						const actor = this.actorsById[actorId];
-
-						if(frame.input)
+						for(const actorId in frame.args)
 						{
-							actor.controller.replay(frame.input);
-							actor.readInput();
-						}
+							const actor = this.controlActor;
 
-						if(frame.args)
-						{
-							Object.assign(actor.args, frame.args[actorId]);
+							if(!actor)
+							{
+								continue;
+							}
+
+							if(frame.args)
+							{
+								Object.assign(actor.args, frame.args[actorId]);
+							}
+
+							if(frame.input)
+							{
+								actor.controller.replay(frame.input);
+								actor.readInput();
+							}
 						}
 					}
 
@@ -3113,7 +3125,7 @@ export class Viewport extends View
 	{
 		if(this.args.isReplaying)
 		{
-			this.controlActor.controller.zero();
+			this.controlActor && this.controlActor.controller.zero();
 			this.stop();
 		}
 	}
@@ -3644,7 +3656,7 @@ export class Viewport extends View
 
 		this.args.frameId = 0;
 
-		this.replayFrames.clear();
+		this.replayInputs = [];
 
 		this.args.isRecording  = true;
 		this.args.isReplaying  = false;
@@ -3658,32 +3670,33 @@ export class Viewport extends View
 	{
 		this.args.demoIndicator = null;
 
+		this.reset();
+
 		this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
 
-		this.reset();
+		this.startLevel();
 
 		this.args.frameId = 0;
 
 		this.args.isReplaying = true;
 		this.args.isRecording = false;
 
-		this.startLevel();
 
 		this.args.paused = false;
 	}
 
 	stop()
 	{
-		this.args.isReplaying = false;
-		this.args.isRecording = false;
-		this.args.paused      = false;
-
 		if(this.args.isRecording)
 		{
 			const replay = JSON.stringify([...this.replayInputs]);
 
 			localStorage.setItem('replay', replay);
 		}
+
+		this.args.isReplaying = false;
+		this.args.isRecording = false;
+		this.args.paused      = false;
 
 		this.controlActor && this.controlActor.controller.zero();
 

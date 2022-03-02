@@ -52,6 +52,11 @@ export const Constrainable = {
 
 	, setPos: function()
 	{
+		if(!this.args._tiedTo)
+		{
+			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+		}
+
 		const tiedTo = this.args._tiedTo;
 
 		if(!tiedTo)
