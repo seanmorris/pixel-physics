@@ -3439,6 +3439,11 @@
          "value":"underground"
         }, 
         {
+         "name":"bgm",
+         "type":"string",
+         "value":"UNDERGROUND_ZONE"
+        }, 
+        {
          "name":"deathLine",
          "type":"int",
          "value":0

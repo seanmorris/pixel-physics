@@ -91,7 +91,7 @@
 }
 
 .hud-bottom-left {
-	display: none;
+	/*display: none;*/
 	position: absolute;
 	bottom: 5px;
 	left: 5px;
@@ -106,14 +106,26 @@
 	/*filter: brightness(0);*/
 	border-top-left-radius: 19px !important;
 	border-bottom-left-radius: 18px !important;
-	transform: scale(var(--scale)) translateX(-120%) !important;
-	transition: transform 0.5s ease-in, filter 0.75s 0.25s ease-in;
-	transition: transform 0.75s ease-in, filter 0.5s ease-in;
-	display: none;
+	/*transform: translateX(-120%) !important;*/
+	/*transition: transform 0.5s ease-in, filter 0.75s 0.25s ease-in;*/
+	transition: transform 750ms ease-out, filter 0.5s ease-in;
+	/*transition: transform 750ms ease-in, filter 0.5s ease-in;*/
+	/*display: none;*/
+}
+
+.hide-now-playing .hud-bottom-left {
+	transition: transform 750ms 250ms ease-in, filter 0.5s ease-in;
+
+	transform: translateX(-120%) !important;
+}
+
+.hide-now-playing .hud-bottom-left::before {
+	background-color: rgba(255,255,0,1);
+	transition: background-color 250ms;
 }
 
 .hud-bottom-left {
-	transition: transform 0.5s ease-out, filter 0.75s ease-in !important;;
+	/*transition: transform 0.5s ease-out, filter 0.75s ease-in !important;;*/
 	/*transform: scale(var(--scale)) translateX(0%) !important;*/
 	/*transform: scale(0.5, 0.5);*/
 }
@@ -128,8 +140,9 @@
 	position: absolute;
 	left: -0px;
 	top: 0px;
+	transition: background-color 850ms;
 	background-image: url(/Sonic/headphones.png);
-	background-color: rgba(255,255,0,0.65);
+	background-color: rgba(255,255,0,0.15);
 	background-repeat: no-repeat;
 	background-position: center;
 	border-radius: 50%;

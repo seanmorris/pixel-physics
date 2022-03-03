@@ -1,4 +1,5 @@
 import { Sheild } from './Sheild';
+import { Bgm } from '../audio/Bgm';
 import { Tag } from 'curvature/base/Tag';
 
 export class StarSheild extends Sheild
@@ -9,7 +10,16 @@ export class StarSheild extends Sheild
 		<div class = "star-sheild-stars"></div>
 	</div>`;
 
+	// bgm = new Audio('/audio/leslie-wai/feel-the-sunshine.mp3');
+
 	frame = 0;
+
+	constructor(...args)
+	{
+		super(...args);
+
+		// this.onRemove(() => this.bgm.pause());
+	}
 
 	acquire(host)
 	{
@@ -19,6 +29,11 @@ export class StarSheild extends Sheild
 		{
 			return;
 		}
+
+		// this.bgm.play();
+		// if(viewport.args.audio)
+		// {
+		// }
 
 		const previous = host.args.currentSheild;
 
@@ -34,14 +49,41 @@ export class StarSheild extends Sheild
 
 		host.addEventListener('damage', invertDamage);
 
-		viewport.onFrameOut(600, () => {
+		viewport.onFrameOut(1560, () => {
+
+			Bgm.stop('STAR_SHIELD');
+
+			host.onRemove(() => Bgm.stop('STAR_SHIELD'));
 
 			host.inventory.remove(this);
 
 			host.removeEventListener('damage', invertDamage);
 
 			host.args.currentSheild = previous;
+
+			this.debindPaused && this.debindPaused();
+
+			delete this.debindPaused;
+
 		});
+
+		Bgm.play('STAR_SHIELD');
+
+		if(!viewport.args.audio)
+		{
+			Bgm.pause();
+		}
+
+		// this.debindPaused = viewport.args.bindTo('paused', v => {
+		// 	if(v !== false)
+		// 	{
+		// 		this.bgm.pause();
+		// 	}
+		// 	else
+		// 	{
+		// 		this.bgm.play();
+		// 	}
+		// });
 	}
 
 	immune()
@@ -52,6 +94,10 @@ export class StarSheild extends Sheild
 	drop(host)
 	{
 		console.log(this, host);
+
+		this.debindPaused && this.debindPaused();
+
+		delete this.debindPaused;
 	}
 
 	update(host)

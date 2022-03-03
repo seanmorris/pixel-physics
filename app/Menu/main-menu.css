@@ -375,7 +375,6 @@
 }
 
 .screen-card-main-menu .menu-container ul {
-	box-sizing: border-box;
 }
 
 .screen-card-main-menu .menu-container[data-current-menu="Single Player"] ul {

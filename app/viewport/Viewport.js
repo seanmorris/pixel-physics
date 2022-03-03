@@ -8,6 +8,8 @@ import { Sequence } from 'curvature/input/Sequence';
 
 import { QuadCell } from '../QuadCell';
 
+import { Bgm } from '../audio/Bgm';
+
 import { TileMap }  from '../tileMap/TileMap';
 
 import { Titlecard } from '../titlecard/Titlecard';
@@ -414,12 +416,47 @@ export class Viewport extends View
 		this.args.airAngle   = new CharacterString({value:0});
 
 		this.args.nowPlaying = new CharacterString({value:'Now playing'});
-		this.args.trackName  = new CharacterString({value:'Ice cap zone act 1 theme'});
+		this.args.trackName  = new CharacterString({value:''});
+		this.args.hideNowPlaying = 'hide-now-playing'
+
+		Bgm.addEventListener('play', event => {
+
+			this.bgm = this.meta.bgm;
+
+			// console.log('PLAY', event.detail);
+
+			if(!this.args.audio)
+			{
+				event.preventDefault();
+			}
+
+			if(!event.detail)
+			{
+				this.args.trackName.args.value = '';
+				return;
+			}
+
+			this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
+		});
+
+		Bgm.addEventListener('stop', event => {
+			this.args.trackName.args.value = 'nothing!';
+			// console.log('STOP', event);
+		});
+
+		Bgm.addEventListener('pause', event => {
+			// console.trace('PAUSE', event.detail);
+		});
+
+		Bgm.addEventListener('unpause', event => {
+			// console.log(this.args.audio, 'UNPAUSE', event.detail);
+			this.args.audio || event.preventDefault();
+		});
 
 		this.args.fpsSprite = new CharacterString({value:0});
 		this.args.frame     = new CharacterString({value:0});
 
-		this.args.scoreLabel = new CharacterString({value:'SCORE:', color: 'yellow'});
+		this.args.scoreLabel = new CharacterString({value:'SCORE:',  color: 'yellow'});
 		this.args.timerLabel = new CharacterString({value:'TIME: ',  color: 'yellow'});
 		this.args.ringLabel  = new CharacterString({value:'RINGS: ', color: 'yellow'});
 
@@ -437,6 +474,9 @@ export class Viewport extends View
 
 		this.args.timeBonusLabel    = new CharacterString({value:'TIME BONUS: ', color: 'yellow'});
 		this.args.timeBonus         = new CharacterString({value: 0});
+
+		this.args.airBonusLabel     = new CharacterString({value:'AIR TIME: ', color: 'yellow'});
+		this.args.airBonus          = new CharacterString({value: '0%'});
 
 		this.args.totalBonusLabel   = new CharacterString({value:'TOTAL: ', color: 'yellow'});
 		this.args.totalBonus        = new CharacterString({value: 0});
@@ -650,7 +690,14 @@ export class Viewport extends View
 		this.args.muteSwitch.args.bindTo('active', v => this.args.audio = v);
 
 		this.args.bindTo('audio', (v) => {
+
 			localStorage.setItem('sonic-3000-audio-enabled', v);
+
+			if(this.args.started)
+			{
+				this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+			}
+
 		});
 
 		this.args.showConsole = null;
@@ -1048,12 +1095,25 @@ export class Viewport extends View
 
 	startLevel(refresh = true)
 	{
-		// this.args.fade = true;
-
 		this.clearDialog();
 		this.hideDialog();
 
 		refresh && this.setZoneCard();
+
+		if(this.meta.bgm)
+		{
+			if(this.bgm !== this.meta.bgm)
+			{
+				Bgm.fadeOut(250).then(() => {
+					Bgm.play(this.meta.bgm, true);
+				});
+			}
+		}
+
+		if(!this.args.audio)
+		{
+			Bgm.pause();
+		}
 
 		this.args.startFrameId = this.args.frameId;
 
@@ -1063,7 +1123,6 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-
 			const sonic = new Chalmers({name:'Player 1'}, this);
 			const tails = new Seymour({name:'Player 2'}, this);
 
@@ -1094,14 +1153,6 @@ export class Viewport extends View
 				this.remotePlayer = sonic;
 				this.nextControl  = tails;
 			}
-
-			// sonic.render(this.tags.actors);
-			// sonic.onRendered();
-			// sonic.onAttached && sonic.onAttached();
-
-			// tails.render(this.tags.actors);
-			// tails.onRendered();
-			// tails.onAttached && tails.onAttached();
 		}
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
@@ -1137,7 +1188,19 @@ export class Viewport extends View
 
 		this.args.started = false;
 
+		// Bgm.stop('MENU_THEME');
+		// Bgm.stop('TITLE_THEME');
+
+		Bgm.unpause();
+
 		this.args.zonecard.played.then(() => {
+
+
+			if(this.args.nowPlaying.args.value)
+			{
+				this.onFrameOut(30, () => this.args.hideNowPlaying = '');
+				this.onFrameOut(800, () => this.args.hideNowPlaying = 'hide-now-playing');
+			}
 
 			this.args.startFrameId = this.args.frameId;
 
@@ -1184,7 +1247,8 @@ export class Viewport extends View
 						{
 							this.args.startFrameId = this.args.frameId - storedPosition.frames;
 
-							checkpoint.args.active = true;
+							checkpoint.args.wasActive = true;
+							checkpoint.args.active    = true;
 
 							this.nextControl.args.x = checkpoint.x;
 							this.nextControl.args.y = checkpoint.y;
@@ -1454,10 +1518,12 @@ export class Viewport extends View
 				if(this.args.paused)
 				{
 					this.unpauseGame();
+					this.args.started && Bgm.unpause();
 				}
 				else
 				{
 					this.pauseGame();
+					this.args.started && Bgm.pause();
 				}
 			}
 
@@ -3604,12 +3670,18 @@ export class Viewport extends View
 
 		const cards = [];
 
-		if(quick)
+		if(quick === 2)
 		{
+			cards.push(new LoadingCard({timeout: 15000, text: 'loading'}, this));
+		}
+		else if(quick)
+		{
+			Bgm.fadeOut(2000);
 			cards.push(...this.homeCards());
 		}
 		else
 		{
+			Bgm.fadeOut(3000);
 			cards.push(...this.returnHomeCards());
 		}
 
@@ -4112,6 +4184,9 @@ export class Viewport extends View
 
 		const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);
 		const ringBonus  = this.controlActor.args.rings * 100;
+		const airBonus   = (Math.round(
+				10000 * this.controlActor.args.airTimeTotal / (this.controlActor.args.airTimeTotal + this.controlActor.args.groundTimeTotal)
+		) / 100) + '%';
 		let   timeBonus  = 0;
 
 		const time  = (this.args.frameId - this.args.startFrameId) / 60;
@@ -4158,13 +4233,15 @@ export class Viewport extends View
 
 		this.args.timeBonus.args.value  = 0;
 		this.args.ringBonus.args.value  = 0;
+		this.args.airBonus.args.value   = 0;
 		this.args.speedBonus.args.value = 0;
 		this.args.totalBonus.args.value = 0;
 
 		this.onFrameOut(45,  () => this.args.timeBonus.args.value  = timeBonus);
 		this.onFrameOut(90,  () => this.args.ringBonus.args.value  = ringBonus);
 		this.onFrameOut(135, () => this.args.speedBonus.args.value = speedBonus);
-		this.onFrameOut(180, () => this.args.totalBonus.args.value = totalBonus);
+		this.onFrameOut(180, () => this.args.airBonus.args.value   = airBonus);
+		this.onFrameOut(205, () => this.args.totalBonus.args.value = totalBonus);
 		this.onFrameOut(420, () => this.args.actClear = false);
 	}
 
