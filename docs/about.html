@@ -131,6 +131,8 @@ section.footer {
 <h2 id="png">PNG</h2>
 <p>To correctly cycle the colors of Hypersonic’s pallet while animations run, I’d need to use an additional 8 sprite sheets, one for each color, and white as a transitional state. While this would have been a workable solution, I didn’t find it acceptable. Rather than re-draw the entire thing using canvas, I decided to use a PNG with indexed color. Once I had that I opened up the PNG as raw bytes in javascript, I located the pallet data and replaced the colors there. This way I only need to change <b>one byte</b> for each color I want to replace. Once I’ve done that I can throw the resulting bytes into a blob, which I can take the URL for and use it in CSS with a transition on <code>background-image</code> to cycle the sprite sheets while animations are playing. This can be applied to any sprite in the system, so long as its using a PNG with indexed colors.</p>
 
+<p>This all happens in real time when the users presses the button to transform:</p>
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/xPa_F32VMXA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <h1 id="physics">Physics</h1>
