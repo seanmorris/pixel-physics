@@ -38,7 +38,7 @@ article figure figcaption {
 	font-size: 0.85rem;
 	margin-top: 0.5rem;
 	margin-bottom: 0.25rem;
-	text-align: right;
+	text-align: justify;
 }
 
 img.avatar {
@@ -179,7 +179,14 @@ section.footer {
 
 </figure>
 
-<p>SVG is used in a lot of different ways in this project, which is relatively unexpected since 16 bit Genesis games are raster graphics, and SVG is generally concerned with vector images. However, it came in handy with its <code>clip-path</code> to generate a simple spotlight effect. Even more powerfully, its able to generate displacement effects using color maps, which I used to create the wave effect for underwater areas. You’ll notice that although Sonic’s sprite is a single HTML element, the effect is only applied to the area with the water region. You can also see displacement effects when Sonic is skidding or charging a spindash, when you double tap the jump button and perform a doublespin, or when he’s standing on a bridge.</p>
+<p>SVG is used in a lot of different ways in this project, which is relatively unexpected since 16 bit Genesis games are raster graphics, and SVG is generally concerned with vector images. However, it came in handy with its <code>clip-path</code> to generate a simple spotlight effect.</p>
+
+<figure>
+<iframe width="540" height="305" src="https://www.youtube.com/embed/XZF0769Rmlk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<figcaption><a target = "_blank" href = "https://www.smashingmagazine.com/2021/09/deep-dive-wonderful-world-svg-displacement-filtering/">Displacement mapping</a> is most obvious when Sonic is on a brige, or using his doublespin attack in the air.</figcaption>
+</figure>
+
+<p>Even more powerfully, its able to generate displacement effects using color maps, which I used to create the wave effect for underwater areas. You’ll notice that although Sonic’s sprite is a single HTML element, the effect is only applied to the area with the water region. You can also see displacement effects when Sonic is skidding or charging a spindash, when you double tap the jump button and perform a doublespin, or when he’s standing on a bridge.</p>
 
 <figure>
 <a target = "_blank" href = "./about/water-effect.webm">
@@ -200,6 +207,8 @@ section.footer {
 
 </figure>
 
+<p>The most satisfying part here is that all of these SVG based effects can be applied to any normal HTML element.</p>
+
 <h2 id="png">PNG</h2>
 <p>To correctly cycle the colors of Hypersonic’s pallet while animations run, I’d need to use an additional 8 sprite sheets, one for each color, and white as a transitional state. While this would have been a workable solution, I didn’t find it acceptable. Rather than re-draw the entire thing using canvas, I decided to use a PNG with indexed color. Once I had that I opened up the PNG as raw bytes in JavaScript, I located the pallet data and replaced the colors there. This way I only need to change <b>one byte</b> for each color I want to replace. Once I’ve done that I can throw the resulting bytes into a blob, which I can take the URL for and use it in CSS with a transition on <code>background-image</code> to cycle the sprite sheets while animations are playing. This can be applied to any sprite in the system, so long as its using a PNG with indexed colors.</p>
 
@@ -208,7 +217,7 @@ section.footer {
 <figure>
 <iframe width="540" height="305" src="https://www.youtube.com/embed/xPa_F32VMXA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-<figcaption>Modifying a PNGs pallet only requires a change of one byte per color, so changing a pallet is very quick.</figcaption>
+<figcaption>Modifying a PNG's pallet only requires a change of one byte per color, so changing a pallet is very quick.</figcaption>
 
 </figure>
 
