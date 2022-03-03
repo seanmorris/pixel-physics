@@ -1,6 +1,7 @@
 import { Card } from './Card';
 
 import { CharacterString } from '../ui/CharacterString';
+import { Bgm } from '../audio/Bgm';
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
 
@@ -31,11 +32,10 @@ export class TitleScreenCard extends Card
 
 		this.started = 0;
 
-		this.bgm = new Audio('/Sonic/carnival-night-zone-act-2-beta.mp3');
+		// this.bgm = new Audio('/Sonic/carnival-night-zone-act-2-beta.mp3');
+		// this.bgm.volume = 0.5;
 
-		this.bgm.volume = 0.5;
-
-		this.onRemove(() => this.bgm.pause());
+		// this.onRemove(() => this.bgm.pause());
 
 		const keyBinding = Keyboard.get().codes.bindTo('Enter', v => {
 			if(!this.started || Date.now() - this.started < 2000)
@@ -47,7 +47,7 @@ export class TitleScreenCard extends Card
 
 			this.args.animation = 'closing';
 
-			this.audioDebind();
+			// this.audioDebind();
 		});
 
 		this.onRemove(keyBinding);
@@ -93,18 +93,20 @@ export class TitleScreenCard extends Card
 
 			this.args.animation = 'closing';
 
-			this.audioDebind();
+			// this.audioDebind();
 		}
 	}
 
 	play()
 	{
 		this.onTimeout(1000, () => {
-			this.audioDebind = this.parent.args.bindTo('audio', (v) => {
-				v ? this.bgm.play() : this.bgm.pause();
-			});
+			// this.audioDebind = this.parent.args.bindTo('audio', (v) => {
+			// 	v ? this.bgm.play() : this.bgm.pause();
+			// });
 
-			this.onRemove(this.audioDebind);
+			this.onRemove(()=>Bgm.stop('TITLE_THEME'));
+
+			Bgm.play('TITLE_THEME');
 		});
 
 		this.onTimeout(2000, () => this.args.aurora = 'aurora');
@@ -113,7 +115,7 @@ export class TitleScreenCard extends Card
 
 		const play = super.play();
 
-		play.then(()=>{ this.bgm.pause(); this.audioDebind(); this.remove(); });
+		// play.then(()=>{ this.bgm.pause(); this.audioDebind(); this.remove(); });
 
 		return Promise.race([this.start, play]);
 	}

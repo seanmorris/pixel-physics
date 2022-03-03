@@ -1,3 +1,4 @@
+import { Bgm } from './audio/Bgm';
 import { Viewport } from './viewport/Viewport';
 
 import { Tag } from 'curvature/base/Tag';
@@ -59,3 +60,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	update();
 });
+
+Bgm.register('STAR_SHIELD', '/audio/leslie-wai/feel-the-sunshine.mp3', 1);
+Bgm.register('RADICAL_CITY', '/audio/colbreakz/848482_ColBreakz---My-Universe.mp3', 1);
+Bgm.register('WEST_SIDE', '/audio/akselmcbossmcgee123/1066486_Blammed-By-Pico.mp3', 1);
+Bgm.register('UNDERGROUND_ZONE', '/audio/tee-lopes/under-ground-zone-remix.mp3', 1);
+Bgm.register('MISTY_RUINS', 'audio/neil-voss/extol.mp3', 1);
+
+Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3', 1);
+Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3', 1);
+Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3', 1);
+
+// Bgm.register('ACT-BOSS', '', 4);
+// Bgm.register('ZONE-BOSS', '', 4);
+
+// Bgm.play('RADICAL_CITY');

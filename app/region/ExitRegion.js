@@ -31,14 +31,15 @@ export class ExitRegion extends Region
 		viewport.onFrameOut(30, () => {
 
 			viewport.actors.remove(this);
-			viewport.quit();
 
 			if(this.args.nextStage)
 			{
+				viewport.quit(2);
 				viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});
 			}
 			else
 			{
+				viewport.quit();
 			}
 		});
 	}

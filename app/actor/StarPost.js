@@ -36,6 +36,23 @@ export class StarPost extends PointActor
 			this.sample = new Audio('/Sonic/starpost-active.wav');
 			this.sample.volume = 0.5 + (Math.random() * 0.025);
 		}
+
+		if(this.args.wasActive)
+		{
+			const monitor = new RingMonitor({
+				direction: 0
+				, ySpeed:  -4
+				, x:       this.x - 10
+				, y:       this.y - 48
+			});
+
+			this.viewport.onFrameOut(12, () => {
+				this.viewport.spawn.add({object:monitor});
+			});
+
+
+			this.args.wasActive = false;
+		}
 	}
 
 	onRendered()

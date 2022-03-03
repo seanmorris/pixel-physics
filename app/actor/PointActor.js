@@ -18,6 +18,8 @@ import { SuperSheild }    from '../powerups/SuperSheild';
 import { BubbleSheild }   from '../powerups/BubbleSheild';
 import { NormalSheild }   from '../powerups/NormalSheild';
 import { ElectricSheild } from '../powerups/ElectricSheild';
+import { StarSheild }     from '../powerups/StarSheild';
+
 
 import { LayerSwitch } from './LayerSwitch';
 import { Layer } from '../viewport/Layer';
@@ -175,9 +177,11 @@ export class PointActor extends View
 
 			item.acquire && item.acquire(this);
 
-			this.args.currentSheild = item;
-
-			item.equip && item.equip(this);
+			if(!(this.args.currentSheild instanceof StarSheild))
+			{
+				this.args.currentSheild = item;
+				item.equip && item.equip(this);
+			}
 		});
 
 		this.inventory.addEventListener('removing', event => {
@@ -289,6 +293,9 @@ export class PointActor extends View
 		this.args.accel     = 0.2;
 		this.args.airAccel  = 0.3;
 		this.args.jumpForce = 14;
+
+		this.args.airTimeTotal = 0;
+		this.args.groundTimeTotal = 0;
 
 		this.args.jumping  = false;
 		this.args.jumpedAt = null;
@@ -1337,6 +1344,8 @@ export class PointActor extends View
 		{
 			const vehicle = this.args.standingOn;
 
+			this.args.groundTimeTotal++;
+
 			this.args.falling = true;
 			this.args.flying  = false;
 			this.args.jumping = false;
@@ -1716,6 +1725,12 @@ export class PointActor extends View
 					if(!this.args.hangingFrom)
 					{
 						this.updateAirPosition();
+
+						this.args.airTimeTotal++;
+					}
+					else
+					{
+						this.args.groundTimeTotal++;
 					}
 				}
 
@@ -1739,6 +1754,8 @@ export class PointActor extends View
 				}
 
 				this.updateGroundPosition();
+
+				this.args.groundTimeTotal++;
 
 				this.args.animationBias = Math.abs((this.args.hSpeed * 0.75 || this.args.gSpeed) / this.args.gSpeedMax);
 
@@ -4015,6 +4032,11 @@ export class PointActor extends View
 			{
 				this.args.direction = 1;
 			}
+		}
+
+		if(this.args.currentSheild instanceof StarSheild)
+		{
+			return;
 		}
 
 		if(this.aAxis < -0.75)

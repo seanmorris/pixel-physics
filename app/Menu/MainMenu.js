@@ -1,3 +1,4 @@
+import { Bgm } from '../audio/Bgm';
 import { Card } from '../intro/Card';
 
 import { Cylinder } from '../effects/Cylinder';
@@ -356,14 +357,12 @@ export class MainMenu extends Menu
 			}
 		};
 
-		this.bgm = new Audio('/Sonic/s3k-competition.mp3');
+		// this.bgm = new Audio('/Sonic/s3k-competition.mp3');
 
-		this.bgm.volume = 0.5;
-		this.bgm.playbackRate = 1;
+		// this.bgm.volume = 0.5;
+		// this.bgm.playbackRate = 1;
 
-		this.onRemove(() => this.bgm.pause());
-
-		this.bgm.loop = true;
+		// this.bgm.loop = true;
 	}
 
 	clear()
@@ -418,13 +417,15 @@ export class MainMenu extends Menu
 
 	onRendered()
 	{
-		const debind = this.parent.args.bindTo('audio', (v) => {
-			v ? this.onTimeout(500, () => this.bgm.play()) : this.bgm.pause();
-		});
+		// const debind = this.parent.args.bindTo('audio', (v) => {
+		// 	v ? this.onTimeout(500, () => this.bgm.play()) : this.bgm.pause();
+		// });
+
+		Bgm.play('MENU_THEME', true);
 
 		super.onRendered(event);
 
-		this.onRemove(debind);
+		// this.onRemove(debind);
 
 		this.args.pinch = new Twist({
 			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
