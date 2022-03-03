@@ -56,6 +56,15 @@ nav {
 	padding: 1rem;
 }
 
+nav a {
+	text-decoration: none;
+	padding: 1rem;
+}
+
+nav a img {
+	vertical-align: middle;
+}
+
 @media (min-width: 830px) {
 	nav {
 		position: fixed;
@@ -93,13 +102,16 @@ section.footer {
 <body>
 
 <nav>
-	<a target = "_blank" href = "https://pixel-physics.seanmorr.is/">Play Now</a>
+	<a target = "_blank" href = "https://pixel-physics.seanmorr.is/">
+		<img width="24" src = "./about/gamepad.svg" />
+		Play Now
+	</a>
 </nav>
 
 <article>
 
 <a target = "_blank" href = "./about/underground-zone.png">
-	<img width="540" src = "./about/underground-zone.png" />
+	<img width="560" src = "./about/underground-zone.png" />
 </a>
 
 <h1 id="rendering-sonic-in-html">
