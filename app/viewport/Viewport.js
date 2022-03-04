@@ -423,8 +423,6 @@ export class Viewport extends View
 
 			this.bgm = this.meta.bgm;
 
-			// console.log('PLAY', event.detail);
-
 			if(!this.args.audio)
 			{
 				event.preventDefault();
@@ -437,10 +435,25 @@ export class Viewport extends View
 			}
 
 			this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
+
+			if(this.args.trackName.args.value)
+			{
+				if(this.args.zonecard)
+				{
+					this.args.zonecard.played.then(() => {
+						this.onFrameOut(60, () => this.args.hideNowPlaying = '');
+						this.onFrameOut(900, () => this.args.hideNowPlaying = 'hide-now-playing');
+					});
+				}
+				else
+				{
+					this.onFrameOut(60, () => this.args.hideNowPlaying = '');
+					this.onFrameOut(900, () => this.args.hideNowPlaying = 'hide-now-playing');
+				}
+			}
 		});
 
 		Bgm.addEventListener('stop', event => {
-			this.args.trackName.args.value = 'nothing!';
 			// console.log('STOP', event);
 		});
 
@@ -693,11 +706,7 @@ export class Viewport extends View
 
 			localStorage.setItem('sonic-3000-audio-enabled', v);
 
-			if(this.args.started)
-			{
-				this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
-			}
-
+			this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
 		});
 
 		this.args.showConsole = null;
@@ -1102,11 +1111,15 @@ export class Viewport extends View
 
 		if(this.meta.bgm)
 		{
-			if(this.bgm !== this.meta.bgm)
+			if(Bgm.playing && this.meta.bgm !== this.bgm)
 			{
 				Bgm.fadeOut(250).then(() => {
 					Bgm.play(this.meta.bgm, true);
 				});
+			}
+			else
+			{
+				Bgm.play(this.meta.bgm, true);
 			}
 		}
 
@@ -1194,13 +1207,6 @@ export class Viewport extends View
 		Bgm.unpause();
 
 		this.args.zonecard.played.then(() => {
-
-
-			if(this.args.nowPlaying.args.value)
-			{
-				this.onFrameOut(30, () => this.args.hideNowPlaying = '');
-				this.onFrameOut(800, () => this.args.hideNowPlaying = 'hide-now-playing');
-			}
 
 			this.args.startFrameId = this.args.frameId;
 
@@ -1518,12 +1524,10 @@ export class Viewport extends View
 				if(this.args.paused)
 				{
 					this.unpauseGame();
-					this.args.started && Bgm.unpause();
 				}
 				else
 				{
 					this.pauseGame();
-					this.args.started && Bgm.pause();
 				}
 			}
 
@@ -4038,6 +4042,8 @@ export class Viewport extends View
 
 		this.args.pauseMenu.focusFirst();
 
+		Bgm.pause();
+
 		this.onTimeout(6, ()=>{
 			this.controller && this.controller.zero();
 		});
@@ -4045,6 +4051,8 @@ export class Viewport extends View
 
 	unpauseGame()
 	{
+		Bgm.unpause();
+
 		this.onTimeout(15, ()=>{
 			this.controller && this.controller.zero();
 		});

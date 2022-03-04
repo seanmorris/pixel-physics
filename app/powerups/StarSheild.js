@@ -53,8 +53,6 @@ export class StarSheild extends Sheild
 
 			Bgm.stop('STAR_SHIELD');
 
-			host.onRemove(() => Bgm.stop('STAR_SHIELD'));
-
 			host.inventory.remove(this);
 
 			host.removeEventListener('damage', invertDamage);
@@ -63,11 +61,15 @@ export class StarSheild extends Sheild
 
 			this.debindPaused && this.debindPaused();
 
+
 			delete this.debindPaused;
 
 		});
 
+		host.onRemove(() => Bgm.stop('STAR_SHIELD'));
 		Bgm.play('STAR_SHIELD');
+		// viewport.onFrameOut(30, () => viewport.args.hideNowPlaying = '');
+		// viewport.onFrameOut(400, () => viewport.args.hideNowPlaying = 'hide-now-playing');
 
 		if(!viewport.args.audio)
 		{
