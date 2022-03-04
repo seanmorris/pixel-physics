@@ -169,8 +169,6 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 				const detail = this.id3.get(selected);
 				const play = new CustomEvent('play', {detail, cancelable});
 
-				console.log(selected, this.id3)
-
 				if(this.dispatchEvent(play))
 				{
 					try { selected.play() }

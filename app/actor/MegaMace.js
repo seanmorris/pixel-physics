@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 import { Mixin } from 'curvature/base/Mixin';
 import { Constrainable } from '../mixin/Constrainable';
+import { SkidDust } from '../behavior/SkidDust';
 
 export class MegaMace extends Mixin.from(PointActor, Constrainable)
 {
@@ -12,9 +13,12 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 		this.args.height = 64 - 12;
 		this.args.type   = 'actor-item actor-mega-mace';
 
+		this.behaviors.add(new SkidDust('particle-dust'));
+
 		this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 8;
 
 		this.args.gravity = 0.8;
+		this.alwaysSkidding  = true;
 	}
 
 	update()
