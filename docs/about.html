@@ -237,6 +237,26 @@ section.footer {
 
 <p>A 2d ray is cast along the direction of motion whenever an object moves. It length is equivalent to the object’s speed. If any of these pixels are solid, the object stops. If another object is on that pixel, the objects collide. This ensures the system won’t miss collision when objects are moving at high speeds. When Sonic lands, A few more rays are cast to determine the shape of the ground, and then his momentum is altered accordingly.</p>
 
+<h1 id = "layers-and-loops">Layers & Loops</h1>
+
+<p>When running, or moving through the air, the player may encounter invisible 'layer switching' objects. This will 'move' the player to layer 1 or 2. If there is a solid tile in the player's path on that layer, there will be a collision. To keep things orderly, the player will always collide with solid tiles on layer 0. This allows a loop to be split across layers 1 and 2, and along with the layer-switching objects, the player can seamlessly traverse a loop.</p>
+
+<figure>
+<a target = "_blank" href = "./about/loop.png">
+	<img width="540" src = "./about/loop.png"/ >
+</a>
+<figcaption>Layer-switching enables obstables like loops to be traversed.</figcaption>
+</figure>
+
+<p>Layer-switching can be used for more than just loops. Exploiting other aspects of the physics engine, along with creative layer-switch placement can allow for complex, branching pathways to be constructed around the level.</p>
+
+<figure>
+<a target = "_blank" href = "./about/layered-path.png">
+	<img width="540" src = "./about/layered-path.png"/ >
+</a>
+<figcaption>Layer switching can also allow for complex paths to be constructed.</figcaption>
+</figure>
+
 <h1 id="input">Input</h1>
 
 <p>To ensure users can make use of whatever input method they prefer, the system uses the HTML5 gamepad API. All input feeds into an abstract controller, where all input is mapped to either a button or an axis. Keyboard keys may also be mapped to buttons or axes within the abstract controller to unify all input. buttons may also be mapped to axes so the d-pad and left stick function in similar ways. Digital buttons will have discrete <code>0</code> or <code>1</code> for their <code>pressed</code> property. Analog buttons will have a value in the interval between <code>0</code> and <code>1</code>, inclusive. Axes will have a value between <code>-1</code> and <code>1</code>. Button press and release times are tracked, and can be compared to the current time to determine press times, hold times and release delays. This allows the game to detect things like quick double-taps.</p>
@@ -253,7 +273,7 @@ section.footer {
 
 <p>The menu system makes use of the above input model to shift focus from one element to another around the page. CSS selectors are used to show which element is currently active, and the browser’s tendency to scroll that element to center upon focus is exploited to create a scrolling menu.</p>
 <p>The character select in the “single player” menu is little more than a select box with some decorative trim. The silhouette above is actually rendered with the same graphics used for the player in-game. It has a CSS filter applied to remove the details. This ensures that the player graphic is loaded before any level starts. The settings menu is implemented in a simpler way, also with select boxes. The outline width input is simply an <code>&lt;INPUT&gt;</code> with its <code>type</code> set to <code>number</code>.</p>
-<p>The system will also detect if the player is using a playstation, xbox, or generic gamepad vs the keyboard and display appropriate graphics when referring to controls. The system has a miniature font engine built in. It works by rendering some text as a series of <code>&lt;SPAN&gt;</code> tags, one for each character. Normal text uses a sprite-sheet like game objects, but the elements are not animated.</p>
+<p>The system will also detect if the player is using a playstation, xbox, or generic gamepad vs the keyboard and display appropriate graphics when referring to controls. The system has a miniature font engine built in. It works by rendering some text as a series of <code>&lt;SPAN&gt;</code> tags, one for each character. Normal text uses the CSS sprite-sheet system, like game objects, but the elements are not animated.</p>
 
 <figure>
 <iframe width="540" height="305" src="https://www.youtube.com/embed/Tx_gi5uR3dE?mute=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -262,7 +282,7 @@ section.footer {
 
 </figure>
 
-<p>In the source text buttons are referred to by the unicode characters ⓿, ❶, ❷ and so on. You can see this live by highlighting the in-game text. The dpad/arrow keys can be referred to as a whole with ✚, and specific directions use ← → ↑ ↓. These are rendered as <code>&lt;SPAN&gt;s</code> with a background image determined in CSS, or simply fall back to the letter of the keyboard key they are mapped to if the keyboard is being used (this is also an image, the original glyph has <code>color:transparent;</code> applied). All that is required to switch the display from one control scheme to another is to change a single CSS class on a parent element. All this results in strings of text that are rendered with images but still are selectable like any other text on a webpage.</p>
+<p>Buttons are referred to by the unicode characters ⓿, ❶, ❷ and so on in the source text. You can see this live by highlighting the in-game prompts, they're normal HTML text. The dpad/arrow keys can be referred to as a whole with ✚, and specific directions use ← → ↑ ↓. These are rendered as <code>&lt;SPAN&gt;s</code> with a background image determined in CSS, or simply fall back to the letter of the keyboard key they are mapped to if the keyboard is being used (this is also an image, the original glyph has <code>color:transparent;</code> applied). All that is required to switch the display from one control scheme to another is to change a single CSS class on a parent element. All this results in strings of text that are rendered with images but still are selectable like any other text on a webpage.</p>
 
 <h1 id="analytics">Analytics</h1>
 <p>Like most web pages, the game makes use of Google Analytics. I was able to get a pretty high level of detail from it. I can see in real time when a user starts a level, connects a game controller, takes damage and even whenever a ring is collected. The game reports all this information via GA Events. It also logs and transmits the current framerate after every 10 seconds of gameplay, so I can take statistics and ensure my optimizations actually improve things.</p>
@@ -279,12 +299,22 @@ section.footer {
 
 <p>The simulations are kept in sync by passing the frame id with each message. If the receiver is behind, their frame id is updated to the one in the message and any timeouts based on frames are called immediately before the simulation resumes. Objects with periodic motion like moving platforms will base their current position on a sine-like function applied to the frame id, keeping them in sync between clients.</p>
 
-<h2 id="idle-demo">Idle Demo / Attract Mode</h2>
-<p>The system can record inputs and object states, index them to frames, and then play them back using a lot of the same code from the networking layer. This can be used to play a demo when the system is left idle on the title screen for long enough, as a sort of 'attract mode.'</p>
+<h2 id="idle-demo">Audio Subsystem</h2>
+<p>A "stack" of multuple HTML audio elements is maintained, with the one in the last position being played. If its not set to loop, once its done it will be removed and the one behind it will start. This allows for power ups to temporarily change the music, or even to stack. If an overridden tracks's powerup expires before the track has resumed, it can be removed from the stack early.</p>
 
 <figure>
-<iframe width="540" height="305" src="https://www.youtube.com/embed/OynWsS5dwR8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ryOG4PW6B0o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<figcaption>The id3 tags from MP3s drive the track information in the botton left.</figcaption>
+</figure>
+
+<p>The Javascript will also example the MP3 for an id3v2 header. These appear in a surprisingly convenient format, right at the start of the MP3, if present. If such a header is found, the game will display the track name and artist in the botton left. The underlying hander emits events when the music changes, so the overarching system can easily trigger such alerts at relevent moments.</p>
+
+<h2 id="idle-demo">Idle Demo / Attract Mode</h2>
+<p>The system can record inputs and object states, index them to frames, and then play them back using a lot of the same code from the networking layer. This can be used to play a demo when the system is left idle on the title screen for long enough, as a sort of 'attract mode,' although the its triggered manually in the current implementation via the pause menu (under  "demos.")</p>
+
+<figure>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9ui9ZxWMiRI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 <figcaption>This "demo" run of Radical City Act 2 was recorded as a JSON file and played back in the same way network inputs are received.</figcaption>
 
 </figure>

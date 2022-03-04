@@ -178,9 +178,6 @@ export class RedEyeJet extends PointActor
 			{
 				other.args.xSpeed = -2;
 				other.args.ignore = -2;
-
-				Bgm.stop('ZONE-BOSS');
-				Bgm.stop('ACT-BOSS');
 			}
 		}
 
@@ -212,7 +209,6 @@ export class RedEyeJet extends PointActor
 
 		if(damaged && other && other.controller && other.controller.rumble)
 		{
-
 			if(this.viewport.settings.rumble)
 			{
 				other.controller.rumble({
@@ -319,6 +315,9 @@ export class RedEyeJet extends PointActor
 
 		if(!this.args.hitPoints)
 		{
+			Bgm.stop('ZONE-BOSS');
+			Bgm.stop('ACT-BOSS');
+
 			other.args.ignore = -2;
 		}
 
@@ -344,6 +343,7 @@ export class RedEyeJet extends PointActor
 		{
 			if(this.hanging.has(MiniMace))
 			{
+				Bgm.play('ACT-BOSS');
 				for(const mace of this.hanging.get(MiniMace))
 				{
 					mace.args.ropeLength = 80;
@@ -352,6 +352,7 @@ export class RedEyeJet extends PointActor
 
 			if(this.hanging.has(MegaMace))
 			{
+				Bgm.play('ZONE-BOSS');
 				for(const mace of this.hanging.get(MegaMace))
 				{
 					mace.args.ropeLength = 96;
@@ -373,8 +374,6 @@ export class RedEyeJet extends PointActor
 				for(const mace of this.hanging.get(MiniMace))
 				{
 					mace.args.ropeLength = 144;
-
-					Bgm.play('ACT-BOSS');
 				}
 			});
 		}
@@ -384,8 +383,6 @@ export class RedEyeJet extends PointActor
 				for(const mace of this.hanging.get(MegaMace))
 				{
 					mace.args.ropeLength = 192;
-
-					Bgm.play('ZONE-BOSS');
 				}
 			});
 		}

@@ -45,6 +45,25 @@
 	background-position-y: calc(-48px * 2);
 }
 
+.actor-item.actor-signpost[data-active=true][data-cleared-by=eggman] .sprite,
+.actor-item.actor-signpost[data-active=true][data-cleared-by=robotnik] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+	background-position-y: calc(-48px * 3);
+}
+
+.actor-item.actor-signpost[data-active=true][data-cleared-by=mecha-egg-robo] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+	background-position-y: calc(-48px * 4);
+}
+
+.actor-item.actor-signpost[data-active=true][data-cleared-by=mecha-sonic] .sprite {
+	animation: none;
+	background-position-x: calc(-48px * 4);
+	background-position-y: calc(-48px * 5);
+}
+
 @keyframes signpost-spin {
 	from{
 		background-position-x: 0;

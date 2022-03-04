@@ -1214,7 +1214,7 @@ export class Viewport extends View
 			{
 				const start = Router.query.start;
 
-				if(start.match(/\d+,\d+/))
+				if(start.match(/\d+(\.\d+)?,\d+(\.\d+)?/))
 				{
 					const [x = 128, y = 128] = start.split(',');
 
