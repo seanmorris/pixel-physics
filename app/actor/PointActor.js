@@ -877,11 +877,6 @@ export class PointActor extends View
 			this.focused = false;
 		}
 
-		if(lastFocus !== this && this.focused)
-		{
-			this.viewport.auras.delete(lastFocus);
-		}
-
 		for(const region of this.regions)
 		{
 			if(region.focus)
@@ -890,6 +885,11 @@ export class PointActor extends View
 
 				this.focused = region.focus;
 			}
+		}
+
+		if(lastFocus !== this && lastFocus !== this.focused)
+		{
+			this.viewport && this.viewport.auras.delete(lastFocus);
 		}
 
 		for(const [tag, cssArgs] of this.autoStyle)

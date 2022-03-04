@@ -12,6 +12,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 	stack   = [];
 	playing = null;
 	id3     = new Map;
+	request = [];
 
 	register(tag, url, maxConcurrent = 1)
 	{
@@ -21,7 +22,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 		const getTags = new Elicit(url);
 
-		getTags.buffer().then(buffer => {
+		this.request.push(getTags.buffer().then(buffer => {
 
 			const bytes = new Uint8Array(buffer);
 			const prefix = String.fromCharCode(...bytes.slice(0, 3));
@@ -77,15 +78,30 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			{
 				this.id3.set(track, tags);
 			}
-		});
+		}));
 	}
 
 	play(tag, loop = false)
 	{
-		if(this.tags.get(this.playing) === tag)
+		if(!this.playing)
+		{
+			this.playing = this.stack[this.stack.length-1];
+		}
+
+		if(this.playing && this.tags.get(this.playing) === tag)
 		{
 			if(this.playing.paused)
 			{
+				const cancelable = true;
+				const detail = this.id3.get(this.playing);
+
+				const play = new CustomEvent('play', {detail, cancelable});
+
+				if(!this.dispatchEvent(play))
+				{
+					return;
+				}
+
 				return this.unpause();
 			}
 		}
@@ -124,11 +140,6 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 		if(selected && selected !== this.playing)
 		{
-			const cancelable = true;
-			const detail = this.id3.get(selected);
-
-			const play = new CustomEvent('play', {detail, cancelable});
-
 			selected.playbackRate = 1.0;
 			selected.currentTime  = 0.0;
 			selected.volume       = 0.25;
@@ -142,7 +153,8 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 			const onCompleted = event => {
 				this.stack.pop();
-				this.stack[this.stack.length - 1].play();
+				this.playing = this.stack[this.stack.length-1]
+				this.play();
 			};
 
 			if(!loop)
@@ -152,11 +164,19 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 			this.tags.set(selected, tag);
 
-			if(this.dispatchEvent(play))
-			{
-				try { selected.play() }
-				catch(error) { console.warn(error) }
-			}
+			Promise.all(this.request).then(() => {
+				const cancelable = true;
+				const detail = this.id3.get(selected);
+				const play = new CustomEvent('play', {detail, cancelable});
+
+				console.log(selected, this.id3)
+
+				if(this.dispatchEvent(play))
+				{
+					try { selected.play() }
+					catch(error) { console.warn(error) }
+				}
+			});
 		}
 	}
 
@@ -202,7 +222,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 		if(this.playing)
 		{
-			this.playing.play();
+			this.play(this.tags.get(this.playing));
 		}
 	}
 
@@ -249,17 +269,22 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 	fadeOut(time)
 	{
 		return new Promise(accept => {
-			const track = this.playing;
+			let track;
 			let start;
-
-			const initial = track.volume;
-
+			let initial;
 			let interval;
 
 			const fade = () => {
+				track = this.playing;
+
+				if(!track)
+				{
+					return;
+				}
 
 				if(!start)
 				{
+					initial = track.volume;
 					start = Date.now();
 				}
 

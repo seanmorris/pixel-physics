@@ -84,6 +84,7 @@ export class TitleScreenCard extends Card
 	{
 		if(!this.started || Date.now() - this.started < 2000)
 		{
+			controller.zero();
 			return;
 		}
 

@@ -1,5 +1,7 @@
 import { Tag } from 'curvature/base/Tag';
 
+import { Bgm } from '../audio/Bgm';
+
 import { PointActor } from './PointActor';
 import { Projectile } from './Projectile';
 import { MiniMace } from './MiniMace';
@@ -19,7 +21,7 @@ export class RedEyeJet extends PointActor
 
 		this.args.float = -1;
 
-		this.args.phase = 'intro';
+		this.args.phase = 'idle';
 
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
@@ -176,6 +178,9 @@ export class RedEyeJet extends PointActor
 			{
 				other.args.xSpeed = -2;
 				other.args.ignore = -2;
+
+				Bgm.stop('ZONE-BOSS');
+				Bgm.stop('ACT-BOSS');
 			}
 		}
 
@@ -322,6 +327,11 @@ export class RedEyeJet extends PointActor
 
 	update()
 	{
+		if(this.args.phase === 'idle')
+		{
+			return;
+		}
+
 		if(!this.viewport)
 		{
 			return;
@@ -363,6 +373,8 @@ export class RedEyeJet extends PointActor
 				for(const mace of this.hanging.get(MiniMace))
 				{
 					mace.args.ropeLength = 144;
+
+					Bgm.play('ACT-BOSS');
 				}
 			});
 		}
@@ -372,6 +384,8 @@ export class RedEyeJet extends PointActor
 				for(const mace of this.hanging.get(MegaMace))
 				{
 					mace.args.ropeLength = 192;
+
+					Bgm.play('ZONE-BOSS');
 				}
 			});
 		}

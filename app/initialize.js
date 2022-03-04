@@ -71,7 +71,7 @@ Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3', 1);
 Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3', 1);
 Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3', 1);
 
-// Bgm.register('ACT-BOSS', '', 4);
-// Bgm.register('ZONE-BOSS', '', 4);
+Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3', 1);
+Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3', 1);
 
 // Bgm.play('RADICAL_CITY');
