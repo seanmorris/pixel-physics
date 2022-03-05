@@ -445,7 +445,7 @@ span.arrow-west {
 }
 
 .viewport .status-message.hide,
-.viewport:focus-within .focus-me .status-message {
+.viewport-frame:not(.window-blurred) .viewport:focus-within .focus-me .status-message {
 	transition: opacity 0.2s ease-in;
 	opacity: 0;
 }

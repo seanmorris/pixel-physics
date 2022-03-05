@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16.64"
+   height="10.24"
+   version="1.1"
+   viewBox="0 0 16.64 10.24"
+   id="svg22"
+   sodipodi:docname="tab.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)">
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     id="namedview24"
+     showgrid="false"
+     inkscape:zoom="83.203127"
+     inkscape:cx="8.3199997"
+     inkscape:cy="5.1199999"
+     inkscape:window-x="1050"
+     inkscape:window-y="31"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <metadata
+     id="metadata2">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(6.26e-4)"
+     id="g16">
+    <rect
+       x=".6"
+       y=".6"
+       width="15.5"
+       height="9"
+       ry="0"
+       fill="#999"
+       fill-opacity=".9"
+       stroke-width="1.0316"
+       id="rect4" />
+    <g
+       fill="#dcdee5"
+       id="g10">
+      <path
+         d="m0 0h16.64l-0.54 0.6h-15.5z"
+         stroke-width=".27599"
+         id="path6" />
+      <path
+         d="m0 0 0.6 0.6v9l-0.6 0.64z"
+         stroke-width=".21651"
+         id="path8" />
+    </g>
+    <g
+       transform="rotate(180 5.3595 4.8905)"
+       fill="#5d6069"
+       id="g14">
+      <path
+         d="m-5.9211-0.45929 4e-7 10.24 0.54-0.6 0.046218-8.9885 15.454-0.011548 0.6-0.64z"
+         fill="#5d6069"
+         stroke-width=".21651"
+         id="path12" />
+    </g>
+  </g>
+  <text
+     x="8.2946091"
+     y="6.1883593"
+     font-family="sans-serif"
+     font-size="3.6667px"
+     letter-spacing="0px"
+     word-spacing="0px"
+     style="line-height:1.25"
+     xml:space="preserve"
+     id="text20"><tspan
+       x="8.2946091"
+       y="6.1883593"
+       font-family="sans-serif"
+       font-size="3.6667px"
+       font-weight="bold"
+       text-align="center"
+       text-anchor="middle"
+       id="tspan18">Tab</tspan></text>
+</svg>

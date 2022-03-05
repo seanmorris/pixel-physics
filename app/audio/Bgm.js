@@ -4,6 +4,7 @@ import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 
 export class BgmHandler extends Mixin.with(EventTargetMixin)
 {
+	volume  = 1.0;
 	theme   = '/Sonic/carnival-night-zone-act-2-beta.mp3';
 	overlay = '/audio/leslie-wai/feel-the-sunshine.mp3';
 	tracks  = new Map;
@@ -13,6 +14,16 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 	playing = null;
 	id3     = new Map;
 	request = [];
+
+	setVolume(volume = 1)
+	{
+		this.volume = volume;
+
+		if(this.playing)
+		{
+			this.playing.volume = volume;
+		}
+	}
 
 	register(tag, url, maxConcurrent = 1)
 	{
@@ -142,7 +153,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 		{
 			selected.playbackRate = 1.0;
 			selected.currentTime  = 0.0;
-			selected.volume       = 0.25;
+			selected.volume       = this.volume;
 			selected.loop         = loop;
 
 			this.plays.set(selected, Date.now());

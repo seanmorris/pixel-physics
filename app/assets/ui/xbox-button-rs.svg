@@ -40,7 +40,8 @@
    inkscape:window-x="1050"
    inkscape:window-y="31"
    inkscape:window-maximized="1"
-   inkscape:current-layer="g40" />
+   inkscape:current-layer="g38"
+   inkscape:document-rotation="0" />
 <g
    id="g44">
 	<g
@@ -117,30 +118,10 @@
 		<g
    id="g38"
    transform="matrix(-1,0,0,1,20.002,0)">
-			<polygon
-   opacity="0.5"
-   fill="#ffffff"
-   points="7.994,2.925 10,5 12.008,2.925 10,2.925 "
-   id="polygon30"
-   transform="matrix(1,0,0,-1,0,7.925)" />
-			<polygon
-   opacity="0.5"
-   fill="#ffffff"
-   points="17.076,10 17.076,7.993 15,10 17.076,12.006 "
-   id="polygon32"
-   transform="matrix(-1,0,0,1,32.076,0)" />
-			<polygon
-   opacity="0.5"
-   fill="#ffffff"
-   points="5,10 2.926,7.993 2.926,10 2.926,12.006 "
-   id="polygon34"
-   transform="matrix(-1,0,0,1,7.926,0)" />
-			<polygon
-   opacity="0.5"
-   fill="#ffffff"
-   points="12.008,17.075 10.002,15 7.994,17.075 10.002,17.075 "
-   id="polygon36"
-   transform="matrix(1,0,0,-1,0,32.075)" />
+			
+			
+			
+			
 		</g>
 	</g>
 	<path

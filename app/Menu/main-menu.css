@@ -67,9 +67,8 @@
 
 .screen-card-main-menu li {
 	display: flex;
-	/*flex-wrap: wrap;*/
 	flex: 1;
-	align-items: flex-start;
+	align-items: center;
 	margin-bottom: 0.5em;
 	user-select: none;
 	margin-top: 0.5em;
@@ -425,13 +424,13 @@ input::-webkit-inner-spin-button {
 
 .screen-card-main-menu li > span:not(:empty):not(.title):not(.subtext):not(.subtext + span) {
 	display: flex;
+	align-items: center;
 }
 
 [data-title=Character] [data-wraps="select"],
 [data-title=Follower] [data-wraps="select"] {
 	position: relative;
 	display: flex;
-	align-items: center;
 	flex: 1;
 }
 

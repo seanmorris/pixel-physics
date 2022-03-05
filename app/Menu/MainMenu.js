@@ -80,6 +80,7 @@ export class MainMenu extends Menu
 				, 'Chalmers'
 				, 'Sean'
 			]
+			, default: 'Sonic'
 			, set: value => this.parent.args.selectedChar = value
 			, get: () => this.parent.args.selectedChar ?? 'Sonic'
 		};

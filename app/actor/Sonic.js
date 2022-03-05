@@ -80,6 +80,7 @@ export class Sonic extends PointActor
 		this.willStick = false;
 		this.stayStuck = false;
 
+		this.lightDashed = true;
 		this.dashed = false;
 
 		this.airControlCard = View.from(require('../cards/sonic-air-controls.html'));
@@ -442,6 +443,9 @@ export class Sonic extends PointActor
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
+
+			this.dashed = false;
+			this.lightDashed = false;
 
 			this.args.height = this.args.normalHeight;
 
@@ -1459,6 +1463,8 @@ export class Sonic extends PointActor
 			this.lightDashing = false;
 			return false;
 		}
+
+		this.lightDashed = true;
 
 		let currentAngle;
 

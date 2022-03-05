@@ -482,18 +482,6 @@ export class Block extends PointActor
 
 	updateStart()
 	{
-		this.weighted = false;
-	}
-
-	updateEnd()
-	{
-		super.updateEnd();
-
-		// if(!this.viewport.collisions.has(this))
-		// {
-		// 	return;
-		// }
-
 		if(this.args.float && this.args.settle)
 		{
 			if(this.weighted && this.args.y < this.def.get('y') + this.args.settle)
@@ -506,6 +494,18 @@ export class Block extends PointActor
 				this.args.y -= Math.min(Math.abs(this.args.settle), 32) / 8 * Math.sign(this.args.settle);
 			}
 		}
+
+		this.weighted = false;
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		// if(!this.viewport.collisions.has(this))
+		// {
+		// 	return;
+		// }
 
 		if(!this.viewport || !this.viewport.collisions.has(this))
 		{
