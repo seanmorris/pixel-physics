@@ -94,6 +94,11 @@ export class Viewport extends View
 
 		window.viewport = this;
 
+		this.listen(window, 'focus', event => this.args.windowFocused = 'window-focused');
+		this.listen(window, 'blur',  event => this.args.windowFocused = 'window-blurred');
+
+		this.args.windowFocused = document.hasFocus() ? 'window-focused' : 'window-blurred';
+
 		this[ Bindable.NoGetters ] = true;
 
 		Router.listen(this, { '': () => '' });
@@ -248,6 +253,7 @@ export class Viewport extends View
 		this.args.debugObjectName = new CharacterString({value:''});
 
 		this.debugBank = {};
+		this.args.interacted = false;
 
 		debugSeq.addEventListener('complete', event => {
 
@@ -423,6 +429,8 @@ export class Viewport extends View
 
 			this.bgm = this.meta.bgm;
 
+			console.log(this.args.audio);
+
 			if(!this.args.audio)
 			{
 				event.preventDefault();
@@ -442,13 +450,13 @@ export class Viewport extends View
 				{
 					this.args.zonecard.played.then(() => {
 						this.onFrameOut(60, () => this.args.hideNowPlaying = '');
-						this.onFrameOut(900, () => this.args.hideNowPlaying = 'hide-now-playing');
+						this.onFrameOut(600, () => this.args.hideNowPlaying = 'hide-now-playing');
 					});
 				}
 				else
 				{
 					this.onFrameOut(60, () => this.args.hideNowPlaying = '');
-					this.onFrameOut(900, () => this.args.hideNowPlaying = 'hide-now-playing');
+					this.onFrameOut(600, () => this.args.hideNowPlaying = 'hide-now-playing');
 				}
 			}
 		});
@@ -508,6 +516,8 @@ export class Viewport extends View
 		this.settings.bindTo('showHud',   v => this.args.showHud   = v);
 		this.settings.bindTo('shortcuts', v => this.args.shortcuts = v);
 		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
+
+		this.settings.bindTo('musicVol',  v => Bgm.setVolume(v / 100));
 
 		this.args.emeralds = [
 			// 'green'
@@ -671,7 +681,7 @@ export class Viewport extends View
 
 		this.startTime = null;
 
-		this.args.audio = true;
+		this.args.audio = false;
 
 		this.nextControl = false;
 
@@ -698,16 +708,24 @@ export class Viewport extends View
 
 		this.args.muteSwitch = new ClickSwitch;
 
-		this.args.muteSwitch.args.active = !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0)
+		this.args.muteSwitch.args.active = false;
 
-		this.args.muteSwitch.args.bindTo('active', v => this.args.audio = v);
+		this.args.bindTo('interacted', v => {
 
-		this.args.bindTo('audio', (v) => {
+			if(!v) return;
 
-			localStorage.setItem('sonic-3000-audio-enabled', v);
+			this.args.muteSwitch.args.active = this.getAudioSetting();
 
-			this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+			this.args.muteSwitch.args.bindTo('active', v => this.args.audio = v);
+
+			this.args.bindTo('audio', (v) => {
+
+				localStorage.setItem('sonic-3000-audio-enabled', v);
+
+				this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+			});
 		});
+
 
 		this.args.showConsole = null;
 
@@ -943,6 +961,11 @@ export class Viewport extends View
 		}
 	}
 
+	getAudioSetting()
+	{
+		return !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0);
+	}
+
 	onAttached(event)
 	{
 		SettingsTask.viewport = this;
@@ -960,9 +983,29 @@ export class Viewport extends View
 
 		this.onTimeout(5500, () => this.args.ntsc = '');
 
+		const audioWasEnabled = this.getAudioSetting();
+
+		const enableKeyboardMessage = ' Click here to enable keyboard control. ';
+		const enableAudioMessage = ' Click here to enable audio. ';
+
 		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 23500, () => {
-			this.args.focusMe.args.value = ' Click here to enable keyboard control. ';
+			this.args.bindTo('interacted', v => {
+				const focusMeMessage = (!v && audioWasEnabled)
+					? enableAudioMessage
+					: enableKeyboardMessage;
+
+				const oldMessage = this.args.focusMe.args.value;
+
+				if(oldMessage === focusMeMessage)
+				{
+					return;
+				}
+
+				this.args.focusMe.args.value = '';
+				this.args.focusMe.args.value = focusMeMessage;
+			}, {wait: 250});
 		});
+
 
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 		this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
@@ -4307,5 +4350,10 @@ export class Viewport extends View
 			eventAction:   'build check',
 			eventLabel:    build
 		});
+	}
+
+	interact()
+	{
+		this.args.interacted = true;
 	}
 }

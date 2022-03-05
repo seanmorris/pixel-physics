@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="20.480566"
+   height="20.480049"
+   version="1.1"
+   viewBox="0 0 20.480567 20.48005"
+   id="svg539"
+   sodipodi:docname="numpad-beveled.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)">
+  <g
+     transform="matrix(0.50002,0,0,0.5,5.1202878,10.240028)"
+     id="g507-4">
+    <g
+       transform="translate(6.26e-4)"
+       id="g503-9">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path493-0" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g497-9">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path495-1" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g501-7">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path499-7" />
+      </g>
+    </g>
+    <path
+       d="M 7.9705,3.3575 H 2.2704 c -0.30834,0 -0.46396,0.37462 -0.24494,0.59076 l 2.85,2.8327 c 0.13544,0.13544 0.35158,0.13544 0.487,0 l 2.85,-2.8327 C 8.43435,3.73213 8.278745,3.3575 7.97039,3.3575 Z"
+       stroke-width="0.028817"
+       id="path505" />
+  </g>
+  <g
+     id="g575"
+     transform="translate(-0.6402046,2.75e-5)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,0.6402046,5.12)"
+       id="g519">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path509" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g513">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path511" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g517">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path515" />
+      </g>
+    </g>
+    <path
+       d="M 4.0810422,9.1053 V 6.25515 c 0,-0.154175 -0.1873125,-0.231985 -0.2953768,-0.122475 l -1.4163566,1.42505 c -0.067723,0.067725 -0.067723,0.175795 0,0.24351 l 1.4163566,1.42505 c 0.1080693,0.11095 0.2953768,0.033144 0.2953768,-0.12104 z"
+       stroke-width="0.0144088"
+       id="path521" />
+  </g>
+  <g
+     id="g566"
+     transform="translate(-0.63945779)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,10.879964,5.12)"
+       id="g533">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path523" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g527">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path525" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g531">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path529" />
+      </g>
+    </g>
+    <path
+       d="m 12.558481,6.2547 v 2.85015 c 0,0.154175 0.187313,0.231985 0.295377,0.122475 l 1.416357,-1.42505 c 0.06772,-0.067725 0.06772,-0.175795 0,-0.24351 l -1.416357,-1.42505 c -0.108069,-0.11095 -0.295377,-0.033141 -0.295377,0.12104 z"
+       stroke-width="0.0144088"
+       id="path535" />
+  </g>
+  <defs
+     id="defs543" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     id="namedview541"
+     showgrid="false"
+     inkscape:zoom="16"
+     inkscape:cx="-1.9847296"
+     inkscape:cy="7.8369656"
+     inkscape:window-x="1050"
+     inkscape:window-y="31"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg539"
+     inkscape:document-rotation="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="15.09015,9.9400234"
+       orientation="0,-1"
+       id="guide1807" />
+    <sodipodi:guide
+       position="15.660373,10.560022"
+       orientation="1,0"
+       id="guide1809" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata475">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="matrix(0.50002,0,0,0.5,5.1198914,1e-5)"
+     id="g491">
+    <g
+       transform="translate(6.26e-4)"
+       id="g487">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path477" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g481">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path479" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g485">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path483" />
+      </g>
+    </g>
+    <path
+       d="M 7.9705,6.8825 H 2.2704 c -0.30834,0 -0.46396,-0.37462 -0.24494,-0.59076 l 2.85,-2.8327 c 0.13544,-0.13544 0.35158,-0.13544 0.487,0 l 2.85,2.8327 C 8.43435,6.50787 8.278745,6.8825 7.97039,6.8825 Z"
+       stroke-width="0.028817"
+       id="path489" />
+  </g>
+  <g
+     transform="matrix(0.50002,0,0,0.5,5.1199884,5.120005)"
+     id="g507">
+    <g
+       transform="translate(6.26e-4)"
+       id="g503">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path493" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g497">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path495" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g501">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path499" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g575-3"
+     transform="translate(-0.6402046,-5.11999)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,0.6402046,5.12)"
+       id="g519-6">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path509-7" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g513-5">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path511-3" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g517-5">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path515-6" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g575-3-9"
+     transform="translate(9.6000136,-5.119995)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,0.6402046,5.12)"
+       id="g519-6-1">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path509-7-2" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g513-5-7">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path511-3-0" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g517-5-9">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path515-6-3" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g575-8"
+     transform="translate(-0.6398086,5.1200275)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,0.6402046,5.12)"
+       id="g519-9">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path509-73" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g513-6">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path511-1" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g517-2">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path515-9" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g566-1"
+     transform="translate(-0.6398086,5.1200275)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,10.879964,5.12)"
+       id="g533-9">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path523-4" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g527-7">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path525-8" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g531-4">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path529-5" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g575-8-6"
+     transform="translate(-0.6401596,10.240032)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,0.6402046,5.12)"
+       id="g519-9-1">
+      <path
+         d="m 0.6,0.6 19.3387,0 -0.04622,8.9885 -19.292498,0.011542 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path509-73-5"
+         sodipodi:nodetypes="ccccc" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g513-6-5">
+        <path
+           d="m -16.159982,-0.4593 -2.18e-4,10.24 0.54,-0.6 0.04622,-8.9885 19.292482,-0.011535 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path511-1-4"
+           sodipodi:nodetypes="ccccccc" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g517-2-7">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path515-9-6" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g566-1-6"
+     transform="translate(-0.6401596,10.240032)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,10.879964,5.12)"
+       id="g533-9-9">
+      <path
+         d="m 0.6,0.6 9.0996,-2.76e-6 -0.046218,8.98849996 -9.0534,0.011545 z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path523-4-3" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g527-7-7">
+        <path
+           d="m -5.9209,-0.45929 -2.18e-4,10.24 0.54,-0.6 0.046218,-8.9885 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path525-8-4" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g531-4-5">
+        <path
+           d="m 0,0 0.6,0.6 v 9 L 0,10.24 Z M 0,0 10.24,7.153e-8 9.7,0.60000007 l -9.0996,2.76e-6 z"
+           id="path529-5-2" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="g566-1-6-4"
+     transform="translate(4.4800964,10.240022)">
+    <g
+       transform="matrix(0.50002,0,0,0.5,10.879964,5.12)"
+       id="g533-9-9-7">
+      <path
+         d="M 0.60059977,-9.6399916 9.7368706,-9.6445337 9.6902526,9.5839975 0.63685259,9.5955425 Z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path523-4-3-4"
+         sodipodi:nodetypes="ccccc" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g527-7-7-4">
+        <path
+           d="m -5.9209,-0.45929 -6e-4,20.480024 0.54,-0.6 0.0466,-19.228524 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path525-8-4-3"
+           sodipodi:nodetypes="ccccccc" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g531-4-5-0">
+        <path
+           d="M 0.6,9.6 0,10.24 c 0,0 0.6,-0.639965 0.6,-0.64 z m 9.64,-19.840034 -0.54,0.6 c 0,0 0,0 0.54,-0.6 z"
+           id="path529-5-2-7"
+           sodipodi:nodetypes="cccccc" />
+      </g>
+    </g>
+    <g
+       transform="matrix(0.50002,0,0,0.5,10.879964,-5.123988)"
+       id="g533-9-9-7-4">
+      <path
+         d="M 0.60059977,-9.6399916 9.7368706,-9.6445337 9.6902526,9.5839975 0.63685259,9.5955425 Z"
+         fill="#999999"
+         fill-opacity="0.9"
+         id="path523-4-3-4-9"
+         sodipodi:nodetypes="ccccc" />
+      <g
+         transform="rotate(180,2.15925,4.89035)"
+         fill="#5d6069"
+         id="g527-7-7-4-2">
+        <path
+           d="m -5.9209,-0.45929 -6e-4,20.480024 0.54,-0.6 0.0466,-19.228524 9.0534,-0.011545 0.6,-0.64 z"
+           fill="#5d6069"
+           stroke-width="0.21651"
+           id="path525-8-4-3-0"
+           sodipodi:nodetypes="ccccccc" />
+      </g>
+      <g
+         fill="#dcdee5"
+         id="g531-4-5-0-6">
+        <path
+           d="M 0.6,9.6 0,10.24 c 0,0 0.6,-0.639965 0.6,-0.64 z m 9.64,-19.840034 -0.54,0.6 c 0,0 0,0 0.54,-0.6 z"
+           id="path529-5-2-7-8"
+           sodipodi:nodetypes="cccccc" />
+      </g>
+    </g>
+  </g>
+</svg>

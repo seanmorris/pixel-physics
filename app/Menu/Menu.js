@@ -188,7 +188,17 @@ export class Menu extends Card
 
 		let next;
 
-		if(controller.buttons[12] && controller.buttons[12].time === 1)
+		const repeatCheck = (button) => controller.buttons[button]
+			&& (controller.buttons[button].time === 1
+			|| (controller.buttons[button].time >= 180
+				&& controller.buttons[button].time % 10 === 1
+			)
+			|| (controller.buttons[button].time > 30
+				&& controller.buttons[button].time < 180
+				&& controller.buttons[button].time % 20 === 1
+			));
+
+		if(repeatCheck(12))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node, true);
 
@@ -201,7 +211,7 @@ export class Menu extends Card
 				this.tickSample.play();
 			}
 		}
-		else if(controller.buttons[13] && controller.buttons[13].time === 1)
+		else if(repeatCheck(13))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node);
 
@@ -216,7 +226,7 @@ export class Menu extends Card
 
 			this.focus(next);
 		}
-		else if(controller.buttons[14] && controller.buttons[14].time === 1)
+		else if(repeatCheck(14))
 		{
 			this.currentItem && this.contract(this.currentItem);
 
@@ -229,7 +239,7 @@ export class Menu extends Card
 				this.tickSample.play();
 			}
 		}
-		else if(controller.buttons[15] && controller.buttons[15].time === 1)
+		else if(repeatCheck(15))
 		{
 			this.currentItem && this.expand(this.currentItem);
 
@@ -291,8 +301,11 @@ export class Menu extends Card
 
 		if(item.input)
 		{
-			event.currentTarget.focus();
-			this.focus(event.currentTarget);
+			if(event)
+			{
+				event.currentTarget.focus();
+				this.focus(event.currentTarget);
+			}
 		}
 
 		if(item.children)
@@ -529,7 +542,7 @@ export class Menu extends Card
 
 		if(item.input === 'select')
 		{
-			item.setting = (item.get ? item.get() : 'Sonic') ?? 'Sonic';
+			item.setting = (item.get ? item.get() : item.default) ?? undefined;
 
 			let selectedIndex = 0;
 
@@ -539,6 +552,13 @@ export class Menu extends Card
 				{
 					selectedIndex = i;
 				}
+			}
+
+			if(item.setting === undefined && item.options.length)
+			{
+				selectedIndex = 0;
+
+				item.setting = item.options[0];
 			}
 
 			const selectTag = $subview.findTag('select');
@@ -552,8 +572,11 @@ export class Menu extends Card
 		}
 		else if(item.input === 'boolean')
 		{
-			item.element.selectedIndex = item.setting ? 0 : 1;
-			item._value.args.value     = item.setting ? 'ON' : 'OFF';
+			if(item.element)
+			{
+				item.element.selectedIndex = item.setting ? 0 : 1;
+				item._value.args.value     = item.setting ? 'ON' : 'OFF';
+			}
 		}
 	}
 

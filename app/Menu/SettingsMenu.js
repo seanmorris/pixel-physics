@@ -55,12 +55,30 @@ export const SettingsMenu = (parent) => { return {
 			}
 		}
 
-		, 'Rumble': {
-			input: 'boolean'
-			, subtext: 'Enable/Disable controller vibration'
-			, set: value => parent.settings.rumble = value
-			, get: () => parent.settings.rumble
+		, 'Gamepad & Keyboard': {
+			children: {
+				'Button Select Test': {
+					input: 'select'
+					, options: [
+						'⓿', '❶', '❷', '❸', '❹', '❺'
+						, '❻', '❼', '❽', '❾', '❿', '⓫'
+						, '✚', '←', '→', '↑', '↓'
+						// , '▦', '🡠', '🡢', '🡡', '🡣'
+						, '⬲', '🡨', '🡪', '🡩', '🡫'
+						, '⟴', '🡰', '🡲', '🡱', '🡳'
+					]
+					, set: value => parent.settings.buttonTest = value
+					, get: () => parent.settings.buttonTest
+				}
+				, 'Rumble': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable controller vibration'
+					, set: value => parent.settings.rumble = value
+					, get: () => parent.settings.rumble
+				}
+			}
 		}
+
 
 		, Network: {
 			children: {
@@ -108,7 +126,7 @@ export const SettingsMenu = (parent) => { return {
 				'Music Volume': {
 					input: 'number'
 					, subtext: 'Background music volume - 0% - 100%'
-					, available: 'unavailable'
+					// , available: 'unavailable'
 					, set: value => parent.settings.musicVol = value
 					, get: () => parent.settings.musicVol
 					, max: 100
