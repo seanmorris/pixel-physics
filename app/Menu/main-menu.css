@@ -66,7 +66,7 @@
 	background-size: 900% 200%;
 	background-image: url(/Sonic/cursor.png);
 	content: '';
-	animation: cursor-animate 0.5s infinite steps(8, start);
+	animation: cursor-animate 0.75s infinite steps(8, start) reverse;
 }
 
 .screen-card-main-menu :focus .title,

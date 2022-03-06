@@ -103,10 +103,22 @@ section.footer {
 <body>
 
 <nav>
+
 	<a target = "_blank" href = "https://pixel-physics.seanmorr.is/">
 		<img width="24" src = "./about/gamepad.svg" />
 		Play Now
 	</a>
+
+	<a target = "_blank" href = "https://github.com/seanmorris/pixel-physics">
+		<img width="24" src = "./ui/github-alt.svg" />
+		GitHub
+	</a>
+
+	<a target = "_blank" href = "https://curvature.seanmorr.is/">
+		<img width="24" src = "./about/curves.svg" />
+		Curvature
+	</a>
+
 </nav>
 
 <article>
@@ -119,7 +131,7 @@ section.footer {
 	Rendering Sonic in HTML (not canvas)
 </h1>
 
-<p>This project is insane. That is on purpose. Its a Sonic engine, written completely from scratch, rendered in HTML. Yes, Sonic is a <code>&lt;DIV&gt;</code> box, styled and animated with CSS. I only started this project to stress test a web framework I created, and to stress test my knowledge of document rendering and the browser in general. Things went <strong>very</strong> well, so I may have gotten a bit extreme with this “test project.”</p>
+<p>This project is insane. That is on purpose. Its a Sonic engine, written completely from scratch, rendered in HTML. Yes, Sonic is a <code>&lt;DIV&gt;</code> box, styled and animated with CSS. I only started this project to stress test a web framework I created (<a href = "https://curvature.seanmorr.is/" target = "_blank">curvature</a>), and to stress test my knowledge of document rendering and the browser in general. Things went <strong>very</strong> well, so I may have gotten a bit extreme with this “test project.”</p>
 
 <p>When normal people want to make a browser game, they’ll use canvas, and usually Web GL, allowing the developer to make use of the GPU. However, CSS also allows for access to the GPU. Once I'd realized the performance level allowed for simple games to be expressed, I started wondering: “How far can I really take this?”</p>
 
@@ -158,7 +170,7 @@ section.footer {
 
 </figure>
 
-<p>Objects are just DIV boxes. They’re animated in a similar way to backdrops, but they only use one image at a time. Graphics for each object are organized into “sprite sheets” with each frame of animation evenly spaced, and each animation on its own row. With the appropriate CSS <code>@keyframe</code> definitions and selectors, I can change the animation by altering the <code>data-animation</code> attribute on the element.</p>
+<p>Objects are just DIV boxes. They’re animated in a similar way to backdrops, but they only use one image at a time. Graphics for objects are organized into “sprite sheets” with each frame of animation evenly spaced, and each animation on its own row. With the appropriate CSS <code>@keyframe</code> definitions and selectors, I can change the animation by altering the <code>data-animation</code> attribute on the element.</p>
 
 <figure>
 <a target = "_blank" href = "./about/tiled.png">
@@ -322,7 +334,7 @@ section.footer {
 </figure>
 
 <h1 id="closing">Closing</h1>
-<p>I would not have taken things to such an extreme degree had they not gone so well. I did have to apply some optimizations back to the original framework and the benefits were massive. I learned a lot doing this project, and I’ve got an engine I can abstract out and share with other developers. I plan to abstract out the font, input, menu, PNG manipulation and SVG effect code into their own libraries and publish them on NPM. I also plan to submit Sonic 3000 to SAGE 2022 (Sonic Amateur Games Expo), and hopefully one day other developers will be able to use the underlying engine to do the same.</p>
+<p>I would not have taken things to such an extreme degree had they not gone so well. I did have to apply some optimizations back to the original framework and the benefits were massive. I originally set out to prove it works fast, and I think I've done that. I learned a lot doing this project, and I’ve got an engine I can abstract out and share with other developers. I plan to abstract out the font, input, menu, PNG manipulation and SVG effect code into their own libraries and publish them on NPM. I also plan to submit Sonic 3000 to SAGE 2022 (Sonic Amateur Games Expo), and hopefully one day other developers will be able to use the underlying engine to do the same.</p>
 
 </article>
 
