@@ -353,6 +353,12 @@ export class MainMenu extends Menu
 
 			// , Load: SavestateMenu(parent)
 
+			, About: {
+				callback: () => {
+					window.open('/about.html');
+				}
+			}
+
 			, 'Back': {
 				callback: () => parent.quit(true)
 			}
