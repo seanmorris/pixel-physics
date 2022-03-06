@@ -283,9 +283,9 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			let initial;
 			let interval;
 
-			const fade = () => {
-				track = this.playing;
+			track = this.playing;
 
+			const fade = () => {
 				if(!track)
 				{
 					return;

@@ -10,15 +10,11 @@ export class StarSheild extends Sheild
 		<div class = "star-sheild-stars"></div>
 	</div>`;
 
-	// bgm = new Audio('/audio/leslie-wai/feel-the-sunshine.mp3');
-
 	frame = 0;
 
 	constructor(...args)
 	{
 		super(...args);
-
-		// this.onRemove(() => this.bgm.pause());
 	}
 
 	acquire(host)
@@ -29,11 +25,6 @@ export class StarSheild extends Sheild
 		{
 			return;
 		}
-
-		// this.bgm.play();
-		// if(viewport.args.audio)
-		// {
-		// }
 
 		const previous = host.args.currentSheild;
 
@@ -68,24 +59,11 @@ export class StarSheild extends Sheild
 
 		host.onRemove(() => Bgm.stop('STAR_SHIELD'));
 		Bgm.play('STAR_SHIELD');
-		// viewport.onFrameOut(30, () => viewport.args.hideNowPlaying = '');
-		// viewport.onFrameOut(400, () => viewport.args.hideNowPlaying = 'hide-now-playing');
 
 		if(!viewport.args.audio)
 		{
 			Bgm.pause();
 		}
-
-		// this.debindPaused = viewport.args.bindTo('paused', v => {
-		// 	if(v !== false)
-		// 	{
-		// 		this.bgm.pause();
-		// 	}
-		// 	else
-		// 	{
-		// 		this.bgm.play();
-		// 	}
-		// });
 	}
 
 	immune()

@@ -167,6 +167,12 @@
 	height: 288px;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: opacity 0.5s ease-out;
+}
+
+.closing .warning-svg,
+.opening .warning-svg {
+	opacity: 0;
 }
 
 .spindash-charge .chromium-logo {

@@ -1,4 +1,5 @@
 import { Region } from "./Region";
+import { Sfx } from '../audio/Sfx';
 import { Tag } from 'curvature/base/Tag';
 
 export class ExplodingRegion extends Region
@@ -8,8 +9,6 @@ export class ExplodingRegion extends Region
 		super(...args);
 
 		this.args.type = 'region region-exploding';
-
-		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
 	}
 
 	updateActor(actor)
@@ -75,12 +74,10 @@ export class ExplodingRegion extends Region
 			return;
 		}
 
-		// if(viewport.args.audio)
-		// {
-		// 	this.hitSound.currentTime = 0;
-		// 	this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-		// 	this.hitSound.play();
-		// }
+		if(Math.random() > 0.85)
+		{
+			Sfx.play('BOSS_DAMAGED');
+		 }
 
 		for(let i = 0; i < 1; i++)
 		{
@@ -109,6 +106,8 @@ export class ExplodingRegion extends Region
 
 	activate()
 	{
+		Sfx.play('BOSS_DAMAGED');
+
 		this.args.active = true;
 
 		this.viewport.onFrameOut(250, () => this.args.active = false)

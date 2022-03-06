@@ -224,8 +224,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			const layer = this.tileLayers[i];
 
 			layer.destroyed = false;
-
-			console.log(layer);
 		}
 	}
 

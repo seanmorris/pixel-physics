@@ -1,6 +1,6 @@
-import { Card } from './Card';
+import { SkippableCard } from './SkippableCard';
 
-export class WarningCard extends Card
+export class WarningCard extends SkippableCard
 {
 	template = require('./warning-card.html');
 

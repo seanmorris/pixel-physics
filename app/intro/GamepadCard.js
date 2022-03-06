@@ -1,6 +1,6 @@
-import { Card } from './Card';
+import { SkippableCard } from './SkippableCard';
 
-export class GamepadCard extends Card
+export class GamepadCard extends SkippableCard
 {
 	template = require('./gamepad-card.html');
 

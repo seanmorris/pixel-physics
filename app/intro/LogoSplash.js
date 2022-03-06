@@ -1,14 +1,11 @@
 import { View } from 'curvature/base/View';
+import { Sfx } from '../audio/Sfx';
 
 export class LogoSplash extends View
 {
 	constructor(args = {}, parent)
 	{
 		super(args, parent);
-
-		this.ringSample = new Audio('/Sonic/ring-collect.wav');
-
-		this.ringSample.volume = 0.50;
 
 		this.template   = `
 		<div class = "player-waving"></div>
@@ -42,10 +39,10 @@ export class LogoSplash extends View
 
 		this.args.animation = 'hide';
 
-		this.onTimeout(500,  ()=> this.args.animation = 'slide');
-		this.onTimeout(1250, ()=> this.args.animation = 'show');
-		this.onTimeout(5000, ()=> this.args.animation = 'done');
+		this.onTimeout(500,  () => this.args.animation = 'slide');
+		this.onTimeout(1250, () => this.args.animation = 'show');
+		this.onTimeout(5000, () => this.args.animation = 'done');
 
-		this.onTimeout(1250, ()=> this.parent.args.audio && this.ringSample.play());
+		this.onTimeout(1250, () => Sfx.play('RING_COLLECTED'));
 	}
 }

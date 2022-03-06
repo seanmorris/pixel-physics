@@ -1,6 +1,6 @@
-import { Card } from './Card';
+import { SkippableCard } from './SkippableCard';
 
-export class DebianCard extends Card
+export class DebianCard extends SkippableCard
 {
 	template = require('./debian-card.html');
 

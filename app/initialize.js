@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	console.log('Starting...');
 
-	// setTimeout(()=>console.log(window.myfunc(512, 512)), 1500);
-
 	if(navigator.serviceWorker)
 	{
 		navigator.serviceWorker.register('/worker-cache.js');
@@ -92,7 +90,7 @@ Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 
 Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
 Sfx.register('SPRING_HIT', '/Sonic/spring-activated.wav', {maxConcurrent: 2, volume: 0.5, fudgeFactor: 0.1});
-Sfx.register('SWITCH_HIT', '/Sonic/switch-activated.wav');
+Sfx.register('SWITCH_HIT', '/Sonic/switch-activated.wav', {maxConcurrent: 3, volume: 0.3, fudgeFactor: 0.2});
 
 Sfx.register('STARPOST_HIT', '/Sonic/starpost-active.wav', {volume: 0.5});
 
@@ -121,3 +119,4 @@ Sfx.register('MECHASONIC_SLAP', '/Sonic/mecha-sonic-thruster-close.wav');
 Sfx.register('TAILS_FLY', '/Sonic/tails-flying.wav');
 
 Sfx.register('LIGTNING_STRIKE', '/Sonic/S3K_4E.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0})
+Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');

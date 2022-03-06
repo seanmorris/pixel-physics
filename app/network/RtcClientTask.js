@@ -86,8 +86,6 @@ export class RtcClientTask extends Task
 
 		const isEncoded = /^s3ktp:\/\/accept\/(.+)/.exec(answerString);
 
-		console.log(isEncoded);
-
 		if(isEncoded)
 		{
 			answerString = atob(isEncoded[1]);
