@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Sfx } from '../audio/Sfx';
 
 const Boosted = Symbol('Boosted');
 
@@ -16,16 +17,13 @@ export class Spinner extends PointActor
 		this.args.direction = this.args.direction || 1;
 	}
 
-	update()
-	{
-		if(!this.sample)
-		{
-			this.sample = new Audio('/Sonic/S2_2B.wav');
-		}
-	}
-
 	collideB(other)
 	{
+		if(other instanceof Spinner)
+		{
+			return;
+		}
+
 		if(other.args.gSpeed === 0)
 		{
 			// return;
@@ -50,11 +48,6 @@ export class Spinner extends PointActor
 			? Math.abs(other.args.gSpeed) * this.args.direction
 			: toSpeed * this.args.direction;
 
-		if(this.viewport.args.audio && this.sample)
-		{
-			this.sample.currentTime = 0;
-			this.sample.volume = 0.5 + (Math.random() / 2.5);
-			this.sample.play();
-		}
+		Sfx.play('SPEEDPAD_HIT');
 	}
 }

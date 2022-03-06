@@ -34,9 +34,6 @@ export class GohlaBall extends Mixin.from(PointActor, CanPop)
 
 		this.willStick = false;
 		this.stayStuck = false;
-
-		this.sample = new Audio('/Sonic/object-destroyed.wav');
-		this.sample.volume = 0.6 + (Math.random() * -0.3);
 	}
 	get solid() { return false; }
 	get isEffect() { return false; }

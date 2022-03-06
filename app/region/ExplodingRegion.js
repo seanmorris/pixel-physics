@@ -1,5 +1,4 @@
 import { Region } from "./Region";
-
 import { Tag } from 'curvature/base/Tag';
 
 export class ExplodingRegion extends Region

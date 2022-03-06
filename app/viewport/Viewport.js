@@ -7,8 +7,10 @@ import { Keyboard } from 'curvature/input/Keyboard';
 import { Sequence } from 'curvature/input/Sequence';
 
 import { QuadCell } from '../QuadCell';
+import { Countdown } from '../timer/Countdown';
 
 import { Bgm } from '../audio/Bgm';
+import { Sfx } from '../audio/Sfx';
 
 import { TileMap }  from '../tileMap/TileMap';
 
@@ -30,6 +32,7 @@ import { BootCard } from    '../intro/BootCard';
 import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
 import { GamepadCard } from '../intro/GamepadCard';
+import { WarningCard } from '../intro/WarningCard';
 import { SeanCard } from    '../intro/SeanCard';
 
 import { PauseMenu } from   '../Menu/PauseMenu.js';
@@ -115,6 +118,8 @@ export class Viewport extends View
 
 		this.objectPalette = ObjectPalette;
 
+		this.timers = new Map;
+
 		// this.quadCell = null;
 
 		this.callIntervals = new Map;
@@ -131,15 +136,16 @@ export class Viewport extends View
 		this.args.mouse = 'moved';
 
 		this.settings = Bindable.make({
-			blur: true
+			audio: true
+			, blur: true
 			, displace: true
 			, showHud: true
 			, shortcuts: true
 			, showFps: true
 			, debugOsd: false
 			, outline: 1
-			, musicVol: 100
-			, sfxVol: 100
+			, musicVol: 50
+			, sfxVol: 75
 			, username: 'player'
 		});
 
@@ -425,6 +431,13 @@ export class Viewport extends View
 		this.args.trackName  = new CharacterString({value:''});
 		this.args.hideNowPlaying = 'hide-now-playing'
 
+		Sfx.addEventListener('play', event => {
+			if(!this.args.audio)
+			{
+				event.preventDefault();
+			}
+		});
+
 		Bgm.addEventListener('play', event => {
 
 			this.bgm = this.meta.bgm;
@@ -434,30 +447,45 @@ export class Viewport extends View
 			if(!this.args.audio)
 			{
 				event.preventDefault();
+				this.args.hideNowPlaying = 'hide-now-playing';
+				return;
 			}
 
 			if(!event.detail)
 			{
 				this.args.trackName.args.value = '';
+				this.args.hideNowPlaying = 'hide-now-playing';
 				return;
 			}
-
-			this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
+			else
+			{
+				this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
+			}
 
 			if(this.args.trackName.args.value)
 			{
+				let played = Promise.resolve();
+
 				if(this.args.zonecard)
 				{
-					this.args.zonecard.played.then(() => {
-						this.onFrameOut(60, () => this.args.hideNowPlaying = '');
-						this.onFrameOut(600, () => this.args.hideNowPlaying = 'hide-now-playing');
-					});
+					played = this.args.zonecard.played
 				}
-				else
-				{
+
+				played.then(() => {
+
 					this.onFrameOut(60, () => this.args.hideNowPlaying = '');
-					this.onFrameOut(600, () => this.args.hideNowPlaying = 'hide-now-playing');
-				}
+
+					if(!this.timers.has(Bgm))
+					{
+						this.timers.set(Bgm, new Countdown(600, () => {
+							this.args.hideNowPlaying = 'hide-now-playing'
+						}));
+					}
+					else
+					{
+						this.timers.get(Bgm).extendTo(600);
+					}
+				});
 			}
 		});
 
@@ -518,6 +546,7 @@ export class Viewport extends View
 		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
 
 		this.settings.bindTo('musicVol',  v => Bgm.setVolume(v / 100));
+		this.settings.bindTo('sfxVol',  v => Sfx.setVolume(v / 100));
 
 		this.args.emeralds = [
 			// 'green'
@@ -963,7 +992,7 @@ export class Viewport extends View
 
 	getAudioSetting()
 	{
-		return !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled')||0);
+		return !!JSON.parse(localStorage.getItem('sonic-3000-audio-enabled') ?? true);
 	}
 
 	onAttached(event)
@@ -988,7 +1017,7 @@ export class Viewport extends View
 		const enableKeyboardMessage = ' Click here to enable keyboard control. ';
 		const enableAudioMessage = ' Click here to enable audio. ';
 
-		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 23500, () => {
+		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 31500, () => {
 			this.args.bindTo('interacted', v => {
 				const focusMeMessage = (!v && audioWasEnabled)
 					? enableAudioMessage
@@ -2647,7 +2676,7 @@ export class Viewport extends View
 			}
 		}
 
-		if(this.args.paused !== false && !this.args.networked)
+		if(this.args.paused !== false)
 		{
 			this.takeInput(controller);
 
@@ -2659,6 +2688,11 @@ export class Viewport extends View
 			this.callFrameOuts();
 			this.callFrameIntervals();
 
+			for(const [key, timer] of this.timers)
+			{
+				timer.update();
+			}
+
 			this.args.lastFrameId = this.args.frameId;
 
 			if(this.args.cutScene)
@@ -2667,7 +2701,7 @@ export class Viewport extends View
 
 				this.args.showHud = false;
 			}
-			else
+			else if(this.settings.showHud)
 			{
 				this.args.showHud = true;
 			}
@@ -2680,7 +2714,7 @@ export class Viewport extends View
 			this.args.frame.args.value = this.args.frameId;
 		}
 
-		if(this.args.started && (this.args.paused !== false && this.args.paused <= 0))
+		if(!this.args.networked && this.args.started && (this.args.paused !== false && this.args.paused <= 0))
 		{
 			return;
 		}
@@ -3751,6 +3785,7 @@ export class Viewport extends View
 			, new BootCard({timeout: 3500})
 			, new DebianCard({timeout: 4500})
 			, new WebkitCard({timeout: 3500})
+			, new WarningCard({timeout: 8000})
 			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
@@ -4094,7 +4129,9 @@ export class Viewport extends View
 
 	unpauseGame()
 	{
+		this.args.pauseMenu.reset();
 		Bgm.unpause();
+
 
 		this.onTimeout(15, ()=>{
 			this.controller && this.controller.zero();
@@ -4107,6 +4144,7 @@ export class Viewport extends View
 		this.onTimeout(60, ()=>{
 			this.args.paused = false;
 		});
+
 	}
 
 	mousemove(event)

@@ -18,7 +18,9 @@ export class ChatBox extends View
 
 			if(packet.message)
 			{
-				this.args.outputLines.push(`> ${packet.message}`);
+				this.args.outputLines.push(View.from(
+					`> <span class = "incoming">[[message]]</span>`, {message: packet.message}
+				));
 
 				this.onNextFrame(() => {
 					const chatOutput = this.tags.chatOutput;
@@ -34,7 +36,7 @@ export class ChatBox extends View
 
 	send(event)
 	{
-		if(event && event.key !== 'Enter')
+		if(event && event.key && event.key !== 'Enter')
 		{
 			return;
 		}

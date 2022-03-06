@@ -1,6 +1,7 @@
 import { LayerSwitch } from './LayerSwitch';
 import { PointActor } from './PointActor';
 import { Region }     from '../region/Region';
+import { Sfx } from '../audio/Sfx';
 
 const WillSpring = Symbol('WillSpring');
 const WontSpring = Symbol('WontSpring');
@@ -66,17 +67,6 @@ export class Spring extends PointActor
 		this.args.actingOn = new Set;
 	}
 
-	update()
-	{
-		super.update();
-
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/spring-activated.wav');
-			this.sample.volume = 0.05 + (Math.random() * 0.1);
-		}
-	}
-
 	collideA(other)
 	{
 		if(other.args.hangingFrom)
@@ -121,12 +111,7 @@ export class Spring extends PointActor
 			return;
 		}
 
-		if(this.viewport.args.audio && this.sample)
-		{
-			this.sample.currentTime = 0;
-			this.sample.volume = 0.05 + (Math.random() * 0.1);
-			this.sample.play();
-		}
+		Sfx.play('SPRING_HIT');
 
 		if(other[WillSpring])
 		{

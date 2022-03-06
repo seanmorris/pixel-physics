@@ -10,6 +10,8 @@ import { Block } from '../actor/Block';
 
 import { Marker } from '../actor/Marker';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Monitor extends PointActor
 {
 	constructor(...args)
@@ -41,12 +43,6 @@ export class Monitor extends PointActor
 		if(!this.viewport)
 		{
 			return;
-		}
-
-		if(this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/object-destroyed.wav');
-			this.sample.volume = 0.6 + (Math.random() * -0.3);
 		}
 	}
 
@@ -159,10 +155,7 @@ export class Monitor extends PointActor
 			}
 		}
 
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
+		Sfx.play('OBJECT_DESTROYED');
 
 		if(typeof ga === 'function')
 		{

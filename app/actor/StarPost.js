@@ -2,6 +2,7 @@ import { CharacterString } from '../ui/CharacterString';
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 // import { Projectile } from '../actor/Projectile';
+import { Sfx } from '../audio/Sfx';
 
 import { Monitor } from './Monitor';
 
@@ -30,12 +31,6 @@ export class StarPost extends PointActor
 	update()
 	{
 		super.update();
-
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/starpost-active.wav');
-			this.sample.volume = 0.5 + (Math.random() * 0.025);
-		}
 
 		if(this.args.wasActive)
 		{
@@ -97,7 +92,7 @@ export class StarPost extends PointActor
 			this.box.setAttribute('data-active', 'true');
 			this.box.setAttribute('data-spin', 'true');
 
-			this.viewport.args.audio && this.sample && this.sample.play();
+			Sfx.play('STARPOST_HIT');
 
 			let throwSpeed = (other.args.gSpeed || other.args.xSpeed);
 

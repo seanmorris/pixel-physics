@@ -4,28 +4,39 @@
 }
 
 .chatbox {
-	transform: scale(2);
 	transform-origin: bottom left;
 	border: 1px solid #333;
 	border-bottom: none;
 	border-left: none;
-	background-color: rgba(255,255,255,0.75);
-	color: black;
+	background-color: rgba(0,0,0,0.65);
+	color: white;
 	position: absolute;
 	bottom: 0;
 	padding: 0.25rem;
-	font-size: 0.5rem;
 	box-shadow: 0em 0.5em 1em rgba(0,0,0,0.75);
 	pointer-events: initial;
-	width: 20%;
-	max-height: 10%;
 	display: flex;
 	flex-direction: column;
+	transform: scale(0.65);
+	max-width: 100%;
+	max-height: 80%;
+	position: absolute;
+	bottom: 0.5rem;
+	left: 0.5rem;
+	z-index: 10000000;
+	transition: transform 1s ease-out;
+}
+
+.viewport.hide-now-playing .chatbox {
+	transform: scale(0.65);
+}
+
+.viewport:not(.hide-now-playing) .chatbox {
+	transform: scale(0.65) translateY(-78px);
 }
 
 .chatbox input,
 .chatbox button {
-	font-size: 0.25rem;
 	color: black;
 }
 
@@ -48,14 +59,19 @@
 }
 
 .chatbox .chat-output {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
 	overflow-y: scroll;
-	flex: 1;
 }
+
 .chatbox .chat-output p {
 	white-space: initial;
+}
+
+.chatbox .chat-output {
+	color: white;
+}
+
+.chatbox .chat-output .incoming {
+	color: yellow;
 }
 
 .chatbox .chat-input {

@@ -1,6 +1,7 @@
 import { Tag } from 'curvature/base/Tag';
 import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
+import { Sfx } from '../audio/Sfx';
 
 export const CanPop = {
 	collideA: function(other, type) {
@@ -188,10 +189,7 @@ export const CanPop = {
 			}
 		}
 
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
+		Sfx.play('OBJECT_DESTROYED');
 
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])
 		{

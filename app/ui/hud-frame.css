@@ -113,6 +113,10 @@
 	/*display: none;*/
 }
 
+.hud-bottom-left:empty {
+	display: none;
+}
+
 .hide-now-playing .hud-bottom-left {
 	transition: transform 750ms 250ms ease-in, filter 0.5s ease-in;
 

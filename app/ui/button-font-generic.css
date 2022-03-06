@@ -236,10 +236,6 @@
 	transform: translateY(2px);
 }
 
-.input-generic .hud-character[data-value="55261"] {
-	display: none;
-}
-
 .input-generic .hud-character[data-value="55261"] +
 .hud-character[data-value="56335"],
 .input-generic .hud-character[data-value="55261"] +

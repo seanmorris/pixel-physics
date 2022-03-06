@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Sfx } from '../audio/Sfx';
 
 export class Switch extends PointActor
 {
@@ -65,8 +66,6 @@ export class Switch extends PointActor
 	onAttached()
 	{
 		this.box = this.findTag('div');
-
-		this.sample = new Audio('/Sonic/switch-activated.wav');
 	}
 
 	collideA(other, type)
@@ -190,10 +189,7 @@ export class Switch extends PointActor
 			return;
 		}
 
-		if(this.viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
+		Sfx.play('SWITCH_HIT');
 	}
 
 	sleep()

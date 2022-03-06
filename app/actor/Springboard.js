@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Sfx } from '../audio/Sfx';
 
 export class Springboard extends PointActor
 {
@@ -12,18 +13,6 @@ export class Springboard extends PointActor
 		this.args.height = 16;
 
 		this.args.animation = 'idle';
-	}
-
-	update()
-	{
-		super.update();
-
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/spring-activated.wav');
-			this.sample.currentTime = 0;
-			this.sample.volume = 0.05 + (Math.random() * 0.1);
-		}
 	}
 
 	collideA(other, type)
@@ -57,14 +46,7 @@ export class Springboard extends PointActor
 				other.args.ySpeed += -12 * power;
 			});
 
-			if(this.viewport && this.viewport.args.audio && this.sample)
-			{
-				this.sample.volume = 0.05 + power * 0.3;
-				this.sample.currentTime = 0;
-				this.sample.play();
-
-				console.log('A', power);
-			}
+			Sfx.play('SPRING_HIT');
 		}
 
 		if(-this.x + other.x <= -26)
@@ -86,13 +68,7 @@ export class Springboard extends PointActor
 
 			this.viewport.onFrameOut(5, () => this.args.animation = 'idle');
 
-			if(this.viewport && this.viewport.args.audio && this.sample)
-			{
-				this.sample.volume = 0.05 + power * 0.1;
-				this.sample.play();
-
-				console.log('B', power);
-			}
+			Sfx.play('SPRING_HIT');
 		}
 
 		if(other.args.ySpeed < 0)

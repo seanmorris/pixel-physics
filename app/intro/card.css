@@ -158,6 +158,17 @@
 	background-position: center;
 }
 
+.warning-svg {
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url(/ui/warning.svg);
+	width: 512px;
+	height: 288px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 .spindash-charge .chromium-logo {
 	transition: transform 0.5s ease-in;
 	transform: skew(-25deg) translateX(-40px);

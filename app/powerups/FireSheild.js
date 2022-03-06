@@ -1,5 +1,6 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
+import { Sfx } from '../audio/Sfx';
 
 export class FireSheild extends Sheild
 {
@@ -14,6 +15,11 @@ export class FireSheild extends Sheild
 		if(!viewport)
 		{
 			return;
+		}
+
+		if(host.controllable)
+		{
+			Sfx.play('FIRE_ACQUIRE');
 		}
 
 		const invertDamage = event => {
@@ -54,20 +60,6 @@ export class FireSheild extends Sheild
 
 	update(host)
 	{
-		if(!this.initSample)
-		{
-			this.initSample = new Audio('/Sonic/S3K_3E.wav');
-			this.initSample.volume = 0.15 + (Math.random() * -0.05);
-
-			this.sample = new Audio('/Sonic/S3K_43.wav');
-			this.sample.volume = 0.15 + (Math.random() * -0.05);
-
-			if(host.viewport.args.audio)
-			{
-				this.initSample.play();
-			}
-		}
-
 		if(!host.args.falling)
 		{
 			this.power = 15;
@@ -96,11 +88,7 @@ export class FireSheild extends Sheild
 			{
 				this.args.boosted = 'boosted';
 
-				if(this.sample)
-				{
-					this.sample.currentTime = 0;
-					this.sample.play();
-				}
+				Sfx.play('FIRE_DASH');
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}
@@ -133,11 +121,7 @@ export class FireSheild extends Sheild
 			{
 				this.args.boosted = 'boosted';
 
-				if(this.sample)
-				{
-					this.sample.currentTime = 0;
-					this.sample.play();
-				}
+				Sfx.play('FIRE_DASH');
 
 				host.viewport.onFrameOut(15, () => this.args.boosted = '');
 			}

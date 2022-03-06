@@ -1,7 +1,3 @@
-.input-keyboard .hud-character[data-value="55261"] {
-	display: none;
-}
-
 .input-keyboard .hud-character[data-value="9913"]{
 	background-image: url(/ui/arrow-keys-beveled.svg) !important;
 	background-position: 50% 50% !important;

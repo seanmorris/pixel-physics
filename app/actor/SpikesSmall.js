@@ -1,4 +1,5 @@
 import { Tag } from 'curvature/base/Tag';
+import { Sfx } from '../audio/Sfx';
 
 import { PointActor } from './PointActor';
 import { Spikes } from './Spikes';
@@ -39,11 +40,6 @@ export class SpikesSmall extends Spikes
 	update()
 	{
 		super.update();
-
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/0A3H.wav');
-		}
 
 		const breakSplit = 4;
 
@@ -98,12 +94,7 @@ export class SpikesSmall extends Spikes
 
 				this.args.type = 'actor-item actor-spikes actor-spikes-small actor-spikes-broken';
 
-				if(this.sample)
-				{
-					this.sample.volume = 0.7 + (Math.random() * -0.5);
-					this.sample.currentTime = 0.471;
-					this.sample.play();
-				}
+				Sfx.play('BLOCK_DESTROYED');
 			});
 
 			this.args.float = 8;

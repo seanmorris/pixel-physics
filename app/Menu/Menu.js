@@ -4,6 +4,8 @@ import { Cylinder } from '../effects/Cylinder';
 import { Pinch } from '../effects/Pinch';
 import { CharacterString } from '../ui/CharacterString';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Menu extends Card
 {
 	template = require('./main-menu.html');
@@ -190,67 +192,40 @@ export class Menu extends Card
 
 		const repeatCheck = (button) => controller.buttons[button]
 			&& (controller.buttons[button].time === 1
-			|| (controller.buttons[button].time >= 180
-				&& controller.buttons[button].time % 10 === 1
+			|| (controller.buttons[button].time >= 140
+				&& controller.buttons[button].time % 5 === 1
 			)
 			|| (controller.buttons[button].time > 30
-				&& controller.buttons[button].time < 180
-				&& controller.buttons[button].time % 20 === 1
+				&& controller.buttons[button].time < 140
+				&& controller.buttons[button].time % 15 === 1
 			));
+
 
 		if(repeatCheck(12))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node, true);
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
+			this.beep();
 		}
 		else if(repeatCheck(13))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node);
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
-
 			this.focus(next);
+
+			this.beep();
 		}
 		else if(repeatCheck(14))
 		{
 			this.currentItem && this.contract(this.currentItem);
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
+			this.beep();
 		}
 		else if(repeatCheck(15))
 		{
 			this.currentItem && this.expand(this.currentItem);
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
+			this.beep();
 		}
 
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
@@ -259,14 +234,7 @@ export class Menu extends Card
 
 			this.args.last = 'A';
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
+			this.beep();
 		}
 		else if(controller.buttons[1] && controller.buttons[1].time === 1)
 		{
@@ -274,17 +242,22 @@ export class Menu extends Card
 
 			this.args.last = 'B';
 
-			if(this.parent.args.audio)
-			{
-				this.tickSample.currentTime = 0;
-
-				this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-				this.tickSample.play();
-			}
+			this.beep();
 		}
 
-		next && this.onTimeout(100, ()=> this.focus(next));
+		next && this.focus(next);
+	}
+
+	beep()
+	{
+		if(!this.parent.args.audio)
+		{
+			return;
+		}
+
+		this.tickSample.volume = (0.8 + 0.2 * Math.random()) * Sfx.volume;
+		this.tickSample.currentTime = 0;
+		this.tickSample.play();
 	}
 
 	run(item, event)

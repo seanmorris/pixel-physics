@@ -3,6 +3,7 @@ import { PointActor } from './PointActor';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 import { CutScene } from './CutScene';
+import { Sfx } from '../audio/Sfx';
 
 export class MiniBoss extends Mixin.from(PointActor)
 {
@@ -21,10 +22,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		this.args.phase = 'idle';
 
-		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
-		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
-		this.dudSound = new Audio('/Sonic/S2_59.wav');
-
 		this.args.hitPoints = 8;
 
 		this.args.noseAngle = (Math.PI/2) * 3;
@@ -37,35 +34,13 @@ export class MiniBoss extends Mixin.from(PointActor)
 		this.args.facing    = 'left';
 
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
-
-		// this.clearScene = new CutScene({src: '/cutscenes/clear-seaview.json'});
 	}
 
 	onAttached()
 	{
 		this.autoAttr.get(this.box)['data-phase'] = 'phase';
 
-		// this.autoStyle.get(this.box)['--nose-angle'] = 'noseAngle';
-		// this.autoStyle.get(this.box)['--drill-push'] = 'drillPush';
-
-		// this.body  = new Tag(`<div class = "body">`);
-		// this.nose  = new Tag(`<div class = "nose">`);
-
-		// this.eyeBack = new Tag(`<div class = "eye-back">`);
-		// this.eyeFore = new Tag(`<div class = "eye-fore">`);
-
-		// this.body.appendChild(this.eyeBack.node);
-		// this.body.appendChild(this.eyeFore.node);
-
-		// this.body.appendChild(this.nose.node);
-
-		// this.sprite.appendChild(this.body.node);
-
-		// this.nose.appendChild(this.drill.node);
-
 		this.attractor = null;
-
-		// this.clearScene.viewport = this.viewport;
 	}
 
 	update()
@@ -105,47 +80,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		switch(this.args.phase)
 		{
-		// 	case 'idle':
-		// 		this.args.xSpeed = 0;
-		// 		this.args.ySpeed = 0;
-		// 		break;
-
-		// 	case 'intro':
-
-		// 		if(this.args.phaseFrameId > 30)
-		// 		{
-		// 			this.args.phase = 'stalking';
-		// 		}
-
-		// 		break;
-
-		// 	case 'alert':
-
-		// 		if(this.args.phaseFrameId > 4)
-		// 		{
-		// 			this.args.drillPush = 1;
-		// 			this.args.falling   = true
-		// 			this.args.float     = -1;
-
-		// 			if(this.y > this.args.alertTo)
-		// 			{
-		// 				this.args.ySpeed--;
-		// 			}
-		// 			else
-		// 			{
-		// 				this.args.y = this.args.alertTo;
-		// 				this.args.ySpeed = 0;
-		// 			}
-		// 		}
-
-		// 		if(this.args.phaseFrameId > 0)
-		// 		{
-		// 			this.args.phase = 'stalking';
-		// 		}
-
-		// 		break;
-
-
 			case 'damaged':
 
 				if(this.args.hitPoints > 0)
@@ -180,193 +114,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 				this.args.float = 0;
 				break;
 
-			// case 'stalking': {
-
-			// 	this.args.xSpeed = -xSign * Math.max(1, xDiff/25);
-			// 	this.args.ySpeed = -ySign * Math.max(1, yDiff/25);
-
-			// 	this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
-
-			// 	if(this.pointIsSafe(mainChar.x, mainChar.y - 128))
-			// 	{
-			// 		this.attractor.x = mainChar.x;
-			// 		this.attractor.y = mainChar.y - 128;
-			// 	}
-
-			// 	this.args.noseAngle = (Math.PI/2)*3;
-
-			// 	this.args.drillPush = 0;
-
-			// 	if(this.args.phaseFrameId > 10)
-			// 	{
-			// 		this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
-			// 	}
-
-			// 	if(this.args.phaseFrameId > 20)
-			// 	{
-			// 		this.args.drillPush = 0.5;
-			// 	}
-
-			// 	if(this.args.phaseFrameId > 45)
-			// 	{
-			// 		this.args.phase = 'ready';
-			// 	}
-
-			// 	break;
-			// }
-
-		// 	case 'buzzing': {
-
-		// 		if(this.pointIsSafe(mainChar.x, mainChar.y + -mainChar.args.height + -34))
-		// 		{
-		// 			this.attractor.x = mainChar.x;
-		// 			this.attractor.y = mainChar.y + -mainChar.args.height + -34;
-		// 		}
-
-		// 		this.args.xSpeed = -xSign * Math.max(1, xDiff/15);
-		// 		this.args.ySpeed = -ySign * Math.max(1, yDiff/15);
-
-		// 		this.args.noseAngle = (Math.PI/2)*3;
-
-		// 		this.args.drillPush = 1;
-
-		// 		if(this.args.phaseFrameId > 10)
-		// 		{
-		// 			this.args.drillPush = 0.5;
-		// 		}
-
-		// 		if(this.args.phaseFrameId > 20)
-		// 		{
-		// 			this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
-		// 		}
-
-		// 		if(this.args.phaseFrameId > 30)
-		// 		{
-		// 			this.args.phase = 'ready';
-		// 		}
-
-		// 		break;
-		// 	}
-
-		// 	case 'ready': {
-
-		// 		if(this.args.phaseFrameId < 10)
-		// 		{
-		// 			this.readySide = Math.sign(mainChar.xSpeedLast || mainChar.gSpeedLast);
-		// 		}
-
-		// 		if(this.pointIsSafe(mainChar.x + 128 * this.readySide, mainChar.y + -mainChar.args.height + -128))
-		// 		{
-		// 			this.attractor.x = mainChar.x + 128 * this.readySide;
-		// 			this.attractor.y = mainChar.y + -mainChar.args.height + -128;
-		// 		}
-
-		// 		this.args.xSpeed = -xSign * Math.max(1, xDiff/15);
-		// 		this.args.ySpeed = -ySign * Math.max(1, yDiff/15);
-
-		// 		this.args.ySpeed += Math.sin(this.args.frameId / 3) * 3;
-
-		// 		this.args.drillPush = 0.75;
-
-		// 		if(this.args.phaseFrameId > 40)
-		// 		{
-		// 			const dieRoll = Math.random();
-
-		// 			if(!mainChar.args.falling)
-		// 			{
-		// 				if(dieRoll > 0.5)
-		// 				{
-		// 					this.args.phase = 'swooping';
-		// 				}
-		// 				else
-		// 				{
-		// 					this.args.phase = 'attacking';
-		// 				}
-		// 			}
-		// 			else
-		// 			{
-		// 				if(dieRoll > 0.5)
-		// 				{
-		// 					this.args.phase = 'buzzing';
-		// 				}
-		// 				else
-		// 				{
-		// 					this.args.phase = 'stalking';
-		// 				}
-		// 			}
-		// 		}
-
-		// 		break;
-		// 	}
-
-		// 	case 'attacking': {
-		// 		this.args.float     = -1;
-		// 		this.args.falling   = true
-
-		// 		if(this.args.phaseFrameId > 100)
-		// 		{
-		// 			this.args.phase = 'stalking';
-		// 		}
-
-		// 		if(this.args.phaseFrameId < 50)
-		// 		{
-		// 			if(this.pointIsSafe(mainChar.x + 256 * (this.readySide || 1), mainChar.y - 32))
-		// 			{
-		// 				this.attractor.x = mainChar.x + 256 * (this.readySide || 1);
-		// 				this.attractor.y = mainChar.y - 32;
-		// 			}
-
-		// 			this.args.noseAngle = 0;
-		// 		}
-		// 		else
-		// 		{
-		// 			if(this.pointIsSafe(mainChar.x + 256 * (-this.readySide || -1), mainChar.y - 16))
-		// 			{
-		// 				this.attractor.x = mainChar.x + 256 * (-this.readySide || -1);
-		// 				this.attractor.y = mainChar.y - 16;
-		// 			}
-
-		// 			this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
-		// 		}
-
-		// 		this.args.drillPush = 1;
-
-		// 		this.args.float = -1;
-
-		// 		const mainSpeed = mainChar.args.xSpeed || mainChar.args.gSpeed;
-
-		// 		this.args.xSpeed = -xSign * Math.max(1, xDiff/10) + mainSpeed * 1.1;
-		// 		this.args.ySpeed = -ySign * Math.max(1, yDiff/10);
-
-		// 		break;
-		// 	}
-
-		// 	case 'swooping': {
-
-		// 		if(this.pointIsSafe(mainChar.x, mainChar.y - 32))
-		// 		{
-		// 			this.attractor.x = mainChar.x;
-		// 			this.attractor.y = mainChar.y - 32;
-		// 		}
-
-		// 		this.args.xSpeed += -xSign * Math.max(1, xDiff/10000);
-		// 		this.args.ySpeed += -ySign * Math.max(1, yDiff/10000);
-
-		// 		this.args.noseAngle = this.angleTo({x:mainChar.x, y: Math.max(this.y, mainChar.y)});
-
-		// 		this.args.drillPush = 1;
-
-		// 		this.args.float = -1;
-
-		// 		if(this.args.phaseFrameId > 180)
-		// 		{
-		// 			this.args.phase = 'stalking';
-		// 		}
-
-		// 		const mainSpeed = mainChar.args.xSpeed || mainChar.args.gSpeed;
-		// 		break;
-		// 	}
-
 			case 'exploding':
 				if(this.args.phaseFrameId === 90)
 				{
@@ -382,11 +129,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 					// this.clearScene.activate(mainChar, this, true);
 
-					if(this.viewport.args.audio)
-					{
-						this.dieSound.volume = 0.5;
-						this.dieSound.play();
-					}
+					Sfx.play('OBJECT_DESTROYED');
 				}
 
 				if(this.args.phaseFrameId > 90)
@@ -398,12 +141,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 				{
 					const explosion = new Tag('<div class = "particle-explosion">');
 
-					if(viewport.args.audio)
-					{
-						this.hitSound.currentTime = 0;
-						this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-						this.hitSound.play();
-					}
+					Sfx.play('BOSS_DAMAGED');
 
 					const xOff = this.args.width  * Math.random() - (this.args.width  / 2);
 					const yOff = this.args.height * Math.random() - (this.args.height / 2);
@@ -622,9 +360,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 		{
 			if(this.viewport.args.audio)
 			{
-				this.dudSound.currentTime = 0;
-				this.dudSound.volume = 0.35 + (Math.random() * -0.15);
-				this.dudSound.play();
+				Sfx.play('BOSS_DUDHIT');
 			}
 
 			if(other.args.falling)
@@ -703,12 +439,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		this.onNextFrame(() => this.args.phase = 'damaged');
 
-		if(this.viewport.args.audio)
-		{
-			this.hitSound.currentTime = 0;
-			this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-			this.hitSound.play();
-		}
+		Sfx.play('BOSS_DAMAGED');
 	}
 
 	pointIsSafe(x, y)

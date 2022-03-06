@@ -435,6 +435,7 @@ input::-webkit-inner-spin-button {
 }
 
 /*.screen-card-main-menu [data-wraps="select"] > select,*/
+.screen-card-pause-menu [data-wraps="select"] > select,
 .screen-card-main-menu [data-wraps="select"] > select {
 	/*display: none;*/
 	position: absolute;
@@ -442,6 +443,7 @@ input::-webkit-inner-spin-button {
 	top: 0;
 	bottom: 0;
 	right: 0;
+	color: transparent;
 	/*flex-grow: 0;
 	flex-shrink: 1;*/
 }

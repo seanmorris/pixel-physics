@@ -236,10 +236,6 @@
 	transform: translateY(2px);
 }
 
-.input-playstation .hud-character[data-value="55261"] {
-	display: none;
-}
-
 .input-playstation .hud-character[data-value="55261"] +
 .hud-character[data-value="56335"],
 .input-playstation .hud-character[data-value="55261"] +

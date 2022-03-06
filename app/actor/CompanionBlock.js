@@ -1,6 +1,8 @@
 import { MarbleBlock } from './MarbleBlock';
 import { LavaRegion } from '../region/LavaRegion';
 
+import { Sfx } from '../audio/Sfx';
+
 export class CompanionBlock extends MarbleBlock
 {
 	constructor(args = {})
@@ -10,8 +12,6 @@ export class CompanionBlock extends MarbleBlock
 		this.args.type = 'actor-item actor-marble-companion-block';
 
 		this.args.density = this.args.density || 9.5;
-
-		this.sample = new Audio('/Sonic/S3K_35.wav');
 
 		this.played = false
 	}
@@ -47,12 +47,7 @@ export class CompanionBlock extends MarbleBlock
 				if(!this.played)
 				{
 					this.onTimeout(50, () => {
-						if(this.viewport.args.audio)
-						{
-							this.sample.volume = 0.15 + (Math.random() * -0.05);
-
-							this.sample.play();
-						}
+						Sfx.play('PLAYER_DAMAGED');
 					});
 
 					if(typeof ga === 'function')

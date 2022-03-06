@@ -9,29 +9,6 @@
          "objects":[
                 {
                  "gid":2,
-                 "height":64,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":5504,
-                 "y":656
-                }, 
-                {
-                 "gid":2,
                  "height":32,
                  "id":140,
                  "name":"ring",
@@ -2674,6 +2651,64 @@
                  "width":32,
                  "x":728,
                  "y":1056
+                }, 
+                {
+                 "height":0,
+                 "id":505,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":5464,
+                 "y":896
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":506,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"sheild-water-monitor",
+                 "visible":true,
+                 "width":32,
+                 "x":5120,
+                 "y":896
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":507,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"sheild-fire-monitor",
+                 "visible":true,
+                 "width":32,
+                 "x":5184,
+                 "y":896
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2810,7 +2845,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":505,
+ "nextobjectid":508,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -1,5 +1,6 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
+import { Sfx } from '../audio/Sfx';
 
 export class ElectricSheild extends Sheild
 {
@@ -18,6 +19,11 @@ export class ElectricSheild extends Sheild
 		if(!viewport)
 		{
 			return;
+		}
+
+		if(host.controllable)
+		{
+			Sfx.play('ELECTRIC_ACQUIRE');
 		}
 
 		const invertDamage = event => {
@@ -81,11 +87,7 @@ export class ElectricSheild extends Sheild
 
 			this.onTimeout(250, () => this.args.boosted = '');
 
-			if(host.viewport.args.audio)
-			{
-				this.sample.currentTime = 0;
-				this.sample.play();
-			}
+			Sfx.play('ELECTRIC_JUMP');
 
 			if(host.xAxis && Math.sign(host.xAxis) !== Math.sign(host.args.xSpeed))
 			{
@@ -172,20 +174,6 @@ export class ElectricSheild extends Sheild
 				this.magnetTimeout = false;
 				this.args.boosted = '';
 			});
-		}
-
-		if(!this.sample && host.controllable)
-		{
-			this.initSample = new Audio('/Sonic/S3K_41.wav');
-			this.initSample.volume = 0.15 + (Math.random() * -0.05);
-
-			this.sample = new Audio('/Sonic/S3K_45.wav');
-			this.sample.volume = 0.15 + (Math.random() * -0.05);
-
-			if(host.viewport.args.audio)
-			{
-				this.initSample.play();
-			}
 		}
 
 		if(host.canFly)

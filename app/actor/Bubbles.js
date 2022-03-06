@@ -41,9 +41,6 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 		this.args.float  = -1;
 		this.args.static = true;
 
-		this.sample = new Audio('/Sonic/object-destroyed.wav');
-		this.sample.volume = 0.6 + (Math.random() * -0.3);
-
 		this.aiming = false;
 	}
 
