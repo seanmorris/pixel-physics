@@ -33,8 +33,6 @@ export class ElectricSheild extends Sheild
 				return;
 			}
 
-			console.log(event);
-
 			event.preventDefault();
 
 			const other = event.detail.other;

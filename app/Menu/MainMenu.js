@@ -357,13 +357,6 @@ export class MainMenu extends Menu
 				callback: () => parent.quit(true)
 			}
 		};
-
-		// this.bgm = new Audio('/Sonic/s3k-competition.mp3');
-
-		// this.bgm.volume = 0.5;
-		// this.bgm.playbackRate = 1;
-
-		// this.bgm.loop = true;
 	}
 
 	clear()
@@ -418,15 +411,9 @@ export class MainMenu extends Menu
 
 	onRendered()
 	{
-		// const debind = this.parent.args.bindTo('audio', (v) => {
-		// 	v ? this.onTimeout(500, () => this.bgm.play()) : this.bgm.pause();
-		// });
-
 		Bgm.play('MENU_THEME', true);
 
 		super.onRendered(event);
-
-		// this.onRemove(debind);
 
 		this.args.pinch = new Twist({
 			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64

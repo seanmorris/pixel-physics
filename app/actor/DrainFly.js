@@ -31,6 +31,12 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 
 		const mainChar = this.viewport.controlActor;
 
+		if(!mainChar)
+		{
+			this.args.phase = 'idle';
+			return;
+		}
+
 		switch(this.args.phase)
 		{
 			case 'idle':
@@ -38,7 +44,7 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 
 				if(mainChar.x + -this.x > -128)
 				{
-					this.args.phase   = 'alert';
+					this.args.phase = 'alert';
 				}
 
 				break;

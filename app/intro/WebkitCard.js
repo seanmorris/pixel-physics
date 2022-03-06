@@ -1,6 +1,6 @@
-import { Card } from './Card';
+import { SkippableCard } from './SkippableCard';
 
-export class WebkitCard extends Card
+export class WebkitCard extends SkippableCard
 {
 	template = require('./webkit-card.html');
 

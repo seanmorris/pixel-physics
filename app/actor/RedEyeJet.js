@@ -339,10 +339,8 @@ export class RedEyeJet extends PointActor
 
 			this.args.maxSpeed = 12;
 
-			if(this.args.phaseFrameId > 120)
+			if(this.args.phaseFrameId > 240)
 			{
-				console.log(this.args.phaseFrameId);
-
 				this.args.phase = 'attacking';
 			}
 		}

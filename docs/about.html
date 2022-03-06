@@ -310,6 +310,8 @@ section.footer {
 
 <p>The Javascript will also example the MP3 for an id3v2 header. These appear in a surprisingly convenient format, right at the start of the MP3, if present. If such a header is found, the game will display the track name and artist in the botton left. The underlying hander emits events when the music changes, so the overarching system can easily trigger such alerts at relevent moments.</p>
 
+<p>Sound effects are loaded and managed in a similar way, however they are allowed to play concurrently. Each sample is mapped to a pool of HTML Audio objects. If a request to play a sample is made, the system will first look for any objects in the pool that are not currently playing. If none are found, it will select the one that is the furthest along to restart. Before I began pooling objects, each on-screen object maintained its own Audio instances. This was unexpectedly expensive, and I got a decent performance boost once I began pooling pregenerated instances.</p>
+
 <h2 id="idle-demo">Idle Demo / Attract Mode</h2>
 <p>The system can record inputs and object states, index them to frames, and then play them back using a lot of the same code from the networking layer. This can be used to play a demo when the system is left idle on the title screen for long enough, as a sort of 'attract mode,' although the its triggered manually in the current implementation via the pause menu (under  "demos.")</p>
 

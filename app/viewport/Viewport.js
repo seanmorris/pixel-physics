@@ -62,9 +62,6 @@ import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Spawn as SpawnTask } from '../console/task/Spawn';
 
-// import { RtcClientTask } from '../network/RtcClientTask';
-// import { RtcServerTask } from '../network/RtcServerTask';
-
 import { RtcClient } from '../network/RtcClient';
 import { RtcServer } from '../network/RtcServer';
 
@@ -85,7 +82,6 @@ const Run = Symbol('run');
 
 export class Viewport extends View
 {
-	secretSample = new Audio('/doom/dssecret.wav');
 	secretsFound = new Set;
 	template     = require('./viewport.html');
 
@@ -179,8 +175,6 @@ export class Viewport extends View
 
 		this.sprites = new Bag;
 		this.world   = null;
-
-		// const ready = this.tileMap.ready;
 
 		let noIntro = Router.query.nointro;
 
@@ -330,8 +324,6 @@ export class Viewport extends View
 
 		});
 
-		// console.log(this.debugSequence);
-
 		this.args.pauseMenu = new PauseMenu({}, this);
 
 		this.particleObserver = new IntersectionObserver((entries, observer) => {
@@ -442,8 +434,6 @@ export class Viewport extends View
 
 			this.bgm = this.meta.bgm;
 
-			console.log(this.args.audio);
-
 			if(!this.args.audio)
 			{
 				event.preventDefault();
@@ -489,16 +479,9 @@ export class Viewport extends View
 			}
 		});
 
-		Bgm.addEventListener('stop', event => {
-			// console.log('STOP', event);
-		});
-
-		Bgm.addEventListener('pause', event => {
-			// console.trace('PAUSE', event.detail);
-		});
-
+		Bgm.addEventListener('stop', event => {});
+		Bgm.addEventListener('pause', event => {});
 		Bgm.addEventListener('unpause', event => {
-			// console.log(this.args.audio, 'UNPAUSE', event.detail);
 			this.args.audio || event.preventDefault();
 		});
 
@@ -721,10 +704,6 @@ export class Viewport extends View
 		this.args.xBlur = 0;
 		this.args.yBlur = 0;
 
-		// this.args.controlCard = View.from(require('../cards/sonic-controls.html'));
-		this.args.controlCard = View.from(require('../cards/basic-controls.html'));
-		this.args.moveCard    = View.from(require('../cards/basic-moves.html'));
-
 		this.args.isRecording = false;
 		this.args.isReplaying = false;
 
@@ -780,10 +759,6 @@ export class Viewport extends View
 							, 'spawn': SpawnTask
 						}
 					});
-
-					// this.args.subspace.tasks.bindTo((v,k) => {
-					// 	console.log(k,v);
-					// });
 				}
 
 				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
@@ -1017,7 +992,7 @@ export class Viewport extends View
 		const enableKeyboardMessage = ' Click here to enable keyboard control. ';
 		const enableAudioMessage = ' Click here to enable audio. ';
 
-		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 31500, () => {
+		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 8000, () => {
 			this.args.bindTo('interacted', v => {
 				const focusMeMessage = (!v && audioWasEnabled)
 					? enableAudioMessage
@@ -1066,8 +1041,6 @@ export class Viewport extends View
 			, '--height': this.args.height
 			, '--scale': this.args.scale
 		});
-
-		// this.update();
 
 		if(!this.startTime)
 		{
@@ -1272,9 +1245,6 @@ export class Viewport extends View
 		Keyboard.get().reset();
 
 		this.args.started = false;
-
-		// Bgm.stop('MENU_THEME');
-		// Bgm.stop('TITLE_THEME');
 
 		Bgm.unpause();
 
@@ -1551,7 +1521,6 @@ export class Viewport extends View
 		if(!this.args.networked && controller.buttons[1011] && controller.buttons[1011].time > 0)
 		{
 			this.args.pauseMenu.input(controller);
-			// this.args.paused = 1;
 		}
 
 		if(!this.args.networked && !this.args.paused)
@@ -2253,34 +2222,6 @@ export class Viewport extends View
 				continue;
 			}
 
-			// if(this.args.networked)
-			// {
-			// 	if(![
-			// 		'layer-switch'
-			// 		, 'ring'
-			// 		, 'companion-block'
-			// 		, 'region'
-			// 		, 'force-region'
-			// 		, 'shade-region'
-			// 		, 'rolling-region'
-			// 		, 'water-region'
-			// 		, 'lava-region'
-			// 		, 'block'
-			// 		, 'switch'
-			// 		, 'base-region'
-			// 		, 'water-region'
-			// 		, 'force-region'
-			// 		, 'rolling-region'
-			// 		, 'lava-region'
-			// 		, 'q-block'
-			// 		, 'sheild-fire-monitor'
-			// 		, 'sheild-water-monitor'
-			// 		, 'sheild-electric-monitor'
-			// 	].includes(objType)){
-			// 		continue;
-			// 	}
-			// }
-
 			const objClass = ObjectPalette[objType];
 			const rawActor = objClass.fromDef(objDef);
 
@@ -2310,15 +2251,9 @@ export class Viewport extends View
 				actor.detach();
 			}
 
-			/* */
-
-			// actor.onRendered();
-
 			if(actor.controllable)
 			{
 				actor.name = objDef.name;
-
-				// this.auras.add( actor );
 
 				actor.args.display = actor.defaultDisplay || null;
 			}
@@ -2444,21 +2379,6 @@ export class Viewport extends View
 		}
 
 		return true;
-
-		// if((camLeft < actorRight && camRight > actorLeft)
-		// 	&& camTop < actor.y && camBottom > actorTop
-		// ){
-		// 	return true;
-		// }
-		// else if((actorLeft < camRight && actorRight > camLeft)
-		// 	&& actorTop < camBottom && actor.y > camTop
-		// ){
-		// 	return true;
-		// }
-		// else
-		// {
-		// 	return false;
-		// }
 	}
 
 	spawnActors()
@@ -3205,33 +3125,6 @@ export class Viewport extends View
 			this.moveCamera();
 
 			this.applyMotionBlur();
-
-			if(this.controlActor.args.name === 'seymour'
-				&& this.controlActor.y < 3840
-				&& this.controlActor.x > 38400
-				&& this.controlActor.standingOn
-				&& this.controlActor.standingOn.isVehicle
-			){
-				this.args.secret = 'aurora';
-
-				if(!this.secretsFound.has('seymour-aurora'))
-				{
-					if(this.args.audio && this.secretSample)
-					{
-						this.secretSample.currentTime = 0;
-						this.secretSample.volume = 0.25;
-						this.secretSample.play();
-					}
-
-					this.showStatus(10000, ' A secret is revealed ');
-
-					this.secretsFound.add('seymour-aurora');
-				}
-			}
-			else
-			{
-				this.args.secret = '';
-			}
 		}
 
 		this.updated.forEach(actor => {
@@ -3491,23 +3384,6 @@ export class Viewport extends View
 		actor[ColCell] = cell;
 
 		return cell;
-
-		// const cells = this.getColCell(actor);
-
-		// const originalCells = actor[ColCell] || new Set;
-
-		// cells.forEach(cell => cell.add(actor));
-
-		// originalCells.forEach(originalCell => {
-		// 	if(!cells.has(originalCell))
-		// 	{
-		// 		originalCell.delete(actor);
-		// 	}
-		// });
-
-		// actor[ColCell] = cells;
-
-		// return cells;
 	}
 
 	getNearbyColCells(actor)
@@ -3882,13 +3758,6 @@ export class Viewport extends View
 		const onOpen = event => {
 			console.log('Connection opened!');
 			this.args.chatBox  = new ChatBox({pipe: server});
-			// const actors = this.actors.list;
-
-			// if(actors[1])
-			// {
-			// 	actors[1].args.name = 'Player 2';
-			// }
-
 			this.args.playerId = 1;
 		};
 
@@ -3927,8 +3796,6 @@ export class Viewport extends View
 
 		this.server = server;
 
-		// console.log(server);
-
 		return server;
 	}
 
@@ -3945,15 +3812,8 @@ export class Viewport extends View
 
 		const onOpen = event => {
 			console.log('Connection opened!')
-			// const actors = this.actors.list;
 			this.args.chatBox = new ChatBox({pipe: client});
-			// if(actors[0])
-			// {
-			// 	actors[0].args.name = 'Player 1';
-			// }
-
 			this.args.playerId = 2;
-
 		};
 
 		const onMessage = event => {
@@ -3991,8 +3851,6 @@ export class Viewport extends View
 		this.listen(client, 'message', onMessage);
 
 		this.client = client;
-
-		// console.log(client);
 
 		return client;
 	}

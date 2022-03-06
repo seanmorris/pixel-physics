@@ -22,8 +22,6 @@ export class Spawner extends PointActor
 		const point = this.viewport.objDefs.get(this.args.point);
 		const type  = ObjectPalette[ this.args.spawn ];
 
-		// console.log(point, type);
-
 		if(!point || !type)
 		{
 			return

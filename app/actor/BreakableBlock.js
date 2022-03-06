@@ -271,7 +271,10 @@ export class BreakableBlock extends Block
 
 		if(!this.broken)
 		{
-			Sfx.play('BLOCK_DESTROYED');
+			this.viewport.onFrameOut(
+				Math.floor(Math.random() * 3)
+				, () => Sfx.play('BLOCK_DESTROYED')
+			);
 		}
 
 		this.viewport.onFrameOut(4, () => {

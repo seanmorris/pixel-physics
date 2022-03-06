@@ -27,8 +27,6 @@ export class Menu extends Card
 		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
-
-		this.tickSample = new Audio('/Sonic/switch-activated.wav');
 	}
 
 	onRendered(event)
@@ -255,9 +253,7 @@ export class Menu extends Card
 			return;
 		}
 
-		this.tickSample.volume = (0.8 + 0.2 * Math.random()) * Sfx.volume;
-		this.tickSample.currentTime = 0;
-		this.tickSample.play();
+		Sfx.play('SWITCH_HIT');
 	}
 
 	run(item, event)
@@ -361,8 +357,6 @@ export class Menu extends Card
 		const title = element.getAttribute('data-title');
 		const item  = this.args.items[ title ];
 
-		// console.log(element, this.args.items, title, item);
-
 		if(item.input === 'number')
 		{
 			item.setting = Number(item.setting) - 1;
@@ -409,34 +403,16 @@ export class Menu extends Card
 				}
 			}
 		}
-
-		// if(item && item.input === 'select')
-		// {
-		// 	event.preventDefault();
-		// 	event.stopPropagation();
-		// 	event.stopImmediatePropagation();
-
-		// 	if(event.key === 'ArrowLeft')
-		// 	{
-		// 		this.cycleSelect(item, -1);
-		// 	}
-
-		// 	if(event.key === 'ArrowRight')
-		// 	{
-		// 		this.cycleSelect(item, 1);
-		// 	}
-		// }
 	}
 
 	change(event, title)
 	{
-		// if(!this.currentItem)
-		// {
-		// 	return;
-		// }
+		const item = this.args.items[ title ];
 
-		// const title  = this.currentItem.getAttribute('data-title');
-		const item   = this.args.items[ title ];
+		if(!item)
+		{
+			return;
+		}
 
 		item.setting = event.target.value;
 
@@ -448,12 +424,6 @@ export class Menu extends Card
 	toggle(event, item, $view, $subview, $parent)
 	{
 		event.preventDefault();
-
-		// item.setting = !item.setting;
-
-		// this.selectListChanged(item, title);
-
-		// item.set(item.setting);
 
 		item.setting = !item.setting;
 		item._value.args.value = item.setting ? 'ON' : 'OFF';
@@ -511,8 +481,6 @@ export class Menu extends Card
 
 	selectListRendered(event, item, title, $view, $subview, $parent)
 	{
-		console.log(item.input);
-
 		if(item.input === 'select')
 		{
 			item.setting = (item.get ? item.get() : item.default) ?? undefined;
@@ -596,11 +564,7 @@ export class Menu extends Card
 
 		if(this.parent.args.audio && !silent)
 		{
-			this.tickSample.currentTime = 0;
-
-			this.tickSample.volume = 0.2 + 0.2 * Math.random();
-
-			this.tickSample.play();
+			this.beep();
 		}
 	}
 }
