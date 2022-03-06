@@ -75,6 +75,8 @@ Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
 Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3');
 Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3');
 
+Bgm.register('NO_WAY', '/audio/sonic/no-way.mp3');
+
 /*** SFX ***/
 
 Sfx.register('PLAYER_DAMAGED', '/Sonic/S3K_35.wav');

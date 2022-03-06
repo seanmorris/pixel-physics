@@ -36,7 +36,7 @@ export class Tails extends PointActor
 		this.args.gravity   = 0.5;
 
 		this.args.width  = 16;
-		this.args.height = 32;
+		this.args.height = 34;
 
 		this.args.normalHeight  = 32;
 		this.args.rollingHeight = 28;;

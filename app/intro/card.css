@@ -212,7 +212,28 @@
   100% { transform: rotate(3600deg); }
 }
 
+.screen-card-no-way-card .no-way {
+	width: 512px;
+	height: 288px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background-image: url(/Sonic/no-way-shaded.png);
+	transition: transform 1s 1.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	background-repeat: no-repeat;
+	/*mix-blend-mode: lighten;*/
+	z-index: 0;
+}
+
+.screen-card-no-way-card .hud-character-string {
+	position: relative;
+	top: -100px;
+	z-index: 1;
+}
+
 .screen-card-title-screen-card .main-elements-container {
+	width: 512px;
+	height: 288px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
@@ -223,6 +244,7 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+
 }
 
 .screen-card-title-screen-card.opening .title-emblem {

@@ -51,6 +51,24 @@
 	/*text-align: center;*/
 }
 
+.screen-card-main-menu li:focus::before,
+.screen-card-main-menu li:focus-within::before,
+.screen-card-main-menu li.focused::before {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	left: -12px;
+	background-repeat: no-repeat;
+	background-position-x: -0px;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-top: 3px;
+	background-size: 900% 200%;
+	background-image: url(/Sonic/cursor.png);
+	content: '';
+	animation: cursor-animate 0.5s infinite steps(8, start);
+}
+
 .screen-card-main-menu :focus .title,
 .screen-card-main-menu li:focus-within .title,
 .screen-card-main-menu .focused .title {
@@ -362,6 +380,7 @@
 	scroll-snap-type: y mandatory;
 	margin: 0;
 	padding: 0;
+	padding-left: 16px;
 	/*padding-bottom: 1em;*/
 }
 
@@ -527,6 +546,11 @@ input::-webkit-inner-spin-button {
 		drop-shadow( -1px -1px 0px black);
 }
 
+.character-preview ~ span {
+	position: relative;
+	top: 3px;
+}
+
 .character-preview[data-character=Sonic] .character {
 	background-image: url(/Sonic/sonic.png);
 	background-position-y: -896px;
@@ -660,5 +684,14 @@ input::-webkit-inner-spin-button {
 	}
 	100% {
 		background-position-x: -128px;
+	}
+}
+
+@keyframes cursor-animate {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -64px;
 	}
 }

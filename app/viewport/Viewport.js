@@ -33,6 +33,7 @@ import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
 import { GamepadCard } from '../intro/GamepadCard';
 import { WarningCard } from '../intro/WarningCard';
+import { NoWayCard } from '../intro/NoWayCard';
 import { SeanCard } from    '../intro/SeanCard';
 
 import { PauseMenu } from   '../Menu/PauseMenu.js';
@@ -170,7 +171,18 @@ export class Viewport extends View
 
 		if(mapUrl)
 		{
-			this.loadMap({mapUrl});
+			this.loadMap({mapUrl}).catch(error => {
+
+				console.warn(error);
+
+				this.args.titlecard = new Series({cards:[new NoWayCard({
+					errorString: `Cannot load map "${inputMapUrl}"!`
+					, timeout:   -1
+				})]}, this);
+
+				this.args.titlecard.play();
+
+			});
 		}
 
 		this.sprites = new Bag;

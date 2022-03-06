@@ -34,6 +34,11 @@ export class RedEyeJet extends PointActor
 	{
 		let name;
 
+		if(this.hanging.has(other))
+		{
+			return false;
+		}
+
 		if(this.hanging.has(MiniMace))
 		{
 			name = 'MINI-MACE';
@@ -321,20 +326,22 @@ export class RedEyeJet extends PointActor
 		{
 			if(this.hanging.has(MiniMace))
 			{
-				Bgm.play('ACT-BOSS');
 				for(const mace of this.hanging.get(MiniMace))
 				{
 					mace.args.ropeLength = 80;
 				}
+
+				Bgm.play('ACT-BOSS', true);
 			}
 
 			if(this.hanging.has(MegaMace))
 			{
-				Bgm.play('ZONE-BOSS');
 				for(const mace of this.hanging.get(MegaMace))
 				{
 					mace.args.ropeLength = 96;
 				}
+
+				Bgm.play('ZONE-BOSS', true);
 			}
 
 			this.args.maxSpeed = 12;

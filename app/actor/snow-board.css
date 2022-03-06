@@ -1,5 +1,5 @@
 .actor-item.actor-snow-board {
-	z-index: var(--z);
+	z-index: calc(var(--z) - 100);
 }
 
 .actor-item.actor-snow-board .sprite {
