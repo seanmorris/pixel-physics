@@ -5,6 +5,8 @@ import { Tag } from 'curvature/base/Tag';
 
 import { SkidDust } from '../behavior/SkidDust';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Eggrobo extends PointActor
 {
 	constructor(...args)
@@ -45,7 +47,6 @@ export class Eggrobo extends PointActor
 
 		if(this.viewport.args.audio && !this.shootingSample)
 		{
-			this.shootingSample = new Audio('/Sonic/shot-fired.wav');
 			this.thrusterSound = new Audio('/Sonic/mecha-sonic-thruster.wav');
 
 			this.thrusterSound.loop = true;
@@ -242,12 +243,7 @@ export class Eggrobo extends PointActor
 			this.box.setAttribute('data-shooting', 'false');
 		});
 
-		if(this.viewport.args.audio && this.shootingSample)
-		{
-			this.shootingSample.volume = 0.6 + (Math.random() * -0.3);
-			this.shootingSample.currentTime = 0;
-			this.shootingSample.play();
-		}
+		Sfx.play('SHOT_FIRED');
 
 		this.args.shotCoolDown = 4;
 	}

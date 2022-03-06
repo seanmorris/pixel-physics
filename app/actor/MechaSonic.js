@@ -1,7 +1,7 @@
 import { PointActor } from './PointActor';
 import { Vehicle } from './Vehicle';
 import { Tag } from 'curvature/base/Tag';
-
+import { Sfx } from '../audio/Sfx';
 import { SkidDust } from '../behavior/SkidDust';
 
 export class MechaSonic extends PointActor
@@ -74,13 +74,8 @@ export class MechaSonic extends PointActor
 
 		if(this.viewport.args.audio && !this.thrusterSound)
 		{
-			this.takeoffSound = new Audio('/Sonic/mecha-sonic-takeoff.wav');
 			this.thrusterSound = new Audio('/Sonic/mecha-sonic-thruster.wav');
 			this.scrapeSound = new Audio('/Sonic/mecha-sonic-scrape.wav');
-			this.thrusterCloseSound = new Audio('/Sonic/mecha-sonic-thruster-close.wav');
-
-			this.thrusterCloseSound.volume  = 0.25;
-			this.takeoffSound.volume = 0.5;
 			this.scrapeSound.volume = 0.1;
 
 			this.thrusterSound.loop = true;
@@ -135,7 +130,7 @@ export class MechaSonic extends PointActor
 				if(!this.args.takeoffPlayed)
 				{
 					this.args.takeoffPlayed = true;
-					this.takeoffSound && this.takeoffSound.play();
+					Sfx.play('MECHASONIC_TAKEOFF');
 				}
 
 				this.args.accel = 0.75;
@@ -243,7 +238,7 @@ export class MechaSonic extends PointActor
 				this.args.animation = 'curling';
 
 				this.onTimeout(200, ()=>{
-					this.thrusterCloseSound && this.thrusterCloseSound.play();
+					Sfx.play('MECHASONIC_SLAP');
 
 					if(this.args.falling)
 					{
@@ -282,7 +277,7 @@ export class MechaSonic extends PointActor
 
 	landSound()
 	{
-		this.thrusterCloseSound && this.thrusterCloseSound.play();
+		Sfx.play('MECHASONIC_SLAP');
 	}
 
 	sleep()
@@ -383,8 +378,7 @@ export class MechaSonic extends PointActor
 
 		if(this.takeoffSound)
 		{
-			this.takeoffSound.currentTime = 0;
-			this.takeoffSound.play();
+			Sfx.play('MECHASONIC_TAKEOFF');
 		}
 	}
 

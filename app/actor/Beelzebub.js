@@ -4,6 +4,8 @@ import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 import { CutScene } from './CutScene';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Beelzebub extends Mixin.from(PointActor)
 {
 	constructor(args, parent)
@@ -20,10 +22,6 @@ export class Beelzebub extends Mixin.from(PointActor)
 		this.args.damagers = new Map;
 
 		this.args.phase = 'idle';
-
-		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
-		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
-		this.dudSound = new Audio('/Sonic/S2_59.wav');
 
 		this.args.hitPoints = 8;
 
@@ -383,11 +381,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 					this.clearScene.activate(mainChar, this, true);
 
-					if(this.viewport.args.audio)
-					{
-						this.dieSound.volume = 0.5;
-						this.dieSound.play();
-					}
+					Sfx.play('OBJECT_DESTROYED');
 				}
 
 				if(this.args.phaseFrameId > 90)
@@ -399,12 +393,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 				{
 					const explosion = new Tag('<div class = "particle-explosion">');
 
-					if(viewport.args.audio)
-					{
-						this.hitSound.currentTime = 0;
-						this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-						this.hitSound.play();
-					}
+					Sfx.play('BOSS_DAMAGED');
 
 					const xOff = this.args.width  * Math.random() - (this.args.width  / 2);
 					const yOff = this.args.height * Math.random() - (this.args.height / 2);
@@ -617,9 +606,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 		{
 			if(this.viewport.args.audio)
 			{
-				this.dudSound.currentTime = 0;
-				this.dudSound.volume = 0.35 + (Math.random() * -0.15);
-				this.dudSound.play();
+				Sfx.play('BOSS_DUDHIT');
 			}
 
 			if(other.args.falling)
@@ -695,12 +682,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		this.args.phase = 'damaged';
 
-		if(this.viewport.args.audio)
-		{
-			this.hitSound.currentTime = 0;
-			this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-			this.hitSound.play();
-		}
+		Sfx.play('BOSS_DAMAGED');
 	}
 
 	pointIsSafe(x, y)

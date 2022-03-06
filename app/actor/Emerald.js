@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Emerald extends PointActor
 {
 	constructor(...args)
@@ -22,12 +24,6 @@ export class Emerald extends PointActor
 		{
 			return;
 		}
-
-		if(viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/S3K_9C.wav');
-			this.sample.volume = 0.25 + (Math.random() * 0.5);
-		}
 	}
 
 	collideA(other)
@@ -43,10 +39,7 @@ export class Emerald extends PointActor
 
 		if(!this.args.gone)
 		{
-			if(this.viewport.args.audio && this.sample)
-			{
-				this.sample.play();
-			}
+			Sfx.play('EMERALD_COLLECTED');
 
 			this.args.type = 'actor-item actor-emerald collected gone emerald-' + (this.args.color || 'white');
 

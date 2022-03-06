@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Sfx } from '../audio/Sfx';
+
 import { Tag } from 'curvature/base/Tag';
 import { View } from 'curvature/base/View';
 
@@ -91,9 +93,6 @@ export class Sonic extends PointActor
 		this.args.spriteSheet = this.spriteSheet = '/Sonic/sonic.png';
 
 		this.hyperSheet = 0;
-
-		this.sampleRingLoss = new Audio('/Sonic/ring-loss.wav');
-		this.sampleBoltDash = new Audio('/Sonic/S3K_4E.wav');
 
 		this.args.bindTo('falling', v => {
 
@@ -1306,11 +1305,7 @@ export class Sonic extends PointActor
 				this.args.boltCount = 0;
 				this.args.boltDash  = true;
 
-				if(this.viewport.args.audio)
-				{
-					this.sampleBoltDash.currentTime = 0;
-					this.sampleBoltDash.play();
-				}
+				Sfx.play('LIGTNING_STRIKE');
 
 				this.args.opacity = 0;
 
@@ -1590,11 +1585,7 @@ export class Sonic extends PointActor
 	{
 		super.loseRings(count, age);
 
-		if(this.viewport.args.audio && this.sampleRingLoss)
-		{
-			this.sampleRingLoss.volume = 0.15 + (Math.random() * -0.05);
-			this.sampleRingLoss.play();
-		}
+		Sfx.play('RINGS_SCATTERED');
 	}
 
 	collideA(other)

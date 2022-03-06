@@ -1,6 +1,7 @@
 import { Tag } from 'curvature/base/Tag';
 
 import { Bgm } from '../audio/Bgm';
+import { Sfx } from '../audio/Sfx';
 
 import { PointActor } from './PointActor';
 import { Projectile } from './Projectile';
@@ -25,10 +26,6 @@ export class RedEyeJet extends PointActor
 
 		this.args.hitPoints = this.args.hitPoints || 8;
 		this.args.maxSpeed  = 9;
-
-		this.dieSound = new Audio('/Sonic/object-destroyed.wav');
-		this.hitSound = new Audio('/Sonic/S3K_6E.wav');
-		this.dudSound = new Audio('/Sonic/S2_59.wav');
 
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 	}
@@ -87,11 +84,8 @@ export class RedEyeJet extends PointActor
 				this.args.falling = true;
 				this.args.ySpeed  = -12;
 				this.noClip = true;
-				if(this.viewport.args.audio)
-				{
-					this.dieSound.volume = 0.5;
-					this.dieSound.play();
-				}
+
+				Sfx.play('OBJECT_DESTROYED');
 			});
 
 			viewport.onFrameOut(100, () => {
@@ -133,11 +127,7 @@ export class RedEyeJet extends PointActor
 
 		if(type === 2)
 		{
-			if(this.viewport.args.audio)
-			{
-				this.dudSound.volume = 0.35 + (Math.random() * -0.15);
-				this.dudSound.play();
-			}
+			Sfx.play('BOSS_DUDHIT');
 
 			other.args.ySpeed = Math.max(7, Math.abs(other.args.ySpeed));
 		}
@@ -157,11 +147,7 @@ export class RedEyeJet extends PointActor
 
 		if(type === 1)
 		{
-			if(this.viewport.args.audio)
-			{
-				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-				this.hitSound.play();
-			}
+			Sfx.play('BOSS_DAMAGED');
 
 			damaged = true;
 
@@ -183,11 +169,7 @@ export class RedEyeJet extends PointActor
 
 		if(type === 3)
 		{
-			if(this.viewport.args.audio)
-			{
-				this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-				this.hitSound.play();
-			}
+			Sfx.play('BOSS_DAMAGED');
 
 			damaged = true;
 
@@ -290,11 +272,7 @@ export class RedEyeJet extends PointActor
 					other.args.ySpeed = -Math.floor(Math.abs(ySpeed)) || -4;
 				});
 
-				if(this.viewport.args.audio)
-				{
-					this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-					this.hitSound.play();
-				}
+				Sfx.play('BOSS_DAMAGED');
 			}
 
 			const gSpeed = other.args.gSpeed;
@@ -429,12 +407,7 @@ export class RedEyeJet extends PointActor
 			{
 				const explosion = new Tag('<div class = "particle-explosion">');
 
-				if(viewport.args.audio)
-				{
-					this.hitSound.currentTime = 0;
-					this.hitSound.volume = 0.35 + (Math.random() * -0.15);
-					this.hitSound.play();
-				}
+				Sfx.play('BOSS_DAMAGED');
 
 				const xOff = this.args.width  * Math.random() - (this.args.width  / 2);
 				const yOff = this.args.height * Math.random() - (this.args.height / 2);

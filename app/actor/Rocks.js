@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 import { Projectile } from '../actor/Projectile';
 import { Tag }        from 'curvature/base/Tag';
+import { Sfx }        from '../audio/Sfx';
 
 export class Rocks extends PointActor
 {
@@ -132,17 +133,6 @@ export class Rocks extends PointActor
 		});
 	}
 
-	update()
-	{
-		super.update();
-
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/rock-smash.wav');
-			this.sample.volume = 0.3 + (Math.random() * -0.2);
-		}
-	}
-
 	collideA(other, type)
 	{
 		if(this.args.gone)
@@ -213,10 +203,7 @@ export class Rocks extends PointActor
 			return;
 		}
 
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
+		Sfx.play('ROCKS_DESTROYED');
 
 		const particleA =this.particleA;
 		const particleB =this.particleB;

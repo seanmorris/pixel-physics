@@ -1,7 +1,8 @@
 import { Block } from './Block';
 import { Orb } from './Orb';
 
-import { Tag  } from 'curvature/base/Tag';
+import { Tag } from 'curvature/base/Tag';
+import { Sfx } from '../audio/Sfx';
 
 export class BreakableBlock extends Block
 {
@@ -62,11 +63,6 @@ export class BreakableBlock extends Block
 
 	update()
 	{
-		if(this.viewport && this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/0A3H.wav');
-		}
-
 		super.update();
 	}
 
@@ -273,11 +269,9 @@ export class BreakableBlock extends Block
 			this.box.classList.add('broken');
 		}
 
-		if(this.sample && !this.broken)
+		if(!this.broken)
 		{
-			this.sample.volume = 0.7 + (Math.random() * -0.2);
-			this.sample.currentTime = 0.4 + (Math.random() * -0.1);
-			this.sample.play();
+			Sfx.play('BLOCK_DESTROYED');
 		}
 
 		this.viewport.onFrameOut(4, () => {

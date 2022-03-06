@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Sfx } from '../audio/Sfx';
+
 export class Ring extends PointActor
 {
 	template = `<div class  = "point-actor [[type]]">
@@ -145,13 +147,7 @@ export class Ring extends PointActor
 
 		if(this.viewport.args.audio)
 		{
-			if(!this.sample)
-			{
-				this.sample = new Audio('/Sonic/ring-collect.wav');
-				this.sample.volume = 0.15 + (Math.random() * -0.05);
-			}
-
-			this.sample.play();
+			Sfx.play('RING_COLLECTED');
 		}
 
 		this.viewport.onFrameOut(5, () => {

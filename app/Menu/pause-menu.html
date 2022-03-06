@@ -12,7 +12,8 @@
 
 			<ul cv-ref = "bound" cv-each = "items:item:title">
 
-				<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(event, item):c;" tabindex="0">
+				<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(event, item):c; keyup(event, item):c;" tabindex="0">
+					[[item.prefix]]
 					<span class = "title">[[item._title]]</span>
 					<span class = "subtext">[[item.subtext]]</span>
 					<span cv-if = "item.input" cv-is = "string">
@@ -27,8 +28,22 @@
 							<option value = "0">off</option>
 						</select>
 					</span>
+					<span cv-if = "item.input" cv-is = "select" class = "field">
+						:
+						<span data-wraps = "select">
+							[[item._selectValue]]
+							<select
+								cv-on    = "input:change(event, title); listRendered:selectListRendered(event, item, title, $view, $subview, $parent);"
+								cv-ref   = "options"
+								cv-bind  = "item.setting"
+								tabindex = "-1"
+								cv-each  = "item.options:option">
+								<option value = "[[option]]">[[option]]</option>
+							</select>
+						</span>
+					</span>
+					[[item.suffix]]
 				</li>
-
 		</ul>
 
 		</div>

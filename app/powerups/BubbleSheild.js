@@ -1,5 +1,6 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
+import { Sfx } from '../audio/Sfx';
 
 export class BubbleSheild extends Sheild
 {
@@ -14,6 +15,11 @@ export class BubbleSheild extends Sheild
 		if(!viewport)
 		{
 			return;
+		}
+
+		if(host.controllable)
+		{
+			Sfx.play('WATER_ACQUIRE');
 		}
 
 		const invertDamage = event => {
@@ -84,20 +90,6 @@ export class BubbleSheild extends Sheild
 			});
 		}
 
-		if(!this.sample)
-		{
-			this.initSample = new Audio('/Sonic/S3K_3F.wav');
-			this.initSample.volume = 0.15 + (Math.random() * -0.05);
-
-			this.sample = new Audio('/Sonic/S3K_44.wav');
-			this.sample.volume = 0.15 + (Math.random() * -0.05);
-
-			if(host.viewport.args.audio)
-			{
-				this.initSample.play();
-			}
-		}
-
 		if(host.canFly)
 		{
 			return;
@@ -120,11 +112,7 @@ export class BubbleSheild extends Sheild
 
 				this.args.bouncing = '';
 
-				if(host.viewport.args.audio)
-				{
-					this.sample.currentTime = 0;
-					this.sample.play();
-				}
+				Sfx.play('WATER_BOUNCE');
 
 				if(host.viewport.settings.rumble)
 				{

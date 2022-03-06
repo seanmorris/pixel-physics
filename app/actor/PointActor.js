@@ -5248,6 +5248,12 @@ export class PointActor extends View
 			return;
 		}
 
+		if(this.args.jumping && !this.lightDashed &&!this.dashed && this.args.ySpeed < -8)
+		{
+			this.args.ySpeed *= 0.5;
+			return;
+		}
+
 		if(this.args.jumping && !this.lightDashed &&!this.dashed && this.args.ySpeed < -4)
 		{
 			this.args.ySpeed = -4;

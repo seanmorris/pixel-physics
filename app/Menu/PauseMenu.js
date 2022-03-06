@@ -120,4 +120,9 @@ export class PauseMenu extends Menu
 			this.args.hideMenu = '';
 		}
 	}
+
+	reset()
+	{
+		this.args.items = this.items;
+	}
 }

@@ -55,7 +55,7 @@ export const SettingsMenu = (parent) => { return {
 			}
 		}
 
-		, 'Gamepad & Keyboard': {
+		, 'Input': {
 			children: {
 				'Button Select Test': {
 					input: 'select'
@@ -135,7 +135,7 @@ export const SettingsMenu = (parent) => { return {
 				, 'SFX': {
 					input: 'number'
 					, subtext: 'Sound effect music volume - 0% - 100%'
-					, available: 'unavailable'
+					// , available: 'unavailable'
 					, set: value => parent.settings.sfxVol = value
 					, get: () => parent.settings.sfxVol
 					, max: 100

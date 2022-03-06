@@ -1,5 +1,6 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
+import { Sfx } from '../audio/Sfx';
 
 export class Rocket extends PointActor
 {
@@ -31,12 +32,6 @@ export class Rocket extends PointActor
 		if(!this.viewport)
 		{
 			return;
-		}
-
-		if(this.viewport.args.audio && !this.sample)
-		{
-			this.sample = new Audio('/Sonic/object-destroyed.wav');
-			this.sample.volume = 0.6 + (Math.random() * -0.3);
 		}
 
 		super.update();
@@ -107,10 +102,7 @@ export class Rocket extends PointActor
 
 		setTimeout(() => viewport.particles.remove(explosion), 512);
 
-		if(viewport.args.audio && this.sample)
-		{
-			this.sample.play();
-		}
+		Sfx.play('OBJECT_DESTROYED');
 
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
