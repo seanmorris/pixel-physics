@@ -1659,9 +1659,12 @@ export class PointActor extends View
 
 				for(const region of regionsBelow)
 				{
-					if((this.broad || this.y + 1 === region.y - region.args.height || this.y + 0 === region.y - region.args.height)
-						&& !this.args.falling
-					){
+					if(this.broad || (
+						!this.args.falling
+						&& (this.y === region.y - region.args.height
+							|| this.y + 1 === region.y - region.args.height
+						)
+					)){
 						if(Math.max(Math.abs(this.args.gSpeed), Math.abs(this.args.xSpeed)) >= region.skimSpeed)
 						{
 							const speed = this.args.falling ? Math.abs(this.args.xSpeed) : Math.abs(this.args.gSpeed);
@@ -1675,7 +1678,7 @@ export class PointActor extends View
 								falling = false;
 								region.skim(this);
 							}
-							else
+							else if(this.broad)
 							{
 								this.args.ySpeed--;
 							}

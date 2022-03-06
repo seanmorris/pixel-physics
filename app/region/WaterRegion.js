@@ -83,7 +83,7 @@ export class WaterRegion extends Region
 
 		if(!this.switch && this.args.switch)
 		{
-			this.switch = this.viewport.actorsById[ this.args.switch ]
+			this.switch = this.viewport.actorsById[ this.args.switch ];
 
 			if(this.switch)
 			{
