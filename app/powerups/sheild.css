@@ -307,9 +307,6 @@
 .actor-chalmers .electric-sheild,
 .actor-chalmers .bubble-sheild,
 .actor-chalmers .fire-sheild,
-.actor-seymour .electric-sheild,
-.actor-seymour .bubble-sheild,
-.actor-seymour .fire-sheild,
 .actor-eggrobo .electric-sheild,
 .actor-eggrobo .bubble-sheild,
 .actor-eggrobo .fire-sheild,
@@ -319,9 +316,46 @@
 .actor-mecha-sonic .electric-sheild,
 .actor-mecha-sonic .bubble-sheild,
 .actor-mecha-sonic .fire-sheild {
-	transform: scale(1.5) translate(4px, -4px);
+	transform: scale(1.5) translate(0px, -13px);
 }
 
+.actor-seymour .electric-sheild,
+.actor-seymour .bubble-sheild,
+.actor-seymour .fire-sheild {
+	transform: scale(1.5) translate(0px, -8px);
+}
+
+.actor-seymour[data-facing=left] .electric-sheild,
+.actor-seymour[data-facing=left] .bubble-sheild,
+.actor-seymour[data-facing=left] .fire-sheild {
+	transform: scale(1.5) translate(0px, -8px);
+}
+
+.actor-seymour[data-falling=true] .electric-sheild,
+.actor-seymour[data-falling=true] .bubble-sheild,
+.actor-seymour[data-falling=true] .fire-sheild {
+	transform: scale(1.5) translate(0px, -13px);
+}
+
+.actor-seymour[data-falling=true][data-facing=left] .electric-sheild,
+.actor-seymour[data-falling=true][data-facing=left] .bubble-sheild,
+.actor-seymour[data-falling=true][data-facing=left] .fire-sheild {
+	transform: scale(1.5) translate(0px, -13px);
+}
+
+.actor-seymour[data-animation=rolling] .electric-sheild,
+.actor-seymour[data-animation=rolling] .bubble-sheild,
+.actor-seymour[data-animation=rolling] .fire-sheild {
+	transform: scale(1.5) translate(0px, -0px);
+}
+
+.actor-seymour[data-facing=left][data-animation=rolling] .electric-sheild,
+.actor-seymour[data-facing=left][data-animation=rolling] .bubble-sheild,
+.actor-seymour[data-facing=left][data-animation=rolling] .fire-sheild {
+	transform: scale(1.5) translate(0px, -0px);
+}
+
+/*
 .actor-mecha-sonic[data-animation=jumping] .electric-sheild,
 .actor-mecha-sonic[data-animation=jumping] .bubble-sheild,
 .actor-mecha-sonic[data-animation=jumping] .fire-sheild,
@@ -329,7 +363,7 @@
 .actor-mecha-sonic[data-animation=rolling] .bubble-sheild,
 .actor-mecha-sonic[data-animation=rolling] .fire-sheild {
 	transform: scale(1.5) translate(-0px, -2px);
-}
+}*/
 
 .star-sheild {
 	position: absolute;
