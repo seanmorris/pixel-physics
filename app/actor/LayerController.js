@@ -28,7 +28,7 @@ export class LayerController extends PointActor
 		this.args.hidden = true;
 	}
 
-	update()
+	updateStart()
 	{
 		if(!this.viewport)
 		{

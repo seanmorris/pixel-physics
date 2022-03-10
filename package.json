@@ -9,12 +9,9 @@
     "build": "brunch build --production"
   },
   "dependencies": {
-    "curvature": "^0.0.66-k",
-    "pokemon-parser": "^0.0.5-c",
+    "curvature": "^0.0.68-b",
     "subspace-client": "^0.0.8",
-    "subspace-console": "^0.0.1-d",
-    "three": "^0.128.0",
-    "three-collada-loader": "^0.0.1"
+    "subspace-console": "^0.0.1-d"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -22,7 +19,7 @@
     "@babel/preset-env": "^7.12.10",
     "auto-reload-brunch": "^2",
     "babel-brunch": "^7.0.1",
-    "babel-minify": "^0.1.12",
+    "babel-minify": "^0.5.1",
     "brunch": "^4.0.0",
     "brunch-preval": "^0.0.3",
     "clean-css-brunch": "^3",
