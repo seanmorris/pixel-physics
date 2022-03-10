@@ -475,6 +475,11 @@ export class Viewport extends View
 
 				played.then(() => {
 
+					if(!this.args.started)
+					{
+						return;
+					}
+
 					this.onFrameOut(60, () => this.args.hideNowPlaying = '');
 
 					if(!this.timers.has(Bgm))
@@ -1178,6 +1183,10 @@ export class Viewport extends View
 			{
 				Bgm.play(this.meta.bgm, true);
 			}
+		}
+		else
+		{
+			Bgm.fadeOut(250);
 		}
 
 		if(!this.args.audio)
@@ -2275,7 +2284,7 @@ export class Viewport extends View
 		{
 			let startType = 'player-start';
 
-			if(character.args.height > 44 && this.defsByName.has('wide-player-start'))
+			if(!character.canRoll && this.defsByName.has('wide-player-start'))
 			{
 				startType = 'wide-player-start';
 			}
@@ -3289,6 +3298,7 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+		this.interact();
 
 		if(typeof ga === 'function')
 		{
@@ -3760,8 +3770,8 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				// {urls: 'stun:stun1.l.google.com:19302'},
-				// {urls: 'stun:stun2.l.google.com:19302'}
+				{urls: 'stun:stun1.l.google.com:19302'},
+				{urls: 'stun:stun2.l.google.com:19302'},
 			]
 		};
 
@@ -3785,7 +3795,7 @@ export class Viewport extends View
 				{
 					if(packet.frame.frame > this.args.frameId)
 					{
-						this.args.frameId = -1 + packet.frame.frame;
+						this.args.frameId = packet.frame.frame;
 					}
 
 					if(packet.frame.input)
@@ -3798,6 +3808,8 @@ export class Viewport extends View
 					{
 						Object.assign(actor.args, packet.frame.args);
 					}
+
+					actor.noClip = actor.args.dead;
 				}
 
 			}
@@ -3815,8 +3827,8 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				// {urls: 'stun:stun1.l.google.com:19302'},
-				// {urls: 'stun:stun2.l.google.com:19302'}
+				{urls: 'stun:stun1.l.google.com:19302'},
+				{urls: 'stun:stun2.l.google.com:19302'},
 			]
 		};
 
@@ -3840,7 +3852,7 @@ export class Viewport extends View
 				{
 					if(packet.frame.frame > this.args.frameId)
 					{
-						this.args.frameId = -1 + packet.frame.frame;
+						this.args.frameId = packet.frame.frame;
 					}
 
 					if(packet.frame.input)
@@ -3852,7 +3864,10 @@ export class Viewport extends View
 					if(packet.frame.args)
 					{
 						Object.assign(actor.args, packet.frame.args);
+
 					}
+
+					actor.noClip = actor.args.dead;
 				}
 
 			}
@@ -3897,6 +3912,8 @@ export class Viewport extends View
 			, mode:    this.controlActor.args.mode
 
 			, groundAngle: this.controlActor.args.groundAngle
+			, respawning:  this.controlActor.args.respawning
+			, dead:        this.controlActor.args.dead ? true : false
 		};
 
 		return {frame, input, args};

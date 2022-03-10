@@ -166,6 +166,8 @@ export class Menu extends Card
 		{
 			element.classList.add('focused');
 			element.focus();
+
+			element.addEventListener('blur', () => this.blur(element), {once:true});
 		}
 
 		this.currentItem = element;
@@ -270,11 +272,7 @@ export class Menu extends Card
 
 		if(item.input)
 		{
-			if(event)
-			{
-				event.currentTarget.focus();
-				this.focus(event.currentTarget);
-			}
+			this.focus(item.input);
 		}
 
 		if(item.children)

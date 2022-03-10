@@ -242,6 +242,9 @@ export class PointActor extends View
 		this.args.rings = 0;
 		this.args.coins = 0;
 
+		this.args.dead  = false;
+		this.args.respawning = false;
+
 		this.ringSet = new Set;
 		this.ringDoc = new DocumentFragment;
 
@@ -1098,7 +1101,7 @@ export class PointActor extends View
 				toX = this.def.get('x');
 				toY = this.def.get('y');
 			}
-			else if((this.args.width > 20 || this.args.height > 44) && this.viewport.defsByName.get('wide-player-start'))
+			else if(!this.canRoll && this.viewport.defsByName.get('wide-player-start'))
 			{
 				const startDef = this.viewport.defsByName.get('wide-player-start');
 

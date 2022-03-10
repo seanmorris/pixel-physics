@@ -3,6 +3,8 @@ import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 
 export class RtcClient extends Mixin.with(EventTargetMixin)
 {
+	candidateTimeout = 500;
+
 	constructor(rtcConfig)
 	{
 		super();
@@ -51,6 +53,9 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		const candidates = new Set;
 
 		return new Promise(accept => {
+
+			let timeout = null;
+
 			this.peerClient.addEventListener('icecandidate', event => {
 
 				if(!event.candidate)
@@ -59,13 +64,18 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 				}
 				else
 				{
-					console.log(event.candidate);
-
 					candidates.add(event.candidate);
 				}
 
-				accept(this.peerClient.localDescription);
+				if(timeout)
+				{
+					clearTimeout(timeout);
+				}
 
+				timeout = setTimeout(
+					() => accept(this.peerClient.localDescription)
+					, this.candidateTimeout
+				);
 			});
 		});
 	}

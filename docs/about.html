@@ -204,7 +204,7 @@ section.footer {
 
 </figure>
 
-<p>SVG is used in a lot of different ways in this project, which is relatively unexpected since 16 bit Genesis games are raster graphics, and SVG is generally concerned with vector images. However, it came in handy with its <code>clip-path</code> to generate a simple spotlight effect.</p>
+<p>SVG is used in a lot of different ways in this project, which is relatively unexpected since 16 bit Genesis games used raster graphics, and SVG is generally concerned with vector images. However, it came in handy with its <code>clip-path</code> to generate a simple spotlight effect.</p>
 
 <figure>
 <iframe width="540" height="305" src="https://www.youtube.com/embed/XZF0769Rmlk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -234,7 +234,7 @@ section.footer {
 <p>The most satisfying part here is that all of these SVG based effects can be applied to any normal HTML element.</p>
 
 <h2 id="png">PNG</h2>
-<p>To correctly cycle the colors of Hypersonic’s pallet while animations run, I’d need to use an additional 8 sprite sheets, one for each color, and white as a transitional state. While this would have been a workable solution, I didn’t find it acceptable. Rather than re-draw the entire thing using canvas, I decided to use a PNG with indexed color. Once I had that I opened up the PNG as raw bytes in JavaScript, I located the pallet data and replaced the colors there. This way I only need to change <b>one byte</b> for each color I want to replace. Once I’ve done that I can throw the resulting bytes into a blob, which I can take the URL for and use it in CSS with a transition on <code>background-image</code> to cycle the sprite sheets while animations are playing. This can be applied to any sprite in the system, so long as its using a PNG with indexed colors.</p>
+<p>To correctly cycle the colors of Hypersonic’s pallet while animations run, I’d need to use an additional 8 sprite sheets, one for each color, and white as a transitional state. While this would have been a workable solution, I didn’t find it acceptable. Rather than re-draw the entire thing using canvas, I decided to use a PNG with indexed color. I opened up the PNG as raw bytes in JavaScript, located the pallet data and replaced the colors there. This way I only need to change <b>one byte</b> for each color I want to replace. Once I’ve done that I can throw the resulting bytes into a blob, which I can take the URL for and use it in CSS with a transition on <code>background-image</code> to cycle the sprite sheets while animations are playing. This can be applied to any sprite in the system, so long as its using a PNG with indexed colors.</p>
 
 <p>This all happens in real time when the users presses the button to transform:</p>
 
@@ -282,7 +282,7 @@ section.footer {
 
 <h1 id="input">Input</h1>
 
-<p>To ensure users can make use of whatever input method they prefer, the system uses the HTML5 gamepad API. All input feeds into an abstract controller, where all input is mapped to either a button or an axis. Keyboard keys may also be mapped to buttons or axes within the abstract controller to unify all input. buttons may also be mapped to axes so the d-pad and left stick function in similar ways. Digital buttons will have discrete <code>0</code> or <code>1</code> for their <code>pressed</code> property. Analog buttons will have a value in the interval between <code>0</code> and <code>1</code>, inclusive. Axes will have a value between <code>-1</code> and <code>1</code>. Button press and release times are tracked, and can be compared to the current time to determine press times, hold times and release delays. This allows the game to detect things like quick double-taps.</p>
+<p>To ensure users can make use of whatever input method they prefer, the system uses the HTML5 gamepad API. All input feeds into an abstract controller, where all input is mapped to either a button or an axis. Keyboard keys may also be mapped to buttons or axes within the abstract controller to unify all input. Buttons may also be mapped to axes so the d-pad and left stick function in similar ways. Digital buttons will have discrete <code>0</code> or <code>1</code> for their <code>pressed</code> property. Analog buttons will have a value in the interval between <code>0</code> and <code>1</code>, inclusive. Axes will have a value between <code>-1</code> and <code>1</code>. Button press and release times are tracked, and can be compared to the current time to determine press times, hold times and release delays. This allows the game to detect things like quick double-taps.</p>
 <p>If the controller supports rumble, the game will detect that automatically. Not only does the browser allow the game to vibrate the controller, it actually allows allows one to specify a <em>specific</em> type if vibration to play. Try hitting a spring or using the bounce attack from the bubble shield. You’ll notice a markedly different feeling from the two.</p>
 
 <h2 id="menus-text">Menus &amp; Text</h2>
@@ -331,7 +331,7 @@ section.footer {
 <figcaption>The id3 tags from MP3s drive the track information in the botton left.</figcaption>
 </figure>
 
-<p>The Javascript will also example the MP3 for an id3v2 header. These appear in a surprisingly convenient format, right at the start of the MP3, if present. If such a header is found, the game will display the track name and artist in the botton left. The underlying hander emits events when the music changes, so the overarching system can easily trigger such alerts at relevent moments.</p>
+<p>The Javascript will also check the MP3 for an id3v2 header. These appear in a surprisingly convenient format, right at the start of the MP3, if present. If such a header is found, the game will display the track name and artist in the botton left. The underlying hander emits events when the music changes, so the overarching system can easily trigger such alerts at relevent moments.</p>
 
 <p>Sound effects are loaded and managed in a similar way, however they are allowed to play concurrently. Each sample is mapped to a pool of HTML Audio objects. If a request to play a sample is made, the system will first look for any objects in the pool that are not currently playing. If none are found, it will select the one that is the furthest along to restart. Before I began pooling objects, each on-screen object maintained its own Audio instances. This was unexpectedly expensive, and I got a decent performance boost once I began pooling pregenerated instances.</p>
 
@@ -353,10 +353,6 @@ section.footer {
 </figure>
 </article>
 
-<section class = "footer">
-
-	&copy 2022 Sean Morris
-
-</section>
+<section class = "footer">&copy 2022 Sean Morris</section>
 
 </body>
