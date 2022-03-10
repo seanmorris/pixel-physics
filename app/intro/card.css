@@ -139,7 +139,7 @@
 
 .chromium-logo:after {
 	position: absolute;
-	background-image: url(/ui/chromium-logo.svg);
+	background-image: url(/ui/chrome-logo.svg);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
