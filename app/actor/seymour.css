@@ -30,8 +30,8 @@
 
 .actor-item.actor-seymour[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: -128px;
-	animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias)) * 160ms) + 320ms);
+	--sprite-offset-y: -256px;
+	animation: seymour-run steps(8) infinite 480ms;
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after,
@@ -39,7 +39,18 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -192px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	animation: seymour-jump steps(4) infinite 96ms;
+	animation: seymour-jump steps(4) infinite 160ms;
+}
+
+.actor-item.actor-seymour[data-animation="springing"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -320px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	transform: rotate(calc(1rad * var(--air-angle)));
+}
+
+.actor-item.actor-seymour[data-facing=left][data-animation="springing"] .sprite:after {
+	transform: scaleX(1) rotate(calc(180deg + calc(-1rad * var(--air-angle))));
 }
 
 .actor-item.actor-seymour[data-animation="rolling"] .sprite:after {
@@ -62,7 +73,7 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-512px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

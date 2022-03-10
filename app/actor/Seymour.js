@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
+import { Spring } from './Spring';
 import { SkidDust } from '../behavior/SkidDust';
 
 export class Seymour extends PointActor
@@ -48,6 +49,8 @@ export class Seymour extends PointActor
 
 		if(!falling)
 		{
+			this.springing = false;
+
 			if(this.yAxis > 0)
 			{
 				this.args.crouching = true;
@@ -64,19 +67,19 @@ export class Seymour extends PointActor
 
 			if(this.args.rolling)
 			{
-				this.box.setAttribute('data-animation', 'rolling');
+				this.args.animation = 'rolling';
 			}
 			else if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.args.animation = 'standing';
 			}
-			else if(speed > maxSpeed * 0.25)
+			else if(speed > maxSpeed * 0.75)
 			{
-				this.box.setAttribute('data-animation', 'running');
+				this.args.animation = 'running';
 			}
 			else if(this.args.moving && gSpeed)
 			{
-				this.box.setAttribute('data-animation', 'walking');
+				this.args.animation = 'walking';
 			}
 			// else if(this.args.crouching || (this.args.standingOn && this.args.standingOn.isVehicle))
 			// {
@@ -84,12 +87,18 @@ export class Seymour extends PointActor
 			// }
 			else
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.args.animation = 'standing';
 			}
 		}
 		else if(this.args.jumping)
 		{
-			this.box.setAttribute('data-animation', 'jumping');
+			this.args.animation = 'jumping';
+		}
+
+		if(this.args.falling && this.springing)
+		{
+			this.args.groundAngle = 0;
+			this.args.animation = 'springing';
 		}
 
 		super.update();
@@ -128,6 +137,21 @@ export class Seymour extends PointActor
 			// this.args.gSpeedMax = this.gSpeedMaxNormal;
 			// this.args.jumpForce = this.jumpForceNormal;
 			// this.args.accel     = this.accelNormal;
+		}
+	}
+
+	collideA(other)
+	{
+		if(other instanceof Spring)
+		{
+			this.onNextFrame(()=>{
+				if(!this.args.falling)
+				{
+					return;
+				}
+				this.springing = true;
+				this.args.animation = 'springing';
+			});
 		}
 	}
 
