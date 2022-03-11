@@ -38,3 +38,9 @@
     font-style: normal;
 
 }
+
+@font-face {
+    font-family: JuliaMono;
+    src: url("/fonts/julia-mono/JuliaMono-Regular.woff2") format("woff2");
+    text-rendering: optimizeLegibility;
+}

@@ -69,6 +69,7 @@
 }
 
 .screen-card-sean-card.opening {
+	opacity: 0;
 }
 
 .screen-card-title-screen-card {
@@ -156,6 +157,7 @@
 	height: 128px;
 	background-repeat: no-repeat;
 	background-position: center;
+	transition: opacity 0.5s ease-out;
 }
 
 .warning-svg {
@@ -170,7 +172,10 @@
 	transition: opacity 0.5s ease-out;
 }
 
+.closed .warning-svg,
+.closed .gamepad-svg,
 .closing .warning-svg,
+.closing .gamepad-svg,
 .opening .warning-svg {
 	opacity: 0;
 }

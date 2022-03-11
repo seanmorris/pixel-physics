@@ -2157,8 +2157,16 @@ export class PointActor extends View
 			this.twister.args.x = this.args.x;
 			this.twister.args.y = this.args.y;
 
-			this.twister.args.xOff = this.args.xOff;
-			this.twister.args.yOff = this.args.yOff;
+			if(this.args.mode)
+			{
+				this.twister.args.xOff = this.args.xOff
+			}
+			else
+			{
+				this.twister.args.xOff = this.args.xOff + -8 * this.args.direction;
+			}
+
+			this.twister.args.yOff = this.args.yOff + 16;
 
 			this.twister.args.width  = this.args.width;
 			this.twister.args.height = this.args.height;
@@ -3407,11 +3415,11 @@ export class PointActor extends View
 					{
 						this.args.falling = false;
 
-						// this.controller.rumble && this.controller.rumble({
-						// 	duration: 80,
-						// 	strongMagnitude: 0.0,
-						// 	weakMagnitude: Math.max(40, Math.min(Math.abs(this.args.ySpeed),10)) / 40
-						// });
+						this.controller.rumble && this.controller.rumble({
+							duration: 80,
+							strongMagnitude: 0.0,
+							weakMagnitude: Math.max(40, Math.min(Math.abs(this.args.ySpeed),10)) / 40
+						});
 					}
 
 					this.args.groundAngle = newAngle;
@@ -4694,6 +4702,13 @@ export class PointActor extends View
 
 		this.args.xSpeed = -2.25 * direction;
 		this.args.ySpeed = -8.00;
+
+		this.args.flying = false;
+
+		this.args.dashed   = false;
+		this.args.lightDashed = false;
+		this.args.lightDashing = false;
+
 		this.args.gSpeed = 0;
 
 		this.args.standingOn = false;
@@ -5301,6 +5316,8 @@ export class PointActor extends View
 				});
 			});
 
+			this.twister.args.yOff = 16;
+
 			this.twister.render(this.twistFilter.node);
 
 			this.onRemove(() => this.twistFilter.remove());
@@ -5329,8 +5346,6 @@ export class PointActor extends View
 					[`--${k}`]: v, filter: `url(#pinch-${this.args.id})`
 				});
 			});
-
-			this.args.yOff = 16;
 
 			this.pincherBg.render(this.pinchFilterBg);
 
@@ -5530,7 +5545,7 @@ export class PointActor extends View
 
 		this.spawnRings = this.spawnRings || 0;
 
-		const maxSpawn = count || Math.min(this.args.rings, 18);
+		const maxSpawn = count || Math.min(this.args.rings, 16);
 
 		let current = 0;
 		const toSpawn = maxSpawn - this.spawnRings;
@@ -5564,7 +5579,7 @@ export class PointActor extends View
 
 			ring.dropped = true;
 
-			this.viewport.onFrameOut(3 + (this.spawnRings % 3), () => {
+			this.viewport.onFrameOut(4 + (this.spawnRings % 4), () => {
 				this.viewport.spawn.add({object:ring});
 			});
 
@@ -5574,17 +5589,17 @@ export class PointActor extends View
 			// ring.args.xSpeed = this.args.xSpeed || this.args.gSpeed;
 			// ring.args.ySpeed = this.args.ySpeed;
 
-			this.viewport.onFrameOut(6 * circle, () => {
-				ring.args.xSpeed += -cos * circle + (-0.5 + Math.random()) * 3;
-				ring.args.ySpeed += -sin * circle + (-0.5 + Math.random()) * 3;
+			this.viewport.onFrameOut(16 * circle, () => {
+				ring.args.xSpeed += -cos * circle * 4 + -(0.5 + Math.random());
+				ring.args.ySpeed += -sin * circle * 4 + -(0.5 + Math.random());
 			});
 
-			if(current % 3 === 1)
+			if(current % 4 === 2)
 			{
 				ring.args.decoration = true;
 				ring.noClip = true;
 
-				this.viewport.onFrameOut(120, () => {
+				this.viewport.onFrameOut(100, () => {
 					this.viewport.actors.remove(ring);
 					if(this.spawnRings > 0)
 					{

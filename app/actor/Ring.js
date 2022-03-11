@@ -22,7 +22,7 @@ export class Ring extends PointActor
 		this.args.dropped = this.args.dropped ?? true;
 		this.args.gone    = false;
 		this.args.gravity = 0.40;
-		this.args.delay   = this.args.delay ?? 64;
+		this.args.delay   = this.args.delay ?? 48;
 	}
 
 	update()
@@ -73,6 +73,11 @@ export class Ring extends PointActor
 
 		super.update();
 
+		if(this.getMapSolidAt(this.x + this.args.xSpeed * this.args.direction, this.y + -8))
+		{
+			this.args.xSpeed *= -1;
+		}
+
 		if((this.dropped || this.scattered) && (!this.args.falling || !this.args.ySpeed))
 		{
 			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
@@ -97,6 +102,11 @@ export class Ring extends PointActor
 
 	collideA(other)
 	{
+		if(other instanceof this.constructor)
+		{
+			return;
+		}
+
 		if(!this.viewport || this.args.gone || this.args.ignore)
 		{
 			return false;
