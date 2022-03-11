@@ -376,7 +376,7 @@ export class MainMenu extends Menu
 	{
 		super.input(controller);
 
-		if(this.args.pinch)
+		if(this.args.twist)
 		{
 			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0);
 			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0);
@@ -385,10 +385,19 @@ export class MainMenu extends Menu
 
 			if(controller.buttons[6])
 			{
-				pressure = 0.25 + controller.buttons[6].pressure - controller.buttons[7].pressure;
+				pressure = controller.buttons[6].pressure - controller.buttons[7].pressure;
 			}
 
-			this.args.pinch.args.scale =  pressure * 256;
+			this.args.twist.args.scale = pressure * -256;
+
+			this.args.twist.args.dx = 64*1.618 * xAxis;
+			this.args.twist.args.dy = 64*1.000 * yAxis;
+		}
+
+		if(this.args.pinch)
+		{
+			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
+			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
 
 			this.args.pinch.args.dx = 64*1.618 * xAxis;
 			this.args.pinch.args.dy = 64*1.000 * yAxis;
@@ -421,7 +430,7 @@ export class MainMenu extends Menu
 
 		super.onRendered(event);
 
-		this.args.pinch = new Twist({
+		this.args.twist = new Twist({
 			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
 		});
 

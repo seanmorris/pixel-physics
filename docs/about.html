@@ -208,7 +208,7 @@ section.footer {
 
 <figure>
 <iframe width="540" height="305" src="https://www.youtube.com/embed/XZF0769Rmlk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<figcaption><a target = "_blank" href = "https://www.smashingmagazine.com/2021/09/deep-dive-wonderful-world-svg-displacement-filtering/">Displacement mapping</a> is most obvious when Sonic is on a brige, or using his doublespin attack in the air.</figcaption>
+<figcaption><a target = "_blank" href = "https://www.smashingmagazine.com/2021/09/deep-dive-wonderful-world-svg-displacement-filtering/">Displacement mapping</a> is most obvious when Sonic is on a bridge, or using his doublespin attack in the air.</figcaption>
 </figure>
 
 <p>Even more powerfully, its able to generate displacement effects using color maps, which I used to create the wave effect for underwater areas. You’ll notice that although Sonic’s sprite is a single HTML element, the effect is only applied to the area with the water region. You can also see displacement effects when Sonic is skidding or charging a spindash, when you double tap the jump button and perform a doublespin, or when he’s standing on a bridge.</p>
@@ -308,6 +308,14 @@ section.footer {
 <p>Buttons are referred to by the unicode characters ⓿, ❶, ❷ and so on in the source text. You can see this live by highlighting the in-game prompts, they're normal HTML text. The dpad/arrow keys can be referred to as a whole with ✚, and specific directions use ← → ↑ ↓. These are rendered as <code>&lt;SPAN&gt;s</code> with a background image determined in CSS, or simply fall back to the letter of the keyboard key they are mapped to if the keyboard is being used (this is also an image, the original glyph has <code>color:transparent;</code> applied). All that is required to switch the display from one control scheme to another is to change a single CSS class on a parent element. All this results in strings of text that are rendered with images but still are selectable like any other text on a webpage.</p>
 
 <h1 id="analytics">Analytics</h1>
+
+<figure>
+<a target = "_blank" href = "./about/analytics.png">
+	<img width="540" src = "./about/analytics.png"/ >
+</a>
+<figcaption>Layer-switching enables obstables like loops to be traversed.</figcaption>
+</figure>
+
 <p>Like most web pages, the game makes use of Google Analytics. I was able to get a pretty high level of detail from it. I can see in real time when a user starts a level, connects a game controller, takes damage, and even whenever a ring is collected. The game reports all this information via GA Events. It also logs and transmits the current framerate after every 10 seconds of gameplay, so I can take statistics and ensure my optimizations actually improve things.</p>
 
 <h1 id="networking">Networking</h1>
@@ -315,7 +323,6 @@ section.footer {
 
 <figure>
 <iframe width="540" height="305" src="https://www.youtube.com/embed/wN8fnwJEbjo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 <figcaption>The system can directly exchange data between two peer's browsers over the internet with no intermediary server.</figcaption>
 
 </figure>

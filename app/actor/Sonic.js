@@ -599,11 +599,11 @@ export class Sonic extends PointActor
 			this.args.xOff = 8 * -this.args.direction;
 			this.args.yOff = 32;
 
-			let warp = -this.args.gSpeed * 15;
+			let warp = -this.args.gSpeed * 22;
 
-			if(Math.abs(warp) > 120)
+			if(Math.abs(warp) > 256)
 			{
-				warp = 120 * Math.sign(warp);
+				warp = 256 * Math.sign(warp);
 			}
 
 			this.twist(warp);

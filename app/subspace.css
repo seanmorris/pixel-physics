@@ -40,7 +40,7 @@
 .terminal {
 	pointer-events: initial;
 	box-sizing: border-box;
-	font-family: courier;
+	font-family: JuliaMono;
 	font-weight: bold;
 	font-size: 0.5rem;
 	color: white;

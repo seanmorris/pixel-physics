@@ -106,8 +106,12 @@
 	opacity: 1;
 }
 
-.pinch-filter, .twist-filter {
+.pinch-filter {
 	transform: scale(1.5);
+}
+
+.twist-filter {
+	/*transform: translateY(-10px);*/
 }
 
 .filters-foreground > .point-actor-filter {
@@ -189,6 +193,7 @@
 	left: 0!important;
 	top: 0!important;
 	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+	opacity: var(--opacity);
 }
 
 .actor-item.actor-ring.decoration .sprite {

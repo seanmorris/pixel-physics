@@ -136,6 +136,7 @@ export class Viewport extends View
 			audio: true
 			, blur: true
 			, displace: true
+			, rumble: true
 			, showHud: true
 			, shortcuts: true
 			, showFps: true
