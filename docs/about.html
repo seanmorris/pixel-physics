@@ -318,6 +318,15 @@ section.footer {
 
 <p>Like most web pages, the game makes use of Google Analytics. I was able to get a pretty high level of detail from it. I can see in real time when a user starts a level, connects a game controller, takes damage, and even whenever a ring is collected. The game reports all this information via GA Events. It also logs and transmits the current framerate after every 10 seconds of gameplay, so I can take statistics and ensure my optimizations actually improve things.</p>
 
+
+<figure>
+<a target = "_blank" href = "./about/analytics-map.png">
+	<img width="540" src = "./about/analytics-map.png"/ >
+</a>
+<figcaption>In 1991, I could only dream that people from all over the world would play A Sonic game I made myself.</figcaption>
+</figure>
+
+
 <h1 id="networking">Networking</h1>
 <p>Online games are enabled through webrtc. It allows one user’s browser to connect directly to a peer’s and once that’s done they’re able to exchange messages. The game simply packages up a few relevant variables from the player object and sends them to the peer which syncs them and does the same.</p>
 
