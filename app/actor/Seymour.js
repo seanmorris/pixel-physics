@@ -73,7 +73,7 @@ export class Seymour extends PointActor
 			{
 				this.args.animation = 'standing';
 			}
-			else if(speed > maxSpeed * 0.75)
+			else if(speed > maxSpeed * 0.5)
 			{
 				this.args.animation = 'running';
 			}

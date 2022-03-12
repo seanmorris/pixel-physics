@@ -1,0 +1,1339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512"
+   height="288"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="gc-input.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 663.1653 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 663.1653 : 1"
+       inkscape:persp3d-origin="372.04724 : 487.7716 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2390"
+       inkscape:persp3d-origin="372.04724 : 487.7716 : 1"
+       inkscape:vp_z="744.09448 : 663.1653 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 663.1653 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective12"
+       inkscape:persp3d-origin="886.50018 : 236.98421 : 1"
+       inkscape:vp_z="1773.0004 : 286.98421 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 286.98421 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3355"
+       inkscape:persp3d-origin="67.123741 : 170.98342 : 1"
+       inkscape:vp_z="134.24748 : 187.98302 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 187.98302 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3443"
+       inkscape:persp3d-origin="177.16534 : 255.09444 : 1"
+       inkscape:vp_z="354.33069 : 314.14955 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 314.14955 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5-2" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2197" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5-2-3-7" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2200" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5-2-7" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2203" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2206" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2209" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2212" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5-5" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2215" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect1879-3-6-5-2-1" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="179.40421"
+       height="259.18695"
+       id="rect2218" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="252.59009"
+       height="252.87537"
+       id="rect1879-3-6-5-2-3" />
+    <rect
+       x="5247.6196"
+       y="1147.9634"
+       width="252.59009"
+       height="252.87537"
+       id="rect2221" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="117.08219"
+     inkscape:cy="109.76584"
+     inkscape:document-units="px"
+     inkscape:current-layer="g2186"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     inkscape:window-x="1050"
+     inkscape:window-y="31"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:document-rotation="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-260.34243,-473.69226)">
+    <g
+       id="g237"
+       transform="translate(134.82195,68.29447)">
+      <g
+         id="g2186"
+         transform="matrix(0.06484983,0,0,0.06484983,172.4122,452.75419)"
+         style="stroke-width:15.4203">
+        <g
+           id="g5620"
+           data-button="button-6">
+          <g
+             id="Shape_13_copy_1_"
+             enable-background="new    "
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="Shape_13_copy"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <g
+                 id="g4"
+                 style="fill:#2d1650;stroke-width:15.4203">
+                <ellipse
+                   fill="#C1C1C1"
+                   cx="2016"
+                   cy="596"
+                   rx="394.32001"
+                   ry="416.55899"
+                   id="ellipse2"
+                   style="fill:#2d1650;stroke-width:15.4203" />
+              </g>
+            </g>
+          </g>
+          <g
+             id="Shape_13_1_"
+             enable-background="new    "
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_13"
+               style="stroke-width:15.4203">
+              <g
+                 id="g10"
+                 style="stroke-width:15.4203">
+                <ellipse
+                   fill="#eeeeee"
+                   cx="2016"
+                   cy="600"
+                   rx="381.55499"
+                   ry="410.27399"
+                   id="ellipse8"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+        </g>
+        <g
+           id="g5610"
+           data-button="button-7">
+          <g
+             id="Shape_13_copy_2_1_"
+             enable-background="new    "
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="Shape_13_copy_2"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <g
+                 id="g19"
+                 style="fill:#2d1650;stroke-width:15.4203">
+                <ellipse
+                   fill="#C1C1C1"
+                   cx="4444"
+                   cy="597"
+                   rx="394.32001"
+                   ry="416.55899"
+                   id="ellipse17"
+                   style="fill:#2d1650;stroke-width:15.4203" />
+              </g>
+            </g>
+          </g>
+          <g
+             id="Shape_13_copy_3_1_"
+             enable-background="new    "
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_13_copy_3"
+               style="stroke-width:15.4203">
+              <g
+                 id="g25"
+                 style="stroke-width:15.4203">
+                <ellipse
+                   fill="#eeeeee"
+                   cx="4444"
+                   cy="601"
+                   rx="381.55499"
+                   ry="410.27399"
+                   id="ellipse23"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3-9"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-2);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:22.5001;"
+           transform="matrix(0.68481895,0,0,0.68586738,845.52479,-545.06846)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:22.5001">R</tspan></tspan></text>
+        <g
+           id="g5640"
+           data-button="button-5">
+          <g
+             id="Shape_14_copy_1_"
+             enable-background="new    "
+             transform="translate(63.785381,-10.951297)"
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_14_copy"
+               style="stroke-width:15.4203">
+              <g
+                 id="g34"
+                 style="stroke-width:15.4203">
+                <path
+                   fill="#490094"
+                   d="m 4875.807,533.154 c -9.153,-20.295 -141.297,-109.763 -312.959,-156.143 -171.663,-46.381 -446.049,-75.91 -470.474,-66.579 -24.426,9.331 -20.68,96.067 -20.68,96.067 l 755.056,236.362 c 0,10e-4 58.209,-89.412 49.057,-109.707 z"
+                   id="path32"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+          <g
+             id="Shape_14_1_"
+             enable-background="new    "
+             transform="translate(63.785381,-10.951297)"
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_14"
+               style="stroke-width:15.4203">
+              <g
+                 id="g40"
+                 style="stroke-width:15.4203">
+                <path
+                   fill="#5600ae"
+                   d="m 4862.77,543.293 c -8.855,-19.636 -136.71,-106.2 -302.801,-151.075 -166.091,-44.875 -431.57,-73.446 -455.203,-64.418 -23.633,9.028 -20.008,92.95 -20.008,92.95 l 730.548,228.689 c 0,0 56.319,-86.51 47.464,-106.146 z"
+                   id="path38"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+        </g>
+        <g
+           id="g5630"
+           data-button="button-4">
+          <g
+             id="Shape_14_copy_1_-5"
+             enable-background="new    "
+             transform="matrix(-1,0,0,1,6378.0784,-10.673502)"
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_14_copy-3"
+               style="stroke-width:15.4203">
+              <g
+                 id="g34-5"
+                 style="stroke-width:15.4203">
+                <path
+                   fill="#490094"
+                   d="m 4875.807,533.154 c -9.153,-20.295 -141.297,-109.763 -312.959,-156.143 -171.663,-46.381 -446.049,-75.91 -470.474,-66.579 -24.426,9.331 -20.68,96.067 -20.68,96.067 l 755.056,236.362 c 0,10e-4 58.209,-89.412 49.057,-109.707 z"
+                   id="path32-6"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+          <g
+             id="Shape_14_1_-2"
+             enable-background="new    "
+             transform="matrix(-1,0,0,1,6378.0784,-10.673502)"
+             style="stroke-width:15.4203">
+            <g
+               id="Shape_14-9"
+               style="stroke-width:15.4203">
+              <g
+                 id="g40-1"
+                 style="stroke-width:15.4203">
+                <path
+                   fill="#5600ae"
+                   d="m 4862.77,543.293 c -8.855,-19.636 -136.71,-106.2 -302.801,-151.075 -166.091,-44.875 -431.57,-73.446 -455.203,-64.418 -23.633,9.028 -20.008,92.95 -20.008,92.95 l 730.548,228.689 c 0,0 56.319,-86.51 47.464,-106.146 z"
+                   id="path38-2"
+                   style="stroke-width:207.685" />
+              </g>
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_15_copy_2_1_"
+           enable-background="new    "
+           style="stroke-width:15.4203">
+          <g
+             id="Shape_15_copy_2"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="g52"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <path
+                 fill="#9E9E9E"
+                 d="m 3227.899,120.173 c -783.427,0 -1504.381,382.763 -1504.381,382.763 l 447.267,1463.6 c 0,0 200.018,-494.059 1044.963,-494.059 807.356,0 1061.166,473.807 1061.166,473.807 L 4700.48,494.936 c 0,0 -688.92,-374.763 -1472.581,-374.763 z"
+                 id="path50"
+                 style="fill:#2d1650;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_15_copy_3_1_"
+           enable-background="new    "
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="Shape_15_copy_3"
+             style="fill:#442178;stroke-width:15.4203">
+            <g
+               id="g58"
+               style="fill:#442178;stroke-width:15.4203">
+              <path
+                 fill="#BABABA"
+                 d="m 3228,136 c -767.991,0 -1504,388 -1504,388 l 460,1390 c 0,0 194.991,-457.373 1044,-457.373 779.869,0 1036,437.373 1036,437.373 L 4700,516 c 0,0 -719.978,-380 -1472,-380 z"
+                 id="path56"
+                 style="fill:#442178;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3-9-6-7"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-2-3-7);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:31.0272;"
+           transform="matrix(0.4966128,0,0,0.4973731,-1067.6001,-73.788155)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:31.0272">ZL</tspan></tspan></text>
+        <g
+           id="Shape_12_1_"
+           enable-background="new    "
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="Shape_12"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="g64"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <path
+                 fill="#9E9E9E"
+                 d="m 1376.184,941.813 c -30.5,123.797 -80.063,786.991 -61.001,1136.274 19.063,349.282 53.376,702.986 282.127,725.093 228.751,22.107 244.002,-265.278 270.689,-371.389 26.688,-106.111 163.938,-711.829 163.938,-711.829 0,0 -625.253,-901.944 -655.753,-778.149 z"
+                 id="path62"
+                 style="fill:#2d1650;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_5_1_"
+           enable-background="new    "
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_5"
+             style="fill:#442178;stroke-width:15.4203">
+            <g
+               id="g70"
+               style="fill:#442178;stroke-width:15.4203">
+              <path
+                 fill="#BABABA"
+                 d="m 1387.867,966.732 c -28.94,121.041 -75.969,769.477 -57.881,1110.986 18.088,341.509 50.646,687.342 267.7,708.957 217.055,21.614 231.525,-259.375 256.849,-363.124 25.322,-103.75 155.556,-695.988 155.556,-695.988 0,0 -593.283,-881.873 -622.224,-760.831 z"
+                 id="path68"
+                 style="fill:#442178;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_6_1_"
+           enable-background="new    "
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_6"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="g76"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <path
+                 fill="#9E9E9E"
+                 d="m 5071.22,945.813 c -31.246,-123.796 -671.8,778.149 -671.8,778.149 0,0 140.609,605.718 167.951,711.828 27.34,106.111 42.963,393.496 277.312,371.39 234.349,-22.106 269.501,-375.811 289.03,-725.093 19.529,-349.282 -31.246,-1012.477 -62.493,-1136.274 z"
+                 id="path74"
+                 style="fill:#2d1650;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_7_1_"
+           enable-background="new    "
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_7"
+             style="fill:#442178;stroke-width:15.4203">
+            <g
+               id="g82"
+               style="fill:#442178;stroke-width:15.4203">
+              <path
+                 fill="#BABABA"
+                 d="m 5059.25,970.732 c -29.648,-121.042 -637.448,760.831 -637.448,760.831 0,0 133.419,592.238 159.362,695.987 25.942,103.75 40.768,384.739 263.133,363.125 222.365,-21.615 255.721,-367.447 274.25,-708.957 18.531,-341.509 -29.649,-989.945 -59.297,-1110.986 z"
+                 id="path80"
+                 style="fill:#442178;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_3_1_"
+           enable-background="new    "
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_3"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="g88"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <path
+                 fill="#9E9E9E"
+                 d="M 3049.206,1753.401 C 2926.448,1565.09 2872.328,1570.874 2796.491,1447.638 2698.695,1288.72 2810.963,971.633 2596.899,681.419 2422.308,444.721 2005.288,296.766 1655.686,542.8 c -373.079,262.558 -355.83,699.77 -175.218,973.886 189.643,287.821 445.085,264.055 582.852,407.409 85.999,89.487 101.857,265.086 203.892,370.361 143.789,148.355 380.245,225.332 639.15,61.496 215.716,-136.505 255.611,-429.567 142.844,-602.551 z"
+                 id="path86"
+                 style="fill:#2d1650;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_1_"
+           enable-background="new    "
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy"
+             style="fill:#442178;stroke-width:15.4203">
+            <g
+               id="g94"
+               style="fill:#442178;stroke-width:15.4203">
+              <path
+                 fill="#BABABA"
+                 d="m 3044,1772 c -111.077,-187.172 -185.557,-195.028 -260,-316 -96,-156 -1.5,-502.603 -192,-760 -171.759,-232.075 -571.054,-373.108 -920,-140 -362.301,242.029 -364,668 -172,956 188.323,282.485 434.635,257.503 568,400 108.42,115.844 111.846,264.142 196,356 154.799,168.97 400.249,242.107 644,68 224,-160 208.508,-441.818 136,-564 z"
+                 id="path92"
+                 style="fill:#442178;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_4_1_"
+           enable-background="new    "
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_4"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <g
+               id="g100"
+               style="fill:#2d1650;stroke-width:15.4203">
+              <path
+                 fill="#9E9E9E"
+                 d="M 4789.313,542.801 C 4439.711,296.767 4022.692,444.722 3848.1,681.42 c -214.063,290.214 -101.795,607.301 -199.592,766.219 -75.836,123.235 -129.957,117.452 -252.715,305.763 -112.766,172.983 -72.872,466.046 142.844,602.552 258.905,163.836 495.362,86.859 639.151,-61.496 102.034,-105.275 117.892,-280.874 203.892,-370.361 137.767,-143.354 393.208,-119.588 582.852,-407.409 180.612,-274.118 197.861,-711.33 -175.219,-973.887 z"
+                 id="path98"
+                 style="fill:#2d1650;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_12_copy_2_1_"
+           enable-background="new    "
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="Shape_12_copy_2"
+             style="fill:#442178;stroke-width:15.4203">
+            <g
+               id="g106"
+               style="fill:#442178;stroke-width:15.4203">
+              <path
+                 fill="#BABABA"
+                 d="m 4773,556 c -348.946,-233.108 -748.241,-92.075 -920,140 -190.5,257.397 -96,604 -192,760 -74.444,120.972 -148.924,128.828 -260,316 -72.508,122.182 -88,404 136,564 243.751,174.107 489.201,100.97 644,-68 84.154,-91.858 87.58,-240.156 196,-356 133.365,-142.497 379.676,-117.515 568,-400 192,-288 190.301,-713.971 -172,-956 z"
+                 id="path104"
+                 style="fill:#442178;stroke-width:15.4203" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_2"
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="g112"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <ellipse
+               fill="#9F9F9F"
+               cx="2063.9609"
+               cy="1111.981"
+               rx="475.267"
+               ry="470.41501"
+               id="ellipse110"
+               style="fill:#2d1650;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_2_copy"
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="g117"
+             style="fill:#442178;stroke-width:15.4203">
+            <ellipse
+               fill="#BABABA"
+               cx="2063.9609"
+               cy="1111.981"
+               rx="463.164"
+               ry="458.43701"
+               id="ellipse115"
+               style="fill:#442178;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_3"
+           style="stroke-width:15.4203">
+          <g
+             id="g122"
+             style="stroke-width:15.4203">
+            <path
+               d="m 2277.477,911.543 c -16.518,-16.517 -171.986,-88.264 -210.783,-88.264 -38.798,0 -189.87,67.706 -210.238,88.074 -21.36,21.361 -87.389,180.218 -88.395,211.244 -0.982,30.301 63.237,186.727 87.045,210.534 26.177,26.177 171.714,85.496 210.512,86.467 38.797,0.97 184.899,-64.136 209.766,-86.1 25.23,-22.284 89.316,-181.148 89.316,-211.279 -10e-4,-30.067 -68.831,-192.282 -87.223,-210.676 z"
+               id="path120"
+               style="stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_3_copy_4"
+           style="stroke-width:15.4203">
+          <g
+             id="g127"
+             style="stroke-width:15.4203">
+            <path
+               fill="#d1d1d1"
+               d="m 2271.033,917.95 c -16.014,-16.014 -166.736,-85.57 -204.35,-85.57 -37.614,0 -184.074,65.64 -203.821,85.386 -20.709,20.709 -84.722,174.718 -85.696,204.797 -0.952,29.376 61.307,181.027 84.389,204.108 25.377,25.377 166.472,82.886 204.085,83.827 37.613,0.939 179.256,-62.179 203.363,-83.472 24.46,-21.604 86.591,-175.619 86.591,-204.83 0,-29.15 -66.729,-186.415 -84.561,-204.246 z"
+               id="path125"
+               style="stroke-width:207.685" />
+          </g>
+        </g>
+        <g
+           id="g2790"
+           style="stroke-width:15.4203"
+           data-button="button-10">
+          <g
+             id="Shape_1"
+             style="stroke-width:15.4203">
+            <g
+               id="g132"
+               style="stroke-width:15.4203">
+              <ellipse
+                 cx="2065.6479"
+                 cy="1124.887"
+                 rx="248.436"
+                 ry="238.772"
+                 id="ellipse130"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g137"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#eeeeee"
+                 cx="2065.6479"
+                 cy="1124.887"
+                 rx="234.287"
+                 ry="225.174"
+                 id="ellipse135"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_2"
+             style="stroke-width:15.4203">
+            <g
+               id="g142"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#acacac"
+                 cx="2064.0659"
+                 cy="1125.85"
+                 rx="211.472"
+                 ry="199.687"
+                 id="ellipse140"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_3"
+             style="stroke-width:15.4203">
+            <g
+               id="g147"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#eeeeee"
+                 cx="2064.0659"
+                 cy="1125.85"
+                 rx="199.429"
+                 ry="188.315"
+                 id="ellipse145"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_4"
+             style="stroke-width:15.4203">
+            <g
+               id="g152"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#acacac"
+                 cx="2063.894"
+                 cy="1131.111"
+                 rx="135.66299"
+                 ry="128.104"
+                 id="ellipse150"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_5"
+             style="stroke-width:15.4203">
+            <g
+               id="g157"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#eeeeee"
+                 cx="2063.8931"
+                 cy="1131.111"
+                 rx="123.949"
+                 ry="117.042"
+                 id="ellipse155"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_6"
+             style="stroke-width:15.4203">
+            <g
+               id="g162"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#acacac"
+                 cx="2066.0459"
+                 cy="1131.0229"
+                 rx="53.974998"
+                 ry="50.966"
+                 id="ellipse160"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_1_copy_7"
+             style="stroke-width:15.4203">
+            <g
+               id="g167"
+               style="stroke-width:15.4203">
+              <ellipse
+                 fill="#eeeeee"
+                 cx="2066.043"
+                 cy="1131.027"
+                 rx="42.118"
+                 ry="39.771"
+                 id="ellipse165"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_3_copy_5"
+           style="stroke-width:15.4203">
+          <g
+             id="g173"
+             style="stroke-width:15.4203">
+            <path
+               d="m 4035.477,1760.543 c -16.518,-16.517 -171.986,-88.264 -210.783,-88.264 -38.798,0 -189.87,67.706 -210.238,88.074 -21.361,21.361 -87.389,180.218 -88.395,211.244 -0.982,30.301 63.237,186.727 87.045,210.534 26.177,26.177 171.714,85.496 210.511,86.466 38.798,0.971 184.9,-64.135 209.767,-86.099 25.229,-22.284 89.316,-181.148 89.316,-211.279 0,-30.067 -68.831,-192.282 -87.223,-210.676 z"
+               id="path171"
+               style="stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_3_copy_6"
+           style="stroke-width:15.4203">
+          <g
+             id="g178"
+             style="stroke-width:15.4203">
+            <path
+               fill="#ffe400"
+               d="m 4029.033,1766.95 c -16.014,-16.014 -166.736,-85.57 -204.35,-85.57 -37.614,0 -184.074,65.64 -203.821,85.386 -20.709,20.709 -84.722,174.718 -85.696,204.797 -0.952,29.376 61.307,181.027 84.389,204.108 25.377,25.377 166.472,82.886 204.085,83.827 37.613,0.939 179.257,-62.179 203.363,-83.472 24.46,-21.604 86.591,-175.619 86.591,-204.83 0,-29.15 -66.729,-186.415 -84.561,-204.246 z"
+               id="path176"
+               style="stroke-width:207.685" />
+          </g>
+        </g>
+        <g
+           id="g5560"
+           data-button="button-11">
+          <g
+             id="Shape_9"
+             style="stroke-width:15.4203">
+            <g
+               id="g183"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#5f5500"
+                 cx="3824"
+                 cy="1976"
+                 r="144"
+                 id="circle181"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_9_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g188"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#ffe400"
+                 cx="3824"
+                 cy="1976"
+                 r="128"
+                 id="circle186"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <text
+             xml:space="preserve"
+             id="text1877-7-3-9-9"
+             style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-2-7);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:22.5001;"
+             transform="matrix(0.68481895,0,0,0.68586738,195.80646,1137.2177)"><tspan
+               x="5247.6191"
+               y="1275.3691"><tspan
+                 style="stroke-width:22.5001">C</tspan></tspan></text>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:15.4203"
+           x="3826.5161"
+           y="1970.2391"
+           id="text2728"><tspan
+             sodipodi:role="line"
+             id="tspan2726"
+             x="3826.5161"
+             y="1970.2391"
+             style="stroke-width:15.4203" /></text>
+        <g
+           id="Shape_2_copy_4"
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="g197"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <ellipse
+               fill="#9E9E9E"
+               cx="2626.458"
+               cy="1976.879"
+               rx="320.40601"
+               ry="317.13599"
+               id="ellipse195"
+               style="fill:#2d1650;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_2_copy_5"
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="g202"
+             style="fill:#442178;stroke-width:15.4203">
+            <ellipse
+               fill="#BABABA"
+               cx="2626.458"
+               cy="1976.879"
+               rx="312.24799"
+               ry="309.061"
+               id="ellipse200"
+               style="fill:#442178;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_4"
+           style="stroke-width:15.4203">
+          <g
+             id="g207"
+             style="stroke-width:15.4203">
+            <polygon
+               points="2870.605,2053.455 2870.605,1901.939 2709.545,1901.939 2709.545,1737.091 2545.798,1737.091 2545.885,1899.515 2387.272,1899.515 2387.272,2055.879 2544.761,2057.091 2544.849,2221.939 2707.272,2221.939 2708.484,2054.666 "
+               id="polygon205"
+               style="stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="g5687"
+           data-button="dpad-0">
+          <g
+             id="Shape_4_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g212"
+               style="stroke-width:15.4203">
+              <polygon
+                 fill="#eaeaea"
+                 points="2860.153,2045.253 2860.153,1910.992 2700.822,1910.992 2700.822,1747.592 2554.194,1747.592 2554.356,1908.718 2396.055,1908.718 2396.055,2047.527 2554.116,2048.664 2554.279,2211.444 2698.174,2211.444 2699.645,2046.391 "
+                 id="polygon210"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_5"
+             style="stroke-width:15.4203">
+            <g
+               id="g217"
+               style="stroke-width:15.4203">
+              <polygon
+                 fill="#c7c7c7"
+                 points="2578.651,1862 2674.235,1862 2627.297,1780.071 "
+                 id="polygon215"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_5_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g222"
+               style="stroke-width:15.4203">
+              <polygon
+                 fill="#c7c7c7"
+                 points="2627.297,2184.928 2674.235,2103 2578.651,2103 "
+                 id="polygon220"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_5_copy_2"
+             style="stroke-width:15.4203">
+            <g
+               id="g227"
+               style="stroke-width:15.4203">
+              <polygon
+                 fill="#c7c7c7"
+                 points="2505.953,2030.302 2505.953,1934.718 2424.024,1981.656 "
+                 id="polygon225"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_5_copy_3"
+             style="stroke-width:15.4203">
+            <g
+               id="g232"
+               style="stroke-width:15.4203">
+              <polygon
+                 fill="#c7c7c7"
+                 points="2746.953,2030.302 2828.881,1981.656 2746.953,1934.718 "
+                 id="polygon230"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+          <g
+             id="Shape_17"
+             style="stroke-width:15.4203">
+            <g
+               id="g237-9"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#c7c7c7"
+                 cx="2626.9031"
+                 cy="1979.417"
+                 r="48.646999"
+                 id="circle235"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="Shape_6_copy_1_"
+           enable-background="new    "
+           style="stroke-width:15.4203">
+          <g
+             id="Shape_6_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g243"
+               style="stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="START_x2F_PAUSE"
+           enable-background="new    "
+           style="stroke-width:11.8976"
+           transform="matrix(1.4379066,0,0,1.1682611,-1041.3941,-163.2947)">
+          <text
+             transform="matrix(0.7382,0,0,1,3021.5576,1148.0313)"
+             font-family="KhmerUI-Bold"
+             font-size="86.4091px"
+             id="text253"
+             style="stroke-width:160.24">START</text>
+        </g>
+        <g
+           id="Shape_2_copy_2"
+           style="fill:#2d1650;stroke-width:15.4203">
+          <g
+             id="g258"
+             style="fill:#2d1650;stroke-width:15.4203">
+            <ellipse
+               fill="#9F9F9F"
+               cx="4403.4292"
+               cy="1111.981"
+               rx="475.267"
+               ry="470.41501"
+               id="ellipse256"
+               style="fill:#2d1650;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="Shape_2_copy_3"
+           style="fill:#442178;stroke-width:15.4203">
+          <g
+             id="g263"
+             style="fill:#442178;stroke-width:15.4203">
+            <ellipse
+               fill="#BABABA"
+               cx="4403.4282"
+               cy="1111.981"
+               rx="463.164"
+               ry="458.43701"
+               id="ellipse261"
+               style="fill:#442178;stroke-width:15.4203" />
+          </g>
+        </g>
+        <g
+           id="g5568"
+           data-button="button-0">
+          <g
+             id="Shape_7_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g268"
+               style="stroke-width:15.4203">
+              <circle
+                 cx="4408"
+                 cy="1104"
+                 r="240"
+                 id="circle266"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_7"
+             style="stroke-width:15.4203">
+            <g
+               id="g273"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#00bc8e"
+                 cx="4408"
+                 cy="1104"
+                 r="224"
+                 id="circle271"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="g5576"
+           data-button="button-2">
+          <g
+             id="Shape_8"
+             style="stroke-width:15.4203">
+            <g
+               id="g281"
+               style="stroke-width:15.4203">
+              <circle
+                 cx="3968"
+                 cy="1336"
+                 r="148"
+                 id="circle279"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_8_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g286"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#ff0000"
+                 cx="3968"
+                 cy="1336"
+                 r="130"
+                 id="circle284"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="g5592"
+           data-button="button-3">
+          <g
+             id="Shape_10"
+             style="stroke-width:15.4203">
+            <g
+               id="g294"
+               style="stroke-width:15.4203">
+              <path
+                 d="m 4206,614 c -40,18 -216,108 -140,216 94,100 146,-2 226,-40 104,-40 210,18 210,-118 -8,-128 -256,-76 -296,-58 z"
+                 id="path292"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_10_copy"
+             style="stroke-width:15.4203">
+            <g
+               id="g299"
+               style="stroke-width:15.4203">
+              <path
+                 fill="#eaeaea"
+                 d="m 4487.297,672.681 c -8.889,-112.396 -236.646,-62.308 -273.91,-45.485 -37.264,16.823 -207.073,96.898 -134.669,194.161 83.202,86.025 136.636,-11.178 211.14,-46.641 96.962,-37.559 200.876,15.784 197.439,-102.035 z"
+                 id="path297"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="g5600"
+           data-button="button-1">
+          <g
+             id="Shape_10_copy_3"
+             style="stroke-width:15.4203">
+            <g
+               id="g304"
+               style="stroke-width:15.4203">
+              <path
+                 d="m 4910.453,905.719 c -18,-40 -108,-216 -216,-140 -100,94 2,146 40,226 40,104 -18,210 118,210 128,-8 76,-256 58,-296 z"
+                 id="path302"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_10_copy_4"
+             style="stroke-width:15.4203">
+            <g
+               id="g309"
+               style="stroke-width:15.4203">
+              <path
+                 fill="#eaeaea"
+                 d="m 4897.257,913.106 c -16.822,-37.264 -96.897,-207.073 -194.161,-134.67 -86.025,83.202 11.178,136.636 46.641,211.141 37.56,96.962 -15.783,200.876 102.035,197.438 112.396,-8.888 62.308,-236.645 45.485,-273.909 z"
+                 id="path307"
+                 style="stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           id="text1877"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:15.4203;"
+           transform="translate(-888.83789,-118.88086)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="shape-inside:url(#rect1879-3);fill:#000000;fill-opacity:0.75;stroke-width:15.4203">A</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text1877-7"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:15.4203;"
+           transform="translate(-1330.9824,113.11914)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:15.4203">B</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:17.3427;"
+           transform="matrix(0.88915449,0,0,0.88915449,-425.55619,-389.35728)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:17.3427">Y</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3-6"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-5);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:15.4203;"
+           transform="translate(-479.3809,-261.0881)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:15.4203">X</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3-9-2"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-2-1);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:22.5001;"
+           transform="matrix(0.68481895,0,0,0.68586738,-1678.368,-545.06846)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:22.5001">L</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text1877-7-3-9-6"
+           style="font-style:normal;font-weight:normal;font-size:144px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect1879-3-6-5-2-3);fill:#000000;fill-opacity:0.75;stroke:none;stroke-width:31.0272;"
+           transform="matrix(0.4966128,0,0,0.4973731,2207.6371,-73.253711)"><tspan
+             x="5247.6191"
+             y="1275.3691"><tspan
+               style="stroke-width:31.0272">ZR</tspan></tspan></text>
+        <g
+           id="g5568-3"
+           data-button="button-16"
+           style="stroke-width:15.4203">
+          <g
+             id="Shape_7_copy-6"
+             style="stroke-width:15.4203"
+             transform="translate(-1196.0002,-395.27045)">
+            <g
+               id="g268-0"
+               style="stroke-width:15.4203">
+              <circle
+                 cx="4408"
+                 cy="1104"
+                 r="240"
+                 id="circle266-6"
+                 style="stroke-width:15.4203" />
+            </g>
+          </g>
+          <g
+             id="Shape_7-2"
+             style="stroke-width:15.4203">
+            <g
+               id="g273-6"
+               style="stroke-width:15.4203"
+               transform="translate(-1196.0002,-395.27045)">
+              <circle
+                 fill="#00bc8e"
+                 cx="4408"
+                 cy="1104"
+                 r="224"
+                 id="circle271-1"
+                 style="fill:#ebebeb;fill-opacity:1;stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <path
+           id="path0"
+           d="m 3170.5813,561.51261 c -21.814,12.49616 -54.5828,31.25035 -72.8195,41.6745 l -33.1572,18.95395 -0.013,85.19841 -0.013,85.19841 72.0682,42.78311 c 39.6379,23.5299 73.0215,43.03151 74.1853,43.33594 1.3821,0.36118 17.0161,-8.29097 45.0188,-24.91566 23.5955,-14.0087 56.5516,-33.52506 73.2352,-43.37059 l 30.3348,-17.90062 v -85.00233 c 0,-79.86398 -0.1179,-84.95738 -1.9466,-84.25492 -1.0711,0.41057 -18.8043,11.00942 -39.4072,23.55275 -20.6029,12.54334 -37.9698,22.79723 -38.5942,22.7869 -0.6235,-0.0103 -16.1477,-9.52562 -34.4988,-21.14463 l -33.3658,-21.12545 -5.2696,3.09953 c -2.8975,1.70419 -17.8468,10.75364 -33.2191,20.10898 l -27.9503,17.0102 0.016,41.9583 0.017,41.95902 32.6059,18.42765 c 17.9331,10.13521 33.3452,18.40702 34.249,18.38196 0.9044,-0.025 16.6977,-8.39712 35.0965,-18.60456 l 33.4535,-18.5596 0.317,-14.19814 0.3162,-14.19886 14.4259,-8.74724 c 7.9335,-4.81109 14.8077,-8.96101 15.2758,-9.22194 0.4673,-0.26094 0.8397,13.97111 0.827,31.62774 l -0.023,32.10245 -50.0104,29.2469 -50.0105,29.24616 -26.2284,-15.52346 c -14.4252,-8.5379 -37.3271,-22.1176 -50.8928,-30.17639 l -24.665,-14.65366 v -58.0987 -58.09945 l 50.0679,-28.85623 c 27.5369,-15.87063 50.4815,-29.01985 50.9879,-29.22035 0.5064,-0.19976 15.973,8.60276 34.3719,19.56206 18.3982,10.95855 33.9991,19.92545 34.6684,19.92545 1.8597,0 46.5003,-27.34663 46.5003,-28.48621 0,-0.54913 -0.5337,-0.99804 -1.186,-0.99804 -0.6523,0 -26.1171,-14.2888 -56.5884,-31.75231 -30.4712,-17.46352 -56.1033,-31.75233 -56.9598,-31.75233 -0.8573,0 -19.4059,10.2244 -41.2205,22.7213"
+           stroke="none"
+           fill="#000000"
+           fill-rule="evenodd"
+           style="fill:#000000;fill-opacity:0.75;stroke-width:237.785" />
+        <g
+           id="g5576-3"
+           data-button="button-8"
+           style="stroke-width:15.4203"
+           transform="translate(9.4240335)">
+          <g
+             id="Shape_8-6"
+             style="stroke-width:26.2684"
+             transform="matrix(0.58702813,0,0,0.58702813,695.17682,537.14474)">
+            <g
+               id="g281-7"
+               style="stroke-width:26.2684">
+              <circle
+                 cx="3968"
+                 cy="1336"
+                 r="148"
+                 id="circle279-5"
+                 style="stroke-width:26.2684" />
+            </g>
+          </g>
+          <g
+             id="Shape_8_copy-3"
+             style="stroke-width:15.4203"
+             transform="translate(-943.49558,-14.585679)">
+            <g
+               id="g286-5"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#ff0000"
+                 cx="3968"
+                 cy="1336"
+                 r="76.31366"
+                 id="circle284-6"
+                 style="fill:#ebebeb;fill-opacity:1;stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+        <g
+           id="START_x2F_PAUSE-2"
+           enable-background="new    "
+           style="stroke-width:11.8976"
+           transform="matrix(1.4379066,0,0,1.1682611,-1491.7228,-163.2947)">
+          <text
+             transform="matrix(0.7382,0,0,1,3021.5576,1148.0313)"
+             font-family="KhmerUI-Bold"
+             font-size="86.4091px"
+             id="text253-9"
+             style="stroke-width:160.24">SELECT</text>
+        </g>
+        <g
+           id="g5576-3-1"
+           data-button="button-9"
+           style="stroke-width:15.4203"
+           transform="translate(-38.893396)">
+          <g
+             id="Shape_8-6-2"
+             style="stroke-width:26.2684"
+             transform="matrix(0.58702813,0,0,0.58702813,1124.6374,537.14474)">
+            <g
+               id="g281-7-7"
+               style="stroke-width:26.2684">
+              <circle
+                 cx="3968"
+                 cy="1336"
+                 r="148"
+                 id="circle279-5-0"
+                 style="stroke-width:26.2684" />
+            </g>
+          </g>
+          <g
+             id="Shape_8_copy-3-9"
+             style="stroke-width:15.4203"
+             transform="translate(-514.03501,-14.58568)">
+            <g
+               id="g286-5-3"
+               style="stroke-width:15.4203">
+              <circle
+                 fill="#ff0000"
+                 cx="3968"
+                 cy="1336"
+                 r="76.31366"
+                 id="circle284-6-6"
+                 style="fill:#ebebeb;fill-opacity:1;stroke-width:207.685" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

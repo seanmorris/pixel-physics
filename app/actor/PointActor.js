@@ -3415,11 +3415,14 @@ export class PointActor extends View
 					{
 						this.args.falling = false;
 
-						this.controller.rumble && this.controller.rumble({
-							duration: 80,
-							strongMagnitude: 0.0,
-							weakMagnitude: Math.max(40, Math.min(Math.abs(this.args.ySpeed),10)) / 40
-						});
+						if(this.viewport.settings.rumble)
+						{
+							this.controller.rumble && this.controller.rumble({
+								duration: 80,
+								strongMagnitude: Math.min(1, Math.abs(this.args.ySpeed) / 25),
+								weakMagnitude: Math.min(20, Math.max(Math.abs(this.args.ySpeed * 10),10)) / 20
+							});
+						}
 					}
 
 					this.args.groundAngle = newAngle;
@@ -3487,6 +3490,15 @@ export class PointActor extends View
 					this.args.x += xSpeedOriginal;
 					this.args.y -= (forePosition[1] || backPosition[1]);
 
+					if(this.viewport.settings.rumble)
+					{
+						this.controller.rumble && this.controller.rumble({
+							duration: 80,
+							strongMagnitude: Math.min(1, Math.abs(this.args.ySpeed) / 25),
+							weakMagnitude: Math.min(20, Math.max(Math.abs(this.args.ySpeed * 10),10)) / 20
+						});
+					}
+
 					return;
 				}
 
@@ -3520,6 +3532,15 @@ export class PointActor extends View
 				this.args.y = Number(airPoint[1]);
 
 				this.args.falling = false;
+
+				if(this.viewport.settings.rumble)
+				{
+					this.controller.rumble && this.controller.rumble({
+						duration: 80,
+						strongMagnitude: Math.min(1, Math.abs(this.args.ySpeed) / 15),
+						weakMagnitude: Math.min(20, Math.max(Math.abs(this.args.ySpeed * 10),10)) / 20
+					});
+				}
 			}
 		}
 

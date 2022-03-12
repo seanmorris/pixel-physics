@@ -29,7 +29,7 @@
 .actor-item.actor-chalmers[data-animation="running"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -128px;
-animation: seymour-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias)) * 160ms) + 320ms);
+animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bias)) * 160ms) + 320ms);
 }
 
 .actor-item.actor-chalmers[data-animation="rolling"] .sprite:after,

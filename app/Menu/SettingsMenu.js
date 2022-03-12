@@ -1,3 +1,6 @@
+import { GamepadConfig } from '../controller/GamepadConfig';
+import { Series } from '../intro/Series';
+
 export const SettingsMenu = (parent) => { return {
 	children: {
 		Video: {
@@ -56,8 +59,23 @@ export const SettingsMenu = (parent) => { return {
 		}
 
 		, 'Input': {
+
 			children: {
-				'Button Select Test': {
+
+				'Gamepad Test': {
+					callback: () => {
+						const cards = [
+							new GamepadConfig({timeout: -1}, parent)
+							, ...parent.homeCards()
+						];
+
+						parent.args.titlecard = new Series({cards}, parent);
+
+						parent.args.titlecard.play();
+					}
+				}
+
+				, 'Button Select Test': {
 					input: 'select'
 					, options: [
 						'⓿', '❶', '❷', '❸', '❹', '❺'
