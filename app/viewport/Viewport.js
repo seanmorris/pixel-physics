@@ -1170,8 +1170,6 @@ export class Viewport extends View
 		this.clearDialog();
 		this.hideDialog();
 
-		refresh && this.setZoneCard();
-
 		if(this.meta.bgm)
 		{
 			if(Bgm.playing && this.meta.bgm !== this.bgm)
@@ -1195,11 +1193,13 @@ export class Viewport extends View
 			Bgm.pause();
 		}
 
+		this.populateMap();
+
+		refresh && this.setZoneCard();
+
 		this.args.startFrameId = this.args.frameId;
 
 		this.fillBackground();
-
-		this.populateMap();
 
 		if(this.args.networked)
 		{
@@ -3652,7 +3652,7 @@ export class Viewport extends View
 
 		if(quick === 2)
 		{
-			cards.push(new LoadingCard({timeout: 15000, text: 'loading'}, this));
+			cards.push(new MainMenu({timeout: -1}, this));
 		}
 		else if(quick)
 		{
