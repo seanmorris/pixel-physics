@@ -15,6 +15,7 @@ export class GamepadConfig extends Card
 			xb: View.from(require('./xbox360-input.svg'))
 			, ps: View.from(require('./ps3-input.svg'))
 			, gc: View.from(require('./gc-input.svg'))
+			, dc: View.from(require('./dc-input.svg'))
 		};
 
 		this.current = 0;

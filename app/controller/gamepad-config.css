@@ -21,6 +21,7 @@
 	--stick-travel:   56px;
 	--bumper-travel:  16px;
 	--trigger-travel: 32px;
+	--button-travel:  4px;
 }
 
 .screen-card-gamepad-config-card.input-xb {
@@ -28,6 +29,8 @@
 	--stick-travel:   12px;
 	--bumper-travel:  4px;
 	--trigger-travel: 8px;
+	--button-size:    9;
+	--button-travel:  0.5px;
 }
 
 .screen-card-gamepad-config-card.input-ps {
@@ -35,69 +38,91 @@
 	--stick-travel:   8px;
 	--bumper-travel:  2px;
 	--trigger-travel: 8px;
+	--button-travel:  0.25px;
 }
 
-[data-button~="button-0"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-0, 0))));
-	r: calc(9 + calc(-0.5 * var(--pressed0, 0)));
+.screen-card-gamepad-config-card.input-dc {
+	--dpad-travel:    1.5px;
+	--stick-travel:   8px;
+	--bumper-travel:  2px;
+	--trigger-travel: 8px;
+	--button-travel:  0.75px;
 }
 
-[data-button~="button-1"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-1, 0))));
-	r: calc(9 + calc(-0.5 * var(--pressed0, 0)));
+[data-button~="button-0"] {  --pressed: var(--pressed-0); }
+[data-button~="button-1"] {	 --pressed: var(--pressed-1); }
+[data-button~="button-2"] {  --pressed: var(--pressed-2); }
+[data-button~="button-3"] {	 --pressed: var(--pressed-3); }
+[data-button~="button-4"] {	 --pressed: var(--pressed-4); }
+[data-button~="button-5"] {  --pressed: var(--pressed-5); }
+[data-button~="button-6"] {  --pressed: var(--pressed-6); }
+[data-button~="button-7"] {  --pressed: var(--pressed-7); }
+
+[data-button~="button-8"] {  --pressed: var(--pressed-8); }
+[data-button~="button-9"] {  --pressed: var(--pressed-9); }
+[data-button~="button-10"] { --pressed: var(--pressed-10); }
+[data-button~="button-11"] { --pressed: var(--pressed-11); }
+[data-button~="button-12"] { --pressed: var(--pressed-12); }
+[data-button~="button-13"] { --pressed: var(--pressed-13); }
+[data-button~="button-14"] { --pressed: var(--pressed-14); }
+[data-button~="button-15"] { --pressed: var(--pressed-15); }
+
+[data-button~="button-16"] { --pressed: var(--pressed-16); }
+
+[data-button~="button-0"],
+[data-button~="button-1"],
+[data-button~="button-2"],
+[data-button~="button-3"],
+[data-button~="button-4"],
+[data-button~="button-5"],
+[data-button~="button-6"],
+[data-button~="button-7"],
+[data-button~="button-8"],
+[data-button~="button-9"],
+[data-button~="button-10"],
+[data-button~="button-11"],
+[data-button~="button-12"],
+[data-button~="button-13"],
+[data-button~="button-14"],
+[data-button~="button-15"],
+[data-button~="button-16"] {
+	filter: brightness(calc(1 + calc(-0.4 * var(--pressed, 0))));
 }
 
-[data-button~="button-2"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-2, 0))));
-	r: calc(9 + calc(-0.5 * var(--pressed0, 0)));
-}
-
+[data-button~="button-0"],
+[data-button~="button-1"],
+[data-button~="button-2"],
 [data-button~="button-3"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-3, 0))));
-	r: calc(9 + calc(-0.5 * var(--pressed0, 0)));
+	transform: translateY( calc(var(--button-travel) * var(--pressed, 0)) );
 }
 
-[data-button~="button-4"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-4, 0))));
-	transform: translateY( calc(var(--bumper-travel) * var(--pressed-4, 0)) );
-}
-
+[data-button~="button-4"],
 [data-button~="button-5"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-5, 0))));
-	transform: translateY( calc(var(--bumper-travel) * var(--pressed-5, 0)) );
+	transform: translateY( calc(var(--bumper-travel) * var(--pressed, 0)) );
 }
 
-[data-button~="button-6"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-6, 0))));
-	transform: translateY( calc(var(--trigger-travel) * var(--pressed-6, 0)) );
-}
-
+[data-button~="button-6"],
 [data-button~="button-7"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-7, 0))));
-	transform: translateY( calc(var(--trigger-travel) * var(--pressed-7, 0)) );
+	transform: translateY( calc(var(--trigger-travel) * var(--pressed, 0)) );
 }
 
 [data-button~="button-8"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-8, 0))));
-	transform: translateY( calc(1px * var(--pressed-8, 0)) );
+	transform: translateY( calc(1px * var(--pressed, 0)) );
 }
 
 [data-button~="button-9"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-9, 0))));
-	transform: translateY( calc(1px * var(--pressed-9, 0)) );
+	transform: translateY( calc(1px * var(--pressed, 0)) );
 }
 
 [data-button~="button-10"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-10, 0))));
 	transform:
-		translateY( calc(1px * var(--pressed-10, 0)) )
+		translateY( calc(1px * var(--pressed, 0)) )
 		translate(calc(var(--stick-travel) * var(--x, 0)), calc(var(--stick-travel) * var(--y, 0)));
 }
 
 [data-button~="button-11"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-11, 0))));
 	transform:
-		translateY( calc(1px * var(--pressed-11, 0)) )
+		translateY( calc(1px * var(--pressed, 0)) )
 		translate(calc(var(--stick-travel) * var(--a, 0)), calc(var(--stick-travel) * var(--b, 0)));
 }
 
@@ -109,27 +134,13 @@
 	);
 }
 
-[data-button~="button-12"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-12, 0))));
-	transform: translateY( calc(1px * var(--pressed-12, 0)) );
-}
-
-[data-button~="button-13"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-13, 0))));
-	transform: translateY( calc(1px * var(--pressed-13, 0)) );
-}
-
-[data-button~="button-14"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-14, 0))));
-	transform: translateY( calc(1px * var(--pressed-14, 0)) );
-}
-
+[data-button~="button-12"],
+[data-button~="button-13"],
+[data-button~="button-14"],
 [data-button~="button-15"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-15, 0))));
-	transform: translateY( calc(1px * var(--pressed-15, 0)) );
+	transform: translateY( calc(var(--button-travel) * var(--pressed, 0)) );
 }
 
 [data-button~="button-16"] {
-	filter: brightness(calc(1 + calc(-0.2 * var(--pressed-16, 0))));
-	transform: translateY( calc(0.5px * var(--pressed-16, 0)) );
+	transform: translateY( calc(var(--button-travel) * var(--pressed, 0)) );
 }

@@ -977,7 +977,14 @@ export class Viewport extends View
 
 		if(timeout >= 0)
 		{
-			this.onTimeout(timeout, ()=>{
+			if(this.statusTimeout)
+			{
+				clearTimeout(this.statusTimeout);
+
+				this.statusTimeout = null;
+			}
+
+			this.statusTimeout = this.onTimeout(timeout, ()=>{
 				this.args.status.args.hide = 'hide';
 			});
 		}
@@ -3299,6 +3306,15 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+
+		const shortName = String(this.gamepad.id)
+		.replace(/\(.\)/, ' ')
+		.replace(/\s?\(.+/, '');
+
+		this.showStatus(2500, ' Gamepad connected: ' + shortName + ' ');
+
+		this.args.focusMe.args.hide = 'hide';
+
 		this.interact();
 
 		if(typeof ga === 'function')
@@ -3317,6 +3333,12 @@ export class Viewport extends View
 		{
 			return;
 		}
+
+		const shortName = String(this.gamepad.id)
+		.replace(/\(.\)/, ' ')
+		.replace(/\s?\(.+/, '');
+
+		this.showStatus(2500, ' Gamepad disconnected: ' + shortName + ' ');
 
 		if(this.args.started)
 		{
