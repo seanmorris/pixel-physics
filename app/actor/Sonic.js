@@ -117,8 +117,10 @@ export class Sonic extends PointActor
 		});
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		const superColors = {
 			'8080e0': 'e0e080',
 			'6060c0': 'e0e000',

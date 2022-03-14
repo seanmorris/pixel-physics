@@ -26,8 +26,10 @@ export class Rocks extends PointActor
 		this.particleH = new Tag('<div class = "particle-rock">');
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		// const direction = Math.sign(other.args.gSpeed || other.args.xSpeed);
 
 		let direction = -1;

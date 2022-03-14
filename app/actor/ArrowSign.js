@@ -35,8 +35,10 @@ export class ArrowSign extends PointActor
 		this.args.height = args.height || 64;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		if(this.headBox)
 		{
 			return;

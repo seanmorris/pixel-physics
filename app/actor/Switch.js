@@ -63,8 +63,10 @@ export class Switch extends PointActor
 		}
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 	}
 

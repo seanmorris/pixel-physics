@@ -27,8 +27,10 @@ export class Sean extends PointActor
 		this.args.height = 35;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 	}
 

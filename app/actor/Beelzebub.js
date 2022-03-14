@@ -39,8 +39,10 @@ export class Beelzebub extends Mixin.from(PointActor)
 		this.clearScene = new CutScene({src: '/cutscenes/clear-seaview.json'});
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.autoStyle.get(this.box)['--nose-angle'] = 'noseAngle';
 		this.autoStyle.get(this.box)['--drill-push'] = 'drillPush';
 

@@ -24,8 +24,10 @@ export class TextActor extends PointActor
 		});
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.sprite = this.findTag('div.sprite');
 
 		this.text.render(this.sprite);

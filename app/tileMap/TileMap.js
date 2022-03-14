@@ -20,7 +20,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
-		this.solidCache      = new Map;
 
 		this.tileLayers  = [];
 
@@ -583,6 +582,18 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 
 			}
+		}
+	}
+
+	reset()
+	{
+		this.replacements.clear();
+		this.tileSetCache.clear();
+		this.tileCache.clear();
+
+		for(const tileset of this.mapData.tilesets)
+		{
+			tileset.image = tileset.original;
 		}
 	}
 

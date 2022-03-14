@@ -22,8 +22,10 @@ export class Orb extends Mixin.from(PointActor)
 		this.args.gravity = 1.35;
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.autoStyle.get(this.box)['--rolled'] = 'rolled';
 	}
 

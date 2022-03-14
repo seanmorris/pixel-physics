@@ -44,8 +44,10 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 		this.aiming = false;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.shield = new ElectricSheild
 
 		if(this.args.electric)

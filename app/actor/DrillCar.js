@@ -33,8 +33,10 @@ export class DrillCar extends Vehicle
 		this.args.particleScale = 2;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 		this.backSprite = new Tag('<div class = "sprite-back sprite">');

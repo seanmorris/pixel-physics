@@ -900,6 +900,16 @@ export class Viewport extends View
 					this.args.layers.push(layer);
 				}
 			}
+
+			if(this.tileMap.mapData && this.tileMap.mapData.properties)
+			{
+				for(const property of this.tileMap.mapData.properties)
+				{
+					const name = property.name.replace(/-/g, '_');
+
+					this.meta[ name ] = property.value;
+				}
+			}
 		});
 
 		// tileMap.ready.then(() => load.args.text = `starting level`);
@@ -1118,16 +1128,6 @@ export class Viewport extends View
 	{
 		this.args.zonecard = new Titlecard({waitFor: this.tileMap.ready}, this);
 
-		if(this.tileMap.mapData && this.tileMap.mapData.properties)
-		{
-			for(const property of this.tileMap.mapData.properties)
-			{
-				const name = property.name.replace(/-/g, '_');
-
-				this.meta[ name ] = property.value;
-			}
-		}
-
 		const line1  = this.meta.titlecard_title_1;
 		const line2  = this.meta.titlecard_title_2;
 		const author = this.meta.titlecard_author;
@@ -1149,11 +1149,6 @@ export class Viewport extends View
 
 	fillBackground()
 	{
-		if(this.meta.backdrop && this.args.bg === this.meta.backdrop)
-		{
-			return;
-		}
-
 		const backdropClass = BackdropPalette[ this.meta.backdrop ];
 
 		delete this.args.backdrop;
@@ -2262,15 +2257,15 @@ export class Viewport extends View
 
 			this.actors.add( actor );
 
-			actor.render(this.tags.actors);
-
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
 				actor.args.display = actor.defaultDisplay || null;
+				actor.render(this.tags.actors);
 			}
 			else
 			{
 				actor.args.display = 'none';
+				actor.render()
 				actor.detach();
 			}
 
@@ -3514,9 +3509,7 @@ export class Viewport extends View
 		this.clearDialog();
 		this.hideDialog();
 
-		this.tileMap.replacements.clear();
-		this.tileMap.tileSetCache.clear();
-		this.tileMap.tileCache.clear();
+		this.tileMap.reset();
 
 		this.callFrames.clear();
 		this.callIntervals.clear();

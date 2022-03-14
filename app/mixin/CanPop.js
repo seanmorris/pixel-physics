@@ -189,8 +189,6 @@ export const CanPop = {
 			}
 		}
 
-		Sfx.play('OBJECT_DESTROYED');
-
 		if(this.args.target && this.viewport.actorsById[ this.args.target ])
 		{
 			const target = this.viewport.actorsById[ this.args.target ];
@@ -202,6 +200,8 @@ export const CanPop = {
 				target.activate(other, this);
 			}
 		}
+
+		Sfx.play('OBJECT_DESTROYED');
 
 		if(typeof ga === 'function')
 		{

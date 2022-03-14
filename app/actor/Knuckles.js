@@ -70,8 +70,10 @@ export class Knuckles extends PointActor
 		});
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 
 		this.punchAura = new Tag('<div class = "punch-aura">');

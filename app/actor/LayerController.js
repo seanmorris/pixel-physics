@@ -117,7 +117,7 @@ export class LayerController extends PointActor
 
 		this.viewport.args.shakeY = this.args.yQuake;
 
-		this.viewport.onFrameOut(60, () => {
+		this.viewport.onFrameOut(90, () => {
 			this.args.activated = true;
 		});
 

@@ -91,13 +91,16 @@ export class StarSheild extends Sheild
 
 		const particle = new Tag('<div class = "particle-stars">');
 
-		const point = host.rotatePoint(host.args.gSpeed, (host.args.height / 2));
+		const point = host.rotatePoint(0, (host.args.height / 2));
 
 		const dashed = host.dashed || host.args.animation === 'springdash';
 
+		if(host.args.falling)
+		{}
+
 		particle.style({
 			'--x': point[0] + host.x + -3 + host.args.xSpeed
-			, '--y': point[1] + host.y + (dashed ? -18 : 0) + host.args.ySpeed
+			, '--y': point[1] + host.y + (dashed ? -18 : -3) + host.args.ySpeed
 			, '--frame': this.frame++
 			, 'z-index': -1
 			, opacity: Math.random() * 2
