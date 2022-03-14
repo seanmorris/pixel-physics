@@ -65,12 +65,39 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 			}
 
+			this.desparseLayers(tilemapData)
+
 			this.loadLayers(tilemapData)
 
 			return this.loadTilesets(tilemapData.tilesets);
 		});
 
 		Object.preventExtensions(this);
+	}
+
+	desparseLayers(tilemapData)
+	{
+		console.time('desparse');
+
+		for(const layer of tilemapData.layers)
+		{
+			if(layer.type !== 'tilelayer' || !layer.sparsed || layer.data)
+			{
+				continue;
+			}
+
+			const desparsed = layer.data = {};
+
+			while(layer.sparsed.length)
+			{
+				const tileNo = Number(layer.sparsed.pop());
+				const tileId = Number(layer.sparsed.pop());
+
+				desparsed[tileId] = tileNo;
+			}
+		}
+
+		console.timeEnd('desparse');
 	}
 
 	loadTilesets(tilesetUrls)
