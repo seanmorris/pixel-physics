@@ -24,6 +24,10 @@
 	z-index: var(--z);
 }
 
+.point-actor.controllable[data-selected]:not([data-driving=true]) {
+	z-index: calc(1 + var(--z));
+}
+
 .point-actor .sprite {
 	contain:  size style;
 }

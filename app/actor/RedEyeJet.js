@@ -522,8 +522,10 @@ export class RedEyeJet extends PointActor
 		super.update();
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 

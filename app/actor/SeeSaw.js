@@ -31,8 +31,10 @@ export class SeeSaw extends PointActor
 		});
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		if(!this.hub)
 		{
 			this.hub = new Tag('<div class = "see-saw-hub">');

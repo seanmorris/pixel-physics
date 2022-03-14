@@ -13,8 +13,10 @@ export class PowerupGlow extends PointActor
 		this.args.height = 64;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.autoAttr.get(this.box)['data-closed'] = 'closed';
 
 		this.icon = new Tag('<div class = "powerup-icon">');

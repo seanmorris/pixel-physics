@@ -28,8 +28,10 @@ export class Eggrobo extends PointActor
 		this.args.height = 57;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 

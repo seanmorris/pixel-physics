@@ -2,12 +2,7 @@ import { Tag } from 'curvature/base/Tag';
 
 export const Constrainable = {
 
-	onAttached: function() {
-		this.box = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
-	}
-
-	, wakeUp: function() {
+	wakeUp: function() {
 
 		if(!this.args._tiedTo)
 		{

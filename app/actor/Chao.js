@@ -64,8 +64,10 @@ export class Chao extends PointActor
 		});
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.setAutoAttr('emote',     'data-emote');
 		this.setAutoAttr('alignment', 'data-alignment');
 		this.setAutoAttr('direction', 'data-direction');

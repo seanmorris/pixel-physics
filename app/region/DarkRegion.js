@@ -15,8 +15,10 @@ export class DarkRegion extends Region
 		this.actors = new Set;
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.basePath = `M 0 0
     					L 0 ${32 * 17}
     					L ${32 * 17} ${32 * 17}

@@ -36,8 +36,10 @@ export class MiniBoss extends Mixin.from(PointActor)
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.autoAttr.get(this.box)['data-phase'] = 'phase';
 
 		this.attractor = null;

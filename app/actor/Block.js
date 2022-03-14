@@ -57,8 +57,10 @@ export class Block extends PointActor
 		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
 
-	onAttached(event)
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		if(!this.viewport)
 		{
 			return;
@@ -82,11 +84,11 @@ export class Block extends PointActor
 
 		// this.screen.style({'pointer-events':'initial', 'z-index': 1000});
 
-		if(!this.viewport)
-		{
-			event.preventDefault();
-			return false;
-		}
+		// if(!this.viewport)
+		// {
+		// 	event.preventDefault();
+		// 	return false;
+		// }
 
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 
@@ -288,11 +290,6 @@ export class Block extends PointActor
 		}
 
 		return true;
-	}
-
-	onAttach(event)
-	{
-
 	}
 
 	activate()

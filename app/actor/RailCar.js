@@ -35,8 +35,10 @@ export class RailCar extends Vehicle
 		this.args.started = false;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 

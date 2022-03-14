@@ -32,8 +32,10 @@ export class Seymour extends PointActor
 		this.args.height = 32;
 	}
 
-	onAttached()
+	onRendered(event)
 	{
+		super.onRendered(event);
+
 		this.box = this.findTag('div');
 	}
 

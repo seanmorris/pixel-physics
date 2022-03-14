@@ -38,14 +38,14 @@ export class BreakableBlock extends Block
 		this.broken = false;
 	}
 
-	onRendered()
+	onRendered(event)
 	{
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
 		this.box.append(this.fragmentsX.node);
 
-		super.onRendered();
+		super.onRendered(event);
 	}
 
 	updateStart()
