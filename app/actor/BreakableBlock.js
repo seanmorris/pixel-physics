@@ -20,20 +20,35 @@ export class BreakableBlock extends Block
 		this.args.static = true;
 		this.args.strength = 0 || Number(this.args.strength);
 
-		this.fragmentsX = new Tag('<div class = "fragmentsX">');
-		this.fragmentsY = new Tag('<div class = "fragmentsY">');
+		this.fragmentsX = document.createElement('div');
+		this.fragmentsY = document.createElement('div');
 
-		this.fragmentTopLeft = new Tag('<div class = "fragment fragment-top-left">');
-		this.fragmentTopRight = new Tag('<div class = "fragment fragment-top-right">');
-		this.fragmentBottomLeft = new Tag('<div class = "fragment fragment-bottom-left">');
-		this.fragmentBottomRight = new Tag('<div class = "fragment fragment-bottom-right">');
+		this.fragmentsX.classList.add('fragmentsX')
+		this.fragmentsY.classList.add('fragmentsY')
 
-		this.fragmentsY.append(this.fragmentTopLeft.node);
-		this.fragmentsY.append(this.fragmentTopRight.node);
-		this.fragmentsY.append(this.fragmentBottomLeft.node);
-		this.fragmentsY.append(this.fragmentBottomRight.node);
+		this.fragmentTopLeft     = document.createElement('div');
+		this.fragmentTopRight    = document.createElement('div');
+		this.fragmentBottomLeft  = document.createElement('div');
+		this.fragmentBottomRight = document.createElement('div');
 
-		this.fragmentsX.append(this.fragmentsY.node);
+		this.fragmentTopLeft.classList.add('fragment');
+		this.fragmentTopLeft.classList.add('fragment-top-left');
+
+		this.fragmentTopRight.classList.add('fragment');
+		this.fragmentTopRight.classList.add('fragment-top-right');
+
+		this.fragmentBottomLeft.classList.add('fragment');
+		this.fragmentBottomLeft.classList.add('fragment-bottom-left');
+
+		this.fragmentBottomRight.classList.add('fragment');
+		this.fragmentBottomRight.classList.add('fragment-bottom-right');
+
+		this.fragmentsY.append(this.fragmentTopLeft);
+		this.fragmentsY.append(this.fragmentTopRight);
+		this.fragmentsY.append(this.fragmentBottomLeft);
+		this.fragmentsY.append(this.fragmentBottomRight);
+
+		this.fragmentsX.append(this.fragmentsY);
 
 		this.broken = false;
 	}
@@ -43,7 +58,7 @@ export class BreakableBlock extends Block
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
-		this.box.append(this.fragmentsX.node);
+		this.box.append(this.fragmentsX);
 
 		super.onRendered(event);
 	}
@@ -92,7 +107,7 @@ export class BreakableBlock extends Block
 		{
 			if(!this.broken && other.y <= this.y - this.args.height)
 			{
-				this.fragmentsX.style({'--xSpeed': 0});
+				this.fragmentsX.style.setProperty('--xSpeed', 0);
 
 				if(!other.args.falling)
 				{
@@ -287,11 +302,11 @@ export class BreakableBlock extends Block
 
 			if(other.isVehicle)
 			{
-				this.fragmentsX.style({'--xSpeed': Math.round(x * 1.1 )});
+				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x * 1.1));
 			}
 			else
 			{
-				this.fragmentsX.style({'--xSpeed': Math.round(x)});
+				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x));
 			}
 		}
 

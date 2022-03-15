@@ -3208,6 +3208,7 @@ export class Viewport extends View
 		{
 			if(region[Run] !== this[Run])
 			{
+				this.regions.delete(region);
 				continue;
 			}
 

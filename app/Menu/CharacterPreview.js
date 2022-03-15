@@ -14,7 +14,7 @@ export class CharacterPreview extends View
 	{
 		super(args, parent);
 
-		this.args.emeralds = [
+		const emeralds = this.args.emeralds = [
 			  View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-red-alt-mini.png" />')
 			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-purple-mini.png" />')
 			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-pink-mini.png" />')
@@ -26,15 +26,15 @@ export class CharacterPreview extends View
 
 		this.onFrame(() => {
 			let e = 0
-			this.args.emeralds.forEach(emerald => {
 
+			for(const emerald of emeralds)
+			{
 				const time = Date.now() / 300;
 				const roll = (e++ * (Math.PI*2) / 7) + time;
 
 				emerald.args.x = Math.cos(roll);
 				emerald.args.y = Math.sin(roll);
-
-			})
+			}
 		});
 	}
 }
