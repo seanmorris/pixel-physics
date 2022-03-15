@@ -184,7 +184,7 @@ export class MainMenu extends Menu
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Misty Ruins Zone'
 						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/ruins-test.json'});
+							this.parent.loadMap({mapUrl: '/map/ruins-test.sparse.json'});
 							this.accept();
 						}
 					}
@@ -307,13 +307,6 @@ export class MainMenu extends Menu
 						}
 					}
 				}
-
-
-				// , callback: () => {
-				// 	this.parent.args.networked = false;
-				// 	this.remove()
-				// }
-
 			}
 
 			, '2 Player P2P': {

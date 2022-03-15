@@ -114,6 +114,8 @@ export class PointActor extends View
 
 		this[ Bindable.NoGetters ] = true;
 
+		Object.defineProperty(this.nodes, Bindable.NoGetters, {value:true});
+
 		this.defaultDisplay = 'initial';
 
 		this.springing = false;
@@ -285,6 +287,8 @@ export class PointActor extends View
 		this.args.airAngle     = 0;
 
 		this.lastAngles = [];
+		Object.defineProperty(this.lastAngles, Bindable.NoGetters, {value: true});
+
 		this.angleAvg   = 16;
 
 		this.args.xSpeedMax = 512;
@@ -1469,7 +1473,7 @@ export class PointActor extends View
 			{
 				this.args.standingOn = null;
 				this.args.landed = false;
-				this.lastAngles  = [];
+				this.lastAngles.splice(0);
 
 				if(this.args.jumping && this.args.jumpedAt < this.y)
 				{
@@ -1942,7 +1946,7 @@ export class PointActor extends View
 				}
 				else if(mode === MODE_LEFT && (this.args.groundAngle < Math.PI * 0.15))
 				{
-					this.lastAngles = [];
+					this.lastAngles.splice(0);
 
 					// this.args.xSpeed = 2;
 
@@ -1957,7 +1961,7 @@ export class PointActor extends View
 				}
 				else if(mode === MODE_RIGHT && (this.args.groundAngle > -Math.PI * 0.15))
 				{
-					this.lastAngles = [];
+					this.lastAngles.splice(0);
 
 					// this.args.xSpeed = -2;
 
@@ -1970,7 +1974,7 @@ export class PointActor extends View
 				}
 				else if(mode === MODE_CEILING)
 				{
-					this.lastAngles = [];
+					this.lastAngles.splice(0);
 
 					this.args.xSpeed = 0;
 
@@ -2401,7 +2405,7 @@ export class PointActor extends View
 						if(this.args.mode === MODE_LEFT || this.args.mode === MODE_RIGHT)
 						{
 							this.args.mode = MODE_FLOOR;
-							this.lastAngles = [];
+							this.lastAngles.splice(0);
 						}
 
 						break;
@@ -2632,6 +2636,7 @@ export class PointActor extends View
 						if(this.args.angle > Math.PI / 4 && this.args.angle < Math.PI / 2)
 						{
 							this.lastAngles = this.lastAngles.map(n => n - Math.PI / 2);
+							Object.defineProperty(this.lastAngles, Bindable.NoGetters, {value: true});
 
 							switch(this.args.mode)
 							{
@@ -2659,6 +2664,7 @@ export class PointActor extends View
 							const orig = this.args.mode;
 
 							this.lastAngles = this.lastAngles.map(n => Number(n) + Math.PI / 2);
+							Object.defineProperty(this.lastAngles, Bindable.NoGetters, {value: true});
 
 							switch(this.args.mode)
 							{
@@ -4217,14 +4223,30 @@ export class PointActor extends View
 			}
 		}
 
-		const actors = viewport.actorsAtPoint(point[0], point[1])
-		.filter(x =>
-			x.args !== actor.args
-			&& x.callCollideHandler(actor)
-			&& x.solid
-		);
+		const actors = viewport.actorsAtPoint(point[0], point[1]);
+		const solids = [];
 
-		if(actors.length === 0)
+		for(const x of actors)
+		{
+			if(x.args === actor.args)
+			{
+				continue;
+			}
+
+			if(!x.callCollideHandler(actor))
+			{
+				continue;
+			}
+
+			if(!x.solid)
+			{
+				continue;
+			}
+
+			solids.push(x);
+		}
+
+		if(solids.length === 0)
 		{
 			if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
 			{

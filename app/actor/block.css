@@ -143,11 +143,11 @@
 }
 
 .actor-item.actor-block .sprite.collapse {
-	filter: grayscale(85%) brightness(1.125);
+	/*filter: grayscale(85%) brightness(1.125);*/
 }
 
 .actor-item.actor-block .sprite.platform {
-	filter: sepia(85%) brightness(0.9125) hue-rotate(140deg);
+	/*filter: sepia(85%) brightness(0.9125) hue-rotate(140deg);*/
 	/*z-index: -10000 !important;*/
 }
 

@@ -92,7 +92,10 @@ export class Block extends PointActor
 
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 
-		this.droop(0);
+		if(this.args.droop)
+		{
+			this.droop(0);
+		}
 
 		this.args.collapse && this.tags.sprite.classList.add('collapse');
 		this.args.platform && this.tags.sprite.classList.add('platform');
