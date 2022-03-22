@@ -99,6 +99,139 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		console.timeEnd('desparse');
 	}
 
+	append(url, xOffset, yOffset)
+	{
+		const elicit = new Elicit(url);
+
+		elicit.stream()
+		.then(response => response.json())
+		.then(data => {
+
+			this.desparseLayers(data);
+
+			for(const newLayer of data.layers)
+			{
+				const newData = {};
+				const sizeOffset = this.mapData.width - newLayer.width;
+
+				const offset = xOffset + yOffset * this.mapData.width;
+
+				if(!newLayer.data)
+				{
+					continue;
+				}
+
+				for(let i of Object.keys(newLayer.data))
+				{
+					const tileId = Number(i);
+					const tileNo = Number(newLayer.data[i]);
+
+					const row = Math.floor(tileId / newLayer.width);
+
+					delete newLayer.data[i];
+
+					newData[row * sizeOffset + offset + tileId] = tileNo;
+				}
+
+				for(let i in newData)
+				{
+					newLayer.data[i] = newData[i];
+				}
+
+				for(const existingLayer of this.mapData.layers)
+				{
+					if(newLayer.name !== existingLayer.name)
+					{
+						continue;
+					}
+
+					for(const i in newLayer.data)
+					{
+						existingLayer.data[i] = newLayer.data[i];
+					}
+				}
+			}
+
+			this.tileNumberCache.clear();
+		});
+
+		elicit.addEventListener('progress', event => {
+			const {received, length, done} = event.detail;
+
+
+			// const type = 'map';
+
+			// this.dispatchEvent(new CustomEvent(
+			// 	'level-progress', {detail: {length, received, done, url}}
+			// ));
+		});
+	}
+
+	resize(newWidth, newHeight, tileLayers = this.tileLayers)
+	{
+		const mapData = this.mapData;
+
+		const originalWidth  = mapData.width;
+		const originalHeight = mapData.height;
+
+		mapData.width  = newWidth;
+		mapData.height = newHeight;
+
+		const offset = newWidth - originalWidth;
+
+		for(const layer of tileLayers)
+		{
+			const newData = {};
+
+			for(let i of Object.keys(layer.data))
+			{
+				const tileId = Number(i);
+				const tileNo = Number(layer.data[i]);
+
+				const row = Math.floor(tileId / originalWidth);
+
+				layer.data[i] = undefined;
+
+				newData[row * offset + tileId] = tileNo;
+			}
+
+			for(let i in newData)
+			{
+				layer.data[i] = newData[i];
+			}
+		}
+
+		this.tileNumberCache.clear();
+	}
+
+	offset(xOffset, yOffset, tileLayers = this.tileLayers)
+	{
+		const offset = xOffset + yOffset * this.mapData.width;
+
+		for(const layer of tileLayers)
+		{
+			const newData = {};
+
+			for(let i in layer.data)
+			{
+				const name   = Number(layer.name);
+				const tileId = Number(i);
+				const tileNo = Number(layer.data[i]);
+
+				layer.data[i] = 0;
+
+				newData[offset + tileId] = tileNo;
+			}
+
+			for(let i in newData)
+			{
+				layer.data[i] = newData[i];
+			}
+		}
+
+		this.tileNumberCache.clear();
+	}
+
 	loadTilesets(tilesetUrls)
 	{
 		const setHeightMasks = [];
@@ -195,7 +328,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileLayers   = tilemapData.layers.filter(l => l.type === 'tilelayer');
 
 		// layerGroup.objectLayers = this.objectLayers;
-		layerGroup.tileLayers   = this.tileLayers;
+		layerGroup.tileLayers = this.tileLayers;
 
 		this.collisionLayers = this.tileLayers.filter(l => {
 
@@ -241,16 +374,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			// 	'level-progress', {detail: {length, received, done, url}}
 			// ));
 		});
-	}
-
-	reset()
-	{
-		for(let i = 0; i < this.tileLayers.length; i++)
-		{
-			const layer = this.tileLayers[i];
-
-			layer.destroyed = false;
-		}
 	}
 
 	coordsToTile(x, y, layerId)
@@ -590,6 +713,13 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.replacements.clear();
 		this.tileSetCache.clear();
 		this.tileCache.clear();
+
+		for(let i = 0; i < this.tileLayers.length; i++)
+		{
+			const layer = this.tileLayers[i];
+
+			layer.destroyed = false;
+		}
 
 		for(const tileset of this.mapData.tilesets)
 		{

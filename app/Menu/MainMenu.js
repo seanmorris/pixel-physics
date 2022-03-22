@@ -270,13 +270,14 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Light Dash Test': {
-						characters: ['Sonic']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Light Dash Test': {
+					// 	characters: ['Sonic']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+
 					, 'Block Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, callback: () => {
@@ -285,20 +286,22 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Half Pipe Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
-							this.accept();
-						}
-					}
-					, 'Water Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/water-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Half Pipe Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+
+					// , 'Water Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/water-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+
 					, 'Arch Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, callback: () => {

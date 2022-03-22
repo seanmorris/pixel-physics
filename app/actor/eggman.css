@@ -26,6 +26,13 @@
 	--sprite-offset-y: 0px;
 }
 
+
+.actor-item.actor-eggman[data-animation="grinding-crouching"] .sprite:after,
+.actor-item.actor-eggman[data-animation="grinding"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -128px;
+}
+
 .actor-item.actor-eggman[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -384px;

@@ -292,7 +292,25 @@
 
 [data-animation=rolling] .bubble-sheild,
 [data-animation=jumping] .bubble-sheild {
+	top: 24px;
+}
+
+[data-animation=rolling][data-mode="0"] .bubble-sheild,
+[data-animation=jumping][data-mode="0"] .bubble-sheild {
 	left: -4px;
+}
+
+[data-facing=left][data-mode="2"][data-animation=rolling] .bubble-sheild,
+[data-facing=left][data-mode="2"][data-animation=jumping] .bubble-sheild {
+	left: -4px;
+	top: 24px;
+}
+
+[data-facing=right][data-mode="2"][data-animation=rolling] .fire-sheild,
+[data-facing=right][data-mode="2"][data-animation=jumping] .fire-sheild,
+[data-facing=right][data-mode="2"][data-animation=rolling] .bubble-sheild,
+[data-facing=right][data-mode="2"][data-animation=jumping] .bubble-sheild {
+	left: 16px;
 	top: 24px;
 }
 
@@ -304,19 +322,40 @@
 	top: 10px;
 }
 
-.actor-chalmers .electric-sheild,
+/*.actor-chalmers .electric-sheild,
 .actor-chalmers .bubble-sheild,
 .actor-chalmers .fire-sheild,
+.actor-mecha-sonic .electric-sheild,
+.actor-mecha-sonic .bubble-sheild,
+.actor-mecha-sonic .fire-sheild,*/
+.actor-eggrobo .normal-sheild,
 .actor-eggrobo .electric-sheild,
 .actor-eggrobo .bubble-sheild,
 .actor-eggrobo .fire-sheild,
-.actor-eggman .electric-sheild,
+.actor-eggman .normal-sheild,
 .actor-eggman .bubble-sheild,
-.actor-eggman .fire-sheild,
-.actor-mecha-sonic .electric-sheild,
-.actor-mecha-sonic .bubble-sheild,
-.actor-mecha-sonic .fire-sheild {
-	transform: scale(1.5) translate(0px, -13px);
+.actor-eggman .fire-sheild {
+	transform: scale(1.35) translate(2px, -6px);
+}
+
+.actor-eggman[data-animation=rolling] .normal-sheild,
+.actor-eggman[data-animation=rolling] .electric-sheild,
+.actor-eggman[data-animation=rolling] .bubble-sheild,
+.actor-eggman[data-animation=rolling] .fire-sheild,
+.actor-eggman[data-animation=jumping] .normal-sheild,
+.actor-eggman[data-animation=jumping] .electric-sheild,
+.actor-eggman[data-animation=jumping] .bubble-sheild,
+.actor-eggman[data-animation=jumping] .fire-sheild {
+	transform: scale(1.35) translate(2px, 2px);
+}
+
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=rolling] .electric-sheild,
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=rolling] .bubble-sheild,
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=rolling] .fire-sheild,
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=jumping] .electric-sheild,
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=jumping] .bubble-sheild,
+.actor-eggman[data-mode="2"][data-facing=right][data-animation=jumping] .fire-sheild {
+	transform: scale(1.35) translate(-2px, 6px);
 }
 
 .actor-seymour .electric-sheild,

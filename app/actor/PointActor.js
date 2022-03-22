@@ -1995,17 +1995,21 @@ export class PointActor extends View
 						this.args.xSpeed = -gSpeed;
 					});
 
-					if(Math.sign(this.xSpeedLast) === -1)
+					if(!this.args.rolling)
 					{
-						this.args.facing = 'left'
-						this.args.x++;
+						if(Math.sign(this.xSpeedLast) === -1)
+						{
+							this.args.direction = -1;
+							this.args.facing = 'left'
+							this.args.x++;
+						}
+						else if(Math.sign(this.xSpeedLast) === 1)
+						{
+							this.args.direction = 1;
+							this.args.facing = 'right'
+							this.args.x--;
+						}
 					}
-					else if(Math.sign(this.xSpeedLast) === 1)
-					{
-						this.args.facing = 'right'
-						this.args.x--;
-					}
-
 				}
 			}
 		}
@@ -2887,6 +2891,26 @@ export class PointActor extends View
 					// }
 
 					if(this.args.mode === MODE_FLOOR && Math.abs(slopeFactor) > 0.5)
+					{
+						if(Math.abs(this.args.gSpeed) < 1)
+						{
+							this.args.gSpeed = Math.sign(slopeFactor) * 4;
+						}
+
+						this.args.gSpeed += slopeFactor * 0.1;
+					}
+
+					if(this.args.mode === MODE_LEFT && slopeFactor < 0.5)
+					{
+						if(Math.abs(this.args.gSpeed) < 1)
+						{
+							this.args.gSpeed = Math.sign(-slopeFactor) * 4;
+						}
+
+						this.args.gSpeed += -slopeFactor * 0.1;
+					}
+
+					if(this.args.mode === MODE_RIGHT && slopeFactor < -0.5)
 					{
 						if(Math.abs(this.args.gSpeed) < 1)
 						{

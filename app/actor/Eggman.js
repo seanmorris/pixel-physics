@@ -64,6 +64,23 @@ export class Eggman extends PointActor
 		this.box = this.findTag('div');
 	}
 
+	updateStart()
+	{
+		if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
+		{
+			this.args.animation = 'airdash';
+			this.args.grinding = false;
+		}
+
+		super.updateStart();
+
+		if(this.args.dead)
+		{
+			this.args.animation = 'dead';
+			return;
+		}
+	}
+
 	update()
 	{
 		const falling = this.args.falling;
@@ -109,8 +126,9 @@ export class Eggman extends PointActor
 		{
 			if(this.args.jumping)
 			{
-				this.box.setAttribute('data-animation', 'jumping');
+				this.args.animation = 'jumping';
 			}
+
 			this.args.height = this.args.rollingHeight;
 		}
 		else if(this.args.rolling)
@@ -130,7 +148,7 @@ export class Eggman extends PointActor
 				}
 			}
 
-			this.box.setAttribute('data-animation', 'rolling');
+			this.args.animation = 'rolling';
 		}
 		else
 		{
@@ -138,40 +156,47 @@ export class Eggman extends PointActor
 
 			if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 			{
-				this.box.setAttribute('data-animation', 'skidding');
+				this.args.animation = 'skidding';
 			}
 			else if(speed > maxSpeed / 2)
 			{
-				this.box.setAttribute('data-animation', 'running');
+				this.args.animation = 'running';
 			}
 			else if(this.args.moving && gSpeed)
 			{
-				this.box.setAttribute('data-animation', 'walking');
+				this.args.animation = 'walking';
 			}
 			else if(this.args.lookingUp)
 			{
-				this.box.setAttribute('data-animation', 'lookingUp');
+				this.args.animation = 'lookingUp';
 			}
 			else if(this.args.crouching || (this.args.standingOn && this.args.standingOn.isVehicle))
 			{
-				this.box.setAttribute('data-animation', 'crouching');
+				this.args.animation = 'crouching';
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.args.animation = 'standing';
 			}
+		}
+
+		if(this.args.hangingFrom)
+		{
+			this.args.animation = 'hanging';
 		}
 
 		if(this.args.grinding)
 		{
 			this.args.rolling = false;
 
-			this.args.animation = 'grinding';
-		}
-
-		if(this.args.hangingFrom)
-		{
-			this.args.animation = 'hanging';
+			if(this.yAxis > 0.5)
+			{
+				this.args.animation = 'grinding-crouching';
+			}
+			else
+			{
+				this.args.animation = 'grinding';
+			}
 		}
 
 		super.update();
