@@ -199,11 +199,6 @@ export class Sonic extends PointActor
 				, this.png.recolor(hyperColorsYellow).toUrl()
 			]);
 		}
-	}
-
-	onRendered()
-	{
-		super.onRendered();
 
 		if(!this.arm)
 		{

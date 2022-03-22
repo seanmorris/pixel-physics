@@ -186,7 +186,7 @@ export class Monitor extends PointActor
 
 		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
 
-		if(this.viewport.settings.rumble && other.controller && other.controller.rumble)
+		if(other && this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{
 			other.controller.rumble({
 				duration: 40,

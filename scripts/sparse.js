@@ -1,5 +1,3 @@
-const Sparser = require('./Sparser');
-
 var stdin = process.stdin,
     stdout = process.stdout,
     inputChunks = [];
@@ -13,7 +11,7 @@ stdin.on('data', function (chunk) {
 
 stdin.on('end', function () {
     var inputJSON = inputChunks.join(''),
-		mapData    = JSON.parse(inputJSON);
+		mapData   = JSON.parse(inputJSON);
 
 	for(const layer of mapData.layers)
 	{

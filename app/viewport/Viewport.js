@@ -1176,14 +1176,10 @@ export class Viewport extends View
 		{
 			if(Bgm.playing && this.meta.bgm !== this.bgm)
 			{
-				Bgm.fadeOut(250).then(() => {
-					Bgm.play(this.meta.bgm, true);
-				});
+				Bgm.stop();
 			}
-			else
-			{
-				Bgm.play(this.meta.bgm, true);
-			}
+
+			Bgm.play(this.meta.bgm, true);
 		}
 		else
 		{
