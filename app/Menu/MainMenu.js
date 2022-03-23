@@ -129,7 +129,7 @@ export class MainMenu extends Menu
 						subtext: 'Learn the controls for Sonic'
 						, characters: ['Sonic']
 						, callback: () => {
-							this.parent.loadMap({mapUrl:'/map/sonic-movement.sparse.json'});
+							this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
 							this.accept();
 						}
 					}
@@ -158,14 +158,14 @@ export class MainMenu extends Menu
 						, children: {
 							'Act 1': {
 								callback: () => {
-									this.parent.loadMap({mapUrl:'/map/empty-zone.sparse.json'});
+									this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
 									this.accept();
 								}
 							}
 							, 'Act 2': {
 								subtext: 'Incomplete!!!'
 								, callback: () => {
-									this.parent.loadMap({mapUrl:'/map/empty-zone-2.sparse.json'});
+									this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
 									this.accept();
 								}
 							}
@@ -175,7 +175,7 @@ export class MainMenu extends Menu
 					, 'Seaview Park Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, callback: () => {
-							this.parent.loadMap({mapUrl:'/map/west-side-zone.sparse.json'});
+							this.parent.loadMap({mapUrl:'/map/west-side-zone.json'});
 							this.accept();
 						}
 					}
@@ -184,7 +184,7 @@ export class MainMenu extends Menu
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Misty Ruins Zone'
 						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/ruins-test.sparse.json'});
+							this.parent.loadMap({mapUrl: '/map/ruins-test.json'});
 							this.accept();
 						}
 					}

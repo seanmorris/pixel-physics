@@ -22,6 +22,7 @@
     "babel-minify": "^0.5.1",
     "brunch": "^4.0.0",
     "brunch-preval": "^0.0.3",
+    "brunch-chilidogsparser": "^0.0.3",
     "clean-css-brunch": "^3",
     "raw-brunch": "^1.0.2",
     "uglify-es-brunch": "^1"
