@@ -1284,7 +1284,7 @@
                         {
                          "name":"content",
                          "type":"string",
-                         "value":"Press and hold \u2779 \/ \u277a"
+                         "value":"Press left or right"
                         }, 
                         {
                          "name":"static",
