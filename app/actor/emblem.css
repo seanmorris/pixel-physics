@@ -1,0 +1,43 @@
+.actor-emblem .sprite::after {
+	left: 0;
+	content: '';
+	position: absolute;
+	background-image: url(/Sonic/emblem-knuckles.png);
+	background-image: url(/Sonic/emblem-robotnik.png);
+	background-image: url(/Sonic/emblem-tails.png);
+	background-image: url(/Sonic/emblem-sonic.png);
+	width: 32px;
+	height: 26px;
+	animation: emblem-hover 1.5s ease-in-out infinite;
+}
+
+.actor-emblem-collected .sprite {
+	filter: saturate(0);
+}
+
+.actor-emblem-gone .sprite::after {
+	left: 8px;
+	background-image: url(/Sonic/sparkle.png);
+	width: 16px;
+	height: 16px;
+	animation: emblem-sparkle 100ms steps(4) infinite
+		, emblem-sparkle-fade 300ms ease-out 1 backwards;
+}
+
+@keyframes emblem-hover {
+	0% { transform: translateY(0px); }
+	50% { transform: translateY(6px); }
+	100% { transform: translateY(0px); }
+}
+
+@keyframes emblem-sparkle {
+	0% { background-position-y: 0px; }
+	100% { background-position-y: -64px; }
+}
+
+@keyframes emblem-sparkle-fade {
+	0% { opacity: 0; }
+	99% { opacity: 1; }
+	100% { opacity: 0; }
+}
+

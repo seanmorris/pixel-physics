@@ -1,0 +1,47 @@
+.actor-item.actor-drop-cage {
+	z-index: 100;
+}
+
+.actor-item.actor-drop-cage .sprite {
+	position: absolute;
+	background-image: url(/Sonic/slot-cage.png);
+}
+
+.actor-item.actor-slot-machine {
+	width: 96px;
+	height: 32px;
+}
+
+.actor-item.actor-slot-machine .slot-panel {
+	background-image: url(/Sonic/slot-panels.png);
+	position: absolute;
+	bottom: 100%;
+	right: 100%;
+	width: 32px;
+	height: 32px;
+	background-position-y: var(--scrollTo);
+}
+
+.actor-item.actor-slot-machine-rolling .slot-panel {
+	/*animation: slots-roll infinite 1s linear;*/
+}
+
+.actor-item.actor-slot-machine .slot-panel-a {
+	transition: background-position-y 0.9s ease-in;
+	left: -48px;
+}
+
+.actor-item.actor-slot-machine .slot-panel-b {
+	transition: background-position-y 1.15s ease-in;
+	left: -16px;
+}
+
+.actor-item.actor-slot-machine .slot-panel-c {
+	transition: background-position-y 1.45s ease-in;
+	left: 16px;
+}
+
+@keyframes slots-roll {
+	0%{ background-position-y: 0px;  }
+	100%{ background-position-y: -256px;  }
+}
