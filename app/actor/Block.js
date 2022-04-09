@@ -7,6 +7,8 @@ import { Ring } from './Ring';
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
 
+import { Platformer } from '../behavior/Platformer';
+
 export class Block extends PointActor
 {
 	static fromDef(objDef)
@@ -550,7 +552,7 @@ export class Block extends PointActor
 					continue;
 				}
 
-				const conveyTo = collidee.findNextStep(this.args.convey);
+				const conveyTo = this.bMap('findNextStep', this.args.convey).get(Platformer);
 
 				if(conveyTo[3])
 				{
@@ -578,16 +580,6 @@ export class Block extends PointActor
 		{
 			this.viewport.actors.remove(this);
 		}
-	}
-
-	popOut(other)
-	{
-		if(this.args.platform)
-		{
-			return;
-		}
-
-		super.popOut(other);
 	}
 
 	get rotateLock() { return true; }

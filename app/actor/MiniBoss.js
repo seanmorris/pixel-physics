@@ -1,4 +1,5 @@
 import { Tag } from 'curvature/base/Tag';
+import { Platformer } from '../behavior/Platformer';
 import { PointActor } from './PointActor';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
@@ -247,7 +248,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 			case 'swooping':
 			case 'stalking':
 			case 'ready': {
-				if(this.checkBelow(this.x, this.y))
+				if(this.bMap('checkBelow', this.x, this.y + 1).get(Platformer))
 				{
 					this.args.falling = true;
 					this.args.ySpeed  = -4;

@@ -74,6 +74,12 @@ export const CanPop = {
 	}
 
 	, damage: function(other, type) {
+
+		if(!other)
+		{
+			this.pop();
+		}
+
 		const shield = this.args.currentSheild;
 		const immune = other.immune(this, shield ? shield.type : 'normal');
 

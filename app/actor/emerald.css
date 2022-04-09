@@ -1,4 +1,8 @@
 .actor-item.actor-emerald .sprite {
+	background-image: url(/Sonic/emerald-dull.png);
+}
+
+.actor-item.actor-emerald.emerald-white .sprite {
 	background-image: url(/Sonic/emerald-white.png);
 }
 
@@ -18,10 +22,14 @@
 	background-image: url(/Sonic/emerald-yellow.png);
 }
 
+.actor-item.actor-emerald.emerald-cyan .sprite {
+	background-image: url(/Sonic/emerald-cyan.png);
+}
+
 .actor-item.actor-emerald.emerald-green .sprite {
 	background-image: url(/Sonic/emerald-green.png);
 }
 
-.actor-item.actor-emerald.emerald-yellow .sprite {
+.actor-item.actor-emerald.emerald-red-alt .sprite {
 	background-image: url(/Sonic/emerald-red-alt.png);
 }

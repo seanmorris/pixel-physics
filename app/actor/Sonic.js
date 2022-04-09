@@ -1,5 +1,7 @@
 import { PointActor } from './PointActor';
 
+import { Platformer } from '../behavior/Platformer';
+
 import { Sfx } from '../audio/Sfx';
 
 import { Tag } from 'curvature/base/Tag';
@@ -770,7 +772,7 @@ export class Sonic extends PointActor
 		}
 
 		if([...this.regions].filter(r => r.isWater).length
-			&& !this.checkBelow(this.x, this.y+16)
+			&& !this.bMap('checkBelow', this.x, this.y + 16).get(Platformer)
 			&& this.args.falling
 			&& this.dashed
 		){
@@ -1462,7 +1464,7 @@ export class Sonic extends PointActor
 
 		this.spindashCharge = 0;
 
-		let angle = Math.atan2(ring.y - this.y, ring.x - this.x);
+		let angle = Math.atan2(ring.y - this.y + 8, ring.x - this.x);
 
 		currentAngle = this.args.groundAngle;
 
@@ -1477,7 +1479,7 @@ export class Sonic extends PointActor
 			dashSpeed = maxDash;
 		}
 
-		const space = this.scanForward(dashSpeed, 0.5);
+		const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
 
 		if(space && dashSpeed > space)
 		{

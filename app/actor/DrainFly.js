@@ -1,5 +1,6 @@
 // import { Follower } from './Follower';
 import { PointActor } from './PointActor';
+import { Platformer } from '../behavior/Platformer';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 
@@ -80,7 +81,7 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 					this.args.ySpeed = 4 * drawY;
 				}
 
-				if(this.checkBelow(this.x, this.y))
+				if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
 				{
 					this.args.ySpeed = -1;
 					this.args.y -= 1;

@@ -51,6 +51,12 @@
 	/*text-align: center;*/
 }
 
+.screen-card-main-menu li:focus,
+.screen-card-main-menu li:focus-within,
+.screen-card-main-menu li.focused {
+
+}
+
 .screen-card-main-menu li:focus span.title::before,
 .screen-card-main-menu li:focus-within span.title::before,
 .screen-card-main-menu li.focused span.title::before {
@@ -78,13 +84,14 @@
 	/*color: white;*/
 	color: rgb(255,255,100);
 }
+
 .screen-card-main-menu :focus,
 .screen-card-main-menu .focused {
 	outline: none;
 }
 
 .screen-card-main-menu li {
-	display: flex;
+	list-style: none;
 	flex: 1;
 	align-items: center;
 	margin-bottom: 0.5em;
@@ -111,7 +118,7 @@
 .screen-card-main-menu li::after,
 .screen-card-pause-menu .subtext,
 .screen-card-main-menu .subtext {
-	/*display: none;*/
+	display: none;
 	transform: scale(0.666) translate(0, -3px);
 
 	transform-origin: top left;
@@ -147,14 +154,14 @@
 .screen-card-main-menu .unavailable.focused::after,
 .screen-card-main-menu .unavailable:focus-within::after,
 .screen-card-main-menu .unavailable:focus::after {
-	/*display: initial;*/
+	display: initial;
 	opacity: 1;
 }
 
-.screen-card-pause-menu .unavailable::after,
+/*.screen-card-pause-menu .unavailable::after,
 .screen-card-main-menu .unavailable::after {
 	content: 'unavailable';
-}
+}*/
 
 .screen-card-main-menu {
 	position: relative;
@@ -410,8 +417,80 @@
 }*/
 
 .screen-card-main-menu li {
-	scroll-snap-align: top;
+	scroll-snap-align: center;
 	position: relative;
+}
+
+.screen-card-main-menu li .zone-suffix {
+	left: 0;
+	top: 100%;
+	transform-origin: top left;
+	transform: scale(0.75);
+	margin-bottom: -8px;
+}
+
+.screen-card-main-menu li.focused .zone-suffix,
+.screen-card-main-menu li:focus-within .zone-suffix,
+.screen-card-main-menu li:focus .zone-suffix {
+}
+
+.screen-card-main-menu li .zone-suffix .row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-direction: row;
+	margin-top: 4px;
+}
+
+.screen-card-main-menu li .emblems:empty {
+	display: none;
+}
+
+.screen-card-main-menu li .emblems {
+	width: calc(15px * var(--emblems));
+	height: 10px;
+}
+
+.screen-card-main-menu li .zone-suffix .row > * {
+	flex: 0;
+	margin-right: 0.5rem;
+}
+
+.screen-card-main-menu li .row .time ,
+.screen-card-main-menu li .row .rings ,
+.screen-card-main-menu li .row .score {
+}
+
+.screen-card-main-menu li .row .rings {
+	background-image: url(/Sonic/ring-icon.png);
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	height: 16px;
+}
+
+.screen-card-main-menu li .row .time {
+	background-image: url(/speedy/clock-icon.png);
+	background-repeat: no-repeat;
+	padding-left: 24px;
+	height: 16px;
+}
+
+.screen-card-main-menu li .row .air {
+	background-image: url(/Sonic/air-icon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 12px;
+	padding-left: 16px;
+	height: 16px;
+}
+
+.screen-card-main-menu li .row .score {
+	background-image: url(/Sonic/star-icon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 12px;
+	padding-left: 16px;
+	height: 16px;
 }
 
 input::-webkit-outer-spin-button,
@@ -518,9 +597,8 @@ input::-webkit-inner-spin-button {
 	position: absolute;
 	top: 0;
 	box-sizing: border-box;
-
 	z-index: 0;
-	width: 100%;
+	margin-left: 92px;
 }
 
 .character-preview[data-character=Sonic] .emeralds,

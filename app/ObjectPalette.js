@@ -15,6 +15,7 @@ import { ForceRegion } from './region/ForceRegion';
 import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
+import { LoadingRegion } from './region/LoadingRegion';
 import { ExplodingRegion } from './region/ExplodingRegion'
 import { SwitchRegion } from './region/SwitchRegion'
 import { RainRegion } from './region/RainRegion'
@@ -67,6 +68,11 @@ import { BrokenMonitor }  from './actor/BrokenMonitor';
 
 import { Ring } from './actor/Ring';
 import { Coin } from './actor/Coin';
+
+import { Emblem } from './actor/Emblem';
+
+import { DropCage } from './actor/DropCage';
+import { SlotMachine } from './actor/SlotMachine';
 
 import { WaterFall } from './actor/WaterFall';
 import { WaterJet }  from './actor/WaterJet';
@@ -221,12 +227,16 @@ export const ObjectPalette = {
 	, 'exploding-region': ExplodingRegion
 	, 'boss-region': BossRegion
 	, 'exit-region': ExitRegion
+	, 'loading-region': LoadingRegion
 	, 'switch-region': SwitchRegion
 	, 'rain-region': RainRegion
 	, 'waterfall-region': WaterfallRegion
 	, 'ring':         Ring
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
+	, 'emblem':       Emblem
+	, 'drop-cage':    DropCage
+	, 'slot-machine': SlotMachine
 	, 'powerup-glow': PowerupGlow
 	, 'explosion':    Explosion
 	, 'text-actor':   TextActor

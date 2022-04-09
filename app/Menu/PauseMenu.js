@@ -8,7 +8,6 @@ import { SettingsMenu } from './SettingsMenu';
 import { SaveMenu } from './SaveMenu';
 import { CharacterString } from '../ui/CharacterString';
 
-
 export class PauseMenu extends Menu
 {
 	template = require('./pause-menu.html');

@@ -7,6 +7,6 @@ export class ScreenFire extends View
 	onAttach(event)
 	{
 		this.args.animation = 'playing'
-		this.onTimeout(5000, ()=> this.remove());
+		this.onTimeout(10000, ()=> this.remove());
 	}
 }

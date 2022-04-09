@@ -1,13 +1,12 @@
 .sheild-hud {
 	display: flex;
 	flex-direction: row;
-	width: 48px;
 	width: 42px;
 	flex-wrap: wrap;
 	justify-content: space-around;
 	transform: scaleY(-1);
 	margin-left: auto;
-	margin-bottom: 2px;
+	margin-bottom: 12px;
 }
 
 .sheild-hud .sheild-icon {

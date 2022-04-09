@@ -1,10 +1,10 @@
-import { SavestateDatabase } from '../savestates/SavestateDatabase';
+import { SaveDatabase } from '../save/SaveDatabase';
 
-export const SavestateMenu = (parent) => {
+export const SaveMenu = (parent) => {
 
 	const children = {};
 
-	SavestateDatabase.open('savestates', 1).then(database => {
+	SaveDatabase.open('saves', 1).then(database => {
 
 		const store = 'savestates';
 		const index = 'id';

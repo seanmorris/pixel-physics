@@ -64,8 +64,8 @@ export const Pushable = {
 			}
 			else if(!this.args.falling || scan > 0)
 			{
-				const nextCenter = this.findNextStep(moveBy);
-				const nextWall   = this.findNextStep(moveBy + (radius * Math.sign(moveBy)));
+				const nextCenter = this.bMap('findNextStep', moveBy).get(Platformer);
+				const nextWall   = this.bMap('findNextStep', moveBy + (radius * Math.sign(moveBy))).get(Platformer);
 
 				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
 				{

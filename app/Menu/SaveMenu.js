@@ -1,4 +1,4 @@
-import { SavestateDatabase } from '../savestates/SavestateDatabase';
+import { SaveDatabase } from '../save/SaveDatabase';
 
 export const SaveMenu = parent => { return {
 	children: {
