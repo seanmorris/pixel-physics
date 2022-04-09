@@ -168,7 +168,7 @@
         {
          "name":"theme",
          "type":"string",
-         "value":"construct"
+         "value":"none"
         }, 
         {
          "name":"titlecard-author",
@@ -183,7 +183,7 @@
         {
          "name":"titlecard-title-1",
          "type":"string",
-         "value":"VISOR TEST"
+         "value":"SPOTLIGHT TEST"
         }, 
         {
          "name":"titlecard-title-2",

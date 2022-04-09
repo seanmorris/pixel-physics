@@ -215,7 +215,7 @@
 }
 
 .actor-item.actor-emerald .sprite {
-	background-image: url(/Sonic/emerald-white.png);
+	/*background-image: url(/Sonic/emerald-white.png);*/
 }
 
 .actor-item.actor-ring.gone .sprite,

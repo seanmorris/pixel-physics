@@ -44,3 +44,11 @@
     src: url("/fonts/julia-mono/JuliaMono-Regular.woff2") format("woff2");
     text-rendering: optimizeLegibility;
 }
+
+@font-face {
+    font-family: 'vcr_osd_monoregular';
+    src: url('/fonts/vcr-osd-mono/vcr_osd_mono_1.001-webfont.woff2') format('woff2'),
+         url('/fonts/vcr-osd-mono/vcr_osd_mono_1.001-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,4 +1,5 @@
 import { Vehicle } from './Vehicle';
+import { Platformer } from '../behavior/Platformer';
 
 export class EggMobile extends Vehicle
 {
@@ -30,7 +31,7 @@ export class EggMobile extends Vehicle
 
 	update()
 	{
-		if(this.checkBelow(this.x, this.y))
+		if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
 		{
 			this.args.y--;
 		}

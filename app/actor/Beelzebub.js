@@ -1,5 +1,6 @@
 import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
+import { Platformer } from '../behavior/Platformer';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 import { CutScene } from './CutScene';
@@ -499,7 +500,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 			case 'swooping':
 			case 'stalking':
 			case 'ready': {
-				if(this.checkBelow(this.x, this.y))
+				if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
 				{
 					this.args.falling = true;
 					this.args.ySpeed  = -4;

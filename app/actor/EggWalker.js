@@ -1,4 +1,5 @@
 import { Vehicle } from './Vehicle';
+import { Platformer } from '../behavior/Platformer';
 import { Projectile } from './Projectile';
 import { Tag } from 'curvature/base/Tag';
 
@@ -148,7 +149,9 @@ export class EggWalker extends Vehicle
 
 	hold_0()
 	{
-		if(!this.args.falling && this.args.ySpeed < 0 || this.checkBelow(this.x, this.y+1))
+		const below = this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+
+		if(!this.args.falling && this.args.ySpeed < 0 || below)
 		{
 			return;
 		}

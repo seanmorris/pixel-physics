@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Platformer } from '../behavior/Platformer';
 import { Tag } from 'curvature/base/Tag';
 
 import { KnuxBomb } from './KnuxBomb';
@@ -341,7 +342,7 @@ export class Knuckles extends PointActor
 
 		if(this.args.flying)
 		{
-			if(this.yAxis > 0 || this.checkBelow(this.x,this.y))
+			if(this.yAxis > 0 || this.bMap('checkBelow', this.x, this.y).get(Platformer))
 			{
 				this.args.flying = false;
 				return;

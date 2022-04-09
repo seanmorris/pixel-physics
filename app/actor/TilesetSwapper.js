@@ -36,7 +36,7 @@ export class TilesetSwapper extends PointActor
 
 			this.viewport.args.screenEffects.push(new ScreenFire);
 
-			this.viewport.onFrameOut(45, () => {
+			this.viewport.onFrameOut(65, () => {
 				this.viewport.tileMap.replacements.set(
 					'/map/../Sonic/tiles/azure-lake/azure-lake.png'
 					, '/map/../Sonic/tiles/azure-lake/azure-lake-burnt.png'

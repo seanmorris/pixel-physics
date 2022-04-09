@@ -66,9 +66,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			this.desparseLayers(tilemapData)
 
-			this.loadLayers(tilemapData)
+			this.loadLayers(tilemapData);
 
-			return this.loadTilesets(tilemapData.tilesets);
+			return this.loadTilesets(tilemapData);
 		});
 
 		Object.preventExtensions(this);
@@ -76,7 +76,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	desparseLayers(tilemapData)
 	{
-		console.time('desparse');
+		// console.time('desparse');
 
 		for(const layer of tilemapData.layers)
 		{
@@ -96,18 +96,30 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 		}
 
-		console.timeEnd('desparse');
+		// console.timeEnd('desparse');
 	}
 
 	append(url, xOffset, yOffset)
 	{
 		const elicit = new Elicit(url);
 
-		elicit.stream()
+		return elicit.stream()
 		.then(response => response.json())
 		.then(data => {
 
 			this.desparseLayers(data);
+
+			let lastGid = 0;
+
+			for(const tileset of this.mapData.tilesets)
+			{
+				lastGid += tileset.tilecount;
+			}
+
+			for(const tileset of data.tilesets)
+			{
+				tileset.firstgid += lastGid;
+			}
 
 			for(const newLayer of data.layers)
 			{
@@ -130,7 +142,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 					delete newLayer.data[i];
 
-					newData[row * sizeOffset + offset + tileId] = tileNo;
+					newData[row * sizeOffset + offset + tileId] = tileNo + lastGid;
 				}
 
 				for(let i in newData)
@@ -152,15 +164,23 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 			}
 
-			this.tileNumberCache.clear();
+			for(const newTileset of data.tilesets)
+			{
+				this.mapData.tilesets.push(newTileset);
+			}
+
+			return this.loadTilesets(data).then(() => {
+
+				this.tileNumberCache.clear()
+
+				return this.getObjectDefs(data);
+
+			});
 		});
 
 		elicit.addEventListener('progress', event => {
 			const {received, length, done} = event.detail;
-
-
 			// const type = 'map';
-
 			// this.dispatchEvent(new CustomEvent(
 			// 	'level-progress', {detail: {length, received, done, url}}
 			// ));
@@ -232,15 +252,15 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileNumberCache.clear();
 	}
 
-	loadTilesets(tilesetUrls)
+	loadTilesets(mapData)
 	{
 		const setHeightMasks = [];
 		const imageProgress  = new Map;
 		const imageSize      = new Map;
 
-		for(const i in tilesetUrls)
+		for(const i in mapData.tilesets)
 		{
-			const tileset = this.mapData.tilesets[i];
+			const tileset = mapData.tilesets[i];
 
 			const image = new Image;
 
@@ -361,7 +381,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		elicit.stream()
 		.then(response => response.json())
 		.then(data => {
-			console.log(data);
+			// console.log(data);
 		});
 
 		elicit.addEventListener('progress', event => {
@@ -481,14 +501,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return false;
 	}
 
-	getObjectDefs()
+	getObjectDefs(mapData = this.mapData)
 	{
-		if(!this.mapData)
+		if(!mapData)
 		{
 			return;
 		}
 
-		return this.mapData.layers
+		return mapData.layers
 			.filter(layer => layer.type === 'objectgroup')
 			.map(layer => layer.objects)
 			.flat();

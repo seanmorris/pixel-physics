@@ -20,6 +20,8 @@ export class Orb extends Mixin.from(PointActor)
 		this.args.bindTo('x', (v,k,t,d,p) => this.args.rolled += 0.5 * Number(v - p || 0));
 
 		this.args.gravity = 1.35;
+
+		this.args.maxFollow = this.args.maxFollow || null;
 	}
 
 	onRendered(event)
@@ -56,34 +58,37 @@ export class Orb extends Mixin.from(PointActor)
 
 		const speedSign = Math.sign(this.args.gSpeed || this.gSpeedLast || other.args.gSpeed);
 
-		const xSpace = this.x - other.x;
-
-		if(xSpace < 0)
+		if(!this.args.maxFollow || this.x < this.args.maxFollow)
 		{
-			if(speedSign && this.args.mode === other.args.mode)
-			{
-				if(xSpace >= -96)
-				{
-					this.args.gSpeed = speedMag * speedSign * 0.75;
-				}
+			const xSpace = this.x - other.x;
 
-				if(xSpace < -96)
-				{
-					this.args.gSpeed = speedMag * speedSign;
-				}
-
-				if(xSpace < -128 && !this.args.mode && !other.args.mode)
-				{
-					this.args.x -= xSpace + 128;
-					this.args.gSpeed = speedMag * speedSign;
-				}
-			}
-			else if(this.args.mode !== other.args.mode)
+			if(xSpace < 0)
 			{
-				this.args.gSpeed = Math.max(
-					speedMag * speedSign * 0.85
-					, this.args.gSpeed * 0.95
-				);
+				if(speedSign && this.args.mode === other.args.mode)
+				{
+					if(xSpace >= -96)
+					{
+						this.args.gSpeed = speedMag * speedSign * 0.75;
+					}
+
+					if(xSpace < -96)
+					{
+						this.args.gSpeed = speedMag * speedSign;
+					}
+
+					if(xSpace < -128 && !this.args.mode && !other.args.mode)
+					{
+						this.args.x -= xSpace + 128;
+						this.args.gSpeed = speedMag * speedSign;
+					}
+				}
+				else if(this.args.mode !== other.args.mode)
+				{
+					this.args.gSpeed = Math.max(
+						speedMag * speedSign * 0.85
+						, this.args.gSpeed * 0.95
+					);
+				}
 			}
 		}
 

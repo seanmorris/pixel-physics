@@ -53,3 +53,7 @@
 section.pause-menu {
 	z-index: 2000;
 }
+
+section.pause-menu li {
+	cursor: pointer;
+}

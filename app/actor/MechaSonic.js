@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Platformer } from '../behavior/Platformer';
 import { Vehicle } from './Vehicle';
 import { Tag } from 'curvature/base/Tag';
 import { Sfx } from '../audio/Sfx';
@@ -343,7 +344,7 @@ export class MechaSonic extends PointActor
 
 		const finalSpeed = this.args.xSpeed + dashSpeed;
 
-		const space = this.scanForward(dashSpeed, 0.5);
+		const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
 
 		if(space && Math.abs(finalSpeed) > Math.abs(space))
 		{

@@ -76,6 +76,11 @@ import { Knuckles } from '../actor/Knuckles';
 import { Seymour } from '../actor/Seymour';
 import { Chalmers } from '../actor/Chalmers';
 
+import { SaveDatabase } from '../save/SaveDatabase';
+import { Save } from '../save/Save';
+
+import { Platformer } from '../behavior/Platformer';
+
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
 const ColCell = Symbol('collision-cells');
@@ -107,6 +112,17 @@ export class Viewport extends View
 
 		this.meta = {};
 
+		this.loadSaves().then(saves => {
+			if(saves.length)
+			{
+				this.currentSave = Save.from(saves[0]);
+			}
+			else
+			{
+				this.currentSave = new Save;
+			}
+		});
+
 		this.characters = {
 			'Sonic':      Sonic
 			, 'Tails':    Tails
@@ -124,6 +140,10 @@ export class Viewport extends View
 		this.willDetach    = new Map;
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
+
+		this.maxObjectId = 0;
+
+		this.args.loadingMap = false;
 
 		this.server = null;
 		this.client = null;
@@ -842,6 +862,29 @@ export class Viewport extends View
 		this.controller.zero();
 	}
 
+	loadWorld({worldUrl, networked = false})
+	{
+
+	}
+
+	loadSaves(reload = false)
+	{
+		if(reload || !this.getSaveIndex)
+		{
+			return this.getSaveIndex = Save.index();
+		}
+
+		return this.getSaveIndex;
+	}
+
+	getZoneState(zone)
+	{
+		const currentSave = this.currentSave ?? {};
+		const currentZone = this.currentMap ?? '';
+
+		return currentSave.getZoneState(zone || currentZone);
+	}
+
 	loadMap({mapUrl, networked = false})
 	{
 		const tileMap = new TileMap({ mapUrl });
@@ -1172,6 +1215,11 @@ export class Viewport extends View
 		this.clearDialog();
 		this.hideDialog();
 
+		this.args.hasFire    = false;
+		this.args.hasWater   = false;
+		this.args.hasElecric = false;
+		this.args.hasNormal  = false;
+
 		if(this.meta.bgm)
 		{
 			if(Bgm.playing && this.meta.bgm !== this.bgm)
@@ -1269,6 +1317,15 @@ export class Viewport extends View
 		Bgm.unpause();
 
 		this.args.zonecard.played.then(() => {
+
+			const zoneState = this.getZoneState();
+
+			for(const emblemId of zoneState.emblems)
+			{
+				const emblem = this.actorsById[emblemId];
+
+				this.nextControl.args.emblems.push(emblem);
+			}
 
 			this.args.startFrameId = this.args.frameId;
 
@@ -2165,59 +2222,17 @@ export class Viewport extends View
 		});
 	}
 
-	populateMap()
+	spawnInitialObjects(objDefs)
 	{
-		if(this.args.populated)
-		{
-			return;
-		}
-
-		const mapWidth  = this.tileMap.mapData.width * 32 + 64;
-		const mapHeight = this.tileMap.mapData.height * 32 + 64;
-
-		// this.quadCell = new QuadCell(
-		// 	{x: mapWidth/2, y: mapHeight/2}
-		// 	, {x: mapWidth, y: mapHeight}
-		// );
-
-		this.args.populated = true;
-
-		const objDefs = this.tileMap.getObjectDefs();
-
-		this.defsByName = new Map;
-		this.objDefs    = new Map;
-
-		for(const [id,backdrop] of this.backdrops)
-		{
-			if(backdrop.view)
-			{
-				backdrop.view.remove();
-
-				backdrop.view = undefined;
-			}
-
-			this.backdrops.delete(id);
-		}
-
-		for(const particle of this.particles.list)
-		{
-			if(particle)
-			{
-				particle.remove();
-
-				this.particles.remove(particle);
-			}
-		}
-
-		const selectedChar = String(this.args.selectedChar || Router.query.char || 'Sonic').toLowerCase();
-		const charClass = ObjectPalette[selectedChar] || Sonic;
-
-		const character = new charClass({name: selectedChar}, this);
-
 		for(let i in objDefs)
 		{
 			const objDef  = objDefs[i];
 			const objType = objDef.type;
+
+			if(objDef.id > this.maxObjectId)
+			{
+				this.maxObjectId = objDef.id;
+			}
 
 			if(objType === 'particle')
 			{
@@ -2278,6 +2293,91 @@ export class Viewport extends View
 				actor.args.display = actor.defaultDisplay || null;
 			}
 		}
+	}
+
+	appendMap(url, x, y)
+	{
+		this.args.loadingMap = true;
+
+		return this.tileMap.append(url, x, y).then(defs => {
+
+			const maxObjectId = this.maxObjectId;
+
+			for(const def of defs)
+			{
+				def.id += maxObjectId;
+				def.x  += x * 32;
+				def.y  += y * 32;
+
+				if(!def.properties)
+				{
+					continue;
+				}
+
+				for(const prop of def.properties)
+				{
+					if(prop.type === 'object')
+					{
+						prop.value += maxObjectId;
+					}
+				}
+			}
+
+			return this.spawnInitialObjects(defs);
+
+		}).finally(() => this.args.loadingMap = false);
+	}
+
+	populateMap()
+	{
+		if(this.args.populated)
+		{
+			return;
+		}
+
+		const mapWidth  = this.tileMap.mapData.width * 32 + 64;
+		const mapHeight = this.tileMap.mapData.height * 32 + 64;
+
+		// this.quadCell = new QuadCell(
+		// 	{x: mapWidth/2, y: mapHeight/2}
+		// 	, {x: mapWidth, y: mapHeight}
+		// );
+
+		this.args.populated = true;
+
+		const objDefs = this.tileMap.getObjectDefs();
+
+		this.defsByName = new Map;
+		this.objDefs    = new Map;
+
+		for(const [id,backdrop] of this.backdrops)
+		{
+			if(backdrop.view)
+			{
+				backdrop.view.remove();
+
+				backdrop.view = undefined;
+			}
+
+			this.backdrops.delete(id);
+		}
+
+		for(const particle of this.particles.list)
+		{
+			if(particle)
+			{
+				particle.remove();
+
+				this.particles.remove(particle);
+			}
+		}
+
+		const selectedChar = String(this.args.selectedChar || Router.query.char || 'Sonic').toLowerCase();
+		const charClass = ObjectPalette[selectedChar] || Sonic;
+
+		const character = new charClass({name: selectedChar}, this);
+
+		this.spawnInitialObjects(objDefs);
 
 		if(!this.args.networked)
 		{
@@ -2577,6 +2677,11 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.args.loadingMap)
+		{
+			return;
+		}
+
 		if(this.args.paused > 0)
 		{
 			this.args.paused--;
@@ -2938,6 +3043,8 @@ export class Viewport extends View
 				this.args.score.args.value = String(this.controlActor.args.score).padStart(4, ' ');
 				this.args.rings.args.value = String(this.controlActor.args.rings).padStart(4, ' ');
 
+				this.args.emblems = this.controlActor.args.emblems;
+
 				this.args.hasRings    = !!this.controlActor.args.rings;
 				this.args.hasEmeralds = !!this.controlActor.args.emeralds;
 				this.args.char.args.value = this.controlActor.args.name;
@@ -3154,7 +3261,7 @@ export class Viewport extends View
 
 				if(groundShift)
 				{
-					const spaceLeft = actor.scanForward(groundShift);
+					const spaceLeft = actor.bMap('scanForward', groundShift).get(Platformer);
 
 					if(spaceLeft === false)
 					{
@@ -3502,6 +3609,11 @@ export class Viewport extends View
 		this[Run]++;
 
 		this.stop();
+
+		this.args.hasFire    = false;
+		this.args.hasWater   = false;
+		this.args.hasElecric = false;
+		this.args.hasNormal  = false;
 
 		this.clearDialog();
 		this.hideDialog();
@@ -4167,18 +4279,22 @@ export class Viewport extends View
 
 	clearAct(message)
 	{
+		const zoneState = viewport.getZoneState();
+
 		console.log(message);
 
 		this.args.actClearLabel.args.value = message;
 
+		const rings  = this.controlActor.args.rings;
+		const frames = this.args.frameId - this.args.startFrameId
+		const time   = frames / 60;
+		const air    = this.controlActor.args.airTimeTotal / (this.controlActor.args.airTimeTotal + this.controlActor.args.groundTimeTotal);
+
 		const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);
-		const ringBonus  = this.controlActor.args.rings * 100;
-		const airBonus   = (Math.round(
-				10000 * this.controlActor.args.airTimeTotal / (this.controlActor.args.airTimeTotal + this.controlActor.args.groundTimeTotal)
-		) / 100) + '%';
+		const ringBonus  = rings * 100;
+		const airBonus   = (Math.round(10000 * air) / 100) + '%';
 		let   timeBonus  = 0;
 
-		const time  = (this.args.frameId - this.args.startFrameId) / 60;
 		const seconds = Math.trunc(Math.abs(time));
 
 		if(seconds < 30)
@@ -4216,7 +4332,7 @@ export class Viewport extends View
 
 		const totalBonus = timeBonus + ringBonus + speedBonus;
 
-		this.controlActor.args.score += totalBonus;
+		const score = this.controlActor.args.score += totalBonus;
 
 		this.args.actClear = true;
 
@@ -4232,6 +4348,28 @@ export class Viewport extends View
 		this.onFrameOut(180, () => this.args.airBonus.args.value   = airBonus);
 		this.onFrameOut(205, () => this.args.totalBonus.args.value = totalBonus);
 		this.onFrameOut(420, () => this.args.actClear = false);
+
+		if(!zoneState.time || zoneState.time > frames)
+		{
+			zoneState.time = frames;
+		}
+
+		if(!zoneState.rings || zoneState.rings < rings)
+		{
+			zoneState.rings = rings;
+		}
+
+		if(!zoneState.air || zoneState.air < air)
+		{
+			zoneState.air = air;
+		}
+
+		if(!zoneState.score || zoneState.score < score)
+		{
+			zoneState.score = score;
+		}
+
+		this.currentSave.save();
 	}
 
 	cpuDetect()

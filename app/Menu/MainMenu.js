@@ -16,6 +16,7 @@ import { TileMap }  from '../tileMap/TileMap';
 
 import { CharacterString } from '../ui/CharacterString';
 import { CharacterPreview } from './CharacterPreview';
+import { ZoneSuffix } from './ZoneSuffix';
 
 export class MainMenu extends Menu
 {
@@ -152,30 +153,57 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Radical City Zone': {
-						subtext: 'Gotta go fast!'
-						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, children: {
-							'Act 1': {
-								callback: () => {
-									this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
-									this.accept();
-								}
-							}
-							, 'Act 2': {
-								subtext: 'Incomplete!!!'
-								, callback: () => {
-									this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
-									this.accept();
-								}
-							}
+					// , 'Radical City Zone': {
+					// 	subtext: 'Gotta go fast!'
+					// 	, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, children: {
+					// 		'Act 1': {
+
+					// 		}
+					// 		, 'Act 2': {
+					// 			subtext: 'Incomplete!!!'
+					// 			, callback: () => {
+					// 				this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
+					// 				this.accept();
+					// 			}
+					// 		}
+					// 	}
+					// }
+
+					, 'Radical City Zone Act 1': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/empty-zone.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl:'/map/empty-zone.json'});
+							this.accept();
 						}
 					}
 
-					, 'Seaview Park Zone': {
+					, 'Radical City Zone Act 2': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/empty-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
+							this.accept();
+						}
+					}
+
+					, 'Seaview Park Zone Act 1': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/west-side-zone.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/west-side-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Seaview Park Zone Act 2': {
+						// characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						characters: []
+						, available: 'unavailable'
+						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
 							this.accept();
 						}
 					}

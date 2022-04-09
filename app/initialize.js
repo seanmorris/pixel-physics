@@ -84,6 +84,7 @@ Sfx.register('RINGS_SCATTERED', '/Sonic/ring-loss.wav', {maxConcurrent: 3, volum
 Sfx.register('BUMPER_BOUNCE', '/Sonic/S3K_AA.wav');
 
 Sfx.register('RING_COLLECTED', '/Sonic/ring-collect.wav', {maxConcurrent: 3, volume: 0.25, fudgeFactor: 0.1});
+Sfx.register('EMBLEM_COLLECTED', '/custom/emblem-collect.wav', {maxConcurrent: 3, volume: 0.25, fudgeFactor: 0.1});
 Sfx.register('EMERALD_COLLECTED', '/Sonic/S3K_9C.wav');
 
 Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
@@ -122,3 +123,5 @@ Sfx.register('TAILS_FLY', '/Sonic/tails-flying.wav');
 
 Sfx.register('LIGTNING_STRIKE', '/Sonic/S3K_4E.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0})
 Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');
+
+Sfx.register('GRINDING', '/Sonic/S3K_DB_sus.wav');
