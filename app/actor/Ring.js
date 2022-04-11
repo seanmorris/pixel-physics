@@ -37,7 +37,11 @@ export class Ring extends PointActor
 
 		const age = (currentFrame - startFrame);
 
-		if(!this.args.decoration)
+		if(this.args.noClip)
+		{
+			this.noClip = true;
+		}
+		else if(!this.args.decoration)
 		{
 			if(this.args.ySpeed < 0)
 			{
@@ -66,12 +70,28 @@ export class Ring extends PointActor
 			this.args.height = 14;
 		}
 
+		const viewport = this.viewport;
+
 		if(this.dropped && this.viewport && !this.viewport.actorIsOnScreen(this, 256))
 		{
-			this.viewport.actors.remove(this);
+			viewport.onFrameOut(15, () => {
+				viewport.actors.remove(this);
+			});
+		}
+
+		if(this.args.reward && this.args.gone)
+		{
+			viewport.onFrameOut(15, () => {
+				viewport.actors.remove(this);
+			});
 		}
 
 		super.update();
+
+		if(this.args.reward)
+		{
+			return;
+		}
 
 		if(this.getMapSolidAt(this.x + this.args.xSpeed * this.args.direction, this.y + -8))
 		{
@@ -112,6 +132,11 @@ export class Ring extends PointActor
 			return false;
 		}
 
+		if(!other.controllable && !other.occupant && !other.args.owner)
+		{
+			return false;
+		}
+
 		const age = this.viewport.args.frameId - this.startFrame;
 
 		if(this.dropped && age < this.args.delay)
@@ -131,10 +156,6 @@ export class Ring extends PointActor
 			other = other.occupant;
 		}
 
-		if(!other.controllable && !other.occupant && !other.args.owner)
-		{
-			return false;
-		}
 
 		if(other.controllable)
 		{

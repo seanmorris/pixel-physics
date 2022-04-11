@@ -14,6 +14,11 @@ export class DropCage extends PointActor
 
 	collideA(other, type)
 	{
+		if(!other.controllable)
+		{
+			return false;
+		}
+
 		if(type === -1 || type % 2 === 0)
 		{
 			if(other.args.y >= this.y - 16

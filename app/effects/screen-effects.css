@@ -29,7 +29,7 @@
 }
 
 .screen-effects .screen-fire.playing {
-	animation: screen-fire-slide 4s linear 1;
+	animation: screen-fire-slide 4s -0.5s linear 1;
 }
 
 /*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n) {

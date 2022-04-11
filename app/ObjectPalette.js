@@ -71,6 +71,8 @@ import { Coin } from './actor/Coin';
 
 import { Emblem } from './actor/Emblem';
 
+import { AntiRing } from './actor/AntiRing';
+
 import { DropCage } from './actor/DropCage';
 import { SlotMachine } from './actor/SlotMachine';
 
@@ -92,6 +94,8 @@ import { EggWalker }  from './actor/EggWalker';
 import { EggShuttle }  from './actor/EggShuttle';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
+
+import { Wanderer }      from './actor/Wanderer';
 
 import { MechaSonic } from './actor/MechaSonic';
 import { Eggrobo }    from './actor/Eggrobo';
@@ -201,6 +205,7 @@ export const ObjectPalette = {
 	, 'rocks-med':    Rocks
 	, 'rocks-short':  Rocks
 	, 'mecha-sonic':  MechaSonic
+	, 'wanderer':     Wanderer
 	, 'sonic':        Sonic
 	, 'tails':        Tails
 	, 'knuckles':     Knuckles
@@ -232,6 +237,7 @@ export const ObjectPalette = {
 	, 'rain-region': RainRegion
 	, 'waterfall-region': WaterfallRegion
 	, 'ring':         Ring
+	, 'antiring':     AntiRing
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
 	, 'emblem':       Emblem

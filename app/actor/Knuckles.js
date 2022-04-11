@@ -84,6 +84,19 @@ export class Knuckles extends PointActor
 		this.sprite.appendChild(this.punchAura.node);
 
 		this.args.bindTo('animation', v => this.box.setAttribute('data-animation', v));
+
+		this.addEventListener('jump', event => {
+			if(this.willPunch)
+			{
+				// this.args.xSpeed = 0.25 * (this.xAxis
+				// 	? (Math.abs(this.punchMomentum) * this.xAxis)
+				// 	: this.punchMomentum
+				// );
+
+				this.punchTime = Date.now();
+				this.punched++;
+			}
+		});
 	}
 
 	update()
@@ -509,22 +522,6 @@ export class Knuckles extends PointActor
 		}
 
 		this.box.style({'--punchCharge': this.args.punchCharge})
-	}
-
-	doJump(force)
-	{
-		super.doJump(force);
-
-		if(this.willPunch)
-		{
-			// this.args.xSpeed = 0.25 * (this.xAxis
-			// 	? (Math.abs(this.punchMomentum) * this.xAxis)
-			// 	: this.punchMomentum
-			// );
-
-			this.punchTime = Date.now();
-			this.punched++;
-		}
 	}
 
 	startle()

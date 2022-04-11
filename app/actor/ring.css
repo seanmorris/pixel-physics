@@ -1,0 +1,43 @@
+.actor-item.actor-ring .sprite {
+	background-image: url(/Sonic/rings.png);
+	--sprite-offset-x: -16px;
+	--sprite-offset-y: -144px;
+	animation: ringSpin steps(4) infinite;
+	animation-duration: calc(1ms * 350);
+	transition: opacity 0.25s ease-in;
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-ring.dropped .sprite {
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -136px;
+}
+
+.actor-item.actor-ring {
+	left: 0!important;
+	top: 0!important;
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+	opacity: var(--opacity);
+}
+
+.actor-item.actor-ring.decoration .sprite {
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -151px;
+}
+
+.actor-item.actor-ring {
+	contain: layout style size;
+	z-index: 100000;
+}
+
+.actor-item.actor-ring .sprite .labels {
+	display: none;
+}
+
+.actor-item.actor-ring.gone .sprite,
+.actor-item.actor-ring.collected .sprite {
+	--sprite-offset-y: -84px;
+	animation: ringTwinkle steps(4) infinite;
+	animation-duration: calc(1ms * 140);
+}

@@ -4464,118 +4464,118 @@ export class PointActor extends View
 		return false;
 	}
 
-	doJump(force)
-	{
-		if(
-			this.args.ignore
-			|| this.args.falling
-			|| !this.args.landed
-			|| this.args.float
-		){
-			return;
-		}
+	// doJump(force)
+	// {
+	// 	if(
+	// 		this.args.ignore
+	// 		|| this.args.falling
+	// 		|| !this.args.landed
+	// 		|| this.args.float
+	// 	){
+	// 		return;
+	// 	}
 
-		if(this.args.standingOn && this.args.standingOn.args.yForce)
-		{
-			force += Math.max(0, this.args.standingOn.args.yForce * 0.25);
-		}
-		else if(this.args.standingOn && this.args.standingOn.yLast)
-		{
-			force += Math.max(0, this.args.standingOn.yLast - this.args.standingOn.args.y);
-		}
+	// 	if(this.args.standingOn && this.args.standingOn.args.yForce)
+	// 	{
+	// 		force += Math.max(0, this.args.standingOn.args.yForce * 0.25);
+	// 	}
+	// 	else if(this.args.standingOn && this.args.standingOn.yLast)
+	// 	{
+	// 		force += Math.max(0, this.args.standingOn.yLast - this.args.standingOn.args.y);
+	// 	}
 
-		const radius     = this.args.width / 2;
-		const scanRadius = Math.min(radius, 4);
+	// 	const radius     = this.args.width / 2;
+	// 	const scanRadius = Math.min(radius, 4);
 
-		const backPosition = this.findNextStep(-scanRadius);
-		const forePosition = this.findNextStep(+scanRadius);
-		const sensorSpread = scanRadius * 2;
+	// 	const backPosition = this.bMap('findNextStep', -scanRadius).get('Platformer');
+	// 	const forePosition = this.bMap('findNextStep', +scanRadius).get('Platformer');
+	// 	const sensorSpread = scanRadius * 2;
 
-		let groundAngle = Math.atan2(backPosition[1] - forePosition[1], Math.ceil(sensorSpread));
+	// 	let groundAngle = Math.atan2(backPosition[1] - forePosition[1], Math.ceil(sensorSpread));
 
-		this.args.ignore  = 6;
-		this.args.pushing = false;
-		this.args.landed  = false;
-		this.args.falling = true;
+	// 	this.args.ignore  = 6;
+	// 	this.args.pushing = false;
+	// 	this.args.landed  = false;
+	// 	this.args.falling = true;
 
-		const originalMode = this.args.mode;
+	// 	const originalMode = this.args.mode;
 
-		switch(this.args.mode)
-		{
-			case MODE_FLOOR:
-				this.args.y -= 16;
-				break;
+	// 	switch(this.args.mode)
+	// 	{
+	// 		case MODE_FLOOR:
+	// 			this.args.y -= 16;
+	// 			break;
 
-			case MODE_RIGHT:
-				groundAngle += -Math.PI / 2;
-				this.args.x += -this.args.width / 2;
-				break;
+	// 		case MODE_RIGHT:
+	// 			groundAngle += -Math.PI / 2;
+	// 			this.args.x += -this.args.width / 2;
+	// 			break;
 
-			case MODE_CEILING:
-				groundAngle += Math.PI;
-				this.args.y += this.args.normalHeight || this.args.height;
-				break;
+	// 		case MODE_CEILING:
+	// 			groundAngle += Math.PI;
+	// 			this.args.y += this.args.normalHeight || this.args.height;
+	// 			break;
 
-			case MODE_LEFT:
-				groundAngle += Math.PI / 2;
-				this.args.x += this.args.width / 2;
-				break;
-		}
+	// 		case MODE_LEFT:
+	// 			groundAngle += Math.PI / 2;
+	// 			this.args.x += this.args.width / 2;
+	// 			break;
+	// 	}
 
-		let gSpeedReal = this.args.gSpeed;
+	// 	let gSpeedReal = this.args.gSpeed;
 
-		if(this.args.standingOn && this.args.standingOn.args.convey)
-		{
-			gSpeedReal += this.args.standingOn.args.convey;
-		}
+	// 	if(this.args.standingOn && this.args.standingOn.args.convey)
+	// 	{
+	// 		gSpeedReal += this.args.standingOn.args.convey;
+	// 	}
 
-		this.args.standingOn = null;
+	// 	this.args.standingOn = null;
 
-		this.args.xSpeed = gSpeedReal * Math.cos(groundAngle);
-		this.args.ySpeed = gSpeedReal * Math.sin(groundAngle);
+	// 	this.args.xSpeed = gSpeedReal * Math.cos(groundAngle);
+	// 	this.args.ySpeed = gSpeedReal * Math.sin(groundAngle);
 
-		const jumpAngle = groundAngle - Math.PI / 2;
+	// 	const jumpAngle = groundAngle - Math.PI / 2;
 
-		let xJump = force * Math.cos(jumpAngle);
-		let yJump = force * Math.sin(jumpAngle);
+	// 	let xJump = force * Math.cos(jumpAngle);
+	// 	let yJump = force * Math.sin(jumpAngle);
 
-		if(Math.abs(xJump) < 0.01)
-		{
-			xJump = 0;
-		}
+	// 	if(Math.abs(xJump) < 0.01)
+	// 	{
+	// 		xJump = 0;
+	// 	}
 
-		if(Math.abs(yJump) < 0.01)
-		{
-			yJump = 0;
-		}
+	// 	if(Math.abs(yJump) < 0.01)
+	// 	{
+	// 		yJump = 0;
+	// 	}
 
-		this.args.airAngle = jumpAngle;
+	// 	this.args.airAngle = jumpAngle;
 
-		this.args.xSpeed += xJump;
-		this.args.ySpeed += yJump;
+	// 	this.args.xSpeed += xJump;
+	// 	this.args.ySpeed += yJump;
 
-		this.args.jumpedAt = this.y;
-		this.args.jumping  = true;
+	// 	this.args.jumpedAt = this.y;
+	// 	this.args.jumping  = true;
 
-		const tileMap = this.viewport.tileMap;
+	// 	const tileMap = this.viewport.tileMap;
 
-		if(tileMap.getSolid(this.x + (this.args.width / 2) * Math.sign(this.args.xSpeed), this.y, this.args.layer))
-		{
-			// if(tileMap.getSolid(this.x + (1 + this.args.width / 2) * Math.sign(this.args.xSpeed), this.y, this.args.layer))
-			// {
-			// 	this.args.x -= 2 * Math.sign(this.args.xSpeed);
-			// }
+	// 	if(tileMap.getSolid(this.x + (this.args.width / 2) * Math.sign(this.args.xSpeed), this.y, this.args.layer))
+	// 	{
+	// 		// if(tileMap.getSolid(this.x + (1 + this.args.width / 2) * Math.sign(this.args.xSpeed), this.y, this.args.layer))
+	// 		// {
+	// 		// 	this.args.x -= 2 * Math.sign(this.args.xSpeed);
+	// 		// }
 
-			this.args.xSpeed = 0;
-		}
+	// 		this.args.xSpeed = 0;
+	// 	}
 
-		this.args.rolling = false;
+	// 	this.args.rolling = false;
 
-		this.args.mode = MODE_FLOOR;
+	// 	this.args.mode = MODE_FLOOR;
 
-		this.args.groundAngle = 0;
-		this.args.gSpeed = 0;
-	}
+	// 	this.args.groundAngle = 0;
+	// 	this.args.gSpeed = 0;
+	// }
 
 	impulse(magnitude, direction, willFall = false)
 	{

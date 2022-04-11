@@ -70,6 +70,8 @@ import { Classifier } from '../Classifier';
 
 import { ChatBox } from '../network/ChatBox';
 
+import { Wanderer } from '../actor/Wanderer';
+
 import { Sonic } from '../actor/Sonic';
 import { Tails } from '../actor/Tails';
 import { Knuckles } from '../actor/Knuckles';
@@ -127,6 +129,7 @@ export class Viewport extends View
 			'Sonic':      Sonic
 			, 'Tails':    Tails
 			, 'Knuckles': Knuckles
+			, 'wanderer': Wanderer
 		};
 
 		this.objectPalette = ObjectPalette;
