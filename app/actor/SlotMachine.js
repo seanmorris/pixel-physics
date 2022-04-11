@@ -1,6 +1,10 @@
 import { Tag } from 'curvature/base/Tag';
 
+import { Sfx } from '../audio/Sfx';
+
 import { PointActor } from './PointActor';
+import { Ring } from './Ring';
+import { AntiRing } from './AntiRing';
 
 export class SlotMachine extends PointActor
 {
@@ -32,6 +36,11 @@ export class SlotMachine extends PointActor
 
 	dropDelay(other)
 	{
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		this.args.type = 'actor-item actor-slot-machine actor-slot-machine-rolling';
 
 		const pos  = Symbol;
@@ -54,67 +63,153 @@ export class SlotMachine extends PointActor
 
 		result.forEach(v => hand[v]++);
 
-		return new Promise(accept => this.viewport.onFrameOut(85, () => {
+		return new Promise(accept => {
+			this.viewport.onFrameOut(85, () => {
 
-			this.args.type = 'actor-item actor-slot-machine';
+				this.args.type = 'actor-item actor-slot-machine';
 
-			if(hand[0] === 1)
-			{
-			}
-			else if(hand[0] === 2)
-			{
-				other.args.rings -= 50;
-			}
-			else if(hand[0] === 3)
-			{
-				if(other.args.rings > 0)
+				if(hand[0] === 1)
 				{
-					other.args.rings = 0;
-				}
-			}
-			else if(hand[5] === 2)
-			{
-				other.args.rings += 25;
-			}
-			else if(hand[5] === 3)
-			{
-				other.args.rings += 100;
-			}
-			else if(hand[6] === 2)
-			{
-				other.args.rings += 50;
-			}
-			else if(hand[6] === 3)
-			{
-				other.args.rings += 75;
-			}
-			else if(hand[7] === 2)
-			{
-				other.args.rings += 15;
-			}
-			else if(hand[7] === 3)
-			{
-				other.args.rings += 20;
-			}
-			else if(hand[2] === 3 || hand[3] === 3 || hand[4] === 3)
-			{
-				other.args.rings += 50;
-			}
-			else if(hand[1] === 1)
-			{
-				other.args.rings += 1;
-			}
-			else if(hand[1] === 2)
-			{
-				other.args.rings += 30;
-			}
-			else if(hand[1] === 3)
-			{
-				other.args.rings += 60;
-			}
+					this.onTimeout(30, () => Sfx.play('FAIL'));
 
-			accept();
-		}));
+					if(other.args.rings > 50)
+					{
+						return this.punish(other, 10).then(accept);
+					}
+
+					return accept();
+				}
+				else if(hand[0] === 2)
+				{
+					return this.punish(other, 50).then(accept);
+
+					return accept();
+				}
+				else if(hand[0] === 3)
+				{
+					if(other.args.rings > 0)
+					{
+						other.args.rings = 0;
+					}
+					else
+					{
+						return this.punish(other, 100).then(accept);
+					}
+
+					return accept();
+				}
+				else if(hand[5] === 2)
+				{
+					return this.reward(other, 25).then(accept);
+				}
+				else if(hand[5] === 3)
+				{
+					return this.reward(other, 100).then(accept);
+				}
+				else if(hand[6] === 2)
+				{
+					return this.reward(other, 50).then(accept);
+				}
+				else if(hand[6] === 3)
+				{
+					return this.reward(other, 75).then(accept);
+				}
+				else if(hand[7] === 2)
+				{
+					return this.reward(other, 15).then(accept);
+				}
+				else if(hand[7] === 3)
+				{
+					return this.reward(other, 20).then(accept);
+				}
+				else if(hand[2] === 3 || hand[3] === 3 || hand[4] === 3)
+				{
+					return this.reward(other, 50).then(accept);
+				}
+				else if(hand[1] === 1)
+				{
+					return this.reward(other, 2).then(accept);
+				}
+				else if(hand[1] === 2)
+				{
+					return this.reward(other, 30).then(accept);
+				}
+				else if(hand[1] === 3)
+				{
+					return this.reward(other, 60).then(accept);
+				}
+
+				accept();
+			});
+		})
+	}
+
+	reward(other, amount = 100)
+	{
+		const viewport = this.viewport;
+
+		let angle = -1.57;
+
+		for(let i = 0; i < amount; i++)
+		{
+
+			const cos = Math.cos(angle);
+			const sin = Math.sin(angle);
+
+			const ring = new Ring({
+				x: other.x + cos * 288
+				, y: other.y + sin * 288
+				, xSpeed: -cos * 7
+				, ySpeed: -sin * 7
+				, static: false
+				, reward: true
+				, noClip: true
+				, float: -1
+			});
+
+			viewport.spawn.add({
+				object: ring, frame: i * 3 + viewport.args.frameId
+			});
+
+			angle += Math.PI + 0.15;
+		}
+
+		return new Promise(accept => viewport.onFrameOut((16 + amount) * 3, () => accept()));
+	}
+
+	punish(other, amount)
+	{
+		Sfx.play('FAIL');
+
+		const viewport = this.viewport;
+
+		let angle = -1.57;
+
+		for(let i = 0; i < amount; i++)
+		{
+
+			const cos = Math.cos(angle);
+			const sin = Math.sin(angle);
+
+			const ring = new AntiRing({
+				x: other.x + cos * 288
+				, y: other.y + sin * 288
+				, xSpeed: -cos * 7
+				, ySpeed: -sin * 7
+				, static: false
+				, reward: true
+				, noClip: true
+				, float: -1
+			});
+
+			viewport.spawn.add({
+				object: ring, frame: i * 3 + viewport.args.frameId
+			});
+
+			angle += Math.PI + 0.15;
+		}
+
+		return new Promise(accept => viewport.onFrameOut((16 + amount) * 3, () => accept()));
 	}
 
 	get solid() { return false; }

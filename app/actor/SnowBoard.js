@@ -43,6 +43,10 @@ export class SnowBoard extends Vehicle
 		this.broad = true;
 
 		this.slowSpin = true;
+
+		this.addEventListener('jump', event => {
+			this.args.groundAngle += (Math.PI * 0.125) * Math.sign(this.args.gSpeed || this.args.direction);
+		});
 	}
 
 	update()
@@ -62,13 +66,6 @@ export class SnowBoard extends Vehicle
 
 			this.args.started = true;
 		}
-	}
-
-	doJump(force)
-	{
-		super.doJump(force);
-
-		this.args.groundAngle += (Math.PI * 0.125) * Math.sign(this.args.gSpeed || this.args.direction);
 	}
 
 	get solid() { return !this.occupant; }

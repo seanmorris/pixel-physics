@@ -1,0 +1,41 @@
+.actor-item.actor-anti-ring .sprite {
+	background-image: url(/Sonic/antiring.png) !important;
+	background-position: 0 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	width: 15px;
+	height: 15px;
+}
+
+.actor-item.actor-anti-ring.dropped .sprite {
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -136px;
+}
+
+.actor-item.actor-anti-ring {
+	left: 0!important;
+	top: 0!important;
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+	opacity: var(--opacity);
+}
+
+.actor-item.actor-anti-ring.decoration .sprite {
+	--sprite-offset-x: -24px;
+	--sprite-offset-y: -151px;
+}
+
+.actor-item.actor-anti-ring {
+	contain: layout style size;
+	z-index: 100000;
+}
+
+.actor-item.actor-anti-ring .sprite .labels {
+	display: none;
+}
+
+.actor-item.actor-anti-ring.gone .sprite,
+.actor-item.actor-anti-ring.collected .sprite {
+	--sprite-offset-y: -84px;
+	animation: ringTwinkle steps(4) infinite;
+	animation-duration: calc(1ms * 140);
+}

@@ -3142,6 +3142,13 @@ export class Platformer
 			return;
 		}
 
+		const jumpEvent = new CustomEvent('jump', {cancelable:true, detail:{host, force}});
+
+		if(!host.dispatchEvent(jumpEvent))
+		{
+			return;
+		}
+
 		if(host.args.standingOn && host.args.standingOn.args.yForce)
 		{
 			force += Math.max(0, host.args.standingOn.args.yForce * 0.25);

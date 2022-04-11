@@ -412,7 +412,7 @@ export class Sonic extends PointActor
 
 			if(this.getMapSolidAt(this.x + headPoint[0], this.y + headPoint[1]))
 			{
-				this.doJump(0);
+				this.bMap('doJump', 0);
 			}
 		}
 		else if(this.lightDashing)
@@ -1033,7 +1033,7 @@ export class Sonic extends PointActor
 		if(this.args.wallSticking)
 		{
 			this.args.x += this.args.width / 2 * (this.args.mode === 1 ? 1 : -1);
-			this.doJump(0);
+			this.bMap('doJump', 0);
 		}
 
 		if(this.args.gSpeed && !this.args.falling && !this.args.rolling && Math.sign(this.args.gSpeed) === this.args.direction)
