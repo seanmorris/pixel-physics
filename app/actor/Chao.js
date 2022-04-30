@@ -66,7 +66,16 @@ export class Chao extends PointActor
 
 	onRendered(event)
 	{
+		console.log(event);
+
 		super.onRendered(event);
+
+		if(!this.listening)
+		{
+			this.box.addEventListener('click', event => this.onClick(event));
+			this.box.addEventListener('contextmenu', event => this.onRightClick(event));
+			this.listening = true;
+		}
 
 		this.setAutoAttr('emote',     'data-emote');
 		this.setAutoAttr('alignment', 'data-alignment');
@@ -99,6 +108,8 @@ export class Chao extends PointActor
 
 		// 	this.animationIndex++;
 		// });
+
+		console.log(event);
 
 		const heroColors = {
 			'addef8': 'e4e0e4',
@@ -264,6 +275,8 @@ export class Chao extends PointActor
 			this.mimeSheet  = this.png.recolor(mimeColors).toUrl();
 			this.whiteSheet = this.png.recolor(whiteColors).toUrl();
 			this.limeRubySheet = this.png.recolor(limeRubyColors).toUrl();
+
+			console.log(this.heroSheet);
 		});
 	}
 
@@ -353,18 +366,6 @@ export class Chao extends PointActor
 		else
 		{
 			this.args.alignment = 'dark';
-		}
-	}
-
-	onRendered()
-	{
-		super.onRendered();
-
-		if(!this.listening)
-		{
-			this.box.addEventListener('click', event => this.onClick(event));
-			this.box.addEventListener('contextmenu', event => this.onRightClick(event));
-			this.listening = true;
 		}
 	}
 

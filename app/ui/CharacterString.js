@@ -18,6 +18,8 @@ export class CharacterString extends View
 
 		super(args, parent);
 
+		this[ Bindable.NoGetters ] = true;
+
 		const chars = [];
 
 		chars[ Bindable.NoGetters ] = true;

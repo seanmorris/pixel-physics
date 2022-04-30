@@ -18,7 +18,7 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 		this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 8;
 
 		this.args.gravity = 0.8;
-		this.alwaysSkidding  = true;
+		// this.alwaysSkidding  = true;
 	}
 
 	update()

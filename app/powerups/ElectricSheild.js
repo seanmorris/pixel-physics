@@ -60,7 +60,7 @@ export class ElectricSheild extends Sheild
 
 	immune(host, other, type = 'normal')
 	{
-		if(type === 'electric')
+		if(type === 'electric' || type === 'projectile')
 		{
 			return true;
 		}

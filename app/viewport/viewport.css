@@ -49,9 +49,14 @@ section.filters {
 	transition: width var(--scale-transition), height var(--scale-transition);
 	border: 1px solid black;
 	position: relative;
-	overflow: hidden;
 	color: red;
 	font-size: 0.7rem;
+}
+
+.viewport-overlay,
+.viewport-zoom,
+.intro-cards {
+	overflow: hidden;
 }
 
 .viewport .viewport-bg-layers {

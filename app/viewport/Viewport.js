@@ -5,6 +5,7 @@ import { View }     from 'curvature/base/View';
 import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
 import { Sequence } from 'curvature/input/Sequence';
+import { Elicit }   from 'curvature/net/Elicit';
 
 import { QuadCell } from '../QuadCell';
 import { Countdown } from '../timer/Countdown';
@@ -70,7 +71,7 @@ import { Classifier } from '../Classifier';
 
 import { ChatBox } from '../network/ChatBox';
 
-import { Wanderer } from '../actor/Wanderer';
+import { PlatformActor as PlatformActor } from '../actor/Platformer';
 
 import { Sonic } from '../actor/Sonic';
 import { Tails } from '../actor/Tails';
@@ -129,7 +130,7 @@ export class Viewport extends View
 			'Sonic':      Sonic
 			, 'Tails':    Tails
 			, 'Knuckles': Knuckles
-			, 'wanderer': Wanderer
+			, 'platformer': PlatformActor
 		};
 
 		this.objectPalette = ObjectPalette;
@@ -615,6 +616,13 @@ export class Viewport extends View
 		this.args.height = 32 * 9;
 		this.args.scale  = 2;
 
+		if(Router.query.tinyScale)
+		{
+			this.args.width  = 32 * 8;
+			this.args.height = 32 * 4.5;
+			this.args.scale  = 4;
+		}
+
 		if(Router.query.noScale)
 		{
 			this.args.width  = 32 * 14 * 2;
@@ -867,7 +875,57 @@ export class Viewport extends View
 
 	loadWorld({worldUrl, networked = false})
 	{
+		let firstMapLoaded = false;
 
+		const loader = new Elicit(worldUrl);
+
+		loader.json().then(world => {
+
+			const maps = world.maps.sort((a,b) => {
+				if(a.x === b.x)
+				{
+					return a.y - b.y;
+				}
+
+				return a.x - b.x;
+			});
+
+			let xMin = Math.min(...maps.map(m => m.x));
+			let yMin = Math.min(...maps.map(m => m.y));
+
+			let xMax = Math.max(...maps.map(m => m.x + m.width));
+			let yMax = Math.max(...maps.map(m => m.y + m.height));
+
+			for(const map of maps)
+			{
+				map.x -= xMin;
+				map.y -= yMin;
+			}
+
+			const firstMap = maps.shift();
+
+			this.loadMap({mapUrl: '/map/' + firstMap.fileName, networked})
+			.then(() => {
+
+				const blockSize = this.tileMap.mapData.tilewidth;
+
+				this.tileMap.offset(-xMin, -yMin);
+
+				// console.log(-xMin / blockSize, -yMin / blockSize);
+
+				this.tileMap.resize(xMax, yMax);
+
+				for(const map of maps)
+				{
+					console.log(map);
+
+					const mapUrl = '/map/' + map.fileName;
+
+					this.appendMap(mapUrl, map.x/blockSize, map.y/blockSize);
+				}
+			});
+
+		});
 	}
 
 	loadSaves(reload = false)
@@ -927,10 +985,15 @@ export class Viewport extends View
 			const layers = this.tileMap.tileLayers;
 			const layerCount = layers.length;
 
+			const blockSize  = this.tileMap.mapData.tilewidth;
+
+			this.args.blockSize = blockSize;
+
 			for(let i = 0; i < layerCount; i++)
 			{
 				const layer = new Layer({
 					layerId: i
+					, blockSize
 					, viewport: this
 					, name:     layers[i].name
 					, width:    this.args.width
@@ -969,7 +1032,9 @@ export class Viewport extends View
 
 		this.args.titlecard.play();
 
-		return tileMap.ready.then(() => this.startLevel());
+		tileMap.ready.then(() => this.startLevel())
+
+		return tileMap.ready;
 	}
 
 	fullscreen()
@@ -2035,9 +2100,9 @@ export class Viewport extends View
 			y = 0;
 		}
 
-		const playableHeight = this.meta.deathLine || (this.tileMap.mapData.height * 32);
+		const playableHeight = this.meta.deathLine || (this.tileMap.mapData.height * this.tileMap.mapData.tileheight);
 
-		const xMax = -(this.tileMap.mapData.width * 32) + this.args.width;
+		const xMax = -(this.tileMap.mapData.width * this.tileMap.mapData.tilewidth) + this.args.width;
 		const yMax = -playableHeight + this.args.height;
 
 		if(x < xMax && !this.meta.wrapX)
@@ -2209,9 +2274,15 @@ export class Viewport extends View
 			}));
 		}
 
+		const tWidth  = this.tileMap.mapData.tilewidth;
+		const tHeight = this.tileMap.mapData.tileheight;
+
+		const mWidth  = this.tileMap.mapData.width;
+		const mHeight = this.tileMap.mapData.height;
+
 		this.tileMap && this.tileMap.ready.then(() => {
-			const xMax = this.tileMap ? -(this.tileMap.mapData.width * 32) : 2 ** 9;
-			const yMax = this.tileMap ? -(this.tileMap.mapData.height * 32) : 2 ** 9;
+			const xMax = this.tileMap ? -(mWidth * tHeight) : 2 ** 9;
+			const yMax = this.tileMap ? -(mHeight * tHeight) : 2 ** 9;
 
 			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
 				x: 0
@@ -2309,8 +2380,8 @@ export class Viewport extends View
 			for(const def of defs)
 			{
 				def.id += maxObjectId;
-				def.x  += x * 32;
-				def.y  += y * 32;
+				def.x  += x * this.tileMap.mapData.tilewidth;
+				def.y  += y * this.tileMap.mapData.tileheight;
 
 				if(!def.properties)
 				{
@@ -3645,6 +3716,8 @@ export class Viewport extends View
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
 
+		this.args.screenEffects = [];
+
 		const layers = this.tileMap.tileLayers;
 
 		for(const layerDef of layers)
@@ -3706,6 +3779,8 @@ export class Viewport extends View
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade     = true;
+
+		this.args.screenEffects = [];
 
 		this.callFrames.clear();
 		this.callIntervals.clear();

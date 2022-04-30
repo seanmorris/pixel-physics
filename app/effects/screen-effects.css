@@ -1,3 +1,7 @@
+.screen-effects:empty {
+	display: none;
+}
+
 .screen-effects {
 	position: absolute;
 	top: 0px;

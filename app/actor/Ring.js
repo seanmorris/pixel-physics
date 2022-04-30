@@ -86,7 +86,10 @@ export class Ring extends PointActor
 			});
 		}
 
-		super.update();
+		if(this.args.reward || this.dropped)
+		{
+			super.update();
+		}
 
 		if(this.args.reward)
 		{
@@ -101,7 +104,7 @@ export class Ring extends PointActor
 		if((this.dropped || this.scattered) && (!this.args.falling || !this.args.ySpeed))
 		{
 			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
-			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, -5);
+			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, age > 6 ? -5 : 0);
 			this.args.gSpeed = 0;
 			this.args.x += this.args.xSpeed;
 			this.args.y += this.args.ySpeed;

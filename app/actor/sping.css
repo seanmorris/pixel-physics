@@ -1,0 +1,37 @@
+.actor-item.actor-sping .sprite {
+	height: 22px;
+	width: 44px;
+}
+
+.actor-item.actor-sping .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/sping.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 22px;
+	width: 44px;
+	z-index: 1;
+	animation: sping-walk steps(2) infinite 500ms;
+}
+
+.actor-item.actor-sping[data-animation="standing"] .sprite:after {
+
+}
+
+.actor-item.actor-sping[data-animation="shooting"] .sprite:after {
+	--sprite-offset-y: 23px;
+}
+
+@keyframes sping-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-96px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

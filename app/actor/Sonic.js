@@ -315,6 +315,8 @@ export class Sonic extends PointActor
 		}
 		else
 		{
+			this.swing = false;
+
 			if(this.springing)
 			{
 				this.args.groundAngle = 0;
@@ -447,6 +449,8 @@ export class Sonic extends PointActor
 
 			this.args.height = this.args.normalHeight;
 
+			this.args.crouching = false;
+
 			if(this.spindashCharge)
 			{
 				this.args.animation = 'spindash';
@@ -493,6 +497,8 @@ export class Sonic extends PointActor
 					if(this.yAxis > 0.5 && !this.args.ignore)
 					{
 						this.args.animation = 'crouching';
+
+						this.args.crouching = true;
 
 						this.args.lookTime--;
 
@@ -578,6 +584,10 @@ export class Sonic extends PointActor
 		if(this.args.hangingFrom)
 		{
 			this.args.animation = 'hanging';
+		}
+		else if(this.swing)
+		{
+			this.args.animation = 'jumping';
 		}
 
 		if(this.args.rolling)
@@ -845,6 +855,11 @@ export class Sonic extends PointActor
 		}
 
 		this.args.falling = true;
+
+		if(this.args.mercy)
+		{
+			dashSpeed *= 0.75;
+		}
 
 		const finalSpeed = this.args.xSpeed + dashSpeed;
 
@@ -1114,6 +1129,10 @@ export class Sonic extends PointActor
 
 	hold_1(button) // spindash
 	{
+		if(this.args.mercy)
+		{
+			return;
+		}
 		// if(this.skidding)
 		// {
 		// 	return;

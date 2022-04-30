@@ -50,7 +50,7 @@ export class FireSheild extends Sheild
 
 	immune(host, other, type = 'normal')
 	{
-		if(type === 'fire')
+		if(type === 'fire' || type === 'projectile')
 		{
 			return true;
 		}

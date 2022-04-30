@@ -17,6 +17,13 @@ export class Spinner extends PointActor
 		this.args.direction = this.args.direction || 1;
 	}
 
+	update()
+	{
+		this.args.gSpeed = 0;
+
+		super.update();
+	}
+
 	collideB(other)
 	{
 		if(other instanceof Spinner)
