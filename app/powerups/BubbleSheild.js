@@ -48,6 +48,16 @@ export class BubbleSheild extends Sheild
 		host.addEventListener('damage', invertDamage);
 	}
 
+	immune(host, other, type = 'normal')
+	{
+		if(type === 'water' || type === 'projectile')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	command_0(host, button)
 	{
 		if(host.canFly || host.dashed)

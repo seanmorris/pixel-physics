@@ -123,6 +123,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		}
 
 		other.args.falling = true;
+		other.swing = true;
 
 		this.hooked = other;
 

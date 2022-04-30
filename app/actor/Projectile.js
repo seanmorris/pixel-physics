@@ -18,6 +18,8 @@ export class Projectile extends PointActor
 		this.args.height = 8;
 
 		this.removeTimer = null;
+
+		this.deflected = false;
 	}
 
 	update()
@@ -54,18 +56,17 @@ export class Projectile extends PointActor
 			return false;
 		}
 
-		if(other.args.gone)
+		if(other.args.gone || this.deflected)
 		{
 			return false;
 		}
 
-		if(other.args.currentSheild)
+		if(other.args.currentSheild && other.args.currentSheild.immune(other, this, 'projectile'))
 		{
-			const angleTo = Math.atan2(this.x - other.x, this.y - other.y);
+			this.args.xSpeed *= -1;
+			this.args.ySpeed *= -1;
 
-			this.impulse(this.args.airSpeed / 2, angleTo, true);
-
-			this.args.falling = true;
+			this.deflected = true;
 
 			return;
 		}

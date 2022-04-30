@@ -162,6 +162,12 @@ export class Platformer
 
 	update(host)
 	{
+		if(host.args.mercy)
+		{
+			host.args.spindashCharge = 0;
+			host.args.dropDashCharge = 0;
+		}
+
 		if(typeof host.args.standingOn === 'number')
 		{
 			const standId = host.args.standingOn;
@@ -423,10 +429,11 @@ export class Platformer
 				host.args.jumpBlocked = !!rollJumpBlock;
 			}
 
-			if(!host.args.hangingFrom && !host.args.falling && this.checkBelow(host, host.x, host.y) && jumpBlock)
-			{
+			if(!host.args.hangingFrom
+				&& !host.args.falling
+				&& this.checkBelow(host, host.x, host.y) && jumpBlock
+			){
 				host.die();
-
 				return;
 			}
 
@@ -649,6 +656,11 @@ export class Platformer
 		if(host.args.ignore > 0)
 		{
 			host.args.ignore--;
+		}
+
+		if(host.args.mercy > 0)
+		{
+			host.args.mercy--;
 		}
 
 		if(host.args.startled > 0)
@@ -934,6 +946,8 @@ export class Platformer
 					if(!host.args.hangingFrom)
 					{
 						this.updateAirPosition(host);
+
+						host.swing = false;
 
 						host.args.airTimeTotal++;
 					}
@@ -1434,6 +1448,14 @@ export class Platformer
 
 	updateGroundPosition(host)
 	{
+		if(host.args.mercy)
+		{
+			if(Math.abs(host.args.gSpeed) > 6)
+			{
+				host.args.gSpeed = 6 * Math.sign(host.args.gSpeed);
+			}
+		}
+
 		const drag = host.getLocalDrag();
 
 		let gSpeedMax = host.args.gSpeedMax;
@@ -1452,10 +1474,10 @@ export class Platformer
 
 		const wasPaused = host.paused;
 
-		if(host.args.gSpeed)
+		if(host.args.gSpeed || host.args.rolling || (host.canRoll && host.args.crouching))
 		{
 			const scanDist  = radius + Math.abs(host.args.gSpeed);
-			const direction = Math.sign(host.args.gSpeed);
+			const direction = Math.sign(host.args.gSpeed || host.args.direction);
 
 			const max  = Math.abs(host.args.gSpeed);
 			const step = 1;
@@ -1796,8 +1818,9 @@ export class Platformer
 
 						if(host.args.angle > Math.PI / 4 && host.args.angle < Math.PI / 2)
 						{
-							host.lastAngles = host.lastAngles.map(n => n - Math.PI / 2);
-							Object.defineProperty(host.lastAngles, Bindable.NoGetters, {value: true});
+							const lastAngles = host.lastAngles.map(n => Number(n) - Math.PI / 2);
+							Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
+							host.lastAngles = lastAngles;
 
 							switch(host.args.mode)
 							{
@@ -1824,8 +1847,9 @@ export class Platformer
 						{
 							const orig = host.args.mode;
 
-							host.lastAngles = host.lastAngles.map(n => Number(n) + Math.PI / 2);
-							Object.defineProperty(host.lastAngles, Bindable.NoGetters, {value: true});
+							const lastAngles = host.lastAngles.map(n => Number(n) + Math.PI / 2);
+							Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
+							host.lastAngles = lastAngles;
 
 							switch(host.args.mode)
 							{
@@ -1989,18 +2013,7 @@ export class Platformer
 						break;
 				}
 
-				if(host.args.rolling)
-				{
-					if(slopeFactor > 0)
-					{
-						host.args.gSpeed += 2.2 * slopeFactor * host.args.accel * direction;
-					}
-					else if(slopeFactor < 0 && host.args.modeTime < 10)
-					{
-						host.args.gSpeed += 1.60 * slopeFactor * host.args.decel * direction;
-					}
-				}
-				else if(host.args.grinding)
+				if(host.args.grinding)
 				{
 					const speed = Math.abs(host.args.gSpeed);
 
@@ -2034,8 +2047,66 @@ export class Platformer
 						host.args.gSpeed += 0.1 * direction;
 					}
 				}
+				else if(host.args.rolling || host.canRoll && host.args.crouching)
+				{
+					if(slopeFactor > 0 && host.args.modeTime > 3)
+					{
+						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 4)
+						{
+							host.args.gSpeed += 0.80 * slopeFactor * direction;
+						}
+
+						if(Math.abs(host.args.gSpeed) < 1)
+						{
+							host.args.gSpeed = (1 + slopeFactor**2) * Math.sign(host.args.gSpeed);
+						}
+
+						const regions = host.viewport.regionsAtPoint(host.x, host.y);
+
+						for(const region of regions)
+						{
+							if(!region.args.maxSpeed || region.args.maxSpeed < 0)
+							{
+								continue;
+							}
+
+							if(region.args.maxSpeed < Math.abs(host.args.gSpeed))
+							{
+								host.args.gSpeed = region.args.maxSpeed * Math.sign(host.args.gSpeed);
+							}
+						}
+					}
+					else if(slopeFactor < 0)
+					{
+						if(Math.abs(host.args.gSpeed) < 10)
+						{
+							host.args.gSpeed += 0.65 * slopeFactor * direction;
+						}
+						else
+						{
+							host.args.gSpeed += 0.45 * slopeFactor * direction;
+						}
+
+					}
+
+				}
 				else if(!host.stayStuck)
 				{
+					if(slopeFactor > 0.25)
+					{
+						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 2)
+						{
+							host.args.gSpeed += 0.65 * slopeFactor * direction;
+						}
+					}
+					else if(slopeFactor < 0)
+					{
+						if(Math.abs(host.args.gSpeed) < 10)
+						{
+							host.args.gSpeed += 0.30 * slopeFactor * direction;
+						}
+					}
+
 					// let speedFactor = 1;
 
 					// if(slopeFactor < 0 && Math.abs(host.args.gSpeed) < 2)
@@ -2047,35 +2118,44 @@ export class Platformer
 					// 	speedFactor = 1.05000 * (1 + (slopeFactor**2/4) / 2);
 					// }
 
-					if(host.args.mode === MODE_FLOOR && Math.abs(slopeFactor) > 0.5)
-					{
-						if(Math.abs(host.args.gSpeed) < 1)
-						{
-							host.args.gSpeed = Math.sign(slopeFactor) * 4;
-						}
+					// if(host.args.mode === MODE_FLOOR && slopeFactor > 0.25)
+					// {
+					// 	if(Math.abs(host.args.gSpeed) < 1)
+					// 	{
+					// 		host.args.gSpeed = Math.sign(slopeFactor) * 4 * Math.sign(host.args.gSpeed);
+					// 	}
 
-						host.args.gSpeed += slopeFactor * 0.1;
-					}
+					// 	host.args.gSpeed += slopeFactor * 1 * Math.sign(host.args.gSpeed);
+					// }
+					// else if(host.args.mode === MODE_FLOOR && slopeFactor < -0.25)
+					// {
+					// 	if(Math.abs(host.args.gSpeed) < 1)
+					// 	{
+					// 		host.args.gSpeed = Math.sign(-slopeFactor) * 4 * Math.sign(-host.args.gSpeed);
+					// 	}
 
-					if(host.args.mode === MODE_LEFT && slopeFactor < 0.5)
-					{
-						if(Math.abs(host.args.gSpeed) < 1)
-						{
-							host.args.gSpeed = Math.sign(-slopeFactor) * 4;
-						}
+					// 	host.args.gSpeed += -slopeFactor * 1 * Math.sign(-host.args.gSpeed);
+					// }
 
-						host.args.gSpeed += -slopeFactor * 0.1;
-					}
+					// if(host.args.mode === MODE_LEFT && slopeFactor < 0.5)
+					// {
+					// 	if(Math.abs(host.args.gSpeed) < 1)
+					// 	{
+					// 		host.args.gSpeed = Math.sign(slopeFactor) * 4;
+					// 	}
 
-					if(host.args.mode === MODE_RIGHT && slopeFactor < -0.5)
-					{
-						if(Math.abs(host.args.gSpeed) < 1)
-						{
-							host.args.gSpeed = Math.sign(slopeFactor) * 4;
-						}
+					// 	host.args.gSpeed += -slopeFactor * 1;
+					// }
 
-						host.args.gSpeed += slopeFactor * 0.1;
-					}
+					// if(host.args.mode === MODE_RIGHT && slopeFactor < -0.5)
+					// {
+					// 	if(Math.abs(host.args.gSpeed) < 1)
+					// 	{
+					// 		host.args.gSpeed = Math.sign(slopeFactor) * 4;
+					// 	}
+
+					// 	host.args.gSpeed += slopeFactor * 1;
+					// }
 
 
 					if(Math.abs(host.args.gSpeed) < 1)
@@ -2235,6 +2315,11 @@ export class Platformer
 			host.args.y += host.args.ySpeed;
 
 			return;
+		}
+
+		if(host.args.jumping && host.args.ySpeed < 0 && host.args.ySpeed > -4)
+		{
+			host.args.xSpeed -= ((host.args.xSpeed / 0.125) / 256);
 		}
 
 		const upMargin = (host.args.flying
@@ -2453,8 +2538,8 @@ export class Platformer
 
 			if(!host.args.ySpeed || Math.sign(stickY - host.y) === Math.sign(host.args.ySpeed))
 			{
-				host.args.xSpeed = 0;
-				host.args.ySpeed = 0;
+				// host.args.xSpeed = 0;
+				// host.args.ySpeed = 0;
 
 				// if(host.args.flying && !angleIsWall && collisionAngle)
 				// {
@@ -2672,8 +2757,9 @@ export class Platformer
 					host.args.falling = false;
 					host.args.gSpeed  = speed;
 
-					host.args.xSpeed = 0;
-					host.args.ySpeed = 0;
+					// host.args.xSpeed = 0;
+					// host.args.ySpeed = 0;
+
 					host.args.float  = host.args.float || 1;
 
 					host.args.x += speed;

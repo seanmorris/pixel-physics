@@ -6,11 +6,6 @@ import { Sfx } from '../audio/Sfx';
 export const CanPop = {
 	collideA: function(other, type) {
 
-		if(other.args.mercy)
-		{
-			return;
-		}
-
 		if(other.knocked)
 		{
 			other.pop && other.pop(other.knocked);
@@ -52,7 +47,10 @@ export const CanPop = {
 			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
 			const otherShield = other.args.currentSheild;
-			this.damage(other, otherShield ? otherShield.type : 'normal');
+			if(other.args.mercy < 45)
+			{
+				this.damage(other, otherShield ? otherShield.type : 'normal');
+			}
 			return;
 		}
 
@@ -67,7 +65,10 @@ export const CanPop = {
 				});
 			}
 
-			other.damage(this, shield ? shield.type : 'normal');
+			if(!other.args.mercy)
+			{
+				other.damage(this, shield ? shield.type : 'normal');
+			}
 		}
 
 		return false;

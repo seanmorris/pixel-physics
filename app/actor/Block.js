@@ -552,7 +552,7 @@ export class Block extends PointActor
 					continue;
 				}
 
-				const conveyTo = this.bMap('findNextStep', this.args.convey).get(Platformer);
+				const conveyTo = collidee.bMap('findNextStep', this.args.convey).get(Platformer);
 
 				if(conveyTo[3])
 				{

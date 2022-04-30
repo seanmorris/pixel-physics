@@ -90,6 +90,24 @@
                  "width":0,
                  "x":104,
                  "y":224
+                }, 
+                {
+                 "gid":2,
+                 "height":46,
+                 "id":12,
+                 "name":"big",
+                 "properties":[
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"big",
+                 "visible":true,
+                 "width":42,
+                 "x":282.666666666667,
+                 "y":512
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -98,7 +116,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":12,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "properties":[
         {

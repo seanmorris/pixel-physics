@@ -49,6 +49,7 @@ import { Flickie } from './actor/Flickie';
 import { Bubbles  } from './actor/Bubbles';
 import { Redz     } from './actor/Redz';
 import { GuardBot } from './actor/GuardBot';
+import { Sping    } from './actor/Sping';
 import { CrabMeat } from './actor/CrabMeat';
 import { BuzzBomber  } from './actor/BuzzBomber';
 import { MechaFroggy } from './actor/MechaFroggy';
@@ -95,7 +96,7 @@ import { EggShuttle }  from './actor/EggShuttle';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
-import { Wanderer }      from './actor/Wanderer';
+import { Platformer } from './actor/Platformer';
 
 import { MechaSonic } from './actor/MechaSonic';
 import { Eggrobo }    from './actor/Eggrobo';
@@ -109,6 +110,8 @@ import { Seymour } from './actor/Seymour';
 import { Chalmers } from './actor/Chalmers';
 
 import { Sean } from './actor/Sean';
+
+import { Big } from './actor/Big';
 
 import { Rocks }  from './actor/Rocks';
 import { Switch } from './actor/Switch';
@@ -172,6 +175,8 @@ import { Tester } from './actor/Tester';
 import { Cursor } from './actor/Cursor';
 import { Spawner } from './actor/Spawner';
 
+import { NeverBetter } from './actor/NeverBetter';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -205,7 +210,7 @@ export const ObjectPalette = {
 	, 'rocks-med':    Rocks
 	, 'rocks-short':  Rocks
 	, 'mecha-sonic':  MechaSonic
-	, 'wanderer':     Wanderer
+	, 'platformer':   Platformer
 	, 'sonic':        Sonic
 	, 'tails':        Tails
 	, 'knuckles':     Knuckles
@@ -215,6 +220,7 @@ export const ObjectPalette = {
 	, 'seymour':      Seymour
 	, 'chalmers':     Chalmers
 	, 'sean':         Sean
+	, 'big':          Big
 	, 'switch':       Switch
 	, 'heavy-duty-switch': HeavyDutySwitch
 	, 'window':       Window
@@ -261,6 +267,7 @@ export const ObjectPalette = {
 	, 'crabmeat': CrabMeat
 	, 'redz': Redz
 	, 'guard-bot': GuardBot
+	, 'sping': Sping
 	, 'mecha-froggy': MechaFroggy
 	, 'buzz-bomber': BuzzBomber
 	, 'bubbles': Bubbles
@@ -304,4 +311,5 @@ export const ObjectPalette = {
 	, 'panel': Panel
 	, 'tester': Tester
 	, 'spawner': Spawner
+	, 'never-better': NeverBetter
 };

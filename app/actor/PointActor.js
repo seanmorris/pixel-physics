@@ -291,8 +291,9 @@ export class PointActor extends View
 		this.args.displayAngle = 0;
 		this.args.airAngle     = 0;
 
-		this.lastAngles = [];
-		Object.defineProperty(this.lastAngles, Bindable.NoGetters, {value: true});
+		const lastAngles = [];
+		Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
+		this.lastAngles = lastAngles
 
 		this.angleAvg   = 16;
 
@@ -4682,7 +4683,7 @@ export class PointActor extends View
 			return;
 		}
 
-		this.viewport.onFrameOut(180, () => this.args.mercy = false);
+		this.dashed = this.args.jumping = this.args.spinning = false;
 
 		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
 
@@ -4693,8 +4694,8 @@ export class PointActor extends View
 				if(!damageEvent.detail.immune)
 				{
 					this.args.y -= 8;
-					this.startle(other);
-					this.args.mercy = true;
+					this.onNextFrame(()=> this.startle(other));
+					this.args.mercy = 180;
 
 					if(this.viewport.settings.rumble)
 					{
@@ -4720,7 +4721,7 @@ export class PointActor extends View
 			this.loseRings();
 			this.args.rings = 0;
 			this.startle(other);
-			this.args.mercy = true;
+			this.args.mercy = 180;
 
 			if(this.viewport.settings.rumble)
 			{
@@ -5293,6 +5294,8 @@ export class PointActor extends View
 
 			this.args.hangingFrom.unhook();
 
+			this.swing = false;
+
 			return;
 		}
 
@@ -5615,11 +5618,11 @@ export class PointActor extends View
 
 		this.spawnRings = this.spawnRings || 0;
 
-		const maxSpawn = count || Math.min(this.args.rings, 16);
+		const maxSpawn = count || Math.min(this.args.rings, 12);
 
 		let current = 0;
 		const toSpawn = maxSpawn - this.spawnRings;
-		const circles = Math.floor(maxSpawn / 8);
+		const circles = Math.floor(maxSpawn / 6);
 
 		while(this.spawnRings < maxSpawn)
 		{
@@ -5632,11 +5635,11 @@ export class PointActor extends View
 			const cos = Math.cos(angle);
 			const sin = Math.sin(angle);
 
-			ring.args.x = this.x - cos * (circle * 8);
-			ring.args.y = this.y - sin * (circle * 8) - (this.args.height / 4);
+			ring.args.x = this.x - cos * (circle * 6);
+			ring.args.y = this.y - sin * (circle * 6) - (this.args.height / 4);
 
 			ring.args.xSpeed = 0;
-			ring.args.ySpeed = -1;
+			ring.args.ySpeed = -6;
 
 			ring.noClip = true;
 
@@ -5659,12 +5662,12 @@ export class PointActor extends View
 			// ring.args.xSpeed = this.args.xSpeed || this.args.gSpeed;
 			// ring.args.ySpeed = this.args.ySpeed;
 
-			this.viewport.onFrameOut(16 * circle, () => {
-				ring.args.xSpeed += -cos * circle * 4 + -(0.5 + Math.random());
-				ring.args.ySpeed += -sin * circle * 4 + -(0.5 + Math.random());
+			this.viewport.onFrameOut(12 * circle, () => {
+				ring.args.xSpeed += -cos * circle * 2;
+				ring.args.ySpeed += -sin * circle * 2;
 			});
 
-			if(current % 4 === 2)
+			if(current % 3 === 2)
 			{
 				ring.args.decoration = true;
 				ring.noClip = true;

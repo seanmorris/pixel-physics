@@ -1273,8 +1273,8 @@
                  "type":"player-start",
                  "visible":true,
                  "width":0,
-                 "x":744,
-                 "y":1480
+                 "x":821.333333333333,
+                 "y":1568
                 }],
          "opacity":0.48,
          "type":"objectgroup",
@@ -1445,7 +1445,7 @@
                         {
                          "name":"maxSpeed",
                          "type":"int",
-                         "value":15
+                         "value":10
                         }, 
                         {
                          "name":"minSpeed",
@@ -1473,7 +1473,7 @@
                         {
                          "name":"maxSpeed",
                          "type":"int",
-                         "value":15
+                         "value":10
                         }, 
                         {
                          "name":"minSpeed",

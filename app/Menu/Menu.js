@@ -1,3 +1,5 @@
+import { Bindable } from 'curvature/base/Bindable';
+
 import { Card } from '../intro/Card';
 
 import { Cylinder } from '../effects/Cylinder';
@@ -12,7 +14,9 @@ export class Menu extends Card
 
 	constructor(args,parent)
 	{
+		args[ Bindable.NoGetters ] = true;
 		super(args,parent);
+		this[ Bindable.NoGetters ] = true;
 
 		this.font = 'small-menu-font';
 		// this.font = 'font';

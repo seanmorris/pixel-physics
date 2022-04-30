@@ -18,7 +18,7 @@ export class Layer extends View
 		this.args.width  = args.width  || 320;
 		this.args.height = args.height || 200;
 
-		this.args.blockSize = 32;
+		this.args.blockSize = args.blockSize || 32;
 
 		this.x = 0;
 		this.y = 0;
@@ -223,7 +223,7 @@ export class Layer extends View
 					block = blocksXY.get(xy);
 				}
 
-				let tileXY = [];
+				const tileXY = [];
 
 				if(layerId && blockId === false)
 				{
@@ -232,7 +232,7 @@ export class Layer extends View
 				}
 				else
 				{
-					tileXY = tileMap.getTile(blockId);
+					Object.assign(tileXY, tileMap.getTile(blockId));
 				}
 
 				const existingOffset = offsets.get(block);

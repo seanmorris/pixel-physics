@@ -89,7 +89,7 @@ Sfx.register('EMBLEM_COLLECTED', '/custom/emblem-collect.wav', {maxConcurrent: 3
 Sfx.register('EMERALD_COLLECTED', '/Sonic/S3K_9C.wav');
 
 Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
-Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 8, volume: 1, fudgeFactor: 0, startTime: 0.4});
+Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.4});
 Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 
 Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});

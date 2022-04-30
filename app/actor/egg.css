@@ -2,6 +2,7 @@
 .actor-item.actor-egg-shell-bottom .sprite,
 .actor-item.actor-egg .sprite {
 	--sprite-sheet:  url('/DBurraki/chao-egg-normal.png');
+	--sprite-offset-x: 0px;
 
 	width:  15px;
 	height: 20px;
@@ -24,11 +25,13 @@
 	width:  15px;
 	height: 20px;
 
-	opacity: 0.25;
+	/*opacity: 0.25;*/
 
 }
 
 .actor-item.actor-egg .sprite:after {
+	display: none;
+
 	content: '';
 
 	position: absolute;
@@ -49,8 +52,15 @@
 		chao-egg-sparkle      250ms infinite steps(4);
 }
 
-.actor-item.actor-egg-shell-bottom .sprite:after {
-	--sprite-offset-y: 20px;
+.actor-item.actor-egg-shell-top .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -20px;
+	top: 8px;
+}
+
+.actor-item.actor-egg-shell-bottom .sprite:before {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -40px;
 }
 
 @keyframes chao-egg-sparkle {
