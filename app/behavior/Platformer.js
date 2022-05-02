@@ -973,7 +973,7 @@ export class Platformer
 
 				if(host.args.grinding && !host.args.gSpeed)
 				{
-					host.args.gSpeed = Math.sign(host.args.direction || host.axis);
+					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
 
 				this.updateGroundPosition(host);
