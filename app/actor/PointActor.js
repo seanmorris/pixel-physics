@@ -5541,11 +5541,11 @@ export class PointActor extends View
 		this.args.dead = true;
 		this.noClip = true;
 
-		this.args.ySpeed = -12;
+		this.args.ySpeed = -14;
 
 		if(this.y > this.viewport.meta.deathLine)
 		{
-			this.args.ySpeed = -14;
+			this.args.ySpeed = -16;
 		}
 
 		this.args.xSpeed = 0;
