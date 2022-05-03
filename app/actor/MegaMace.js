@@ -13,7 +13,7 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 		this.args.height = 64 - 12;
 		this.args.type   = 'actor-item actor-mega-mace';
 
-		this.behaviors.add(new SkidDust('particle-dust'));
+		// this.behaviors.add(new SkidDust('particle-dust'));
 
 		this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 8;
 
