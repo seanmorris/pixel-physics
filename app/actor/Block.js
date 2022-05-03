@@ -112,6 +112,11 @@ export class Block extends PointActor
 		this.setTile();
 	}
 
+	wakeUp()
+	{
+		this.setTile();
+	}
+
 	collideA(other, type)
 	{
 		if(other.isRegion || other.noClip)

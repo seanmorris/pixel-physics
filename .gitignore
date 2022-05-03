@@ -29,3 +29,7 @@ tmp/
 public/
 
 secrets
+docs/map/tileset-*
+docs/map/map-*
+app/assets/map/tileset-*
+app/assets/map/map-*
