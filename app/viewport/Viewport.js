@@ -543,6 +543,9 @@ export class Viewport extends View
 		this.args.speedBonusLabel   = new CharacterString({value:'SPEED BONUS: ', color: 'yellow'});
 		this.args.speedBonus        = new CharacterString({value: 0});
 
+		this.args.skidBonusLabel    = new CharacterString({value:'SKID BONUS: ', color: 'yellow'});
+		this.args.skidBonus         = new CharacterString({value: 0});
+
 		this.args.ringBonusLabel    = new CharacterString({value:'RING BONUS: ', color: 'yellow'});
 		this.args.ringBonus         = new CharacterString({value: 0});
 
@@ -4420,12 +4423,13 @@ export class Viewport extends View
 		this.args.speedBonus.args.value = 0;
 		this.args.totalBonus.args.value = 0;
 
-		this.onFrameOut(45,  () => this.args.timeBonus.args.value  = timeBonus);
-		this.onFrameOut(90,  () => this.args.ringBonus.args.value  = ringBonus);
-		this.onFrameOut(135, () => this.args.speedBonus.args.value = speedBonus);
-		this.onFrameOut(180, () => this.args.airBonus.args.value   = airBonus);
-		this.onFrameOut(205, () => this.args.totalBonus.args.value = totalBonus);
-		this.onFrameOut(420, () => this.args.actClear = false);
+		this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value  = timeBonus);
+		this.onFrameOut(45 * 2, () => this.args.ringBonus.args.value  = ringBonus);
+		this.onFrameOut(45 * 3, () => this.args.speedBonus.args.value = speedBonus);
+		this.onFrameOut(45 * 4, () => this.args.skidBonus.args.value  = this.controlActor.args.dragBonus || 0);
+		this.onFrameOut(45 * 5, () => this.args.airBonus.args.value   = airBonus);
+		this.onFrameOut(45 * 6, () => this.args.totalBonus.args.value = totalBonus);
+		this.onFrameOut(45 * 7, () => this.args.actClear = false);
 
 		if(!zoneState.time || zoneState.time > frames)
 		{

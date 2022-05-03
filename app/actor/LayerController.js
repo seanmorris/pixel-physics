@@ -113,6 +113,9 @@ export class LayerController extends PointActor
 			return;
 		}
 
+		this.args.x = other.x;
+		this.args.y = other.y;
+
 		this.viewport.auras.add(this);
 
 		this.viewport.args.shakeY = this.args.yQuake;

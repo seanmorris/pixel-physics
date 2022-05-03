@@ -1450,9 +1450,9 @@ export class Platformer
 	{
 		if(host.args.mercy)
 		{
-			if(Math.abs(host.args.gSpeed) > 6)
+			if(Math.abs(host.args.gSpeed) > 10)
 			{
-				host.args.gSpeed = 6 * Math.sign(host.args.gSpeed);
+				host.args.gSpeed = 10 * Math.sign(host.args.gSpeed);
 			}
 		}
 
