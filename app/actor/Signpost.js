@@ -85,6 +85,8 @@ export class Signpost extends PointActor
 			new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`})
 		];
 
+		this.following = other;
+
 		this.args.falling = true;
 		this.args.active  = true;
 		this.args.follow  = true;
@@ -97,6 +99,23 @@ export class Signpost extends PointActor
 	{
 		if(this.args.follow)
 		{
+			const other = this.following;
+
+			if(other.skidding && !other.args.rolling && !other.args.falling)
+			{
+				if(!this.args.xStart)
+				{
+					this.skidLabel    = new CharacterString({value: `Skid: 0`});
+					this.args.xStart  = this.x;
+					this.args.charStrings.push(this.skidLabel);
+				}
+
+				this.args.dragged = Math.trunc(Math.abs(this.args.xStart - this.x));
+				this.skidLabel.args.value = `Skid: ${this.args.dragged}`;
+
+				other.args.dragBonus = this.args.dragged;
+			}
+
 			const toX = Math.max(this.x, this.viewport.controlActor.x + -160);
 
 			if(toX !== this.x)
