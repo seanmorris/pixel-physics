@@ -783,6 +783,8 @@ export class Viewport extends View
 				localStorage.setItem('sonic-3000-audio-enabled', v);
 
 				this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+
+				this.args.muteSwitch.args.active = v;
 			});
 		});
 
@@ -1011,6 +1013,14 @@ export class Viewport extends View
 				{
 					this.args.layers.push(layer);
 				}
+
+				if(this.args.theme === 'none')
+				{
+					if(layers[i].name.substring(0, 9) === 'Collision')
+					{
+						layer.args.hidden = true;
+					}
+				}
 			}
 
 			if(this.tileMap.mapData && this.tileMap.mapData.properties)
@@ -1163,12 +1173,12 @@ export class Viewport extends View
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 		this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
 
-		this.listen(this.tags.frame, 'click', (event) => {
-			if(event.target === this.tags.frame.node)
-			{
-				this.tags.viewport.focus();
-			}
-		});
+		// this.listen(this.tags.frame, 'click', (event) => {
+		// 	if(event.target === this.tags.frame.node)
+		// 	{
+		// 		this.tags.viewport.focus();
+		// 	}
+		// });
 
 		this.listen(window, 'resize', (event) => {
 			this.onTimeout(100, () => this.fitScale(false));
@@ -1201,10 +1211,6 @@ export class Viewport extends View
 		this.args.paused  = false;
 
 		this.listen(document.body, 'click', event => {
-			if(event.target !== document.body)
-			{
-				return;
-			}
 			this.tags.viewport.focus();
 		});
 

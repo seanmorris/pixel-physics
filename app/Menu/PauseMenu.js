@@ -25,48 +25,65 @@ export class PauseMenu extends Menu
 		});
 
 		this.items = this.args.items = {
-			Continue: { callback: () => parent.unpauseGame() }
+			Continue: {
+				subtext: 'Return to gameplay.'
+				, callback: () => parent.unpauseGame()
+			}
+			, Mute: {
+				input: 'boolean'
+				, subtext: 'Mute all audio'
+				, set: value => parent.args.audio = !value
+				, get: () => !parent.args.audio
+			}
+			, Settings: SettingsMenu(parent)
 			, Reset:    {
-				children: {
+				subtext: 'Reset the run.'
+				, children: {
 					'Last Checkpoint': {
-						subtext: 'Restart and record your run.'
-						, callback: () => {
-							parent.unpauseGame();
-							parent.reset();
-							parent.startLevel();
+						subtext: 'Restart from the last checkpoint.'
+						, children: {
+							'No': { callback: () => this.args.items.back.callback() }
+							, 'Yes': {callback: () => {
+								parent.unpauseGame();
+								parent.reset();
+								parent.startLevel();
+							}}
 						}
 					}
 					, 'Level Start': {
-						subtext: 'Restart and record your run.'
-						, callback: () => {
-							parent.clearCheckpoints();
-							parent.unpauseGame();
-							parent.reset();
-							parent.startLevel();
+						subtext: 'Restart from the beginning of the act.'
+						, children: {
+							'No': { callback: () => this.args.items.back.callback() }
+							, 'Yes': {callback: () => {
+								parent.clearCheckpoints();
+								parent.unpauseGame();
+								parent.reset();
+								parent.startLevel();
+							}}
 						}
 					}
 				}
 			}
-			, Demos:    {
-				children: {
-					record: {
-						callback: () => this.parent.record()
-						, subtext: 'Restart and record your run.'
-					}
-					, stop: {
-						callback: () => this.parent.stop()
-						, subtext: 'Replay your run.'
-					}
-					, replay: {
-						callback: () => this.parent.playback()
-						, subtext: 'Replay your run.'
-					}
-				}
-			}
-			, Settings: SettingsMenu(parent)
+			// , Demos:    {
+			// 	children: {
+			// 		record: {
+			// 			callback: () => this.parent.record()
+			// 			, subtext: 'Restart and record your run.'
+			// 		}
+			// 		, stop: {
+			// 			callback: () => this.parent.stop()
+			// 			, subtext: 'Replay your run.'
+			// 		}
+			// 		, replay: {
+			// 			callback: () => this.parent.playback()
+			// 			, subtext: 'Replay your run.'
+			// 		}
+			// 	}
+			// }
 			// , Save: SaveMenu(parent)
 			, Quit: {
-				children: {
+				subtext: 'Quit to the title screen.'
+				, children: {
 					'No': { callback: () => this.args.items.back.callback() }
 					, 'Yes': { callback: () => {
 						this.args.items.back.callback();

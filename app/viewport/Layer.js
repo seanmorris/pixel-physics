@@ -23,6 +23,8 @@ export class Layer extends View
 		this.x = 0;
 		this.y = 0;
 
+		this.hidden = false;
+
 		this.args.offsetX = 0;
 		this.args.offsetY = 0;
 
@@ -139,6 +141,17 @@ export class Layer extends View
 	{
 		const viewport = this.args.viewport;
 
+		if(this.args.hidden)
+		{
+			if(!this.hidden)
+			{
+				this.blocks.list.forEach(b => b.style({display:'none'}));
+				this.hidden = true;
+			}
+
+			return;
+		}
+
 		if(this.args.destroyed && this.tags.background)
 		{
 			const tileMap  = viewport.tileMap;
@@ -149,6 +162,8 @@ export class Layer extends View
 			layerDef.destroyed = true;
 
 			this.tags.background.style({display: 'none'});
+
+			this.args.hidden = true;
 
 			return;
 		}
