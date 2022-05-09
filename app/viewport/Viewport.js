@@ -985,6 +985,16 @@ export class Viewport extends View
 		});
 
 		tileMap.ready.then(() => {
+			if(this.tileMap.mapData && this.tileMap.mapData.properties)
+			{
+				for(const property of this.tileMap.mapData.properties)
+				{
+					const name = property.name.replace(/-/g, '_');
+
+					this.meta[ name ] = property.value;
+				}
+			}
+
 			this.args.layers.length = 0;
 
 			const layers = this.tileMap.tileLayers;
@@ -1014,22 +1024,16 @@ export class Viewport extends View
 					this.args.layers.push(layer);
 				}
 
-				if(this.args.theme === 'none')
+				if(this.meta.theme !== 'construct')
 				{
 					if(layers[i].name.substring(0, 9) === 'Collision')
 					{
 						layer.args.hidden = true;
 					}
-				}
-			}
-
-			if(this.tileMap.mapData && this.tileMap.mapData.properties)
-			{
-				for(const property of this.tileMap.mapData.properties)
-				{
-					const name = property.name.replace(/-/g, '_');
-
-					this.meta[ name ] = property.value;
+					else
+					{
+						layer.args.hidden = false;
+					}
 				}
 			}
 		});
