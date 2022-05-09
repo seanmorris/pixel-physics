@@ -2,9 +2,44 @@ import { GamepadConfig } from '../controller/GamepadConfig';
 import { Series } from '../intro/Series';
 
 export const SettingsMenu = (parent) => { return {
-	children: {
-		Video: {
-			children: {
+	subtext: 'Edit your configuration.'
+	, children: {
+		Audio: {
+			subtext: 'Audio settings.'
+			, children: {
+				'Mute': {
+					input: 'boolean'
+					, subtext: 'Mute all audio'
+					, set: value => parent.args.audio = !value
+					, get: () => !parent.args.audio
+				}
+				, 'Music Volume': {
+					input: 'number'
+					, subtext: 'Background music volume - 0% - 100%'
+					// , available: 'unavailable'
+					, set: value => parent.settings.musicVol = value
+					, get: () => parent.settings.musicVol
+					, max: 100
+					, min: 0
+				}
+				, 'SFX': {
+					input: 'number'
+					, subtext: 'Sound effect music volume - 0% - 100%'
+					// , available: 'unavailable'
+					, set: value => parent.settings.sfxVol = value
+					, get: () => parent.settings.sfxVol
+					, max: 100
+					, min: 0
+				}
+				// , 'Mono / Stereo': {
+				// 	available: 'unavailable'
+				// }
+			}
+		}
+
+		, Video: {
+			subtext: 'Video settings.'
+			, children: {
 				'Motion Blur Effects': {
 					input: 'boolean'
 					, subtext: 'Enable/Disable motion blur effects'
@@ -60,7 +95,8 @@ export const SettingsMenu = (parent) => { return {
 
 		, 'Input': {
 
-			children: {
+			subtext: 'Input settings.'
+			, children: {
 
 				'Gamepad Test': {
 					callback: () => {
@@ -99,7 +135,8 @@ export const SettingsMenu = (parent) => { return {
 
 
 		, Network: {
-			children: {
+			subtext: 'Network settings.'
+			, children: {
 				'Username': {
 					input: 'string'
 					, subtext: 'Name to display in online games'
@@ -138,32 +175,5 @@ export const SettingsMenu = (parent) => { return {
 
 			}
 		}
-
-		, Audio: {
-			children: {
-				'Music Volume': {
-					input: 'number'
-					, subtext: 'Background music volume - 0% - 100%'
-					// , available: 'unavailable'
-					, set: value => parent.settings.musicVol = value
-					, get: () => parent.settings.musicVol
-					, max: 100
-					, min: 0
-				}
-				, 'SFX': {
-					input: 'number'
-					, subtext: 'Sound effect music volume - 0% - 100%'
-					// , available: 'unavailable'
-					, set: value => parent.settings.sfxVol = value
-					, get: () => parent.settings.sfxVol
-					, max: 100
-					, min: 0
-				}
-				, 'Mono / Stereo': {
-					available: 'unavailable'
-				}
-			}
-		}
-
 	}
 }}
