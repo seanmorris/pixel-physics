@@ -145,7 +145,11 @@ export class Layer extends View
 		{
 			if(!this.hidden)
 			{
-				this.blocks.list.forEach(b => b.style({display:'none'}));
+				this.blocks.list.forEach(b => {
+					b.style({display:'none'});
+					b.remove();
+
+				});
 				this.hidden = true;
 			}
 
