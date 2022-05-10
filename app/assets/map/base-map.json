@@ -64,6 +64,12 @@
  "nextlayerid":5,
  "nextobjectid":2,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"theme",
+         "type":"string",
+         "value":"construct"
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.7.1",
  "tileheight":32,

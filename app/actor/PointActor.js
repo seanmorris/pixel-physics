@@ -3657,10 +3657,10 @@ export class PointActor extends View
 					{
 						this.args.cameraMode = 'bridge';
 					}
-					// else if(!forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
-					// {
-					// 	this.args.cameraMode = 'cliff';
-					// }
+					else if(!forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
+					{
+						this.args.cameraMode = 'cliff';
+					}
 					else
 					{
 						this.args.cameraMode = 'normal';

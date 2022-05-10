@@ -137,7 +137,7 @@ export class Viewport extends View
 
 		this.timers = new Map;
 
-		// this.quadCell = null;
+		this.quadCell = null;
 
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
@@ -2426,7 +2426,8 @@ export class Viewport extends View
 		const mapHeight = this.tileMap.mapData.height * 32 + 64;
 
 		// this.quadCell = new QuadCell(
-		// 	{x: mapWidth/2, y: mapHeight/2}
+		// 	this.args.width * 2
+		// 	, {x: mapWidth/2, y: mapHeight/2}
 		// 	, {x: mapWidth, y: mapHeight}
 		// );
 
@@ -2730,16 +2731,17 @@ export class Viewport extends View
 
 	nearbyActors(actor)
 	{
-		// const nearbyActors = this.quadCell.select(actor.x, actor.y, x, y);
+		const x = this.args.x;
+		const y = this.args.y;
+		const width  = this.args.width;
+		const height = this.args.height;
+
+		// const nearbyActors = this.quadCell.select(actor.x, actor.y, width, height);
 
 		// return nearbyActors;
 
 		const nearbyCells = this.getNearbyColCells(actor);
 
-		const width  = this.args.width;
-		const height = this.args.height;
-		const x = this.args.x;
-		const y = this.args.y;
 
 		const result = new Set;
 

@@ -18,7 +18,9 @@ export class QuadCell
 
 	cells = [];
 
-	constructor(position = {x:0,y:0}, size = {x:0,y:0}, parent = null)
+	minSize = 0;
+
+	constructor(minSize, position = {x:0,y:0}, size = {x:0,y:0}, parent = null)
 	{
 		this.parent = parent;
 
@@ -27,6 +29,8 @@ export class QuadCell
 
 		this.size.x = size.x;
 		this.size.y = size.y;
+
+		this.minSize = minSize;
 
 		Object.seal(this);
 	}
@@ -74,6 +78,14 @@ export class QuadCell
 
 			return true;
 		}
+		else if(this.size.x <= this.minSize)
+		{
+			this.leafRefs.add(object);
+
+			object[CellRef] = this;
+
+			return true;
+		}
 		else if(
 			this.leafRefs
 			&& point.x === this.leafPoint.x
@@ -82,6 +94,8 @@ export class QuadCell
 			this.leafRefs.add(object);
 
 			object[CellRef] = this;
+
+			return true;
 		}
 		else if(!this.divided)
 		{
@@ -195,10 +209,12 @@ export class QuadCell
 		const p = this.position;
 		const s = this.size;
 
-		this.ld = new this.constructor({x:p.x - s.x/4, y:p.y - s.y/4}, {x:s.x/2, y:s.y/2}, this);
-		this.rd = new this.constructor({x:p.x + s.x/4, y:p.y - s.y/4}, {x:s.x/2, y:s.y/2}, this);
-		this.lu = new this.constructor({x:p.x - s.x/4, y:p.y + s.y/4}, {x:s.x/2, y:s.y/2}, this);
-		this.ru = new this.constructor({x:p.x + s.x/4, y:p.y + s.y/4}, {x:s.x/2, y:s.y/2}, this);
+		const m = this.minSize;
+
+		this.ld = new this.constructor(m, {x:p.x - s.x/4, y:p.y - s.y/4}, {x:s.x/2, y:s.y/2}, this);
+		this.rd = new this.constructor(m, {x:p.x + s.x/4, y:p.y - s.y/4}, {x:s.x/2, y:s.y/2}, this);
+		this.lu = new this.constructor(m, {x:p.x - s.x/4, y:p.y + s.y/4}, {x:s.x/2, y:s.y/2}, this);
+		this.ru = new this.constructor(m, {x:p.x + s.x/4, y:p.y + s.y/4}, {x:s.x/2, y:s.y/2}, this);
 
         this.cells.push(
         	this.ld, this.rd
