@@ -1,0 +1,12 @@
+.actor-umbrella {
+	z-index: -1000;
+}
+
+.actor-umbrella .sprite {
+	width: 78px;
+	height: 82px;
+	top: 2px;
+	background-image: url(/Sonic/umbrella.png);
+	background-repeat: repeat-y;
+	z-index: -1;
+}

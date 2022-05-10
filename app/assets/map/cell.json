@@ -213,6 +213,11 @@
  "orientation":"orthogonal",
  "properties":[
         {
+         "name":"backdrop",
+         "type":"string",
+         "value":"angel-island"
+        }, 
+        {
          "name":"theme",
          "type":"string",
          "value":"construct"

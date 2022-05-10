@@ -1869,7 +1869,7 @@ export class Viewport extends View
 			case 'aerial':
 				this.args.xOffsetTarget = 0.5;
 
-				cameraSpeed = 25;
+				cameraSpeed = 16;
 
 				if(!actor.args.flying && (deepJump || highJump))
 				{
@@ -1901,8 +1901,8 @@ export class Viewport extends View
 			case 'tube':
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.50;
-				this.maxCameraBound     = 64;
-				cameraSpeed = 45;
+				this.maxCameraBound     = 2;
+				cameraSpeed = 16;
 				break;
 
 			case 'cinematic':
@@ -1954,7 +1954,7 @@ export class Viewport extends View
 		let gSpeed = actor.args.gSpeed;
 		let xSpeed = actor.args.xSpeed;
 
-		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'tube', 'hooked', 'corkscrew'];
+		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
 
 		if(biasModes.includes(this.cameraMode) && !actor.args.pushing  && actor.args.modeTime > 0)
 		{
