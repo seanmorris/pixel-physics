@@ -50,6 +50,12 @@
 	100% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
 }
 
+
+.backdrop.angel-island .parallax {
+	background-color: #2424fc;
+}
+
+
 .backdrop {
 	/*filter: blur(1.5px);*/
 }
@@ -107,9 +113,15 @@
 	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
 }
 
+.backdrop.angel-island .parallax {
+	height: calc(-1 * var(--stacked));
+	/*height: calc(-1 * var(--stacked));*/
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(288px + var(--stacked))));
+}
+
 .backdrop.wood .parallax {
 	height: 632px;
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stackHeight) / 4)));
 }
 
 .backdrop.industrial .parallax {

@@ -70,6 +70,7 @@ export class Backdrop extends View
 			, 'background-position-x': xPos
 			, 'background-repeat':     'repeat-x'
 			, 'background-image':      url
+			, '--stackHeight':         stacked
 		});
 
 		this.args.bindTo(

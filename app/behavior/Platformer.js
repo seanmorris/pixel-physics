@@ -1165,7 +1165,7 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					// host.args.groundAngle = -Math.PI / 2;
+					host.args.groundAngle = -Math.PI / 2;
 
 					host.args.x += host.args.width/2;
 
@@ -1180,7 +1180,7 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					// host.args.groundAngle = Math.PI / 2;
+					host.args.groundAngle = Math.PI / 2;
 					host.args.x -= host.args.width/2;
 
 					host.args.ignore = 30;
@@ -1191,14 +1191,14 @@ export class Platformer
 
 					host.args.xSpeed = 0;
 
-					host.args.y += host.args.height;
+					// host.args.y -= host.args.height;
 					host.args.ignore = 8;
 					host.args.falling = true;
 					host.willJump = false;
 
 					const gSpeed = host.args.gSpeed;
 
-					// host.args.groundAngle = Math.PI;
+					host.args.groundAngle = Math.PI;
 					host.args.mode = MODE_FLOOR;
 
 					host.onNextFrame(() => {
@@ -1686,7 +1686,7 @@ export class Platformer
 										{
 											host.args.x -= host.args.direction;
 											host.args.y -= host.args.gSpeed + -2;
-											host.args.groundAngle = 0;
+											// host.args.groundAngle = 0;
 										}
 										else
 										{
@@ -1728,7 +1728,7 @@ export class Platformer
 										{
 											host.args.x -= host.args.direction;
 											host.args.y -= host.args.gSpeed + 2;
-											host.args.groundAngle = 0;
+											// host.args.groundAngle = 0;
 										}
 										else
 										{
@@ -2852,7 +2852,7 @@ export class Platformer
 
 				if(topTest)
 				{
-					host.args.ySpeed += topTest.yOffsetChanged;
+					// host.args.ySpeed += topTest.yOffsetChanged;
 					host.args.y      += host.args.height;
 				}
 			}

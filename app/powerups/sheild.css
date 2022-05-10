@@ -252,6 +252,20 @@
 	top: 24px;
 }
 
+[data-animation=rolling][data-mode="3"] .bubble-sheild,
+[data-animation=rolling][data-mode="1"] .bubble-sheild {
+	left: 0px;
+	top: 27px;
+}
+
+[data-animation=rolling][data-mode="3"] .fire-sheild,
+[data-animation=rolling][data-mode="1"] .fire-sheild,
+[data-animation=rolling][data-mode="3"] .electric-sheild,
+[data-animation=rolling][data-mode="1"] .electric-sheild {
+	left: 12px;
+	top: 25px;
+}
+
 [data-animation=springdash] .electric-sheild,
 [data-animation=lightdash] .electric-sheild,
 [data-animation=lightdash-back] .electric-sheild ,

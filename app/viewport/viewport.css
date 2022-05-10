@@ -267,7 +267,7 @@ section.filters {
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor.actor-egg-walker .sprite,
-.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker) {
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella) {
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);

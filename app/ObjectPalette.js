@@ -145,6 +145,7 @@ import { Bell } from './actor/Bell';
 import { Torch } from './actor/Torch';
 
 import { Signpost } from './actor/Signpost';
+import { Umbrella } from './actor/Umbrella';
 
 import { RedEyeJet } from './actor/RedEyeJet';
 import { MiniMace } from './actor/MiniMace';
@@ -284,6 +285,7 @@ export const ObjectPalette = {
 	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
 	, 'signpost': Signpost
+	, 'umbrella': Umbrella
 	, 'red-eye-jet': RedEyeJet
 	, 'beelzebub': Beelzebub
 	, 'mini-boss': MiniBoss
