@@ -152,7 +152,6 @@ export class SlotMachine extends PointActor
 
 		for(let i = 0; i < amount; i++)
 		{
-
 			const cos = Math.cos(angle);
 			const sin = Math.sin(angle);
 
@@ -171,7 +170,7 @@ export class SlotMachine extends PointActor
 				object: ring, frame: i * 3 + viewport.args.frameId
 			});
 
-			angle += Math.PI + 0.15;
+			angle += Math.PI + (i % 2 ? 0.3 : 0);
 		}
 
 		return new Promise(accept => viewport.onFrameOut((16 + amount) * 3, () => accept()));
@@ -206,7 +205,7 @@ export class SlotMachine extends PointActor
 				object: ring, frame: i * 3 + viewport.args.frameId
 			});
 
-			angle += Math.PI + 0.15;
+			angle -= Math.PI + (i % 2 ? 0.3 : 0);
 		}
 
 		return new Promise(accept => viewport.onFrameOut((16 + amount) * 3, () => accept()));
