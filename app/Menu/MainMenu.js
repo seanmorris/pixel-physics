@@ -188,7 +188,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Seaview Park Zone Act 1': {
+					, 'Seaview Park Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/west-side-zone.json'}, this.parent)
 						, callback: () => {
@@ -197,13 +197,22 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Seaview Park Zone Act 2': {
-						// characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						characters: []
-						, available: 'unavailable'
-						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
+					// , 'Seaview Park Zone Act 2': {
+					// 	// characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	characters: []
+					// 	, available: 'unavailable'
+					// 	, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
+					// 		this.accept();
+					// 	}
+					// }
+
+					, 'Manic Harbor Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
 						, callback: () => {
-							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
+							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
 							this.accept();
 						}
 					}
@@ -226,6 +235,15 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'Moon Test': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art for Moon Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
+							this.accept();
+						}
+					}
+
 					, 'Terrain Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing different terrain types'
@@ -244,16 +262,9 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Moon Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/moon-test.json'});
-							this.accept();
-						}
-					}
-
 					, 'Space Pinball Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing pinball physics'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
 							this.accept();
@@ -261,6 +272,7 @@ export class MainMenu extends Menu
 					}
 					, 'Belt and Wheel Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing elastic and rotational physics'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/belt-test.json'});
 							this.accept();
@@ -268,6 +280,7 @@ export class MainMenu extends Menu
 					}
 					, 'See-Saw Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing see-saw physics'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
 							this.accept();
@@ -276,6 +289,7 @@ export class MainMenu extends Menu
 
 					, 'Vehicle Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing vehicles'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
 							this.accept();
@@ -284,6 +298,7 @@ export class MainMenu extends Menu
 
 					, 'Spotlight Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing spotlight effects'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/visor-test.json'});
 							this.accept();
@@ -292,6 +307,7 @@ export class MainMenu extends Menu
 
 					, 'Flickie Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Flickie stress test'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
 							this.accept();

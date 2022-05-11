@@ -67,6 +67,7 @@ Bgm.register('RADICAL_CITY', '/audio/colbreakz/848482_ColBreakz---My-Universe.mp
 Bgm.register('WEST_SIDE', '/audio/akselmcbossmcgee123/1066486_Blammed-By-Pico.mp3');
 Bgm.register('UNDERGROUND_ZONE', '/audio/tee-lopes/under-ground-zone-remix.mp3');
 Bgm.register('MISTY_RUINS', 'audio/neil-voss/extol.mp3');
+Bgm.register('MANIC_HARBOR', '/audio/bobenshibobsled/1024371_Curse-Ska-Version.mp3');
 
 Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3');
 Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');

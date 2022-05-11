@@ -1,0 +1,11 @@
+.actor-dish {
+	z-index: -1000;
+}
+
+.actor-dish .sprite {
+	width: 46px;
+	height: 50px;
+	background-image: url(/Sonic/dish.png);
+	background-repeat: repeat-y;
+	z-index: -1;
+}

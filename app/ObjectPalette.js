@@ -146,6 +146,7 @@ import { Torch } from './actor/Torch';
 
 import { Signpost } from './actor/Signpost';
 import { Umbrella } from './actor/Umbrella';
+import { Dish } from './actor/Dish';
 
 import { RedEyeJet } from './actor/RedEyeJet';
 import { MiniMace } from './actor/MiniMace';
@@ -286,6 +287,7 @@ export const ObjectPalette = {
 	, 'road-barrier': RoadBarrier
 	, 'signpost': Signpost
 	, 'umbrella': Umbrella
+	, 'dish': Dish
 	, 'red-eye-jet': RedEyeJet
 	, 'beelzebub': Beelzebub
 	, 'mini-boss': MiniBoss
