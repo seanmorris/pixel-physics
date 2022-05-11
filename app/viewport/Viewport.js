@@ -3336,13 +3336,6 @@ export class Viewport extends View
 			this.nextControl   = null;
 		}
 
-		if(this.controlActor)
-		{
-			this.moveCamera();
-
-			this.applyMotionBlur();
-		}
-
 		this.updated.forEach(actor => {
 			if(actor.args.standingLayer)
 			{
@@ -3365,6 +3358,13 @@ export class Viewport extends View
 				actor.args.y += actor.args.standingLayer.offsetYChanged || 0;
 			}
 		});
+
+		if(this.controlActor)
+		{
+			this.moveCamera();
+
+			this.applyMotionBlur();
+		}
 
 		if(this.args.networked && this.controlActor)
 		{
