@@ -1,0 +1,40 @@
+.actor-item.actor-balkiry .sprite {
+	height: 24px;
+	width: 64px;
+}
+
+.actor-item.actor-balkiry .sprite {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/balkiry.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 24px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-balkiry .balkiry-flame {
+	position: absolute;
+	top: 15px;
+	left: -16px;
+	width: 16px;
+	height: 8px;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -8px;
+	background-image: url(/Sonic/balkiry-flame.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	animation: balkiry-boost steps(2) infinite 60ms;
+}
+
+@keyframes balkiry-boost {
+	from{
+		background-position: 0px 0px;
+	}
+	to{
+		background-position: 0px -16px;
+	}
+}
