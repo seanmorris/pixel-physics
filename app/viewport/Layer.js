@@ -64,6 +64,11 @@ export class Layer extends View
 
 	move()
 	{
+		if(this.meta.controller === undefined)
+		{
+			return;
+		}
+
 		const viewport   = this.args.viewport;
 		const layers     = viewport.tileMap.tileLayers;
 		const layerDef   = layers[this.args.layerId];

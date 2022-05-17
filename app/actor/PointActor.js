@@ -483,7 +483,7 @@ export class PointActor extends View
 				return;
 			}
 
-			if(this.controllable && groundObject.isVehicle)
+			if(this.controllable && groundObject.isVehicle && !groundObject.dead)
 			{
 				this.args.pushing = false;
 

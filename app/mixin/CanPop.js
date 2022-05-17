@@ -6,6 +6,8 @@ import { Sfx } from '../audio/Sfx';
 export const CanPop = {
 	collideA: function(other, type) {
 
+		const viewport = this.viewport;
+
 		if(other.knocked)
 		{
 			other.pop && other.pop(other.knocked);
@@ -61,7 +63,7 @@ export const CanPop = {
 				ga('send', 'event', {
 					eventCategory: 'badnik',
 					eventAction: 'damaged-player',
-					eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
+					eventLabel: `${viewport.args.actName}::${this.args.id}::${other.args.id}`
 				});
 			}
 
