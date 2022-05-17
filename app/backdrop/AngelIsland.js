@@ -10,7 +10,7 @@ export class AngelIsland extends Backdrop
 
 		this.args.strips = [
 			{
-				autoscroll: 0.000
+				autoscroll: -0.080
 				, parallax: 0.005
 				, url:      '/Sonic/backdrop/angel-island/sky-0.png'
 				, height:   196

@@ -20,6 +20,9 @@ import { ExplodingRegion } from './region/ExplodingRegion'
 import { SwitchRegion } from './region/SwitchRegion'
 import { RainRegion } from './region/RainRegion'
 import { WaterfallRegion } from './region/WaterfallRegion'
+import { KillRegion } from './region/KillRegion'
+import { VehicleRegion } from './region/VehicleRegion'
+import { DropVehicleRegion } from './region/DropVehicleRegion'
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -56,6 +59,7 @@ import { MechaFroggy } from './actor/MechaFroggy';
 import { DrainFly    } from './actor/DrainFly';
 import { GohlaBall   } from './actor/GohlaBall';
 import { Voltorb     } from './actor/Voltorb';
+import { Balkiry     } from './actor/Balkiry';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -129,6 +133,7 @@ import { SteelCrate } from './actor/SteelCrate';
 import { ChaoCrate } from './actor/ChaoCrate';
 import { UnbreakableCrate } from './actor/UnbreakableCrate';
 import { Rocket } from './actor/Rocket';
+import { Booster } from './actor/Booster';
 
 import { WindStone } from './actor/WindStone';
 import { RoadBarrier } from './actor/RoadBarrier';
@@ -244,6 +249,9 @@ export const ObjectPalette = {
 	, 'switch-region': SwitchRegion
 	, 'rain-region': RainRegion
 	, 'waterfall-region': WaterfallRegion
+	, 'kill-region': KillRegion
+	, 'vehicle-region': VehicleRegion
+	, 'drop-vehicle-region': DropVehicleRegion
 	, 'ring':         Ring
 	, 'antiring':     AntiRing
 	// , 'super-ring':   SuperRing
@@ -276,8 +284,10 @@ export const ObjectPalette = {
 	, 'drainfly': DrainFly
 	, 'gohla-ball': GohlaBall
 	, 'voltorb': Voltorb
+	, 'balkiry': Balkiry
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
+	, 'booster': Booster
 	, 'spinner': Spinner
 	, 'springboard': Springboard
 	, 'wooden-crate': WoodenCrate

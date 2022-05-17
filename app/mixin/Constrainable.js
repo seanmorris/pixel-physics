@@ -63,8 +63,11 @@ export const Constrainable = {
 
 		this.args.falling = true;
 
-		const xDist = tiedTo.x - this.x;
-		const yDist = tiedTo.y - this.y;
+		const xTarget = tiedTo.x;
+		const yTarget = tiedTo.y;
+
+		const xDist = xTarget - this.x;
+		const yDist = yTarget - this.y;
 
 		const angle = Math.atan2(yDist, xDist);
 		const dist  = Math.sqrt(yDist**2 + xDist**2);
@@ -86,8 +89,8 @@ export const Constrainable = {
 
 			const xMove = Math.cos(angle) * maxDist;
 			const yMove = Math.sin(angle) * maxDist;
-			const xNext = tiedTo.x - xMove;
-			const yNext = tiedTo.y - yMove;
+			const xNext = xTarget - xMove;
+			const yNext = yTarget - yMove;
 
 			this.args.xSpeed += Math.cos(gravityAngle) * overshot;
 			this.args.ySpeed += Math.sin(gravityAngle) * overshot;
@@ -100,7 +103,7 @@ export const Constrainable = {
 				this.viewport.setColCell(this);
 			}
 
-			if(this.x === tiedTo.x && !tiedTo.args.xSpeed)
+			if(this.x === xTarget && !tiedTo.args.xSpeed)
 			{
 				this.args.ySpeed = 0;
 			}
@@ -108,8 +111,8 @@ export const Constrainable = {
 
 		if(tiedTo.args.ySpeed > 0 && !tiedTo.args.xSpeed && !this.args.xSpeed)
 		{
-			this.args.x = tiedTo.x;
-			this.args.y = tiedTo.y + this.args.ropeLength;
+			this.args.x = xTarget;
+			this.args.y = yTarget + this.args.ropeLength;
 		}
 	}
 };

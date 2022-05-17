@@ -1954,7 +1954,7 @@ export class Viewport extends View
 		let gSpeed = actor.args.gSpeed;
 		let xSpeed = actor.args.xSpeed;
 
-		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
+		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
 
 		if(biasModes.includes(this.cameraMode) && !actor.args.pushing  && actor.args.modeTime > 0)
 		{

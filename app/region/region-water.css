@@ -8,7 +8,7 @@
 }
 
 .region.region-water .region-color {
-	background-color: rgba(0,128,255,0.25);
+	background-color: rgba(0,128,255,0.33);
 }
 
 .viewport:not(.displacement-off) .region.region-water .region-filter-wrapper {

@@ -35,6 +35,7 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 		this.willStick = false;
 		this.stayStuck = false;
 	}
+
 	update()
 	{
 		const direction = this.args.direction;

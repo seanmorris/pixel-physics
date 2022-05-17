@@ -91,4 +91,7 @@ export class Region extends PointActor
 
 	get solid() { return false; }
 	get isEffect() { return true; }
+
+	enter(other){}
+	leave(other){}
 }

@@ -744,6 +744,8 @@ export class Platformer
 					host.regions.delete(region);
 
 					host.crossRegionBoundary(region, false);
+
+					region.leave(host);
 				}
 			}
 
@@ -808,6 +810,8 @@ export class Platformer
 					host.regions.add(region);
 
 					host.crossRegionBoundary(region, true);
+
+					region.enter(host);
 				}
 			}
 

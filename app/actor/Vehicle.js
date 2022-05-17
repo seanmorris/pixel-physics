@@ -2,6 +2,8 @@ import { PointActor } from './PointActor';
 
 export class Vehicle extends PointActor
 {
+	dead = false;
+
 	update()
 	{
 		if(this.occupant)
@@ -77,4 +79,15 @@ export class Vehicle extends PointActor
 	}
 
 	get isVehicle() { return true; }
+
+	sleep()
+	{
+		super.sleep();
+
+		if(this.dead)
+		{
+			this.viewport.actors.remove(this);
+			return;
+		}
+	}
 }
