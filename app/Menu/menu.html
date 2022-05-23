@@ -1,9 +1,6 @@
 <div class = "screen-card screen-card-[[cardName]] [[animation]]">
-
 	<div class = "menu-scroller"></div>
-
 	[[warp]]
-
 	<div class = "menu-container" data-current-menu = "[[currentKey]]">
 		<ul cv-ref = "bound" cv-each = "items:item:title">
 			<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item);" tabindex="0">
@@ -16,7 +13,7 @@
 					: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
 				</span>
 				<span cv-if = "item.input" cv-is = "boolean">
-					: <span data-wraps = "select"><select cv-on = "mousedown:toggle(event, item);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
+					: <span data-wraps = "select"><select cv-on = "click:toggle(event,item);mousedown:cancel(event);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
 						<option value = "1">on</option>
 						<option value = "0">off</option>
 					</select></span>
@@ -29,5 +26,4 @@
 			</li>
 		</ul>
 	</div>
-
 </div>

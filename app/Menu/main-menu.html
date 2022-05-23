@@ -37,7 +37,7 @@
 							<span data-wraps = "select">
 								[[item._boolValue]]
 								<select
-									cv-on    = "cvDomAttached:selectListRendered(event, item, title, $view, $subview, $parent);mousedown:toggle(event, item, $view, $subview, $parent); input:change(event, title)" cv-ref = "boolean"
+									cv-on    = "cvDomAttached:selectListRendered(event, item, title, $view, $subview, $parent);click:toggle(event,item);mousedown:cancel(event);input:change(event, title)" cv-ref = "boolean"
 									cv-bind = "item.setting"
 									tabindex="-1">
 								<option value = "1">on</option>

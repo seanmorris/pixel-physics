@@ -32,6 +32,17 @@
 	--sprite-offset-y: 0px;
 }
 
+.actor-item.actor-knuckles[data-animation="skidding"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -1120px;
+	animation: knuckles-skid steps(2) 1 forwards 160ms;
+}
+
+.actor-item.actor-knuckles[data-animation="dead"] .sprite:after {
+	--sprite-offset-x: -128px;
+	--sprite-offset-y: -928px;
+}
+
 .actor-item.actor-knuckles[data-animation="startle"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -928px;
@@ -223,6 +234,15 @@
 	}
 	to{
 		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-skid {
+	from{
+		background-position: calc(0px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 

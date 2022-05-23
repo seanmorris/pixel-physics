@@ -43,6 +43,8 @@ export class Tails extends PointActor
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.sparks = new Set();
 	}
 
 	onRendered(event)
@@ -136,53 +138,54 @@ export class Tails extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(!this.args.rolling)
+			if(this.args.grinding)
 			{
-				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
-				{
-					this.box.setAttribute('data-animation', 'skidding');
-				}
-				else if(speed > maxSpeed / 2)
-				{
-					this.box.setAttribute('data-animation', 'running');
-				}
-				else if(this.args.moving && this.args.gSpeed)
-				{
-					this.box.setAttribute('data-animation', 'walking');
-				}
-				else
-				{
-					this.box.setAttribute('data-animation', 'standing');
-				}
+				this.args.animation = 'grinding';
+				this.args.rolling = false;
+			}
+			else if(this.args.rolling)
+			{
+				this.args.animation = 'rolling';
+
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'rolling');
+				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
+				{
+					this.args.animation = 'skidding';
+				}
+				else if(speed > maxSpeed / 2)
+				{
+					this.args.animation = 'running';
+				}
+				else if(this.args.moving && this.args.gSpeed)
+				{
+					this.args.animation = 'walking';
+				}
+				else
+				{
+					this.args.animation = 'standing';
+				}
 			}
 		}
 		else if(this.args.flying && !this.args.startled)
 		{
 			if(this.yAxis > 0)
 			{
-				this.box.setAttribute('data-animation', 'jumping');
+				this.args.animation = 'jumping';
 				this.args.ySpeed = this.args.ySpeed > this.args.jumpForce
 					? this.args.ySpeed
 					: this.args.jumpForce;
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'flying');
+				this.args.animation = 'flying';
 			}
 		}
 		else if(this.args.jumping)
 		{
 			this.flyingSound.pause();
-			this.box.setAttribute('data-animation', 'jumping');
-		}
-
-		if(this.args.hangingFrom)
-		{
-			this.args.animation = 'hanging';
+			this.args.animation = 'jumping';
 		}
 
 		if(!this.args.startled)
@@ -196,6 +199,65 @@ export class Tails extends PointActor
 
 
 		super.update();
+
+		if(this.args.hangingFrom)
+		{
+			this.args.animation = 'hanging';
+		}
+
+		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
+		{
+			const sparkParticle = new Tag(`<div class = "particle-sparks">`);
+			const sparkEnvelope = new Tag(`<div class = "envelope-sparks">`);
+
+			sparkEnvelope.appendChild(sparkParticle.node);
+
+			const sparkPoint = this.rotatePoint(
+				-this.args.gSpeed * 1.75 * this.args.direction
+				, 8
+			);
+
+			const flip = Math.sign(this.args.gSpeed);
+
+			sparkEnvelope.style({
+				'--x': sparkPoint[0] + this.x
+				, '--y': sparkPoint[1] + this.y + Math.random * -3
+				, 'z-index': 0
+				, 'animation-delay': (-Math.random()*0.25) + 's'
+				, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
+				, '--flip': flip
+				, '--angle': this.realAngle
+				, opacity: Math.random() * 2
+			});
+
+			sparkEnvelope.particle = sparkParticle;
+
+			this.viewport.particles.add(sparkEnvelope);
+
+			this.sparks.add(sparkEnvelope);
+
+			this.viewport.onFrameOut(30, () => {
+				this.viewport.particles.remove(sparkEnvelope);
+				this.sparks.delete(sparkEnvelope);
+			});
+		}
+
+		if(this.sparks.size)
+		{
+			for(const spark of this.sparks)
+			{
+				const sparkPoint = this.rotatePoint(
+					1.75 * this.args.direction
+					, 8
+				);
+
+				spark.style({
+					opacity: Math.random() * 2
+					, '--x': sparkPoint[0] + this.x
+					, '--y': sparkPoint[1] + this.y
+				});
+			}
+		}
 	}
 
 	command_0(button)
