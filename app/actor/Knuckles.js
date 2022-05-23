@@ -521,6 +521,11 @@ export class Knuckles extends PointActor
 			}
 		}
 
+		if(this.args.dead)
+		{
+			this.args.animation = 'dead';
+		}
+
 		this.box.style({'--punchCharge': this.args.punchCharge})
 	}
 

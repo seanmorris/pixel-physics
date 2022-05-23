@@ -958,6 +958,7 @@ export class Platformer
 					else
 					{
 						host.args.groundTimeTotal++;
+						host.args.flying = false;
 					}
 				}
 

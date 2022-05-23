@@ -192,6 +192,25 @@ export class Menu extends Card
 			return;
 		}
 
+		if(controller.buttons[0] && controller.buttons[0].time === 1)
+		{
+			this.currentItem && this.currentItem.click();
+
+			this.args.last = 'A';
+
+			next = this.currentItem;
+
+			this.beep();
+		}
+		else if(controller.buttons[1] && controller.buttons[1].time === 1)
+		{
+			this.back();
+
+			this.args.last = 'B';
+
+			this.beep();
+		}
+
 		let next;
 
 		const repeatCheck = (button) => controller.buttons[button]
@@ -203,7 +222,6 @@ export class Menu extends Card
 				&& controller.buttons[button].time < 140
 				&& controller.buttons[button].time % 15 === 1
 			));
-
 
 		if(repeatCheck(12))
 		{
@@ -228,23 +246,6 @@ export class Menu extends Card
 		else if(repeatCheck(15))
 		{
 			this.currentItem && this.expand(this.currentItem);
-
-			this.beep();
-		}
-
-		if(controller.buttons[0] && controller.buttons[0].time === 1)
-		{
-			this.currentItem && this.currentItem.click();
-
-			this.args.last = 'A';
-
-			this.beep();
-		}
-		else if(controller.buttons[1] && controller.buttons[1].time === 1)
-		{
-			this.back();
-
-			this.args.last = 'B';
 
 			this.beep();
 		}
@@ -274,9 +275,9 @@ export class Menu extends Card
 			return;
 		}
 
-		if(item.input)
+		if(event && item.input)
 		{
-			this.focus(item.input);
+			this.onNextFrame(()=>this.focus(event.target.closest('li')));
 		}
 
 		if(item.children)
@@ -359,6 +360,11 @@ export class Menu extends Card
 		const title = element.getAttribute('data-title');
 		const item  = this.args.items[ title ];
 
+		if(!item)
+		{
+			return;
+		}
+
 		if(item.input === 'number')
 		{
 			item.setting = Number(item.setting) - 1;
@@ -423,13 +429,18 @@ export class Menu extends Card
 		item.set(item.setting);
 	}
 
-	toggle(event, item, $view, $subview, $parent)
+	toggle(event, item)
 	{
-		event.preventDefault();
+		event && event.preventDefault();
 
 		item.setting = !item.setting;
 		item._value.args.value = item.setting ? 'ON' : 'OFF';
 		item.set && item.set(item.setting);
+	}
+
+	cancel(event)
+	{
+		event.preventDefault();
 	}
 
 	cycleSelect(item, title, direction = 1)

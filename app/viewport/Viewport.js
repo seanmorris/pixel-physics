@@ -1836,9 +1836,9 @@ export class Viewport extends View
 				break;
 
 			case 'normal':
-				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
-				this.args.yOffsetTarget = [0.55, 0.50, 0.45, 0.50][actor.args.mode];
-				this.maxCameraBound = 64;
+				this.args.xOffsetTarget = [0.50, 0.45, 0.50, 0.55][actor.args.mode];
+				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
+				this.maxCameraBound = 96;
 				cameraSpeed = 24;
 				break;
 
@@ -1869,7 +1869,7 @@ export class Viewport extends View
 			case 'aerial':
 				this.args.xOffsetTarget = 0.5;
 
-				cameraSpeed = 16;
+				cameraSpeed = 24;
 
 				if(!actor.args.flying && (deepJump || highJump))
 				{
@@ -1901,8 +1901,8 @@ export class Viewport extends View
 			case 'tube':
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.50;
-				this.maxCameraBound     = 2;
-				cameraSpeed = 16;
+				this.maxCameraBound     = 64;
+				cameraSpeed = 24;
 				break;
 
 			case 'cinematic':
@@ -2536,7 +2536,7 @@ export class Viewport extends View
 				continue;
 			}
 
-			const position = this.getCheckpoint(actor.args.id);
+			const position = this.getCheckpoint(actor.args.canonical);
 
 			if(position && position.checkpointId)
 			{
@@ -4307,6 +4307,11 @@ export class Viewport extends View
 
 	clearCheckpoints(name = null)
 	{
+		if(!this.controlActor)
+		{
+			return;
+		}
+
 		if(name === null)
 		{
 			name = this.controlActor.args.canonical;

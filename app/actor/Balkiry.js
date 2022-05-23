@@ -1,5 +1,7 @@
 import { Flickie } from './Flickie';
 
+import { Spring } from './Spring';
+
 import { Mixin } from 'curvature/base/Mixin';
 import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
@@ -17,6 +19,8 @@ export class Balkiry extends Mixin.from(PointActor, CanPop)
 		super(...args);
 
 		this.args.type      = 'actor-item actor-balkiry';
+
+		this[Spring.WontSpring] = true;
 
 		this.args.animation = 'standing';
 

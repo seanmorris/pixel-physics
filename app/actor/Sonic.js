@@ -59,10 +59,12 @@ export class Sonic extends PointActor
 		this.args.decel     = 0.40;
 
 		this.gSpeedMaxNormal = 18;
-		this.gSpeedMaxSuper  = 23;
+		this.gSpeedMaxSuper  = 20;
+		this.gSpeedMaxHyper  = 23;
 
 		this.jumpForceNormal = 11.5;
-		this.jumpForceSuper  = 16;
+		this.jumpForceSuper  = 14;
+		this.jumpForceHyper  = 16;
 
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
 		this.args.jumpForce = this.jumpForceNormal;
@@ -252,6 +254,11 @@ export class Sonic extends PointActor
 				if(this.args.rings > 0)
 				{
 					this.args.rings--;
+
+					if(this.isHyper)
+					{
+						this.args.rings--;
+					}
 				}
 				else
 				{
@@ -439,6 +446,7 @@ export class Sonic extends PointActor
 		}
 		else if(!falling)
 		{
+			const maxSpeedNormal  = this.gSpeedMaxNormal / (this.isSuper ? 2 : 1);
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
 			const speed     = Math.abs(gSpeed);
@@ -461,21 +469,21 @@ export class Sonic extends PointActor
 				{
 					this.args.animation = 'skidding';
 				}
-				else if(this.args.moving && speed > maxSpeed * 0.75)
+				else if(this.args.moving && speed > maxSpeedNormal * 0.75)
 				{
-					if(this.isSuper && this.args.moving && speed > maxSpeed * 1.85)
+					if(this.isSuper && this.args.moving && speed > maxSpeedNormal * 1.85)
 					{
 						this.args.animation = 'dash';
 					}
-					else if(this.args.moving && speed > maxSpeed * 2.25)
+					else if(this.args.moving && speed > maxSpeedNormal * 2.25)
 					{
 						this.args.animation = 'running-4';
 					}
-					else if(this.args.moving && speed > maxSpeed * 1.75)
+					else if(this.args.moving && speed > maxSpeedNormal * 1.75)
 					{
 						this.args.animation = 'running-3';
 					}
-					else if(this.args.moving && speed > maxSpeed * 1.25)
+					else if(this.args.moving && speed > maxSpeedNormal * 1.25)
 					{
 						this.args.animation = 'running-2';
 					}
@@ -1371,8 +1379,22 @@ export class Sonic extends PointActor
 			return;
 		}
 
-		this.isSuper = !this.isSuper;
-		this.isHyper = !this.isHyper;
+		if(this.isHyper)
+		{
+			this.isHyper = false;
+			this.isSuper = false;
+			this.setProfile();
+			return;
+		}
+
+		if(this.isSuper)
+		{
+			this.isHyper = !this.isHyper;
+		}
+		else
+		{
+			this.isSuper = !this.isSuper;
+		}
 
 		this.onTimeout(150, () =>{
 			if(this.args.rings === 0)
@@ -1383,7 +1405,6 @@ export class Sonic extends PointActor
 			};
 		});
 
-
 		this.setProfile();
 	}
 
@@ -1393,8 +1414,8 @@ export class Sonic extends PointActor
 		{
 			this.args.spriteSheet = this.superSpriteSheet;
 
-			this.args.gSpeedMax = this.gSpeedMaxSuper;
-			this.args.jumpForce = this.jumpForceSuper;
+			this.args.gSpeedMax = this.gSpeedMaxHyper;
+			this.args.jumpForce = this.jumpForceHyper;
 			this.args.accel     = this.accelSuper;
 		}
 		else if(this.isSuper)
