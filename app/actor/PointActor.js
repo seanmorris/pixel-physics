@@ -2202,6 +2202,31 @@ export class PointActor extends View
 		return drag;
 	}
 
+	getLocalFriction()
+	{
+		let friction = 1;
+
+		for(const region of this.regions)
+		{
+			if(region.skimmers.has(this) || region.skimmers.has(Bindable.make(this)))
+			{
+				continue;
+			}
+
+			if(!region.args.friction && region.args.friction !== 0)
+			{
+				continue;
+			}
+
+			if(region.args.friction < friction)
+			{
+				friction = region.args.friction;
+			}
+		}
+
+		return friction;
+	}
+
 	// updateGroundPosition()
 	// {
 	// 	const drag = this.getLocalDrag();
@@ -3641,7 +3666,7 @@ export class PointActor extends View
 		}
 		else if(this.controllable)
 		{
-			if(!this.args.falling && this.args.rolling && this.args.jumpBlocked)
+			if(this.args.mode && !this.args.falling && this.args.rolling && this.args.jumpBlocked)
 			{
 				this.args.cameraMode = 'tube';
 			}
@@ -3653,13 +3678,20 @@ export class PointActor extends View
 
 				if(this.args.mode === MODE_FLOOR && this.args.groundAngle === 0)
 				{
-					if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
+					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
-						this.args.cameraMode = 'bridge';
-					}
-					else if(!forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
-					{
-						this.args.cameraMode = 'cliff';
+						if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
+						{
+							this.args.cameraMode = 'bridge';
+						}
+						else if(!forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
+						{
+							this.args.cameraMode = 'cliff';
+						}
+						else
+						{
+							this.args.cameraMode = 'normal';
+						}
 					}
 					else
 					{
@@ -3944,13 +3976,14 @@ export class PointActor extends View
 			{
 				const axisSign = Math.sign(xAxis);
 				const sign     = Math.sign(gSpeed);
+				const friction = this.getLocalFriction();
 				let gSpeed     = this.args.gSpeed;
 
 				if(!this.args.rolling && !this.args.climbing && !this.args.ignore && !this.args.wallSticking)
 				{
 					if(axisSign === sign || !sign)
 					{
-						gSpeed += xAxis * this.args.accel * drag;
+						gSpeed += xAxis * friction * this.args.accel * drag;
 
 						if(Math.abs(axisSign - sign) === 2)
 						{
@@ -3959,7 +3992,7 @@ export class PointActor extends View
 					}
 					else if(!this.args.ignore)
 					{
-						gSpeed += xAxis * this.args.accel * drag * this.args.skidTraction;
+						gSpeed += xAxis * friction * this.args.accel * drag * this.args.skidTraction;
 					}
 				}
 
@@ -5543,11 +5576,11 @@ export class PointActor extends View
 
 		this.spawnRings = this.spawnRings || 0;
 
-		const maxSpawn = count || Math.min(this.args.rings, 12);
+		const maxSpawn = count || Math.min(this.args.rings, 16);
 
 		let current = 0;
 		const toSpawn = maxSpawn - this.spawnRings;
-		const circles = Math.floor(maxSpawn / 6);
+		const circles = Math.floor(maxSpawn / 8);
 
 		while(this.spawnRings < maxSpawn)
 		{
@@ -5560,11 +5593,11 @@ export class PointActor extends View
 			const cos = Math.cos(angle);
 			const sin = Math.sin(angle);
 
-			ring.args.x = this.x - cos * (circle * 6);
-			ring.args.y = this.y - sin * (circle * 6) - (this.args.height / 4);
+			ring.args.x = this.x - cos * (circle * 8);
+			ring.args.y = this.y - sin * (circle * 8) - (this.args.height / 4);
 
 			ring.args.xSpeed = 0;
-			ring.args.ySpeed = -6;
+			ring.args.ySpeed = -3;
 
 			ring.noClip = true;
 
@@ -5577,7 +5610,7 @@ export class PointActor extends View
 
 			ring.dropped = true;
 
-			this.viewport.onFrameOut(4 + (this.spawnRings % 4), () => {
+			this.viewport.onFrameOut(4 + (current % 4), () => {
 				this.viewport.spawn.add({object:ring});
 			});
 
@@ -5714,3 +5747,4 @@ export class PointActor extends View
 		return result;
 	}
 }
+

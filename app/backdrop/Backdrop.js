@@ -1,5 +1,7 @@
 import { View } from 'curvature/base/View';
 
+import { Png } from '../sprite/Png';
+
 const layers = [];
 
 export class Backdrop extends View
@@ -32,8 +34,11 @@ export class Backdrop extends View
 
 		let stacked = 0;
 
+
 		for(const i in strips)
 		{
+			const recolors = [];
+
 			const strip = strips[i];
 
 			yPositions.push(`calc(100% - calc(1px * ${stacked}))`);
@@ -55,7 +60,22 @@ export class Backdrop extends View
 			urls.push(strips[i].url);
 
 			stacked += (strips[i].height - 1);
+
+			if(strip.recolor)
+			{
+				const stripPng = new Png(strip.url);
+
+				for(const pallete of strip.recolor)
+				{
+					recolors.push(stripPng.ready.then(
+						() => stripPng.recolor(pallete).toDataUri()
+					));
+				}
+
+				Promise.all(recolors).then(frames => strip.frames = frames);
+			}
 		}
+
 
 		this.urls = urls;
 

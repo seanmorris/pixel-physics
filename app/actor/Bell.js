@@ -64,7 +64,7 @@ export class Bell extends Mixin.from(PointActor, Constrainable)
 			const ring = new Ring({x:this.x, y:this.y});
 
 			ring.dropped = true;
-			ring.delay   = 15;
+			ring.delay   = 5;
 
 			ring.args.static = false;
 			ring.args.ignore = 10;

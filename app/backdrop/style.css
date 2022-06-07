@@ -28,6 +28,7 @@
 	/*background-color: #323292;*/
 	background-color: #1e1659;
 	/*filter: blur(0.5px);*/
+	transform: translateZ(0px);
 }
 
 .backdrop.west-side-cloudy {
@@ -52,6 +53,7 @@
 
 
 .backdrop.angel-island .parallax {
+	filter: blur(0.0px);
 	background-color: #2424fc;
 }
 

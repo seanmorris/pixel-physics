@@ -12,6 +12,7 @@ import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
+import { FrictionRegion } from './region/FrictionRegion';
 import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
@@ -239,6 +240,7 @@ export const ObjectPalette = {
 	, 'dark-region':  DarkRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
+	, 'friction-region': FrictionRegion
 	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
 	, 'grinding-region': GrindingRegion
