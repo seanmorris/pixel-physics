@@ -447,9 +447,10 @@ export class Sonic extends PointActor
 		else if(!falling)
 		{
 			const maxSpeedNormal  = this.gSpeedMaxNormal / (this.isSuper ? 2 : 1);
+			const friction = this.getLocalFriction();
 			const direction = this.args.direction;
 			const gSpeed    = this.args.gSpeed;
-			const speed     = Math.abs(gSpeed);
+			const speed     = Math.abs(gSpeed) / friction ** 2;
 			const maxSpeed  = this.args.gSpeedMax;
 
 			this.dashed = false;
@@ -457,44 +458,64 @@ export class Sonic extends PointActor
 
 			this.args.height = this.args.normalHeight;
 
-			this.args.crouching = false;
-
 			if(this.spindashCharge)
 			{
 				this.args.animation = 'spindash';
 			}
 			else if(!this.args.rolling)
 			{
-				if(Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
+				this.args.crouching = false;
+
+				if(friction > 0.5 && Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
 				{
 					this.args.animation = 'skidding';
 				}
 				else if(this.args.moving && speed > maxSpeedNormal * 0.75)
 				{
-					if(this.isSuper && this.args.moving && speed > maxSpeedNormal * 1.85)
+					if(this.xAxis || friction >= 0.5)
 					{
-						this.args.animation = 'dash';
-					}
-					else if(this.args.moving && speed > maxSpeedNormal * 2.25)
-					{
-						this.args.animation = 'running-4';
-					}
-					else if(this.args.moving && speed > maxSpeedNormal * 1.75)
-					{
-						this.args.animation = 'running-3';
-					}
-					else if(this.args.moving && speed > maxSpeedNormal * 1.25)
-					{
-						this.args.animation = 'running-2';
+						if(this.isSuper && this.args.moving && speed > maxSpeedNormal * 1.85)
+						{
+							this.args.animation = 'dash';
+						}
+						else if(this.args.moving && speed > maxSpeedNormal * 2.25)
+						{
+							this.args.animation = 'running-4';
+						}
+						else if(this.args.moving && speed > maxSpeedNormal * 1.75)
+						{
+							this.args.animation = 'running-3';
+						}
+						else if(this.args.moving && speed > maxSpeedNormal * 1.25)
+						{
+							this.args.animation = 'running-2';
+						}
+						else
+						{
+							this.args.animation = 'running';
+						}
 					}
 					else
 					{
-						this.args.animation = 'running';
+						this.args.animation = 'sliding';
 					}
 				}
 				else if(this.args.moving && this.args.gSpeed)
 				{
-					this.args.animation = 'walking';
+					if(this.xAxis || friction > 0.5)
+					{
+						this.args.animation = 'walking';
+					}
+					else
+					{
+						this.args.animation = 'sliding';
+					}
+
+				}
+				else if(this.xAxis && friction === 0)
+				{
+					this.args.animation = 'running';
+					this.args.facing = this.xAxis === -1 ? 'left' : 'right';
 				}
 				else if(this.args.moving && this.args.gSpeed)
 				{
@@ -717,6 +738,11 @@ export class Sonic extends PointActor
 
 		super.update();
 
+		if(!this.yAxis && this.spindashCharge)
+		{
+			this.spindash();
+		}
+
 		if(this.args.falling && this.springing && this.args.ySpeed >= 0)
 		{
 			this.args.groundAngle = 0;
@@ -894,6 +920,16 @@ export class Sonic extends PointActor
 
 	command_0()
 	{
+		if(this.args.crouching && !this.args.rolling && this.yAxis)
+		{
+			this.spindashCharge += 10;
+
+			this.args.xOff = 5 * -this.args.direction;
+			this.args.yOff = 32;
+			this.twist(this.spindashCharge * this.args.direction);
+			return;
+		}
+
 		this.dropDashCharge = 0;
 
 		if(this.args.jumping && !this.dashed && !this.doubleSpin)
@@ -1098,6 +1134,14 @@ export class Sonic extends PointActor
 			return;
 		}
 
+		if(!this.yAxis)
+		{
+			this.args.crouching = false;
+		}
+	}
+
+	spindash()
+	{
 		if(this.spindashCharge < 5 && (this.args.modeTime < 45 || this.args.skidding))
 		{
 			this.spindashCharge = 15;
@@ -1145,6 +1189,8 @@ export class Sonic extends PointActor
 		// {
 		// 	return;
 		// }
+
+		this.yAxis = -1;
 
 		if(this.args.ignore || this.args.rolling)
 		{
@@ -1197,6 +1243,8 @@ export class Sonic extends PointActor
 			{
 				this.spindashCharge = 10;
 			}
+
+			this.args.crouching = true;
 
 			const viewport = this.viewport;
 

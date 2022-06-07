@@ -291,6 +291,7 @@ export class Platformer
 
 		if(host.viewport
 			&& host.args.respawning
+			&& !host.args.npc
 			&& !host.viewport.args.isRecording
 			&& !host.viewport.args.isReplaying
 		){
@@ -931,7 +932,7 @@ export class Platformer
 			}
 			else if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
 			{
-				host.args.falling = !this.checkBelow(host, ) || host.args.falling;
+				host.args.falling = !this.checkBelow(host) || host.args.falling;
 			}
 
 			if(host.noClip || (!host.isRegion && !host.isEffect && host.args.falling && host.viewport))
@@ -1139,7 +1140,7 @@ export class Platformer
 
 		const tileMap = host.viewport.tileMap;
 
-		if(Math.abs(host.args.gSpeed) < 2 && !host.args.falling)
+		if((host.args.pushing || Math.abs(host.args.gSpeed) < 2) && !host.args.falling)
 		{
 			let stayStuck = host.stayStuck;
 
@@ -1906,15 +1907,17 @@ export class Platformer
 			wasPaused || host.pause(false);
 
 			const pushFoward = host.xAxis && (Math.sign(host.xAxis) === Math.sign(host.args.gSpeed));
+			const friction   = host.getLocalFriction();
 
-			if(
-				host.args.mode === MODE_FLOOR
+			if(host.args.mode === MODE_FLOOR
 				|| host.args.mode === MODE_CEILING
 				|| (host.args.gSpeed < 0 && host.args.mode === MODE_LEFT)
 				|| (host.args.gSpeed > 0 && host.args.mode === MODE_RIGHT)
 			){
+
 				const pushBack = host.xAxis && (Math.sign(host.xAxis) !== Math.sign(host.args.gSpeed));
-				const decel    = host.args.decel * ((host.args.rolling && pushBack) ? 3 : 0.75);
+
+				const decel = friction * host.args.decel * ((host.args.rolling && pushBack) ? 3 : 0.75);
 
 				if(!host.args.climbing && host.args.gSpeed && (!pushFoward || host.args.rolling))
 				{
@@ -1927,6 +1930,11 @@ export class Platformer
 						else
 						{
 							host.args.gSpeed -= decel * 1/drag * 0.125 * Math.sign(host.args.gSpeed);
+						}
+
+						if(Math.abs(host.args.gSpeed) > 40)
+						{
+							host.args.gSpeed = 40 * direction;
 						}
 					}
 					else if(host.args.rolling)
@@ -2045,7 +2053,7 @@ export class Platformer
 					}
 					else if(slopeFactor > 0)
 					{
-						host.args.gSpeed *= 1.0015 * (1+(slopeFactor/2) * 0.045);
+						host.args.gSpeed *= 1.0015 * (1+(slopeFactor/2) * 0.045) / friction;
 					}
 					else
 					{
@@ -2058,7 +2066,7 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 4)
 						{
-							host.args.gSpeed += 0.80 * slopeFactor * direction;
+							host.args.gSpeed += 0.45 * slopeFactor * direction;
 						}
 
 						if(Math.abs(host.args.gSpeed) < 1)
@@ -2080,6 +2088,11 @@ export class Platformer
 								host.args.gSpeed = region.args.maxSpeed * Math.sign(host.args.gSpeed);
 							}
 						}
+
+						if(Math.abs(host.args.gSpeed) < 2 && Math.abs(Math.sign(host.args.gSpeed) - Math.sign(direction)) < 2)
+						{
+							host.args.gSpeed = 2 * direction;
+						}
 					}
 					else if(slopeFactor < 0)
 					{
@@ -2091,9 +2104,7 @@ export class Platformer
 						{
 							host.args.gSpeed += 0.45 * slopeFactor * direction;
 						}
-
 					}
-
 				}
 				else if(!host.stayStuck)
 				{
@@ -2101,7 +2112,12 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 2)
 						{
-							host.args.gSpeed += 0.65 * slopeFactor * direction;
+							host.args.gSpeed += slopeFactor * direction;
+
+							if(Math.abs(host.args.gSpeed) < 2 && Math.abs(Math.sign(host.args.gSpeed) - Math.sign(direction)) < 2)
+							{
+								host.args.gSpeed = 2 * direction;
+							}
 						}
 					}
 					else if(slopeFactor < 0)
@@ -2753,6 +2769,7 @@ export class Platformer
 				}
 				else if(!host.args.dead
 					&& host.args.startled < 175
+					&& host.args.ySpeed > 0
 					&& ( (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) )
 						|| ( (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
 					)

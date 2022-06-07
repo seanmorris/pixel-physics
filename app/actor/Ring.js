@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Spring } from './Spring';
 
 import { Sfx } from '../audio/Sfx';
 
@@ -13,6 +14,8 @@ export class Ring extends PointActor
 	constructor(...args)
 	{
 		super(...args);
+
+		this[Spring.WontSpring] = true;
 
 		this.args.type = 'actor-item actor-ring';
 
@@ -86,7 +89,7 @@ export class Ring extends PointActor
 			});
 		}
 
-		if(this.args.reward || this.dropped)
+		if(this.args.reward || this.dropped || this.attract)
 		{
 			super.update();
 		}
@@ -96,7 +99,12 @@ export class Ring extends PointActor
 			return;
 		}
 
-		if(this.getMapSolidAt(this.x + this.args.xSpeed * this.args.direction, this.y + -8))
+		if(!this.attract && this.getMapSolidAt(this.x, this.y + -this.args.height))
+		{
+			this.args.y += this.args.height + 1;
+			this.args.ySpeed = Math.abs(this.args.ySpeed) || 8;
+		}
+		else if(!this.attract && this.getMapSolidAt(this.x + this.args.xSpeed * this.args.direction, this.y + -8, false))
 		{
 			this.args.xSpeed *= -1;
 		}

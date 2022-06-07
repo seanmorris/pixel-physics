@@ -315,6 +315,23 @@ export class Png
 	{
 		return URL.createObjectURL(this.toBlob());
 	}
+
+	toDataUri()
+	{
+		if(this.getDataUri)
+		{
+			return this.getDataUri;
+		}
+
+		const reader = new FileReader();
+		reader.readAsDataURL(this.toBlob());
+
+		this.getDataUri = new Promise(accept => reader.addEventListener(
+			'load', event => accept(event.target.result)
+		));
+
+		return this.getDataUri;
+	}
 }
 
 Png.Pixel = Pixel;

@@ -89,6 +89,7 @@ export class PauseMenu extends Menu
 						this.args.items.back.callback();
 						parent.unpauseGame();
 						parent.quit();
+						parent.playCards();
 					}}
 				}
 			}

@@ -4,6 +4,15 @@ import { CharacterString } from '../ui/CharacterString';
 import { Bgm } from '../audio/Bgm';
 
 import { MarbleGarden as Backdrop } from '../backdrop/MarbleGarden';
+// import { AngelIsland as Backdrop } from '../backdrop/AngelIsland';
+// import { Industrial as Backdrop } from '../backdrop/Industrial';
+// import { Moon as Backdrop } from '../backdrop/Moon';
+// import { SouthRidge as Backdrop } from '../backdrop/SouthRidge';
+// import { Underground as Backdrop } from '../backdrop/Underground';
+// import { ProtoLabrynth as Backdrop } from '../backdrop/ProtoLabrynth';
+// import { MysticCave as Backdrop } from '../backdrop/MysticCave';
+// import { WestSide as Backdrop } from '../backdrop/WestSide';
+// import { WestSideCloudy as Backdrop } from '../backdrop/WestSideCloudy';
 
 import { Keyboard } from 'curvature/input/Keyboard';
 

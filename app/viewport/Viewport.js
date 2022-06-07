@@ -1111,6 +1111,7 @@ export class Viewport extends View
 	showStatus(timeout, text)
 	{
 		this.args.status.args.hide  = '';
+		this.args.status.args.value = '';
 		this.args.status.args.value = text;
 
 		if(timeout >= 0)
@@ -1303,6 +1304,8 @@ export class Viewport extends View
 
 		if(this.meta.bgm)
 		{
+			Bgm.stop('MENU_THEME');
+
 			if(Bgm.playing && this.meta.bgm !== this.bgm)
 			{
 				Bgm.stop();
@@ -1925,7 +1928,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.40;
 
-				cameraSpeed = 18;
+				cameraSpeed = 24;
 
 				break;
 
@@ -2060,6 +2063,11 @@ export class Viewport extends View
 		}
 
 		this.args.yOffsetTarget += actor.args.cameraBias - ySpeedBias;
+
+		if(actor.args.mode === 0 && Math.abs(actor.args.groundAngle - -Math.PI / 4) < 0.001)
+		{
+			this.args.yOffsetTarget -= 0.25;
+		}
 
 		if(cameraSpeed)
 		{
@@ -2531,7 +2539,7 @@ export class Viewport extends View
 
 		for(const actor of this.actors.list)
 		{
-			if(!actor)
+			if(!actor || actor.args.npc)
 			{
 				continue;
 			}
@@ -3889,8 +3897,6 @@ export class Viewport extends View
 
 		Keyboard.get().reset();
 
-		this.args.titlecard.play();
-
 		this.controller.zero();
 	}
 
@@ -3922,6 +3928,11 @@ export class Viewport extends View
 			new ThankYouCard({timeout: 5000}, this)
 			, ...this.homeCards()
 		];
+	}
+
+	playCards()
+	{
+		this.args.titlecard.play();
 	}
 
 	record()

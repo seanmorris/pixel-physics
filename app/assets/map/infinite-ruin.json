@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"infinite-rail.json"
+        }
+    },
  "height":32,
  "infinite":false,
  "layers":[
@@ -4958,8 +4966,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":365,
+ "nextlayerid":7,
+ "nextobjectid":369,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -20,8 +20,8 @@ export class Spinner extends PointActor
 	update()
 	{
 		this.args.gSpeed = 0;
-
 		super.update();
+		this.args.gSpeed = 0;
 	}
 
 	collideB(other)

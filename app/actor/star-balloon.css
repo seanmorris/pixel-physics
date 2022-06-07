@@ -1,5 +1,5 @@
 .actor-item.actor-balloon.actor-star-balloon {
-	z-index: 1;
+	z-index: 100000;
 }
 
 .actor-item.actor-balloon.actor-star-balloon .sprite {

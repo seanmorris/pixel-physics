@@ -464,10 +464,8 @@ export class MainMenu extends Menu
 		this.refreshConnection();
 	}
 
-	onRendered()
+	onRendered(event)
 	{
-		Bgm.play('MENU_THEME', true);
-
 		super.onRendered(event);
 
 		this.args.twist = new Twist({
@@ -617,6 +615,8 @@ export class MainMenu extends Menu
 	play()
 	{
 		super.play();
+
+		Bgm.play('MENU_THEME', true);
 
 		const done = this.done;
 

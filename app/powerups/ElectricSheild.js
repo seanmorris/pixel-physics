@@ -9,7 +9,7 @@ export class ElectricSheild extends Sheild
 	type = 'electric';
 	jumps = 3;
 	attract = new Set;
-	magnetism = 0;
+	magnetism = 0.25;
 	magnetTimeout = false;
 
 	acquire(host)
@@ -81,7 +81,7 @@ export class ElectricSheild extends Sheild
 			host.impulse(10, -Math.PI / 2);
 			this.jumps--;
 
-			this.args.boosted = 'boosted';
+			// this.args.boosted = 'boosted';
 
 			this.onTimeout(250, () => this.args.boosted = '');
 
@@ -116,16 +116,28 @@ export class ElectricSheild extends Sheild
 		// }
 	}
 
-	hold_6(host, button)
+	// hold_6(host, button)
+	// {
+	// 	const pressure = button.pressure;
+
+	// 	this.magnetize(host,pressure);
+	// }
+
+	magnetize(host, pressure)
 	{
+		if(!host.controllable)
+		{
+			return;
+		}
+
 		host.args.xOff  = 0;
 		host.args.yOff  = 32;
 
-		this.args.boosted = 'boosted';
+		// this.args.boosted = 'boosted';
 
-		this.magnetism = Math.max(0, button.pressure - 0.25);
+		this.magnetism = Math.max(0.25, pressure);
 
-		host.pinch(260 * this.magnetism, 0);
+		// host.pinch(260 * this.magnetism, 0);
 
 		const Ring = host.viewport.objectPalette.ring;
 
@@ -154,7 +166,7 @@ export class ElectricSheild extends Sheild
 			return true;
 		};
 
-		const ring = host.findNearestActor(findRing, this.magnetism * 386);
+		const ring = host.findNearestActor(findRing, 256);
 
 		if(ring)
 		{
@@ -166,6 +178,8 @@ export class ElectricSheild extends Sheild
 
 	update(host)
 	{
+		this.magnetize(host, 2.5);
+
 		if(!host.args.falling && !this.magnetTimeout)
 		{
 			this.magnetTimeout = this.onTimeout(100, () => {

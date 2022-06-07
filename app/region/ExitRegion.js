@@ -40,6 +40,8 @@ export class ExitRegion extends Region
 			else
 			{
 				viewport.quit();
+
+				viewport.playCards();
 			}
 		});
 	}
