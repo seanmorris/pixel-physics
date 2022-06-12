@@ -164,7 +164,7 @@ export class WaterRegion extends Region
 			return;
 		}
 
-		if(other.y - other.args.height < this.y - this.args.height)
+		if(other.args.y - other.args.height < this.args.y - this.args.height)
 		{
 			return;
 		}
@@ -177,8 +177,8 @@ export class WaterRegion extends Region
 
 			const attach = other.rotatePoint(...other.facePoint);
 
-			const x = other.x + attach[0];
-			const y = other.y + attach[1];
+			const x = other.args.x + attach[0];
+			const y = other.args.y + attach[1];
 
 			bubble.style({'--startY': y, '--size': Math.random()});
 
@@ -186,15 +186,15 @@ export class WaterRegion extends Region
 
 				const point = other.facePoint;
 
-				const x = other.x + point[0];
-				const y = other.y + point[1];
+				const x = other.args.x + point[0];
+				const y = other.args.y + point[1];
 
-				if(other.y < this.y - this.args.height)
+				if(other.args.y < this.args.y - this.args.height)
 				{
 					bubble.style({display: 'none'});
 				}
 
-				if(y < this.y - this.args.height)
+				if(y < this.args.y - this.args.height)
 				{
 					bubble.style({display: 'none'});
 				}
@@ -203,7 +203,7 @@ export class WaterRegion extends Region
 			});
 
 			const stopWatchingBubble = this.onFrame(() => {
-				bubble.style({'--maxY': this.y - this.args.height});
+				bubble.style({'--maxY': this.args.y - this.args.height});
 			});
 
 			viewport.particles.add(bubble);
@@ -221,7 +221,6 @@ export class WaterRegion extends Region
 				viewport.particles.remove(bubble);
 				stopWatchingBubble();
 			}, 1500);
-
 		}
 	}
 

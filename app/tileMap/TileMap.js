@@ -567,6 +567,19 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const solidLayerCount = this.collisionLayers.length;
 
+		if(1||layerInput <= 3)
+		{
+			if(tileNumber === 0)
+			{
+				return false;
+			}
+
+			if(tileNumber === 1)
+			{
+				return this.tileLayers[layerInput];
+			}
+		}
+
 		if(layerInput > 0  && layerInput < solidLayerCount)
 		{
 			if(this.getSolid(xInput, yInput, 0))
@@ -605,19 +618,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				{
 					return this.tileLayers[i];
 				}
-			}
-		}
-
-		if(1||layerInput <= 3)
-		{
-			if(tileNumber === 0)
-			{
-				return false;
-			}
-
-			if(tileNumber === 1)
-			{
-				return this.tileLayers[layerInput];
 			}
 		}
 

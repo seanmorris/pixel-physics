@@ -32,6 +32,12 @@
 	contain:  size style;
 }
 
+.point-actor .sprite
+.point-actor .sprite:after,
+.point-actor .sprite:before {
+	pointer-events: none;
+}
+
 [data-paused="0"] .point-actor .sprite:after,
 [data-paused="-1"] .point-actor .sprite:after {
 	animation-play-state: paused !important;
@@ -125,6 +131,7 @@
 
 .filters-background > .point-actor-filter {
 	backdrop-filter: blur(0px);
+	pointer-events: none;
 	filter: var(--bgFilter);
 }
 

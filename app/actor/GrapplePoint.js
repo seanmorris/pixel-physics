@@ -117,7 +117,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return false;
 		}
 
-		if(Math.abs(other.y - this.y) > 8 || !other.controllable || this.hooked)
+		if(Math.abs(other.args.y - this.args.y) > 8 || !other.controllable || this.hooked)
 		{
 			return;
 		}
@@ -130,7 +130,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.viewport.auras.add(this);
 
-		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed ;
+		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
 		this.args.ySpeed = other.args.ySpeed;
 
 		other.args.xSpeed = 0;
@@ -140,11 +140,11 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		other.args.ignore = -4;
 		other.args.float =  -1;
 
-		other.xLast = other.x;
-		other.yLast = other.y;
+		other.xLast = other.args.x;
+		other.yLast = other.args.y;
 
-		other.args.x = this.x;
-		other.args.y = this.y + other.args.height;
+		other.args.x = this.args.x;
+		other.args.y = this.args.y + other.args.height;
 
 		other.args.hangingFrom = this;
 		other.args.jumping = false;

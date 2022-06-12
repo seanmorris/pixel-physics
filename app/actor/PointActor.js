@@ -574,7 +574,7 @@ export class PointActor extends View
 			}
 			else if(!groundObject.isVehicle)
 			{
-				if(this.y <= this.args.height + groundObject.y - groundObject.args.height)
+				if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
 				{
 					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 						this.args.x += vv + -groundObject.args.x
@@ -3670,11 +3670,11 @@ export class PointActor extends View
 			{
 				this.args.cameraMode = 'tube';
 			}
-			else if(!this.args.falling || this.getMapSolidAt(this.x, this.y + 24))
+			else if(!this.args.falling || this.getMapSolidAt(this.args.x, this.args.y + 24))
 			{
-				const forwardSolid = this.getMapSolidAt(this.x + 32 * this.args.direction, this.y + 24);
-				const forwardDeepSolid = this.getMapSolidAt(this.x + 32 * this.args.direction, this.y + 96);
-				const underSolid   = this.getMapSolidAt(this.x + 0  * this.args.direction, this.y + 48);
+				const forwardSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 24);
+				const forwardDeepSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 96);
+				const underSolid   = this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 48);
 
 				if(this.args.mode === MODE_FLOOR && this.args.groundAngle === 0)
 				{
@@ -3705,7 +3705,7 @@ export class PointActor extends View
 			}
 			else
 			{
-				if(this.getMapSolidAt(this.x + 0  * this.args.direction, this.y + 64))
+				if(this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 64))
 				{
 					this.args.cameraMode = 'normal';
 				}
@@ -3723,7 +3723,7 @@ export class PointActor extends View
 
 					if(this.args.falling
 						&& Math.abs(this.args.xSpeed > 25)
-						&& !this.getMapSolidAt(this.x, this.y + 480)
+						&& !this.getMapSolidAt(this.args.x, this.args.y + 480)
 					){
 						this.args.cameraMode = 'airplane'
 					}
@@ -3761,25 +3761,25 @@ export class PointActor extends View
 
 		let type;
 
-		if(other.y <= this.y - this.args.height)
+		if(other.args.y <= this.args.y - this.args.height)
 		{
 			this.args.collType = 'collision-top';
 
 			type = 0;
 		}
-		else if(other.x < this.x - Math.floor(this.args.width/2))
+		else if(other.args.x < this.args.x - Math.floor(this.args.width/2))
 		{
 			this.args.collType = 'collision-left';
 
 			type = 1;
 		}
-		else if(other.x >= this.x + Math.floor(this.args.width/2))
+		else if(other.args.x >= this.args.x + Math.floor(this.args.width/2))
 		{
 			this.args.collType = 'collision-right';
 
 			type = 3;
 		}
-		else if(other.y >= this.y)
+		else if(other.args.y >= this.args.y)
 		{
 			this.args.collType = 'collision-bottom';
 
@@ -4577,44 +4577,83 @@ export class PointActor extends View
 			return;
 		}
 
-		const cells = viewport.getNearbyColCells(this);
+		const cells = viewport.getNearbyColCells(this.args.x, this.args.y);
 
-		const actors = new Map;
+		let closest = null;
+		let minDist = Infinity;
 
-		cells.map(s => s.forEach(a =>{
-
-			if(a === this)
+		for(const cell of cells)
+		{
+			for(const actor of cell)
 			{
-				return;
+				if(actor === this)
+				{
+					continue;
+				}
+
+				if(actor.args.gone)
+				{
+					continue;
+				}
+
+				if(!selector(actor))
+				{
+					continue;
+				}
+
+				const distance = this.distanceFrom(actor);
+
+				if(Math.abs(distance) > maxDistance)
+				{
+					continue;
+				}
+
+				if(distance < minDist)
+				{
+					closest = actor;
+					minDist = distance;
+				}
 			}
-
-			if(a.args.gone)
-			{
-				return;
-			}
-
-			if(!selector(a))
-			{
-				return;
-			}
-
-			const distance = this.distanceFrom(a);
-			const angle    = Math.atan2(a.y - this.y, a.x - this.x);
-
-			if(Math.abs(distance) > maxDistance)
-			{
-				return;
-			}
-
-			actors.set(distance, a);
-		}));
-
-		const distances = [...actors.keys()];
-		const shortest  = Math.min(...distances);
-
-		const closest = actors.get(shortest);
+		}
 
 		return closest;
+
+		// const actors = new Map;
+
+		// cells.map(s => s.forEach(a =>{
+
+		// 	if(a === this)
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	if(a.args.gone)
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	if(!selector(a))
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	const distance = this.distanceFrom(a);
+		// 	const angle    = Math.atan2(a.y - this.y, a.args.x - this.args.x);
+
+		// 	if(Math.abs(distance) > maxDistance)
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	actors.set(distance, a);
+		// }));
+
+		// const distances = [...actors.keys()];
+		// const shortest  = Math.min(...distances);
+
+		// const closest = actors.get(shortest);
+
+		// return closest;
 	}
 
 	immune(other, type = 'normal')
@@ -4763,7 +4802,7 @@ export class PointActor extends View
 
 		if(x.args.platform || x.isVehicle)
 		{
-			if(this.y <= x.y + -x.args.height && this.args.ySpeed >= 0)
+			if(this.args.y <= x.args.y + -x.args.height && this.args.ySpeed >= 0)
 			{
 				return true;
 			}
@@ -5030,19 +5069,19 @@ export class PointActor extends View
 		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
-				return [this.x + 0, this.y + 1];
+				return [this.args.x + 0, this.args.y + 1];
 				break;
 
 			case MODE_RIGHT:
-				return [this.x + 1, this.y + 0];
+				return [this.args.x + 1, this.args.y + 0];
 				break;
 
 			case MODE_CEILING:
-				return [this.x + 0, this.y - 1];
+				return [this.args.x + 0, this.args.y - 1];
 				break;
 
 			case MODE_LEFT:
-				return [this.x - 1, this.y + 0];
+				return [this.args.x - 1, this.args.y + 0];
 				break;
 		}
 	}
@@ -5073,7 +5112,7 @@ export class PointActor extends View
 
 		if(x.args.platform || x.isVehicle)
 		{
-			if(this.y <= x.y + -x.args.height && this.args.ySpeed >= 0)
+			if(this.args.y <= x.args.y + -x.args.height && this.args.ySpeed >= 0)
 			{
 				return true;
 			}
@@ -5458,8 +5497,8 @@ export class PointActor extends View
 				if(splash.node)
 				{
 					splash.style({
-						'--x': this.x + this.args.xSpeed,
-						'--y': region.y + -region.args.height + -8
+						'--x': this.args.x + this.args.xSpeed,
+						'--y': region.args.y + -region.args.height + -8
 						, 'z-index': 5, opacity: Math.random
 						, '--particleScale': this.args.particleScale
 						, '--time': 320
