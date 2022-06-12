@@ -162,8 +162,8 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.x = this.x + Math.cos(rounded) * 16;
-		other.args.y = this.y + Math.sin(rounded) * 16;
+		other.args.x = this.args.x + Math.cos(rounded) * 16;
+		other.args.y = this.args.y + Math.sin(rounded) * 16;
 
 		other.args.jumping = false;
 		other.args.ignore = other.args.falling ? 4 : 12;

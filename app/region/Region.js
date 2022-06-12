@@ -71,8 +71,8 @@ export class Region extends PointActor
 
 		super.update();
 
-		const topBoundry  = -this.viewport.args.y - (this.y - this.args.height);
-		const leftBoundry = -this.viewport.args.x - this.x;
+		const topBoundry  = -this.viewport.args.y - (this.args.y - this.args.height);
+		const leftBoundry = -this.viewport.args.x - this.args.x;
 
 		this.mainElem && this.mainElem.style({
 			'--viewportWidth':    this.viewport.args.width  + 'px'

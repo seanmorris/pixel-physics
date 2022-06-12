@@ -196,8 +196,8 @@ export class Platformer
 			host.args.pushing = false;
 		}
 
-		const startX = host.x;
-		const startY = host.y;
+		const startX = host.args.x;
+		const startY = host.args.y;
 
 		if(host.noClip && !host.controllable)
 		{
@@ -403,7 +403,7 @@ export class Platformer
 			const headPoint = host.rotatePoint(0, height * 0.75);
 			// const headPoint = host.rotatePoint(radius * -direction, host.args.height * 0.75);
 
-			let jumpBlock = host.getMapSolidAt(host.x + headPoint[0], host.y + headPoint[1]);
+			let jumpBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
 
 			if(Array.isArray(jumpBlock))
 			{
@@ -416,8 +416,8 @@ export class Platformer
 				// const headPoint = host.rotatePoint(radius * -direction, host.args.height * 0.75);
 
 				let rollJumpBlock = host.getMapSolidAt(
-					host.x + rollTopPoint[0]
-					, host.y + rollTopPoint[1]
+					host.args.x + rollTopPoint[0]
+					, host.args.y + rollTopPoint[1]
 				);
 
 				if(Array.isArray(rollJumpBlock))
@@ -432,7 +432,7 @@ export class Platformer
 
 			if(!host.args.hangingFrom
 				&& !host.args.falling
-				&& this.checkBelow(host, host.x, host.y) && jumpBlock
+				&& this.checkBelow(host, host.args.x, host.args.y) && jumpBlock
 			){
 				host.die();
 				return;
@@ -646,7 +646,7 @@ export class Platformer
 
 		if(host.args.ignore === -3 && (!host.args.falling || host.args.ySpeed >= -10))
 		{
-			host.onNextFrame(() => host.args.ignore = 0);
+			host.viewport.onFrameOut(1, () => host.args.ignore = 0);
 		}
 
 		if(host.args.ignore < 1 && host.args.ignore > 0)
@@ -687,11 +687,11 @@ export class Platformer
 				host.args.landed = false;
 				host.lastAngles.splice(0);
 
-				if(host.args.jumping && host.args.jumpedAt < host.y)
+				if(host.args.jumping && host.args.jumpedAt < host.args.y)
 				{
 					host.args.deepJump = true;
 				}
-				else if(host.args.jumping && host.args.jumpedAt > host.y + 160)
+				else if(host.args.jumping && host.args.jumpedAt > host.args.y + 160)
 				{
 					host.args.highJump = true;
 				}
@@ -726,7 +726,7 @@ export class Platformer
 
 		if(!host.noClip)
 		{
-			regions = host.viewport.regionsAtPoint(host.x, host.y);
+			regions = host.viewport.regionsAtPoint(host.args.x, host.args.y);
 
 			for(const region of host.regions)
 			{
@@ -832,7 +832,7 @@ export class Platformer
 
 			const headPoint = host.rotatePoint(0, height + 1);
 
-			let jumpBlock = host.getMapSolidAt(host.x + headPoint[0], host.y + headPoint[1]);
+			let jumpBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
 
 			if(Array.isArray(jumpBlock))
 			{
@@ -884,8 +884,8 @@ export class Platformer
 				{
 					if(host.broad || (
 						!host.args.falling
-						&& (host.y === region.y - region.args.height
-							|| host.y + 1 === region.y - region.args.height
+						&& (host.args.y === region.args.y - region.args.height
+							|| host.args.y + 1 === region.args.y - region.args.height
 						)
 					)){
 						if(Math.max(Math.abs(host.args.gSpeed), Math.abs(host.args.xSpeed)) >= region.skimSpeed)
@@ -1207,7 +1207,7 @@ export class Platformer
 					host.args.groundAngle = Math.PI;
 					host.args.mode = MODE_FLOOR;
 
-					host.onNextFrame(() => {
+					host.viewport.onFrameOut(1, () => {
 						host.args.mode = MODE_FLOOR;
 
 						host.willJump = false
@@ -1307,7 +1307,7 @@ export class Platformer
 				{
 					for(const groundActor of groundActors)
 					{
-						if(!groundActor.isVehicle && host.y > 1 + groundActor.y + -groundActor.args.height)
+						if(!groundActor.isVehicle && host.args.y > 1 + groundActor.args.y + -groundActor.args.height)
 						{
 							continue;
 						}
@@ -1509,7 +1509,7 @@ export class Platformer
 								, host.args.height
 							);
 
-							let headBlock = host.getMapSolidAt(host.x + headPoint[0], host.y + headPoint[1]);
+							let headBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
 
 							if(Array.isArray(headBlock))
 							{
@@ -1541,7 +1541,7 @@ export class Platformer
 						{
 							const waistPoint = host.rotatePoint(radius * -direction, host.args.height * 0.5);
 
-							let waistBlock = host.getMapSolidAt(host.x + waistPoint[0], host.y + waistPoint[1])
+							let waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
 
 							if(Array.isArray(waistBlock))
 							{
@@ -1631,7 +1631,7 @@ export class Platformer
 
 								let falling = !!host.args.gSpeed;
 
-								if(this.checkBelow(host, host.x, host.y))
+								if(this.checkBelow(host, host.args.x, host.args.y))
 								{
 									host.args.gSpeed = gSpeed;
 									host.args.xSpeed = 0;
@@ -1892,13 +1892,13 @@ export class Platformer
 			if(!host.static && host.args.mode === MODE_FLOOR)
 			{
 				while((host.args.gSpeed <= 0 || host.args.modeTime < 3)
-					 && host.getMapSolidAt(host.x - radius, host.y - hRadius, false)
+					 && host.getMapSolidAt(host.args.x - radius, host.args.y - hRadius, false)
 				){
 					host.args.x++;
 				}
 
 				while((host.args.gSpeed >= 0 || host.args.modeTime < 3)
-					&& host.getMapSolidAt(host.x + radius, host.y - hRadius, false)
+					&& host.getMapSolidAt(host.args.x + radius, host.args.y - hRadius, false)
 				){
 					host.args.x--;
 				}
@@ -2053,7 +2053,7 @@ export class Platformer
 					}
 					else if(slopeFactor > 0)
 					{
-						host.args.gSpeed *= 1.0015 * (1+(slopeFactor/2) * 0.045) / friction;
+						host.args.gSpeed *= 1.0015 * (1+(slopeFactor/2) * 0.045);
 					}
 					else
 					{
@@ -2074,7 +2074,7 @@ export class Platformer
 							host.args.gSpeed = (1 + slopeFactor**2) * Math.sign(host.args.gSpeed);
 						}
 
-						const regions = host.viewport.regionsAtPoint(host.x, host.y);
+						const regions = host.viewport.regionsAtPoint(host.args.x, host.args.y);
 
 						for(const region of regions)
 						{
@@ -2126,6 +2126,15 @@ export class Platformer
 						{
 							host.args.gSpeed += 0.30 * slopeFactor * direction;
 						}
+					}
+					else if(slopeFactor > 0 && friction < 0.75)
+					{
+						if(Math.abs(host.args.gSpeed) < 1)
+						{
+							host.args.gSpeed = direction;
+						}
+
+						host.args.gSpeed += direction * slopeFactor;
 					}
 
 					// let speedFactor = 1;
@@ -2425,7 +2434,7 @@ export class Platformer
 		}
 
 		const willStick = host.willStick || host.args.deepJump;
-		const xMove = host.xLast - host.x;
+		const xMove = host.xLast - host.args.x;
 
 		if(upDistanceL
 			&& upDistanceR
@@ -2488,8 +2497,8 @@ export class Platformer
 			});
 		}
 
-		Object.assign(host.lastPointA, [host.x, host.y].map(Math.trunc));
-		Object.assign(host.lastPointB, [host.x, host.y].map(Math.trunc));
+		Object.assign(host.lastPointA, [host.args.x, host.args.y].map(Math.trunc));
+		Object.assign(host.lastPointB, [host.args.x, host.args.y].map(Math.trunc));
 
 		const scanDist = 1 + Math.ceil(airSpeed);
 
@@ -2555,24 +2564,24 @@ export class Platformer
 			const stickX = airPoint[0];
 			const stickY = airPoint[1];
 
-			let away = false;
+			// let away = false;
 
-			if(!host.args.ySpeed || Math.sign(stickY - host.y) === Math.sign(host.args.ySpeed))
-			{
-				// host.args.xSpeed = 0;
-				// host.args.ySpeed = 0;
+			// if(!host.args.ySpeed || Math.sign(stickY - host.args.y) === Math.sign(host.args.ySpeed))
+			// {
+			// 	// host.args.xSpeed = 0;
+			// 	// host.args.ySpeed = 0;
 
-				// if(host.args.flying && !angleIsWall && collisionAngle)
-				// {
-				// 	host.args.mode = MODE_CEILING;
-				// 	host.args.xSpeed *= -1;
-				// }
-			}
-			else
-			{
-				// host.args.y++;
-				away = true;
-			}
+			// 	// if(host.args.flying && !angleIsWall && collisionAngle)
+			// 	// {
+			// 	// 	host.args.mode = MODE_CEILING;
+			// 	// 	host.args.xSpeed *= -1;
+			// 	// }
+			// }
+			// else
+			// {
+			// 	// host.args.y++;
+			// 	away = true;
+			// }
 
 			// if(!host.viewport.tileMap.getSolid(stickX, stickY))
 			// {
@@ -2580,7 +2589,7 @@ export class Platformer
 			host.args.x = stickX;
 			host.args.y = stickY;
 
-			blockers = host.getMapSolidAt(host.x + direction, host.y);
+			blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
 
 			if(Array.isArray(blockers))
 			{
@@ -2611,8 +2620,8 @@ export class Platformer
 					host.args.facing = 'left';
 				}
 				else if((host.willStick || (!isLeft && !isRight))
-					&& !host.getMapSolidAt(host.x - direction, host.y)
-					&& !host.getMapSolidAt(host.x - direction, host.y + 1)
+					&& !host.getMapSolidAt(host.args.x - direction, host.args.y)
+					&& !host.getMapSolidAt(host.args.x - direction, host.args.y + 1)
 				){
 					if(isLeft)
 					{
@@ -2841,7 +2850,7 @@ export class Platformer
 			}
 		}
 
-		if(!tileMap.getSolid(host.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.y, host.args.layer))
+		if(!tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.args.layer))
 		{
 			if(Math.abs(host.args.xSpeed) > host.args.xSpeedMax)
 			{
@@ -2859,12 +2868,12 @@ export class Platformer
 			if(host.args.xSpeed)
 			{
 				const edgeTest = host.willStick ? false : host.getMapSolidAt(
-					host.x + (1+radius) * Math.sign(host.args.xSpeed)
-					, host.y - host.args.height / 2
+					host.args.x + (1+radius) * Math.sign(host.args.xSpeed)
+					, host.args.y - host.args.height / 2
 				);
 
 				const topTest = host.getMapSolidAt(
-					host.x, host.y - 24
+					host.args.x, host.args.y - 24
 				);
 
 				if(!edgeTest)
@@ -2875,7 +2884,7 @@ export class Platformer
 				if(topTest)
 				{
 					// host.args.ySpeed += topTest.yOffsetChanged;
-					host.args.y      += host.args.height;
+					host.args.y += host.args.height;
 				}
 			}
 
@@ -2901,9 +2910,9 @@ export class Platformer
 
 		if(host.args.standingOn instanceof PointActor)
 		{
-			const groundTop = host.args.standingOn.y + -host.args.standingOn.args.height + -1;
+			const groundTop = host.args.standingOn.args.y + -host.args.standingOn.args.height + -1;
 
-			if(host.y < groundTop || host.args.ySpeed < 0)
+			if(host.args.y < groundTop || host.args.ySpeed < 0)
 			{
 				host.args.standingOn = null;
 			}
@@ -2918,7 +2927,7 @@ export class Platformer
 
 			host.dropDashCharge = 0;
 
-			host.onNextFrame(()=>{
+			host.viewport.onFrameOut(1, ()=>{
 				host.args.gSpeed += dropBoost
 				host.args.rolling = true;
 			});
@@ -2930,8 +2939,8 @@ export class Platformer
 			const dustPoint = host.rotatePoint(host.args.gSpeed, 0);
 
 			dustParticle.style({
-				'--x': dustPoint[0] + host.x
-				, '--y': dustPoint[1] + host.y
+				'--x': dustPoint[0] + host.args.x
+				, '--y': dustPoint[1] + host.args.y
 				, 'z-index': 0
 				, opacity: Math.random() * 2
 			});
@@ -2961,7 +2970,7 @@ export class Platformer
 			for(const region of regions)
 			{
 				if(actor.args.mode === MODE_FLOOR
-					&& -1 + point[1] === region.y + -region.args.height
+					&& -1 + point[1] === region.args.y + -region.args.height
 					&& Math.abs(actor.args.gSpeed) >= region.skimSpeed
 				){
 					return -1 + i;
@@ -2975,11 +2984,7 @@ export class Platformer
 		}
 
 		const actors = viewport.actorsAtPoint(point[0], point[1])
-		.filter(a =>
-			a.args !== actor.args
-			&& a.callCollideHandler(actor)
-			&& a.solid
-		);
+		.filter(a => a.args !== actor.args && a.callCollideHandler(actor) && a.solid);
 
 		if(actors.length > 0)
 		{
@@ -3004,7 +3009,7 @@ export class Platformer
 			for(const region of regions)
 			{
 				if(actor.args.mode !== MODE_FLOOR
-					|| point[1] !== 1 + region.y + -region.args.height
+					|| point[1] !== 1 + region.args.y + -region.args.height
 					|| Math.abs(actor.args.gSpeed) <= region.skimSpeed
 				){
 					const actors = viewport.actorsAtPoint(point[0], point[1])
@@ -3336,12 +3341,12 @@ export class Platformer
 		host.args.xSpeed += xJump;
 		host.args.ySpeed += yJump;
 
-		host.args.jumpedAt = host.y;
+		host.args.jumpedAt = host.args.y;
 		host.args.jumping  = true;
 
 		const tileMap = host.viewport.tileMap;
 
-		if(tileMap.getSolid(host.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.y, host.args.layer))
+		if(tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.args.layer))
 		{
 			// if(tileMap.getSolid(host.x + (1 + host.args.width / 2) * Math.sign(host.args.xSpeed), host.y, host.args.layer))
 			// {
@@ -3449,8 +3454,8 @@ export class Platformer
 
 	checkBelow(host, testX = null, testY = null)
 	{
-		testX = testX ?? host.x;
-		testY = testY ?? host.y;
+		testX = testX ?? host.args.x;
+		testY = testY ?? host.args.y;
 
 		const lPoint = [];
 		const rPoint = [];

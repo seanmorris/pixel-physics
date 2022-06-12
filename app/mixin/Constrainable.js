@@ -63,11 +63,11 @@ export const Constrainable = {
 
 		this.args.falling = true;
 
-		const xTarget = tiedTo.x;
-		const yTarget = tiedTo.y;
+		const xTarget = tiedTo.args.x;
+		const yTarget = tiedTo.args.y;
 
-		const xDist = xTarget - this.x;
-		const yDist = yTarget - this.y;
+		const xDist = xTarget - this.args.x;
+		const yDist = yTarget - this.args.y;
 
 		const angle = Math.atan2(yDist, xDist);
 		const dist  = Math.sqrt(yDist**2 + xDist**2);
@@ -103,7 +103,7 @@ export const Constrainable = {
 				this.viewport.setColCell(this);
 			}
 
-			if(this.x === xTarget && !tiedTo.args.xSpeed)
+			if(this.args.x === xTarget && !tiedTo.args.xSpeed)
 			{
 				this.args.ySpeed = 0;
 			}

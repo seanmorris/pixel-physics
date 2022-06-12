@@ -99,12 +99,12 @@ export class Ring extends PointActor
 			return;
 		}
 
-		if(!this.attract && this.getMapSolidAt(this.x, this.y + -this.args.height))
+		if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x, this.args.y + -this.args.height))
 		{
 			this.args.y += this.args.height + 1;
 			this.args.ySpeed = Math.abs(this.args.ySpeed) || 8;
 		}
-		else if(!this.attract && this.getMapSolidAt(this.x + this.args.xSpeed * this.args.direction, this.y + -8, false))
+		else if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x + this.args.xSpeed * this.args.direction, this.args.y + -8, false))
 		{
 			this.args.xSpeed *= -1;
 		}
@@ -167,7 +167,6 @@ export class Ring extends PointActor
 			other = other.occupant;
 		}
 
-
 		if(other.controllable)
 		{
 			other.args.rings += 1;
@@ -196,8 +195,8 @@ export class Ring extends PointActor
 			this.args.type = 'actor-item actor-ring collected gone'
 		});
 
-		const x = this.x;
-		const y = this.y;
+		const x = this.args.x;
+		const y = this.args.y;
 
 		const viewport = this.viewport;
 
@@ -216,7 +215,7 @@ export class Ring extends PointActor
 				});
 			}
 
-			this.onNextFrame(()=> {
+			this.viewport.onFrameOut(1, () => {
 				other.collect(this);
 			});
 		}

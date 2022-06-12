@@ -106,7 +106,7 @@ export const CanPop = {
 		explosionTag.classList.add('particle-explosion');
 		const explosion = new Tag(explosionTag);
 
-		explosion.style({'--x': this.x, '--y': this.y-16});
+		explosion.style({'--x': this.args.x, '--y': this.args.y-16});
 
 		viewport.particles.add(explosion);
 
@@ -122,7 +122,7 @@ export const CanPop = {
 			other.args.xSpeed = 0;
 			other.args.ySpeed = -9;
 
-			other.args.x = this.x;
+			other.args.x = this.args.x;
 
 			other.dashed = false;
 		}

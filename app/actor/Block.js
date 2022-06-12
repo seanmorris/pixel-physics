@@ -229,15 +229,15 @@ export class Block extends PointActor
 			// 	return false;
 			// }
 
-			const otherTop  = other.y - other.args.height;
-			const blockTop  = this.y  - this.args.height;
+			const otherTop  = other.args.y - other.args.height;
+			const blockTop  = this.args.y  - this.args.height;
 			const halfWidth = this.args.width / 2;
 
 			if(other.args.falling
-				&& other.y - blockTop < 16
+				&& other.args.y - blockTop < 16
 				&& other.args.ySpeed >= 0
 				&& !other.args.float
-				&& Math.abs(other.x - this.x) < (halfWidth - 16)
+				&& Math.abs(other.args.x - this.args.x) < (halfWidth - 16)
 			){
 				if(other.controllable)
 				{
@@ -249,7 +249,7 @@ export class Block extends PointActor
 				}
 			}
 
-			if((other.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
+			if((other.args.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
 			{
 				return true;
 			}

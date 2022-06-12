@@ -1215,9 +1215,12 @@ export class Viewport extends View
 		this.args.running = false;
 		this.args.paused  = false;
 
-		this.listen(document.body, 'click', event => {
-			this.tags.viewport.focus();
-		});
+		this.listen(
+			document.body
+			, 'click'
+			, event => this.tags.viewport.focus()
+			, {capture: true}
+		);
 
 		this.args.scale = this.args.scale || 1;
 
@@ -1579,8 +1582,8 @@ export class Viewport extends View
 
 				spawnObject[Run] = this[Run];
 
-				spawnObject.args.x = this.controlActor.x;
-				spawnObject.args.y = this.controlActor.y;
+				spawnObject.args.x = this.controlActor.args.x;
+				spawnObject.args.y = this.controlActor.args.y;
 
 				delete this.debugBank[debugObjectType];
 			}
@@ -1796,10 +1799,10 @@ export class Viewport extends View
 			{
 				const focus = actor.focused;
 
-				this.cameraBound = this.maxCameraBound = Math.max(Math.abs(focus.x - actor.x), Math.abs(focus.y - actor.y));
+				this.cameraBound = this.maxCameraBound = Math.max(Math.abs(focus.x - actor.args.x), Math.abs(focus.y - actor.args.y));
 
-				this.args.x -= actor.x - focus.x;
-				this.args.y -= actor.y - focus.y;
+				this.args.x -= actor.args.x - focus.x;
+				this.args.y -= actor.args.y - focus.y;
 			}
 
 			this.cameraMode = actor.args.cameraMode;
@@ -2085,8 +2088,8 @@ export class Viewport extends View
 
 		const center = actor.rotatePoint(0, -actor.args.height / 2);
 
-		const actorX = center[0] + -actor.x;
-		const actorY = center[1] + -actor.y;
+		const actorX = center[0] + -actor.args.x;
+		const actorY = center[1] + -actor.args.y;
 
 		const xNext = actorX + center[0] + this.args.width  * this.args.xOffset;
 		const yNext = actorY + center[1] + this.args.height * this.args.yOffset;
@@ -2579,17 +2582,17 @@ export class Viewport extends View
 
 		const actorWidth = actor.args.width;
 
-		const actorTop   = actor.y - actor.args.height;
+		const actorTop   = actor.args.y - actor.args.height;
 
-		const actorLeft  = actor.x - (actor.isRegion ? 0 : actorWidth / 2);
-		const actorRight = actor.x + (actor.isRegion ? actorWidth : (actorWidth / 2));
+		const actorLeft  = actor.args.x - (actor.isRegion ? 0 : actorWidth / 2);
+		const actorRight = actor.args.x + (actor.isRegion ? actorWidth : (actorWidth / 2));
 
 		if(camLeft > actorRight || actorLeft > camRight)
 		{
 			return false;
 		}
 
-		if(camTop > actor.y || actorTop > camBottom)
+		if(camTop > actor.args.y || actorTop > camBottom)
 		{
 			return false;
 		}
@@ -2737,19 +2740,18 @@ export class Viewport extends View
 		// this.quadCell.insert(actor, {x: actor.args.x + actor.args.width / 2, y: actor.args.y});
 	}
 
-	nearbyActors(actor)
+	nearbyActors(x, y)
 	{
-		const x = this.args.x;
-		const y = this.args.y;
-		const width  = this.args.width;
-		const height = this.args.height;
+		// const x = this.args.x;
+		// const y = this.args.y;
+		// const width  = this.args.width;
+		// const height = this.args.height;
 
-		// const nearbyActors = this.quadCell.select(actor.x, actor.y, width, height);
+		// const nearbyActors = this.quadCell.select(actor.args.x, actor.args.y, width, height);
 
 		// return nearbyActors;
 
-		const nearbyCells = this.getNearbyColCells(actor);
-
+		const nearbyCells = this.getNearbyColCells(x, y);
 
 		const result = new Set;
 
@@ -3039,12 +3041,18 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
+				if(!actor)
+				{
+					this.auras.delete(actor);
+					continue;
+				}
+
 				if(actor !== this.controlActor)
 				{
 					updatable.add(actor);
 				}
 
-				const nearbyActors = this.nearbyActors(actor);
+				const nearbyActors = this.nearbyActors(actor.args.x, actor.args.y);
 
 				for(const actor of nearbyActors)
 				{
@@ -3149,8 +3157,8 @@ export class Viewport extends View
 
 				if(this.args.debugOsd)
 				{
-					this.args.xPos.args.value     = Number(this.controlActor.x).toFixed(3);
-					this.args.yPos.args.value     = Number(this.controlActor.y).toFixed(3);
+					this.args.xPos.args.value     = Number(this.controlActor.args.x).toFixed(3);
+					this.args.yPos.args.value     = Number(this.controlActor.args.y).toFixed(3);
 					this.args.layer.args.value    = Number(this.controlActor.args.layer);
 
 					this.args.ground.args.value   = this.controlActor.args.landed;
@@ -3215,7 +3223,7 @@ export class Viewport extends View
 				focusedActor = this.controlActor.focused;
 			}
 
-			const nearbyActors = this.nearbyActors(focusedActor) || [];
+			const nearbyActors = this.nearbyActors(focusedActor.args.x, focusedActor.args.y) || [];
 
 			for(const actorList of [nearbyActors, this.regions])
 			{
@@ -3450,9 +3458,14 @@ export class Viewport extends View
 			return actorPointCache.get(cacheKey);
 		}
 
-		const actors = [];
+		const nearbyActors = this.nearbyActors(x, y);
 
-		const nearbyActors = this.nearbyActors({x,y});
+		if(!nearbyActors.size)
+		{
+			return [];
+		}
+
+		const actors = new Set;
 
 		for(const actor of nearbyActors)
 		{
@@ -3489,14 +3502,16 @@ export class Viewport extends View
 			{
 				if(otherBottom >= myTop && myBottom >= otherTop)
 				{
-					actors.push( actor );
+					actors.add( actor );
 				}
 			}
 		}
 
-		actorPointCache.set(cacheKey, actors);
+		const list = [...actors];
 
-		return actors;
+		actorPointCache.set(cacheKey, list);
+
+		return list;
 	}
 
 	padConnected(event)
@@ -3584,18 +3599,18 @@ export class Viewport extends View
 	{
 		const colCellDiv = this.colCellDiv;
 
-		const actorTop   = actor.y - actor.args.height;
+		const actorTop   = actor.args.y - actor.args.height;
 
 		const actorWidth = actor.args.width;
 
-		const actorLeft  = actor.x - actorWidth / 2;
-		const actorRight = actor.x + actorWidth / 2;
+		const actorLeft  = actor.args.x - actorWidth / 2;
+		const actorRight = actor.args.x + actorWidth / 2;
 
 		const cellMinX = Math.floor( actorLeft  / colCellDiv );
 		const cellMaxX = Math.ceil( actorRight / colCellDiv );
 
 		const cellMinY = Math.floor( actorTop / colCellDiv );
-		const cellMaxY = Math.ceil( actor.y  / colCellDiv );
+		const cellMaxY = Math.ceil( actor.args.y  / colCellDiv );
 
 		const cells = new Set;
 
@@ -3616,7 +3631,7 @@ export class Viewport extends View
 
 		actor = Bindable.make(actor);
 
-		const cell = this.getColCell(actor);
+		const cell = this.getColCell(actor.args);
 
 		actor[ColCell] && actor[ColCell].delete(actor);
 
@@ -3627,10 +3642,10 @@ export class Viewport extends View
 		return cell;
 	}
 
-	getNearbyColCells(actor)
+	getNearbyColCells(actorX, actorY)
 	{
-		const actorX = actor.x;
-		const actorY = actor.y;
+		// const actorX = actor.args.x;
+		// const actorY = actor.args.y;
 
 		const colCellDiv = this.colCellDiv
 		const cellX = Math.floor( actorX / colCellDiv );

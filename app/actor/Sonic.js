@@ -777,8 +777,8 @@ export class Sonic extends PointActor
 			);
 
 			this.dimmer.style({
-				'--x': this.x + boltPoint[0]
-				, '--y': this.y + boltPoint[1]
+				'--x': this.args.x + boltPoint[0]
+				, '--y': this.args.y + boltPoint[1]
 			});
 
 			this.args.boltCount++;
@@ -788,8 +788,8 @@ export class Sonic extends PointActor
 			boltParticle.attr({'data-direction': direction});
 
 			boltParticle.style({
-				'--x': this.x + boltPoint[0]
-				, '--y': this.y + boltPoint[1]
+				'--x': this.args.x + boltPoint[0]
+				, '--y': this.args.y + boltPoint[1]
 				, '--index': this.args.boltCount
 				, '--direction': direction
 				, '--mod': this.viewport.args.frameId % 4
@@ -816,7 +816,7 @@ export class Sonic extends PointActor
 		}
 
 		if([...this.regions].filter(r => r.isWater).length
-			&& !this.bMap('checkBelow', this.x, this.y + 16).get(Platformer)
+			&& !this.bMap('checkBelow', this.args.x, this.args.y + 16).get(Platformer)
 			&& this.args.falling
 			&& this.dashed
 		){
@@ -940,7 +940,7 @@ export class Sonic extends PointActor
 
 			this.pinch(-600, 50);
 
-			const marker = new Marker({x:this.x,y:this.y});
+			const marker = new Marker({x:this.args.x,y:this.args.y});
 
 			marker.owner = this;
 
@@ -1253,8 +1253,8 @@ export class Sonic extends PointActor
 			const dustPoint = this.rotatePoint(0, 0);
 
 			dustParticle.style({
-				'--x': dustPoint[0] + this.x
-				, '--y': dustPoint[1] + this.y
+				'--x': dustPoint[0] + this.args.x
+				, '--y': dustPoint[1] + this.args.y
 				, '--direction': this.args.direction
 				, '--dashCharge': 0
 			});
