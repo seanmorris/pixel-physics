@@ -216,6 +216,11 @@ export class Platformer
 				host.args.ySpeed += host.args.gravity;
 			}
 
+			if(host.impulseMag !== null)
+			{
+				this.applyImpulse(host);
+			}
+
 			if(host.args.float > 0)
 			{
 				host.args.float--;
@@ -605,38 +610,7 @@ export class Platformer
 
 		if(host.impulseMag !== null)
 		{
-			host.args.xSpeed += Number(Number(Math.cos(host.impulseDir) * host.impulseMag).toFixed(3));
-			host.args.ySpeed += Number(Number(Math.sin(host.impulseDir) * host.impulseMag).toFixed(3));
-
-			if(!host.impulseFal)
-			{
-				switch(host.args.mode)
-				{
-					case MODE_FLOOR:
-						host.args.gSpeed = Math.cos(host.impulseDir) * host.impulseMag;
-						break;
-
-					case MODE_CEILING:
-						host.args.gSpeed = -Math.cos(host.impulseDir) * host.impulseMag;
-						break;
-
-					case MODE_LEFT:
-						host.args.gSpeed = -Math.sin(host.impulseDir) * host.impulseMag;
-						break;
-
-					case MODE_RIGHT:
-						host.args.gSpeed = Math.sin(host.impulseDir) * host.impulseMag;
-						break;
-				}
-			}
-			else
-			{
-				host.args.falling = host.impulseFal || host.args.falling;
-			}
-
-			host.impulseMag   = null;
-			host.impulseDir   = null;
-			host.impulseFal   = null;
+			this.applyImpulse(host);
 		}
 
 		if(host.args.ignore === -2 && (host.args.falling === false || host.args.ySpeed > 64))
@@ -1452,6 +1426,42 @@ export class Platformer
 		}
 	}
 
+	applyImpulse(host)
+	{
+		host.args.xSpeed += Number(Number(Math.cos(host.impulseDir) * host.impulseMag).toFixed(3));
+		host.args.ySpeed += Number(Number(Math.sin(host.impulseDir) * host.impulseMag).toFixed(3));
+
+		if(!host.impulseFal)
+		{
+			switch(host.args.mode)
+			{
+				case MODE_FLOOR:
+					host.args.gSpeed = Math.cos(host.impulseDir) * host.impulseMag;
+					break;
+
+				case MODE_CEILING:
+					host.args.gSpeed = -Math.cos(host.impulseDir) * host.impulseMag;
+					break;
+
+				case MODE_LEFT:
+					host.args.gSpeed = -Math.sin(host.impulseDir) * host.impulseMag;
+					break;
+
+				case MODE_RIGHT:
+					host.args.gSpeed = Math.sin(host.impulseDir) * host.impulseMag;
+					break;
+			}
+		}
+		else
+		{
+			host.args.falling = host.impulseFal || host.args.falling;
+		}
+
+		host.impulseMag   = null;
+		host.impulseDir   = null;
+		host.impulseFal   = null;
+	}
+
 	updateGroundPosition(host)
 	{
 		if(host.args.mercy)
@@ -2212,6 +2222,8 @@ export class Platformer
 				host.args.gSpeed = 0;
 			}
 		}
+
+		host.args.heading = Math.sign(host.args.gSpeed);
 
 		// if(host.controllable)
 		// {

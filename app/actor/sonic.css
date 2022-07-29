@@ -387,11 +387,16 @@
 	--animation-steps: -4;
 	--animation-width: 64px;
 
-	animation: sonic-jump steps(8) infinite 160ms;
+	animation: sonic-jump steps(8) infinite 180ms;
 	/*animation: sonic-jump steps(4) infinite calc(calc(calc(1 - var(--animation-bias)) * 64ms) + 128ms);*/
 
 	/*animation: sonic-jump steps(8) infinite calc(calc(calc(1 - var(--animation-bias)) * 512ms) + 128ms);*/
 	/*transform: scale(-1,-1) rotate(calc(calc(-1rad * var(--air-angle)) + 0deg));*/
+}
+
+.actor-item.actor-sonic[data-animation="rolling"][data-facing="left"][data-heading="1"] .sprite:after,
+.actor-item.actor-sonic[data-animation="rolling"][data-facing="right"][data-heading="-1"] .sprite:after {
+	animation: sonic-jump steps(8) infinite 180ms reverse;
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {

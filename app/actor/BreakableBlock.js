@@ -76,11 +76,6 @@ export class BreakableBlock extends Block
 		}
 	}
 
-	update()
-	{
-		super.update();
-	}
-
 	callCollideHandler(...args)
 	{
 		if(this.broken)

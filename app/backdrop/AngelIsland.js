@@ -35,7 +35,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.009
-				, url:      '/Sonic/backdrop/angel-island/sky-1.png'
+				, url:      '/Sonic/backdrop/angel-island/water-1.png'
 				, interval: 12
 				, timeout:  100
 				, frame:    0
@@ -45,7 +45,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.011
-				, url:      '/Sonic/backdrop/angel-island/sky-2.png'
+				, url:      '/Sonic/backdrop/angel-island/water-2.png'
 				, height:   8
 				, interval: 14
 				, timeout:  100
@@ -55,7 +55,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.013
-				, url:      '/Sonic/backdrop/angel-island/sky-3.png'
+				, url:      '/Sonic/backdrop/angel-island/water-3.png'
 				, height:   8
 				, interval: 16
 				, timeout:  100
@@ -65,7 +65,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.015
-				, url:      '/Sonic/backdrop/angel-island/sky-4.png'
+				, url:      '/Sonic/backdrop/angel-island/water-4.png'
 				, height:   16
 				, interval: 16
 				, timeout:  100
@@ -75,7 +75,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.017
-				, url:      '/Sonic/backdrop/angel-island/sky-5.png'
+				, url:      '/Sonic/backdrop/angel-island/water-5.png'
 				, height:   8
 				, interval: 16
 				, timeout:  100
@@ -85,7 +85,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.019
-				, url:      '/Sonic/backdrop/angel-island/sky-6.png'
+				, url:      '/Sonic/backdrop/angel-island/water-6.png'
 				, height:   8
 				, interval: 13
 				, timeout:  100
@@ -95,7 +95,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.021
-				, url:      '/Sonic/backdrop/angel-island/sky-7.png'
+				, url:      '/Sonic/backdrop/angel-island/water-7.png'
 				, height:   16
 				, interval: 11
 				, timeout:  100
@@ -105,7 +105,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.023
-				, url:      '/Sonic/backdrop/angel-island/sky-8.png'
+				, url:      '/Sonic/backdrop/angel-island/water-8.png'
 				, height:   8
 				, interval: 12
 				, timeout:  100
@@ -115,7 +115,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.025
-				, url:      '/Sonic/backdrop/angel-island/sky-9.png'
+				, url:      '/Sonic/backdrop/angel-island/water-9.png'
 				, height:   8
 				, interval: 11
 				, timeout:  100
@@ -125,7 +125,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.028
-				, url:      '/Sonic/backdrop/angel-island/sky-10.png'
+				, url:      '/Sonic/backdrop/angel-island/water-10.png'
 				, height:   8
 				, interval: 13
 				, timeout:  100
@@ -135,7 +135,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.030
-				, url:      '/Sonic/backdrop/angel-island/sky-11.png'
+				, url:      '/Sonic/backdrop/angel-island/water-11.png'
 				, height:   16
 				, interval: 13
 				, timeout:  100
@@ -145,7 +145,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.033
-				, url:      '/Sonic/backdrop/angel-island/sky-12.png'
+				, url:      '/Sonic/backdrop/angel-island/water-12.png'
 				, height:   8
 				, interval: 11
 				, timeout:  100
@@ -155,7 +155,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.035
-				, url:      '/Sonic/backdrop/angel-island/sky-13.png'
+				, url:      '/Sonic/backdrop/angel-island/water-13.png'
 				, height:   7
 				, interval: 15
 				, timeout:  100
@@ -165,7 +165,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.037
-				, url:      '/Sonic/backdrop/angel-island/sky-14.png'
+				, url:      '/Sonic/backdrop/angel-island/water-14.png'
 				, height:   8
 				, interval: 17
 				, timeout:  100
@@ -175,7 +175,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.039
-				, url:      '/Sonic/backdrop/angel-island/sky-15.png'
+				, url:      '/Sonic/backdrop/angel-island/water-15.png'
 				, height:   8
 				, interval: 19
 				, timeout:  100
@@ -185,7 +185,7 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.041
-				, url:      '/Sonic/backdrop/angel-island/sky-16.png'
+				, url:      '/Sonic/backdrop/angel-island/water-16.png'
 				, height:   6
 				, interval: 11
 				, timeout:  100
@@ -195,19 +195,13 @@ export class AngelIsland extends Backdrop
 			, {
 				autoscroll: 0.000
 				, parallax: 0.044
-				, url:      '/Sonic/backdrop/angel-island/sky-17.png'
+				, url:      '/Sonic/backdrop/angel-island/water-17.png'
 				, height:   10
 				, interval: 13
 				, timeout:  100
 				, frame:    4
 				, recolor
 			}
-			// , {
-			// 	autoscroll: 0.000
-			// 	, parallax: 0.072
-			// 	, url:      '/Sonic/backdrop/angel-island/water-0.png'
-			// 	, height:   96
-			// }
 		];
 	}
 }

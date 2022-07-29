@@ -139,6 +139,7 @@ export class Spring extends PointActor
 
 		other[WillSpring] = true;
 
+		other.args.mercy  = 0;
 		other.args.gSpeed = 0;
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;
@@ -166,7 +167,7 @@ export class Spring extends PointActor
 		other.args.y = this.args.y + Math.sin(rounded) * 16;
 
 		other.args.jumping = false;
-		other.args.ignore = other.args.falling ? 4 : 12;
+		other.args.ignore = other.args.ignore || (other.args.falling ? 12 : 2);
 		other.args.float = 2;
 
 		this.viewport.onFrameOut(2,()=>{

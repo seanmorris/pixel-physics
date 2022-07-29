@@ -1,5 +1,6 @@
 import { BreakableBlock } from './BreakableBlock';
 import { Projectile } from './Projectile';
+import { Spring } from './Spring';
 
 export class WoodenCrate extends BreakableBlock
 {
@@ -10,7 +11,16 @@ export class WoodenCrate extends BreakableBlock
 		this.args.type   = 'actor-item actor-breakable-block actor-wooden-crate';
 		this.args.width  = 60;
 		this.args.height = 60;
-		this.args.static = false;
+		this.args.static = this.args.static ?? false;
+
+		this[Spring.WontSpring] = true;
+	}
+
+	updateStart()
+	{
+		this.args.static = (!this.args.falling && !this.args.standingOn);
+
+		super.updateStart();
 	}
 
 	collideA(other, type)

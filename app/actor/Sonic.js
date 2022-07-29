@@ -62,9 +62,9 @@ export class Sonic extends PointActor
 		this.gSpeedMaxSuper  = 20;
 		this.gSpeedMaxHyper  = 23;
 
-		this.jumpForceNormal = 11.5;
-		this.jumpForceSuper  = 14;
-		this.jumpForceHyper  = 16;
+		this.jumpForceNormal = 11;
+		this.jumpForceSuper  = 13;
+		this.jumpForceHyper  = 15;
 
 		this.args.gSpeedMax = this.gSpeedMaxNormal;
 		this.args.jumpForce = this.jumpForceNormal;
@@ -460,7 +460,30 @@ export class Sonic extends PointActor
 
 			if(this.spindashCharge)
 			{
-				this.args.animation = 'spindash';
+				if(this.spindashCharge < 1)
+				{
+					this.spindashCharge = 0;
+				}
+				else
+				{
+					this.args.animation = 'spindash';
+
+					this.spindashCharge -= 0.2;
+
+					if(this.dashDust)
+					{
+						this.dashDust.style({'--dashCharge': this.spindashCharge});
+					}
+
+					let dashCharge = this.spindashCharge / 20;
+
+					if(dashCharge > 1)
+					{
+						dashCharge = 1;
+					}
+
+					this.twist(120 * dashCharge * this.args.direction);
+				}
 			}
 			else if(!this.args.rolling)
 			{
@@ -536,7 +559,7 @@ export class Sonic extends PointActor
 							this.args.cameraBias = -0.5;
 						}
 					}
-					else if(this.yAxis < -0.5 && !this.args.ignore)
+					else if(this.yAxis && this.yAxis < -0.5 && !this.args.ignore)
 					{
 						this.args.animation = 'looking-up';
 
@@ -924,9 +947,24 @@ export class Sonic extends PointActor
 		{
 			this.spindashCharge += 10;
 
+			let dashCharge = this.spindashCharge / 20;
+
+			if(dashCharge > 1)
+			{
+				dashCharge = 1;
+			}
+
 			this.args.xOff = 5 * -this.args.direction;
 			this.args.yOff = 32;
-			this.twist(this.spindashCharge * this.args.direction);
+			this.twist(120 * dashCharge * this.args.direction);
+			if(!this.dashDust)
+			{
+				this.showDashDust();
+			}
+			else if(this.dashDust)
+			{
+				this.dashDust.style({'--dashCharge': this.spindashCharge});
+			}
 			return;
 		}
 
@@ -934,6 +972,12 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping && !this.dashed && !this.doubleSpin)
 		{
+
+			if(this.args.mercy < 120)
+			{
+				this.args.mercy = 0;
+			}
+
 			this.doubleSpin = true;
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
@@ -1190,7 +1234,7 @@ export class Sonic extends PointActor
 		// 	return;
 		// }
 
-		this.yAxis = -1;
+		this.yAxis = 1;
 
 		if(this.args.ignore || this.args.rolling)
 		{
@@ -1226,6 +1270,11 @@ export class Sonic extends PointActor
 			return;
 		}
 
+		if(!this.spindashCharge && button.time > 6)
+		{
+			return;
+		}
+
 		this.args.ignore = 1;
 
 		let dashCharge = this.spindashCharge / 20;
@@ -1235,46 +1284,22 @@ export class Sonic extends PointActor
 			dashCharge = 1;
 		}
 
-		if(this.spindashCharge === 0)
+		this.spindashCharge = this.spindashCharge || 1;
+
+		if(this.yAxis > 0.5)
 		{
-			this.spindashCharge = 1;
+			this.spindashCharge = this.spindashCharge || 10;
+		}
 
-			if(this.yAxis > 0.5)
-			{
-				this.spindashCharge = 10;
-			}
+		this.args.crouching = true;
 
-			this.args.crouching = true;
-
-			const viewport = this.viewport;
-
-			const dustParticle = new Tag('<div class = "particle-spindash-dust">');
-
-			const dustPoint = this.rotatePoint(0, 0);
-
-			dustParticle.style({
-				'--x': dustPoint[0] + this.args.x
-				, '--y': dustPoint[1] + this.args.y
-				, '--direction': this.args.direction
-				, '--dashCharge': 0
-			});
-
-			if(this.args.direction < 0)
-			{
-				dustParticle.setAttribute('data-facing', 'left');
-			}
-			else if(this.args.direction > 0)
-			{
-				dustParticle.setAttribute('data-facing', 'right');
-			}
-
-			viewport.particles.add(dustParticle.node);
-
-			this.dashDust = dustParticle;
+		if(!this.dashDust)
+		{
+			this.showDashDust();
 		}
 		else if(this.dashDust)
 		{
-			this.dashDust.style({'--dashCharge': dashCharge});
+			this.dashDust.style({'--dashCharge': this.spindashCharge});
 		}
 
 		if(this.viewport.args.frameId % 3 === 0)
@@ -1297,6 +1322,28 @@ export class Sonic extends PointActor
 		{
 			this.args.facing = 'right';
 		}
+	}
+
+	showDashDust()
+	{
+		const viewport = this.viewport;
+
+		const dustParticle = new Tag('<div class = "particle-spindash-dust">');
+
+		const dustPoint = this.rotatePoint(0, 0);
+
+		dustParticle.style({
+			'--x': dustPoint[0] + this.args.x
+			, '--y': dustPoint[1] + this.args.y
+			, '--direction': this.args.direction
+			, '--dashCharge': this.spindashCharge
+		});
+
+		dustParticle.setAttribute('data-facing', this.args.facing);
+
+		viewport.particles.add(dustParticle);
+
+		this.dashDust = dustParticle;
 	}
 
 	hold_2()

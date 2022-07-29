@@ -61,6 +61,7 @@ import { DrainFly    } from './actor/DrainFly';
 import { GohlaBall   } from './actor/GohlaBall';
 import { Voltorb     } from './actor/Voltorb';
 import { Balkiry     } from './actor/Balkiry';
+import { SnailBot    } from './actor/SnailBot';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -76,6 +77,8 @@ import { Ring } from './actor/Ring';
 import { Coin } from './actor/Coin';
 
 import { Emblem } from './actor/Emblem';
+
+import { Apple } from './actor/Apple';
 
 import { AntiRing } from './actor/AntiRing';
 
@@ -259,6 +262,7 @@ export const ObjectPalette = {
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
 	, 'emblem':       Emblem
+	, 'apple':        Apple
 	, 'drop-cage':    DropCage
 	, 'slot-machine': SlotMachine
 	, 'powerup-glow': PowerupGlow
@@ -287,6 +291,7 @@ export const ObjectPalette = {
 	, 'gohla-ball': GohlaBall
 	, 'voltorb': Voltorb
 	, 'balkiry': Balkiry
+	, 'snailbot': SnailBot
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'booster': Booster

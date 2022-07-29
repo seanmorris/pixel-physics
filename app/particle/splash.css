@@ -11,4 +11,6 @@
 	--animation-width: 32px;
 
 	animation: particle-animate steps(var(--animation-steps)) 1 forwards calc(240ms * var(--particleScale, 1));
+
+	z-index: 10000;
 }

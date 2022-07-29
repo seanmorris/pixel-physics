@@ -8,34 +8,6 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":2,
-                 "height":64,
-                 "id":394,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"animation",
-                         "type":"string",
-                         "value":"dropping"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"sonic",
-                 "visible":true,
-                 "width":32,
-                 "x":32,
-                 "y":72
-                }, 
-                {
                  "gid":2889,
                  "height":32,
                  "id":400,
@@ -69,6 +41,18 @@
                  "width":224,
                  "x":48,
                  "y":664
+                }, 
+                {
+                 "height":0,
+                 "id":402,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":48,
+                 "y":64
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -124,7 +108,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":402,
+ "nextobjectid":403,
  "orientation":"orthogonal",
  "properties":[
         {

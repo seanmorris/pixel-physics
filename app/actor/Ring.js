@@ -26,6 +26,7 @@ export class Ring extends PointActor
 		this.args.gone    = false;
 		this.args.gravity = 0.40;
 		this.args.delay   = this.args.delay ?? 48;
+
 	}
 
 	update()
@@ -200,7 +201,7 @@ export class Ring extends PointActor
 
 		const viewport = this.viewport;
 
-		this.viewport.onFrameOut(1200, () => {
+		this.viewport.onFrameOut(4200, () => {
 			this.restore = true;
 		});
 

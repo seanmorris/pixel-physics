@@ -96,11 +96,22 @@
 		particle-animate
 		steps(var(--animation-steps))
 		infinite
-		calc(calc( 256 / var(--dashCharge) ) * 1ms);
+		max(
+			calc(
+				calc(
+					1 - calc(
+						calc(
+							min(var(--dashCharge),40)
+						) / 40)
+				) * 640ms
+			)
+			,64ms
+		);
 
 	transform: translate(-125%, -100%) scaleX(var(--direction)) !important;
 
-	opacity: calc(0 + calc( 0.5 * var(--dashCharge) ));
+	/*opacity: calc(0 + calc( 0.5 * var(--dashCharge) ));*/
+	opacity: 0.5;
 
 	z-index: -1;
 }

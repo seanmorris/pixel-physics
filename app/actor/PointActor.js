@@ -277,6 +277,7 @@ export class PointActor extends View
 		this.args.height = this.args.height || 1;
 
 		this.args.direction = Number(this.args.direction) || 1;
+		this.args.heading   = 0;
 
 		this.args.xSpeed = this.args.xSpeed || 0;
 		this.args.ySpeed = this.args.ySpeed || 0;
@@ -659,7 +660,7 @@ export class PointActor extends View
 			, '--animation-bias': 'animationBias'
 			, '--bg-filter':      'bgFilter'
 			, '--sprite-sheet':   'spriteSheetUrl'
-			, '--direction'   :   'direction'
+			, '--direction':      'direction'
 			, '--sprite-x':       'spriteX'
 			, '--sprite-y':       'spriteY'
 			, '--angle':          'angle'
@@ -679,7 +680,9 @@ export class PointActor extends View
 		this.autoAttr.set(this.box, {
 			'data-camera-mode': 'cameraMode'
 			, 'data-colliding': 'colliding'
+			, 'data-direction': 'direction'
 			, 'data-respawning':'respawning'
+			, 'data-heading':   'heading'
 			, 'data-mercy':     'mercy'
 			, 'data-selected':  'selected'
 			, 'data-following': 'following'
@@ -4549,10 +4552,10 @@ export class PointActor extends View
 
 		if(deg > 0)
 		{
-			return Math.floor(deg * 10) / 10;
+			return Math.round(Math.floor(deg * 10) / 10);
 		}
 
-		return Math.ceil(deg * 10) / 10;
+		return Math.round(Math.ceil(deg * 10) / 10);
 	}
 
 	roundAngle(angle, segments)
@@ -4684,6 +4687,18 @@ export class PointActor extends View
 
 		const damageEvent = new CustomEvent('damage', {cancelable:true, detail:{other,type}});
 
+		if(this.isHyper)
+		{
+			return;
+		}
+
+		if(this.isSuper)
+		{
+			this.onNextFrame(()=> this.startle(other));
+			this.args.mercy = 30;
+			return;
+		}
+
 		if(!this.immune(other, type))
 		{
 			if(!this.dispatchEvent(damageEvent))
@@ -4717,7 +4732,7 @@ export class PointActor extends View
 		{
 			this.loseRings();
 			this.args.rings = 0;
-			this.startle(other);
+			this.onNextFrame(()=> this.startle(other));
 			this.args.mercy = 180;
 
 			if(this.viewport.settings.rumble)

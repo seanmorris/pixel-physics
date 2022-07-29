@@ -24,8 +24,8 @@
 }
 
 .screen-effects .screen-fire .fire-strip > div {
-	width: 32px;
-	height:  300%;
+	width: 16px;
+	height:  150%;
 	background-image: url(/Sonic/angel-island-fire.png);
 	background-position: calc(var(--index, 0) * -32px) 0;
 	background-repeat: repeat-x;
@@ -33,39 +33,68 @@
 }
 
 .screen-effects .screen-fire.playing {
-	animation: screen-fire-slide 4s -0.5s linear 1;
+	animation: screen-fire-slide 6s -0.5s linear 1;
 }
 
-/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n) {
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n) {
 	animation: screen-fire-twist 2.5s 0.0s steps(1) infinite;
 }*/
 
-.screen-effects .screen-fire.playing .fire-strip:nth-child(4n) > div {
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n) > div {
 	animation: screen-fire-flicker 0.5s 0.2s ease-in-out infinite alternate;
 }
 
-/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+1) {
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+1) {
 	animation: screen-fire-twist 2.5s 0.1s steps(1) infinite;
 }*/
 
-.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+1) > div {
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+1) > div {
 	animation: screen-fire-flicker 0.5s 0.1s ease-in-out infinite alternate;
 }
 
-/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+2) {
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+2) {
 	animation: screen-fire-twist 2.5s 0.2s steps(1) infinite;
 }*/
 
-.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+2) > div {
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+2) > div {
 	animation: screen-fire-flicker 0.5s 0.0s ease-in-out infinite alternate;
 }
 
-/*.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+3) {
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+3) {
 	animation: screen-fire-twist 2.5s 0.3s steps(1) infinite;
 }*/
 
-.screen-effects .screen-fire.playing .fire-strip:nth-child(4n+3) > div {
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+3) > div {
 	animation: screen-fire-flicker 0.5s 0.3s ease-in-out infinite alternate;
+}
+
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+4) > div {
+	animation: screen-fire-flicker 0.5s 0.25s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+1) {
+	animation: screen-fire-twist 2.5s 0.1s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+5) > div {
+	animation: screen-fire-flicker 0.5s 0.05s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+2) {
+	animation: screen-fire-twist 2.5s 0.2s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+6) > div {
+	animation: screen-fire-flicker 0.5s 0.15s ease-in-out infinite alternate;
+}
+
+/*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+3) {
+	animation: screen-fire-twist 2.5s 0.3s steps(1) infinite;
+}*/
+
+.screen-effects .screen-fire.playing .fire-strip:nth-child(8n+7) > div {
+	animation: screen-fire-flicker 0.5s 0.35s ease-in-out infinite alternate;
 }
 /*
 @keyframes screen-fire-twist {

@@ -35,7 +35,7 @@
 }
 
 .actor-star-post[data-active="true"] .star-post-head {
-	animation: starPostActive steps(2) 10ms 0.5s infinite;
+	animation: starPostActive steps(2) 100ms 0.5s infinite;
 }
 
 .actor-star-post[data-active="true"][data-direction="-1"] .star-post-head-box {

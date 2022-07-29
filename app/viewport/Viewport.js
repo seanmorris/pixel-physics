@@ -1030,6 +1030,10 @@ export class Viewport extends View
 					{
 						layer.args.hidden = true;
 					}
+					else if(layers[i].name.substring(0, 6) === 'Moving' && layers[i].name.substring(0, 10) !== 'Moving Art')
+					{
+						layer.args.hidden = true;
+					}
 					else
 					{
 						layer.args.hidden = false;
@@ -2547,6 +2551,11 @@ export class Viewport extends View
 				continue;
 			}
 
+			if(!actor.controllable)
+			{
+				continue;
+			}
+
 			const position = this.getCheckpoint(actor.args.canonical);
 
 			if(position && position.checkpointId)
@@ -2757,8 +2766,7 @@ export class Viewport extends View
 
 		for(const i in nearbyCells)
 		{
-			const cell   = nearbyCells[i];
-			const actors = cell;
+			const actors = nearbyCells[i];
 
 			for(const actor of actors)
 			{
@@ -3633,7 +3641,10 @@ export class Viewport extends View
 
 		const cell = this.getColCell(actor.args);
 
-		actor[ColCell] && actor[ColCell].delete(actor);
+		if(actor[ColCell] && actor[ColCell] !== cell)
+		{
+			actor[ColCell].delete(actor);
+		}
 
 		cell.add(actor);
 
@@ -3657,7 +3668,7 @@ export class Viewport extends View
 
 		if(cache)
 		{
-			return cache.filter(set=>set.size);
+			return cache;//.filter(set=>set.size);
 		}
 
 		const space = colCellDiv;
@@ -3706,7 +3717,7 @@ export class Viewport extends View
 			// , this.getColCell({x:colE, y:rowE})
 		]);
 
-		return cache.filter(set=>set.size);
+		return cache;//.filter(set=>set.size);
 	}
 
 	screenFilter(filterName)
@@ -4459,11 +4470,13 @@ export class Viewport extends View
 		const score = this.controlActor.args.score += totalBonus;
 
 		this.args.actClear = true;
+		this.args.skidBonusValue = this.controlActor.args.dragBonus || 0;
 
 		this.args.timeBonus.args.value  = 0;
 		this.args.ringBonus.args.value  = 0;
 		this.args.airBonus.args.value   = 0;
 		this.args.speedBonus.args.value = 0;
+		this.args.skidBonus.args.value  = 0;
 		this.args.totalBonus.args.value = 0;
 
 		this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value  = timeBonus);

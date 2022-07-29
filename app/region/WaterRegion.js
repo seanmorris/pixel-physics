@@ -182,7 +182,7 @@ export class WaterRegion extends Region
 
 			bubble.style({'--startY': y, '--size': Math.random()});
 
-			const stopHoldingBubble = this.onFrame(() => {
+			const stopHoldingBubble = viewport.onFrameInterval(1, () => {
 
 				const point = other.facePoint;
 
@@ -202,7 +202,7 @@ export class WaterRegion extends Region
 				bubble.style({'--x': x, '--y': y});
 			});
 
-			const stopWatchingBubble = this.onFrame(() => {
+			const stopWatchingBubble = viewport.onFrameInterval(1, () => {
 				bubble.style({'--maxY': this.args.y - this.args.height});
 			});
 
