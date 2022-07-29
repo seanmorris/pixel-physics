@@ -17,7 +17,7 @@ export class Tails extends PointActor
 
 		this.args.type      = 'actor-item actor-tails';
 
-		this.jumpForceNormal = 11.5;
+		this.jumpForceNormal = 11;
 		this.jumpForceSuper  = 16;
 
 		this.accelNormal = 0.15;

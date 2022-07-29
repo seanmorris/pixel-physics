@@ -5,6 +5,7 @@ import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
 
 import { SkidDust } from '../behavior/SkidDust';
+import { Patrol } from '../behavior/Patrol';
 import { CanPop } from '../mixin/CanPop';
 
 import { Explosion } from '../actor/Explosion';
@@ -17,6 +18,7 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 		super(...args);
 
 		this.behaviors.add(new SkidDust);
+		this.behaviors.add(new Patrol);
 
 		this.args.type      = 'actor-item actor-crabmeat';
 
@@ -34,11 +36,22 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.args.patrolBeat    = this.args.patrolBeat    || 90;
+		this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
+		this.args.shotTelegraph = this.args.shotTelegraph || 65;
+
+		this.age = 0;
 	}
 
 	update()
 	{
 		const direction = this.args.direction;
+
+		super.update();
+
+		const telegraph = this.args.shotTelegraph;
+		const beat      = this.args.patrolBeat;
 
 		if(this.box)
 		{
@@ -50,13 +63,42 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 			{
 				this.box.setAttribute('data-animation', 'walking');
 			}
+			else if(this.age % beat < telegraph || this.age % beat > (beat - 15))
+			{
+				this.box.setAttribute('data-animation', 'shooting');
+			}
 			else
 			{
+
 				this.box.setAttribute('data-animation', 'standing');
 			}
 		}
 
-		super.update();
+		if(this.age % beat === (beat - 3))
+		{
+			const xA = this.x +  19;
+			const xB = this.x + -19;
+			const y  = this.y + -19;
+			const z  = -1;
+
+			const xSpeed = -1.5;
+			const ySpeed = -3;
+
+			const owner = this;
+
+			const ballA = new Projectile({x:xA,y,z,owner});
+			const ballB = new Projectile({x:xB,y,z,owner});
+
+			this.viewport.onFrameOut(2, () => {
+				Object.assign(ballA.args, {xSpeed:-xSpeed,ySpeed});
+				Object.assign(ballB.args, {xSpeed,ySpeed});
+			});
+
+			this.viewport.spawn.add({object:ballA});
+			this.viewport.spawn.add({object:ballB});
+		}
+
+		this.age++;
 	}
 
 	effect(other)

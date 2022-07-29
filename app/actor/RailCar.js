@@ -152,6 +152,8 @@ export class RailCar extends Vehicle
 
 			this.args.groundAngle = 0;
 			this.args.mode = 0;
+
+			this.args.dead = true;
 		}
 	}
 
@@ -159,6 +161,8 @@ export class RailCar extends Vehicle
 	{
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');
+
+		this.args.dead = false;
 
 		this.args.groundAngle = 0;
 		this.args.gSpeed = 0;

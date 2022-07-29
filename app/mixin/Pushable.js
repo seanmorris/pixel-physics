@@ -1,5 +1,12 @@
+import { Ring } from '../actor/Ring';
+
 export const Pushable = {
 	collideA: function(other, type) {
+
+		if(other instanceof Ring)
+		{
+			return false;
+		}
 
 		if(type === -1 || other.isEffect)
 		{

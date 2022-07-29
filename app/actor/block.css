@@ -187,3 +187,8 @@
 	animation: none;
 }
 
+.actor-item.actor-block[data-design="azure-lake"] .sprite {
+	background-position: bottom center;
+	height: 40px;
+	width: 101px;
+}

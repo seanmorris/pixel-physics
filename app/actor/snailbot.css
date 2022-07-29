@@ -1,0 +1,47 @@
+.actor-item.actor-snailbot .sprite {
+	height: 64px;
+	width: 64px;
+}
+
+.actor-item.actor-snailbot .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/snailbot.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 64px;
+	width: 64px;
+	z-index: 1;
+}
+
+.actor-item.actor-snailbot[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-snailbot[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: snailbot-walk steps(6) infinite 80ms;
+}
+
+.actor-item.actor-snailbot[data-animation="walking"][data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-snailbot[data-animation="shooting"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-x: -320px;
+}
+
+@keyframes snailbot-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

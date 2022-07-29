@@ -58,6 +58,11 @@ export class TilesetSwapper extends PointActor
 					'/map/../Sonic/tiles/azure-lake/giant-loop.png'
 					, '/map/../Sonic/tiles/azure-lake/giant-loop-burnt.png'
 				);
+
+				this.viewport.tileMap.replacements.set(
+					'/map/../Sonic/azure-lake-platform.png'
+					, '/map/../Sonic/azure-lake-platform-burnt.png'
+				);
 			});
 		});
 	}

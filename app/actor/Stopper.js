@@ -23,11 +23,13 @@ export class Stopper extends BreakableBlock
 			if(other.args.ySpeed > 0 || other.ySpeedLast > 0)
 			{
 				other.args.groundAngle = 0;
-				other.args.x       = this.args.x;
-				other.args.xSpeed  = 0;
-				other.args.ySpeed  = Math.abs(other.args.gSpeed);
-				other.args.falling = true;
-				other.args.mode    = 0;
+				other.args.x        = this.args.x;
+				other.args.xSpeed   = 0;
+				other.args.ySpeed   = Math.abs(other.args.gSpeed);
+				other.args.falling  = true;
+				other.args.bouncing = false;
+				other.args.jumping  = false;
+				other.args.mode     = 0;
 
 				this.break();
 

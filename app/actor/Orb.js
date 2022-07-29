@@ -97,7 +97,11 @@ export class Orb extends Mixin.from(PointActor)
 
 	collideA(other)
 	{
-		other.controllable && other.loseRings();
+		if(!other.isHyper && !other.isSuper)
+		{
+			other.controllable && other.loseRings();
+		}
+
 		other.controllable && other.die();
 	}
 

@@ -429,6 +429,15 @@
 	margin-bottom: -8px;
 }
 
+.screen-card-main-menu li .zone-suffix .checkpoint {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/star-post-head.png);
+	animation: starPostActive steps(2) 100ms 0.5s infinite;
+	min-width: 16px;
+	height: 16px;
+}
+
 .screen-card-main-menu li.focused .zone-suffix,
 .screen-card-main-menu li:focus-within .zone-suffix,
 .screen-card-main-menu li:focus .zone-suffix {

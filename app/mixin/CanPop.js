@@ -81,6 +81,7 @@ export const CanPop = {
 		if(!other)
 		{
 			this.pop();
+			return;
 		}
 
 		const shield = this.args.currentSheild;

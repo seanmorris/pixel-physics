@@ -195,6 +195,8 @@ export class Layer extends View
 
 		let ii = 0;
 
+		let willDisable = true;
+
 		for(let i = startColumn; i <= endColumn; i += Math.sign(blocksWide))
 		{
 			const tileX = i
@@ -268,6 +270,11 @@ export class Layer extends View
 
 				const blockSrc = tileXY[2];
 
+				if(blockId !== false && blockId !== 0)
+				{
+					willDisable = false;
+				}
+
 				if(existingOffset !== blockOffset || existingSrc !== blockSrc)
 				{
 					if(blockId !== false && blockId !== 0)
@@ -297,10 +304,19 @@ export class Layer extends View
 		{
 			const background = this.tags.background;
 
-			background.style({
-				'--offsetX': -offsetX % blockSize
-				, '--offsetY': -offsetY % blockSize
-			});
+			if(willDisable)
+			{
+				background.style({display: 'none'});
+			}
+			else if(this.tags.background)
+			{
+				background.style({
+					display:       'initial'
+					, '--offsetX': -offsetX % blockSize
+					, '--offsetY': -offsetY % blockSize
+				});
+			}
 		}
+
 	}
 }

@@ -483,6 +483,7 @@ export class Block extends PointActor
 		this.args.conveyed += this.args.convey;
 
 		this.box && this.box.style({'--conveyed': this.args.conveyed*0.8});
+		this.box && this.box.setAttribute('data-design', this.args.design);
 
 		super.update();
 	}

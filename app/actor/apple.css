@@ -1,0 +1,40 @@
+.actor-apple .sprite::after {
+	left: 0;
+	content: '';
+	position: absolute;
+	background-image: url(/god-of-thunder/gold-apple.png);
+	width: 11px;
+	height: 11px;
+	animation: apple-hover 1.5s ease-in-out infinite;
+}
+
+.actor-apple-collected .sprite {
+	filter: saturate(0);
+}
+
+.actor-apple-gone .sprite::after {
+	left: 8px;
+	background-image: url(/Sonic/sparkle.png);
+	width: 16px;
+	height: 16px;
+	animation: apple-sparkle 100ms steps(4) infinite
+		, apple-sparkle-fade 300ms ease-out 1 backwards;
+}
+
+@keyframes apple-hover {
+	0% { transform: translateY(0px); }
+	50% { transform: translateY(6px); }
+	100% { transform: translateY(0px); }
+}
+
+@keyframes apple-sparkle {
+	0% { background-position-y: 0px; }
+	100% { background-position-y: -64px; }
+}
+
+@keyframes apple-sparkle-fade {
+	0% { opacity: 0; }
+	99% { opacity: 1; }
+	100% { opacity: 0; }
+}
+

@@ -209,17 +209,17 @@ export class EggWalker extends Vehicle
 			, x: this.args.x + offset[0] + (this.args.xSpeed || this.args.gSpeed)
 			, y: this.args.y + offset[1] - (this.crouching ? -20 : 0)
 			, owner: this
-			, xSpeed: this.args.xSpeed || this.args.gSpeed
+			, xSpeed: this.args.xSpeed || this.args.gSpeed || this.args.direction
 			// , ySpeed: this.args.ySpeed
 			, float:  10
 		});
 
 		projectile.impulse(8, trajectory + (direction < 0 ? Math.PI : 0), true);
 
-		projectile.update();
-
-		this.viewport.auras.add(projectile);
 		this.viewport.spawn.add({object:projectile});
+		this.viewport.auras.add(projectile);
+
+		projectile.update();
 
 		this.box.setAttribute('data-shoot', 'true');
 

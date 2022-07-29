@@ -75,8 +75,8 @@ export class Sping extends Mixin.from(PointActor, CanPop)
 			const y = this.y - 12;
 			const z = -1;
 
-			const xSpeed = -3.5 * Math.sign(this.gSpeedLast);
-			const ySpeed = -7;
+			const xSpeed = -1.5 * Math.sign(this.gSpeedLast);
+			const ySpeed = -3;
 
 			const owner = this;
 

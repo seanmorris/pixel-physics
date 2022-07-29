@@ -1,4 +1,6 @@
 import { PointActor } from './PointActor';
+import { Platformer } from '../behavior/Platformer';
+
 import { Explosion }  from '../actor/Explosion';
 import { Tag }        from 'curvature/base/Tag';
 
@@ -14,17 +16,22 @@ export class Projectile extends PointActor
 
 		this.args.type = 'actor-item actor-projectile';
 
+		this.behaviors.add(new Platformer);
+
 		this.args.width  = 8;
 		this.args.height = 8;
 
+		this.args.gravity   = 0.15;
+
 		this.removeTimer = null;
+		this.noClip = true;
 
 		this.deflected = false;
 	}
 
 	update()
 	{
-		if(this.removed)
+		if(this.removed || !this.viewport)
 		{
 			return;
 		}
@@ -38,14 +45,14 @@ export class Projectile extends PointActor
 
 		super.update();
 
-		if(!this.args.xSpeed && !this.args.ySpeed)
+		if(!this.args.xSpeed && !this.args.ySpeed && this.age > 1)
 		{
 			this.explode();
 		}
 
-		if(!this.removeTimer)
+		if(this.viewport && !this.removeTimer)
 		{
-			this.removeTimer = this.onTimeout(2500, () => this.explode());
+			this.removeTimer = this.viewport.onFrameOut(150, () => this.explode());
 		}
 	}
 
