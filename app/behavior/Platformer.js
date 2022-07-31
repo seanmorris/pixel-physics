@@ -76,59 +76,6 @@ export class Platformer
 			host.args.standingLayer = null;
 		}
 
-		const lastFocus = host.focused;
-
-		if(!host.args.falling)
-		{
-			host.focused = false;
-		}
-
-		for(const region of host.regions)
-		{
-			if(region.focus)
-			{
-				host.viewport.auras.add(region.focus);
-
-				host.focused = region.focus;
-			}
-		}
-
-		if(lastFocus !== host && lastFocus !== host.focused)
-		{
-			host.viewport && host.viewport.auras.delete(lastFocus);
-		}
-
-		for(const [tag, cssArgs] of host.autoStyle)
-		{
-			const styles = {};
-
-			for(const [prop, arg] of Object.entries(cssArgs))
-			{
-				if(arg in host.args)
-				{
-					styles[ prop ] = host.args[ arg ];
-				}
-			}
-
-			tag.style(styles);
-		}
-
-		for(const [tag, attrsArgs] of host.autoAttr)
-		{
-			const attrs = {};
-
-			for(const [attr, arg] of Object.entries(attrsArgs))
-			{
-				if(arg in host.args)
-				{
-					attrs[ attr ] = host.args[ arg ];
-				}
-
-			}
-
-			tag.attr(attrs);
-		}
-
 		if(host.follower)
 		{
 			const frame = host.viewport.serializePlayer();
@@ -944,7 +891,7 @@ export class Platformer
 					host.args.animationBias = 1;
 				}
 			}
-			else if(!host.noClip || host.args.standingLayer || (!host.isRegion &&!host.isEffect && !host.args.falling))
+			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion &&!host.isEffect && !host.args.falling)))
 			{
 				host.args.xSpeed = 0;
 				host.args.ySpeed = 0;
@@ -1355,8 +1302,11 @@ export class Platformer
 
 		if(host.twister)
 		{
-			host.twister.args.x = host.args.x;
-			host.twister.args.y = host.args.y;
+			if(host.viewport && host.viewport.args.frameId % host.viewport.settings.frameSkip === 0)
+			{
+				host.twister.args.x = host.args.x;
+				host.twister.args.y = host.args.y;
+			}
 
 			if(host.args.mode)
 			{
@@ -1375,8 +1325,11 @@ export class Platformer
 
 		if(host.pincherBg)
 		{
-			host.pincherBg.args.x = host.args.x;
-			host.pincherBg.args.y = host.args.y;
+			if(host.viewport && host.viewport.args.frameId % host.viewport.settings.frameSkip === 0)
+			{
+				host.pincherBg.args.x = host.args.x;
+				host.pincherBg.args.y = host.args.y;
+			}
 
 			host.pincherBg.args.xOff = host.args.xOff;
 			host.pincherBg.args.yOff = host.args.yOff;
@@ -1387,8 +1340,11 @@ export class Platformer
 
 		if(host.pincherFg)
 		{
-			host.pincherFg.args.x = host.args.x;
-			host.pincherFg.args.y = host.args.y;
+			if(host.viewport && host.viewport.args.frameId % host.viewport.settings.frameSkip === 0)
+			{
+				host.pincherFg.args.x = host.args.x;
+				host.pincherFg.args.y = host.args.y;
+			}
 
 			host.pincherFg.args.xOff = host.args.xOff;
 			host.pincherFg.args.yOff = host.args.yOff;
@@ -2540,8 +2496,15 @@ export class Platformer
 			collisionAngle = Math.atan2(airPoint[1] - airPointB[1], airPoint[0] - airPointB[0]);
 		}
 
-		host.xLast = host.args.x;
-		host.yLast = host.args.y;
+		if(host.xLast !== host.args.x)
+		{
+			host.xLast = host.args.x;
+		}
+
+		if(host.yLast !== host.args.y)
+		{
+			host.yLast = host.args.y;
+		}
 
 		if(airPoint !== false)
 		{

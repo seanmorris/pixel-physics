@@ -748,6 +748,11 @@ export class PointActor extends View
 
 	updateStart()
 	{
+		if(this.args.dead)
+		{
+			this.args.xSpeed = 0;
+		}
+
 		for(const behavior of this.behaviors)
 		{
 			behavior.updateStart && behavior.updateStart(this);
@@ -756,10 +761,6 @@ export class PointActor extends View
 
 		// this.args.localCameraMode = null;
 
-		// if(this.args.dead)
-		// {
-		// 	return;
-		// }
 
 		// if(this.args.standingLayer && !this.args.static)
 		// {
@@ -807,6 +808,64 @@ export class PointActor extends View
 		for(const behavior of this.behaviors)
 		{
 			behavior.updateEnd && behavior.updateEnd(this);
+		}
+
+		if(this.viewport && this.viewport.args.frameId % this.viewport.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
+		const lastFocus = this.focused;
+
+		if(!this.args.falling)
+		{
+			this.focused = false;
+		}
+
+		for(const region of this.regions)
+		{
+			if(region.focus)
+			{
+				this.viewport.auras.add(region.focus);
+
+				this.focused = region.focus;
+			}
+		}
+
+		if(lastFocus !== this && lastFocus !== this.focused)
+		{
+			this.viewport && this.viewport.auras.delete(lastFocus);
+		}
+
+		for(const [tag, cssArgs] of this.autoStyle)
+		{
+			const styles = {};
+
+			for(const [prop, arg] of Object.entries(cssArgs))
+			{
+				if(arg in this.args)
+				{
+					styles[ prop ] = this.args[ arg ];
+				}
+			}
+
+			tag.style(styles);
+		}
+
+		for(const [tag, attrsArgs] of this.autoAttr)
+		{
+			const attrs = {};
+
+			for(const [attr, arg] of Object.entries(attrsArgs))
+			{
+				if(arg in this.args)
+				{
+					attrs[ attr ] = this.args[ arg ];
+				}
+
+			}
+
+			tag.attr(attrs);
 		}
 
 		// if(!this.args.static && this.args.falling)
@@ -4770,12 +4829,21 @@ export class PointActor extends View
 
 	startle(other)
 	{
-		if(this.noClip)
+		if(this.noClip || this.args.startled > 30)
 		{
 			return;
 		}
 
-		const direction = Math.sign(this.args.xSpeed || this.args.gSpeed || this.args.direction);
+		const direction = Math.sign(
+			(this.x - this.xLast)
+			|| this.args.xSpeed
+			|| this.args.gSpeed
+			|| other && (
+				other.args.xSpeed
+				|| (this.args.x - other.args.x)
+			)
+			|| this.args.direction
+		);
 
 		this.args.jumping  = false;
 		this.args.falling  = true;
@@ -4784,7 +4852,7 @@ export class PointActor extends View
 		this.args.float    = 1;
 
 		this.args.xSpeed = -2.25 * direction;
-		this.args.ySpeed = -8.00;
+		this.args.ySpeed = -8;
 
 		this.args.flying = false;
 
@@ -4799,7 +4867,11 @@ export class PointActor extends View
 		if(this.args.mode === MODE_CEILING)
 		{
 			this.args.xSpeed *= -1;
-			this.args.ySpeed *= -1;
+			this.args.ySpeed = 0;
+		}
+		else
+		{
+			this.args.y -= 4;
 		}
 	}
 
@@ -5788,15 +5860,15 @@ export class PointActor extends View
 	{
 		const result = new Map;
 
-		this.behaviors.forEach(b => {
-
+		for(const b of this.behaviors)
+		{
 			if(typeof b[methodName] !== 'function')
 			{
-				return;
+				continue;
 			}
 
 			result.set(b.constructor, b[methodName](this, ...args));
-		});
+		}
 
 		return result;
 	}

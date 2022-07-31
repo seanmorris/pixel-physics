@@ -1,12 +1,8 @@
-import { Flickie } from './Flickie';
-
 import { Mixin } from 'curvature/base/Mixin';
 import { PointActor } from './PointActor';
 
 import { Patrol } from '../behavior/Patrol';
 import { CanPop } from '../mixin/CanPop';
-
-import { Explosion } from '../actor/Explosion';
 
 export class SnailBot extends Mixin.from(PointActor, CanPop)
 {
@@ -24,7 +20,6 @@ export class SnailBot extends Mixin.from(PointActor, CanPop)
 		this.args.decel     = 0.5;
 
 		this.args.gSpeedMax = 5;
-		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
 		this.args.width     = 24;
@@ -42,43 +37,22 @@ export class SnailBot extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
-		const direction = this.args.direction;
-
-
-		const telegraph = this.args.shotTelegraph;
-		const beat      = this.args.patrolBeat;
-
-		if(this.box)
-		{
-			if(this.args.moving && this.args.gSpeed)
-			{
-				this.box.setAttribute('data-animation', 'walking');
-			}
-			else
-			{
-
-				this.box.setAttribute('data-animation', 'standing');
-			}
-		}
-
 		super.update();
+
+		if(this.args.moving && this.args.gSpeed)
+		{
+			this.args.animation = 'walking';
+		}
+		else
+		{
+			this.args.animation = 'standing';
+		}
 
 		this.args.direction = Math.sign(this.args.gSpeed);
 
 		this.age++;
 	}
 
-	effect(other)
-	{
-		super.effect(other);
-
-		// this.viewport.spawn.add({object:new Flickie({
-		// 	x: this.args.x,
-		// 	y: this.args.y,
-		// })});
-	}
-
 	get solid() { return false; }
 	get isEffect() { return false; }
-	// get controllable() { return true; }
 }

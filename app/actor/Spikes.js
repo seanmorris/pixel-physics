@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Sfx } from '../audio/Sfx';
 
 export class Spikes extends PointActor
 {
@@ -25,14 +26,76 @@ export class Spikes extends PointActor
 
 		this.args.pointing = this.args.pointing || 0;
 
+		this.args.beat        = this.args.beat || 90;
+		this.args.retractible = this.args.retractible ?? false;
+		this.args.retracted   = false;
+
 		this.hazard = true;
+
+		this.age = 0;
+	}
+
+	updateStart()
+	{
+		if(this.args.retractible)
+		{
+			const wasRetracted = this.args.retracted;
+
+			this.args.retracted = !!(Math.floor(this.age / this.args.beat) % 2);
+
+			if(!this.args.retracted && wasRetracted)
+			{
+				Sfx.play('SPIKES_OUT');
+
+				const actors = this.viewport.actorsAtPoint(this.x, this.y, this.width, this.height);
+
+				for(const actor of actors)
+				{
+					if(actor === this)
+					{
+						continue;
+					}
+
+					switch(this.args.pointing)
+					{
+						case 0:
+							actor.args.y = this.args.y + -this.args.height;
+							break;
+
+						case 1:
+							actor.args.x = this.args.x + -(this.args.width/2) + -(actor.args.width/2) + -4;
+							actor.damage(this);
+							break;
+
+						case 2:
+							actor.args.y = this.args.y +  this.args.height/2;
+							break;
+
+						case 3:
+							actor.args.x = this.args.y +  this.args.width/2 + actor.args.width/2 + 4;
+							actor.damage(this);
+							break;
+					}
+
+				}
+			}
+			if(this.args.retracted && !wasRetracted)
+			{
+				Sfx.play('SPIKES_IN');
+			}
+		}
+
+		super.updateStart();
+
+		this.age++;
 	}
 
 	onRendered(event)
 	{
 		super.onRendered(event);
 
-		this.autoAttr.get(this.box)['data-pointing'] = 'pointing';
+		this.autoAttr.get(this.box)['data-pointing']  = 'pointing';
+		this.autoAttr.get(this.box)['data-retracted'] = 'retracted';
 	}
 
 	startle(){}
@@ -40,6 +103,11 @@ export class Spikes extends PointActor
 
 	collideA(other, type)
 	{
+		if(this.args.retracted)
+		{
+			return false;
+		}
+
 		if(other.isRegion)
 		{
 			return;
@@ -59,6 +127,7 @@ export class Spikes extends PointActor
 
 				if(speed <= 0)
 				{
+					other.args.x = this.args.x + (this.args.width/2)  + (other.args.width/2) + 4;
 					other.damage(this);
 				}
 			}
@@ -68,6 +137,7 @@ export class Spikes extends PointActor
 
 				if(speed >= 0)
 				{
+					other.args.x = this.args.x + -(this.args.width/2)  + -(other.args.width/2) + -4;
 					other.damage(this);
 				}
 			}
@@ -77,6 +147,7 @@ export class Spikes extends PointActor
 
 				if(speed <= 0)
 				{
+					other.args.y = this.args.y + other.args.height;
 					other.damage(this);
 				}
 			}
@@ -86,6 +157,7 @@ export class Spikes extends PointActor
 
 				if(speed >= 0)
 				{
+					other.args.y = this.args.y + -this.args.height;
 					other.damage(this);
 				}
 			}
@@ -94,5 +166,5 @@ export class Spikes extends PointActor
 		return true;
 	}
 
-	get solid() {return true;}
+	get solid() {return !this.args.retracted;}
 }

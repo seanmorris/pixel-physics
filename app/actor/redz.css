@@ -1,6 +1,6 @@
 .actor-item.actor-redz .sprite {
-	height: 64px;
 	width: 64px;
+	height: 32px;
 }
 
 .actor-item.actor-redz .sprite:after {
@@ -10,13 +10,16 @@
 	left: 0;
 	/*background-image: url(/secret/super-seymour.png);*/
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: 0px;
+	--sprite-offset-y: -32px;
 	background-image: url(/Sonic/redz.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 64px;
 	width: 64px;
 	z-index: 1;
-	animation: redz-walk steps(3) infinite 500ms alternate;
+}
+
+.actor-item.actor-redz[data-direction="-1"] {
+	transform: scaleX(-1);
 }
 
 .actor-item.actor-redz[data-animation="standing"] .sprite:after {
@@ -26,7 +29,12 @@
 
 .actor-item.actor-redz[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
-	animation: redz-walk steps(6) infinite 320ms;
+	animation: redz-walk steps(3) infinite alternate 130ms;
+}
+
+.actor-item.actor-redz[data-animation="shooting"] .sprite:after {
+	--sprite-offset-y: -96px;
+	animation: redz-shoot steps(2, end) 350ms 2;
 }
 
 @keyframes redz-walk {
@@ -34,6 +42,15 @@
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes redz-shoot {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

@@ -25,7 +25,7 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 		this.args.accel     = 0.1;
 		this.args.decel     = 0.5;
 
-		this.args.gSpeedMax = 5;
+		this.args.gSpeedMax = 2;
 		this.args.jumpForce = 5;
 		this.args.gravity   = 0.5;
 
@@ -124,7 +124,7 @@ export class BuzzBomber extends Mixin.from(PointActor, CanPop)
 			, YSpeed: this.args.YSpeed
 		});
 
-		projectile.impulse(18, 1.57 + (Math.PI/4) * 1);
+		projectile.impulse(6, 1.57 + (Math.PI/4) * 1);
 
 		this.viewport.auras.add(projectile);
 		this.viewport.spawn.add({object:projectile});

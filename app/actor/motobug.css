@@ -1,0 +1,47 @@
+.actor-item.actor-motobug .sprite {
+	height: 32px;
+	width: 40px;
+}
+
+.actor-item.actor-motobug .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/motobug.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 32px;
+	width: 40px;
+	z-index: 1;
+}
+
+.actor-item.actor-motobug[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-motobug[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: motobug-walk steps(3) infinite 180ms;
+}
+
+.actor-item.actor-motobug[data-animation="walking"][data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-motobug[data-animation="shooting"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-x: -160px;
+}
+
+@keyframes motobug-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-120px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

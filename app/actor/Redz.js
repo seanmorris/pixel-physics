@@ -5,10 +5,11 @@ import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
 
 import { SkidDust } from '../behavior/SkidDust';
+import { Patrol } from '../behavior/Patrol';
 import { CanPop } from '../mixin/CanPop';
 
 import { Explosion } from '../actor/Explosion';
-import { Projectile } from '../actor/Projectile';
+import { SpitFire } from '../actor/SpitFire';
 
 export class Redz extends Mixin.from(PointActor, CanPop)
 {
@@ -17,13 +18,14 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 		super(...args);
 
 		this.behaviors.add(new SkidDust);
+		this.behaviors.add(new Patrol);
 
 		this.args.type      = 'actor-item actor-redz';
 
 		this.args.animation = 'standing';
 
-		this.args.accel     = 0.1;
-		this.args.decel     = 0.5;
+		// this.args.accel     = 0.1;
+		// this.args.decel     = 0.5;
 
 		this.args.gSpeedMax = 5;
 		this.args.jumpForce = 5;
@@ -34,11 +36,19 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.args.patrolBeat    = this.args.patrolBeat    || 160;
+		this.args.patrolPause   = this.args.patrolPause   || 60;
+		this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
+
+		this.age = 0;
 	}
 
 	update()
 	{
-		const direction = this.args.direction;
+		super.update();
+
+		const direction = this.args.direction = Math.sign(this.args.gSpeed) || this.args.direction;
 
 		if(this.box)
 		{
@@ -52,11 +62,24 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 			}
 			else
 			{
-				this.box.setAttribute('data-animation', 'standing');
+				this.box.setAttribute('data-animation', 'shooting');
 			}
 		}
 
-		super.update();
+		if(this.age % this.args.patrolBeat === this.args.patrolBeat - this.args.patrolPause)
+		{
+			const spitFire = new SpitFire({
+				owner: this
+				, direction
+				, x: this.x + 59 * direction
+				, y: this.y - 3
+				, z: this.z + 1
+			});
+
+			this.viewport.spawn.add({object:spitFire});
+		}
+
+		this.age++;
 	}
 
 	effect(other)

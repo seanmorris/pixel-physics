@@ -23,14 +23,16 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
-		super.update();
-
-		if(!this.viewport)
+		if(!this.viewport || !this.viewport.actorIsOnScreen(this))
 		{
 			return;
 		}
 
-		const mainChar = this.viewport.controlActor;
+		const viewport = this.viewport;
+
+		super.update();
+
+		const mainChar = viewport.controlActor;
 
 		if(!mainChar)
 		{
@@ -65,6 +67,7 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 				break;
 
 			case 'attacking': {
+
 				const drawX = Math.sign(mainChar.x + -this.x);
 				const drawY = Math.sign(mainChar.y + -this.y + -24);
 

@@ -175,7 +175,7 @@ export class WestSideCloudy extends Backdrop
 				autoscroll: 0
 				, parallax: 0.004
 				, url:      '/Sonic/backdrop/west-side/water-cloudy.png'
-				, height:   48
+				, height:   46
 			}
 		];
 

@@ -38,7 +38,8 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 		this.stayStuck = false;
 
 		this.args.patrolBeat    = this.args.patrolBeat    || 90;
-		this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
+		this.args.patrolPause   = this.args.patrolPause   || 25;
+	 	this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
 		this.args.shotTelegraph = this.args.shotTelegraph || 65;
 
 		this.age = 0;
@@ -89,7 +90,7 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 			const ballA = new Projectile({x:xA,y,z,owner});
 			const ballB = new Projectile({x:xB,y,z,owner});
 
-			this.viewport.onFrameOut(2, () => {
+			this.viewport.onFrameOut(3, () => {
 				Object.assign(ballA.args, {xSpeed:-xSpeed,ySpeed});
 				Object.assign(ballB.args, {xSpeed,ySpeed});
 			});

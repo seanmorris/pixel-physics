@@ -25,10 +25,10 @@
 
 .actor-item.actor-crabmeat[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
-	animation: crabmeat-walk steps(6) infinite 480ms;
+	animation: crabmeat-walk steps(6) infinite 380ms;
 }
 
-.actor-item.actor-crabmeat[data-animation="walking"][direction="left"] .sprite:after {
+.actor-item.actor-crabmeat[data-animation="walking"][data-direction="-1"] .sprite:after {
 	transform: scaleX(-1);
 }
 

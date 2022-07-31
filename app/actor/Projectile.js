@@ -118,6 +118,7 @@ export class Projectile extends PointActor
 		setTimeout(() => viewport.particles.remove(particle), 350);
 
 		this.viewport.actors.remove( this );
+		this.remove();
 	}
 
 	get canStick() { return false; }

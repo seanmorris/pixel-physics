@@ -160,6 +160,39 @@
 	transition: opacity 0.5s ease-out;
 }
 
+.button-callout {
+	width: 64px;
+	text-align: right;
+	white-space: normal;
+	position: absolute;
+	height: 32px;
+	bottom: 32px;
+	right: 0px;
+	padding-right: 32px;
+	transform: scale(0) rotate(-180deg);
+	transition: 0.5s 0.25s ease-out transform;
+}
+
+.closing .button-callout,
+.closed .button-callout,
+.opened .button-callout {
+	transform: scale(1) rotate(0deg);
+}
+
+.button-callout .arrow{
+	transform: scale(1) rotate(0deg);
+	position: absolute;
+	background-image: url(/ui/curved-arrow.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	transform: scaleX(-1) rotate(90deg) ;
+	width: 32px;
+	height: 32px;
+	right: 0px;
+	top: 20px;
+}
+
 .warning-svg {
 	background-color: white;
 	margin-left: auto;

@@ -14,10 +14,27 @@
 	filter: initial !important;
 }
 
-.actor-item.actor-marble-companion-block .sprite {
+.actor-item.actor-marble-companion-block .sprite::after {
+	content: '';
+	left: 0;
+	top: 0;
+	position: absolute;
 	background-image: url(/Sonic/marble-companion-block.png);
 	width: 32px;
 	height: 32px;
+	transition: filter 0.25s ease-in;
+}
+
+.actor-item.actor-marble-companion-block-dead .sprite::after {
+	filter: saturate(10%) brightness(0.85) contrast(150%);
+}
+
+.actor-item.actor-marble-companion-block-dying .sprite::after {
+	animation:
+		companion-block-shake   6 ease-in-out 75ms,
+		companion-block-shake-2 12 ease-in-out 75ms 450ms;
+
+	filter: saturate(10%) brightness(0.75) contrast(120%);
 }
 
 .actor-item.actor-breakable-block {
@@ -191,4 +208,34 @@
 	background-position: bottom center;
 	height: 40px;
 	width: 101px;
+}
+
+@keyframes companion-block-shake {
+	0%{
+		transform: translateX(0px);
+	}
+	25%{
+		transform: translateX(-2px);
+	}
+	75%{
+		transform: translateX(2px);
+	}
+	100%{
+		transform: translateX(0px);
+	}
+}
+
+@keyframes companion-block-shake-2 {
+	0%{
+		transform: translateX(0px);
+	}
+	25%{
+		transform: translateX(-4px);
+	}
+	75%{
+		transform: translateX(4px);
+	}
+	100%{
+		transform: translateX(0px);
+	}
 }

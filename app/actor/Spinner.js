@@ -15,13 +15,13 @@ export class Spinner extends PointActor
 		this.args.height = 24;
 
 		this.args.direction = this.args.direction || 1;
+
+		this.args.static = true;
 	}
 
 	update()
 	{
-		this.args.gSpeed = 0;
 		super.update();
-		this.args.gSpeed = 0;
 	}
 
 	collideB(other)
