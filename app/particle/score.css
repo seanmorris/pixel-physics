@@ -1,0 +1,34 @@
+.particle-score {
+	transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
+	transform-origin: bottom center;
+
+	width: 24px;
+	height: 10px;
+
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+
+	background-position: center;
+	background-repeat: no-repeat;
+
+	z-index: 10000;
+
+	animation: score-rise 0.15s 0.2s ease-in-out forwards;
+}
+
+.particle-score.score-10  { background-image: url(/Sonic/score-10.png); }
+.particle-score.score-100 { background-image: url(/Sonic/score-100.png); }
+.particle-score.score-200 { background-image: url(/Sonic/score-200.png); }
+.particle-score.score-300 { background-image: url(/Sonic/score-300.png); }
+.particle-score.score-500 { background-image: url(/Sonic/score-500.png); }
+.particle-score.score-1000 { background-image: url(/Sonic/score-1000.png); }
+.particle-score.score-10000 { background-image: url(/Sonic/score-10000.png); }
+
+@keyframes score-rise {
+	from{
+		transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
+	}
+	to{
+		transform: translate(-50%, calc(-350% + 6px)) scale(var(--particleScale, 1));
+	}
+}

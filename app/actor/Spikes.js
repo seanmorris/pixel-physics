@@ -39,11 +39,11 @@ export class Spikes extends PointActor
 	{
 		if(this.args.retractible)
 		{
-			const wasRetracted = this.args.retracted;
+			this.args.wasRetracted = this.args.retracted;
 
 			this.args.retracted = !!(Math.floor(this.age / this.args.beat) % 2);
 
-			if(!this.args.retracted && wasRetracted)
+			if(!this.args.retracted && this.args.wasRetracted)
 			{
 				Sfx.play('SPIKES_OUT');
 
@@ -59,7 +59,7 @@ export class Spikes extends PointActor
 					switch(this.args.pointing)
 					{
 						case 0:
-							actor.args.y = this.args.y + -this.args.height;
+							actor.args.y = this.args.y + -this.args.height + -4;
 							break;
 
 						case 1:
@@ -79,7 +79,7 @@ export class Spikes extends PointActor
 
 				}
 			}
-			if(this.args.retracted && !wasRetracted)
+			if(this.args.retracted && !this.args.wasRetracted)
 			{
 				Sfx.play('SPIKES_IN');
 			}
@@ -166,5 +166,5 @@ export class Spikes extends PointActor
 		return true;
 	}
 
-	get solid() {return !this.args.retracted;}
+	get solid() {return !this.args.wasRetracted;}
 }

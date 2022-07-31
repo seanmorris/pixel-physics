@@ -125,14 +125,25 @@ export class Monitor extends PointActor
 
 		if(other)
 		{
+			other.args.popCombo += 1;
 			other.args.score += 100;
 		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});
 
+		const scoreNode = document.createElement('div');
+		scoreNode.classList.add('particle-score');
+		scoreNode.classList.add('score-100');
+		const scoreTag = new Tag(scoreNode);
+
+		scoreTag.style({'--x': this.args.x, '--y': this.args.y-16});
+
+		viewport.particles.add(scoreTag);
+
 		viewport.particles.add(explosion);
 
 		setTimeout(() => viewport.particles.remove(explosion), 512);
+		setTimeout(() => viewport.particles.remove(scoreTag), 768);
 
 		setTimeout(() => this.screen && this.screen.remove(), 1024);
 

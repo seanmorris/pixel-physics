@@ -142,14 +142,45 @@ export const CanPop = {
 
 			if(other.controllable && typeof this.effect === 'function')
 			{
-				if(this.args.gold)
+				let points = 100;
+
+				other.args.popCombo += 1;
+
+				const scoreNode = document.createElement('div');
+				scoreNode.classList.add('particle-score');
+				const scoreTag = new Tag(scoreNode);
+
+				scoreTag.style({'--x': this.args.x, '--y': this.args.y-16});
+
+				switch(true)
 				{
-					other.args.score += 10000;
+					case this.args.gold:
+						scoreNode.classList.add('score-10000');
+						points = 10000;
+						break;
+					case other.args.popCombo === 1:
+						scoreNode.classList.add('score-100');
+						break;
+					case other.args.popCombo === 2:
+					case other.args.popCombo === 3:
+						scoreNode.classList.add('score-200');
+						points *= 2;
+						break;
+					case other.args.popCombo >= 4 && other.args.popCombo <= 6:
+						scoreNode.classList.add('score-500');
+						points *= 5;
+						break;
+					case other.args.popCombo >= 7:
+						scoreNode.classList.add('score-1000');
+						points *= 10;
+						break;
 				}
-				else
-				{
-					other.args.score += 100;
-				}
+
+				viewport.particles.add(scoreTag);
+
+				setTimeout(() => viewport.particles.remove(scoreTag), 768);
+
+				other.args.score += points;
 
 				this.effect(other);
 			}

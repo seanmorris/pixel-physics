@@ -53,7 +53,7 @@ export class Signpost extends PointActor
 			this.viewport.auras.add(boss);
 
 			boss.args.x = this.x + (this.x < 125000 ? 768 : -768);
-			boss.args.y = this.y - 160;
+			boss.args.y = this.y - 144;
 
 			if(this.viewport.controlActor && this.viewport.controlActor.args.jumpForce < 10.5)
 			{

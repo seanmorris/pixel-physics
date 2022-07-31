@@ -457,62 +457,6 @@
                 {
                  "gid":2,
                  "height":32,
-                 "id":29,
-                 "name":"b-fish",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"jumpForce",
-                         "type":"int",
-                         "value":16
-                        }],
-                 "rotation":0,
-                 "type":"b-fish",
-                 "visible":true,
-                 "width":32,
-                 "x":224,
-                 "y":1077.33333333333
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
-                 "id":30,
-                 "name":"b-fish",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"jumpForce",
-                         "type":"int",
-                         "value":16
-                        }],
-                 "rotation":0,
-                 "type":"b-fish",
-                 "visible":true,
-                 "width":32,
-                 "x":224,
-                 "y":1077.33333333333
-                }, 
-                {
-                 "gid":2,
-                 "height":32,
                  "id":31,
                  "name":"b-fish",
                  "properties":[

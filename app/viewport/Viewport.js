@@ -1085,7 +1085,7 @@ export class Viewport extends View
 
 		this.showStatus(3500, ' hit escape to revert. ');
 
-		this.tags.viewport.node.requestFullscreen().then(res=>{
+		this.tags.frame.node.requestFullscreen().then(res=>{
 			this.onTimeout(100, ()=>{
 
 				this.fitScale();

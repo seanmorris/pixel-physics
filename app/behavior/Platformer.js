@@ -10,7 +10,6 @@ const MODE_RIGHT   = 3;
 
 export class Platformer
 {
-
 	updateStart(host)
 	{
 		host.lastLayer = null;
@@ -104,6 +103,11 @@ export class Platformer
 				host.follower.args.x = host.x;
 				host.follower.args.y = host.y;
 			}
+		}
+
+		if(!host.args.falling)
+		{
+			host.args.popCombo = 0;
 		}
 	}
 

@@ -356,7 +356,7 @@ export class RedEyeJet extends PointActor
 			this.viewport.onFrameOut(45, () => {
 				for(const mace of this.hanging.get(MiniMace))
 				{
-					mace.args.ropeLength = 144;
+					mace.args.ropeLength = 128;
 				}
 			});
 		}
@@ -365,7 +365,7 @@ export class RedEyeJet extends PointActor
 			this.viewport.onFrameOut(45, () => {
 				for(const mace of this.hanging.get(MegaMace))
 				{
-					mace.args.ropeLength = 192;
+					mace.args.ropeLength = 176;
 				}
 			});
 		}
@@ -544,5 +544,5 @@ export class RedEyeJet extends PointActor
 		this.box.appendChild(this.eye.node);
 	}
 
-	get solid() { return true; }
+	get solid() { return false; }
 }
