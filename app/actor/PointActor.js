@@ -130,6 +130,7 @@ export class PointActor extends View
 		this.args.rings  = 0;
 
 		this.args.mercy = false;
+		this.args.popCombo = 0;
 
 		this.args.opacity = this.args.opacity ?? 1;
 		this.args.pushing = false;
@@ -248,6 +249,7 @@ export class PointActor extends View
 
 		this.args.emeralds = 0;
 		this.args.emblems  = [];
+		this.args.emblemsCurrent = [];
 
 		this.args.dead  = false;
 		this.args.respawning = false;

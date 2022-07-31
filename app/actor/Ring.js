@@ -144,19 +144,12 @@ export class Ring extends PointActor
 			return false;
 		}
 
-		if(!other.controllable && !other.occupant && !other.args.owner)
-		{
-			return false;
-		}
-
 		const age = this.viewport.args.frameId - this.startFrame;
 
 		if(this.dropped && age < this.args.delay)
 		{
 			return false;
 		}
-
-		super.collideA(other);
 
 		if(other.args.owner)
 		{
@@ -167,6 +160,13 @@ export class Ring extends PointActor
 		{
 			other = other.occupant;
 		}
+
+		if(!other.controllable && !other.occupant && !other.args.owner)
+		{
+			return false;
+		}
+
+		super.collideA(other);
 
 		if(other.controllable)
 		{

@@ -86,6 +86,7 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 
 				if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
 				{
+					this.args.falling = true;
 					this.args.ySpeed = -1;
 					this.args.y -= 1;
 				}

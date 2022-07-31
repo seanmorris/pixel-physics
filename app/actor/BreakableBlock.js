@@ -285,6 +285,24 @@ export class BreakableBlock extends Block
 				Math.floor(Math.random() * 3)
 				, () => Sfx.play('BLOCK_DESTROYED')
 			);
+
+			if(other && other.controllable)
+			{
+				other.args.popCombo += 1;
+
+
+				const scoreNode = document.createElement('div');
+				scoreNode.classList.add('particle-score');
+				scoreNode.classList.add('score-10');
+				const scoreTag = new Tag(scoreNode);
+
+				scoreTag.style({'--x': this.args.x, '--y': this.args.y - this.args.height});
+
+				this.viewport.particles.add(scoreTag);
+				setTimeout(() => this.viewport.particles.remove(scoreTag), 768);
+
+				other.args.score += 10;
+			}
 		}
 
 		this.viewport.onFrameOut(4, () => {

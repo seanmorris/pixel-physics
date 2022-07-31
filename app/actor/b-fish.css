@@ -19,10 +19,6 @@
 	animation: b-fish-bite steps(2) infinite alternate 100ms;
 }
 
-.actor-item.actor-b-fish[data-direction="-1"] {
-	transform: scaleX(-1);
-}
-
 .actor-item.actor-b-fish[data-animation="standing"] .sprite:after {
 	/*--sprite-offset-x: 0px;
 	--sprite-offset-y: 32px;*/
