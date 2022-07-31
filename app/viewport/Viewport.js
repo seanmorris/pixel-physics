@@ -166,6 +166,7 @@ export class Viewport extends View
 			, showFps: true
 			, debugOsd: false
 			, outline: 1
+			, frameSkip: 1
 			, musicVol: 50
 			, sfxVol: 75
 			, username: 'player'
@@ -690,30 +691,46 @@ export class Viewport extends View
 			{
 				i.viewport = null;
 
-				i.remove();
-
-				if(i[ColCell])
-				{
-					this.playable.delete(i);
-
-					i[ColCell].delete(i);
-				}
+				this.playable.delete(i);
 
 				if(i instanceof Region)
 				{
 					this.regions.delete(i);
 				}
 
-				this.auras.delete(i);
-
+				delete this.actorsByName[i.args.name];
 				delete this.actorsById[i.args.name];
 				delete this.actorsById[i.args.id];
 
-				delete i[ColCell];
+				this.recent.delete(i);
+				this.auras.delete(i);
+
+				this.updateStarted.delete(i);
+				this.updateEnded.delete(i);
+				this.updated.delete(i);
 
 				// this.quadCell.remove(i);
-
 				this.objectDb.remove(i);
+
+				// console.log(i, i[ColCell].has(i), i[ColCell]);
+
+				const cell = this.getColCell(i);
+
+				if(i[ColCell])
+				{
+					i[ColCell].delete(i);
+				}
+
+				if(cell)
+				{
+					cell.delete(i);
+				}
+
+				// console.log(i[ColCell].has(i));
+
+				delete i[ColCell];
+
+				i.remove();
 			}
 		});
 
@@ -1177,7 +1194,6 @@ export class Viewport extends View
 				this.args.focusMe.args.value = focusMeMessage;
 			}, {wait: 250});
 		});
-
 
 		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
 		this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
@@ -2159,6 +2175,11 @@ export class Viewport extends View
 
 	applyMotionBlur()
 	{
+		if(this.args.frameId % this.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		const controlActor = this.controlActor;
 
 		if(this.settings.blur && controlActor && this.tags.blur)
@@ -2209,6 +2230,11 @@ export class Viewport extends View
 
 	updateBackground()
 	{
+		if(this.args.frameId % this.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		let controlActor = this.controlActor;
 
 		if(controlActor && controlActor.standingOn && controlActor.standingOn.isVehicle)
@@ -2247,6 +2273,11 @@ export class Viewport extends View
 
 	updateBackdrops()
 	{
+		if(this.args.frameId % this.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		for(const [,backdrop] of this.backdrops)
 		{
 			if(!backdrop.view)
@@ -2465,12 +2496,10 @@ export class Viewport extends View
 			this.backdrops.delete(id);
 		}
 
-		for(const particle of this.particles.list)
+		for(const particle of Object.entries(this.particles.list))
 		{
 			if(particle)
 			{
-				particle.remove();
-
 				this.particles.remove(particle);
 			}
 		}
@@ -2544,7 +2573,7 @@ export class Viewport extends View
 			}
 		});
 
-		for(const actor of this.actors.list)
+		for(const [id, actor] of Object.entries(this.actors.list))
 		{
 			if(!actor || actor.args.npc)
 			{
@@ -2739,7 +2768,10 @@ export class Viewport extends View
 
 		actor.updateEnd();
 
-		this.setColCell(actor);
+		if(!actor.removed)
+		{
+			this.setColCell(actor);
+		}
 
 		// this.quadCell.remove(actor, actor.args);
 
@@ -3121,7 +3153,7 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				if(actor[Run] === this[Run])
+				if(!actor.removed && actor[Run] === this[Run])
 				{
 					this.setColCell(actor);
 				}
@@ -3405,6 +3437,19 @@ export class Viewport extends View
 		}
 
 		this.spawnActors();
+
+		if(this.args.fps < 30)
+		{
+			this.settings.frameSkip = 3;
+		}
+		else if(this.args.fps < 45)
+		{
+			this.settings.frameSkip = 2;
+		}
+		else
+		{
+			this.settings.frameSkip = 1;
+		}
 	}
 
 	click(event)
@@ -3635,6 +3680,11 @@ export class Viewport extends View
 
 	setColCell(actor)
 	{
+		if(actor.removed)
+		{
+			return;
+		}
+
 		actor[ Bindable.NoGetters ] = true;
 
 		actor = Bindable.make(actor);
@@ -3798,12 +3848,12 @@ export class Viewport extends View
 
 		this.actorsById = {};
 
-		for(const effect of this.effects.list)
+		for(const [id,effect] of Object.entries(this.effects.list))
 		{
 			effect && this.effects.remove(effect);
 		}
 
-		for(const particle of this.particles.list)
+		for(const [id,particle] of Object.entries(this.particles.list))
 		{
 			particle && this.particles.remove(particle);
 		}
@@ -4039,7 +4089,7 @@ export class Viewport extends View
 		};
 
 		const onMessage = event => {
-			const actors = this.actors.list;
+			// const actors = this.actors.list;
 
 			if(this.remotePlayer)
 			{
@@ -4096,7 +4146,7 @@ export class Viewport extends View
 		};
 
 		const onMessage = event => {
-			const actors = this.actors.list;
+			// const actors = this.actors.list;
 
 			if(this.remotePlayer)
 			{

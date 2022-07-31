@@ -5,7 +5,29 @@
 .actor-item.actor-spikes .sprite {
 	position: relative;
 	background-position: 0 0;
+	background-repeat: no-repeat;
 	background-image: url(/Sonic/spikes-wide.png);
+	transition: background-position 0.05s linear;
+}
+
+.actor-item.actor-spikes[data-retracted="true"] .sprite {
+	transition: background-position 0.1s ease-in;
+}
+
+.actor-item.actor-spikes[data-pointing="0"][data-retracted="true"] .sprite {
+	background-position: 4px 32px;
+}
+
+.actor-item.actor-spikes[data-pointing="1"][data-retracted="true"] .sprite {
+	background-position: -32px 4px;
+}
+
+.actor-item.actor-spikes[data-pointing="2"][data-retracted="true"] .sprite {
+	background-position: 4px 32px;
+}
+
+.actor-item.actor-spikes[data-pointing="3"][data-retracted="true"] .sprite {
+	background-position: 32px 4px;
 }
 
 .actor-item.actor-spikes[data-pointing="2"] .sprite,

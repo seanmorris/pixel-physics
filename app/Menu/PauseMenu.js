@@ -87,6 +87,7 @@ export class PauseMenu extends Menu
 					'No': { callback: () => this.args.items.back.callback() }
 					, 'Yes': { callback: () => {
 						this.args.items.back.callback();
+						parent.clearCheckpoints();
 						parent.unpauseGame();
 						parent.quit();
 						parent.playCards();

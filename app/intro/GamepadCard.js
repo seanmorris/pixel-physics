@@ -8,6 +8,8 @@ export class GamepadCard extends SkippableCard
 	{
 		super(args, parent);
 
+		this.args.timeout = 2500;
+
 		this.args.cardName = 'gamepad-card';
 		this.args.text     = ``;
 	}

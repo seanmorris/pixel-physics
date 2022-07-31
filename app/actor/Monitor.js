@@ -31,9 +31,12 @@ export class Monitor extends PointActor
 	{
 		super.onRendered(event);
 
-		this.screen = new Tag(`<div class = "monitor-screen">`);
+		if(!this.screen && this.sprite)
+		{
+			this.screen = new Tag(`<div class = "monitor-screen">`);
 
-		this.sprite && this.sprite.appendChild(this.screen.node);
+			this.sprite.appendChild(this.screen.node);
+		}
 	}
 
 	update()
@@ -184,7 +187,7 @@ export class Monitor extends PointActor
 			}
 		}
 
-		this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
+		// this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
 
 		if(other && this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{

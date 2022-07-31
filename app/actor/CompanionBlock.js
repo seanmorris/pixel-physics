@@ -44,11 +44,21 @@ export class CompanionBlock extends MarbleBlock
 			{
 				isInLava = true;
 
+				if(this.args.height > 16)
+				{
+					this.args.height -= 0.5;
+				}
+
+
 				if(!this.played)
 				{
-					this.onTimeout(50, () => {
+					this.args.type = 'actor-item actor-marble-companion-block actor-marble-companion-block-dying';
+
+					this.viewport.onFrameOut(80, () => {
+						this.args.type = 'actor-item actor-marble-companion-block actor-marble-companion-block-dead';
 						Sfx.play('PLAYER_DAMAGED');
 					});
+
 
 					if(typeof ga === 'function')
 					{
@@ -85,6 +95,11 @@ export class CompanionBlock extends MarbleBlock
 					this.args.pushed = 0;
 				}
 			}
+		}
+
+		if(!isInLava)
+		{
+			this.args.height = 32;
 		}
 
 	}

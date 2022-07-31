@@ -39,7 +39,7 @@ export class Balkiry extends Mixin.from(PointActor, CanPop)
 
 		this.args.float = -1;
 
-		this.aiming = false;
+		this.noClip = true;
 	}
 
 	onRendered()
@@ -60,7 +60,7 @@ export class Balkiry extends Mixin.from(PointActor, CanPop)
 
 		if(this.args.xSpeed > -12)
 		{
-			this.args.xSpeed -= 0.2;
+			this.args.xSpeed -= 0.1;
 		}
 
 		this.args.ySpeed  = 0;

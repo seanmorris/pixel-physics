@@ -1,0 +1,47 @@
+.actor-item.actor-b-fish .sprite {
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-b-fish .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -32px;
+	background-image: url(/Sonic/b-fish.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 32px;
+	width: 32px;
+	z-index: 1;
+	animation: b-fish-bite steps(2) infinite alternate 100ms;
+}
+
+.actor-item.actor-b-fish[data-direction="-1"] {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-b-fish[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-b-fish[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+}
+
+.actor-item.actor-b-fish[data-animation="shooting"] .sprite:after {
+	--sprite-offset-y: -96px;
+	animation: b-fish-shoot steps(2, end) 350ms 2;
+}
+
+@keyframes b-fish-bite {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

@@ -1302,10 +1302,7 @@ export class Sonic extends PointActor
 			this.dashDust.style({'--dashCharge': this.spindashCharge});
 		}
 
-		if(this.viewport.args.frameId % 3 === 0)
-		{
-			this.spindashCharge++;
-		}
+		this.spindashCharge++;
 
 		this.args.xOff = 5 * -this.args.direction;
 		this.args.yOff = 32;

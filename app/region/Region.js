@@ -71,17 +71,20 @@ export class Region extends PointActor
 
 		super.update();
 
-		const topBoundry  = -this.viewport.args.y - (this.args.y - this.args.height);
-		const leftBoundry = -this.viewport.args.x - this.args.x;
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
+		{
+			const topBoundry  = -this.viewport.args.y - (this.args.y - this.args.height);
+			const leftBoundry = -this.viewport.args.x - this.args.x;
 
-		this.mainElem && this.mainElem.style({
-			'--viewportWidth':    this.viewport.args.width  + 'px'
-			, '--viewportHeight': this.viewport.args.height + 'px'
-			, '--leftBoundry':    (leftBoundry) + 'px'
-			, '--topBoundry':     (topBoundry) + 'px'
-			, '--vpX':            (this.viewport.args.x) + 'px'
-			, '--vpY':            (this.viewport.args.y) + 'px'
-		});
+			this.mainElem && this.mainElem.style({
+				'--viewportWidth':    this.viewport.args.width  + 'px'
+				, '--viewportHeight': this.viewport.args.height + 'px'
+				, '--leftBoundry':    (leftBoundry) + 'px'
+				, '--topBoundry':     (topBoundry) + 'px'
+				, '--vpX':            (this.viewport.args.x) + 'px'
+				, '--vpY':            (this.viewport.args.y) + 'px'
+			});
+		}
 	}
 
 	updateActor(other)

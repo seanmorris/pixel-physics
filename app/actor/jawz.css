@@ -1,0 +1,18 @@
+.actor-item.actor-jawz .sprite {
+	height: 24px;
+	width: 54px;
+}
+
+.actor-item.actor-jawz .sprite {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/jawz.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 24px;
+	width: 56px;
+	z-index: 1;
+}

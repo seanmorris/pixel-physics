@@ -129,3 +129,5 @@ Sfx.register('LIGTNING_STRIKE', '/Sonic/S3K_4E.wav', {maxConcurrent: 1, volume: 
 Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');
 
 Sfx.register('GRINDING', '/Sonic/S3K_DB_sus.wav');
+Sfx.register('SPIKES_OUT', '/Sonic/S3K_A6.wav');
+Sfx.register('SPIKES_IN', '/Sonic/S3K_52.wav');

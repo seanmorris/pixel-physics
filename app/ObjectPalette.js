@@ -61,7 +61,13 @@ import { DrainFly    } from './actor/DrainFly';
 import { GohlaBall   } from './actor/GohlaBall';
 import { Voltorb     } from './actor/Voltorb';
 import { Balkiry     } from './actor/Balkiry';
+import { Jawz        } from './actor/Jawz';
 import { SnailBot    } from './actor/SnailBot';
+import { Motobug     } from './actor/Motobug';
+import { BFish       } from './actor/BFish';
+import { Grounder    } from './actor/Grounder';
+
+import { SpitFire    } from './actor/SpitFire';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -291,7 +297,12 @@ export const ObjectPalette = {
 	, 'gohla-ball': GohlaBall
 	, 'voltorb': Voltorb
 	, 'balkiry': Balkiry
+	, 'jawz': Jawz
 	, 'snailbot': SnailBot
+	, 'motobug': Motobug
+	, 'b-fish': BFish
+	, 'grounder': Grounder
+	, 'spitfire': SpitFire
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'booster': Booster

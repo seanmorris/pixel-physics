@@ -146,6 +146,11 @@ export class Layer extends View
 	{
 		const viewport = this.args.viewport;
 
+		if(viewport.args.frameId % viewport.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		if(this.args.hidden)
 		{
 			if(!this.hidden)

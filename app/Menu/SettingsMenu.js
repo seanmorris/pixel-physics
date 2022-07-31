@@ -63,6 +63,15 @@ export const SettingsMenu = (parent) => { return {
 					, min: 0
 				}
 
+				// , 'Frameskip': {
+				// 	input: 'number'
+				// 	, subtext: 'Change the frameskip'
+				// 	, set: value => parent.settings.frameSkip = value
+				// 	, get: () => parent.settings.frameSkip
+				// 	, max: 8
+				// 	, min: 0
+				// }
+
 				, 'Display HUD': {
 					input: 'boolean'
 					, subtext: 'Enable/Disable the HUD'
