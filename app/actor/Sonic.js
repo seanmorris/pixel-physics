@@ -209,6 +209,14 @@ export class Sonic extends PointActor
 			this.arm = new Tag(`<div class = "rear-arm">`);
 			this.box.appendChild(this.arm.node);
 		}
+
+		if(!this.swoosh)
+		{
+			this.swoosh = new Tag(`<div class = "double-spin">`);
+			this.box.appendChild(this.swoosh.node);
+		}
+
+		this.autoAttr.get(this.box)['data-doublespin'] = 'doubleSpin';
 	}
 
 	updateStart()
@@ -331,7 +339,7 @@ export class Sonic extends PointActor
 
 			this.springing = false;
 
-			this.doubleSpin = this.dashed = false;
+			this.args.doubleSpin = this.dashed = false;
 
 			if(this.args.mode % 2 === 0)
 			{
@@ -970,7 +978,7 @@ export class Sonic extends PointActor
 
 		this.dropDashCharge = 0;
 
-		if(this.args.jumping && !this.dashed && !this.doubleSpin)
+		if(this.args.jumping && !this.dashed && !this.args.doubleSpin)
 		{
 
 			if(this.args.mercy < 120)
@@ -978,9 +986,11 @@ export class Sonic extends PointActor
 				this.args.mercy = 0;
 			}
 
-			this.doubleSpin = true;
+			this.args.doubleSpin = true;
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
+
+			this.viewport.onFrameOut(60, () => this.args.doubleSpin = false);
 
 			this.pinch(-600, 50);
 
