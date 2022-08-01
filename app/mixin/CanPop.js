@@ -160,19 +160,43 @@ export const CanPop = {
 						break;
 					case other.args.popCombo === 1:
 						scoreNode.classList.add('score-100');
+						points = 100;
 						break;
 					case other.args.popCombo === 2:
-					case other.args.popCombo === 3:
 						scoreNode.classList.add('score-200');
-						points *= 2;
+						points = 200;
 						break;
-					case other.args.popCombo >= 4 && other.args.popCombo <= 6:
+					case other.args.popCombo === 3:
+						scoreNode.classList.add('score-300');
+						points = 300;
+						break;
+					case other.args.popCombo === 4:
+						scoreNode.classList.add('score-400');
+						points = 400;
+						break;
+					case other.args.popCombo === 5:
 						scoreNode.classList.add('score-500');
-						points *= 5;
+						points = 500;
 						break;
-					case other.args.popCombo >= 7:
+					case other.args.popCombo === 6:
+						scoreNode.classList.add('score-600');
+						points = 600;
+						break;
+					case other.args.popCombo === 7:
+						scoreNode.classList.add('score-700');
+						points = 700;
+						break;
+					case other.args.popCombo === 8:
+						scoreNode.classList.add('score-800');
+						points = 800;
+						break;
+					case other.args.popCombo === 9:
+						scoreNode.classList.add('score-900');
+						points = 900;
+						break;
+					case other.args.popCombo >= 10:
 						scoreNode.classList.add('score-1000');
-						points *= 10;
+						points = 1000;
 						break;
 				}
 

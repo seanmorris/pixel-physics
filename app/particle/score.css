@@ -20,7 +20,13 @@
 .particle-score.score-100 { background-image: url(/Sonic/score-100.png); }
 .particle-score.score-200 { background-image: url(/Sonic/score-200.png); }
 .particle-score.score-300 { background-image: url(/Sonic/score-300.png); }
+.particle-score.score-300 { background-image: url(/Sonic/score-300.png); }
+.particle-score.score-400 { background-image: url(/Sonic/score-400.png); }
 .particle-score.score-500 { background-image: url(/Sonic/score-500.png); }
+.particle-score.score-600 { background-image: url(/Sonic/score-600.png); }
+.particle-score.score-700 { background-image: url(/Sonic/score-700.png); }
+.particle-score.score-800 { background-image: url(/Sonic/score-800.png); }
+.particle-score.score-900 { background-image: url(/Sonic/score-900.png); }
 .particle-score.score-1000 { background-image: url(/Sonic/score-1000.png); }
 .particle-score.score-10000 { background-image: url(/Sonic/score-10000.png); }
 

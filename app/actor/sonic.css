@@ -480,6 +480,22 @@
 	opacity: var(--opacity, 0);
 }
 
+.actor-item.actor-sonic[data-facing="left"] .double-spin {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-sonic[data-doublespin="true"] .double-spin {
+	animation: sonic-double-spin steps(6) 200ms 1 forwards;
+	background-repeat: no-repeat;
+	background-image: url(/Sonic/double-spin.png);
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	top: -41px;
+	left: -24px;
+	opacity: 0.75;
+}
+
 .actor-item.actor-sonic[data-animation="standing"] {
 	/*z-index: 100;*/
 }
@@ -636,6 +652,15 @@
 	}
 	to{
 		background-position: calc(-320px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes sonic-double-spin {
+	from{
+		background-position: 0 -48px;
+	}
+	to{
+		background-position: -288px -48px;
 	}
 }
 
