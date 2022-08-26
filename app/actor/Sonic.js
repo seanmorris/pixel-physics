@@ -251,6 +251,12 @@ export class Sonic extends PointActor
 		{
 			if(this.viewport.args.frameId % 60 === 0)
 			{
+				if(this.args.rings < 2)
+				{
+					this.isHyper = false;
+					this.setProfile();
+				}
+
 				if(this.args.rings > 0)
 				{
 					this.args.rings--;
@@ -679,49 +685,52 @@ export class Sonic extends PointActor
 			this.args.animation = this.args.standingOn.ridingAnimation || 'standing';
 		}
 
-		if(this.args.grinding && !this.args.falling)
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
 		{
-			// `<div class = "particle-sparks">`
+			if(this.args.grinding && !this.args.falling)
+			{
+				// `<div class = "particle-sparks">`
 
-			const sparkTag = document.createElement('div');
-			sparkTag.classList.add('particle-sparks');
-			const sparkParticle = new Tag(sparkTag);
+				const sparkTag = document.createElement('div');
+				sparkTag.classList.add('particle-sparks');
+				const sparkParticle = new Tag(sparkTag);
 
-			// `<div class = "envelope-sparks">`
-			const envelopeTag = document.createElement('div');
-			envelopeTag.classList.add('envelope-sparks');
-			const sparkEnvelope = new Tag(envelopeTag);
+				// `<div class = "envelope-sparks">`
+				const envelopeTag = document.createElement('div');
+				envelopeTag.classList.add('envelope-sparks');
+				const sparkEnvelope = new Tag(envelopeTag);
 
-			sparkEnvelope.appendChild(sparkParticle.node);
+				sparkEnvelope.appendChild(sparkParticle.node);
 
-			const sparkPoint = this.rotatePoint(
-				-this.args.gSpeed * 1.75 * this.args.direction
-				, 8
-			);
+				const sparkPoint = this.rotatePoint(
+					-this.args.gSpeed * 1.75 * this.args.direction
+					, 8
+				);
 
-			const flip = Math.sign(this.args.gSpeed);
+				const flip = Math.sign(this.args.gSpeed);
 
-			sparkEnvelope.style({
-				'--x': sparkPoint[0] + this.x
-				, '--y': sparkPoint[1] + this.y + Math.random * -3
-				, 'z-index': 0
-				, 'animation-delay': (-Math.random()*0.25) + 's'
-				, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
-				, '--flip': flip
-				, '--angle': this.realAngle
-				, opacity: Math.random() * 2
-			});
+				sparkEnvelope.style({
+					'--x': sparkPoint[0] + this.x
+					, '--y': sparkPoint[1] + this.y + Math.random * -3
+					, 'z-index': 0
+					, 'animation-delay': (-Math.random()*0.25) + 's'
+					, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
+					, '--flip': flip
+					, '--angle': this.realAngle
+					, opacity: Math.random() * 2
+				});
 
-			sparkEnvelope.particle = sparkParticle;
+				sparkEnvelope.particle = sparkParticle;
 
-			this.viewport.particles.add(sparkEnvelope);
+				this.viewport.particles.add(sparkEnvelope);
 
-			this.sparks.add(sparkEnvelope);
+				this.sparks.add(sparkEnvelope);
 
-			this.viewport.onFrameOut(30, () => {
-				this.viewport.particles.remove(sparkEnvelope);
-				this.sparks.delete(sparkEnvelope);
-			});
+				this.viewport.onFrameOut(30, () => {
+					this.viewport.particles.remove(sparkEnvelope);
+					this.sparks.delete(sparkEnvelope);
+				});
+			}
 		}
 
 		if(this.pincherBg)
@@ -856,20 +865,23 @@ export class Sonic extends PointActor
 			}
 		}
 
-		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
 		{
-			for(const spark of this.sparks)
+			if(this.args.grinding && !this.args.falling && this.args.gSpeed)
 			{
-				const sparkPoint = this.rotatePoint(
-					1.75 * this.args.direction
-					, 8
-				);
+				for(const spark of this.sparks)
+				{
+					const sparkPoint = this.rotatePoint(
+						1.75 * this.args.direction
+						, 8
+					);
 
-				spark.style({
-					opacity: Math.random() * 2
-					, '--x': sparkPoint[0] + this.x
-					, '--y': sparkPoint[1] + this.y
-				});
+					spark.style({
+						opacity: Math.random() * 2
+						, '--x': sparkPoint[0] + this.x
+						, '--y': sparkPoint[1] + this.y
+					});
+				}
 			}
 		}
 	}

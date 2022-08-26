@@ -59,6 +59,7 @@ import { Console as Terminal } from 'subspace-console/Console';
 
 import { Input as InputTask } from '../console/task/Input';
 import { Impulse as ImpulseTask } from '../console/task/Impulse';
+import { Mark as MarkTask } from '../console/task/Mark';
 import { Settings as SettingsTask } from '../console/task/Settings';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
@@ -141,6 +142,7 @@ export class Viewport extends View
 
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
+		this.callRenderedFrames = new Map;
 		this.willDetach    = new Map;
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
@@ -823,8 +825,9 @@ export class Viewport extends View
 						scroller: this.tags.subspace
 						, path:{
 							'input': InputTask
-							, 'move': MoveTask
+							, 'mark': MarkTask
 							, 'impulse': ImpulseTask
+							, 'move': MoveTask
 							, 'pos': PosTask
 							, 'set': SettingsTask
 							, 'spawn': SpawnTask
@@ -1160,6 +1163,7 @@ export class Viewport extends View
 		SettingsTask.viewport = this;
 		ImpulseTask.viewport = this;
 		InputTask.viewport = this;
+		MarkTask.viewport = this;
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 		SpawnTask.viewport = this;
@@ -1936,7 +1940,6 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.50;
 				this.maxCameraBound     = 1;
 				cameraSpeed = 0;
-
 				break;
 
 			case 'cliff':
@@ -1969,6 +1972,14 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.5;
 				this.maxCameraBound     = 48;
 				cameraSpeed = 3;
+				break;
+
+
+			case 'locked':
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.25;
+				this.maxCameraBound     = 32;
+				cameraSpeed = 16;
 				break;
 
 			default:
@@ -2360,7 +2371,7 @@ export class Viewport extends View
 		for(let i in objDefs)
 		{
 			const objDef  = objDefs[i];
-			const objType = objDef.type;
+			const objType = objDef.type || objDef.class || objDef.name;
 
 			if(objDef.id > this.maxObjectId)
 			{
@@ -2783,23 +2794,12 @@ export class Viewport extends View
 
 	nearbyActors(x, y)
 	{
-		// const x = this.args.x;
-		// const y = this.args.y;
-		// const width  = this.args.width;
-		// const height = this.args.height;
-
-		// const nearbyActors = this.quadCell.select(actor.args.x, actor.args.y, width, height);
-
-		// return nearbyActors;
-
 		const nearbyCells = this.getNearbyColCells(x, y);
 
 		const result = new Set;
 
-		for(const i in nearbyCells)
+		for(const actors of nearbyCells)
 		{
-			const actors = nearbyCells[i];
-
 			for(const actor of actors)
 			{
 				if(actor.removed)
@@ -2870,6 +2870,7 @@ export class Viewport extends View
 		if(this.args.paused === false || this.args.paused > 0 || this.args.networked)
 		{
 			this.callFrameOuts();
+			this.callRenderedFrameOut();
 			this.callFrameIntervals();
 
 			for(const [key, timer] of this.timers)
@@ -3522,10 +3523,10 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
-			if(actor[Run] !== this[Run])
-			{
-				continue;
-			}
+			// if(actor[Run] !== this[Run])
+			// {
+			// 	continue;
+			// }
 
 			const actorArgs = actor.args;
 
@@ -4224,6 +4225,17 @@ export class Viewport extends View
 		return {frame, input, args};
 	}
 
+	onRenderedFrameOut(frames, callback)
+	{
+		if(frames < 0)
+		{
+			callback();
+			return;
+		}
+
+		this.callRenderedFrames.set(callback, frames);
+	}
+
 	onFrameOut(frames, callback)
 	{
 		if(frames <= 0)
@@ -4284,6 +4296,25 @@ export class Viewport extends View
 			}
 
 			this.callFrames.delete(i);
+		}
+	}
+
+	callRenderedFrameOut()
+	{
+		if(this.args.frameId % this.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
+		for(const [callback, framesLeft] of this.callRenderedFrames)
+		{
+			if(framesLeft <=0)
+			{
+				callback();
+				continue;
+			}
+
+			this.callRenderedFrames.set(callback, -1 + frames);
 		}
 	}
 

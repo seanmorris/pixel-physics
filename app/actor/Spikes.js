@@ -47,7 +47,7 @@ export class Spikes extends PointActor
 			{
 				Sfx.play('SPIKES_OUT');
 
-				const actors = this.viewport.actorsAtPoint(this.x, this.y, this.width, this.height);
+				const actors = this.viewport.actorsAtPoint(this.args.x, this.args.y, this.args.width, this.args.height);
 
 				for(const actor of actors)
 				{

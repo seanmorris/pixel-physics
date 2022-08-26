@@ -525,7 +525,7 @@ export class Platformer
 
 			host.args.cameraMode = vehicle.args.cameraMode;
 
-			if(host.willJump && host.yAxis < 0)
+			if(host.willJump && (host.yAxis < 0 || (host.args.standingOn && host.args.standingOn.quickDrop)))
 			{
 				const leaving = host.args.standingOn;
 
@@ -540,9 +540,15 @@ export class Platformer
 
 				// host.args.y -= vehicle.args.seatHeight || vehicle.args.height;
 				host.args.y -= 16;
-
-				host.args.xSpeed = vehicle.args.direction * 2 * -Math.sign(vehicle.args.seatAngle || -1);
-				host.args.ySpeed = -host.args.jumpForce;
+				if(!(leaving && leaving.quickDrop))
+				{
+					host.args.xSpeed = vehicle.args.direction * 2 * -Math.sign(vehicle.args.seatAngle || -1);
+					host.args.ySpeed = -host.args.jumpForce;
+				}
+				else
+				{
+					host.args.ySpeed = -host.args.jumpForce + Math.max(leaving.args.ySpeed,0);
+				}
 				vehicle.args.ySpeed = 0;
 			}
 
@@ -799,7 +805,7 @@ export class Platformer
 		{
 			const groundPoint  = host.groundPoint;
 			const regionsBelow = host.viewport.regionsAtPoint(groundPoint[0], groundPoint[1]+1);
-			const standingOn   = host.getMapSolidAt(...groundPoint);
+			const standingOn   = host.getMapSolidAt(...groundPoint)/* || host.getMapSolidAt(groundPoint[0], groundPoint[1]+1)*/;
 
 			if(!host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
 			{
@@ -1011,7 +1017,7 @@ export class Platformer
 		const regionClass  = host.viewport.objectPalette['base-region'];
 		const skipChecking = [regionClass];
 
-		if(!host.isGhost && !(skipChecking.some(x => host instanceof x)))
+		if(!host.isGhost && !host.isStatic && !(skipChecking.some(x => host instanceof x)))
 		{
 			let collisions;
 
@@ -1265,7 +1271,7 @@ export class Platformer
 					host.args.standingLayer = null;
 				}
 			}
-			else
+			else if(host.args.standingOn && !host.args.standingOn.isVehicle)
 			{
 				host.args.standingOn = null;
 			}
@@ -2354,12 +2360,12 @@ export class Platformer
 			, host.findSolid
 		);
 
-		const upDistanceM = host.castRay(
-			upScanDist
-			, -Math.PI / 2
-			, [0, 0]
-			, host.findSolid
-		);
+		// const upDistanceM = host.castRay(
+		// 	upScanDist
+		// 	, -Math.PI / 2
+		// 	, [0, 0]
+		// 	, host.findSolid
+		// );
 
 		const upDistance = (upDistanceL || upDistanceR)
 			? Math.min(...[upDistanceL, upDistanceR].filter(x => x !== false))

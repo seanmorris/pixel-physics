@@ -62,9 +62,19 @@
 	z-index: 100;
 }
 
-.actor-item.actor-breakable-block.broken .sprite {
-	background-image: none !important;
-	opacity: 0 !important;
+.actor-item.actor-breakable-block:not(.broken) .sprite {
+	background-image: var(--sprite-sheet, url(/Sonic/marble-companion-block.png));
+	background-position-x: calc(var(--sprite-x) * -32px);
+	background-position-y: calc(var(--sprite-y) * -32px);
+}
+
+.actor-item.actor-breakable-block .fragmentsX {
+	display: none;
+}
+.actor-item.actor-breakable-block.broken .fragmentsX,
+.actor-item.actor-breakable-block.breaking .fragmentsX,
+.actor-item.actor-breakable-block.will-break .fragmentsX {
+	display: initial;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
@@ -86,7 +96,7 @@
 	position: absolute;
 	transition: transform var(--x-speed) ease-out , opacity var(--y-speed) ease-in;
 	transform: translate(var(--xTarget), -0px);
-	/*opacity: 0.5;*/
+	opacity: 0.5;
 	top:  calc(var(--height, 32) * -0.5px);
 	left: 0px;
 	width: calc(var(--width, 32) * 1px);

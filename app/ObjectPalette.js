@@ -66,6 +66,7 @@ import { SnailBot    } from './actor/SnailBot';
 import { Motobug     } from './actor/Motobug';
 import { BFish       } from './actor/BFish';
 import { Grounder    } from './actor/Grounder';
+import { SpringTurtle } from './actor/SpringTurtle';
 
 import { SpitFire    } from './actor/SpitFire';
 
@@ -107,6 +108,7 @@ import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
 import { EggWalker }  from './actor/EggWalker';
 import { EggShuttle }  from './actor/EggShuttle';
+import { PogoSpring }  from './actor/PogoSpring';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
@@ -223,6 +225,7 @@ export const ObjectPalette = {
 	, 'snow-board':   SnowBoard
 	, 'egg-mobile':   EggMobile
 	, 'egg-shuttle':  EggShuttle
+	, 'pogo-spring':  PogoSpring
 	, 'rocks-tall':   Rocks
 	, 'rocks-med':    Rocks
 	, 'rocks-short':  Rocks
@@ -302,6 +305,7 @@ export const ObjectPalette = {
 	, 'motobug': Motobug
 	, 'b-fish': BFish
 	, 'grounder': Grounder
+	, 'spring-turtle': SpringTurtle
 	, 'spitfire': SpitFire
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
