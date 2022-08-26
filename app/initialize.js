@@ -131,3 +131,5 @@ Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');
 Sfx.register('GRINDING', '/Sonic/S3K_DB_sus.wav');
 Sfx.register('SPIKES_OUT', '/Sonic/S3K_A6.wav');
 Sfx.register('SPIKES_IN', '/Sonic/S3K_52.wav');
+
+Sfx.register('POGO_BOUNCE', '/Sonic/0A8H.wav', {maxConcurrent: 3, volume: 0.5, fudgeFactor: 0.25});

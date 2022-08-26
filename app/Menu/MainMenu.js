@@ -188,11 +188,20 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Seaview Park Zone': {
+					, 'Seaview Park Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/west-side-zone.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/west-side-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Seaview Park Zone Act 2': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
 							this.accept();
 						}
 					}

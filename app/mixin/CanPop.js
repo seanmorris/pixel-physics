@@ -3,9 +3,10 @@ import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { Sfx } from '../audio/Sfx';
 
-export const CanPop = {
-	collideA: function(other, type) {
-
+export class CanPop
+{
+	collideA(other, type)
+	{
 		const viewport = this.viewport;
 
 		if(other.knocked)
@@ -76,8 +77,8 @@ export const CanPop = {
 		return false;
 	}
 
-	, damage: function(other, type) {
-
+	damage(other, type)
+	{
 		if(!other)
 		{
 			this.pop();
@@ -96,7 +97,8 @@ export const CanPop = {
 		}
 	}
 
-	, pop: function(other) {
+	pop(other)
+	{
 		const viewport = this.viewport;
 
 		if(!viewport || this.args.gone || (other && other.args.owner === this))

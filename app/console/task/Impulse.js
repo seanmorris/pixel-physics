@@ -18,7 +18,12 @@ export class Impulse extends Task
 		}
 
 		// this.print(`Pressing button ${buttonId} for ${ms} milliseconds...`);
-		const actor = Impulse.viewport.controlActor;
+		let actor = Impulse.viewport.controlActor;
+
+		if(actor.standingOn && actor.standingOn.isVehicle)
+		{
+			actor = actor.standingOn;
+		}
 
 		actor.impulse(magnitude, angle, true);
 	}

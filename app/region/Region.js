@@ -13,7 +13,7 @@ export class Region extends PointActor
 		obj.args.x = obj.originalX = -0 + Math.floor(objDef.x);
 		obj.args.y = obj.originalY = -0 + Math.floor(objDef.y);
 
-		this.static = true;
+		obj.args.static = true;
 
 		return obj;
 	}

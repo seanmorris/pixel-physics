@@ -427,7 +427,7 @@ export class PointActor extends View
 			this.args.modeTime = 0;
 		});
 
-		this.args.bindTo('standingOn', (groundObject,key,target) => {
+		this.args.bindTo('standingOn', (groundObject,key,target,previous) => {
 
 			if(this.isGhost)
 			{
@@ -481,8 +481,23 @@ export class PointActor extends View
 				prevGroundObject.args.active = false;
 			}
 
+			if(this.controllable)
+			{
+				if(prevGroundObject)
+				{
+					prevGroundObject.args.active = false;
+					this.viewport.auras.delete(prevGroundObject);
+				}
+
+				if(groundObject)
+				{
+					groundObject.args.active = true;
+				}
+			}
+
 			if(!groundObject)
 			{
+				this.viewport.auras.delete(this.args.standingOn);
 				return;
 			}
 
@@ -495,9 +510,6 @@ export class PointActor extends View
 				const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 					const x = groundObject.args.direction * groundObject.args.seatForward || 0;
 					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
-
-					// const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
-					// const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
 
 					const [xRot, yRot] = groundObject.rotatePoint(x, y);
 
@@ -516,9 +528,6 @@ export class PointActor extends View
 
 					const x = groundObject.args.direction * groundObject.args.seatForward || 0;
 					const y = groundObject.args.seatHeight || groundObject.args.height || 0;
-
-					// const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
-					// const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
 
 					const [xRot, yRot] = groundObject.rotatePoint(x, y);
 
@@ -580,12 +589,27 @@ export class PointActor extends View
 				if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
 				{
 					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
+						const solid = groundObject.getMapSolidAt(this.args.x + vv + -groundObject.args.x, this.args.y);
+
+						if(solid)
+						{
+							return;
+						}
+
 						this.args.x += vv + -groundObject.args.x
 					});
 
 					const debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-						this.args.y = vv + -groundObject.args.height
-							+ ((this.controllable || this.isPushable) ? 0 : 0);
+						const newY = vv + -groundObject.args.height + ((this.controllable || this.isPushable) ? 0 : 0);
+
+						const solid = groundObject.getMapSolidAt(this.args.x, newY);
+
+						if(solid)
+						{
+							return;
+						}
+
+						this.args.y = newY;
 					});
 
 					const debindGroundL = groundObject.args.bindTo('layer', (vv,kk) => {
@@ -698,6 +722,7 @@ export class PointActor extends View
 			, 'data-driving':   'driving'
 			, 'data-active':    'active'
 			, 'data-layer':     'layer'
+			, 'data-dead':      'dead'
 			, 'data-mode':      'mode'
 			, 'data-id':        'id'
 		});
@@ -4912,13 +4937,14 @@ export class PointActor extends View
 		const viewport = actor.viewport;
 		const tileMap  = viewport.tileMap;
 
-		const actors = viewport
-		.actorsAtPoint(point[0], point[1])
-		.filter(actor.checkSolidActors.bind(actor));
+		const actors = viewport.actorsAtPoint(point[0], point[1]);
 
-		if(actors.length > 0)
+		for(const a of actors)
 		{
-			return i;
+			if(actor.checkSolidActors(a))
+			{
+				return i;
+			}
 		}
 
 		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
@@ -5402,7 +5428,7 @@ export class PointActor extends View
 
 		if(!this.willJump)
 		{
-			if(this.yAxis < 0)
+			if(this.yAxis < 0 || (this.args.standingOn && this.args.standingOn.quickDrop))
 			{
 				this.ignores.set(this.args.standingOn, 15);
 

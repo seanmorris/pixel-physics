@@ -985,7 +985,7 @@ var Bindable = /*#__PURE__*/function () {
         var bindToAll = false;
 
         if (Array.isArray(property)) {
-          var debinders = property.map(function (p) {
+          var debinders = property.forEach(function (p) {
             return bindTo(p, callback, options);
           });
           return function () {
@@ -3877,7 +3877,6 @@ var View = /*#__PURE__*/function (_Mixin$with) {
     _classCallCheck(this, View);
 
     _this = _super.call(this, args, mainView);
-    _this[_EventTargetMixin.EventTargetMixin.EventTargetParent] = mainView;
     Object.defineProperty(_assertThisInitialized(_this), 'args', {
       value: _Bindable.Bindable.make(args)
     });
@@ -3951,24 +3950,15 @@ var View = /*#__PURE__*/function (_Mixin$with) {
         });
       })
     });
-
-    _this.onRemove(function () {
-      if (!_this[_EventTargetMixin.EventTargetMixin.Parent]) {
-        return;
-      }
-
-      _this[_EventTargetMixin.EventTargetMixin.Parent] = null;
-    });
-
     _this.controller = _assertThisInitialized(_this);
+    _this.loaded = Promise.resolve(_assertThisInitialized(_this));
     _this.template = "";
     _this.firstNode = null;
     _this.lastNode = null;
     _this.viewList = null;
     _this.mainView = null;
     _this.preserve = false;
-    _this.removed = false;
-    _this.loaded = Promise.resolve(_assertThisInitialized(_this)); // return Bindable.make(this);
+    _this.removed = false; // return Bindable.make(this);
 
     return _this;
   }
@@ -4625,7 +4615,7 @@ var View = /*#__PURE__*/function (_Mixin$with) {
     key: "compileAttrTag",
     value: function compileAttrTag(sourceTag) {
       var attrProperty = sourceTag.getAttribute('cv-attr');
-      var pairs = attrProperty.split(/[,;]/);
+      var pairs = attrProperty.split(',');
       var attrs = pairs.map(function (p) {
         return p.split(':');
       });
@@ -4765,8 +4755,6 @@ var View = /*#__PURE__*/function (_Mixin$with) {
             }
 
             if (v instanceof View) {
-              v[_EventTargetMixin.EventTargetMixin.EventTargetParent] = _this7;
-
               var onAttach = function onAttach(rootNode, parentNode) {
                 v.dispatchAttached(rootNode, parentNode, _this7);
               };
@@ -5107,7 +5095,6 @@ var View = /*#__PURE__*/function (_Mixin$with) {
 
             _this8.nodesAttached.add(onAttach);
 
-            v[_EventTargetMixin.EventTargetMixin.EventTargetParent] = _this8;
             v.render(tag);
             v.onRemove(function () {
               return _this8.nodesAttached.remove(onAttach);
@@ -6405,8 +6392,8 @@ var View = /*#__PURE__*/function (_Mixin$with) {
     key: "from",
     value: function from(template) {
       var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var mainView = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-      var view = new this(args, mainView);
+      var parent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var view = new this(args, parent);
       view.template = template;
       return view;
     }
@@ -7439,40 +7426,16 @@ var _EventTargetMixin;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+var _EventTarget = Symbol('Target');
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-var EventTargetParent = Symbol('EventTargetParent');
-var CallHandler = Symbol('CallHandler');
-var Capture = Symbol('Capture');
-var Bubble = Symbol('Bubble');
-var Target = Symbol('Target');
-var HandlersBubble = Symbol('HandlersBubble');
-var HandlersCapture = Symbol('HandlersCapture');
 var EventTargetMixin = (_EventTargetMixin = {}, _defineProperty(_EventTargetMixin, _Mixin.Mixin.Constructor, function () {
-  this[HandlersCapture] = new Map();
-  this[HandlersBubble] = new Map();
+  try {
+    this[_EventTarget] = new EventTarget();
+  } catch (error) {
+    this[_EventTarget] = document.createDocumentFragment();
+  }
 }), _defineProperty(_EventTargetMixin, "dispatchEvent", function dispatchEvent() {
-  var _this = this;
+  var _this$_EventTarget;
 
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
     args[_key] = arguments[_key];
@@ -7485,234 +7448,25 @@ var EventTargetMixin = (_EventTargetMixin = {}, _defineProperty(_EventTargetMixi
     args[0] = event;
   }
 
-  event.cvPath = event.cvPath || [];
-  event.cvTarget = event.cvCurrentTarget = this;
-  this[Capture].apply(this, args);
-  var handlers = [];
-
-  if (this[HandlersCapture].has(event.type)) {
-    var handlerMap = this[HandlersCapture].get(event.type);
-
-    var newHandlers = _toConsumableArray(handlerMap);
-
-    newHandlers.forEach(function (h) {
-      return h.push(handlerMap);
-    });
-    handlers.push.apply(handlers, _toConsumableArray(newHandlers));
-  }
-
-  if (this[HandlersBubble].has(event.type)) {
-    var _handlerMap = this[HandlersBubble].get(event.type);
-
-    var _newHandlers = _toConsumableArray(_handlerMap);
-
-    _newHandlers.forEach(function (h) {
-      return h.push(_handlerMap);
-    });
-
-    handlers.push.apply(handlers, _toConsumableArray(_newHandlers));
-  }
-
-  handlers.push([function () {
-    return _this[CallHandler].apply(_this, args);
-  }, {}, null]);
-  var result;
-
-  for (var _i = 0, _handlers = handlers; _i < _handlers.length; _i++) {
-    var _handlers$_i = _slicedToArray(_handlers[_i], 3),
-        handler = _handlers$_i[0],
-        options = _handlers$_i[1],
-        map = _handlers$_i[2];
-
-    if (options.once) {
-      map["delete"](handler);
-    }
-
-    result = handler(event);
-
-    if (event.cancelable && result === false) {
-      break;
-    }
-  }
-
-  if (event.cancelable && (event.cancelBubble || result === false)) {
-    this[Bubble].apply(this, args);
-  }
-
-  if (!this[EventTargetParent]) {
-    Object.freeze(event.cvPath);
-  }
-
-  return event.returnValue;
-}), _defineProperty(_EventTargetMixin, "addEventListener", function addEventListener(type, callback) {
-  var _this2 = this;
-
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-  if (options === true) {
-    options = {
-      useCapture: true
-    };
-  }
-
-  var handlers = HandlersBubble;
-
-  if (options.useCapture) {
-    handlers = HandlersCapture;
-  }
-
-  if (!this[handlers].has(type)) {
-    this[handlers].set(type, new Map());
-  }
-
-  this[handlers].get(type).set(callback, options);
-
-  if (options.signal) {
-    options.signal.addEventListener('abort', function (event) {
-      return _this2.removeEventListener(type, callback, options);
-    }, {
-      once: true
-    });
-  }
-}), _defineProperty(_EventTargetMixin, "removeEventListener", function removeEventListener(type, callback) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-  if (options === true) {
-    options = {
-      useCapture: true
-    };
-  }
-
-  var handlers = HandlersBubble;
-
-  if (options.useCapture) {
-    handlers = HandlersCapture;
-  }
-
-  if (!this[handlers].has(type)) {
-    return;
-  }
-
-  this[handlers].get(type)["delete"](callback);
-}), _defineProperty(_EventTargetMixin, Capture, function () {
-  var _this$EventTargetPare;
-
-  var event = arguments.length <= 0 ? undefined : arguments[0];
-  event.cvPath.push(this);
-
-  if (!this[EventTargetParent]) {
-    return;
-  }
-
-  var result = (_this$EventTargetPare = this[EventTargetParent])[Capture].apply(_this$EventTargetPare, arguments);
-
-  if (event.cancelable && result === false) {
-    return;
-  }
-
-  if (!this[EventTargetParent][HandlersCapture].has(event.type)) {
-    return;
-  }
-
-  event.cvCurrentTarget = this[EventTargetParent];
-  var type = event.type;
-  var handlers = this[EventTargetParent][HandlersCapture].get(type);
-
-  var _iterator = _createForOfIteratorHelper(handlers),
-      _step;
-
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var _step$value = _slicedToArray(_step.value, 2),
-          handler = _step$value[0],
-          options = _step$value[1];
-
-      if (options.once) {
-        handlers["delete"](handler);
-      }
-
-      result = handler(event);
-
-      if (event.cancelable && result === false) {
-        break;
-      }
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-
-  return result;
-}), _defineProperty(_EventTargetMixin, Bubble, function () {
-  var _this$EventTargetPare3, _this$EventTargetPare4;
-
-  var event = arguments.length <= 0 ? undefined : arguments[0];
-
-  if (!event.bubbles || !this[EventTargetParent]) {
-    return;
-  }
-
-  if (!this[EventTargetParent][HandlersBubble].has(event.type)) {
-    var _this$EventTargetPare2;
-
-    return (_this$EventTargetPare2 = this[EventTargetParent])[Bubble].apply(_this$EventTargetPare2, arguments);
-  }
-
-  var result;
-  event.cvCurrentTarget = this[EventTargetParent];
-  var type = event.type;
-  var handlers = this[EventTargetParent][HandlersBubble].get(event.type);
-
-  var _iterator2 = _createForOfIteratorHelper(handlers),
-      _step2;
-
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var _step2$value = _slicedToArray(_step2.value, 2),
-          handler = _step2$value[0],
-          options = _step2$value[1];
-
-      if (options.once) {
-        handlers["delete"](handler);
-      }
-
-      result = handler(event);
-
-      if (event.cancelable && result === false) {
-        return result;
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
-  }
-
-  result = (_this$EventTargetPare3 = this[EventTargetParent])[CallHandler].apply(_this$EventTargetPare3, arguments);
-
-  if (event.cancelable && (event.cancelBubble || result === false)) {
-    return result;
-  }
-
-  return (_this$EventTargetPare4 = this[EventTargetParent])[Bubble].apply(_this$EventTargetPare4, arguments);
-}), _defineProperty(_EventTargetMixin, CallHandler, function () {
-  var event = arguments.length <= 0 ? undefined : arguments[0];
-
-  if (event.defaultPrevented) {
-    return;
-  }
+  (_this$_EventTarget = this[_EventTarget]).dispatchEvent.apply(_this$_EventTarget, args);
 
   var defaultHandler = "on".concat(event.type[0].toUpperCase() + event.type.slice(1));
 
   if (typeof this[defaultHandler] === 'function') {
-    return this[defaultHandler](event);
+    this[defaultHandler](event);
   }
+
+  return event.returnValue;
+}), _defineProperty(_EventTargetMixin, "addEventListener", function addEventListener() {
+  var _this$_EventTarget2;
+
+  (_this$_EventTarget2 = this[_EventTarget]).addEventListener.apply(_this$_EventTarget2, arguments);
+}), _defineProperty(_EventTargetMixin, "removeEventListener", function removeEventListener() {
+  var _this$_EventTarget3;
+
+  (_this$_EventTarget3 = this[_EventTarget]).removeEventListener.apply(_this$_EventTarget3, arguments);
 }), _EventTargetMixin);
 exports.EventTargetMixin = EventTargetMixin;
-Object.defineProperty(EventTargetMixin, 'EventTargetParent', {
-  value: EventTargetParent
-});
   })();
 });
 
@@ -13231,7 +12985,7 @@ var MainMenu = /*#__PURE__*/function (_Menu) {
               _this.accept();
             }
           },
-          'Seaview Park Zone': {
+          'Seaview Park Zone Act 1': {
             characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik'],
             suffix: new _ZoneSuffix.ZoneSuffix({
               map: '/map/west-side-zone.json'
@@ -13239,6 +12993,19 @@ var MainMenu = /*#__PURE__*/function (_Menu) {
             callback: function callback() {
               _this.parent.loadMap({
                 mapUrl: '/map/west-side-zone.json'
+              });
+
+              _this.accept();
+            }
+          },
+          'Seaview Park Zone Act 2': {
+            characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik'],
+            suffix: new _ZoneSuffix.ZoneSuffix({
+              map: '/map/west-side-zone-2.json'
+            }, _this.parent),
+            callback: function callback() {
+              _this.parent.loadMap({
+                mapUrl: '/map/west-side-zone-2.json'
               });
 
               _this.accept();
@@ -15034,6 +14801,8 @@ var _BFish = require("./actor/BFish");
 
 var _Grounder = require("./actor/Grounder");
 
+var _SpringTurtle = require("./actor/SpringTurtle");
+
 var _SpitFire = require("./actor/SpitFire");
 
 var _Explosion = require("./actor/Explosion");
@@ -15089,6 +14858,8 @@ var _RailCar = require("./actor/RailCar");
 var _EggWalker = require("./actor/EggWalker");
 
 var _EggShuttle = require("./actor/EggShuttle");
+
+var _PogoSpring = require("./actor/PogoSpring");
 
 var _NuclearSuperball = require("./actor/NuclearSuperball");
 
@@ -15246,6 +15017,7 @@ var ObjectPalette = {
   'snow-board': _SnowBoard.SnowBoard,
   'egg-mobile': _EggMobile.EggMobile,
   'egg-shuttle': _EggShuttle.EggShuttle,
+  'pogo-spring': _PogoSpring.PogoSpring,
   'rocks-tall': _Rocks.Rocks,
   'rocks-med': _Rocks.Rocks,
   'rocks-short': _Rocks.Rocks,
@@ -15325,6 +15097,7 @@ var ObjectPalette = {
   'motobug': _Motobug.Motobug,
   'b-fish': _BFish.BFish,
   'grounder': _Grounder.Grounder,
+  'spring-turtle': _SpringTurtle.SpringTurtle,
   'spitfire': _SpitFire.SpitFire,
   'grapple-point': _GrapplePoint.GrapplePoint,
   'rocket': _Rocket.Rocket,
@@ -17777,10 +17550,11 @@ var Block = /*#__PURE__*/function (_PointActor) {
     _this.originalX = _this.args.x;
     _this.originalY = _this.args.y;
     _this.args.solid = (_this$args$solid = _this.args.solid) !== null && _this$args$solid !== void 0 ? _this$args$solid : true;
-    _this.args.gravity = 0.4;
+    _this.args.gravity = 0.6;
     _this.args.collapse = (_args$collapse = args.collapse) !== null && _args$collapse !== void 0 ? _args$collapse : false;
     _this.args.active = -1;
-    _this.weighted = false; // this.args.bindTo('spriteSheet', v => console.trace(v));
+    _this.weighted = false;
+    _this.activatedAt = null; // this.args.bindTo('spriteSheet', v => console.trace(v));
 
     return _this;
   }
@@ -17831,12 +17605,42 @@ var Block = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "wakeUp",
     value: function wakeUp() {
+      var _this2 = this;
+
       this.setTile();
+      this.noClip = false;
+
+      if (!this.args.tiedTo) {
+        return;
+      }
+
+      if (!this.args._tiedTo) {
+        this.args._tiedTo = this.viewport.actorsById[this.args.tiedTo];
+      }
+
+      var _tiedTo = this.args._tiedTo;
+
+      if (_tiedTo && !_tiedTo.hanging.has(this.constructor)) {
+        _tiedTo.hanging.set(this.constructor, new Set());
+
+        var hangList = _tiedTo.hanging.get(this.constructor);
+
+        hangList.add(this);
+        this.chain = new _Tag.Tag('<div class = "chain">');
+        this.sprite.appendChild(this.chain.node);
+        this.onRemove(function () {
+          return hangList["delete"](_this2);
+        });
+      }
     }
   }, {
     key: "collideA",
     value: function collideA(other, type) {
-      var _this2 = this;
+      var _this3 = this;
+
+      if (other instanceof this.constructor && !other.args.falling) {
+        return false;
+      }
 
       if (other.isRegion || other.noClip) {
         return false;
@@ -17844,10 +17648,6 @@ var Block = /*#__PURE__*/function (_PointActor) {
 
       if (other.args.standingOn === this) {
         this.weighted = true;
-      }
-
-      if (other instanceof this.constructor && !other.args.falling) {
-        return false;
       }
 
       if (!other.args.falling && this.args.droop && other.args.ySpeed >= 0 && other.args.standingOn !== this) {
@@ -17893,36 +17693,19 @@ var Block = /*#__PURE__*/function (_PointActor) {
       }
 
       if (type === -1 && !this.args.platform && other.controllable && other.args.ySpeed) {
-        // if(other.args.y < this.args.y)
-        // {
-        // 	other.args.y = this.y + -this.args.height + this.args.ySpeed + -1
-        // 	if(other.args.ySpeed < 0)
-        // 	{
-        // 		other.args.ySpeed = this.args.ySpeed
-        // 	}
-        // 	else
-        // 	{
-        // 		other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
-        // 		other.args.ySpeed = this.args.ySpeed;
-        // 	}
-        // }
         if (other.args.y < this.args.y) {
           other.args.y = this.y + -this.args.height + this.args.ySpeed;
           other.args.ySpeed = this.args.ySpeed;
         }
 
         this.onNextFrame(function () {
-          other.args.y = _this2.y + -_this2.args.height;
+          other.args.y = _this3.y + -_this3.args.height;
           other.args.falling = false;
         });
         return;
       }
 
       if (this.args.platform && !(other instanceof _Ring.Ring)) {
-        // if(other.willStick)
-        // {
-        // 	return false;
-        // }
         var otherTop = other.args.y - other.args.height;
 
         var _blockTop = this.args.y - this.args.height;
@@ -17953,24 +17736,11 @@ var Block = /*#__PURE__*/function (_PointActor) {
       }
 
       if (!this["switch"] && this.args.collapse && (type === 0 || type === 2) && this.args["float"] <= 0) {
-        if (other.args.ySpeed > 15) {
-          this.args["float"] = 1;
-          this.args.goBack = false;
-          var ySpeed = other.args.ySpeed;
-          this.onNextFrame(function () {
-            if (_this2.args.falling || _this2.args["float"]) {
-              _this2.args.ySpeed = ySpeed;
-              _this2.args["float"] = 1;
-            } else {
-              _this2.args.ySpeed = -1;
-              _this2.args["float"] = 1;
-            }
-
-            _this2.args.falling = true;
-          });
-        } else if (other.args.ySpeed > 0 || other.args.gSpeed) {
-          this.args["float"] = this.args["float"] >= 0 ? this.args["float"] : this.args.delay || 0;
-        }
+        this.args["float"] = 1;
+        this.args.goBack = false;
+        this.viewport.onFrameOut(1, function () {
+          return _this3.args.falling = true;
+        });
       }
 
       return true;
@@ -17988,25 +17758,36 @@ var Block = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "update",
     value: function update() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (!this.viewport) {
         return;
+      }
+
+      if (this.args.active > 0) {
+        if (!this.activatedAt) {
+          this.activatedAt = this.viewport.args.frameId;
+        }
       }
 
       if (this.args["switch"] && !this["switch"]) {
         this["switch"] = this.viewport.actorsById[this.args["switch"]];
       }
 
+      if (this.args["static"]) {
+        _get(_getPrototypeOf(Block.prototype), "update", this).call(this);
+
+        return;
+      }
+
       if (this.args.collapse) {
         this.args.gSpeed = 0;
 
-        if (this["switch"] && this["switch"].args.active) {
+        if (!this["switch"] && this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25 || this["switch"] && this["switch"].args.active) {
           this.args["float"] = this.args["float"] >= 0 ? this.args["float"] : this.args.delay || 0;
-
-          if (!this.args["float"]) {
-            this.args.ySpeed = this.args.ySpeed || 12;
-          }
+          this.noClip = true;
+          this.args.active = false;
+          this.args.falling = true;
         }
       }
 
@@ -18017,68 +17798,85 @@ var Block = /*#__PURE__*/function (_PointActor) {
       this.xLast = this.args.x;
       this.yLast = this.args.y;
 
-      if (this.args["float"] && (this.args.oscillateX || this.args.oscillateY)) {
-        var current = Math.pow(Math.cos(Math.pow(Math.sin(this.viewport.args.frameId / 90), 5)), 5 * 3.333);
+      if (this.args["float"] && this.args.oscillateX && this.args.oscillateY) {
+        {
+          var current = Math.sin(this.viewport.args.frameId / this.args.timeX);
+          var moveX = current * this.args.oscillateX;
+          this.args.x = this.originalX - moveX;
+        }
+        {
+          var _current = Math.cos(this.viewport.args.frameId / this.args.timeY);
+
+          var moveY = -(_current * this.args.oscillateY);
+          this.args.y = this.originalY - moveY;
+        }
+      } else if (this.args["float"] && (this.args.oscillateX || this.args.oscillateY)) {
+        var _current2 = Math.pow(Math.cos(Math.pow(Math.sin(this.viewport.args.frameId / 90), 5)), 5 * 3.333);
 
         if (this.args.oscillateX) {
-          var moveX = Math.round(current * this.args.oscillateX);
-          this.args.x = this.originalX - moveX;
+          var _moveX = Math.round(_current2 * this.args.oscillateX);
+
+          this.args.x = this.originalX - _moveX;
         }
 
         if (this.args.oscillateY) {
-          var moveY = Math.round(current * this.args.oscillateY);
-          this.args.y = this.originalY - moveY;
+          var _moveY = Math.round(_current2 * this.args.oscillateY);
+
+          this.args.y = this.originalY - _moveY;
         }
       }
 
-      if (!this["switch"] && this.args.collapse) {
-        if (!this.reset && !this.args.once) {
-          this.reset = true;
-          this.viewport.onFrameOut(300, function () {
-            _this3.args.groundAngle = 0;
-            _this3.args.falling = true;
-            _this3.args.goBack = true;
-            _this3.args["float"] = -1;
-            _this3.reset = false;
-          });
-        }
-
-        if (!this.args.worm && this.args.goBack) {
-          this.args["float"] = -1;
-          this.noClip = true;
-          var distX = this.originalX - this.args.x;
-          var distY = this.originalY - this.args.y;
-          this.args.xSpeed = 0;
-          this.args.ySpeed = 0;
-          this.args.gSpeed = 0;
-
-          if (Math.abs(distX) > 3) {
-            this.args.x += Math.sign(distX) * 3;
-          } else {
-            this.args.x = this.originalX;
-          }
-
-          if (Math.abs(distY) > 3) {
-            this.args.y += Math.sign(distY) * 3;
-          } else {
-            this.args.y = this.originalY;
-          }
-
-          if (this.args.x === this.originalX && this.args.y === this.originalY) {
-            this.args.goBack = false;
-            this.noClip = false;
-          }
-
-          this.args.groundAngle = 0;
-          this.args.airAngle = 0;
-        }
+      if (!this["switch"] && this.args.collapse) {// if(!this.reset && !this.args.once)
+        // {
+        // 	this.reset = true;
+        // 	this.viewport.onFrameOut(300, () => {
+        // 		this.args.groundAngle = 0;
+        // 		this.args.falling = true;
+        // 		this.args.goBack = true;
+        // 		this.args.float = -1;
+        // 		this.reset = false;
+        // 	});
+        // }
+        // if(!this.args.worm && this.args.goBack)
+        // {
+        // 	this.args.float = -1;
+        // 	this.noClip = true;
+        // 	const distX = this.originalX - this.args.x;
+        // 	const distY = this.originalY - this.args.y;
+        // 	this.args.xSpeed = 0;
+        // 	this.args.ySpeed = 0;
+        // 	this.args.gSpeed = 0;
+        // 	if(Math.abs(distX) > 3)
+        // 	{
+        // 		this.args.x += Math.sign(distX) * 3;
+        // 	}
+        // 	else
+        // 	{
+        // 		this.args.x	= this.originalX;
+        // 	}
+        // 	if(Math.abs(distY) > 3)
+        // 	{
+        // 		this.args.y += Math.sign(distY) * 3;
+        // 	}
+        // 	else
+        // 	{
+        // 		this.args.y	= this.originalY;
+        // 	}
+        // 	if(this.args.x === this.originalX && this.args.y === this.originalY)
+        // 	{
+        // 		this.args.goBack = false;
+        // 		this.noClip = false;
+        // 	}
+        // 	this.args.groundAngle = 0;
+        // 	this.args.airAngle = 0;
+        // }
       } else if (this.args.droop) {
         this.snapBack = this.snapBack || false;
 
         if (!this.args.colliding && this.args.yForce && this.viewport) {
           this.viewport.onFrameOut(4, function () {
-            if (!_this3.args.colliding) {
-              _this3.snapBack = true;
+            if (!_this4.args.colliding) {
+              _this4.snapBack = true;
             }
           });
         }
@@ -18124,6 +17922,18 @@ var Block = /*#__PURE__*/function (_PointActor) {
         '--conveyed': this.args.conveyed * 0.8
       });
       this.box && this.box.setAttribute('data-design', this.args.design);
+      var _tiedTo = this.args._tiedTo;
+
+      if (_tiedTo && this.chain) {
+        var point = {
+          x: this.args.x,
+          y: this.args.y - this.args.height
+        };
+        this.chain.style({
+          '--distance': _tiedTo.distanceFrom(point) + _tiedTo.args.height,
+          '--angle': _tiedTo.angleTo(point) + Math.PI / 2
+        });
+      }
 
       _get(_getPrototypeOf(Block.prototype), "update", this).call(this);
     }
@@ -18233,6 +18043,17 @@ var Block = /*#__PURE__*/function (_PointActor) {
     value: function sleep() {
       if (this.args.collapse && this.args.once && !this.args["float"]) {
         this.viewport.actors.remove(this);
+      }
+
+      if (this.args.collapse) {
+        this.args.y = this.originalY;
+        this.args.active = false;
+        this.activatedAt = null;
+        this.args["float"] = -1;
+        this.args.ySpeed = 0;
+        this.args.goBack = false;
+        this.args.falling = false;
+        this.noClip = false;
       }
     }
   }, {
@@ -18586,6 +18407,12 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
+      var _this2 = this;
+
+      if (this.broken) {
+        return false;
+      }
+
       if (other instanceof _Block2.Block && (other.args["float"] || this.args["float"])) {
         return false;
       }
@@ -18639,11 +18466,18 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
       }
 
       if (this.args.strength === 2) {
-        if (!other.isVehicle) {
-          return true;
-        } else {
+        if (other.isVehicle || other.args.standingOn && other.args.standingOn.isVehicle) {
+          if (type === 0) {
+            this.viewport.onFrameOut(1, function () {
+              return _this2.broken || _this2["break"](other);
+            });
+            return true;
+          }
+
           this.broken || this["break"](other);
           return false;
+        } else {
+          return true;
         }
       }
 
@@ -18691,6 +18525,7 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
         this.args.ySpeed = 0;
         this.box.classList.remove('broken');
         this.box.classList.remove('breaking');
+        this.box.classList.remove('will-break');
         this.broken = false;
       }
 
@@ -18710,7 +18545,7 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
   }, {
     key: "delayedBreak",
     value: function delayedBreak() {
-      var _this2 = this;
+      var _this3 = this;
 
       var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 30;
       var other = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -18720,26 +18555,31 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
       }
 
       this.viewport.onFrameOut(delay, function () {
-        return _this2["break"](other);
+        return _this3["break"](other);
       });
     }
   }, {
     key: "break",
     value: function _break(other) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.box) {
-        this.box.classList.add('breaking');
-        this.box.classList.add('broken');
+        this.box.classList.add('will-break');
+        this.viewport.onFrameOut(2, function () {
+          _this4.box.classList.add('breaking');
+
+          _this4.box.classList.add('broken');
+        });
       }
 
       if (!this.broken) {
         this.viewport.onFrameOut(Math.floor(Math.random() * 3), function () {
           return _Sfx.Sfx.play('BLOCK_DESTROYED');
         });
+        var o = other && other.occupant || other;
 
-        if (other && other.controllable) {
-          other.args.popCombo += 1;
+        if (o && o.controllable) {
+          o.args.popCombo += 1;
           var scoreNode = document.createElement('div');
           scoreNode.classList.add('particle-score');
           scoreNode.classList.add('score-10');
@@ -18750,14 +18590,14 @@ var BreakableBlock = /*#__PURE__*/function (_Block) {
           });
           this.viewport.particles.add(scoreTag);
           setTimeout(function () {
-            return _this3.viewport.particles.remove(scoreTag);
+            return _this4.viewport.particles.remove(scoreTag);
           }, 768);
-          other.args.score += 10;
+          o.args.score += 10;
         }
       }
 
       this.viewport.onFrameOut(4, function () {
-        _this3.box && _this3.box.classList.remove('breaking');
+        _this4.box && _this4.box.classList.remove('breaking');
       });
 
       if (!this.args.collapse && other && other.args.mode % 2 === 0) {
@@ -28198,9 +28038,15 @@ var Monitor = /*#__PURE__*/function (_PointActor) {
 
       _get(_getPrototypeOf(Monitor.prototype), "collideA", this).call(this, other, type);
 
-      if (type === 1 && !other.args.spinning) {
-        return true;
-      }
+      if (other.passPop && other.occupant && !other.args.dead) {
+        other = other.occupant;
+        this.pop(other);
+        return;
+      } // if(type === 1 && !other.args.spinning)
+      // {
+      // 	return true;
+      // }
+
 
       if (type === 2 && this.args["float"] && other.controllable) {
         other.args.ySpeed *= -1;
@@ -29008,6 +28854,8 @@ exports.PogoSpring = void 0;
 
 var _Vehicle2 = require("./Vehicle");
 
+var _Sfx = require("../audio/Sfx");
+
 var _Tag = require("curvature/base/Tag");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29034,6 +28882,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var PogoSpring = /*#__PURE__*/function (_Vehicle) {
   _inherits(PogoSpring, _Vehicle);
 
@@ -29049,6 +28899,11 @@ var PogoSpring = /*#__PURE__*/function (_Vehicle) {
     }
 
     _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "quickDrop", true);
+
+    _defineProperty(_assertThisInitialized(_this), "passPop", true);
+
     _this.args.type = 'actor-item actor-pogo-spring';
     _this.args.width = 32;
     _this.args.height = 32;
@@ -29056,38 +28911,128 @@ var PogoSpring = /*#__PURE__*/function (_Vehicle) {
     _this.args.gSpeedMax = 20;
     _this.args.decel = 0.45;
     _this.args.accel = 0.45;
-    _this.args.gravity = 1;
-    _this.args.seatHeight = 32;
+    _this.args.gravity = 0.6;
+    _this.args.seatHeight = 16;
+    _this.args.seatForward = -2;
     _this.args.skidTraction = 0.05;
     _this.args.jumpForce = 8;
     _this.dustCount = 0;
     _this.args.particleScale = 2;
     _this.args.started = false;
+    _this.args.cameraMode = 'locked';
+    _this.args.bound = 0;
+
+    _this.bindTo('occupant', function (v, k, t, d, p) {
+      if (p && !v) {
+        _this.args.dead = true;
+        _this.args.gSpeed = 0;
+        _this.args.xSpeed = 0;
+        _this.args.ySpeed = 0;
+      }
+    });
+
     return _this;
   }
 
   _createClass(PogoSpring, [{
     key: "onRendered",
     value: function onRendered(event) {
-      _get(_getPrototypeOf(PogoSpring.prototype), "onRendered", this).call(this, event); // this.box = this.findTag('div');
-      // this.sprite = this.findTag('div.sprite');
-      // this.frontWheel = new Tag('<div class = "rail-car-wheel rail-car-wheel-front">');
-      // this.backWheel = new Tag('<div class = "rail-car-wheel rail-car-wheel-back">');
-      // this.frontFrag = new Tag('<div class = "rail-car-frag rail-car-frag-front">');
-      // this.backFrag = new Tag('<div class = "rail-car-frag rail-car-frag-back">');
-      // this.sprite.appendChild(this.frontWheel.node);
-      // this.sprite.appendChild(this.backWheel.node);
-      // this.sprite.appendChild(this.frontFrag.node);
-      // this.sprite.appendChild(this.backFrag.node);
+      _get(_getPrototypeOf(PogoSpring.prototype), "onRendered", this).call(this, event);
 
+      this.autoStyle.get(this.box)['--bound'] = 'bound';
     }
   }, {
     key: "update",
-    value: function update() {}
+    value: function update() {
+      var _this2 = this;
+
+      if (!this.args.falling && !this.occupant) {
+        this.args.dead = false;
+      }
+
+      if (this.occupant && !this.frameout && !this.args.falling) {
+        this.args.height = 16 + this.occupant.args.height;
+        this.args.bound = -Math.floor(this.ySpeedLast);
+        this.frameout = this.viewport.onFrameOut(1, function () {
+          _this2.args.falling = true;
+          _this2.frameout = false;
+          _this2.args.ySpeed = _this2.args.bound;
+
+          if (_this2.args.ySpeed > -3) {
+            _this2.args.ySpeed -= 3;
+          }
+
+          if (_this2.args.ySpeed > -13) {
+            _this2.args.ySpeed -= 3;
+          }
+
+          if (_this2.args.ySpeed < -24) {
+            _this2.args.ySpeed = -24;
+          }
+        });
+        this.args.xSpeed *= 0.3;
+        var xDir = this.xAxis || this.xSpeedLast;
+        this.args.direction = Math.sign(xDir);
+        this.args.facing = Math.sign(xDir) < 0 ? 'left' : 'right';
+
+        _Sfx.Sfx.play('POGO_BOUNCE');
+      } else if (!this.occupant) {
+        this.args.gSpeed = 0;
+        this.args.xSpeed = 0;
+      }
+
+      if (!this.occupant) {
+        this.args.height = 32;
+        this.args.bound = -4;
+      }
+
+      this.noClip = this.args.dead;
+
+      _get(_getPrototypeOf(PogoSpring.prototype), "update", this).call(this);
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (other instanceof PogoSpring) {
+        return;
+      }
+
+      if (other.args.falling && other.args.ySpeed > 0) {
+        this.args.bound = -other.args.ySpeed;
+      }
+
+      _get(_getPrototypeOf(PogoSpring.prototype), "collideA", this).call(this, other, type);
+    }
+  }, {
+    key: "sleep",
+    value: function sleep() {
+      this.args.x = this.def.get('x');
+      this.args.y = this.def.get('y');
+      this.args.dead = false;
+      this.args.gSpeed = 0;
+      this.args.xSpeed = 0;
+      this.args.ySpeed = 0;
+
+      _get(_getPrototypeOf(PogoSpring.prototype), "sleep", this).call(this);
+
+      this.args.facing = 'right';
+    }
+  }, {
+    key: "wakeUp",
+    value: function wakeUp() {
+      if (!this.args.falling && !this.occupant) {
+        this.args.dead = false;
+      }
+    }
   }, {
     key: "solid",
     get: function get() {
       return !this.occupant;
+    }
+  }, {
+    key: "rotateLock",
+    get: function get() {
+      return true;
     }
   }]);
 
@@ -29490,7 +29435,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       _this.args.modeTime = 0;
     });
 
-    _this.args.bindTo('standingOn', function (groundObject, key, target) {
+    _this.args.bindTo('standingOn', function (groundObject, key, target, previous) {
       if (_this.isGhost) {
         return;
       }
@@ -29578,7 +29523,21 @@ var PointActor = /*#__PURE__*/function (_View) {
         prevGroundObject.args.active = false;
       }
 
+      if (_this.controllable) {
+        if (prevGroundObject) {
+          prevGroundObject.args.active = false;
+
+          _this.viewport.auras["delete"](prevGroundObject);
+        }
+
+        if (groundObject) {
+          groundObject.args.active = true;
+        }
+      }
+
       if (!groundObject) {
+        _this.viewport.auras["delete"](_this.args.standingOn);
+
         return;
       }
 
@@ -29587,8 +29546,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         groundObject.args.active = true;
         var debindGroundX = groundObject.args.bindTo('x', function (vv, kk) {
           var x = groundObject.args.direction * groundObject.args.seatForward || 0;
-          var y = groundObject.args.seatHeight || groundObject.args.height || 0; // const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
-          // const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
+          var y = groundObject.args.seatHeight || groundObject.args.height || 0;
 
           var _groundObject$rotateP = groundObject.rotatePoint(x, y),
               _groundObject$rotateP2 = _slicedToArray(_groundObject$rotateP, 2),
@@ -29605,8 +29563,7 @@ var PointActor = /*#__PURE__*/function (_View) {
           }
 
           var x = groundObject.args.direction * groundObject.args.seatForward || 0;
-          var y = groundObject.args.seatHeight || groundObject.args.height || 0; // const xRot = x * Math.cos(groundObject.realAngle) - y * Math.sin(groundObject.realAngle);
-          // const yRot = y * Math.cos(groundObject.realAngle) + x * Math.sin(groundObject.realAngle);
+          var y = groundObject.args.seatHeight || groundObject.args.height || 0;
 
           var _groundObject$rotateP3 = groundObject.rotatePoint(x, y),
               _groundObject$rotateP4 = _slicedToArray(_groundObject$rotateP3, 2),
@@ -29658,11 +29615,24 @@ var PointActor = /*#__PURE__*/function (_View) {
       } else if (!groundObject.isVehicle) {
         if (_this.args.y <= _this.args.height + groundObject.args.y - groundObject.args.height) {
           var _debindGroundX = groundObject.args.bindTo('x', function (vv, kk) {
+            var solid = groundObject.getMapSolidAt(_this.args.x + vv + -groundObject.args.x, _this.args.y);
+
+            if (solid) {
+              return;
+            }
+
             _this.args.x += vv + -groundObject.args.x;
           });
 
           var _debindGroundY = groundObject.args.bindTo('y', function (vv, kk) {
-            _this.args.y = vv + -groundObject.args.height + (_this.controllable || _this.isPushable ? 0 : 0);
+            var newY = vv + -groundObject.args.height + (_this.controllable || _this.isPushable ? 0 : 0);
+            var solid = groundObject.getMapSolidAt(_this.args.x, newY);
+
+            if (solid) {
+              return;
+            }
+
+            _this.args.y = newY;
           });
 
           var _debindGroundL = groundObject.args.bindTo('layer', function (vv, kk) {
@@ -29765,6 +29735,7 @@ var PointActor = /*#__PURE__*/function (_View) {
         'data-driving': 'driving',
         'data-active': 'active',
         'data-layer': 'layer',
+        'data-dead': 'dead',
         'data-mode': 'mode',
         'data-id': 'id'
       }); // data-camera-mode = "[[cameraMode]]"
@@ -33235,10 +33206,23 @@ var PointActor = /*#__PURE__*/function (_View) {
 
       var viewport = actor.viewport;
       var tileMap = viewport.tileMap;
-      var actors = viewport.actorsAtPoint(point[0], point[1]).filter(actor.checkSolidActors.bind(actor));
+      var actors = viewport.actorsAtPoint(point[0], point[1]);
 
-      if (actors.length > 0) {
-        return i;
+      var _iterator16 = _createForOfIteratorHelper(actors),
+          _step16;
+
+      try {
+        for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
+          var a = _step16.value;
+
+          if (actor.checkSolidActors(a)) {
+            return i;
+          }
+        }
+      } catch (err) {
+        _iterator16.e(err);
+      } finally {
+        _iterator16.f();
       }
 
       var solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
@@ -33702,7 +33686,7 @@ var PointActor = /*#__PURE__*/function (_View) {
       }
 
       if (!this.willJump) {
-        if (this.yAxis < 0) {
+        if (this.yAxis < 0 || this.args.standingOn && this.args.standingOn.quickDrop) {
           this.ignores.set(this.args.standingOn, 15);
           this.args.ignore = 0;
         }
@@ -34125,12 +34109,12 @@ var PointActor = /*#__PURE__*/function (_View) {
         args[_key3 - 1] = arguments[_key3];
       }
 
-      var _iterator16 = _createForOfIteratorHelper(this.behaviors),
-          _step16;
+      var _iterator17 = _createForOfIteratorHelper(this.behaviors),
+          _step17;
 
       try {
-        for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
-          var b = _step16.value;
+        for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
+          var b = _step17.value;
 
           if (typeof b[methodName] !== 'function') {
             continue;
@@ -34139,9 +34123,9 @@ var PointActor = /*#__PURE__*/function (_View) {
           result.set(b.constructor, b[methodName].apply(b, [this].concat(args)));
         }
       } catch (err) {
-        _iterator16.e(err);
+        _iterator17.e(err);
       } finally {
-        _iterator16.f();
+        _iterator17.f();
       }
 
       return result;
@@ -38169,6 +38153,11 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
 
       if (this.isSuper) {
         if (this.viewport.args.frameId % 60 === 0) {
+          if (this.args.rings < 2) {
+            this.isHyper = false;
+            this.setProfile();
+          }
+
           if (this.args.rings > 0) {
             this.args.rings--;
 
@@ -38466,36 +38455,38 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         this.args.animation = this.args.standingOn.ridingAnimation || 'standing';
       }
 
-      if (this.args.grinding && !this.args.falling) {
-        // `<div class = "particle-sparks">`
-        var sparkTag = document.createElement('div');
-        sparkTag.classList.add('particle-sparks');
-        var sparkParticle = new _Tag.Tag(sparkTag); // `<div class = "envelope-sparks">`
+      if (this.viewport.args.frameId % this.viewport.settings.frameSkip === 0) {
+        if (this.args.grinding && !this.args.falling) {
+          // `<div class = "particle-sparks">`
+          var sparkTag = document.createElement('div');
+          sparkTag.classList.add('particle-sparks');
+          var sparkParticle = new _Tag.Tag(sparkTag); // `<div class = "envelope-sparks">`
 
-        var envelopeTag = document.createElement('div');
-        envelopeTag.classList.add('envelope-sparks');
-        var sparkEnvelope = new _Tag.Tag(envelopeTag);
-        sparkEnvelope.appendChild(sparkParticle.node);
-        var sparkPoint = this.rotatePoint(-this.args.gSpeed * 1.75 * this.args.direction, 8);
-        var flip = Math.sign(this.args.gSpeed);
-        sparkEnvelope.style({
-          '--x': sparkPoint[0] + this.x,
-          '--y': sparkPoint[1] + this.y + Math.random * -3,
-          'z-index': 0,
-          'animation-delay': -Math.random() * 0.25 + 's',
-          '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip,
-          '--flip': flip,
-          '--angle': this.realAngle,
-          opacity: Math.random() * 2
-        });
-        sparkEnvelope.particle = sparkParticle;
-        this.viewport.particles.add(sparkEnvelope);
-        this.sparks.add(sparkEnvelope);
-        this.viewport.onFrameOut(30, function () {
-          _this3.viewport.particles.remove(sparkEnvelope);
+          var envelopeTag = document.createElement('div');
+          envelopeTag.classList.add('envelope-sparks');
+          var sparkEnvelope = new _Tag.Tag(envelopeTag);
+          sparkEnvelope.appendChild(sparkParticle.node);
+          var sparkPoint = this.rotatePoint(-this.args.gSpeed * 1.75 * this.args.direction, 8);
+          var flip = Math.sign(this.args.gSpeed);
+          sparkEnvelope.style({
+            '--x': sparkPoint[0] + this.x,
+            '--y': sparkPoint[1] + this.y + Math.random * -3,
+            'z-index': 0,
+            'animation-delay': -Math.random() * 0.25 + 's',
+            '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip,
+            '--flip': flip,
+            '--angle': this.realAngle,
+            opacity: Math.random() * 2
+          });
+          sparkEnvelope.particle = sparkParticle;
+          this.viewport.particles.add(sparkEnvelope);
+          this.sparks.add(sparkEnvelope);
+          this.viewport.onFrameOut(30, function () {
+            _this3.viewport.particles.remove(sparkEnvelope);
 
-          _this3.sparks["delete"](sparkEnvelope);
-        });
+            _this3.sparks["delete"](sparkEnvelope);
+          });
+        }
       }
 
       if (this.pincherBg) {
@@ -38594,26 +38585,28 @@ var Sonic = /*#__PURE__*/function (_PointActor) {
         }
       }
 
-      if (this.args.grinding && !this.args.falling && this.args.gSpeed) {
-        var _iterator = _createForOfIteratorHelper(this.sparks),
-            _step;
+      if (this.viewport.args.frameId % this.viewport.settings.frameSkip === 0) {
+        if (this.args.grinding && !this.args.falling && this.args.gSpeed) {
+          var _iterator = _createForOfIteratorHelper(this.sparks),
+              _step;
 
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var spark = _step.value;
+          try {
+            for (_iterator.s(); !(_step = _iterator.n()).done;) {
+              var spark = _step.value;
 
-            var _sparkPoint = this.rotatePoint(1.75 * this.args.direction, 8);
+              var _sparkPoint = this.rotatePoint(1.75 * this.args.direction, 8);
 
-            spark.style({
-              opacity: Math.random() * 2,
-              '--x': _sparkPoint[0] + this.x,
-              '--y': _sparkPoint[1] + this.y
-            });
+              spark.style({
+                opacity: Math.random() * 2,
+                '--x': _sparkPoint[0] + this.x,
+                '--y': _sparkPoint[1] + this.y
+              });
+            }
+          } catch (err) {
+            _iterator.e(err);
+          } finally {
+            _iterator.f();
           }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
         }
       }
     }
@@ -39613,7 +39606,7 @@ var Spikes = /*#__PURE__*/function (_PointActor) {
         if (!this.args.retracted && this.args.wasRetracted) {
           _Sfx.Sfx.play('SPIKES_OUT');
 
-          var actors = this.viewport.actorsAtPoint(this.x, this.y, this.width, this.height);
+          var actors = this.viewport.actorsAtPoint(this.args.x, this.args.y, this.args.width, this.args.height);
 
           var _iterator = _createForOfIteratorHelper(actors),
               _step;
@@ -40483,6 +40476,144 @@ exports.Spring = Spring;
 _defineProperty(Spring, "WontSpring", WontSpring);
 });
 
+;require.register("actor/SpringTurtle.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SpringTurtle = void 0;
+
+var _Mixin = require("curvature/base/Mixin");
+
+var _PointActor = require("./PointActor");
+
+var _Patrol = require("../behavior/Patrol");
+
+var _CanPop = require("../mixin/CanPop");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var SpringTurtle = /*#__PURE__*/function (_Mixin$from) {
+  _inherits(SpringTurtle, _Mixin$from);
+
+  var _super = _createSuper(SpringTurtle);
+
+  function SpringTurtle() {
+    var _this$args$patrolPaus, _this$args$patrolBeat, _this$args$patrolSpee;
+
+    var _this;
+
+    _classCallCheck(this, SpringTurtle);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _this.behaviors.add(new _Patrol.Patrol());
+
+    _this.args.type = 'actor-item actor-spring-turtle';
+    _this.args.animation = 'standing';
+    _this.args.accel = 0.1;
+    _this.args.decel = 0.5;
+    _this.args.gSpeedMax = 3;
+    _this.args.gravity = 0.5;
+    _this.args.width = 24;
+    _this.args.height = 32;
+    _this.willStick = false;
+    _this.stayStuck = false;
+    _this.args.patrolPause = (_this$args$patrolPaus = _this.args.patrolPause) !== null && _this$args$patrolPaus !== void 0 ? _this$args$patrolPaus : 10;
+    _this.args.patrolBeat = (_this$args$patrolBeat = _this.args.patrolBeat) !== null && _this$args$patrolBeat !== void 0 ? _this$args$patrolBeat : 120;
+    _this.args.patrolSpeed = (_this$args$patrolSpee = _this.args.patrolSpeed) !== null && _this$args$patrolSpee !== void 0 ? _this$args$patrolSpee : 1;
+    _this.args.lastSpring = 0;
+    _this.age = 0;
+    return _this;
+  }
+
+  _createClass(SpringTurtle, [{
+    key: "onRendered",
+    value: function onRendered(event) {
+      _get(_getPrototypeOf(SpringTurtle.prototype), "onRendered", this).call(this, event);
+
+      this.autoAttr.get(this.box)['data-spring'] = 'springing';
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (type === 0 || other.args.falling) {
+        this.ignores.set(other, 15);
+        other.args.ySpeed = -20;
+        other.args.xSpeed = 0;
+        this.args.lastSpring = 10;
+        return;
+      }
+
+      return _get(_getPrototypeOf(SpringTurtle.prototype), "collideA", this).call(this, other, type);
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(SpringTurtle.prototype), "update", this).call(this);
+
+      if (this.args.lastSpring > 0) {
+        this.args.lastSpring--;
+      }
+
+      this.args.springing = !!this.args.lastSpring;
+
+      if (this.args.moving && this.args.gSpeed) {
+        this.args.animation = 'walking';
+      } else {
+        this.args.animation = 'standing';
+      }
+
+      this.args.direction = Math.sign(this.args.gSpeed);
+      this.age++;
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: "isEffect",
+    get: function get() {
+      return false;
+    }
+  }]);
+
+  return SpringTurtle;
+}(_Mixin.Mixin.from(_PointActor.PointActor, _CanPop.CanPop));
+
+exports.SpringTurtle = SpringTurtle;
+});
+
 ;require.register("actor/Springboard.js", function(exports, require, module) {
 "use strict";
 
@@ -41065,6 +41196,11 @@ var SteelCrate = /*#__PURE__*/function (_BreakableBlock) {
       }
 
       return true;
+    }
+  }, {
+    key: "setTile",
+    value: function setTile() {
+      this.args.spriteSheet = '/custom/steel-crate.png';
     }
   }]);
 
@@ -43933,6 +44069,11 @@ var WoodenCrate = /*#__PURE__*/function (_BreakableBlock) {
       }
 
       return true;
+    }
+  }, {
+    key: "setTile",
+    value: function setTile() {
+      this.args.spriteSheet = '/Sonic/wooden-crate.png';
     }
   }]);
 
@@ -47963,7 +48104,7 @@ var Platformer = /*#__PURE__*/function () {
         host.processInput();
         host.args.cameraMode = vehicle.args.cameraMode;
 
-        if (host.willJump && host.yAxis < 0) {
+        if (host.willJump && (host.yAxis < 0 || host.args.standingOn && host.args.standingOn.quickDrop)) {
           var leaving = host.args.standingOn;
           host.args.standingLayer = false;
           host.args.standingOn = false;
@@ -47973,8 +48114,14 @@ var Platformer = /*#__PURE__*/function () {
           host.args.jumping = true; // host.args.y -= vehicle.args.seatHeight || vehicle.args.height;
 
           host.args.y -= 16;
-          host.args.xSpeed = vehicle.args.direction * 2 * -Math.sign(vehicle.args.seatAngle || -1);
-          host.args.ySpeed = -host.args.jumpForce;
+
+          if (!(leaving && leaving.quickDrop)) {
+            host.args.xSpeed = vehicle.args.direction * 2 * -Math.sign(vehicle.args.seatAngle || -1);
+            host.args.ySpeed = -host.args.jumpForce;
+          } else {
+            host.args.ySpeed = -host.args.jumpForce + Math.max(leaving.args.ySpeed, 0);
+          }
+
           vehicle.args.ySpeed = 0;
         }
 
@@ -48203,7 +48350,9 @@ var Platformer = /*#__PURE__*/function () {
       if (!host.args["static"]) {
         var groundPoint = host.groundPoint;
         var regionsBelow = host.viewport.regionsAtPoint(groundPoint[0], groundPoint[1] + 1);
-        var standingOn = host.getMapSolidAt.apply(host, _toConsumableArray(groundPoint));
+        var standingOn = host.getMapSolidAt.apply(host, _toConsumableArray(groundPoint))
+        /* || host.getMapSolidAt(groundPoint[0], groundPoint[1]+1)*/
+        ;
 
         if (!host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size) {
           var falling = !standingOn;
@@ -48371,7 +48520,7 @@ var Platformer = /*#__PURE__*/function () {
       var regionClass = host.viewport.objectPalette['base-region'];
       var skipChecking = [regionClass];
 
-      if (!host.isGhost && !skipChecking.some(function (x) {
+      if (!host.isGhost && !host.isStatic && !skipChecking.some(function (x) {
         return host instanceof x;
       })) {
         var _collisions;
@@ -48564,7 +48713,7 @@ var Platformer = /*#__PURE__*/function () {
           } else {
             host.args.standingLayer = null;
           }
-        } else {
+        } else if (host.args.standingOn && !host.args.standingOn.isVehicle) {
           host.args.standingOn = null;
         }
       }
@@ -49398,8 +49547,13 @@ var Platformer = /*#__PURE__*/function () {
 
       var upScanDist = host.args.ySpeed < 0 ? -host.args.ySpeed + upMargin : 0;
       var upDistanceL = host.castRay(upScanDist, -Math.PI / 2, [-host.args.width / 2, 0], host.findSolid);
-      var upDistanceR = host.castRay(upScanDist, -Math.PI / 2, [host.args.width / 2, 0], host.findSolid);
-      var upDistanceM = host.castRay(upScanDist, -Math.PI / 2, [0, 0], host.findSolid);
+      var upDistanceR = host.castRay(upScanDist, -Math.PI / 2, [host.args.width / 2, 0], host.findSolid); // const upDistanceM = host.castRay(
+      // 	upScanDist
+      // 	, -Math.PI / 2
+      // 	, [0, 0]
+      // 	, host.findSolid
+      // );
+
       var upDistance = upDistanceL || upDistanceR ? Math.min.apply(Math, _toConsumableArray([upDistanceL, upDistanceR].filter(function (x) {
         return x !== false;
       }))) : false;
@@ -50511,6 +50665,11 @@ var Impulse = /*#__PURE__*/function (_Task) {
 
 
       var actor = Impulse.viewport.controlActor;
+
+      if (actor.standingOn && actor.standingOn.isVehicle) {
+        actor = actor.standingOn;
+      }
+
       actor.impulse(magnitude, angle, true);
     }
   }, {
@@ -50675,6 +50834,77 @@ _defineProperty(Input, "viewport", null);
 _defineProperty(Input, "helpText", 'Press a button x for y milliseconds.');
 
 _defineProperty(Input, "useText", 'input x y');
+});
+
+;require.register("console/task/Mark.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Mark = void 0;
+
+var _Router = require("curvature/base/Router");
+
+var _Task2 = require("subspace-console/Task");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Mark = /*#__PURE__*/function (_Task) {
+  _inherits(Mark, _Task);
+
+  var _super = _createSuper(Mark);
+
+  function Mark() {
+    _classCallCheck(this, Mark);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Mark, [{
+    key: "init",
+    value: function init(x, y) {
+      if (!Mark.viewport.controlActor) {
+        return;
+      }
+
+      var actor = Mark.viewport.controlActor;
+      this.print("Character is at ".concat(actor.x, ", ").concat(actor.y, "."));
+
+      _Router.Router.setQuery('start', "".concat(Math.round(actor.x), ",").concat(Math.round(actor.y)));
+    }
+  }]);
+
+  return Mark;
+}(_Task2.Task);
+
+exports.Mark = Mark;
+
+_defineProperty(Mark, "viewport", null);
+
+_defineProperty(Mark, "helpText", 'Mark the current actor\'s position in space as a start position.');
 });
 
 ;require.register("console/task/Move.js", function(exports, require, module) {
@@ -52642,6 +52872,12 @@ _Sfx.Sfx.register('GRINDING', '/Sonic/S3K_DB_sus.wav');
 _Sfx.Sfx.register('SPIKES_OUT', '/Sonic/S3K_A6.wav');
 
 _Sfx.Sfx.register('SPIKES_IN', '/Sonic/S3K_52.wav');
+
+_Sfx.Sfx.register('POGO_BOUNCE', '/Sonic/0A8H.wav', {
+  maxConcurrent: 3,
+  volume: 0.5,
+  fudgeFactor: 0.25
+});
 });
 
 require.register("intro/BootCard.js", function(exports, require, module) {
@@ -54381,230 +54617,250 @@ var _Projectile = require("../actor/Projectile");
 
 var _Sfx = require("../audio/Sfx");
 
-var CanPop = {
-  collideA: function collideA(other, type) {
-    var _this = this;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    var viewport = this.viewport;
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-    if (other.knocked) {
-      other.pop && other.pop(other.knocked);
-      this.pop(other.knocked);
-      return;
-    }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-    if (other.punching) {
-      this.args.falling = true;
+var CanPop = /*#__PURE__*/function () {
+  function CanPop() {
+    _classCallCheck(this, CanPop);
+  }
 
-      if (other.args.falling && other.args.ySpeed < 0) {
-        // this.args.xSpeed = other.args.xSpeed + 10 * Math.sign(other.args.xSpeed);
-        this.args.ySpeed = -10 + other.args.ySpeed;
-      } else {
-        this.args.xSpeed = other.args.gSpeed * Math.sign(other.args.gSpeed) * 2;
-        this.args.ySpeed = -2;
+  _createClass(CanPop, [{
+    key: "collideA",
+    value: function collideA(other, type) {
+      var _this = this;
+
+      var viewport = this.viewport;
+
+      if (other.knocked) {
+        other.pop && other.pop(other.knocked);
+        this.pop(other.knocked);
+        return;
       }
 
-      this.args["float"] = 15;
-      this.knocked = other;
-      this.noClip = true;
-      this["static"] = false;
-      this.viewport.onFrameOut(30, function () {
-        return _this.pop(other);
-      });
+      if (other.punching) {
+        this.args.falling = true;
+
+        if (other.args.falling && other.args.ySpeed < 0) {
+          // this.args.xSpeed = other.args.xSpeed + 10 * Math.sign(other.args.xSpeed);
+          this.args.ySpeed = -10 + other.args.ySpeed;
+        } else {
+          this.args.xSpeed = other.args.gSpeed * Math.sign(other.args.gSpeed) * 2;
+          this.args.ySpeed = -2;
+        }
+
+        this.args["float"] = 15;
+        this.knocked = other;
+        this.noClip = true;
+        this["static"] = false;
+        this.viewport.onFrameOut(30, function () {
+          return _this.pop(other);
+        });
+        return false;
+      }
+
+      var shield = this.args.currentSheild;
+      var immune = other.immune(this, shield ? shield.type : 'normal');
+
+      if ((!shield || immune) && !this.args.gone && this.viewport && (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof _Projectile.Projectile)) {
+        var otherShield = other.args.currentSheild;
+
+        if (other.args.mercy < 45) {
+          this.damage(other, otherShield ? otherShield.type : 'normal');
+        }
+
+        return;
+      }
+
+      if (!this.knocked && other && other.controllable && !other.punching) {
+        if (typeof ga === 'function') {
+          ga('send', 'event', {
+            eventCategory: 'badnik',
+            eventAction: 'damaged-player',
+            eventLabel: "".concat(viewport.args.actName, "::").concat(this.args.id, "::").concat(other.args.id)
+          });
+        }
+
+        if (!other.args.mercy) {
+          other.damage(this, shield ? shield.type : 'normal');
+        }
+      }
+
       return false;
     }
-
-    var shield = this.args.currentSheild;
-    var immune = other.immune(this, shield ? shield.type : 'normal');
-
-    if ((!shield || immune) && !this.args.gone && this.viewport && (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof _Projectile.Projectile)) {
-      var otherShield = other.args.currentSheild;
-
-      if (other.args.mercy < 45) {
-        this.damage(other, otherShield ? otherShield.type : 'normal');
+  }, {
+    key: "damage",
+    value: function damage(other, type) {
+      if (!other) {
+        this.pop();
+        return;
       }
 
-      return;
-    }
+      var shield = this.args.currentSheild;
+      var immune = other.immune(this, shield ? shield.type : 'normal');
 
-    if (!this.knocked && other && other.controllable && !other.punching) {
+      if ((!shield || immune) && !this.args.gone && this.viewport && (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof _Projectile.Projectile)) {
+        this.pop(other);
+      }
+    }
+  }, {
+    key: "pop",
+    value: function pop(other) {
+      var _this2 = this;
+
+      var viewport = this.viewport;
+
+      if (!viewport || this.args.gone || other && other.args.owner === this) {
+        return;
+      }
+
+      var explosionTag = document.createElement('div');
+      explosionTag.classList.add('particle-explosion');
+      var explosion = new _Tag.Tag(explosionTag);
+      explosion.style({
+        '--x': this.args.x,
+        '--y': this.args.y - 16
+      });
+      viewport.particles.add(explosion);
+      setTimeout(function () {
+        return viewport.particles.remove(explosion);
+      }, 512);
+      setTimeout(function () {
+        return _this2.screen && _this2.screen.remove();
+      }, 1024);
+      this.box && this.box.setAttribute('data-animation', 'broken');
+
+      if (other && other.dashed) {
+        other.args.gSpeed = 0;
+        other.args.xSpeed = 0;
+        other.args.ySpeed = -9;
+        other.args.x = this.args.x;
+        other.dashed = false;
+      }
+
+      if (other) {
+        if (other.occupant) {
+          other = other.occupant;
+        }
+
+        if (other.args.owner) {
+          other = other.args.owner;
+        }
+
+        if (other.controllable && typeof this.effect === 'function') {
+          var points = 100;
+          other.args.popCombo += 1;
+          var scoreNode = document.createElement('div');
+          scoreNode.classList.add('particle-score');
+          var scoreTag = new _Tag.Tag(scoreNode);
+          scoreTag.style({
+            '--x': this.args.x,
+            '--y': this.args.y - 16
+          });
+
+          switch (true) {
+            case this.args.gold:
+              scoreNode.classList.add('score-10000');
+              points = 10000;
+              break;
+
+            case other.args.popCombo === 1:
+              scoreNode.classList.add('score-100');
+              break;
+
+            case other.args.popCombo === 2:
+            case other.args.popCombo === 3:
+              scoreNode.classList.add('score-200');
+              points *= 2;
+              break;
+
+            case other.args.popCombo >= 4 && other.args.popCombo <= 6:
+              scoreNode.classList.add('score-500');
+              points *= 5;
+              break;
+
+            case other.args.popCombo >= 7:
+              scoreNode.classList.add('score-1000');
+              points *= 10;
+              break;
+          }
+
+          viewport.particles.add(scoreTag);
+          setTimeout(function () {
+            return viewport.particles.remove(scoreTag);
+          }, 768);
+          other.args.score += points;
+          this.effect(other);
+        }
+
+        if (other.dashed) {
+          other.args.xSpeed /= 4;
+        }
+
+        var ySpeed = other.args.ySpeed;
+
+        if (other.args.falling && !other.punching) {
+          this.onNextFrame(function () {
+            if (ySpeed > 0) {
+              other.args.ySpeed = Math.min(-ySpeed, -7);
+            } else {
+              other.args.ySpeed += 4;
+            }
+
+            other.args.falling = true;
+          });
+        }
+
+        other.dashed = false;
+
+        if (this.viewport.settings.rumble) {
+          if (other && other.controller && other.controller.rumble) {
+            other.controller.rumble({
+              duration: 40,
+              strongMagnitude: 0.0,
+              weakMagnitude: 1.0
+            });
+            this.viewport.onTimeout(40, function () {
+              other.controller.rumble({
+                duration: 110,
+                strongMagnitude: 0.75,
+                weakMagnitude: 1.0
+              });
+            });
+          }
+        }
+      }
+
+      if (this.args.target && this.viewport.actorsById[this.args.target]) {
+        var target = this.viewport.actorsById[this.args.target];
+
+        if (target) {
+          this.viewport.auras.add(target);
+          target.activate(other, this);
+        }
+      }
+
+      _Sfx.Sfx.play('OBJECT_DESTROYED');
+
       if (typeof ga === 'function') {
         ga('send', 'event', {
           eventCategory: 'badnik',
-          eventAction: 'damaged-player',
-          eventLabel: "".concat(viewport.args.actName, "::").concat(this.args.id, "::").concat(other.args.id)
+          eventAction: 'defeated',
+          eventLabel: "".concat(this.viewport.args.actName, "::").concat(this.args.id)
         });
       }
 
-      if (!other.args.mercy) {
-        other.damage(this, shield ? shield.type : 'normal');
-      }
+      this.viewport.actors.remove(this);
+      this.args.gone = true;
     }
+  }]);
 
-    return false;
-  },
-  damage: function damage(other, type) {
-    if (!other) {
-      this.pop();
-      return;
-    }
+  return CanPop;
+}();
 
-    var shield = this.args.currentSheild;
-    var immune = other.immune(this, shield ? shield.type : 'normal');
-
-    if ((!shield || immune) && !this.args.gone && this.viewport && (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof _Projectile.Projectile)) {
-      this.pop(other);
-    }
-  },
-  pop: function pop(other) {
-    var _this2 = this;
-
-    var viewport = this.viewport;
-
-    if (!viewport || this.args.gone || other && other.args.owner === this) {
-      return;
-    }
-
-    var explosionTag = document.createElement('div');
-    explosionTag.classList.add('particle-explosion');
-    var explosion = new _Tag.Tag(explosionTag);
-    explosion.style({
-      '--x': this.args.x,
-      '--y': this.args.y - 16
-    });
-    viewport.particles.add(explosion);
-    setTimeout(function () {
-      return viewport.particles.remove(explosion);
-    }, 512);
-    setTimeout(function () {
-      return _this2.screen && _this2.screen.remove();
-    }, 1024);
-    this.box && this.box.setAttribute('data-animation', 'broken');
-
-    if (other && other.dashed) {
-      other.args.gSpeed = 0;
-      other.args.xSpeed = 0;
-      other.args.ySpeed = -9;
-      other.args.x = this.args.x;
-      other.dashed = false;
-    }
-
-    if (other) {
-      if (other.occupant) {
-        other = other.occupant;
-      }
-
-      if (other.args.owner) {
-        other = other.args.owner;
-      }
-
-      if (other.controllable && typeof this.effect === 'function') {
-        var points = 100;
-        other.args.popCombo += 1;
-        var scoreNode = document.createElement('div');
-        scoreNode.classList.add('particle-score');
-        var scoreTag = new _Tag.Tag(scoreNode);
-        scoreTag.style({
-          '--x': this.args.x,
-          '--y': this.args.y - 16
-        });
-
-        switch (true) {
-          case this.args.gold:
-            scoreNode.classList.add('score-10000');
-            points = 10000;
-            break;
-
-          case other.args.popCombo === 1:
-            scoreNode.classList.add('score-100');
-            break;
-
-          case other.args.popCombo === 2:
-          case other.args.popCombo === 3:
-            scoreNode.classList.add('score-200');
-            points *= 2;
-            break;
-
-          case other.args.popCombo >= 4 && other.args.popCombo <= 6:
-            scoreNode.classList.add('score-500');
-            points *= 5;
-            break;
-
-          case other.args.popCombo >= 7:
-            scoreNode.classList.add('score-1000');
-            points *= 10;
-            break;
-        }
-
-        viewport.particles.add(scoreTag);
-        setTimeout(function () {
-          return viewport.particles.remove(scoreTag);
-        }, 768);
-        other.args.score += points;
-        this.effect(other);
-      }
-
-      if (other.dashed) {
-        other.args.xSpeed /= 4;
-      }
-
-      var ySpeed = other.args.ySpeed;
-
-      if (other.args.falling && !other.punching) {
-        this.onNextFrame(function () {
-          if (ySpeed > 0) {
-            other.args.ySpeed = Math.min(-ySpeed, -7);
-          } else {
-            other.args.ySpeed += 4;
-          }
-
-          other.args.falling = true;
-        });
-      }
-
-      other.dashed = false;
-
-      if (this.viewport.settings.rumble) {
-        if (other && other.controller && other.controller.rumble) {
-          other.controller.rumble({
-            duration: 40,
-            strongMagnitude: 0.0,
-            weakMagnitude: 1.0
-          });
-          this.viewport.onTimeout(40, function () {
-            other.controller.rumble({
-              duration: 110,
-              strongMagnitude: 0.75,
-              weakMagnitude: 1.0
-            });
-          });
-        }
-      }
-    }
-
-    if (this.args.target && this.viewport.actorsById[this.args.target]) {
-      var target = this.viewport.actorsById[this.args.target];
-
-      if (target) {
-        this.viewport.auras.add(target);
-        target.activate(other, this);
-      }
-    }
-
-    _Sfx.Sfx.play('OBJECT_DESTROYED');
-
-    if (typeof ga === 'function') {
-      ga('send', 'event', {
-        eventCategory: 'badnik',
-        eventAction: 'defeated',
-        eventLabel: "".concat(this.viewport.args.actName, "::").concat(this.args.id)
-      });
-    }
-
-    this.viewport.actors.remove(this);
-    this.args.gone = true;
-  }
-};
 exports.CanPop = CanPop;
 });
 
@@ -58531,7 +58787,7 @@ var Region = /*#__PURE__*/function (_PointActor) {
       obj.args.height = objDef.height;
       obj.args.x = obj.originalX = -0 + Math.floor(objDef.x);
       obj.args.y = obj.originalY = -0 + Math.floor(objDef.y);
-      this["static"] = true;
+      obj.args["static"] = true;
       return obj;
     }
   }]);
@@ -62157,6 +62413,8 @@ var _Input = require("../console/task/Input");
 
 var _Impulse = require("../console/task/Impulse");
 
+var _Mark = require("../console/task/Mark");
+
 var _Settings = require("../console/task/Settings");
 
 var _Move = require("../console/task/Move");
@@ -62301,6 +62559,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     _this.quadCell = null;
     _this.callIntervals = new Map();
     _this.callFrames = new Map();
+    _this.callRenderedFrames = new Map();
     _this.willDetach = new Map();
     _this.backdrops = new Map();
     _this.checkpoints = new Map();
@@ -62980,8 +63239,9 @@ var Viewport = /*#__PURE__*/function (_View) {
             scroller: _this.tags.subspace,
             path: {
               'input': _Input.Input,
-              'move': _Move.Move,
+              'mark': _Mark.Mark,
               'impulse': _Impulse.Impulse,
+              'move': _Move.Move,
               'pos': _Pos.Pos,
               'set': _Settings.Settings,
               'spawn': _Spawn.Spawn
@@ -63334,6 +63594,7 @@ var Viewport = /*#__PURE__*/function (_View) {
       _Settings.Settings.viewport = this;
       _Impulse.Impulse.viewport = this;
       _Input.Input.viewport = this;
+      _Mark.Mark.viewport = this;
       _Move.Move.viewport = this;
       _Pos.Pos.viewport = this;
       _Spawn.Spawn.viewport = this;
@@ -64023,6 +64284,13 @@ var Viewport = /*#__PURE__*/function (_View) {
           cameraSpeed = 3;
           break;
 
+        case 'locked':
+          this.args.xOffsetTarget = 0.50;
+          this.args.yOffsetTarget = 0.25;
+          this.maxCameraBound = 32;
+          cameraSpeed = 16;
+          break;
+
         default:
           this.maxCameraBound = 64;
           cameraSpeed = 25;
@@ -64366,7 +64634,7 @@ var Viewport = /*#__PURE__*/function (_View) {
     value: function spawnInitialObjects(objDefs) {
       for (var i in objDefs) {
         var objDef = objDefs[i];
-        var objType = objDef.type;
+        var objType = objDef.type || objDef["class"] || objDef.name;
 
         if (objDef.id > this.maxObjectId) {
           this.maxObjectId = objDef.id;
@@ -64765,36 +65033,39 @@ var Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "nearbyActors",
     value: function nearbyActors(x, y) {
-      // const x = this.args.x;
-      // const y = this.args.y;
-      // const width  = this.args.width;
-      // const height = this.args.height;
-      // const nearbyActors = this.quadCell.select(actor.args.x, actor.args.y, width, height);
-      // return nearbyActors;
       var nearbyCells = this.getNearbyColCells(x, y);
       var result = new Set();
 
-      for (var i in nearbyCells) {
-        var actors = nearbyCells[i];
+      var _iterator13 = _createForOfIteratorHelper(nearbyCells),
+          _step13;
 
-        var _iterator13 = _createForOfIteratorHelper(actors),
-            _step13;
+      try {
+        for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+          var actors = _step13.value;
 
-        try {
-          for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
-            var actor = _step13.value;
+          var _iterator14 = _createForOfIteratorHelper(actors),
+              _step14;
 
-            if (actor.removed) {
-              continue;
+          try {
+            for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+              var actor = _step14.value;
+
+              if (actor.removed) {
+                continue;
+              }
+
+              result.add(actor);
             }
-
-            result.add(actor);
+          } catch (err) {
+            _iterator14.e(err);
+          } finally {
+            _iterator14.f();
           }
-        } catch (err) {
-          _iterator13.e(err);
-        } finally {
-          _iterator13.f();
         }
+      } catch (err) {
+        _iterator13.e(err);
+      } finally {
+        _iterator13.f();
       }
 
       return result;
@@ -64846,23 +65117,24 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       if (this.args.paused === false || this.args.paused > 0 || this.args.networked) {
         this.callFrameOuts();
+        this.callRenderedFrameOut();
         this.callFrameIntervals();
 
-        var _iterator14 = _createForOfIteratorHelper(this.timers),
-            _step14;
+        var _iterator15 = _createForOfIteratorHelper(this.timers),
+            _step15;
 
         try {
-          for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
-            var _step14$value = _slicedToArray(_step14.value, 2),
-                key = _step14$value[0],
-                timer = _step14$value[1];
+          for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
+            var _step15$value = _slicedToArray(_step15.value, 2),
+                key = _step15$value[0],
+                timer = _step15$value[1];
 
             timer.update();
           }
         } catch (err) {
-          _iterator14.e(err);
+          _iterator15.e(err);
         } finally {
-          _iterator14.f();
+          _iterator15.f();
         }
 
         this.args.lastFrameId = this.args.frameId;
@@ -64893,22 +65165,22 @@ var Viewport = /*#__PURE__*/function (_View) {
         return;
       }
 
-      var _iterator15 = _createForOfIteratorHelper(this.willDetach),
-          _step15;
+      var _iterator16 = _createForOfIteratorHelper(this.willDetach),
+          _step16;
 
       try {
-        for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
-          var _step15$value = _slicedToArray(_step15.value, 2),
-              detachee = _step15$value[0],
-              detacher = _step15$value[1];
+        for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
+          var _step16$value = _slicedToArray(_step16.value, 2),
+              detachee = _step16$value[0],
+              detacher = _step16$value[1];
 
           this.willDetach["delete"](detachee);
           detacher();
         }
       } catch (err) {
-        _iterator15.e(err);
+        _iterator16.e(err);
       } finally {
-        _iterator15.f();
+        _iterator16.f();
       }
 
       if (!Number(this.args.rings.args.value)) {
@@ -65031,12 +65303,12 @@ var Viewport = /*#__PURE__*/function (_View) {
       if (this.args.running && !this.args.debugEditMode) {
         var updatable = new Set();
 
-        var _iterator16 = _createForOfIteratorHelper(this.regions),
-            _step16;
+        var _iterator17 = _createForOfIteratorHelper(this.regions),
+            _step17;
 
         try {
-          for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
-            var region = _step16.value;
+          for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
+            var region = _step17.value;
 
             if (!this.actorIsOnScreen(region, 768)) {
               continue;
@@ -65045,17 +65317,17 @@ var Viewport = /*#__PURE__*/function (_View) {
             updatable.add(region);
           }
         } catch (err) {
-          _iterator16.e(err);
+          _iterator17.e(err);
         } finally {
-          _iterator16.f();
+          _iterator17.f();
         }
 
-        var _iterator17 = _createForOfIteratorHelper(this.auras),
-            _step17;
+        var _iterator18 = _createForOfIteratorHelper(this.auras),
+            _step18;
 
         try {
-          for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
-            var _actor = _step17.value;
+          for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
+            var _actor = _step18.value;
 
             if (!_actor) {
               this.auras["delete"](_actor);
@@ -65068,38 +65340,21 @@ var Viewport = /*#__PURE__*/function (_View) {
 
             var nearbyActors = this.nearbyActors(_actor.args.x, _actor.args.y);
 
-            var _iterator24 = _createForOfIteratorHelper(nearbyActors),
-                _step24;
+            var _iterator25 = _createForOfIteratorHelper(nearbyActors),
+                _step25;
 
             try {
-              for (_iterator24.s(); !(_step24 = _iterator24.n()).done;) {
-                var _actor2 = _step24.value;
+              for (_iterator25.s(); !(_step25 = _iterator25.n()).done;) {
+                var _actor2 = _step25.value;
 
                 if (_actor2 !== this.controlActor) {
                   updatable.add(_actor2);
                 }
               }
             } catch (err) {
-              _iterator24.e(err);
+              _iterator25.e(err);
             } finally {
-              _iterator24.f();
-            }
-          }
-        } catch (err) {
-          _iterator17.e(err);
-        } finally {
-          _iterator17.f();
-        }
-
-        var _iterator18 = _createForOfIteratorHelper(updatable),
-            _step18;
-
-        try {
-          for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
-            var _actor3 = _step18.value;
-
-            if (_actor3[Run] === this[Run]) {
-              this.actorUpdateStart(_actor3);
+              _iterator25.f();
             }
           }
         } catch (err) {
@@ -65108,21 +65363,15 @@ var Viewport = /*#__PURE__*/function (_View) {
           _iterator18.f();
         }
 
-        if (this.controlActor) {
-          if (this.controlActor[Run] === this[Run]) {
-            this.actorUpdateStart(this.controlActor);
-          }
-        }
-
         var _iterator19 = _createForOfIteratorHelper(updatable),
             _step19;
 
         try {
           for (_iterator19.s(); !(_step19 = _iterator19.n()).done;) {
-            var _actor4 = _step19.value;
+            var _actor3 = _step19.value;
 
-            if (_actor4[Run] === this[Run]) {
-              this.actorUpdate(_actor4);
+            if (_actor3[Run] === this[Run]) {
+              this.actorUpdateStart(_actor3);
             }
           }
         } catch (err) {
@@ -65133,7 +65382,7 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         if (this.controlActor) {
           if (this.controlActor[Run] === this[Run]) {
-            this.actorUpdate(this.controlActor);
+            this.actorUpdateStart(this.controlActor);
           }
         }
 
@@ -65142,10 +65391,10 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         try {
           for (_iterator20.s(); !(_step20 = _iterator20.n()).done;) {
-            var _actor5 = _step20.value;
+            var _actor4 = _step20.value;
 
-            if (_actor5[Run] === this[Run]) {
-              this.actorUpdateEnd(_actor5);
+            if (_actor4[Run] === this[Run]) {
+              this.actorUpdate(_actor4);
             }
           }
         } catch (err) {
@@ -65156,7 +65405,7 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         if (this.controlActor) {
           if (this.controlActor[Run] === this[Run]) {
-            this.actorUpdateEnd(this.controlActor);
+            this.actorUpdate(this.controlActor);
           }
         }
 
@@ -65165,10 +65414,10 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         try {
           for (_iterator21.s(); !(_step21 = _iterator21.n()).done;) {
-            var _actor6 = _step21.value;
+            var _actor5 = _step21.value;
 
-            if (!_actor6.removed && _actor6[Run] === this[Run]) {
-              this.setColCell(_actor6);
+            if (_actor5[Run] === this[Run]) {
+              this.actorUpdateEnd(_actor5);
             }
           }
         } catch (err) {
@@ -65179,28 +65428,51 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         if (this.controlActor) {
           if (this.controlActor[Run] === this[Run]) {
+            this.actorUpdateEnd(this.controlActor);
+          }
+        }
+
+        var _iterator22 = _createForOfIteratorHelper(updatable),
+            _step22;
+
+        try {
+          for (_iterator22.s(); !(_step22 = _iterator22.n()).done;) {
+            var _actor6 = _step22.value;
+
+            if (!_actor6.removed && _actor6[Run] === this[Run]) {
+              this.setColCell(_actor6);
+            }
+          }
+        } catch (err) {
+          _iterator22.e(err);
+        } finally {
+          _iterator22.f();
+        }
+
+        if (this.controlActor) {
+          if (this.controlActor[Run] === this[Run]) {
             this.setColCell(this.controlActor);
           }
         }
 
         if (this.collisions) {
-          var _iterator22 = _createForOfIteratorHelper(this.collisions),
-              _step22;
+          var _iterator23 = _createForOfIteratorHelper(this.collisions),
+              _step23;
 
           try {
-            for (_iterator22.s(); !(_step22 = _iterator22.n()).done;) {
-              var _step22$value = _slicedToArray(_step22.value, 2),
-                  collider = _step22$value[0],
-                  collidees = _step22$value[1];
+            for (_iterator23.s(); !(_step23 = _iterator23.n()).done;) {
+              var _step23$value = _slicedToArray(_step23.value, 2),
+                  collider = _step23$value[0],
+                  collidees = _step23$value[1];
 
-              var _iterator23 = _createForOfIteratorHelper(collidees),
-                  _step23;
+              var _iterator24 = _createForOfIteratorHelper(collidees),
+                  _step24;
 
               try {
-                for (_iterator23.s(); !(_step23 = _iterator23.n()).done;) {
-                  var _step23$value = _slicedToArray(_step23.value, 2),
-                      collidee = _step23$value[0],
-                      type = _step23$value[1];
+                for (_iterator24.s(); !(_step24 = _iterator24.n()).done;) {
+                  var _step24$value = _slicedToArray(_step24.value, 2),
+                      collidee = _step24$value[0],
+                      type = _step24$value[1];
 
                   if (!collidee) {
                     continue;
@@ -65209,15 +65481,15 @@ var Viewport = /*#__PURE__*/function (_View) {
                   collidee.pause(false);
                 }
               } catch (err) {
-                _iterator23.e(err);
+                _iterator24.e(err);
               } finally {
-                _iterator23.f();
+                _iterator24.f();
               }
             }
           } catch (err) {
-            _iterator22.e(err);
+            _iterator23.e(err);
           } finally {
-            _iterator22.f();
+            _iterator23.f();
           }
         }
 
@@ -65285,12 +65557,12 @@ var Viewport = /*#__PURE__*/function (_View) {
           for (var _i6 = 0, _arr4 = [nearbyActors, _this10.regions]; _i6 < _arr4.length; _i6++) {
             var actorList = _arr4[_i6];
 
-            var _iterator25 = _createForOfIteratorHelper(actorList),
-                _step25;
+            var _iterator26 = _createForOfIteratorHelper(actorList),
+                _step26;
 
             try {
-              for (_iterator25.s(); !(_step25 = _iterator25.n()).done;) {
-                var _actor7 = _step25.value;
+              for (_iterator26.s(); !(_step26 = _iterator26.n()).done;) {
+                var _actor7 = _step26.value;
 
                 if (_actor7[Run] !== _this10[Run]) {
                   continue;
@@ -65341,18 +65613,18 @@ var Viewport = /*#__PURE__*/function (_View) {
                 _this10.recent.add(_actor7);
               }
             } catch (err) {
-              _iterator25.e(err);
+              _iterator26.e(err);
             } finally {
-              _iterator25.f();
+              _iterator26.f();
             }
           }
 
-          var _iterator26 = _createForOfIteratorHelper(_this10.recent),
-              _step26;
+          var _iterator27 = _createForOfIteratorHelper(_this10.recent),
+              _step27;
 
           try {
             var _loop = function _loop() {
-              var actor = _step26.value;
+              var actor = _step27.value;
 
               if (actor[Run] !== _this10[Run]) {
                 _this10.recent["delete"](actor);
@@ -65377,15 +65649,15 @@ var Viewport = /*#__PURE__*/function (_View) {
               }
             };
 
-            for (_iterator26.s(); !(_step26 = _iterator26.n()).done;) {
+            for (_iterator27.s(); !(_step27 = _iterator27.n()).done;) {
               var _ret = _loop();
 
               if (_ret === "continue") continue;
             }
           } catch (err) {
-            _iterator26.e(err);
+            _iterator27.e(err);
           } finally {
-            _iterator26.f();
+            _iterator27.f();
           }
 
           if (wakeActors) {
@@ -65476,12 +65748,12 @@ var Viewport = /*#__PURE__*/function (_View) {
     value: function regionsAtPoint(x, y) {
       var regions = new Set();
 
-      var _iterator27 = _createForOfIteratorHelper(this.regions),
-          _step27;
+      var _iterator28 = _createForOfIteratorHelper(this.regions),
+          _step28;
 
       try {
-        for (_iterator27.s(); !(_step27 = _iterator27.n()).done;) {
-          var region = _step27.value;
+        for (_iterator28.s(); !(_step28 = _iterator28.n()).done;) {
+          var region = _step28.value;
 
           if (region[Run] !== this[Run]) {
             this.regions["delete"](region);
@@ -65506,9 +65778,9 @@ var Viewport = /*#__PURE__*/function (_View) {
           }
         }
       } catch (err) {
-        _iterator27.e(err);
+        _iterator28.e(err);
       } finally {
-        _iterator27.f();
+        _iterator28.f();
       }
 
       return regions;
@@ -65533,17 +65805,16 @@ var Viewport = /*#__PURE__*/function (_View) {
 
       var actors = new Set();
 
-      var _iterator28 = _createForOfIteratorHelper(nearbyActors),
-          _step28;
+      var _iterator29 = _createForOfIteratorHelper(nearbyActors),
+          _step29;
 
       try {
-        for (_iterator28.s(); !(_step28 = _iterator28.n()).done;) {
-          var actor = _step28.value;
-
-          if (actor[Run] !== this[Run]) {
-            continue;
-          }
-
+        for (_iterator29.s(); !(_step29 = _iterator29.n()).done;) {
+          var actor = _step29.value;
+          // if(actor[Run] !== this[Run])
+          // {
+          // 	continue;
+          // }
           var actorArgs = actor.args;
           var actorX = actorArgs.x;
           var actorY = actorArgs.y;
@@ -65568,9 +65839,9 @@ var Viewport = /*#__PURE__*/function (_View) {
           }
         }
       } catch (err) {
-        _iterator28.e(err);
+        _iterator29.e(err);
       } finally {
-        _iterator28.f();
+        _iterator29.f();
       }
 
       var list = _toConsumableArray(actors);
@@ -65793,21 +66064,21 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.args.screenEffects = [];
       var layers = this.tileMap.tileLayers;
 
-      var _iterator29 = _createForOfIteratorHelper(layers),
-          _step29;
+      var _iterator30 = _createForOfIteratorHelper(layers),
+          _step30;
 
       try {
-        for (_iterator29.s(); !(_step29 = _iterator29.n()).done;) {
-          var layerDef = _step29.value;
+        for (_iterator30.s(); !(_step30 = _iterator30.n()).done;) {
+          var layerDef = _step30.value;
           layerDef.offsetX = 0;
           layerDef.offsetY = 0;
           layerDef.offsetXChanged = 0;
           layerDef.offsetYChanged = 0;
         }
       } catch (err) {
-        _iterator29.e(err);
+        _iterator30.e(err);
       } finally {
-        _iterator29.f();
+        _iterator30.f();
       }
 
       for (var _i7 = 0, _arr5 = [].concat(_toConsumableArray(this.args.layers), _toConsumableArray(this.args.fgLayers)); _i7 < _arr5.length; _i7++) {
@@ -65819,18 +66090,18 @@ var Viewport = /*#__PURE__*/function (_View) {
         layer.args.offsetYChanged = 0;
       }
 
-      var _iterator30 = _createForOfIteratorHelper(this.actors.items()),
-          _step30;
+      var _iterator31 = _createForOfIteratorHelper(this.actors.items()),
+          _step31;
 
       try {
-        for (_iterator30.s(); !(_step30 = _iterator30.n()).done;) {
-          var actor = _step30.value;
+        for (_iterator31.s(); !(_step31 = _iterator31.n()).done;) {
+          var actor = _step31.value;
           this.actors.remove(actor);
         }
       } catch (err) {
-        _iterator30.e(err);
+        _iterator31.e(err);
       } finally {
-        _iterator30.f();
+        _iterator31.f();
       }
 
       this.controlActor && this.actors.remove(this.controlActor);
@@ -65885,18 +66156,18 @@ var Viewport = /*#__PURE__*/function (_View) {
       this.args.totalBonus.args.value = 0;
       this.meta = {};
 
-      var _iterator31 = _createForOfIteratorHelper(this.actors.items()),
-          _step31;
+      var _iterator32 = _createForOfIteratorHelper(this.actors.items()),
+          _step32;
 
       try {
-        for (_iterator31.s(); !(_step31 = _iterator31.n()).done;) {
-          var actor = _step31.value;
+        for (_iterator32.s(); !(_step32 = _iterator32.n()).done;) {
+          var actor = _step32.value;
           this.actors.remove(actor);
         }
       } catch (err) {
-        _iterator31.e(err);
+        _iterator32.e(err);
       } finally {
-        _iterator31.f();
+        _iterator32.f();
       }
 
       for (var _i10 = 0, _arr6 = [].concat(_toConsumableArray(this.args.layers), _toConsumableArray(this.args.fgLayers)); _i10 < _arr6.length; _i10++) {
@@ -65927,34 +66198,34 @@ var Viewport = /*#__PURE__*/function (_View) {
       var layers = this.args.layers;
       var layerCount = layers.length;
 
-      var _iterator32 = _createForOfIteratorHelper(this.args.layers),
-          _step32;
-
-      try {
-        for (_iterator32.s(); !(_step32 = _iterator32.n()).done;) {
-          var _layer2 = _step32.value;
-
-          _layer2.remove();
-        }
-      } catch (err) {
-        _iterator32.e(err);
-      } finally {
-        _iterator32.f();
-      }
-
-      var _iterator33 = _createForOfIteratorHelper(this.args.fgLayers),
+      var _iterator33 = _createForOfIteratorHelper(this.args.layers),
           _step33;
 
       try {
         for (_iterator33.s(); !(_step33 = _iterator33.n()).done;) {
-          var _layer3 = _step33.value;
+          var _layer2 = _step33.value;
 
-          _layer3.remove();
+          _layer2.remove();
         }
       } catch (err) {
         _iterator33.e(err);
       } finally {
         _iterator33.f();
+      }
+
+      var _iterator34 = _createForOfIteratorHelper(this.args.fgLayers),
+          _step34;
+
+      try {
+        for (_iterator34.s(); !(_step34 = _iterator34.n()).done;) {
+          var _layer3 = _step34.value;
+
+          _layer3.remove();
+        }
+      } catch (err) {
+        _iterator34.e(err);
+      } finally {
+        _iterator34.f();
       }
 
       var cards = [];
@@ -66212,6 +66483,16 @@ var Viewport = /*#__PURE__*/function (_View) {
       };
     }
   }, {
+    key: "onRenderedFrameOut",
+    value: function onRenderedFrameOut(frames, callback) {
+      if (frames < 0) {
+        callback();
+        return;
+      }
+
+      this.callRenderedFrames.set(callback, frames);
+    }
+  }, {
     key: "onFrameOut",
     value: function onFrameOut(frames, callback) {
       if (frames <= 0) {
@@ -66260,56 +66541,85 @@ var Viewport = /*#__PURE__*/function (_View) {
 
         var callbacks = this.callFrames.get(i);
 
-        var _iterator34 = _createForOfIteratorHelper(callbacks),
-            _step34;
+        var _iterator35 = _createForOfIteratorHelper(callbacks),
+            _step35;
 
         try {
-          for (_iterator34.s(); !(_step34 = _iterator34.n()).done;) {
-            var callback = _step34.value;
+          for (_iterator35.s(); !(_step35 = _iterator35.n()).done;) {
+            var callback = _step35.value;
             callback();
           }
         } catch (err) {
-          _iterator34.e(err);
+          _iterator35.e(err);
         } finally {
-          _iterator34.f();
+          _iterator35.f();
         }
 
         this.callFrames["delete"](i);
       }
     }
   }, {
+    key: "callRenderedFrameOut",
+    value: function callRenderedFrameOut() {
+      if (this.args.frameId % this.settings.frameSkip !== 0) {
+        return;
+      }
+
+      var _iterator36 = _createForOfIteratorHelper(this.callRenderedFrames),
+          _step36;
+
+      try {
+        for (_iterator36.s(); !(_step36 = _iterator36.n()).done;) {
+          var _step36$value = _slicedToArray(_step36.value, 2),
+              callback = _step36$value[0],
+              framesLeft = _step36$value[1];
+
+          if (framesLeft <= 0) {
+            callback();
+            continue;
+          }
+
+          this.callRenderedFrames.set(callback, -1 + frames);
+        }
+      } catch (err) {
+        _iterator36.e(err);
+      } finally {
+        _iterator36.f();
+      }
+    }
+  }, {
     key: "callFrameIntervals",
     value: function callFrameIntervals() {
       for (var i = this.args.lastFrameId; i <= this.args.frameId; i++) {
-        var _iterator35 = _createForOfIteratorHelper(this.callIntervals),
-            _step35;
+        var _iterator37 = _createForOfIteratorHelper(this.callIntervals),
+            _step37;
 
         try {
-          for (_iterator35.s(); !(_step35 = _iterator35.n()).done;) {
-            var _step35$value = _slicedToArray(_step35.value, 2),
-                interval = _step35$value[0],
-                callbacks = _step35$value[1];
+          for (_iterator37.s(); !(_step37 = _iterator37.n()).done;) {
+            var _step37$value = _slicedToArray(_step37.value, 2),
+                interval = _step37$value[0],
+                callbacks = _step37$value[1];
 
             if (i % interval === 0) {
-              var _iterator36 = _createForOfIteratorHelper(callbacks),
-                  _step36;
+              var _iterator38 = _createForOfIteratorHelper(callbacks),
+                  _step38;
 
               try {
-                for (_iterator36.s(); !(_step36 = _iterator36.n()).done;) {
-                  var callback = _step36.value;
+                for (_iterator38.s(); !(_step38 = _iterator38.n()).done;) {
+                  var callback = _step38.value;
                   callback();
                 }
               } catch (err) {
-                _iterator36.e(err);
+                _iterator38.e(err);
               } finally {
-                _iterator36.f();
+                _iterator38.f();
               }
             }
           }
         } catch (err) {
-          _iterator35.e(err);
+          _iterator37.e(err);
         } finally {
-          _iterator35.f();
+          _iterator37.f();
         }
       }
     }
@@ -66441,19 +66751,19 @@ var Viewport = /*#__PURE__*/function (_View) {
       });
       var offset = 0;
 
-      var _iterator37 = _createForOfIteratorHelper(lines),
-          _step37;
+      var _iterator39 = _createForOfIteratorHelper(lines),
+          _step39;
 
       try {
-        for (_iterator37.s(); !(_step37 = _iterator37.n()).done;) {
-          var line = _step37.value;
+        for (_iterator39.s(); !(_step39 = _iterator39.n()).done;) {
+          var line = _step39.value;
           line.offset = offset;
           offset += line.args.value.length;
         }
       } catch (err) {
-        _iterator37.e(err);
+        _iterator39.e(err);
       } finally {
-        _iterator37.f();
+        _iterator39.f();
       }
 
       this.args.dialogLines = lines;

@@ -73,10 +73,17 @@ export class Monitor extends PointActor
 
 		super.collideA(other, type);
 
-		if(type === 1 && !other.args.spinning)
+		if(other.passPop && other.occupant&& !other.args.dead)
 		{
-			return true;
+			other = other.occupant;
+			this.pop(other);
+			return;
 		}
+		
+		// if(type === 1 && !other.args.spinning)
+		// {
+		// 	return true;
+		// }
 
 		if(type === 2 && this.args.float && other.controllable)
 		{

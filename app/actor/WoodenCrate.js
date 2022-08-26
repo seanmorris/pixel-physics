@@ -78,4 +78,9 @@ export class WoodenCrate extends BreakableBlock
 
 		return true;
 	}
+
+	setTile()
+	{
+		this.args.spriteSheet = '/Sonic/wooden-crate.png';
+	}
 }

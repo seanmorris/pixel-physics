@@ -1,0 +1,83 @@
+.actor-pogo-spring {
+	z-index: -1;
+}
+.actor-item.actor-pogo-spring[data-active="true"] .sprite {
+	position: relative;
+	top: calc(-16px + calc(1px * var(--height)));
+}
+.actor-pogo-spring[data-dead="true"] {
+	z-index: -1;
+	animation: pogo-spring-flicker 0.15s infinite;
+}
+
+.actor-pogo-spring .sprite:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 9px;
+	width: 32px;
+	height: 22px;
+	background-image: url(/Sonic/springs.png);
+	background-position: -16px -35px;
+	transform-origin: 16px 4px;
+	/*animation: pogo-spring-bounce .5s 1 ease-out;*/1
+}
+
+.actor-pogo-spring .sprite:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 32px;
+	height: 32px;
+	background-image: url(/Sonic/springs.png), url(/Sonic/pogo-spring-base.png);
+	background-position: -80px -90px, 0 14px;
+	background-repeat: no-repeat;
+}
+
+.actor-pogo-spring[data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-pogo-spring[data-active="true"][data-falling="true"] .sprite:before {
+	transform: scale(1.25, 0.75);
+	background-position: -80px -18px;
+	animation: pogo-spring-bounce .25s 1 ease-out;
+}
+
+.actor-pogo-spring[data-active="true"] .sprite:after {
+	background-image: url(/Sonic/springs.png);
+	background-position: -80px -90px;
+}
+
+.actor-pogo-spring[data-dead="true"] .sprite:after {
+	background-image: url(/Sonic/springs.png);
+	background-position: -80px -90px;
+}
+
+@keyframes pogo-spring-bounce {
+	from {
+		transform: scale(1.25, 1);
+	}
+	15% {
+		transform: scale(0.25, min(calc(var(--bound) / -3.5), 3));
+	}
+	45% {
+		transform: scale(0.75, min(calc(var(--bound) / -2.5), 3));
+	}
+	to {
+		transform: scale(1.25, 1);
+	}
+}
+
+@keyframes pogo-spring-flicker {
+	from {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

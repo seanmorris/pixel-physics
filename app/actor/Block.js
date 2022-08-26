@@ -48,13 +48,15 @@ export class Block extends PointActor
 
 		this.args.solid = this.args.solid ?? true;
 
-		this.args.gravity = 0.4;
+		this.args.gravity = 0.6;
 
 		this.args.collapse = args.collapse ?? false;
 
 		this.args.active = -1;
 
 		this.weighted = false;
+
+		this.activatedAt = null;
 
 		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
@@ -115,10 +117,40 @@ export class Block extends PointActor
 	wakeUp()
 	{
 		this.setTile();
+
+		this.noClip = false;
+
+		if(!this.args.tiedTo)
+		{
+			return;
+		}
+
+		if(!this.args._tiedTo)
+		{
+			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+		}
+
+		const _tiedTo = this.args._tiedTo;
+
+		if(_tiedTo && !_tiedTo.hanging.has(this.constructor))
+		{
+			_tiedTo.hanging.set(this.constructor, new Set);
+			const hangList = _tiedTo.hanging.get(this.constructor);
+			hangList.add(this);
+
+			this.chain = new Tag('<div class = "chain">');
+			this.sprite.appendChild(this.chain.node);
+			this.onRemove(() => hangList.delete(this));
+		}
 	}
 
 	collideA(other, type)
 	{
+		if(other instanceof this.constructor && !other.args.falling)
+		{
+			return false;
+		}
+
 		if(other.isRegion || other.noClip)
 		{
 			return false;
@@ -127,11 +159,6 @@ export class Block extends PointActor
 		if(other.args.standingOn === this)
 		{
 			this.weighted = true;
-		}
-
-		if(other instanceof this.constructor && !other.args.falling)
-		{
-			return false;
 		}
 
 		if(!other.args.falling
@@ -194,21 +221,6 @@ export class Block extends PointActor
 
 		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
-			// if(other.args.y < this.args.y)
-			// {
-			// 	other.args.y = this.y + -this.args.height + this.args.ySpeed + -1
-
-			// 	if(other.args.ySpeed < 0)
-			// 	{
-			// 		other.args.ySpeed = this.args.ySpeed
-			// 	}
-			// 	else
-			// 	{
-			// 		other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
-			// 		other.args.ySpeed = this.args.ySpeed;
-			// 	}
-			// }
-
 			if(other.args.y < this.args.y)
 			{
 				other.args.y = this.y + -this.args.height + this.args.ySpeed;
@@ -224,11 +236,6 @@ export class Block extends PointActor
 
 		if(this.args.platform && !(other instanceof Ring))
 		{
-			// if(other.willStick)
-			// {
-			// 	return false;
-			// }
-
 			const otherTop  = other.args.y - other.args.height;
 			const blockTop  = this.args.y  - this.args.height;
 			const halfWidth = this.args.width / 2;
@@ -269,34 +276,10 @@ export class Block extends PointActor
 
 		if(!this.switch && this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
 		{
-			if(other.args.ySpeed > 15)
-			{
-				this.args.float = 1;
+			this.args.float = 1;
+			this.args.goBack = false;
 
-				this.args.goBack = false;
-
-				const ySpeed = other.args.ySpeed;
-
-				this.onNextFrame(()=>{
-					if(this.args.falling || this.args.float)
-					{
-						this.args.ySpeed = ySpeed;
-						this.args.float  = 1;
-					}
-					else
-					{
-						this.args.ySpeed = -1;
-						this.args.float  = 1;
-					}
-
-					this.args.falling = true;
-
-				});
-			}
-			else if(other.args.ySpeed > 0 || other.args.gSpeed)
-			{
-				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
-			}
+			this.viewport.onFrameOut(1, () => this.args.falling = true);
 		}
 
 		return true;
@@ -319,23 +302,38 @@ export class Block extends PointActor
 			return;
 		}
 
+		if(this.args.active > 0)
+		{
+			if(!this.activatedAt)
+			{
+				this.activatedAt = this.viewport.args.frameId;
+			}
+		}
+
 		if(this.args.switch && !this.switch)
 		{
 			this.switch = this.viewport.actorsById[ this.args.switch ];
+		}
+
+		if(this.args.static)
+		{
+			super.update();
+			return;
 		}
 
 		if(this.args.collapse)
 		{
 			this.args.gSpeed = 0;
 
-			if(this.switch && this.switch.args.active)
+			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
 			{
 				this.args.float  = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 
-				if(!this.args.float)
-				{
-					this.args.ySpeed = this.args.ySpeed || 12;
-				}
+				this.noClip = true;
+
+				this.args.active = false;
+
+				this.args.falling = true;
 			}
 		}
 
@@ -347,7 +345,21 @@ export class Block extends PointActor
 		this.xLast = this.args.x;
 		this.yLast = this.args.y;
 
-		if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
+		if(this.args.float && (this.args.oscillateX && this.args.oscillateY))
+		{
+			{
+				const current = Math.sin(this.viewport.args.frameId/this.args.timeX);
+				const moveX = (current * this.args.oscillateX);
+				this.args.x = this.originalX - moveX;
+			}
+
+			{
+				const current = Math.cos(this.viewport.args.frameId/this.args.timeY);
+				const moveY = -(current * this.args.oscillateY);
+				this.args.y = this.originalY - moveY;
+			}
+		}
+		else if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
 		{
 			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);
 
@@ -368,59 +380,59 @@ export class Block extends PointActor
 
 		if(!this.switch && this.args.collapse)
 		{
-			if(!this.reset && !this.args.once)
-			{
-				this.reset = true;
+			// if(!this.reset && !this.args.once)
+			// {
+			// 	this.reset = true;
 
-				this.viewport.onFrameOut(300, () => {
-					this.args.groundAngle = 0;
-					this.args.falling = true;
-					this.args.goBack = true;
-					this.args.float = -1;
-					this.reset = false;
-				});
-			}
+			// 	this.viewport.onFrameOut(300, () => {
+			// 		this.args.groundAngle = 0;
+			// 		this.args.falling = true;
+			// 		this.args.goBack = true;
+			// 		this.args.float = -1;
+			// 		this.reset = false;
+			// 	});
+			// }
 
-			if(!this.args.worm && this.args.goBack)
-			{
-				this.args.float = -1;
+			// if(!this.args.worm && this.args.goBack)
+			// {
+			// 	this.args.float = -1;
 
-				this.noClip = true;
+			// 	this.noClip = true;
 
-				const distX = this.originalX - this.args.x;
-				const distY = this.originalY - this.args.y;
+			// 	const distX = this.originalX - this.args.x;
+			// 	const distY = this.originalY - this.args.y;
 
-				this.args.xSpeed = 0;
-				this.args.ySpeed = 0;
-				this.args.gSpeed = 0;
+			// 	this.args.xSpeed = 0;
+			// 	this.args.ySpeed = 0;
+			// 	this.args.gSpeed = 0;
 
-				if(Math.abs(distX) > 3)
-				{
-					this.args.x += Math.sign(distX) * 3;
-				}
-				else
-				{
-					this.args.x	= this.originalX;
-				}
+			// 	if(Math.abs(distX) > 3)
+			// 	{
+			// 		this.args.x += Math.sign(distX) * 3;
+			// 	}
+			// 	else
+			// 	{
+			// 		this.args.x	= this.originalX;
+			// 	}
 
-				if(Math.abs(distY) > 3)
-				{
-					this.args.y += Math.sign(distY) * 3;
-				}
-				else
-				{
-					this.args.y	= this.originalY;
-				}
+			// 	if(Math.abs(distY) > 3)
+			// 	{
+			// 		this.args.y += Math.sign(distY) * 3;
+			// 	}
+			// 	else
+			// 	{
+			// 		this.args.y	= this.originalY;
+			// 	}
 
-				if(this.args.x === this.originalX && this.args.y === this.originalY)
-				{
-					this.args.goBack = false;
-					this.noClip = false;
-				}
+			// 	if(this.args.x === this.originalX && this.args.y === this.originalY)
+			// 	{
+			// 		this.args.goBack = false;
+			// 		this.noClip = false;
+			// 	}
 
-				this.args.groundAngle = 0;
-				this.args.airAngle = 0;
-			}
+			// 	this.args.groundAngle = 0;
+			// 	this.args.airAngle = 0;
+			// }
 		}
 		else if(this.args.droop)
 		{
@@ -484,6 +496,17 @@ export class Block extends PointActor
 
 		this.box && this.box.style({'--conveyed': this.args.conveyed*0.8});
 		this.box && this.box.setAttribute('data-design', this.args.design);
+
+		const _tiedTo = this.args._tiedTo;
+
+		if(_tiedTo && this.chain)
+		{
+			const point = {x:this.args.x, y:this.args.y - this.args.height};
+			this.chain.style({
+				'--distance': _tiedTo.distanceFrom(point) + _tiedTo.args.height
+				, '--angle':  _tiedTo.angleTo(point) + (Math.PI/2)
+			});
+		}
 
 		super.update();
 	}
@@ -585,6 +608,18 @@ export class Block extends PointActor
 		if(this.args.collapse && this.args.once && !this.args.float)
 		{
 			this.viewport.actors.remove(this);
+		}
+
+		if(this.args.collapse)
+		{
+			this.args.y       = this.originalY;
+			this.args.active  = false;
+			this.activatedAt  = null;
+			this.args.float   = -1;
+			this.args.ySpeed  = 0;
+			this.args.goBack  = false;
+			this.args.falling = false;
+			this.noClip       = false;
 		}
 	}
 

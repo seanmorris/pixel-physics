@@ -7,9 +7,12 @@
 	left: calc(50% - 4px);
 	background-image: url(/Sonic/chain-link.png);
 	background-position: bottom;
+	transform-origin: bottom center;
+	transform: rotate(calc(1rad * var(--angle, 0)));
 }
 
 
+[data-theme="wood"] .actor-item .chain,
 [data-bg="wood"] .actor-item .chain {
 	background-image: url(/Sonic/rope.png);
 	background-repeat: repeat-y;
