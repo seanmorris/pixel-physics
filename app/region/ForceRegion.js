@@ -23,6 +23,11 @@ export class ForceRegion extends Region
 			this.originalHeight = this.args.height;
 		}
 
+		if(this.switch && this.switch.args.active > 0 && !this.args.active)
+		{
+			this.args.active = true;
+		}
+
 		super.update();
 	}
 
@@ -32,17 +37,11 @@ export class ForceRegion extends Region
 		{
 			return;
 		}
+	}
 
+	wakeUp()
+	{
 		this.switch = this.viewport.actorsById[ this.args.switch ];
-
-		if(!this.switch)
-		{
-			return;
-		}
-
-		this.switch.args.bindTo('active', v => {
-			this.args.active = v || this.args.active;
-		});
 	}
 
 	activate()
@@ -64,12 +63,10 @@ export class ForceRegion extends Region
 
 		if(other.args.falling)
 		{
-			this.onNextFrame(()=>{
-				other.args.xSpeed += Math.sign(this.args.xForce);
-				other.args.ySpeed += Math.sign(this.args.yForce);
-				other.args.animation = 'springdash';
-				other.args.groundAngle = 0;
-			});
+			other.args.xSpeed += Math.sign(this.args.xForce);
+			other.args.ySpeed += Math.sign(this.args.yForce);
+			// other.args.animation = 'springdash';
+			other.args.groundAngle = 0;
 
 			return;
 		}

@@ -51,6 +51,7 @@ export class Block extends PointActor
 		this.args.gravity = 0.6;
 
 		this.args.collapse = args.collapse ?? false;
+		this.args.drop     = args.drop     ?? false;
 
 		this.args.active = -1;
 
@@ -103,6 +104,7 @@ export class Block extends PointActor
 
 		this.args.collapse && this.tags.sprite.classList.add('collapse');
 		this.args.platform && this.tags.sprite.classList.add('platform');
+		this.args.drop     && this.tags.sprite.classList.add('drop');
 
 		if(this.args.hidden)
 		{
@@ -274,10 +276,42 @@ export class Block extends PointActor
 			return true;
 		}
 
-		if(!this.switch && this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
+		if(!this.switch && this.args.drop && (type === 0 || type === 2) && this.args.float <= 0)
 		{
 			this.args.float = 1;
 			this.args.goBack = false;
+		}
+
+		if(!this.switch && this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
+		{
+			if(other.args.ySpeed > 15)
+			{
+				this.args.float = 1;
+
+				this.args.goBack = false;
+
+				const ySpeed = other.args.ySpeed;
+
+				this.onNextFrame(()=>{
+					if(this.args.falling || this.args.float)
+					{
+						this.args.ySpeed = ySpeed;
+						this.args.float  = 1;
+					}
+					else
+					{
+						this.args.ySpeed = -1;
+						this.args.float  = 1;
+					}
+
+					this.args.falling = true;
+
+				});
+			}
+			else if(other.args.ySpeed > 0 || other.args.gSpeed)
+			{
+				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
+			}
 
 			this.viewport.onFrameOut(1, () => this.args.falling = true);
 		}
@@ -322,6 +356,21 @@ export class Block extends PointActor
 		}
 
 		if(this.args.collapse)
+		{
+			this.args.gSpeed = 0;
+
+			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
+			{
+				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
+
+				if(!this.args.float)
+				{
+					this.args.ySpeed = this.args.ySpeed || 12;
+				}
+			}
+		}
+
+		if(this.args.drop)
 		{
 			this.args.gSpeed = 0;
 
@@ -441,7 +490,11 @@ export class Block extends PointActor
 			if(!this.args.colliding && this.args.yForce && this.viewport)
 			{
 				this.viewport.onFrameOut(4, () => {
-					if(!this.args.colliding)
+					const colliding = this.viewport.collisions.has(this);
+
+					const collisions = colliding ? [...this.viewport.collisions.get(this).keys()] : [];
+
+					if(!colliding || !collisions.filter(a => a.controllable).length)
 					{
 						this.snapBack = true;
 					}
@@ -503,7 +556,7 @@ export class Block extends PointActor
 		{
 			const point = {x:this.args.x, y:this.args.y - this.args.height};
 			this.chain.style({
-				'--distance': _tiedTo.distanceFrom(point) + _tiedTo.args.height
+				'--distance': _tiedTo.distanceFrom(point) + this.args.height
 				, '--angle':  _tiedTo.angleTo(point) + (Math.PI/2)
 			});
 		}
@@ -605,21 +658,31 @@ export class Block extends PointActor
 
 	sleep()
 	{
-		if(this.args.collapse && this.args.once && !this.args.float)
+		if(this.args.drop && this.args.once && !this.args.float)
 		{
 			this.viewport.actors.remove(this);
 		}
 
-		if(this.args.collapse)
+		if(this.args.drop && this.args.float >= 0)
 		{
-			this.args.y       = this.originalY;
-			this.args.active  = false;
-			this.activatedAt  = null;
-			this.args.float   = -1;
 			this.args.ySpeed  = 0;
-			this.args.goBack  = false;
+			this.args.float   = -1;
+			this.args.active  = false;
 			this.args.falling = false;
-			this.noClip       = false;
+
+			this.viewport.onFrameOut(120, () => {
+				this.args.y       = this.originalY;
+				this.activatedAt  = null;
+				this.args.goBack  = false;
+				this.noClip       = false;
+
+				this.args.ySpeed  = 0;
+				this.args.float   = -1;
+				this.args.active  = false;
+				this.args.falling = false;
+
+				this.viewport.setColCell(this);
+			});
 		}
 	}
 

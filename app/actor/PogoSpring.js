@@ -49,11 +49,13 @@ export class PogoSpring extends Vehicle
 			}
 		});
 	}
+
 	onRendered(event)
 	{
 		super.onRendered(event);
 
 		this.autoStyle.get(this.box)['--bound'] = 'bound';
+
 	}
 
 	update()
@@ -136,24 +138,45 @@ export class PogoSpring extends Vehicle
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');
 
+		this.viewport.setColCell(this);
+
 		this.args.dead = false;
 
 		this.args.gSpeed = 0;
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
 
+		this.args.bound  = 0;
+
 		super.sleep();
 		
 		this.args.facing = 'right';
 	}
 
-	wakeUp()
-	{
-		if(!this.args.falling && !this.occupant)
-		{
-			this.args.dead = false;
-		}
-	}
+	// wakeUp()
+	// {
+	// 	this.args.x = this.def.get('x');
+	// 	this.args.y = this.def.get('y');
+
+	// 	this.args.dead = false;
+
+	// 	this.args.gSpeed = 0;
+	// 	this.args.xSpeed = 0;
+	// 	this.args.ySpeed = 0;
+
+	// 	this.args.bound  = 0;
+
+	// 	super.sleep();
+
+	// 	this.args.facing = 'right';
+
+	// 	if(!this.args.falling && !this.occupant)
+	// 	{
+	// 		this.args.dead = false;
+	// 	}
+
+	// 	super.wakeUp();
+	// }
 
 	get solid() { return !this.occupant; }
 	get rotateLock() { return true; }

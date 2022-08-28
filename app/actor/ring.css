@@ -3,7 +3,7 @@
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -144px;
 	animation: ringSpin steps(4) infinite;
-	animation-duration: calc(1ms * 175);
+	animation-duration: calc(1ms * 275);
 	transition: opacity 0.25s ease-in;
 	width: 32px;
 	height: 32px;

@@ -7,7 +7,8 @@ export class SwitchRegion extends Region
 	{
 		super(...args);
 
-		this.args.type = 'region region-switch';
+		this.args.type  = 'region region-switch';
+		this.args.latch = args.latch ?? this.args.latch
 
 		this.activated = false;
 	}
@@ -26,16 +27,18 @@ export class SwitchRegion extends Region
 			return;
 		}
 
-		const target = this.viewport.actorsById[ this.args.target ];
-
-		if(!target)
-		{
-			return;
-		}
-
 		if(this.args.latch)
 		{
-			this.activated = true;
+			this.args.active = this.activated = true;
+		}
+
+		console.log(actor, this.args.active);
+
+		const target = this.viewport.actorsById[ this.args.target ];
+
+		if(!target || !target.activate)
+		{
+			return;
 		}
 
 		target.activate(actor, this);
@@ -69,17 +72,17 @@ export class SwitchRegion extends Region
 			actor = actor.occupant;
 		}
 
-		if(!(actor.controllable) || !this.args.target)
+		if(!(actor.controllable))
 		{
 			return;
 		}
 
-		const target = this.viewport.actorsById[ this.args.target ];
+		// const target = this.viewport.actorsById[ this.args.target ];
 
-		if(!target || !target.activate)
-		{
-			return;
-		}
+		// if(!target || !target.activate)
+		// {
+		// 	return;
+		// }
 
 		this.viewport.onFrameOut(
 			this.args.delay || 1

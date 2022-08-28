@@ -140,6 +140,8 @@ export class Viewport extends View
 
 		this.quadCell = null;
 
+		this.visible = new Set;
+
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
 		this.callRenderedFrames = new Map;
@@ -174,7 +176,7 @@ export class Viewport extends View
 			, username: 'player'
 		});
 
-		this.vizi = true;
+		// this.vizi = true;
 
 		this.args.shakeX = 0;
 		this.args.shakeY = 0;
@@ -2333,6 +2335,7 @@ export class Viewport extends View
 
 			backdrop.view && Object.assign(backdrop.view.args, ({
 				x: this.args.x
+				, xOffset: -this.args.x + -backdrop.x
 				, xPan: this.args.x
 				, xMax: xMax
 				, y: this.args.y + backdrop.y
@@ -2390,6 +2393,7 @@ export class Viewport extends View
 			if(objType === 'backdrop')
 			{
 				this.backdrops.set(objDef.id, objDef);
+				console.log(objDef.id, objDef);
 				continue;
 			}
 
@@ -2411,7 +2415,10 @@ export class Viewport extends View
 			const actor = Bindable.make(rawActor);
 
 			this.actors.add( actor );
+		}
 
+		for(const actor of this.actors.items())
+		{
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
 				actor.args.display = actor.defaultDisplay || null;
@@ -2627,7 +2634,7 @@ export class Viewport extends View
 		const camRight  = -this.args.x +  16 +  margin + width;
 
 		const camTop    = -this.args.y - margin;
-		const camBottom = -this.args.y + height + margin;
+		const camBottom = -this.args.y + height + margin * 0.5;
 
 		const actorWidth = actor.args.width;
 
@@ -3315,6 +3322,7 @@ export class Viewport extends View
 
 						this.willDetach.delete(actor);
 
+						this.visible.add(actor);
 						actor.vizi = true;
 					}
 
@@ -3324,7 +3332,7 @@ export class Viewport extends View
 				}
 			}
 
-			for(const actor of this.recent)
+			for(const actor of new Set([...this.recent, ...this.visible]))
 			{
 				if(actor[Run] !== this[Run])
 				{
@@ -3341,6 +3349,7 @@ export class Viewport extends View
 						actor.sleep();
 						actor.args.display = 'none';
 						actor.detach();
+						this.visible.delete(actor);
 						actor.vizi = false;
 						actor.willhide = null;
 
@@ -3387,6 +3396,7 @@ export class Viewport extends View
 
 			this.controlActor.nodes.map(n => this.tags.actors.append(n));
 
+			this.visible.add(this.controlActor);
 			this.controlActor.vizi = true;
 
 			this.args.maxSpeed = null;
@@ -3794,6 +3804,7 @@ export class Viewport extends View
 
 		this.tileMap.reset();
 
+		this.visible.clear();
 		this.callFrames.clear();
 		this.callIntervals.clear();
 		this.collisions.clear();

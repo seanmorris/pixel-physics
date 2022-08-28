@@ -24,6 +24,7 @@ export class WaterFall extends PointActor
 
 		this.args.width  = this.args.width  || 32;
 		this.args.height = this.args.height || 64;
+		this.args.upward = this.args.upward ?? false;
 		this.args.type   = 'actor-item actor-water-fall';
 		this.args.active = false;
 		this.args.static = true;
@@ -34,29 +35,11 @@ export class WaterFall extends PointActor
 		super.onRendered();
 
 		this.autoAttr.get(this.box)['data-upward'] = 'upward';
+	}
 
-		if(!this.viewport || !this.args.switch)
-		{
-			return;
-		}
-
+	wakeUp()
+	{
 		this.switch = this.viewport.actorsById[ this.args.switch ];
-
-		if(!this.switch)
-		{
-			return;
-		}
-
-		this.switch.args.bindTo('active', v => {
-			if(v && v > 0 && !this.args.active)
-			{
-				this.args.active = true;
-				this.onNextFrame(()=>{
-					this.args.toHeight = this.args.openHeight;
-					this.args.y -= this.args.openOffset;
-				});
-			}
-		});
 	}
 
 	update()
@@ -78,7 +61,13 @@ export class WaterFall extends PointActor
 				this.args.height += increment;
 				this.args.y += increment;
 			}
+		}
 
+		if(this.switch && this.switch.args.active > 0 && !this.args.active)
+		{
+			this.args.active = true;
+			this.args.toHeight = this.args.openHeight;
+			this.args.y -= this.args.openOffset;
 		}
 	}
 

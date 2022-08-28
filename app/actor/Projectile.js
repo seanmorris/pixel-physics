@@ -6,6 +6,8 @@ import { Tag }        from 'curvature/base/Tag';
 
 import { Region } from '../region/Region';
 import { Spring } from './Spring';
+import { Block } from './Block';
+
 // import { StarPost } from './StarPost';
 
 export class Projectile extends PointActor
@@ -58,7 +60,7 @@ export class Projectile extends PointActor
 
 	collideA(other)
 	{
-		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
+		if(other === this.args.owner || other instanceof Region || other instanceof Spring || other instanceof Block)
 		{
 			return false;
 		}

@@ -639,6 +639,11 @@ export class Sonic extends PointActor
 			});
 		}
 
+		if(falling && this.args.animation === 'standing')
+		{
+			this.args.animation = 'walking';
+		}
+
 		if(this.args.hangingFrom)
 		{
 			this.args.animation = 'hanging';

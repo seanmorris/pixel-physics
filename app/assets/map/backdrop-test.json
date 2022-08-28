@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":16,
  "infinite":false,
  "layers":[
@@ -58,7 +65,7 @@
                  "visible":true,
                  "width":384,
                  "x":32,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -75,7 +82,7 @@
                  "visible":true,
                  "width":384,
                  "x":416,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -92,7 +99,7 @@
                  "visible":true,
                  "width":384,
                  "x":800,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -109,7 +116,7 @@
                  "visible":true,
                  "width":384,
                  "x":1184,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -126,7 +133,7 @@
                  "visible":true,
                  "width":384,
                  "x":1568,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -143,7 +150,7 @@
                  "visible":true,
                  "width":384,
                  "x":1952,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -160,7 +167,7 @@
                  "visible":true,
                  "width":384,
                  "x":2336,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -177,7 +184,7 @@
                  "visible":true,
                  "width":384,
                  "x":2720,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -194,7 +201,7 @@
                  "visible":true,
                  "width":384,
                  "x":3104,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -211,7 +218,7 @@
                  "visible":true,
                  "width":384,
                  "x":3488,
-                 "y":32
+                 "y":288
                 }, 
                 {
                  "height":192,
@@ -228,7 +235,7 @@
                  "visible":true,
                  "width":384,
                  "x":3872,
-                 "y":32
+                 "y":288
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -255,7 +262,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -278,7 +285,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],
@@ -297,7 +304,7 @@
          "value":false
         }],
  "renderorder":"right-down",
- "tiledversion":"1.7.1",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {
@@ -315,6 +322,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.6",
+ "version":1.4,
  "width":134
 }
