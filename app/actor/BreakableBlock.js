@@ -135,6 +135,15 @@ export class BreakableBlock extends Block
 			return false;
 		}
 
+		if(this.args.strength === -2)
+		{
+			if(other.args.falling || Math.abs(other.args.gSpeed) > 4)
+			{
+				this.broken || this.break(other);
+				return false;
+			}
+		}
+
 		if(this.args.strength === -1)
 		{
 			return true;
@@ -239,7 +248,6 @@ export class BreakableBlock extends Block
 			this.args.static = true;
 			this.args.falling = false;
 			this.args.float = -1;
-			this.args.ySpeed = 0;
 			this.noClip = false;
 
 			this.args.ySpeed = 0;
@@ -422,6 +430,6 @@ export class BreakableBlock extends Block
 		this.break(other);
 	}
 
-	get solid() { return !this.broken; }
+	get solid() { return !this.broken && this.args.strength !== -2; }
 }
 

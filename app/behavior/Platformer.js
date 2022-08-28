@@ -805,7 +805,10 @@ export class Platformer
 		{
 			const groundPoint  = host.groundPoint;
 			const regionsBelow = host.viewport.regionsAtPoint(groundPoint[0], groundPoint[1]+1);
-			const standingOn   = host.getMapSolidAt(...groundPoint)/* || host.getMapSolidAt(groundPoint[0], groundPoint[1]+1)*/;
+			const standingOn   = host.getMapSolidAt(...groundPoint) || ((host.controllable && host.args.groundAngle)
+				? host.getMapSolidAt(groundPoint[0], groundPoint[1]+1)
+				: false
+			);
 
 			if(!host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
 			{

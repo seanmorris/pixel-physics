@@ -130,7 +130,7 @@ export class SeeSaw extends PointActor
 
 			const power  = Math.abs(this.reflectForce / other.args.weight);
 
-			const torque = Math.min(1, Math.ceil(hang * 5) / 5);
+			const torque = Math.min(1, Math.ceil(hang * 3) / 3);
 
 			other.args.gSpeed = 0;
 

@@ -3,6 +3,7 @@ import { PointActor } from './PointActor';
 
 import { Patrol } from '../behavior/Patrol';
 import { CanPop } from '../mixin/CanPop';
+import { Ring } from './Ring';
 
 export class SpringTurtle extends Mixin.from(PointActor, CanPop)
 {
@@ -46,6 +47,11 @@ export class SpringTurtle extends Mixin.from(PointActor, CanPop)
 
 	collideA(other, type)
 	{
+		if(other.args.static)
+		{
+			return;
+		}
+
 		if(type === 0 || other.args.falling)
 		{
 			this.ignores.set(other, 15);

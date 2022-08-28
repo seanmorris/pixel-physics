@@ -96,7 +96,17 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	}
 
 	update()
-	{}
+	{
+		if(!this.args.tiedTo)
+		{
+			return;
+		}
+
+		if(!this.args._tiedTo)
+		{
+			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+		}
+	}
 
 	collideB(other)
 	{

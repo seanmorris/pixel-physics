@@ -417,21 +417,20 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		const tileKey = x + ',' + y + ',' + layerId;
-		const cached  = this.tileNumberCache.get(tileKey);
+		// const tileKey = x + ',' + y + ',' + layerId;
+		// const cached  = this.tileNumberCache.get(tileKey);
 
-		if(cached !== undefined)
-		{
-			return cached;
-		}
+		// if(cached !== undefined)
+		// {
+		// 	return cached;
+		// }
 
 		const tileLayers = this.tileLayers;
 		const mapData    = this.mapData;
 
 		if(!tileLayers[layerId])
 		{
-			this.tileNumberCache.set(tileKey, false);
-
+			// this.tileNumberCache.set(tileKey, false);
 			return false;
 		}
 
@@ -441,12 +440,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					this.tileNumberCache.set(tileKey, false);
-
+					// this.tileNumberCache.set(tileKey, false);
 					return false;
 				}
 
-				this.tileNumberCache.set(tileKey, 1);
+				// this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -467,12 +465,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					this.tileNumberCache.set(tileKey, false);
+					// this.tileNumberCache.set(tileKey, false);
 
 					return false;
 				}
 
-				this.tileNumberCache.set(tileKey, 1);
+				// this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -491,12 +489,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const tileNumber = tile > 0 ? tile - 1 : 0;
 
-			this.tileNumberCache.set(tileKey, tileNumber);
+			// this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
 		}
 
-		this.tileNumberCache.set(tileKey, false);
+		// this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}

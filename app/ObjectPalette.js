@@ -36,6 +36,8 @@ import { Block }          from './actor/Block';
 import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
+import { TripleRingMonitor } from './actor/monitor/TripleRingMonitor';
+import { InfoMonitor } from './actor/monitor/InfoMonitor';
 import { SheildStarMonitor } from './actor/monitor/SheildStarMonitor';
 import { SheildNormalMonitor } from './actor/monitor/SheildNormalMonitor';
 import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
@@ -283,6 +285,8 @@ export const ObjectPalette = {
 	, 'star-balloon': StarBalloon
 	, 'web-monitor': WebMonitor
 	, 'ring-monitor': RingMonitor
+	, 'triple-ring-monitor': TripleRingMonitor
+	, 'info-monitor': InfoMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
 	, 'sheild-normal-monitor': SheildNormalMonitor
 	, 'sheild-star-monitor': SheildStarMonitor
