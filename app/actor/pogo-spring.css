@@ -20,7 +20,6 @@
 	background-image: url(/Sonic/springs.png);
 	background-position: -16px -35px;
 	transform-origin: 16px 4px;
-	/*animation: pogo-spring-bounce .5s 1 ease-out;*/1
 }
 
 .actor-pogo-spring .sprite:after {
@@ -31,7 +30,7 @@
 	width: 32px;
 	height: 32px;
 	background-image: url(/Sonic/springs.png), url(/Sonic/pogo-spring-base.png);
-	background-position: -80px -90px, 0 14px;
+	background-position: -80px -90px, 0px 14px;
 	background-repeat: no-repeat;
 }
 
