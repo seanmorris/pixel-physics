@@ -2809,10 +2809,10 @@ export class Viewport extends View
 		{
 			for(const actor of actors)
 			{
-				if(actor.removed)
-				{
-					continue;
-				}
+				// if(actor.removed)
+				// {
+				// 	continue;
+				// }
 
 				result.add(actor);
 			}
@@ -3533,42 +3533,42 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
-			// if(actor[Run] !== this[Run])
-			// {
-			// 	continue;
-			// }
-
-			const actorArgs = actor.args;
-
-			const actorX = actorArgs.x;
-			const actorY = actorArgs.y;
-
-			const width  = actorArgs.width;
-			const height = actorArgs.height;
-
 			const myRadius = Math.max(Math.floor(w / 2), 0);
 
 			const myLeft   = x - myRadius;
 			const myRight  = x + myRadius;
-			const myTop    = y - Math.max(h, 0);
-			const myBottom = y;
+
+			const actorArgs = actor.args;
+
+			const actorX = actorArgs.x;
+			const width  = actorArgs.width;
 
 			const offset = width / 2;
 
 			const isRegion = actor.isRegion;
-
 			const otherLeft   = actorX - (isRegion ? 0 : offset);
 			const otherRight  = actorX + (isRegion ? width : offset);
-			const otherTop    = actorY - height ;
+
+			if(myRight < otherLeft || otherRight <= myLeft)
+			{
+				continue;
+			}
+
+			const myTop    = y - Math.max(h, 0);
+			const myBottom = y;
+
+			const actorY = actorArgs.y;
+			const height = actorArgs.height;
+
+			const otherTop    = actorY - height;
 			const otherBottom = actorY;
 
-			if(myRight >= otherLeft && otherRight > myLeft)
+			if(otherBottom < myTop || myBottom < otherTop)
 			{
-				if(otherBottom >= myTop && myBottom >= otherTop)
-				{
-					actors.add( actor );
-				}
+				continue;
 			}
+
+			actors.add( actor );
 		}
 
 		const list = [...actors];

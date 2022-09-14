@@ -96,7 +96,7 @@
 	position: absolute;
 	transition: transform var(--x-speed) ease-out , opacity var(--y-speed) ease-in;
 	transform: translate(var(--xTarget), -0px);
-	opacity: 0.5;
+	/*opacity: 0.5;*/
 	top:  calc(var(--height, 32) * -0.5px);
 	left: 0px;
 	width: calc(var(--width, 32) * 1px);
@@ -116,7 +116,7 @@
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsY {
-	opacity: 0;
+	/*opacity: 0;*/
 }
 
 .actor-item.actor-breakable-block .fragment {

@@ -3,12 +3,17 @@ import { Orb } from './Orb';
 
 import { Tag } from 'curvature/base/Tag';
 import { Sfx } from '../audio/Sfx';
+import { Platformer } from '../behavior/Platformer';
 
 export class BreakableBlock extends Block
 {
 	constructor(args = {}, parent)
 	{
 		super(args, parent);
+
+		// console.log([...this.behaviors]);
+
+		// this.behaviors.clear();
 
 		this.args.type = 'actor-item actor-breakable-block';
 
@@ -58,8 +63,6 @@ export class BreakableBlock extends Block
 		this.box    = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
-		this.box.append(this.fragmentsX);
-
 		super.onRendered(event);
 	}
 
@@ -74,6 +77,18 @@ export class BreakableBlock extends Block
 				this.break();
 			}
 		}
+	}
+
+	update()
+	{
+		const regions = this.viewport.regionsAtPoint(this.args.x, this.args.y);
+
+		for(const region of regions)
+		{
+			region.updateActor(this);
+		}
+
+		super.update();
 	}
 
 	callCollideHandler(...args)
@@ -256,6 +271,8 @@ export class BreakableBlock extends Block
 			this.box.classList.remove('breaking');
 			this.box.classList.remove('will-break');
 
+			this.fragmentsX.remove();
+
 			this.broken = false;
 		}
 
@@ -270,7 +287,13 @@ export class BreakableBlock extends Block
 
 		this.args.y = this.def.get('y') + 1;
 
-		this.box.classList.remove('broken');
+		if(this.broken)
+		{
+			this.box.classList.remove('broken');
+			this.box.classList.remove('will-break');
+			this.fragmentsX.remove();
+		}
+
 		// this.args.y = this.def.get('y') + 1;
 
 		this.args.active = 0;
@@ -287,22 +310,30 @@ export class BreakableBlock extends Block
 			return;
 		}
 
+		this.box.append(this.fragmentsX);
+
 		this.viewport.onFrameOut(delay, () => this.break(other));
 	}
 
 	break(other)
 	{
-		if(this.box)
-		{
-			this.box.classList.add('will-break');
-			this.viewport.onFrameOut(2, () => {
-				this.box.classList.add('breaking');
-				this.box.classList.add('broken');
-			});
-		}
+		this.box.append(this.fragmentsX);
 
 		if(!this.broken)
 		{
+			if(this.box)
+			{
+				this.box.classList.add('will-break');
+
+				this.viewport.onFrameOut(1, () => {
+					this.box.classList.add('breaking');
+				});
+
+				this.viewport.onFrameOut(2, () => {
+					this.box.classList.add('broken');
+				});
+			}
+
 			this.viewport.onFrameOut(
 				Math.floor(Math.random() * 3)
 				, () => Sfx.play('BLOCK_DESTROYED')
@@ -328,8 +359,9 @@ export class BreakableBlock extends Block
 			}
 		}
 
-		this.viewport.onFrameOut(4, () => {
+		this.viewport.onFrameOut(30, () => {
 			this.box && this.box.classList.remove('breaking');
+			this.fragmentsX.remove();
 		});
 
 		if(!this.args.collapse && other && other.args.mode % 2 === 0)
