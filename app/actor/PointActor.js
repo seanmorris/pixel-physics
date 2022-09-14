@@ -44,9 +44,11 @@ export class PointActor extends View
 
 	template = `<div class  = "point-actor [[type]]">
 		<div class = "sprite" cv-ref = "sprite">
-			<div class = "labels" cv-ref = "labels" cv-each = "charStrings:charString:c">[[charString]]</div>
+
 		</div>
 	</div>`;
+
+	//<div class = "labels" cv-ref = "labels" cv-each = "charStrings:charString:c">[[charString]]</div>
 
 	profiles = {
 		normal: {

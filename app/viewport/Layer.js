@@ -211,7 +211,7 @@ export class Layer extends View
 
 			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
 			{
-				const xy = String(i) + '::' + String(j);
+				const xy = i  * (1+Math.abs(blocksHigh)) + j;
 
 				// const tileY = j - Math.ceil(this.y / blockSize);
 
