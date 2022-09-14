@@ -36,9 +36,12 @@ export class TilesetSwapper extends PointActor
 
 			const fire = new ScreenFire;
 
-			this.viewport.args.screenEffects.push(fire);
+			this.viewport.args.screenEffects.add(fire);
 
-			this.viewport.onFrameOut(60000, () => fire.remove());
+			this.viewport.onFrameOut(60 * 10, () => {
+				this.viewport.args.screenEffects.remove(fire);
+				fire.remove();
+			});
 
 			this.viewport.onFrameOut(65, () => {
 				this.viewport.tileMap.replacements.set(

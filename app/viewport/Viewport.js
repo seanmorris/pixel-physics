@@ -112,7 +112,7 @@ export class Viewport extends View
 
 		Router.listen(this, { '': () => '' });
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		this.meta = {};
 
@@ -3827,7 +3827,7 @@ export class Viewport extends View
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		const layers = this.tileMap.tileLayers;
 
@@ -3891,7 +3891,7 @@ export class Viewport extends View
 		this.args.cutScene = false;
 		this.args.fade     = true;
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		this.callFrames.clear();
 		this.callIntervals.clear();
