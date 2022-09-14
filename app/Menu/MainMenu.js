@@ -394,12 +394,17 @@ export class MainMenu extends Menu
 
 				}
 			}
-			, 'Connect To Server': {
 
-				available: 'unavailable'
-			}
 			, Settings: SettingsMenu(parent)
 
+			, Graphics: {
+				input: 'select'
+				, options: ['High', 'Low']
+				, set: value => parent.settings.graphicsLevel = value
+				, get: ()    => parent.settings.graphicsLevel
+			}
+
+			// , 'Connect To Server': { available: 'unavailable' }
 			// , Load: SavestateMenu(parent)
 
 			, About: {
@@ -408,9 +413,7 @@ export class MainMenu extends Menu
 				}
 			}
 
-			, 'Back': {
-				callback: () => parent.quit(true)
-			}
+			// , 'Back': { callback: () => parent.quit(true) }
 		};
 	}
 

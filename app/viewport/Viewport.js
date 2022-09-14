@@ -174,6 +174,7 @@ export class Viewport extends View
 			, musicVol: 50
 			, sfxVol: 75
 			, username: 'player'
+			, graphicsLevel: 'High'
 		});
 
 		// this.vizi = true;
@@ -570,6 +571,20 @@ export class Viewport extends View
 		this.args.ntsc = 'ntsc';
 
 		this.args.frameId = -1;
+
+		this.settings.bindTo('graphicsLevel',  v => {
+			switch(v)
+			{
+				case 'High':
+					this.args.displacement = 'on';
+					this.settings.blur     = true;
+					break;
+				case 'Low':
+					this.args.displacement = 'off'
+					this.settings.blur     = false;
+					break;
+			}
+		});
 
 		this.settings.bindTo('displace',  v => this.args.displacement = v ? 'on' : 'off');
 		this.settings.bindTo('outline',   v => this.args.outline   = v);

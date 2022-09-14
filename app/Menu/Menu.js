@@ -62,6 +62,7 @@ export class Menu extends Card
 				}
 				else if(item.input === 'select')
 				{
+					item._value.args.value = item.setting;
 					item._selectValue = item._value;
 				}
 			}

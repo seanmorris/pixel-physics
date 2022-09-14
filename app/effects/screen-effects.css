@@ -24,7 +24,7 @@
 	opacity: 0.7;
 	transform-origin: top left;
 	--scaleX: 1;
-	transform: translateY(33.3%) scaleX(var(--scaleX));
+	transform: translateY(50%) scaleX(var(--scaleX));
 }
 
 .screen-effects .screen-fire .fire-strip > div {
@@ -130,7 +130,7 @@
 
 @keyframes screen-fire-slide {
 	from {
-		transform: translateY(33.3%)  scaleX(var(--scaleX));
+		transform: translateY(50%)  scaleX(var(--scaleX));
 
 	}
 	to {

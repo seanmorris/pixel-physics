@@ -20,6 +20,7 @@ import { LoadingRegion } from './region/LoadingRegion';
 import { ExplodingRegion } from './region/ExplodingRegion'
 import { SwitchRegion } from './region/SwitchRegion'
 import { RainRegion } from './region/RainRegion'
+import { DebrisRegion } from './region/DebrisRegion'
 import { WaterfallRegion } from './region/WaterfallRegion'
 import { KillRegion } from './region/KillRegion'
 import { VehicleRegion } from './region/VehicleRegion'
@@ -264,6 +265,7 @@ export const ObjectPalette = {
 	, 'loading-region': LoadingRegion
 	, 'switch-region': SwitchRegion
 	, 'rain-region': RainRegion
+	, 'debris-region': DebrisRegion
 	, 'waterfall-region': WaterfallRegion
 	, 'kill-region': KillRegion
 	, 'vehicle-region': VehicleRegion
