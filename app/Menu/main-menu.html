@@ -30,10 +30,9 @@
 							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event, title)" tabindex="-1" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "number" class = "field">
-							: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event, title)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
+							<span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event, title)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "boolean" class = "field">
-							:
 							<span data-wraps = "select">
 								[[item._boolValue]]
 								<select
@@ -45,7 +44,6 @@
 							</select></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "select" class = "field">
-							:
 							<span data-wraps = "select">
 								[[item._selectValue]]
 								<select

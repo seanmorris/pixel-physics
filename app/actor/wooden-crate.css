@@ -10,6 +10,6 @@
 
 .actor-item.actor-breakable-block.actor-wooden-crate .fragment {
 	background-image: url(/Sonic/wooden-crate.png);
-	--centerX: calc(var(--sprite-x) * calc(var(--width, 32) * -1px));
-	--centerY: calc(var(--sprite-y) * calc(var(--height, 32) * -1px));
+	--centerX: calc(var(--sprite-x, 0) * calc(var(--width, 32) * -1px));
+	--centerY: calc(var(--sprite-y, 0) * calc(var(--height, 32) * -1px));
 }

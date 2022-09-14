@@ -36,6 +36,12 @@ export class PauseMenu extends Menu
 				, get: () => !parent.args.audio
 			}
 			, Settings: SettingsMenu(parent)
+			, Graphics: {
+				input: 'select'
+				, options: ['High', 'Low']
+				, set: value => parent.settings.graphicsLevel = value
+				, get: ()    => parent.settings.graphicsLevel
+			}
 			, Reset:    {
 				subtext: 'Reset the run.'
 				, children: {

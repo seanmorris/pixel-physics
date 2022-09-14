@@ -290,6 +290,7 @@ export class BreakableBlock extends Block
 		if(this.broken)
 		{
 			this.box.classList.remove('broken');
+			this.box.classList.remove('breaking');
 			this.box.classList.remove('will-break');
 			this.fragmentsX.remove();
 		}
@@ -317,21 +318,27 @@ export class BreakableBlock extends Block
 
 	break(other)
 	{
-		this.box.append(this.fragmentsX);
+		const wasBroken = this.broken;
 
 		if(!this.broken)
 		{
+			this.box.append(this.fragmentsX);
+
+			this.broken = true;
+
 			if(this.box)
 			{
+				const viewport = this.viewport;
+
 				this.box.classList.add('will-break');
-
-				this.viewport.onFrameOut(1, () => {
-					this.box.classList.add('breaking');
-				});
-
-				this.viewport.onFrameOut(2, () => {
+				this.box.classList.add('breaking');
+				viewport.onFrameOut(1, () => {
 					this.box.classList.add('broken');
 				});
+				// viewport.onFrameOut(1, () => {
+				// });
+				// viewport.onFrameOut(1, () => {
+				// });
 			}
 
 			this.viewport.onFrameOut(
@@ -372,9 +379,13 @@ export class BreakableBlock extends Block
 			{
 				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x * 1.1));
 			}
-			else
+			else if(other.controllable)
 			{
 				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x));
+			}
+			else
+			{
+				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x) * 3);
 			}
 		}
 
@@ -385,7 +396,7 @@ export class BreakableBlock extends Block
 
 		this.args.active = 1;
 
-		if(this.args.collapse && !this.broken)
+		if(this.args.collapse && !wasBroken)
 		{
 			const left  = this.viewport.actorsAtPoint(this.x - this.args.width, this.y);
 			const right = this.viewport.actorsAtPoint(this.x + this.args.width, this.y);

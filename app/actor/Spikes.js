@@ -127,7 +127,10 @@ export class Spikes extends PointActor
 
 				if(speed <= 0)
 				{
-					other.args.x = this.args.x + (this.args.width/2)  + (other.args.width/2) + 4;
+					if(this.args.wasRetracted)
+					{
+						other.args.x = this.args.x + (this.args.width/2)  + (other.args.width/2) + 4;
+					}
 					other.damage(this);
 				}
 			}
@@ -137,7 +140,10 @@ export class Spikes extends PointActor
 
 				if(speed >= 0)
 				{
-					other.args.x = this.args.x + -(this.args.width/2)  + -(other.args.width/2) + -4;
+					if(this.args.wasRetracted)
+					{
+						other.args.x = this.args.x + -(this.args.width/2)  + -(other.args.width/2) + -4;
+					}
 					other.damage(this);
 				}
 			}
@@ -147,7 +153,10 @@ export class Spikes extends PointActor
 
 				if(speed <= 0)
 				{
-					other.args.y = this.args.y + other.args.height;
+					if(this.args.wasRetracted)
+					{
+						other.args.y = this.args.y + other.args.height;
+					}
 					other.damage(this);
 				}
 			}
@@ -157,7 +166,10 @@ export class Spikes extends PointActor
 
 				if(speed >= 0)
 				{
-					other.args.y = this.args.y + -this.args.height;
+					if(this.args.wasRetracted)
+					{
+						other.args.y = this.args.y + -this.args.height;
+					}
 					other.damage(this);
 				}
 			}

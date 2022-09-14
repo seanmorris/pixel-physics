@@ -39,8 +39,8 @@
 
 .actor-item.actor-breakable-block {
 	--break-speed: 0s;
-	--x-speed:  0s;
-	--y-speed: 0s;
+	--x-speed:  0.75s;
+	--y-speed: 1.0s;
 	--xTarget: 0vh;
 	--yTarget: 0vh;
 	--spread: 0%;
@@ -54,7 +54,7 @@
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken {
-	/*--y-speed: 1.5s;*/
+	--y-speed: 1.5s;
 	--spread: 10%;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .actor-item.actor-breakable-block .fragmentsX {
-	display: none;
+	/*display: none;*/
 }
 .actor-item.actor-breakable-block.broken .fragmentsX,
 .actor-item.actor-breakable-block.breaking .fragmentsX,
@@ -78,9 +78,10 @@
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
-	--xTarget: calc(var(--xSpeed) * 24px);
-	transform: translate(var(--xTarget), -128px);
+	--xTarget: calc(var(--xSpeed) * 12px);
 	--yTarget: 50vh;
+	transform: translate(var(--xTarget), -128px);
+	transform: translate(var(--xTarget), 0px);
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken .fragmentsX {
@@ -89,7 +90,7 @@
 }
 
 .actor-item.actor-breakable-block.breaking .fragmentsX {
-	filter: brightness(1.15) saturate(0.25) contrast(1.25);
+	/*filter: brightness(1.15) saturate(0.25) contrast(1.25);*/
 }
 
 .actor-item.actor-breakable-block .fragmentsX {
@@ -116,7 +117,7 @@
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsY {
-	/*opacity: 0;*/
+	opacity: 0;
 }
 
 .actor-item.actor-breakable-block .fragment {

@@ -63,8 +63,8 @@ export class ForceRegion extends Region
 
 		if(other.args.falling)
 		{
-			other.args.xSpeed += Math.sign(this.args.xForce);
-			other.args.ySpeed += Math.sign(this.args.yForce);
+			other.args.xSpeed += Number(this.args.xForce);
+			other.args.ySpeed += Number(this.args.yForce);
 			// other.args.animation = 'springdash';
 			other.args.groundAngle = 0;
 
