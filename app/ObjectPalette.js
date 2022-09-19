@@ -34,6 +34,9 @@ import { Stopper }        from './actor/Stopper';
 import { Zipline }        from './actor/Zipline';
 import { Block }          from './actor/Block';
 
+import { Tree }          from './actor/Tree';
+import { Coconut }       from './actor/Coconut';
+
 import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
@@ -212,6 +215,8 @@ export const ObjectPalette = {
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
 	, 'block':           Block
+	, 'tree':            Tree
+	, 'coconut':         Coconut
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock

@@ -11,7 +11,12 @@ export class ChaoCrate extends BreakableBlock
 		this.args.width  = 60;
 		this.args.height = 60;
 		this.args.static = false;
+		this.args.spriteSheet = '/Sonic/chao-crate.png';
+
+		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
+
+	setTile(){}
 
 	collideA(other, type)
 	{

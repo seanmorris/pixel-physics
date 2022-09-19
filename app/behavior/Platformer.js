@@ -502,7 +502,7 @@ export class Platformer
 			{
 				host.args.gSpeed = 0;
 			}
-			else if(host.canRoll && host.yAxis > 0.55 && !host.args.ignore)
+			else if(host.canRoll && host.yAxis > 0.55 && !host.args.ignore && !host.carrying.size)
 			{
 				host.args.rolling = true;
 			}
@@ -2696,7 +2696,7 @@ export class Platformer
 				{
 					// host.args.groundAngle = host.args.angle = newAngle;
 
-					if(host.canRoll && (host.yAxis > 0.55 || host.args.dropDashCharge))
+					if(host.canRoll && (host.yAxis > 0.55 || host.args.dropDashCharge) && !host.carrying.size)
 					{
 						host.args.rolling = true;
 					}

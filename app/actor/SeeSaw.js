@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Ring } from './Ring';
 import { Tag } from 'curvature/base/Tag';
 
 const Side = Symbol('Side');
@@ -45,6 +46,11 @@ export class SeeSaw extends PointActor
 
 	collideA(other, type)
 	{
+		if(other instanceof Ring)
+		{
+			return;
+		}
+
 		other.args.groundAngle = 0;
 
 		if(!other.args.falling || other.args.ySpeed <= 0)

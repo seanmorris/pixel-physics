@@ -1,5 +1,6 @@
 import { Png } from '../sprite/Png';
 import { PointActor } from './PointActor';
+import { Coconut } from './Coconut';
 
 export class Chao extends PointActor
 {
@@ -11,10 +12,16 @@ export class Chao extends PointActor
 
 		this.args.type = 'actor-item actor-chao';
 
-		this.args.spriteSheet = this.spriteSheet = '/DBurraki/chao-normal.png';
+		this.args.particleScale = 0.75;
+		this.args.spriteSheet   = this.spriteSheet = '/DBurraki/chao-normal.png';
 
 		this.args.width  = 14;
 		this.args.height = 18;
+
+		this.xHold = 8;
+		this.yHold = 0;
+
+		this.maxFlight = 180;
 
 		this.emotes = ['normal', 'alert', 'inquire', 'like', 'love', 'angry'];
 		this.emoteIndex = 0;
@@ -35,6 +42,7 @@ export class Chao extends PointActor
 				carrier.carrying.add(this);
 
 				this.args.float = -1;
+				this.args.groundAngle = 0;
 			}
 			else if(this.carriedBy)
 			{
@@ -62,12 +70,34 @@ export class Chao extends PointActor
 		this.args.bindTo('currentState', () => {
 			this.args.stateTime = 0;
 		});
+
+		this.stats = {run: 0, swim: 0, fly: 0, power:0, stamina: 0, luck: 0, intelligence: 0};
+
+		this.defaultColors = ['addef8', '2ebee9', '0e6d89', 'ecde2f', 'dcb936', '985000', 'f8b0c0', 'f85080', 'e4e0e4', 'e0e0e0', 'f8f820', '606080'];
+		this.customColors = [null,null,null,null,null,null,null,null,null,null,null,null];
+
+
+		this.customColors.bindTo(() => {
+
+			const colorMap = {};
+
+			for(const i in this.defaultColors)
+			{
+				colorMap[ this.defaultColors[i] ] = this.customColors[i] ?? this.defaultColors[i];
+			}
+
+			this.png.ready.then(()=>{
+				const customSheet = this.png.recolor(colorMap).toUrl();
+				this.args.spriteSheet = customSheet;
+				console.log('!!!');
+			});
+
+		}, {wait:0});
+
 	}
 
 	onRendered(event)
 	{
-		console.log(event);
-
 		super.onRendered(event);
 
 		if(!this.listening)
@@ -108,8 +138,6 @@ export class Chao extends PointActor
 
 		// 	this.animationIndex++;
 		// });
-
-		console.log(event);
 
 		const heroColors = {
 			'addef8': 'e4e0e4',
@@ -275,8 +303,6 @@ export class Chao extends PointActor
 			this.mimeSheet  = this.png.recolor(mimeColors).toUrl();
 			this.whiteSheet = this.png.recolor(whiteColors).toUrl();
 			this.limeRubySheet = this.png.recolor(limeRubyColors).toUrl();
-
-			console.log(this.heroSheet);
 		});
 	}
 
@@ -373,8 +399,119 @@ export class Chao extends PointActor
 
 	update()
 	{
+		let inWater = false;
+
+		const floatRegions = [...this.regions].filter(r => r.args.density >= 1);
+
+		if(floatRegions.length)
+		{
+			if(this.args.currentState !== 'flying' || this.args.ySpeed > 0)
+			{
+				const floatTarget = floatRegions[0].args.y - floatRegions[0].args.height + 6;
+				const snapSpace = 3;
+
+				if(this.args.currentState !== 'walking')
+				{
+					this.args.xSpeed = this.args.xSpeed * 0.95;
+				}
+
+				if(this.args.y > floatTarget)
+				{
+					this.args.falling = true;
+					this.args.ySpeed += -0.25;
+					this.args.float = -1;
+
+					if(this.args.ySpeed > snapSpace)
+					{
+						this.args.ySpeed = snapSpace;
+					}
+
+					if(this.args.ySpeed < -snapSpace)
+					{
+						this.args.ySpeed = -snapSpace;
+					}
+				}
+				else
+				{
+					if(this.args.ySpeed > 0 && Math.abs(this.args.y - floatTarget) < snapSpace)
+					{
+						this.args.y = floatTarget;
+					}
+
+					this.args.ySpeed = 0;
+					this.args.float = 1;
+				}
+
+				this.args.groundAngle = 0;
+			}
+
+			inWater = true;
+		}
+		else
+		{
+			if(this.args.currentState !== 'flying')
+			{
+				this.args.float = 0;
+			}
+		}
+
+		const eating = new Set;
+
+		for(const carrying of this.carrying)
+		{
+			if(carrying instanceof Coconut)
+			{
+				this.args.currentState = 'eating';
+
+				eating.add(carrying);
+			}
+		}
+
 		switch(this.args.currentState)
 		{
+			case 'eating':
+				if(!this.args.falling)
+				{
+					this.args.ySpeed = 0;
+				}
+
+				if(!this.carriedBy)
+				{
+					this.args.float = 0;
+				}
+				else
+				{
+					this.args.float = -1;
+				}
+
+				this.args.xSpeed = 0;
+				this.args.animation = 'eating';
+				this.args.emote = 'love';
+
+				if(this.args.stateTime && this.args.stateTime % 75 === 0)
+				{
+					for(const e of eating)
+					{
+						e.args.size--;
+
+						if(!e.args.size)
+						{
+							if(!this.carriedBy)
+							{
+								this.args.currentState = 'thinking';
+							}
+							else
+							{
+								this.args.currentState = 'held';
+							}
+							e.lift(this);
+							this.viewport.actors.remove(e);
+						}
+					}
+				}
+
+				break;
+
 			case 'held':
 
 				this.args.falling = false;
@@ -399,6 +536,12 @@ export class Chao extends PointActor
 			case 'standing':
 				this.args.animation = 'standing';
 
+				if(!this.args.falling)
+				{
+					this.args.xSpeed = 0;
+					this.args.ySpeed = 0;
+				}
+
 				if(this.args.stateTime > 120)
 				{
 					this.args.currentState = 'thinking';
@@ -407,6 +550,12 @@ export class Chao extends PointActor
 				break;
 
 			case 'thinking':
+
+				if(!this.args.falling)
+				{
+					this.args.xSpeed = 0;
+					this.args.ySpeed = 0;
+				}
 
 				this.args.animation = 'thinking';
 
@@ -438,9 +587,21 @@ export class Chao extends PointActor
 				{
 					this.args.direction = Math.sign(Math.random() - 0.5);
 
-					if(Math.random() > 0.25)
+					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
 					{
-						this.args.currentState = 'sitting';
+						this.args.direction *= -1;
+					}
+
+					if(Math.random() > 0.15)
+					{
+						if(this.args.groundAngle || inWater)
+						{
+							this.args.currentState = 'walking';
+						}
+						else
+						{
+							this.args.currentState = 'sitting';
+						}
 					}
 					else
 					{
@@ -452,7 +613,14 @@ export class Chao extends PointActor
 
 			case 'walking':
 
-				this.args.animation = 'walking';
+				if(inWater)
+				{
+					this.args.animation = 'flying';
+				}
+				else
+				{
+					this.args.animation = 'walking';
+				}
 
 				if(this.args.stateTime < 15)
 				{
@@ -463,11 +631,27 @@ export class Chao extends PointActor
 					this.args.emote = 'normal';
 				}
 
-				this.args.gSpeed = 0.01 * this.args.direction;
+				if(inWater)
+				{
+					this.args.xSpeed = 1 * this.args.direction;
+				}
+				else
+				{
+					this.args.gSpeed = 0.01 * this.args.direction;
+				}
+
 
 				if(this.args.stateTime > 40)
 				{
-					this.args.currentState = 'flying';
+					if(Math.random() > 0.95)
+					{
+						this.args.currentState = 'flying';
+					}
+
+					if(Math.random() > 0.98)
+					{
+						this.args.currentState = 'searching';
+					}
 				}
 
 				break;
@@ -476,21 +660,42 @@ export class Chao extends PointActor
 
 				this.args.animation = 'flying';
 
-				if(this.args.stateTime < 45)
+				if(this.args.stateTime === 1)
 				{
-					if(!this.args.falling)
+					this.flightTime = (this.maxFlight/2) + Math.round((this.maxFlight/2) * Math.random());
+				}
+
+				if(this.args.stateTime > 60 && this.args.ySpeed < 0)
+				{
+					this.args.ySpeed *= 0.1;
+				}
+
+				if(this.args.stateTime < this.flightTime)
+				{
+					this.args.groundAngle = 0;
+
+					if(!this.args.ySpeed || !this.args.falling)
 					{
+						if(!this.args.xSpeed && !this.args.gSpeed)
+						{
+							this.args.direction = Math.sign(Math.random() - 0.5);
+						}
+
 						this.args.falling = true;
-						this.args.direction = Math.sign(Math.random() - 0.5);
 						this.args.ySpeed  = -Math.sin(this.args.stateTime / 0.05);
 						this.args.xSpeed  =  1.25 * this.args.direction;
-						this.args.float   = 45;
+						this.args.float   =  -1;
 					}
 					else if(this.args.ySpeed >= 0)
 					{
 						this.args.currentState = 'flying';
 					}
 
+					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
+					{
+						this.args.direction *= -1;
+						this.args.xSpeed *= -1;
+					}
 				}
 				else
 				{
@@ -500,11 +705,28 @@ export class Chao extends PointActor
 				break;
 
 			case 'sitting':
-				this.args.animation = 'sitting';
+
+				this.args.xSpeed = 0;
+
+				if(inWater)
+				{
+					this.args.animation = 'standing';
+				}
+				else
+				{
+					this.args.animation = 'sitting';
+				}
 
 				if(this.args.stateTime > 120)
 				{
-					this.args.currentState = 'thinking';
+					if(Math.random() > 0.35)
+					{
+						this.args.currentState = 'walking';
+					}
+					else
+					{
+						this.args.currentState = 'thinking';
+					}
 				}
 
 				break;
@@ -517,6 +739,24 @@ export class Chao extends PointActor
 		super.update();
 
 		this.args.stateTime++;
+	}
+
+	collideA(other, type)
+	{
+		super.collideA(other, type);
+
+		if(other.carriedBy || this.carrying.size)
+		{
+			return;
+		}
+
+		if(other instanceof Coconut)
+		{
+			if(other.args.size)
+			{
+				other.lift(this);
+			}
+		}
 	}
 
 	stateStanding() {}
