@@ -127,7 +127,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return false;
 		}
 
-		if(Math.abs(other.args.y - this.args.y) > 8 || !other.controllable || this.hooked)
+		if((other.args.falling && Math.abs(other.args.y - this.args.y) > 8) || !other.controllable || this.hooked)
 		{
 			return;
 		}
@@ -136,7 +136,6 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		other.swing = true;
 
 		this.hooked = other;
-
 
 		this.viewport.auras.add(this);
 

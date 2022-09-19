@@ -1,0 +1,50 @@
+.region.region-debris {
+	/*filter: blur(0.65px);
+	opacity: 0.75;*/
+}
+
+.region.region-debris .sprite {
+	position: absolute;
+	/*bottom:  100% !important;*/
+}
+
+.region.region-debris .region-color-wrapper {
+	/*bottom: 0px !important;*/
+}
+
+.region.region-shade.region-debris .region-color {
+	background: url(/Sonic/leaves-debris.png), url(/Sonic/leaves-debris.png);
+	background-position-x: calc(-0px + var(--vpX));
+	height: calc(100% - 64px);
+	animation: debris-shift 0.85s linear infinite, debris-wave 2.75s linear infinite;
+	top:  0px;
+}
+
+[data-paused="0"] .region .region-color,
+[data-paused="-1"] .region .region-color {
+	animation-play-state: paused !important;
+}
+
+.region.region-shade.region-debris .region-color-wrapper {
+	top:  0px;
+}
+
+@keyframes debris-wave {
+	0% {
+		background-position-x: 0px, 256px;
+	}
+	100% {
+		background-position-x: 256px, 0px;
+	}
+}
+
+@keyframes debris-shift {
+	0% {
+		background-position-y: calc(-0px + var(--vpY));
+		/*background-position-x: calc(-0px + var(--vpX));*/
+	}
+	100% {
+		background-position-y: calc(-256px + var(--vpY));
+		/*background-position-x: calc(-256px + var(--vpX));*/
+	}
+}

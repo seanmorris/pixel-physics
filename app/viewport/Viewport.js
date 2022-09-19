@@ -64,6 +64,7 @@ import { Settings as SettingsTask } from '../console/task/Settings';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Spawn as SpawnTask } from '../console/task/Spawn';
+import { Chao as ChaoTask } from '../console/task/Chao';
 
 import { RtcClient } from '../network/RtcClient';
 import { RtcServer } from '../network/RtcServer';
@@ -848,6 +849,7 @@ export class Viewport extends View
 							, 'pos': PosTask
 							, 'set': SettingsTask
 							, 'spawn': SpawnTask
+							, 'chao': ChaoTask
 						}
 					});
 				}
@@ -1184,6 +1186,7 @@ export class Viewport extends View
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 		SpawnTask.viewport = this;
+		ChaoTask.viewport = this;
 
 		this.buildDetect();
 		this.cpuDetect();
@@ -2429,6 +2432,8 @@ export class Viewport extends View
 
 			const actor = Bindable.make(rawActor);
 
+			actor.name = objDef.name;
+
 			this.actors.add( actor );
 		}
 
@@ -2454,8 +2459,6 @@ export class Viewport extends View
 
 			if(actor.controllable)
 			{
-				actor.name = objDef.name;
-
 				actor.args.display = actor.defaultDisplay || null;
 			}
 		}
@@ -2555,9 +2558,9 @@ export class Viewport extends View
 
 			const startDef = this.defsByName.get(startType);
 
-			character.args.x = startDef.x;
-			character.args.y = startDef.y;
-			character.args.z = startDef.z = 10;
+			character.args.x = startDef ? startDef.x : mapWidth  / 2;
+			character.args.y = startDef ? startDef.y : mapHeight / 2;
+			character.args.z = startDef ? startDef.z ?? 10 : 10;
 
 			character.args.animation = 'dropping';
 
@@ -2586,14 +2589,13 @@ export class Viewport extends View
 			this.auras.add(character)
 			this.actors.add(character);
 
-			if(startDef.properties)
+			if(startDef && startDef.properties)
 			{
 				for(const property of startDef.properties)
 				{
 					character.args[property.name] = property.value;
 				}
 			}
-
 
 			this.nextControl = character;
 		}
@@ -2692,6 +2694,7 @@ export class Viewport extends View
 					spawn.object[Run] = this[Run];
 
 					spawn.object.startFrame = this.args.frameId;
+					spawn.object.args.id = ++this.maxObjectId;
 
 					this.actors.add(Bindable.make(spawn.object));
 
@@ -2732,6 +2735,7 @@ export class Viewport extends View
 				spawn.object[Run] = this[Run];
 
 				spawn.object.startFrame = this.args.frameId;
+				spawn.object.args.id = ++this.maxObjectId;
 
 				this.actors.add(Bindable.make(spawn.object));
 

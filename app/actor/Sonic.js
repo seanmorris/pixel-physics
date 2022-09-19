@@ -552,7 +552,7 @@ export class Sonic extends PointActor
 				}
 				else
 				{
-					if(this.yAxis > 0.5 && !this.args.ignore)
+					if(this.yAxis > 0.5 && !this.args.ignore && !this.carrying.size)
 					{
 						this.args.animation = 'crouching';
 
@@ -578,7 +578,13 @@ export class Sonic extends PointActor
 					}
 					else
 					{
-						if(this.args.idleTime > 60*300)
+						const fieldType = this.viewport.meta['fieldType'];
+
+						if(fieldType === 'garden' || fieldType === 'adventure')
+						{
+							this.args.animation = 'standing';
+						}
+						else if(this.args.idleTime > 60*300)
 						{
 							this.args.animation = 'idle-3';
 						}
@@ -901,6 +907,11 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
+		if(this.carrying.size)
+		{
+			return;
+		}
+
 		if(this.dashed || (this.args.ignore && this.args.ignore !== -2))
 		{
 			return;
@@ -989,6 +1000,10 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping && !this.dashed && !this.doubleSpin)
 		{
+			if(this.carrying.size)
+			{
+				return;
+			}
 
 			if(this.args.mercy < 120)
 			{
@@ -1170,9 +1185,9 @@ export class Sonic extends PointActor
 
 				if(solid)
 				{
-					this.viewport.onFrameOut(40, standOrRecheck);
+					this.viewport.onFrameOut(10, standOrRecheck);
 
-					this.args.gSpeed = this.args.direction * 4;
+					this.args.gSpeed = this.args.gSpeed || this.args.direction * 4 || 4;
 					this.args.rolling = true;
 
 					return;
@@ -1246,6 +1261,12 @@ export class Sonic extends PointActor
 		{
 			return;
 		}
+
+		if(this.carrying.size)
+		{
+			return;
+		}
+
 		// if(this.skidding)
 		// {
 		// 	return;
@@ -1397,10 +1418,14 @@ export class Sonic extends PointActor
 
 			for(const object of objects.keys())
 			{
+				if(this.carrying.size && !this.carrying.has(object))
+				{
+					continue;
+				}
+
 				if(typeof object.lift === 'function')
 				{
 					object.lift(this);
-					return;
 				}
 			}
 		}

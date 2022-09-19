@@ -55,6 +55,8 @@ export class Egg extends PointActor
 				carrier.carrying.add(this);
 
 				this.args.float = -1;
+
+				this.args.groundAngle = 0;
 			}
 			else if(this.carriedBy)
 			{
@@ -74,6 +76,9 @@ export class Egg extends PointActor
 
 				this.args.falling = true;
 				this.args.float = 0;
+
+				this.args.groundAngle = 0;
+
 			}
 		});
 	}
@@ -90,5 +95,18 @@ export class Egg extends PointActor
 		this.carriedBy = actor;
 	}
 
+	sleep()
+	{
+		if(!this.broken)
+		{
+			return;
+		}
+
+		this.viewport.actors.remove(this);
+
+		console.log(this);
+	}
+
+	get rotateLock() { return true; }
 	get solid() { return false; }
 }

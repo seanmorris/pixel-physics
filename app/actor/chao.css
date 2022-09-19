@@ -106,6 +106,12 @@
 	--sprite-offset-y: -144px;
 }
 
+.actor-item.actor-chao[data-animation=eating] .sprite:after {
+	animation: chao-animate steps(5) infinite 700ms;
+	--animation-steps: -5;
+	--sprite-offset-y: -168px;
+}
+
 .actor-item.actor-chao .sprite:before {
 	content: '';
 	position: absolute;

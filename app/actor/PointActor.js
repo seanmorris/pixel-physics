@@ -43,12 +43,8 @@ export class PointActor extends View
 	static lastClick = 0;
 
 	template = `<div class  = "point-actor [[type]]">
-		<div class = "sprite" cv-ref = "sprite">
-
-		</div>
+		<div class = "sprite" cv-ref = "sprite"></div>
 	</div>`;
-
-	//<div class = "labels" cv-ref = "labels" cv-each = "charStrings:charString:c">[[charString]]</div>
 
 	profiles = {
 		normal: {
@@ -126,6 +122,9 @@ export class PointActor extends View
 		this.stepCache = {};
 
 		this.fallTime  = 0;
+
+		this.xHold = 12;
+		this.yHold = 12;
 
 		this.args.weight = this.args.weight ?? 100;
 		this.args.score  = 0;
@@ -243,6 +242,8 @@ export class PointActor extends View
 		this.args.modeTime = 0;
 
 		this.args.charStrings = [];
+
+		this.args.charStrings.bindTo(v => console.log(v));
 
 		this.args.display = this.args.display || 'initial';
 
