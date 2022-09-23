@@ -202,6 +202,7 @@
 }
 
 
+.screen-card-main-menu .lobby,
 .screen-card-main-menu .token-exchange {
 	position: absolute;
 	top: 0px;
@@ -219,14 +220,13 @@
 	display: none;
 }
 
+.screen-card-main-menu .lobby .window,
 .screen-card-main-menu .token-exchange label {
 	position: relative;
 	display: block;
 	margin:auto;
 	margin-left: 0.125em;
 	margin-right: 0.125em;
-	width: 170px;
-	height: 50%;
 	padding: 0.5em;
 	display: flex;
 	flex-direction: column;
@@ -235,7 +235,12 @@
 	border: 1px solid black;
 	border-radius: 0.5em;
 	color: black;
-	text-shadow: 1em 1em 1em black;
+}
+
+.screen-card-main-menu .token-exchange label {
+	text-shadow: 0.25em 0.25em 0.25em rgba(0,0,0,0.5);
+	height: 50%;
+	width: 170px;
 }
 
 .screen-card-main-menu .token-exchange label p {
@@ -584,10 +589,12 @@ input::-webkit-inner-spin-button {
 [data-wraps="select"] > select option {
 	color: black;
 	padding: 0.5rem;
+	font-size: calc(0.75em * var(--scale));
 }
 
 [data-wraps] > input {
 	font-family: '04b11';
+	font-size: 0.7rem;
 }
 
 [data-wraps="select"] > select {

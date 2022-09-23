@@ -10,7 +10,7 @@
 
 .hud-character {
 	display: inline-block;
-	image-rendering: pixelated;
+	/*image-rendering: pixelated;*/
 	background-size: auto calc(48px * var(--scale));
 	background-image: url(/Sonic/font.png);
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;

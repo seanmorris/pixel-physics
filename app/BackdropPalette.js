@@ -3,6 +3,7 @@ import { ProtoLabrynth  } from 'backdrop/ProtoLabrynth';
 import { Industrial     } from 'backdrop/Industrial';
 import { MysticCave     } from 'backdrop/MysticCave';
 import { WestSideCloudy } from 'backdrop/WestSideCloudy';
+import { WestSideDay    } from 'backdrop/WestSideDay';
 import { WestSide       } from 'backdrop/WestSide';
 import { AngelIsland    } from 'backdrop/AngelIsland';
 import { Wood           } from 'backdrop/Wood';
@@ -13,6 +14,7 @@ import { SouthRidge     } from 'backdrop/SouthRidge';
 
 export const BackdropPalette = {
 	'west-side-cloudy': WestSideCloudy
+	, 'west-side-day':  WestSideDay
 	, 'west-side':      WestSide
 	, 'angel-island':   AngelIsland
 	, 'wood':           Wood

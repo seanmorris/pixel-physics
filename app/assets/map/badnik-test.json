@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":32,
  "infinite":false,
  "layers":[
@@ -150,7 +157,7 @@
                  "type":"sheild-fire-monitor",
                  "visible":true,
                  "width":32,
-                 "x":0,
+                 "x":48,
                  "y":928
                 }, 
                 {
@@ -543,8 +550,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1280,
-                 "y":786.666666666667
+                 "x":1504,
+                 "y":584
                 }, 
                 {
                  "gid":2,
@@ -555,8 +562,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1322.66666666667,
-                 "y":896
+                 "x":1546.66666666667,
+                 "y":693.333333333333
                 }, 
                 {
                  "gid":2,
@@ -567,8 +574,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1306.66666666667,
-                 "y":834.667
+                 "x":1530.66666666667,
+                 "y":632.000333333333
                 }, 
                 {
                  "gid":2,
@@ -579,8 +586,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1392,
-                 "y":869.333333333333
+                 "x":1616,
+                 "y":666.666666666666
                 }, 
                 {
                  "gid":2,
@@ -591,8 +598,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1354.66666666667,
-                 "y":810.666666666667
+                 "x":1578.66666666667,
+                 "y":608
                 }, 
                 {
                  "gid":2,
@@ -603,8 +610,8 @@
                  "type":"drainfly",
                  "visible":true,
                  "width":32,
-                 "x":1349.33333333333,
-                 "y":869.333333333333
+                 "x":1573.33333333333,
+                 "y":666.666666666666
                 }, 
                 {
                  "gid":2,
@@ -629,6 +636,90 @@
                  "width":32,
                  "x":352,
                  "y":768
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":45,
+                 "name":"ring",
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":112,
+                 "y":720
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":46,
+                 "name":"ring",
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":144,
+                 "y":720
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":47,
+                 "name":"ring",
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":176,
+                 "y":720
+                }, 
+                {
+                 "gid":2,
+                 "height":16,
+                 "id":48,
+                 "name":"voltorb",
+                 "properties":[
+                        {
+                         "name":"weight",
+                         "type":"int",
+                         "value":150
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1112,
+                 "y":864
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":49,
+                 "name":"sheild-electric-monitor",
+                 "rotation":0,
+                 "type":"sheild-electric-monitor",
+                 "visible":true,
+                 "width":32,
+                 "x":976,
+                 "y":768
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":50,
+                 "name":"spring-turtle",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"1"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1560,
+                 "y":928
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -637,7 +728,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":45,
+ "nextobjectid":51,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -646,7 +737,7 @@
          "value":"construct"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.7.1",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {
@@ -677,6 +768,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.6",
+ "version":1.4,
  "width":64
 }

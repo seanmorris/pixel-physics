@@ -40,8 +40,6 @@ section.filters {
 }
 
 .viewport {
-	image-rendering: high-quality;
-	image-rendering: crisp-edges;
 	image-rendering: pixelated;
 	backface-visibility: hidden;
 	width: calc(1px * calc(var(--width)  * var(--scale) ));
@@ -51,6 +49,10 @@ section.filters {
 	position: relative;
 	color: red;
 	font-size: 0.7rem;
+}
+
+.viewport-frame[data-smoothing=true] .viewport {
+	image-rendering: auto;
 }
 
 .viewport-overlay,

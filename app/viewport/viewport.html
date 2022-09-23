@@ -1,18 +1,18 @@
 <section class = "filters" cv-each = "effects:effect">[[effect]]</section>
 
-<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]" data-theme = "[[theme]]" data-bg = "[[bg]]" cv-ref = "frame" data-paused = "[[paused]]" cv-on = "mousedown:interact:c;keydown:interact:c;">
-	<div class = "viewport-header">
-		<span class = "sean-icon"></span>
-		<h1>Pixel Physics</h1>
-	</div>
+<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]" data-theme = "[[theme]]" data-bg = "[[bg]]" cv-ref = "frame" data-paused = "[[paused]]" data-smoothing = [[smoothing]] cv-on = "mousedown:interact:c;keydown:interact:c;">
 	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]] [[hideNowPlaying]]" cv-ref = "viewport" tabindex="0" cv-on = "click(event);mousemove(event)">
 
 		<svg height="32" width="32">
 		<defs>
-
 			<filter id="motionBlur" x="0%"
  y="0%" width="100%" height="100%">
-				<feGaussianBlur in="SourceGraphic" stdDeviation="0,0" cv-ref = "blur" />
+				<feGaussianBlur
+					in = "SourceGraphic"
+					edgeMode = "duplicate"
+					stdDeviation = "0,0"
+					cv-ref = "blur"
+				/>
 			</filter>
 		</defs>
 		</svg>
@@ -88,7 +88,6 @@
 					in="Displaced"
 					stdDeviation="0.35"
 				></feGaussianBlur>
-
 			</filter>
 
 			<filter id = "ntsc"
@@ -155,7 +154,6 @@
 					></animate>
 
 				</feDisplacementMap>
-
 			</filter>
 
 		</defs>
@@ -398,28 +396,19 @@
 			</div>
 
 			<div class = "status-message">[[status]]</div>
-
 			<section class = "contents" cv-if = "networked">[[chatBox]]</section>
-
 			<!-- <div class = "filters filters-foreground" cv-ref = "fgFilters"></div> -->
-
 			<div class = "console [[showConsole]]" cv-ref = "subspace" tab-index = "0">[[subspace]]</div>
-
 			<div class = "shade" data-fade = "[[fade]]"></div>
 
 		</div>
 
 		<div class = "quick-controls" cv-if = "shortcuts">
-
 			[[muteSwitch]]
-
 			<div class = "button" cv-on = "click:fullscreen()">
 				<image src = "/ui/fullscreen.svg" />
 			</div>
-
 		</div>
 
-
 	</div>
-
 </div>

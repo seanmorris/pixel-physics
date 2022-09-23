@@ -409,18 +409,6 @@ export class Platformer
 			}
 		}
 
-		for(const [object, timeout] of host.ignores)
-		{
-			if(timeout <= 0)
-			{
-				host.ignores.delete(object);
-			}
-			else
-			{
-				host.ignores.set(object, -1 + timeout);
-			}
-		}
-
 		host.args.skimming = false;
 
 		if(host.args.falling)
@@ -1397,6 +1385,11 @@ export class Platformer
 
 	applyImpulse(host)
 	{
+		if(host.args.dead)
+		{
+			return;
+		}
+
 		host.args.xSpeed += Number(Number(Math.cos(host.impulseDir) * host.impulseMag).toFixed(3));
 		host.args.ySpeed += Number(Number(Math.sin(host.impulseDir) * host.impulseMag).toFixed(3));
 
@@ -1555,7 +1548,7 @@ export class Platformer
 
 					nextPosition = this.findNextStep(host,step * direction);
 
-					if(host.args.falling)
+					if(host.args.falling || host.locked)
 					{
 						return;
 					}
@@ -1871,7 +1864,7 @@ export class Platformer
 			if(!host.static && host.args.mode === MODE_FLOOR)
 			{
 				while((host.args.gSpeed <= 0 || host.args.modeTime < 3)
-					 && host.getMapSolidAt(host.args.x - radius, host.args.y - hRadius, false)
+					&& host.getMapSolidAt(host.args.x - radius, host.args.y - hRadius, false)
 				){
 					host.args.x++;
 				}
@@ -3354,6 +3347,11 @@ export class Platformer
 
 	impulse(host, magnitude, direction, willFall = false)
 	{
+		if(host.args.dead)
+		{
+			return;
+		}
+
 		host.impulseMag = magnitude;
 		host.impulseDir = direction;
 		host.impulseFal = willFall;

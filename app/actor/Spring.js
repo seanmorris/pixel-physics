@@ -69,6 +69,11 @@ export class Spring extends PointActor
 
 	collideA(other)
 	{
+		if(other.carriedBy)
+		{
+			return false;
+		}
+
 		if(other.args.hangingFrom)
 		{
 			other.args.hangingFrom.unhook();
@@ -98,24 +103,24 @@ export class Spring extends PointActor
 
 		if(this.args.actingOn.has(other))
 		{
-			return;
+			return false;
 		}
 
 		if(other.args.platform)
 		{
-			return;
+			return false;
 		}
 
 		if(other instanceof Region)
 		{
-			return;
+			return false;
 		}
 
 		Sfx.play('SPRING_HIT');
 
 		if(other[WillSpring])
 		{
-			return;
+			return false;
 		}
 
 		this.args.actingOn.add(other)
@@ -132,7 +137,7 @@ export class Spring extends PointActor
 
 		if(other.noClip)
 		{
-			return;
+			return false;
 		}
 
 		// other.args.direction = Math.sign(this.args.gSpeed);
@@ -163,15 +168,16 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.x = this.args.x + Math.cos(rounded) * 16;
-		other.args.y = this.args.y + Math.sin(rounded) * 16;
+		other.args.x = this.args.x + Math.cos(rounded) * 4;
+		other.args.y = this.args.y + Math.sin(rounded) * 4;
+
+		other.locked = 2;
 
 		other.args.jumping = false;
 		other.args.ignore = other.args.ignore || (other.args.falling ? 12 : 2);
 		other.args.float = 2;
 
-		this.viewport.onFrameOut(2,()=>{
-
+		this.viewport.onFrameOut(1,()=>{
 			other.args.float = 2;
 			other.args.direction = Math.sign(xImpulse);
 
@@ -197,11 +203,11 @@ export class Spring extends PointActor
 		}
 		else
 		{
-			this.viewport.onFrameOut(3, () => other.args.rolling = isRolling);
-			this.viewport.onFrameOut(2, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(4, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(3, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(2, () => other.args.rolling = isRolling);
 			this.viewport.onFrameOut(1, () => other.args.rolling = isRolling);
 		}
-
 
 		if(Math.abs(other.args.xSpeed) < 3 || Math.sign(other.args.xSpeed) !== Math.sign(xImpulse))
 		{
@@ -225,6 +231,8 @@ export class Spring extends PointActor
 		other.args.displayAngle = 0;
 		other.args.groundAngle = 0;
 		other.args.airAngle = -Math.PI / 2;
+
+		return false;
 	}
 
 	sleep()

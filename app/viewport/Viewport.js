@@ -85,6 +85,7 @@ import { SaveDatabase } from '../save/SaveDatabase';
 import { Save } from '../save/Save';
 
 import { Platformer } from '../behavior/Platformer';
+import { Matrix } from 'matrix-api/Matrix';
 
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
@@ -164,7 +165,9 @@ export class Viewport extends View
 		this.settings = Bindable.make({
 			audio: true
 			, blur: true
+			, smoothing: false
 			, displace: true
+			, scaling: true
 			, rumble: true
 			, showHud: true
 			, shortcuts: true
@@ -176,6 +179,7 @@ export class Viewport extends View
 			, sfxVol: 75
 			, username: 'player'
 			, graphicsLevel: 'High'
+			, matrixUrl: 'https://matrix.org/_matrix'
 		});
 
 		// this.vizi = true;
@@ -573,15 +577,29 @@ export class Viewport extends View
 
 		this.args.frameId = -1;
 
+		this.settings.bindTo('scaling',  v => this.fitScale(false), {wait:0});
+
 		this.settings.bindTo('graphicsLevel',  v => {
 			switch(v)
 			{
 				case 'High':
-					this.args.displacement = 'on';
+					this.settings.displace = true;
+					this.settings.scaling  = true;
 					this.settings.blur     = true;
 					break;
+				case 'Medium':
+					this.settings.scaling  = true;
+					this.settings.displace = true;
+					this.settings.blur     = false;
+					break;
 				case 'Low':
-					this.args.displacement = 'off'
+					this.settings.scaling  = true;
+					this.settings.displace = false;
+					this.settings.blur     = false;
+					break;
+				case 'Very Low':
+					this.settings.displace = false;
+					this.settings.scaling  = false;
 					this.settings.blur     = false;
 					break;
 			}
@@ -593,6 +611,7 @@ export class Viewport extends View
 		this.settings.bindTo('showHud',   v => this.args.showHud   = v);
 		this.settings.bindTo('shortcuts', v => this.args.shortcuts = v);
 		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
+		this.settings.bindTo('smoothing', v => this.args.smoothing = v);
 
 		this.settings.bindTo('musicVol',  v => Bgm.setVolume(v / 100));
 		this.settings.bindTo('sfxVol',  v => Sfx.setVolume(v / 100));
@@ -638,7 +657,7 @@ export class Viewport extends View
 
 		this.args.width  = 32 * 16;
 		this.args.height = 32 * 9;
-		this.args.scale  = 2;
+		this.args.scale  = 1;
 
 		if(Router.query.tinyScale)
 		{
@@ -1132,16 +1151,23 @@ export class Viewport extends View
 
 	fitScale(fill = false)
 	{
-		const hScale = window.innerHeight / this.args.height;
-		const vScale = window.innerWidth / this.args.width;
-
-		if(fill)
+		if(!this.settings.scaling)
 		{
-			this.args.scale = hScale > vScale ? hScale : vScale;
+			this.args.scale = 1;
 		}
 		else
 		{
-			this.args.scale = hScale > vScale ? vScale : hScale;
+			const hScale = window.innerHeight / this.args.height;
+			const vScale = window.innerWidth / this.args.width;
+
+			if(fill)
+			{
+				this.args.scale = hScale > vScale ? hScale : vScale;
+			}
+			else
+			{
+				this.args.scale = hScale > vScale ? vScale : hScale;
+			}
 		}
 
 		this.tags.frame && this.tags.frame.style({
@@ -2343,9 +2369,10 @@ export class Viewport extends View
 				}
 			}
 
-			const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;
-			const rightIntersect  = -(-backdrop.width + -this.args.x + -backdrop.x);
-			const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
+			const leftIntersect   =   this.args.width  + -this.args.x + -backdrop.x;
+			const topIntersect    =   this.args.height + -this.args.y + -backdrop.y;
+
+			const rightIntersect  = -(-backdrop.width  + -this.args.x + -backdrop.x);
 			const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
 
 			const xMax = this.tileMap ? -(this.tileMap.mapData.width * 32) : 2 ** 9;
@@ -2387,54 +2414,57 @@ export class Viewport extends View
 		});
 	}
 
+	spawnFromDef(objDef)
+	{
+		const objType = objDef.type || objDef.class || objDef.name;
+
+		if(objDef.id > this.maxObjectId)
+		{
+			this.maxObjectId = objDef.id;
+		}
+
+		if(objType === 'particle')
+		{
+			const particle = new Particle3d;
+
+			particle.style({'--x': objDef.x, '--y': objDef.y});
+
+			this.particles.add(particle.node);
+		}
+
+		if(objType === 'backdrop')
+		{
+			this.backdrops.set(objDef.id, objDef);
+			return;
+		}
+
+		this.defsByName.set(objDef.name, objDef);
+		this.objDefs.set(objDef.id, objDef);
+
+		if(!ObjectPalette[objType])
+		{
+			return;
+		}
+
+		const objClass = ObjectPalette[objType];
+		const rawActor = objClass.fromDef(objDef);
+
+		rawActor[Run] = this[Run];
+
+		rawActor[ Bindable.NoGetters ] = true;
+
+		const actor = Bindable.make(rawActor);
+
+		actor.name = objDef.name;
+
+		this.actors.add( actor );
+	}
+
 	spawnInitialObjects(objDefs)
 	{
 		for(let i in objDefs)
 		{
-			const objDef  = objDefs[i];
-			const objType = objDef.type || objDef.class || objDef.name;
-
-			if(objDef.id > this.maxObjectId)
-			{
-				this.maxObjectId = objDef.id;
-			}
-
-			if(objType === 'particle')
-			{
-				const particle = new Particle3d;
-
-				particle.style({'--x': objDef.x, '--y': objDef.y});
-
-				this.particles.add(particle.node);
-			}
-
-			if(objType === 'backdrop')
-			{
-				this.backdrops.set(objDef.id, objDef);
-				console.log(objDef.id, objDef);
-				continue;
-			}
-
-			this.defsByName.set(objDef.name, objDef);
-			this.objDefs.set(objDef.id, objDef);
-
-			if(!ObjectPalette[objType])
-			{
-				continue;
-			}
-
-			const objClass = ObjectPalette[objType];
-			const rawActor = objClass.fromDef(objDef);
-
-			rawActor[Run] = this[Run];
-
-			rawActor[ Bindable.NoGetters ] = true;
-
-			const actor = Bindable.make(rawActor);
-
-			actor.name = objDef.name;
-
-			this.actors.add( actor );
+			this.spawnFromDef(objDefs[i]);
 		}
 
 		for(const actor of this.actors.items())
@@ -4680,5 +4710,40 @@ export class Viewport extends View
 	interact()
 	{
 		this.args.interacted = true;
+	}
+
+	matrixConnect()
+	{
+		if(!this.settings.matrixUrl)
+		{
+			console.error('No matrixUrl defined!!!');
+		}
+
+		if(this.matrix)
+		{
+			return this.matrix;
+		}
+
+		this.matrix = new Matrix(this.settings.matrixUrl, {interval: 500});
+
+		return new Promise(accept => {
+			const redirectUrl = location.origin + '/accept-sso';
+			this.matrix.initSso(encodeURIComponent(redirectUrl));
+
+			this.matrix.addEventListener('logged-in', event => {
+
+				this.matrix.listenForServerEvents();
+
+				this.matrix.syncRoomHistory(
+					'!hJzXrccruagKGXTFUQ:matrix.org'
+					, message => console.log(message)
+					, Date.now() - (7 * 24 * 60 * 60 * 1000)
+				);
+
+				this.matrix.addEventListener('m.room.message', event => console.log(event));
+
+				accept(this.matrix);
+			});
+		});
 	}
 }

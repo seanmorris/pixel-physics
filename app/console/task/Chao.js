@@ -80,4 +80,21 @@ export class Chao extends Task
 			chao.customColors[colorId] = color;
 		}
 	}
+
+	command_store(id)
+	{
+		if(!Chao.viewport)
+		{
+			return;
+		}
+
+		const chao = Chao.viewport.actorsById[id];
+
+		if(!(chao instanceof ChaoActor))
+		{
+			return;
+		}
+
+		this.print(JSON.stringify(chao.store()));
+	}
 }

@@ -71,7 +71,7 @@ export class Panel extends PointActor
 
 			other.args.falling = false;
 
-			if(this.holding.has(other) && other.willJump)
+			if(this.args.next && this.holding.has(other) && other.willJump)
 			{
 				const nextPanel = this.viewport.actorsById[ this.args.next ];
 
@@ -137,7 +137,7 @@ export class Panel extends PointActor
 		 	return false;
 		}
 
-		const nextPanel = this.viewport.actorsById[ this.args.next ];
+		const nextPanel = this.args.next && this.viewport.actorsById[ this.args.next ];
 
 		if(nextPanel)
 		{

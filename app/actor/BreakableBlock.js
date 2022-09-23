@@ -11,9 +11,7 @@ export class BreakableBlock extends Block
 	{
 		super(args, parent);
 
-		// console.log([...this.behaviors]);
-
-		// this.behaviors.clear();
+		this.behaviors.clear();
 
 		this.args.type = 'actor-item actor-breakable-block';
 
@@ -219,8 +217,7 @@ export class BreakableBlock extends Block
 			&& !other.falling
 			&& !other.isVehicle
 			&& !other.args.gSpeed
-			&& !other.args.xSpeed
-			&& !other.args.ySpeed
+			&& !other.args.falling
 		){
 			return !this.broken;
 		}

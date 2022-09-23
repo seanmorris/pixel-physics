@@ -1,6 +1,7 @@
 import { Png } from '../sprite/Png';
 import { PointActor } from './PointActor';
 import { Coconut } from './Coconut';
+import { Mushroom } from './Mushroom';
 
 export class Chao extends PointActor
 {
@@ -71,11 +72,26 @@ export class Chao extends PointActor
 			this.args.stateTime = 0;
 		});
 
-		this.stats = {run: 0, swim: 0, fly: 0, power:0, stamina: 0, luck: 0, intelligence: 0};
+		this.stats = {
+			intelligence: 0
+			, stamina: 0
+			, luck:    0
+			, run:     0
+			, swim:    0
+			, fly:     0
+			, power:   0
+		};
+
+		this.mood = {
+			attitude: 0
+			, hunger: 0
+			, health: 100
+			,
+		}
 
 		this.defaultColors = ['addef8', '2ebee9', '0e6d89', 'ecde2f', 'dcb936', '985000', 'f8b0c0', 'f85080', 'e4e0e4', 'e0e0e0', 'f8f820', '606080'];
-		this.customColors = [null,null,null,null,null,null,null,null,null,null,null,null];
 
+		this.customColors = [null,null,null,null,null,null,null,null,null,null,null,null];
 
 		this.customColors.bindTo(() => {
 
@@ -93,7 +109,6 @@ export class Chao extends PointActor
 			});
 
 		}, {wait:0});
-
 	}
 
 	onRendered(event)
@@ -459,7 +474,7 @@ export class Chao extends PointActor
 
 		for(const carrying of this.carrying)
 		{
-			if(carrying instanceof Coconut)
+			if(carrying instanceof Coconut || carrying instanceof Mushroom)
 			{
 				this.args.currentState = 'eating';
 
@@ -750,7 +765,7 @@ export class Chao extends PointActor
 			return;
 		}
 
-		if(other instanceof Coconut)
+		if(other instanceof Coconut || other instanceof Mushroom)
 		{
 			if(other.args.size)
 			{
@@ -772,4 +787,39 @@ export class Chao extends PointActor
 	stateSwimming() {}
 
 	stateFlyingLooking() {}
+
+	store()
+	{
+		const frozen = {
+			name:       this.args.name
+			, colors:   this.customColors
+			, align:    this.args.alignment
+			, garden:   null
+			, position: [this.args.x, this.args.y]
+			, stats:    this.stats
+			, mood:     this.mood
+		};
+
+		return frozen;
+	}
+
+	load(frozen)
+	{
+		if(typeof frozen === 'string')
+		{
+			frozen = JSON.parse(frozen);
+		}
+
+		this.args.name = frozen.name ?? '';
+
+		if(frozen.position)
+		{
+			this.args.x = frozen.position[0];
+			this.args.y = frozen.position[1];
+		}
+
+		frozen.colors && Object.assign(this.customColors, frozen.colors);
+		frozen.stats  && Object.assign(this.stats, frozen.stats);
+		frozen.mood   && Object.assign(this.mood, frozen.mood);
+	}
 }

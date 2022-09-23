@@ -68,15 +68,12 @@ export class ChaoCrate extends BreakableBlock
 		{
 			for(let i = 0; i < 5; i++)
 			{
-				const egg = new Egg({x: this.x, y: this.y});
+				const egg = new Egg({x: this.x, y: this.y - 3});
 
 				this.viewport.spawn.add({object:egg});
-
-				this.onNextFrame(() => {
-					egg.args.falling = true;
-					egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
-					egg.args.ySpeed  = -7;
-				});
+				egg.args.falling = true;
+				egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
+				egg.args.ySpeed  = -7;
 			}
 		}
 

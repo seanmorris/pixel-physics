@@ -1,0 +1,70 @@
+.lobby .row {
+	display: flex;
+	flex-direction: row;
+}
+
+.lobby .column {
+	display: flex;
+	flex-direction: column;
+}
+
+.lobby .wide {
+	flex: 1;
+}
+
+.screen-card-main-menu .lobby .window {
+	height: 77%;
+	margin: auto 1rem;
+	display: flex;
+	flex-direction: row;
+	padding: 0;
+	width: calc(100% - calc(2rem + 2px));
+}
+
+.screen-card-main-menu .lobby .frame {
+	position: relative;
+	overflow: hidden;
+}
+
+.screen-card-main-menu .lobby .scroller {
+	position: relative;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: 0;
+	overflow: scroll;
+}
+
+.screen-card-main-menu .lobby .window .users {
+	min-width: 4em;
+	resize: horizontal;
+}
+
+.screen-card-main-menu .lobby .window .users .scroller,
+.screen-card-main-menu .lobby .window .messages .scroller {
+	display: flex;
+	flex-direction: column;
+	padding: 0.25em;
+}
+
+.screen-card-main-menu .lobby .window .messages input[type=text] {
+	flex: 1;
+	color: black;
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+}
+.screen-card-main-menu .lobby .window .messages button {
+	border: none;
+	border-top: 1px solid black;
+}
+
+.screen-card-main-menu .lobby .window .users {
+	resize: horizontal;
+	border-right: 1px solid black;
+	text-align: right;
+}
+
+

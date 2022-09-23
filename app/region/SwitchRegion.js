@@ -10,6 +10,8 @@ export class SwitchRegion extends Region
 		this.args.type  = 'region region-switch';
 		this.args.latch = args.latch ?? this.args.latch
 
+		this.args.hidden = true;
+
 		this.activated = false;
 	}
 
@@ -31,8 +33,6 @@ export class SwitchRegion extends Region
 		{
 			this.args.active = this.activated = true;
 		}
-
-		console.log(actor, this.args.active);
 
 		const target = this.viewport.actorsById[ this.args.target ];
 

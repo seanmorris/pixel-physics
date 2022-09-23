@@ -50,10 +50,7 @@ export class CanPop
 			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
 			const otherShield = other.args.currentSheild;
-			if(other.args.mercy < 45)
-			{
-				this.damage(other, otherShield ? otherShield.type : 'normal');
-			}
+			this.damage(other, otherShield ? otherShield.type : 'normal');
 			return;
 		}
 
@@ -71,6 +68,7 @@ export class CanPop
 			if(!other.args.mercy)
 			{
 				other.damage(this, shield ? shield.type : 'normal');
+				this.ignores.set(other, 10);
 			}
 		}
 

@@ -1,7 +1,7 @@
 .actor-item.actor-egg-shell-top .sprite,
 .actor-item.actor-egg-shell-bottom .sprite,
 .actor-item.actor-egg .sprite {
-	--sprite-sheet:  url('/DBurraki/chao-egg-normal.png');
+	--sprite-sheet:  url(var(--sprite-sheet));
 	--sprite-offset-x: 0px;
 
 	width:  15px;
