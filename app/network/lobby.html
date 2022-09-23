@@ -1,0 +1,25 @@
+<div class = "lobby">
+	<div class = "window">
+		<div class = "users frame">
+			<div class = "scroller" cv-each = "users:user">
+				<span class = "user">[[user]]</span>
+			</div>
+		</div>
+		<div class = "messages wide column">
+			<div class = "row wide frame">
+				<div class = "scroller" cv-each = "messages:message">
+					<span class = "message">[[message]]</span>
+				</div>
+			</div>
+			<div class = "row">
+				<input
+					type    = "text"
+					cv-bind = "input"
+					cv-on   = "focus;click:clickInput"
+					cv-ref  = "input"
+				/>
+				<button>send</button>
+			</div>
+		</div>
+	</div>
+</div>

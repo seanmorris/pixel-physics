@@ -38,7 +38,7 @@ export class PauseMenu extends Menu
 			, Settings: SettingsMenu(parent)
 			, Graphics: {
 				input: 'select'
-				, options: ['High', 'Low']
+				, options: ['High', 'Medium', 'Low', 'Very Low']
 				, set: value => parent.settings.graphicsLevel = value
 				, get: ()    => parent.settings.graphicsLevel
 			}

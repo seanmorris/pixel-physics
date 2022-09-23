@@ -17,21 +17,6 @@ export class Bumper extends PointActor
 		this.ignores = new Map;
 	}
 
-	update()
-	{
-		super.update();
-
-		for(const [key,val] of this.ignores)
-		{
-			this.ignores.set(key, -1 + val);
-
-			if(val === 0)
-			{
-				this.ignores.delete(key);
-			}
-		}
-	}
-
 	collideA(other)
 	{
 		if(other.static || other.isRegion || this.ignores.has(other) || other.noClip)

@@ -13,13 +13,8 @@
 
 	<section class = "contents" cv-if = "!connected">
 		<div class = "menu-container" data-current-menu = "[[currentKey]]">
-
+			<div>[[title]]</div>
 			<div>
-				[[title]]
-			</div>
-
-			<div>
-
 				<ul cv-ref = "bound" cv-each = "items:item:title">
 
 					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item, event); keyup(event, item):c" tabindex="0">
@@ -58,20 +53,15 @@
 						</span>
 						[[item.suffix]]
 					</li>
-
-
 				</ul>
-
 			</div>
-
 		</div>
 	</section>
 
 	<section class = "contents" cv-if = "!connected">
-
+		<section class = "contents" cv-if = "lobby">[[lobby]]</section>
 		<section class = "contents" cv-if = "hostGame">
 			<div class = "token-exchange" data-have-token = "[[haveToken]]">
-
 				<label>
 					<p>Input the token from your friend here.</p>
 					<textarea cv-bind = "input" cv-on = "click:paste(event)"></textarea>
@@ -82,16 +72,13 @@
 					<p>Send this token to your friend to get started.</p>
 					<textarea cv-on = "click:copy" cv-ref = "hostOutput" cv-bind = "hostOutput" readonly = "true"></textarea>
 					<button cv-on = "click:copy">[[copy]]</button>
-
 					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
-
 			</div>
 		</section>
 
 		<section class = "contents" cv-if = "joinGame">
 			<div class = "token-exchange">
-
 				<label cv-if = "haveToken">
 					<p>Send this token to your friend to get started.</p>
 					<textarea cv-on = "click:copy" cv-ref = "joinOutput" cv-bind = "joinOutput" readonly = "true"></textarea>
@@ -104,7 +91,6 @@
 					<button cv-on = "click:acceptRtp">go!</button>
 					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
-
 			</div>
 		</section>
 

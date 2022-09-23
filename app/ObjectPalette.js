@@ -36,6 +36,8 @@ import { Block }          from './actor/Block';
 
 import { Tree }          from './actor/Tree';
 import { Coconut }       from './actor/Coconut';
+import { Mushroom }      from './actor/Mushroom';
+import { Door }          from './actor/Door';
 
 import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
@@ -217,6 +219,8 @@ export const ObjectPalette = {
 	, 'block':           Block
 	, 'tree':            Tree
 	, 'coconut':         Coconut
+	, 'mushroom':        Mushroom
+	, 'door':            Door
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock

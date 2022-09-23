@@ -79,7 +79,7 @@
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
 	--xTarget: calc(var(--xSpeed) * 12px);
-	--yTarget: 50vh;
+	--yTarget: 80vh;
 	transform: translate(var(--xTarget), -128px);
 	transform: translate(var(--xTarget), 0px);
 }

@@ -1,0 +1,8 @@
+.actor-mushroom {
+	z-index: 10;
+}
+
+.actor-mushroom .sprite {
+	background-image: url(/Sonic/mushroom.png);
+	background-position-y: calc(calc(4 + calc(-1 * var(--size, 4))) * -24px);
+}

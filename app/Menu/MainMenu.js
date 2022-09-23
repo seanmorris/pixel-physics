@@ -18,6 +18,8 @@ import { CharacterString } from '../ui/CharacterString';
 import { CharacterPreview } from './CharacterPreview';
 import { ZoneSuffix } from './ZoneSuffix';
 
+import { Lobby } from '../network/Lobby';
+
 export class MainMenu extends Menu
 {
 	template = require('./main-menu.html');
@@ -56,7 +58,6 @@ export class MainMenu extends Menu
 			value:  '✚ select'
 			, font: this.font
 		});
-
 
 		this.refreshConnection();
 
@@ -153,23 +154,6 @@ export class MainMenu extends Menu
 						}
 					}
 
-					// , 'Radical City Zone': {
-					// 	subtext: 'Gotta go fast!'
-					// 	, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, children: {
-					// 		'Act 1': {
-
-					// 		}
-					// 		, 'Act 2': {
-					// 			subtext: 'Incomplete!!!'
-					// 			, callback: () => {
-					// 				this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
-					// 				this.accept();
-					// 			}
-					// 		}
-					// 	}
-					// }
-
 					, 'Radical City Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/empty-zone.json'}, this.parent)
@@ -205,17 +189,6 @@ export class MainMenu extends Menu
 							this.accept();
 						}
 					}
-
-					// , 'Seaview Park Zone Act 2': {
-					// 	// characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	characters: []
-					// 	, available: 'unavailable'
-					// 	, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
-					// 		this.accept();
-					// 	}
-					// }
 
 					, 'Manic Harbor Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -365,41 +338,54 @@ export class MainMenu extends Menu
 				}
 			}
 
-			, '2 Player P2P': {
-
+			, 'Multiplayer': {
 				children: {
-
-					'Host a game': {
+					'Matrix Lobby': {
 						callback: () => {
-							this.args.hostOutput = '';
-							this.args.hostGame   = true;
-							this.args.copy       = 'copy';
+							this.args.lobby = new Lobby;
+							// this.args.lobbyUsers    = Array(100).fill(0).map((v,k) => `User ${k}`);
+							// this.args.lobbyMessages = Array(100).fill(0).map((v,k) => `Message ${k}`);
+							// this.parent.matrixConnect().then(matrix => {
+							// });
 						}
 					}
 
-					, 'Join a game': {
-						callback: () => {
-							this.args.joinOutput = '';
-							this.args.joinGame   = true;
-							this.args.copy       = 'copy';
+					, 'Peer to Peer': {
 
-							this.client.offer().then(token => {
-								const tokenString    = JSON.stringify(token);
-								const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
-								this.args.joinOutput = encodedToken;
-								this.args.haveToken  = true;
-							});
+						children: {
+							'Host a game': {
+								callback: () => {
+									this.args.hostOutput = '';
+									this.args.hostGame   = true;
+									this.args.copy       = 'copy';
+								}
+							}
+
+							, 'Join a game': {
+								callback: () => {
+									this.args.joinOutput = '';
+									this.args.joinGame   = true;
+									this.args.copy       = 'copy';
+
+									this.client.offer().then(token => {
+										const tokenString    = JSON.stringify(token);
+										const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
+										this.args.joinOutput = encodedToken;
+										this.args.haveToken  = true;
+									});
+								}
+							}
 						}
 					}
-
 				}
 			}
+
 
 			, Settings: SettingsMenu(parent)
 
 			, Graphics: {
 				input: 'select'
-				, options: ['High', 'Low']
+				, options: ['High', 'Medium', 'Low', 'Very Low']
 				, set: value => parent.settings.graphicsLevel = value
 				, get: ()    => parent.settings.graphicsLevel
 			}

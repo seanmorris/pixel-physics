@@ -4,7 +4,86 @@ import { Series } from '../intro/Series';
 export const SettingsMenu = (parent) => { return {
 	subtext: 'Edit your configuration.'
 	, children: {
-		Audio: {
+		Video: {
+			subtext: 'Video settings.'
+			, children: {
+				'Motion Blur Effects': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable Motion Blur Effects'
+					, set: value => parent.settings.blur = value
+					, get: () => parent.settings.blur
+				}
+
+				, 'Displacement Effects': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable Displacement Effects'
+					, set: value => parent.settings.displace = value
+					, get: () => parent.settings.displace
+				}
+
+				, 'Scaling': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable Scaling'
+					, set: value => parent.settings.scaling = value
+					, get: () => parent.settings.scaling
+				}
+
+				, 'Smoothing': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable Smoothing'
+					, set: value => parent.settings.smoothing = value
+					, get: () => parent.settings.smoothing
+				}
+
+				// , 'Outline Thickness': {
+				// 	input: 'number'
+				// 	, subtext: 'Change the Outline Thickness'
+				// 	, set: value => parent.settings.outline = value
+				// 	, get: () => parent.settings.outline
+				// 	, max: 15
+				// 	, min: 0
+				// }
+
+				// , 'Frameskip': {
+				// 	input: 'number'
+				// 	, subtext: 'Change the frameskip'
+				// 	, set: value => parent.settings.frameSkip = value
+				// 	, get: () => parent.settings.frameSkip
+				// 	, max: 8
+				// 	, min: 0
+				// }
+
+				, 'Display HUD': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable the HUD'
+					, set: value => parent.settings.showHud = value
+					, get: () => parent.settings.showHud
+				}
+
+				// , 'Debug OSD': {
+				// 	input: 'boolean'
+				// 	, subtext: 'Enable/Disable Debug OSD'
+				// 	, set: value => parent.settings.debugOsd = value
+				// 	, get: () => parent.settings.debugOsd
+				// }
+
+				, 'FPS Meter': {
+					input: 'boolean'
+					, subtext: 'Enable/Disable the FPS Meter'
+					, set: value => parent.settings.showFps = value
+					, get: () => parent.settings.showFps
+				}
+
+				, 'Mute/Fullscreen': {
+					input: 'boolean'
+					, subtext: 'Show the mute & fullscreen controls in the bottom right.'
+					, set: value => parent.settings.shortcuts = value
+					, get: () => parent.settings.shortcuts
+				}
+			}
+		}
+
+		, Audio: {
 			subtext: 'Audio settings.'
 			, children: {
 				'Mute': {
@@ -37,76 +116,9 @@ export const SettingsMenu = (parent) => { return {
 			}
 		}
 
-		, Video: {
-			subtext: 'Video settings.'
-			, children: {
-				'Motion Blur Effects': {
-					input: 'boolean'
-					, subtext: 'Enable/Disable motion blur effects'
-					, set: value => parent.settings.blur = value
-					, get: () => parent.settings.blur
-				}
-
-				, 'Displacement Effects': {
-					input: 'boolean'
-					, subtext: 'Enable/Disable displacement effects'
-					, set: value => parent.settings.displace = value
-					, get: () => parent.settings.displace
-				}
-
-				, 'Outline Thickness': {
-					input: 'number'
-					, subtext: 'Change the outline thickness'
-					, set: value => parent.settings.outline = value
-					, get: () => parent.settings.outline
-					, max: 15
-					, min: 0
-				}
-
-				// , 'Frameskip': {
-				// 	input: 'number'
-				// 	, subtext: 'Change the frameskip'
-				// 	, set: value => parent.settings.frameSkip = value
-				// 	, get: () => parent.settings.frameSkip
-				// 	, max: 8
-				// 	, min: 0
-				// }
-
-				, 'Display HUD': {
-					input: 'boolean'
-					, subtext: 'Enable/Disable the HUD'
-					, set: value => parent.settings.showHud = value
-					, get: () => parent.settings.showHud
-				}
-
-				, 'Debug OSD': {
-					input: 'boolean'
-					, subtext: 'Enable/Disable debug OSD'
-					, set: value => parent.settings.debugOsd = value
-					, get: () => parent.settings.debugOsd
-				}
-
-				, 'FPS Meter': {
-					input: 'boolean'
-					, subtext: 'Enable/Disable the FPS meter'
-					, set: value => parent.settings.showFps = value
-					, get: () => parent.settings.showFps
-				}
-
-				, 'Mute/Fullscreen': {
-					input: 'boolean'
-					, subtext: 'Show the mute & fullscreen controls in the bottom right.'
-					, set: value => parent.settings.shortcuts = value
-					, get: () => parent.settings.shortcuts
-				}
-			}
-		}
-
 		, 'Input': {
-
 			subtext: 'Input settings.'
 			, children: {
-
 				'Gamepad Test': {
 					callback: () => {
 						const cards = [
@@ -155,7 +167,16 @@ export const SettingsMenu = (parent) => { return {
 					, min: 0
 				}
 
-				, 'Subspace Hub Servers': {}
+				, 'Matrix URL': {
+					input: 'string'
+					, subtext: 'Matrix Server URL for lobby.'
+					, set: value => parent.settings.matrixUrl = value
+					, get: () => parent.settings.matrixUrl
+					// , max: 15
+					, min: 0
+				}
+
+				// , 'Subspace Hub Servers': {}
 
 				, 'ICE Servers': {
 					children: {

@@ -100,8 +100,10 @@ export class Ring extends PointActor
 			return;
 		}
 
-		if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x, this.args.y + -this.args.height))
-		{
+		if(this.dropped && !this.attract
+			&& this.getMapSolidAt(this.args.x, this.args.y + -this.args.height)
+			&& !this.getMapSolidAt(this.args.x, this.args.y)
+		){
 			this.args.y += this.args.height + 1;
 			this.args.ySpeed = Math.abs(this.args.ySpeed) || 8;
 		}

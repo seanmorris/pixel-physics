@@ -19,6 +19,8 @@ export class Tree extends PointActor
 
 		this.args.type = 'actor-item actor-tree';
 
+		this.args.z = -1;
+
 		this.args.width  = 80;
 
 		this.args.coconutCount = 4;
@@ -44,24 +46,31 @@ export class Tree extends PointActor
 			return;
 		}
 
-		if(other.args.y < this.args.y + -this.args.height + 64)
+		if(Math.abs(other.args.x - this.args.x) > 20)
 		{
-			this.ignores.set(other, 45);
+			return;
+		}
 
-			if(this.args.coconutCount)
-			{
-				this.args.coconutCount--;
+		if(other.args.y > this.args.y + -this.args.height + 64)
+		{
+			return;
+		}
 
-				const coconut = new Coconut;
+		this.ignores.set(other, 45);
 
-				// coconut.args.ySpeed = -2;
-				coconut.args.x = this.args.x;
-				coconut.args.y = this.args.y + -this.args.height + 48;
+		if(this.args.coconutCount)
+		{
+			this.args.coconutCount--;
 
-				this.viewport.spawn.add({object:coconut});
+			const coconut = new Coconut;
 
-				this.viewport.onFrameOut(1, () => coconut.args.xSpeed = other.args.xSpeed || other.args.direction * Math.random() * 2);
-			}
+			// coconut.args.ySpeed = -2;
+			coconut.args.x = this.args.x;
+			coconut.args.y = this.args.y + -this.args.height + 48;
+
+			this.viewport.spawn.add({object:coconut});
+
+			this.viewport.onFrameOut(1, () => coconut.args.xSpeed = other.args.xSpeed || other.args.direction * Math.random() * 2);
 		}
 	}
 
