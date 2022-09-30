@@ -34,6 +34,12 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 				messageEvent.originalEvent = event;
 				this.dispatchEvent(messageEvent);
 			});
+
+			this.peerServerChannel.addEventListener('icecandidate', event => {
+				const messageEvent = new CustomEvent('icecandidate', {detail: event.data });
+				messageEvent.originalEvent = event;
+				this.dispatchEvent(messageEvent);
+			});
 		});
 	}
 
@@ -45,6 +51,26 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 	close()
 	{
 		this.peerServerChannel && this.peerServerChannel.close()
+	}
+
+	getIceCandidates()
+	{
+		const candidates = new Set;
+
+		return new Promise(accept => this.peerServer.addEventListener('icecandidate', event => {
+			if(!event.candidate)
+			{
+				accept([...candidates]);
+				return;
+			}
+
+			candidates.add(event.candidate);
+		}));
+	}
+
+	addIceCandidate(candidate)
+	{
+		this.peerServer.addIceCandidate(candidate);
 	}
 
 	answer(offer)
@@ -63,14 +89,14 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 			this.peerServer.addEventListener('icecandidate', event => {
 
-				if(!event.candidate)
-				{
-					return;
-				}
-				else
-				{
-					candidates.add(event.candidate);
-				}
+				// if(!event.candidate)
+				// {
+				// 	return;
+				// }
+				// else
+				// {
+				// 	candidates.add(event.candidate);
+				// }
 
 				if(timeout)
 				{
