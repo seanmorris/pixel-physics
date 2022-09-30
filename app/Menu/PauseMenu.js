@@ -125,11 +125,13 @@ export class PauseMenu extends Menu
 			}
 		}
 
+		const pauseButton = 9;
+
 		if(!this.args.hideMenu)
 		{
 			super.input(controller);
 		}
-		else if(controller.buttons[9] && controller.buttons[9].active)
+		else if(controller.buttons[pauseButton] && controller.buttons[pauseButton].active)
 		{
 			this.args.hideMenu = '';
 		}

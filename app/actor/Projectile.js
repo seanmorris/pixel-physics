@@ -6,6 +6,7 @@ import { Tag }        from 'curvature/base/Tag';
 
 import { Region } from '../region/Region';
 import { Spring } from './Spring';
+import { BreakableBlock } from './BreakableBlock';
 import { Block } from './Block';
 
 // import { StarPost } from './StarPost';
@@ -22,6 +23,8 @@ export class Projectile extends PointActor
 
 		this.args.width  = 8;
 		this.args.height = 8;
+
+		this.args.strength = this.args.strength || 1;
 
 		this.args.gravity   = 0.15;
 
@@ -60,7 +63,12 @@ export class Projectile extends PointActor
 
 	collideA(other)
 	{
-		if(other === this.args.owner || other instanceof Region || other instanceof Spring || other instanceof Block)
+		if(this.args.strength <= 1 && other instanceof BreakableBlock)
+		{
+			return false;
+		}
+
+		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
 		{
 			return false;
 		}
@@ -91,7 +99,7 @@ export class Projectile extends PointActor
 
 		if(this.args.owner && !this.args.owner.args.gone)
 		{
-			other.controllable && other.damage();
+			(other.controllable || (other instanceof BreakableBlock)) && other.damage();
 		}
 
 		// this.args.x += Math.cos(this.args.angle) * (other.args.width / 2) * Math.sign(this.args.xSpeed);

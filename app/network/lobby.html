@@ -1,25 +1,72 @@
-<div class = "lobby">
-	<div class = "window">
-		<div class = "users frame">
-			<div class = "scroller" cv-each = "users:user">
-				<span class = "user">[[user]]</span>
-			</div>
+<div class = "lobby [[showMenu]] [[showInvites]]" data-click-barrier>
+
+	<div class = "main column">
+		<div class = "left-menu">
+			<div>[[username]]</div>
+			<button cv-on = "click:logOut">Log Out</button>
 		</div>
-		<div class = "messages wide column">
-			<div class = "row wide frame">
-				<div class = "scroller" cv-each = "messages:message">
-					<span class = "message">[[message]]</span>
+
+		<div class = "topbar row">
+			<div>
+				<div class = "burger-button" cv-on = "click:toggleMenu">
+					<div class = "stripe"></div>
+					<div class = "stripe"></div>
+					<div class = "stripe"></div>
 				</div>
 			</div>
-			<div class = "row">
-				<input
-					type    = "text"
-					cv-bind = "input"
-					cv-on   = "focus;click:clickInput"
-					cv-ref  = "input"
-				/>
-				<button>send</button>
+			<div>
+				<div cv-on = "click:toggleInvites" class = "invite button">
+					<div class = "amount" cv-if = "invites.length">[[invites.length]]</div>
+					<img class = "icon" src = "/icons/mail.svg" />
+				</div>
 			</div>
+		</div>
+
+		<div class = "row wide">
+
+			<div class = "users frame">
+				<div class = "scroller" cv-each = "users:user">
+					<div title = "[[user.id]]" class = "user" tabindex = "0">
+						[[user.username]]
+						<div class = "user-list-buttons">
+							<button cv-on   = "click:sendCryptoInvite(event, user)">invite</button>
+<!-- 							<button>message</button>
+							<button>ignore</button> -->
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class = "messages wide column">
+				<div class = "row wide frame">
+					<div class = "scroller" cv-ref = "scroller" cv-each = "messages:message">
+						<span class = "message">[[message]]</span>
+					</div>
+				</div>
+				<div class = "row">
+					<input
+						type    = "text"
+						cv-bind = "input"
+						cv-on   = "keyup"
+						cv-ref  = "input"
+					/>
+					<button cv-on   = "click:sendMessage">send</button>
+				</div>
+			</div>
+
+			<div class = "invites">
+				<div cv-if = "!invites.length">No pending invites.</div>
+				<div class = "column" cv-each = "invites:invite:i">
+					<div class = "column">
+						<div>[[invite.sender]] invited you to play!</div>
+						<div class = "row">
+							<button cv-on = "click:acceptCryptoInvite(event, invite)">accept</button>
+							<button cv-on = 'click:rejectCryptoInvite(event, invite, "button_clicked")'>reject</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </div>

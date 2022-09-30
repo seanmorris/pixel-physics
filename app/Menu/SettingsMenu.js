@@ -1,6 +1,8 @@
 import { GamepadConfig } from '../controller/GamepadConfig';
 import { Series } from '../intro/Series';
 
+import { ButtonSelect } from './ButtonSelect';
+
 export const SettingsMenu = (parent) => { return {
 	subtext: 'Edit your configuration.'
 	, children: {
@@ -120,22 +122,50 @@ export const SettingsMenu = (parent) => { return {
 			subtext: 'Input settings.'
 			, children: {
 				'Gamepad Test': {
-					callback: () => {
-						const cards = [
-							new GamepadConfig({timeout: -1}, parent)
-							, ...parent.homeCards()
-						];
+					callback: (item,menu) => {
+						menu.args.override = new GamepadConfig({}, parent);
+						menu.args.override.onRemove(() => {
+							menu.args.override = null;
+							menu.onNextFrame(()=>menu.focusFirst());
+						});
+						// const cards = [
+						// 	new GamepadConfig({timeout: -1}, parent)
+						// 	, ...parent.homeCards()
+						// ];
 
-						parent.args.titlecard = new Series({cards}, parent);
+						// parent.args.titlecard = new Series({cards}, parent);
 
-						parent.args.titlecard.play();
+						// parent.args.titlecard.play();
 					}
 				}
 
-				, 'Button Select Test': {
+				, 'Select A Button': {
+					callback: (item,menu) => {
+						console.log('Select a button!');
+						menu.args.override = new ButtonSelect({},menu);
+						menu.args.override.onRemove(() => {
+							menu.args.override = null;
+							menu.onNextFrame(()=>menu.focusFirst());
+						});
+					}
+				}
+
+				, 'Output test': {
+					input: 'output'
+					, bind: i => {
+						return parent.settings.bindTo('buttonTest', v => {
+							i.setting = v
+						})
+					}
+					, set: value => parent.settings.buttonTest = value
+					, get: () => parent.settings.buttonTest
+				}
+
+				, 'Button Font Test': {
 					input: 'select'
 					, options: [
-						'⓿', '❶', '❷', '❸', '❹', '❺'
+						''
+						, '⓿', '❶', '❷', '❸', '❹', '❺'
 						, '❻', '❼', '❽', '❾', '❿', '⓫'
 						, '✚', '←', '→', '↑', '↓'
 						// , '▦', '🡠', '🡢', '🡡', '🡣'

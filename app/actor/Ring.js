@@ -47,7 +47,7 @@ export class Ring extends PointActor
 		}
 		else if(!this.args.decoration)
 		{
-			if(this.args.ySpeed < 0)
+			if(this.args.ySpeed < 0 || age < 15)
 			{
 				this.noClip = true;
 			}
@@ -115,7 +115,7 @@ export class Ring extends PointActor
 		if((this.dropped || this.scattered) && (!this.args.falling || !this.args.ySpeed))
 		{
 			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
-			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, age > 6 ? -5 : 0);
+			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, age > 6 ? -2 : 0);
 			this.args.gSpeed = 0;
 			this.args.x += this.args.xSpeed;
 			this.args.y += this.args.ySpeed;

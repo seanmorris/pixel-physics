@@ -53,26 +53,26 @@ export class Industrial extends Backdrop
 				, height:   24
 			}
 			, {
-				autoscroll: 0.25
-				, parallax: 0.015
+				autoscroll: 0.31
+				, parallax: 0.023
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.125
-				, parallax: 0.0125
+				autoscroll: 0.28
+				, parallax: 0.021
 				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.025
-				, parallax: 0.012
+				autoscroll: 0.25
+				, parallax: 0.020
 				, url:      '/Sonic/backdrop/labrynth-industrial/2.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.015
-				, parallax: 0.011
+				autoscroll: 0.23
+				, parallax: 0.019
 				, url:      '/Sonic/backdrop/labrynth-industrial/3.png'
 				, height:   24
 			}

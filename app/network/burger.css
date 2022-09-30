@@ -1,0 +1,51 @@
+.burger-button {
+	width: 1.5em;
+	height: 1.5em;
+	display: flex;
+	flex-shrink: 0;
+	flex-direction: column;
+	justify-content: space-between;
+	position: relative;
+	z-index: 30000;
+}
+
+.burger-button .stripe {
+	transition: transform 0.25s 0.05s ease-in
+		, opacity 0.25s 0.05s ease-in
+		, width 0.25s 0.05s ease-in;
+
+	background-color: black;
+	width: 100%;
+	height: 15%;
+}
+
+.burger-button .stripe:nth-child(2) {
+	transform-origin: 50% 50%;
+}
+
+.lobby.show-menu .burger-button .stripe:nth-child(2),
+.lobby .showing-menu .burger-button .stripe:nth-child(2) {
+	transform: rotate(225deg);
+	width:  117%;
+	opacity: 0;
+}
+
+.burger-button .stripe:first-child {
+	transform-origin: -0% 50%;
+}
+
+.lobby.show-menu .burger-button .stripe:first-child,
+.lobby .showing-menu .burger-button .stripe:first-child {
+	transform: rotate(45deg);
+	width:  117%;
+}
+
+.burger-button .stripe:last-child {
+	transform-origin: -0% 50%;
+}
+
+.lobby.show-menu .burger-button .stripe:last-child,
+.lobby .showing-menu .burger-button .stripe:last-child {
+	transform: rotate(-45deg);
+	width:  117%;
+}

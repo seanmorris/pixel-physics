@@ -1,3 +1,30 @@
+.lobby {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: black;
+}
+
+.lobby button {
+	font-size: 0.65rem;
+}
+
+.lobby > .main {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin-bottom: 1.5rem;
+	border-bottom: 1px solid black;
+	z-index: 1000001;
+	overflow: hidden;
+	background: white;
+	color: black;
+}
+
 .lobby .row {
 	display: flex;
 	flex-direction: row;
@@ -12,21 +39,31 @@
 	flex: 1;
 }
 
-.screen-card-main-menu .lobby .window {
-	height: 77%;
-	margin: auto 1rem;
-	display: flex;
-	flex-direction: row;
-	padding: 0;
-	width: calc(100% - calc(2rem + 2px));
+.lobby .lobby-status-message {
+	font-style: italic;
+	opacity: 0.75;
 }
 
-.screen-card-main-menu .lobby .frame {
+.lobby {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+}
+
+.lobby .row {
+	display: flex;
+	flex: row;
+	/*flex: 1;*/
+}
+
+.lobby .frame {
 	position: relative;
 	overflow: hidden;
 }
 
-.screen-card-main-menu .lobby .scroller {
+.lobby .scroller {
 	position: relative;
 	overflow: hidden;
 	position: absolute;
@@ -38,33 +75,140 @@
 	overflow: scroll;
 }
 
-.screen-card-main-menu .lobby .window .users {
+.lobby .users {
 	min-width: 4em;
+	width: 7em;
 	resize: horizontal;
 }
 
-.screen-card-main-menu .lobby .window .users .scroller,
-.screen-card-main-menu .lobby .window .messages .scroller {
+.lobby .users .scroller,
+.lobby .messages .scroller {
 	display: flex;
 	flex-direction: column;
 	padding: 0.25em;
 }
 
-.screen-card-main-menu .lobby .window .messages input[type=text] {
+.lobby .messages input[type=text] {
 	flex: 1;
 	color: black;
 	border-top: 1px solid black;
 	border-right: 1px solid black;
 }
-.screen-card-main-menu .lobby .window .messages button {
+.lobby .messages button {
 	border: none;
 	border-top: 1px solid black;
 }
 
-.screen-card-main-menu .lobby .window .users {
+.lobby .users {
 	resize: horizontal;
 	border-right: 1px solid black;
 	text-align: right;
 }
 
+.lobby .users .user {
+	display: flex;
+	flex-direction: column;
+}
 
+.lobby .users .user .user-list-buttons {
+	display: none;
+}
+
+.lobby .users .user:focus-within .user-list-buttons,
+.lobby .users .user:focus .user-list-buttons {
+	display: initial;
+	animation: lobby-buttons-focused 1s ease-in;
+}
+
+.lobby .topbar {
+	padding: 0.25rem;
+	border-bottom: 1px solid black;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.lobby .topbar .button {
+	position: relative;
+}
+
+.lobby .topbar .button .amount {
+	position: absolute;
+	bottom: -8%;
+	left: -25%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: white;
+	font-size: 0.25rem;
+	width: 3em;
+	height: 3em;
+	border-radius: 50%;
+	background-color: #bf0000;
+	font-weight: bold;
+	font-family: '8-bit-pusab';
+	color: white;
+}
+
+.lobby .topbar .button .amount:empty {
+	display: none;
+}
+
+.lobby .left-menu {
+	position: absolute;
+	color: black;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	background: white;
+	border-right: 1px black solid;
+	padding: 1rem;
+	transition: transform 0.25s ease-in, opacity 0.25s ease-in;
+	transform: translateX(-100%);
+	padding-top: 1.5rem;
+	opacity: 0;
+}
+
+.lobby.show-menu .left-menu {
+	transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+	transform: translateX(0%);
+	opacity: 1;
+}
+
+.lobby .invites {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 25%;
+	white-space: normal;
+	background-color: white;
+	border-left: 1px solid black;
+	padding: 1rem;
+	padding-top: 1.75rem;
+	transition: transform 0.25s ease-in, opacity 0.25s ease-in;
+	transform: translateX(100%);
+}
+
+.lobby .invites > .column > div {
+	display: flex;
+	width: 100%;
+}
+
+.lobby.show-invites .invites {
+	transform: translateX(0%);
+}
+
+.topbar .button {
+	z-index: 100;
+}
+
+.lobby .icon {
+	height: 1rem;
+}
+
+@keyframes lobby-buttons-focused {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}

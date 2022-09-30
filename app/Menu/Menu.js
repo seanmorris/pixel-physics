@@ -8,6 +8,8 @@ import { CharacterString } from '../ui/CharacterString';
 
 import { Sfx } from '../audio/Sfx';
 
+const Bindings = Symbol('bindings');
+
 export class Menu extends Card
 {
 	template = require('./main-menu.html');
@@ -20,6 +22,8 @@ export class Menu extends Card
 
 		this.font = 'small-menu-font';
 		// this.font = 'font';
+
+		this.args.initialPath = [];
 
 		this.args.cardName = 'menu';
 
@@ -36,6 +40,16 @@ export class Menu extends Card
 	onRendered(event)
 	{
 		this.args.bindTo('items', v => {
+
+			for(const i in this.args.items)
+			{
+				const item = this.args.items[i];
+
+				if(item[Bindings])
+				{
+					[...item[Bindings]].forEach(b => b());
+				}
+			}
 
 			for(const i in v)
 			{
@@ -65,6 +79,19 @@ export class Menu extends Card
 					item._value.args.value = item.setting;
 					item._selectValue = item._value;
 				}
+				else if(item.input === 'output')
+				{
+					const bindable = Bindable.make(item);
+
+					item[Bindings] = item[Bindings] ?? new Set;
+
+					item[Bindings].add(bindable.bindTo('setting', v => item._value.args.value = v));
+
+					if(item.bind)
+					{
+						item[Bindings].add(item.bind(Bindable.make(item)));
+					}
+				}
 			}
 		});
 
@@ -87,9 +114,30 @@ export class Menu extends Card
 				this.focus(next);
 			}
 
-		}, {wait: 10});
+		}, {wait: 0});
 
 		this.focusFirst();
+	}
+
+	onAttached(event)
+	{
+		const autoNav = () => {
+			if(this.args.initialPath.length)
+			{
+				const item = this.args.initialPath.shift();
+
+				if(item in this.args.items)
+				{
+					this.onTimeout(0, () => this.run(this.args.items[item]));
+					if(this.args.initialPath.length)
+					{
+						this.onTimeout(0, () => autoNav());
+					}
+				}
+			}
+		}
+
+		this.onTimeout(0, () => autoNav());
 	}
 
 	focusFirst()
@@ -193,6 +241,12 @@ export class Menu extends Card
 			return;
 		}
 
+		if(this.args.override)
+		{
+			this.args.override.input(controller);
+			return;
+		}
+
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
 		{
 			this.currentItem && this.currentItem.click();
@@ -224,13 +278,13 @@ export class Menu extends Card
 				&& controller.buttons[button].time % 15 === 1
 			));
 
-		if(repeatCheck(12))
+		if(repeatCheck(12) || (controller.axes[7] && controller.axes[7].magnitude < 0 && controller.axes[7].delta))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node, true);
 
 			this.beep();
 		}
-		else if(repeatCheck(13))
+		else if(repeatCheck(13) || (controller.axes[7] && controller.axes[7].magnitude > 0 && controller.axes[7].delta))
 		{
 			next = this.findNext(this.currentItem, this.tags.bound.node);
 
@@ -238,13 +292,13 @@ export class Menu extends Card
 
 			this.beep();
 		}
-		else if(repeatCheck(14))
+		else if(repeatCheck(14) || (controller.axes[6] && controller.axes[6].magnitude < 0 && controller.axes[6].delta))
 		{
 			this.currentItem && this.contract(this.currentItem);
 
 			this.beep();
 		}
-		else if(repeatCheck(15))
+		else if(repeatCheck(15) || (controller.axes[6] && controller.axes[6].magnitude > 0 && controller.axes[6].delta))
 		{
 			this.currentItem && this.expand(this.currentItem);
 
@@ -289,7 +343,7 @@ export class Menu extends Card
 					value:'back', font: 'small-menu-font'
 				})
 				, callback: () => {
-					this.args.items = prev
+					this.args.items = prev;
 					this.args.currentKey = prev._title ? prev._title.args.value : '';
 					this.onNextFrame(()=>this.focusFirst());
 				}
@@ -306,7 +360,7 @@ export class Menu extends Card
 
 		if(item.callback)
 		{
-			item.callback();
+			item.callback(item, this);
 		}
 	}
 

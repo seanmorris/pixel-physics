@@ -95,7 +95,10 @@ export class TitleScreenCard extends Card
 			return;
 		}
 
-		if(controller.buttons[9] && controller.buttons[9].time === 1)
+		const startButton = controller.axes[7] ? 7 : 9;
+
+
+		if(controller.buttons[startButton] && controller.buttons[startButton].time === 1)
 		{
 			this.onTimeout(200, () => this.startPressed = true);
 

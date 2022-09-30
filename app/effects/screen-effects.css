@@ -25,7 +25,7 @@
 }
 
 .screen-effects .screen-fire .fire-strip > div {
-	width: 16px;
+	width: 32px;
 	height: calc(100% - calc(63px + 53px));
 	background-image: url(/Sonic/angel-island-fire-center.png);
 	background-position: calc(var(--index, 0) * -32px) 0;
@@ -34,7 +34,7 @@
 
 .screen-effects .screen-fire .fire-strip > div::before {
 	content: "";
-	width: 16px;
+	width: 32px;
 	height: 63px;
 	background-image: url(/Sonic/angel-island-fire-top.png);
 	background-position: calc(var(--index, 0) * -32px) 0;
@@ -44,7 +44,7 @@
 
 .screen-effects .screen-fire .fire-strip > div::after {
 	content: "";
-	width: 16px;
+	width: 32px;
 	height: 53px;
 	background-image: url(/Sonic/angel-island-fire-bottom.png);
 	background-position: calc(var(--index, 0) * -32px) 0;
