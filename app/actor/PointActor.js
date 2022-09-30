@@ -703,6 +703,7 @@ export class PointActor extends View
 			, 'data-layer':     'layer'
 			, 'data-dead':      'dead'
 			, 'data-mode':      'mode'
+			, 'data-netplayer': 'netplayer'
 			, 'data-id':        'id'
 		});
 
@@ -2057,14 +2058,47 @@ export class PointActor extends View
 			this.yAxis = controller.axes[1].magnitude;
 		}
 
-		if(controller.axes[2])
-		{
-			this.aAxis = controller.axes[2].magnitude;
-		}
+		// if(controller.axes[6] && controller.axes[6].magnitude)
+		// {
+		// 	this.xAxis = controller.axes[6].magnitude;
+		// }
+		// else if(controller.axes[0] && controller.axes[0].magnitude)
+		// {
+		// 	this.xAxis = controller.axes[0].magnitude;
+		// }
 
-		if(controller.axes[3])
+		// if(controller.axes[7] && controller.axes[7].magnitude)
+		// {
+		// 	this.yAxis = controller.axes[7].magnitude;
+		// }
+		// else if(controller.axes[1] && controller.axes[1].magnitude)
+		// {
+		// 	this.yAxis = controller.axes[1].magnitude;
+		// }
+
+		if(0 && controller.axes[7])
 		{
-			this.bAxis = controller.axes[3].magnitude;
+			if(controller.axes[3])
+			{
+				this.aAxis = controller.axes[3].magnitude;
+			}
+
+			if(controller.axes[4])
+			{
+				this.bAxis = controller.axes[4].magnitude;
+			}
+		}
+		else
+		{
+			if(controller.axes[2])
+			{
+				this.aAxis = controller.axes[2].magnitude;
+			}
+
+			if(controller.axes[3])
+			{
+				this.bAxis = controller.axes[3].magnitude;
+			}
 		}
 
 		const buttons = controller.buttons;
@@ -2474,81 +2508,83 @@ export class PointActor extends View
 
 		const maxSpawn = count || Math.min(this.args.rings, 16);
 
-		let current = 0;
+		let current   = 0;
 		const toSpawn = maxSpawn - this.spawnRings;
 		const circles = Math.floor(maxSpawn / 8);
 
-		while(this.spawnRings < maxSpawn)
-		{
-			const ring = new Ring;
-
-			const circle = Math.ceil(circles * current / maxSpawn);
-			const angle  = (current % 8) * (Math.PI * 4 * circle) / maxSpawn;
-			const radius = 1 * circle;
-
-			const cos = Math.cos(angle);
-			const sin = Math.sin(angle);
-
-			ring.args.x = this.x - cos * (circle * 8);
-			ring.args.y = this.y - sin * (circle * 8) - (this.args.height / 4);
-
-			ring.args.xSpeed = 0;
-			ring.args.ySpeed = -3;
-
-			ring.noClip = true;
-
-			ring.args.static  = false;
-			ring.args.float   = 18;
-			ring.args.ignore  = 30;
-
-			ring.args.width  = 16;
-			ring.args.height = 16;
-
-			ring.dropped = true;
-
-			this.viewport.onFrameOut(4 + (current % 4), () => {
-				this.viewport.spawn.add({object:ring});
-			});
-
-			this.spawnRings++;
-	 		current++;
-
-			// ring.args.xSpeed = this.args.xSpeed || this.args.gSpeed;
-			// ring.args.ySpeed = this.args.ySpeed;
-
-			this.viewport.onFrameOut(12 * circle, () => {
-				ring.args.xSpeed += -cos * circle * 2;
-				ring.args.ySpeed += -sin * circle * 2;
-			});
-
-			if(current % 3 === 2)
+		this.viewport.onFrameOut(4, () => {
+			while(this.spawnRings < maxSpawn)
 			{
-				ring.args.decoration = true;
+				const ring = new Ring;
+
+				const circle = Math.ceil(current / 8);
+				const angle  = (current % 8) * (Math.PI / 4);
+				const radius = 1 * circle;
+
+				const cos = Math.cos(angle);
+				const sin = Math.sin(angle);
+
+				ring.args.x = this.x - cos * (circle * 8);
+				ring.args.y = this.y - sin * (circle * 8) - (this.args.height / 4);
+
+				ring.args.xSpeed = 0;
+				ring.args.ySpeed = 0;
+
 				ring.noClip = true;
 
-				this.viewport.onFrameOut(100, () => {
-					this.viewport.actors.remove(ring);
-					if(this.spawnRings > 0)
-					{
-						this.spawnRings--;
-					}
-				});
-			}
-			else
-			{
-				ring.args.decoration = false;
-				ring.noClip = false;
+				ring.args.static  = false;
+				ring.args.float   = 18;
+				ring.args.ignore  = 30;
 
-				this.viewport.onFrameOut(age || 360 - (current % 5) * 35, () => {
-					this.viewport.actors.remove(ring);
+				ring.args.width  = 16;
+				ring.args.height = 16;
 
-					if(this.spawnRings > 0)
-					{
-						this.spawnRings--;
-					}
+				ring.dropped = true;
+
+				this.viewport.onFrameOut((1+circle) * 2, () => {
+					this.viewport.spawn.add({object:ring});
 				});
+
+				this.spawnRings++;
+		 		current++;
+
+				// ring.args.xSpeed = this.args.xSpeed || this.args.gSpeed;
+				// ring.args.ySpeed = this.args.ySpeed;
+
+				this.viewport.onFrameOut(circle * 2 + 6, () => {
+					ring.args.xSpeed += -cos * circle * 3;
+					ring.args.ySpeed += -sin * circle * 3;
+				});
+
+				if(current % 3 === 2)
+				{
+					ring.args.decoration = true;
+					ring.noClip = true;
+
+					this.viewport.onFrameOut(100, () => {
+						this.viewport.actors.remove(ring);
+						if(this.spawnRings > 0)
+						{
+							this.spawnRings--;
+						}
+					});
+				}
+				else
+				{
+					ring.args.decoration = false;
+					ring.noClip = false;
+
+					this.viewport.onFrameOut(age || 360 - (current % 5) * 35, () => {
+						this.viewport.actors.remove(ring);
+
+						if(this.spawnRings > 0)
+						{
+							this.spawnRings--;
+						}
+					});
+				}
 			}
-		}
+		});
 	}
 
 	collect(pickup)

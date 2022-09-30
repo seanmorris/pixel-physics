@@ -21,6 +21,12 @@
 						[[item.prefix]]
 						<span class = "title">[[item._title]]</span>
 						<span class = "subtext">[[item.subtext]]</span>
+						<span cv-if = "item.input" cv-is = "output">
+							:
+							<span data-wraps = "output">
+								[[item._value]]
+							</span>
+						</span>
 						<span cv-if = "item.input" cv-is = "string" class = "field">
 							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event, title)" tabindex="-1" /></span>
 						</span>
@@ -93,6 +99,6 @@
 				</label>
 			</div>
 		</section>
-
 	</section>
+	<section class = "override">[[override]]</section>
 </div>

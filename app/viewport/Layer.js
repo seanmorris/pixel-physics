@@ -237,7 +237,7 @@ export class Layer extends View
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
-					const scale  = '1.02';
+					const scale  = '1.03';
 
 					block.style({
 						transform: `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`

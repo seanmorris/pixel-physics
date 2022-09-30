@@ -212,6 +212,7 @@ export class EggWalker extends Vehicle
 			, xSpeed: this.args.xSpeed || this.args.gSpeed || this.args.direction
 			// , ySpeed: this.args.ySpeed
 			, float:  10
+			, strength: 2
 		});
 
 		projectile.impulse(8, trajectory + (direction < 0 ? Math.PI : 0), true);

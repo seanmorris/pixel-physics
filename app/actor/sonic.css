@@ -26,6 +26,7 @@
 	--sprite-offset-y: 0px;
 	/*z-index: 1;*/
 
+
 	backdrop-filter: var(--bg-filter);
 	filter: blur(0px);
 	/*filter: url(#sonic-pinch);*/
@@ -35,6 +36,9 @@
 	/*backdrop-filter: var(--fg-filter) blur(0);*/
 	/*transform: rotate(calc(1rad * var(--ground-angle)));
 	transform-origin: 50%, bottom - 16px;*/
+}
+.actor-item.actor-sonic[data-netplayer=true] .sprite:after {
+	filter: blur(0px) hue-rotate(-60deg) saturate(350%);
 }
 
 .actor-item.actor-sonic .sprite:before {

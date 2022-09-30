@@ -77,12 +77,15 @@
 .hud .char-icon.seymour {
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -32px -64px;
+	background-position: -0px -16px;
+
 }
 
 .hud .char-icon.player-1,
 .hud .char-icon.chalmers {
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -16px -80px;
+	background-position: -0px -16px;
 }
 
 

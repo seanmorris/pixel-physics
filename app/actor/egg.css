@@ -1,7 +1,6 @@
 .actor-item.actor-egg-shell-top .sprite,
 .actor-item.actor-egg-shell-bottom .sprite,
 .actor-item.actor-egg .sprite {
-	--sprite-sheet:  url(var(--sprite-sheet));
 	--sprite-offset-x: 0px;
 
 	width:  15px;
@@ -19,7 +18,7 @@
 	top: 0;
 
 	background-image: var(--sprite-sheet);
-	transition: background-image 0.5s ease-out;
+	/*transition: background-image 0.5s ease-out;*/
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 
 	width:  15px;
@@ -39,7 +38,7 @@
 	top: 0;
 
 	background-image: var(--sprite-sheet);
-	transition: background-image 0.5s ease-out;
+	/*transition: background-image 0.5s ease-out;*/
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 
 	background-position-x: -16px;

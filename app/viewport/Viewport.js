@@ -1,6 +1,7 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Bag  }     from 'curvature/base/Bag';
 import { Tag  }     from 'curvature/base/Tag';
+import { Uuid }     from 'curvature/base/Uuid';
 import { View }     from 'curvature/base/View';
 import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
@@ -34,6 +35,7 @@ import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
 import { GamepadCard } from '../intro/GamepadCard';
 import { WarningCard } from '../intro/WarningCard';
+import { SaneCard } from '../intro/SaneCard';
 import { NoWayCard } from '../intro/NoWayCard';
 import { SeanCard } from    '../intro/SeanCard';
 
@@ -414,8 +416,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps = 120;
-		this.args.maxFps = 60;
+		this.args.maxFps = 75;
 
 		this.args.currentActor = '';
 
@@ -873,7 +874,14 @@ export class Viewport extends View
 					});
 				}
 
-				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
+				if(this.args.networked)
+				{
+					this.args.showConsole = false;
+				}
+				else
+				{
+					this.args.showConsole = this.args.showConsole ? null : 'showConsole';
+				}
 
 				event.preventDefault();
 			}
@@ -1227,7 +1235,7 @@ export class Viewport extends View
 		const enableKeyboardMessage = ' Click here to enable keyboard control. ';
 		const enableAudioMessage = ' Click here to enable audio. ';
 
-		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 8000, () => {
+		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 36000, () => {
 			this.args.bindTo('interacted', v => {
 				const focusMeMessage = (!v && audioWasEnabled)
 					? enableAudioMessage
@@ -1288,7 +1296,22 @@ export class Viewport extends View
 		this.listen(
 			document.body
 			, 'click'
-			, event => this.tags.viewport.focus()
+			, event => {
+
+				let element = event.target;
+
+				while(element && element.matches)
+				{
+					if(element.matches('[data-click-barrier]'))
+					{
+						return;
+					}
+
+					element = element.parentNode;
+				}
+
+				this.tags.viewport.focus()
+			}
 			, {capture: true}
 		);
 
@@ -1406,8 +1429,8 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-			const sonic = new Chalmers({name:'Player 1'}, this);
-			const tails = new Seymour({name:'Player 2'}, this);
+			const sonic = new Sonic({name:'Player 1', id: String(new Uuid)}, this);
+			const tails = new Sonic({name:'Player 2', id: String(new Uuid)}, this);
 
 			const startDef = this.defsByName.get('player-start');
 
@@ -1430,11 +1453,15 @@ export class Viewport extends View
 			{
 				this.nextControl  = sonic;
 				this.remotePlayer = tails;
+
+				tails.args.netplayer = true;
 			}
 			else if(this.args.playerId === 2)
 			{
 				this.remotePlayer = sonic;
 				this.nextControl  = tails;
+
+				sonic.args.netplayer = true;
 			}
 		}
 
@@ -1513,7 +1540,7 @@ export class Viewport extends View
 					this.setColCell(this.nextControl.follower);
 				}
 			}
-			else if(!this.args.isReplaying && !this.args.isRecording)
+			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
 			{
 				this.args.demoIndicator = null;
 
@@ -1599,7 +1626,7 @@ export class Viewport extends View
 				{
 					const gamepadId = String(gamepad.id);
 
-					if(gamepadId.match(/xbox/i))
+					if(gamepadId.match(/xbo?x/i))
 					{
 						this.args.inputType = 'input-xbox';
 					}
@@ -1792,9 +1819,11 @@ export class Viewport extends View
 					: '';
 			}
 
-			if(controller.buttons[9]
-				&& controller.buttons[9].active
-				&& controller.buttons[9].time === 1
+			const pauseButton = 9;
+
+			if(controller.buttons[pauseButton]
+				&& controller.buttons[pauseButton].active
+				&& controller.buttons[pauseButton].time === 1
 			){
 				if(this.args.paused)
 				{
@@ -2986,7 +3015,7 @@ export class Viewport extends View
 			this.args.ringLabel.args.color = 'yellow';
 		}
 
-		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(0);
 
 		const time  = (this.args.frameId - this.args.startFrameId) / 60;
 		let minutes = String(Math.trunc(Math.abs(time) / 60)).padStart(2,'0')
@@ -4012,9 +4041,16 @@ export class Viewport extends View
 
 		const cards = [];
 
-		if(quick === 2)
+		if(quick === 2 || this.args.networked)
 		{
-			cards.push(new MainMenu({timeout: -1}, this));
+			const menu = new MainMenu({timeout: -1}, this);
+
+			if(this.args.networked)
+			{
+				menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
+			}
+
+			cards.push(menu);
 		}
 		else if(quick)
 		{
@@ -4027,8 +4063,9 @@ export class Viewport extends View
 			cards.push(...this.returnHomeCards());
 		}
 
-
 		this.args.titlecard = new Series({cards}, this);
+
+		this.args.titlecard.play();
 
 		this.args.bg = this.args.backdrop = null;
 
@@ -4042,9 +4079,10 @@ export class Viewport extends View
 		return [
 			new LoadingCard({timeout: 3500, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
+			, new WarningCard({timeout: 8500})
 			, new DebianCard({timeout: 4500})
 			, new WebkitCard({timeout: 3500})
-			, new WarningCard({timeout: 8000})
+			, new SaneCard({timeout: 4500})
 			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
@@ -4144,7 +4182,7 @@ export class Viewport extends View
 		const server = (!refresh && server) || new RtcServer(rtcConfig);
 
 		const onOpen = event => {
-			console.log('Connection opened!');
+			// console.log('Connection opened!');
 			this.args.chatBox  = new ChatBox({pipe: server});
 			this.args.playerId = 1;
 		};
@@ -4201,7 +4239,7 @@ export class Viewport extends View
 		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
 
 		const onOpen = event => {
-			console.log('Connection opened!')
+			// console.log('Connection opened!')
 			this.args.chatBox = new ChatBox({pipe: client});
 			this.args.playerId = 2;
 		};
@@ -4276,6 +4314,8 @@ export class Viewport extends View
 			, float:   this.controlActor.args.float
 			, angle:   this.controlActor.args.angle
 			, mode:    this.controlActor.args.mode
+
+			, rings:    this.controlActor.args.rings
 
 			, groundAngle: this.controlActor.args.groundAngle
 			, respawning:  this.controlActor.args.respawning
@@ -4719,31 +4759,23 @@ export class Viewport extends View
 			console.error('No matrixUrl defined!!!');
 		}
 
+		const redirectUrl = location.origin + '/accept-sso';
+
 		if(this.matrix)
 		{
-			return this.matrix;
+			if(!this.matrix.isLoggedIn)
+			{
+				return this.matrix.logIn(redirectUrl).then(() => this.matrix);
+			}
+
+			return Promise.resolve(this.matrix);
 		}
 
-		this.matrix = new Matrix(this.settings.matrixUrl, {interval: 500});
-
-		return new Promise(accept => {
-			const redirectUrl = location.origin + '/accept-sso';
-			this.matrix.initSso(encodeURIComponent(redirectUrl));
-
-			this.matrix.addEventListener('logged-in', event => {
-
-				this.matrix.listenForServerEvents();
-
-				this.matrix.syncRoomHistory(
-					'!hJzXrccruagKGXTFUQ:matrix.org'
-					, message => console.log(message)
-					, Date.now() - (7 * 24 * 60 * 60 * 1000)
-				);
-
-				this.matrix.addEventListener('m.room.message', event => console.log(event));
-
-				accept(this.matrix);
-			});
+		this.matrix = new Matrix(this.settings.matrixUrl, {
+			interval:  0
+			// , storage: localStorage
 		});
+
+		return this.matrix.logIn(redirectUrl).then(() => this.matrix);
 	}
 }

@@ -1,3 +1,4 @@
+import { Router }   from 'curvature/base/Router';
 import { Bgm } from '../audio/Bgm';
 import { Card } from '../intro/Card';
 
@@ -27,6 +28,11 @@ export class MainMenu extends Menu
 	constructor(args,parent)
 	{
 		super(args,parent);
+
+		if(Router.query.menuPath)
+		{
+			this.args.initialPath = JSON.parse(Router.query.menuPath);
+		}
 
 		this.args.cardName = 'main-menu';
 
@@ -342,11 +348,9 @@ export class MainMenu extends Menu
 				children: {
 					'Matrix Lobby': {
 						callback: () => {
-							this.args.lobby = new Lobby;
-							// this.args.lobbyUsers    = Array(100).fill(0).map((v,k) => `User ${k}`);
-							// this.args.lobbyMessages = Array(100).fill(0).map((v,k) => `Message ${k}`);
-							// this.parent.matrixConnect().then(matrix => {
-							// });
+							this.parent.matrixConnect().then(matrix => {
+								this.args.override = new Lobby({},this.parent);
+							});
 						}
 					}
 
@@ -414,28 +418,37 @@ export class MainMenu extends Menu
 	{
 		super.input(controller);
 
-		if(this.args.twist)
-		{
-			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0);
-			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0);
+		let xEffect = 2;
+		let yEffect = 3;
 
-			let pressure = 0;
+		// if(controller.axes[7])
+		// {
+		// 	xEffect = 3;
+		// 	yEffect = 4;
+		// }
 
-			if(controller.buttons[6])
-			{
-				pressure = controller.buttons[6].pressure - controller.buttons[7].pressure;
-			}
+		// if(this.args.twist)
+		// {
+		// 	const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0);
+		// 	const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0);
 
-			this.args.twist.args.scale = pressure * -256;
+		// 	let pressure = 0;
 
-			this.args.twist.args.dx = 64*1.618 * xAxis;
-			this.args.twist.args.dy = 64*1.000 * yAxis;
-		}
+		// 	if(controller.buttons[6])
+		// 	{
+		// 		pressure = controller.buttons[6].pressure - controller.buttons[7].pressure;
+		// 	}
+
+		// 	this.args.twist.args.scale = pressure * -256;
+
+		// 	this.args.twist.args.dx = 64*1.618 * xAxis;
+		// 	this.args.twist.args.dy = 64*1.000 * yAxis;
+		// }
 
 		if(this.args.pinch)
 		{
-			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
-			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
+			const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
+			const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
 
 			this.args.pinch.args.dx = 64*1.618 * xAxis;
 			this.args.pinch.args.dy = 64*1.000 * yAxis;
@@ -466,9 +479,9 @@ export class MainMenu extends Menu
 	{
 		super.onRendered(event);
 
-		this.args.twist = new Twist({
-			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		});
+		// this.args.twist = new Twist({
+		// 	id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
+		// });
 
 		this.args.pinch = new Pinch({
 			id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64

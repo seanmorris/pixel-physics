@@ -11,7 +11,7 @@ export class BreakableBlock extends Block
 	{
 		super(args, parent);
 
-		this.behaviors.clear();
+		// this.behaviors.clear();
 
 		this.args.type = 'actor-item actor-breakable-block';
 
@@ -223,6 +223,7 @@ export class BreakableBlock extends Block
 		}
 
 		if((other instanceof Orb)
+			|| other.isVehicle
 			|| other.args.spinning
 			|| other.args.dashed
 			|| other.punching
@@ -382,7 +383,7 @@ export class BreakableBlock extends Block
 			}
 			else
 			{
-				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x) * 3);
+				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x) * 2);
 			}
 		}
 
@@ -397,6 +398,7 @@ export class BreakableBlock extends Block
 		{
 			const left  = this.viewport.actorsAtPoint(this.x - this.args.width, this.y);
 			const right = this.viewport.actorsAtPoint(this.x + this.args.width, this.y);
+			const down  = this.viewport.actorsAtPoint(this.x, this.y + 1);
 
 			if(Array.isArray(left) && !Math.sign(this.args.worm))
 			{
@@ -424,6 +426,56 @@ export class BreakableBlock extends Block
 			if(Array.isArray(right) && !Math.sign(this.args.worm))
 			{
 				for(const actor of right)
+				{
+					if(!(actor instanceof BreakableBlock))
+					{
+						continue;
+					}
+
+					if(!actor.args.collapse)
+					{
+						continue;
+					}
+
+					if(actor.broken)
+					{
+						continue;
+					}
+
+					actor.delayedBreak(8)
+				}
+			}
+
+			if(Array.isArray(down) && !Math.sign(this.args.worm))
+			{
+				for(const actor of down)
+				{
+					if(!(actor instanceof BreakableBlock))
+					{
+						continue;
+					}
+
+					if(!actor.args.collapse)
+					{
+						continue;
+					}
+
+					if(actor.broken)
+					{
+						continue;
+					}
+
+					actor.delayedBreak(8)
+				}
+			}
+		}
+		else if(!wasBroken)
+		{
+			const up = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height);
+
+			if(Array.isArray(up) && !Math.sign(this.args.worm))
+			{
+				for(const actor of up)
 				{
 					if(!(actor instanceof BreakableBlock))
 					{

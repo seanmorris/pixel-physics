@@ -181,11 +181,11 @@
 	background-image: url(/custom/checker-blue.png);
 }
 
-.screen-card-main-menu svg {
+.screen-card-main-menu > svg {
 	pointer-events: none;
 }
 
-.screen-card-main-menu svg,
+.screen-card-main-menu > svg,
 .screen-card-main-menu .menu-scroller {
 	position: absolute;
 	transform: scale(2);
