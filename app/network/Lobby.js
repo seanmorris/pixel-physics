@@ -13,6 +13,11 @@ export class Lobby extends View
 	requests       = new Map;
 	users          = new Map;
 
+	serverCandidates = new Set;
+	clientCandidates = new Set;
+
+	isClient = null;
+
 	input(){}
 
 	constructor(args,parent)
@@ -42,10 +47,15 @@ export class Lobby extends View
 
 			this.listen(matrix, 'matrix-event', event => console.log(event.detail.type, event));
 			this.listen(matrix, 'sonic-3000.lobby.message', event => this.handleLobbyMessage(event));
-			this.listen(matrix, 'sonic-3000.lobby.crypto-invite', event => this.handleCryptoInvite(event));
-			this.listen(matrix, 'sonic-3000.lobby.crypto-offer',  event => this.handleCryptoOffer(event));
-			this.listen(matrix, 'sonic-3000.lobby.crypto-accept', event => this.handleCryptoAccept(event));
-			this.listen(matrix, 'sonic-3000.lobby.crypto-reject', event => this.handleCryptoReject(event));
+
+			this.listen(matrix, 'sonic-3000.lobby.crypto-game-invite', event => this.handleCryptoGameInvite(event));
+			this.listen(matrix, 'sonic-3000.lobby.crypto-game-offer',  event => this.handleCryptoGameOffer(event));
+			this.listen(matrix, 'sonic-3000.lobby.crypto-game-accept', event => this.handleCryptoGameAccept(event));
+			this.listen(matrix, 'sonic-3000.lobby.crypto-game-reject', event => this.handleCryptoGameReject(event));
+
+			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-invite',  event => this.handleCryptoCandidateInvite(event));
+			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-present', event => this.handleCryptoCandidatePresent(event));
+			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-ack',     event => this.handleCryptoCandidateAck(event));
 
 			this.listen(matrix, 'matrix-event', event => {
 				if(!event.detail.sender)
@@ -154,17 +164,16 @@ export class Lobby extends View
 		this.sendMessage(event);
 	}
 
-	sendCryptoInvite(event, {id:to})
+	sendCryptoGameInvite(event, {id:to})
 	{
 		this.refreshRtc();
 
 		this.messageService.invite(to).then(invitation => this.matrix.putEvent(
 			this.args.roomId
-			, 'sonic-3000.lobby.crypto-invite'
+			, 'sonic-3000.lobby.crypto-game-invite'
 			, invitation
 		))
 		.then(response => {
-			this.args.input = '';
 			this.args.messages.push(new LobbyStatus({
 				message: `You invited ${to} to play!`
 			}));
@@ -173,7 +182,7 @@ export class Lobby extends View
 		.finally(() => this.tags.input.focus());
 	}
 
-	handleCryptoInvite(event)
+	handleCryptoGameInvite(event)
 	{
 		if(!this.user || event.detail.content.to !== this.user.user_id)
 		{
@@ -189,7 +198,7 @@ export class Lobby extends View
 
 		if(floodControl.invite && Date.now() - floodControl.invite < 15000)
 		{
-			this.rejectCryptoInvite(event, event.detail, 'flood_control');
+			this.rejectCryptoGameInvite(event, event.detail, 'flood_control');
 			return;
 		}
 
@@ -202,7 +211,7 @@ export class Lobby extends View
 		floodControl.invite = Date.now();
 	}
 
-	acceptCryptoInvite(event, invite)
+	acceptCryptoGameInvite(event, invite)
 	{
 		this.args.invites.delete(invite);
 
@@ -211,17 +220,19 @@ export class Lobby extends View
 
 		this.args.messages.push(new LobbyStatus({message: `You accepted the invite from ${invite.sender}!`}))
 
+		this.isClient = true;
+
 		this.messageService.accept(invite).then(cryptoMessage => {
-			const encodedToken = this.client.offer()
-			.then(token => cryptoMessage.createReply(JSON.stringify(token)))
-			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-offer', reply));
+			Promise.all([this.client.getIceCandidates(), this.client.offer()])
+			.then(([candidates, token]) => cryptoMessage.createReply(JSON.stringify({candidates,token})))
+			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-offer', reply));
 		});
 
 		this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
 		this.args.showInvites = 'hiding-invites';
 	}
 
-	rejectCryptoInvite(event, invite, reason = '')
+	rejectCryptoGameInvite(event, invite, reason = '')
 	{
 		this.args.invites.delete(invite);
 
@@ -232,14 +243,14 @@ export class Lobby extends View
 
 		this.messageService.accept(invite).then(cryptoMessage => {
 			cryptoMessage.createReply(reason)
-			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-reject', reply));
+			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-reject', reply));
 		});
 
 		this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
 		this.args.showInvites = 'hiding-invites';
 	}
 
-	handleCryptoOffer(event)
+	handleCryptoGameOffer(event)
 	{
 		if(!this.user || event.detail.content.to !== this.user.user_id)
 		{
@@ -263,17 +274,20 @@ export class Lobby extends View
 				offerString = atob(isEncoded[1]);
 			}
 
-			const offer  = JSON.parse(offerString);
+			const {token: offer, candidates: remoteCandidates}  = JSON.parse(offerString);
 
-			this.server.answer(offer)
-			.then(token => cryptoMessage.createReply(JSON.stringify(token)))
-			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-accept', reply));
+			Promise.all([this.server.getIceCandidates(), this.server.answer(offer)])
+			.then(([candidates, offer]) => {
+				cryptoMessage.createReply(JSON.stringify({candidates, token:offer}))
+				.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-accept', reply))
+				.then(() => Promise.all(remoteCandidates.map(c => this.server.addIceCandidate(c))));
+			})
 
 			this.args.messages.push(new LobbyStatus({message: `${message.sender} accepted your invite!`}));
 		});
 	}
 
-	handleCryptoAccept(event)
+	handleCryptoGameAccept(event)
 	{
 		if(!this.user || event.detail.content.to !== this.user.user_id)
 		{
@@ -286,13 +300,15 @@ export class Lobby extends View
 
 		this.messageService.accept(message)
 		.then(cryptoMessage => {
-			this.client.accept(JSON.parse(cryptoMessage.content))
-			this.args.messages.push(new LobbyStatus({message: `Completing RTC handshake...`}))
-
+			const {token, candidates} = JSON.parse(cryptoMessage.content);
+			this.client.accept(token);
+			candidates.map(c => this.server.addIceCandidate(c));
 		});
+
+		// this.args.messages.push(new LobbyStatus({message: `Completing RTC handshake...`}));
 	}
 
-	handleCryptoReject(event)
+	handleCryptoGameReject(event)
 	{
 		if(!this.user || event.detail.content.to !== this.user.user_id)
 		{
@@ -313,6 +329,16 @@ export class Lobby extends View
 
 			this.args.messages.push(new LobbyStatus({message}));
 		});
+	}
+
+	handleCryptoGameCandidateSyn()
+	{
+
+	}
+
+	handleCryptoGameCandidateAck()
+	{
+
 	}
 
 	handleLobbyMessage({detail:message})
@@ -351,6 +377,9 @@ export class Lobby extends View
 
 		server.addEventListener('close', onClose, {once:true});
 		client.addEventListener('close', onClose, {once:true});
+
+		// server.addEventListener('icecandidate', event => console.log(event.originalEvent.candidate));
+		// client.addEventListener('icecandidate', event => console.log(event.originalEvent.candidate));
 	}
 
 	toggleMenu()

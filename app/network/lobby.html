@@ -29,7 +29,7 @@
 					<div title = "[[user.id]]" class = "user" tabindex = "0">
 						[[user.username]]
 						<div class = "user-list-buttons">
-							<button cv-on   = "click:sendCryptoInvite(event, user)">invite</button>
+							<button cv-on   = "click:sendCryptoGameInvite(event, user)">invite</button>
 <!-- 							<button>message</button>
 							<button>ignore</button> -->
 						</div>
@@ -60,8 +60,8 @@
 					<div class = "column">
 						<div>[[invite.sender]] invited you to play!</div>
 						<div class = "row">
-							<button cv-on = "click:acceptCryptoInvite(event, invite)">accept</button>
-							<button cv-on = 'click:rejectCryptoInvite(event, invite, "button_clicked")'>reject</button>
+							<button cv-on = "click:acceptCryptoGameInvite(event, invite)">accept</button>
+							<button cv-on = 'click:rejectCryptoGameInvite(event, invite, "button_clicked")'>reject</button>
 						</div>
 					</div>
 				</div>

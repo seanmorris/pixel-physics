@@ -32,6 +32,12 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 			messageEvent.originalEvent = event;
 			this.dispatchEvent(messageEvent);
 		});
+
+		this.peerClient.addEventListener('icecandidate', event => {
+			const messageEvent = new CustomEvent('icecandidate', {detail: event.data });
+			messageEvent.originalEvent = event;
+			this.dispatchEvent(messageEvent);
+		});
 	}
 
 	send(input)
@@ -42,6 +48,21 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 	close()
 	{
 		this.peerClientChannel && this.peerClientChannel.close();
+	}
+
+	getIceCandidates()
+	{
+		const candidates = new Set;
+
+		return new Promise(accept => this.peerClient.addEventListener('icecandidate', event => {
+			if(!event.candidate)
+			{
+				accept([...candidates]);
+				return;
+			}
+
+			candidates.add(event.candidate);
+		}));
 	}
 
 	offer()
@@ -58,14 +79,14 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 
 			this.peerClient.addEventListener('icecandidate', event => {
 
-				if(!event.candidate)
-				{
-					return;
-				}
-				else
-				{
-					candidates.add(event.candidate);
-				}
+				// if(!event.candidate)
+				// {
+				// 	return;
+				// }
+				// else
+				// {
+				// 	candidates.add(event.candidate);
+				// }
 
 				if(timeout)
 				{
@@ -84,6 +105,6 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 	{
 		const session = new RTCSessionDescription(answer);
 
-		this.peerClient.setRemoteDescription(session);
+		return this.peerClient.setRemoteDescription(session);
 	}
 }
