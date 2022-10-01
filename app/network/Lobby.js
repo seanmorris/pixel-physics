@@ -222,8 +222,12 @@ export class Lobby extends View
 
 		this.isClient = true;
 
+		const getIceCandidates = this.client.getIceCandidates();
+
+		getIceCandidates.then(candidates => console.log(candidates));
+
 		this.messageService.accept(invite).then(cryptoMessage => {
-			Promise.all([this.client.getIceCandidates(), this.client.offer()])
+			Promise.all([getIceCandidates, this.client.offer()])
 			.then(([candidates, token]) => cryptoMessage.createReply(JSON.stringify({candidates,token})))
 			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-offer', reply));
 		});
@@ -276,11 +280,17 @@ export class Lobby extends View
 
 			const {token: offer, candidates: remoteCandidates}  = JSON.parse(offerString);
 
-			Promise.all([this.server.getIceCandidates(), this.server.answer(offer)])
+			const answer = this.server.answer(offer);
+
+			answer.then(() => {
+				remoteCandidates.map(c => this.server.addIceCandidate(c));
+			});
+
+			Promise.all([this.server.getIceCandidates(), answer])
 			.then(([candidates, offer]) => {
+				console.log(candidates);
 				cryptoMessage.createReply(JSON.stringify({candidates, token:offer}))
-				.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-accept', reply))
-				.then(() => Promise.all(remoteCandidates.map(c => this.server.addIceCandidate(c))));
+				.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-accept', reply));
 			})
 
 			this.args.messages.push(new LobbyStatus({message: `${message.sender} accepted your invite!`}));
@@ -301,8 +311,11 @@ export class Lobby extends View
 		this.messageService.accept(message)
 		.then(cryptoMessage => {
 			const {token, candidates} = JSON.parse(cryptoMessage.content);
-			this.client.accept(token);
-			candidates.map(c => this.server.addIceCandidate(c));
+			this.client.accept(token).then(() => {
+				candidates.map(c => {
+					this.client.addIceCandidate(c)
+				});
+			});
 		});
 
 		// this.args.messages.push(new LobbyStatus({message: `Completing RTC handshake...`}));
