@@ -487,15 +487,17 @@ export class PointActor extends View
 				prevGroundObject.args.active = false;
 			}
 
+			const Switch = this.viewport.objectPalette['switch'];
+
 			if(this.controllable)
 			{
-				if(prevGroundObject)
+				if(prevGroundObject && !(prevGroundObject instanceof Switch))
 				{
 					prevGroundObject.args.active = false;
 					this.viewport.auras.delete(prevGroundObject);
 				}
 
-				if(groundObject)
+				if(groundObject && !(groundObject instanceof Switch))
 				{
 					groundObject.args.active = true;
 				}

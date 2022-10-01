@@ -67,4 +67,25 @@ export class Booster extends PointActor
 			this.args.ySpeed -= 0.5;
 		}
 	}
+
+	explode()
+	{
+		this.viewport.onFrameOut(60, () => {
+			this.args.launched = false;
+			this.args.active   = false;
+
+			this.viewport.auras.delete(this);
+
+			this.args.x = this.def.get('x');
+			this.args.y = this.def.get('y');
+
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+			this.args.gSpeed = 0;
+
+			this.viewport.setColCell(this);
+
+			console.log(this.args.x, this.args.y);
+		});
+	}
 }

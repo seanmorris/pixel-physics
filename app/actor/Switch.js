@@ -34,15 +34,6 @@ export class Switch extends PointActor
 	{
 		super.update();
 
-		if(this.args.active)
-		{
-			this.args.height = this.height + -6;
-		}
-		else
-		{
-			this.args.height = this.height;
-		}
-
 		if(this.ignore > 0)
 		{
 			this.ignore--;
@@ -60,6 +51,20 @@ export class Switch extends PointActor
 		){
 			this.args.active = false;
 			this.activator   = null;
+		}
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		if(this.args.active)
+		{
+			this.args.height = this.height + -6;
+		}
+		else
+		{
+			this.args.height = this.height;
 		}
 	}
 
@@ -107,7 +112,6 @@ export class Switch extends PointActor
 		{
 			return true;
 		}
-
 
 		other.onRemove(()=> this.activator = null);
 

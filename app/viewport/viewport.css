@@ -56,8 +56,7 @@ section.filters {
 }
 
 .viewport-overlay,
-.viewport-zoom,
-.intro-cards {
+.viewport-zoom {
 	overflow: hidden;
 }
 

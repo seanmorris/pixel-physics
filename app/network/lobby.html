@@ -7,11 +7,14 @@
 		</div>
 
 		<div class = "topbar row">
-			<div>
+			<div class = "row">
 				<div class = "burger-button" cv-on = "click:toggleMenu">
 					<div class = "stripe"></div>
 					<div class = "stripe"></div>
 					<div class = "stripe"></div>
+				</div>
+				<div class = "title">
+					#sonic-3000-test-lobby
 				</div>
 			</div>
 			<div>
@@ -24,8 +27,12 @@
 
 		<div class = "row wide">
 
-			<div class = "users frame">
-				<div class = "scroller" cv-each = "users:user">
+			<div class = "users frame column">
+				<div class = "sort-buttons">
+					<button class = "sort-abc"  cv-on = 'click:sortUsers("abc")'></button>
+					<button class = "sort-time" cv-on = 'click:sortUsers("time")'></button>
+				</div>
+				<div class = "scroller" cv-each = "userList:user">
 					<div title = "[[user.id]]" class = "user" tabindex = "0">
 						[[user.username]]
 						<div class = "user-list-buttons">
@@ -38,6 +45,10 @@
 			</div>
 
 			<div class = "messages wide column">
+				<div class = "row motd [[motdClosed]]">
+					<button class="close-button" cv-on = "click:closeMotd"></button>
+					<span>&lt;motd&gt;: [[motd]]</span>
+				</div>
 				<div class = "row wide frame">
 					<div class = "scroller" cv-ref = "scroller" cv-each = "messages:message">
 						<span class = "message">[[message]]</span>
