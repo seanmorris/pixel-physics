@@ -28,7 +28,12 @@ export class Lobby extends View
 
 		this.args.roomId   = '!hJzXrccruagKGXTFUQ:matrix.org';
 		this.args.invites  = new Bag;
-		this.args.users    = new Bag;
+		this.args.userList = [];;
+		this.args.users    = new Bag((i,a,s) => {
+			this.sortUsers();
+		});
+
+		this.args.motd = 'Welcome to the Sonic 3000 test lobby! We\'re still building and testing, so check back soon for updates. Click a user\'s name on the left to send an invite.';
 
 		this.args.messages = [];
 		parent.matrixConnect().then(matrix => {
@@ -63,26 +68,7 @@ export class Lobby extends View
 					return;
 				}
 
-				const sender = event.detail.sender;
-				const [username,host] = sender.slice(1).split(':');
-
-				if(!this.users.has(event.detail.sender))
-				{
-					const user = {
-						id: sender
-						, lastSeen: 0
-						, username
-						, host
-					};
-
-					this.users.set(sender, user);
-
-					this.args.users.add(user);
-				}
-
-				const user = this.users.get(sender);
-
-				user.lastSeen = Date.now();
+				this.checkEventSender(event.detail.sender);
 			});
 
 			matrix.syncRoomHistory(
@@ -93,28 +79,16 @@ export class Lobby extends View
 						return;
 					}
 
-					const sender = message.sender;
-					const [username,host] = sender.slice(1).split(':');
+					this.checkEventSender(message.sender);
 
-					if(!this.users.has(sender))
-					{
-						const user = {
-							id: sender
-							, lastSeen: 0
-							, username
-							, host
-						};
+					const user = this.users.get(message.sender);
 
-						this.users.set(sender, user);
+					// if(!message.type.match(/^sonic-3000/))
+					// {
+					// 	console.log(message.type);
+					// }
 
-						this.args.users.add(user);
-					}
-
-					const user = this.users.get(sender);
-
-					user.lastSeen = Date.now();
-
-					if(message.type !== 'sonic-3000.lobby.message')
+					if(message.type !== 'sonic-3000.lobby.message' || message.origin_server_ts < 1664646573000)
 					{
 						return;
 					}
@@ -126,14 +100,40 @@ export class Lobby extends View
 
 					this.onNextFrame(() => {
 						this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+						this.sortUsers();
 					});
 				}
 				, Date.now() - (7 * 24 * 60 * 60 * 1000)
+				// , Math.max(1664596800000, Date.now() - (7 * 24 * 60 * 60 * 1000))
 				// , Date.now() - (60 * 1000)
+				// , 1664646573000
 			);
 		});
 
 		this.args.input = '';
+	}
+
+	checkEventSender(sender)
+	{
+		const [username,host] = sender.slice(1).split(':');
+
+		if(!this.users.has(sender))
+		{
+			const user = {
+				id: sender
+				, lastSeen: 0
+				, username
+				, host
+			};
+
+			this.users.set(sender, user);
+
+			this.args.users.add(user);
+		}
+
+		const user = this.users.get(sender);
+
+		user.lastSeen = Date.now();
 	}
 
 	sendMessage(event)
@@ -344,22 +344,14 @@ export class Lobby extends View
 		});
 	}
 
-	handleCryptoGameCandidateSyn()
-	{
-
-	}
-
-	handleCryptoGameCandidateAck()
-	{
-
-	}
-
 	handleLobbyMessage({detail:message})
 	{
 		if(message.room_id !== this.args.roomId)
 		{
 			return;
 		}
+
+		this.checkEventSender(message.sender);
 
 		const user = this.users.get(message.sender);
 
@@ -370,6 +362,7 @@ export class Lobby extends View
 
 		this.onNextFrame(() => {
 			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+			this.sortUsers();
 		});
 	}
 
@@ -434,5 +427,45 @@ export class Lobby extends View
 
 		this.parent.args.networked = false;
 		this.parent.args.chatBox = null;
+	}
+
+	sortByName = (a,b) => a.username.localeCompare(b.username);
+	sortByTime = (a,b) => b.lastSeen - a.lastSeen;
+
+	sorting = false;
+
+	sortUsers(type = null)
+	{
+		switch(type)
+		{
+			case 'abc':
+				this.userSorter = this.sortByName;
+				break;
+			case 'time':
+				this.userSorter = this.sortByTime;
+				break;
+		}
+
+		if(this.sorting)
+		{
+			return;
+		}
+
+		this.sorting = true;
+
+		this.onTimeout(100, () => {
+			const userList = this.args.users.items();
+
+			userList.sort(this.userSorter || this.sortByName);
+
+			this.args.userList = userList;
+
+			this.sorting = false;
+		});
+	}
+
+	closeMotd(event)
+	{
+		this.args.motdClosed = 'closed';
 	}
 }
