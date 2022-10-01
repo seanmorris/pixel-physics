@@ -65,6 +65,11 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		}));
 	}
 
+	addIceCandidate(candidate)
+	{
+		this.peerClient.addIceCandidate(candidate);
+	}
+
 	offer()
 	{
 		this.peerClient.createOffer().then(offer => {
