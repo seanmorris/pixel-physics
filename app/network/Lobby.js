@@ -91,7 +91,7 @@ export class Lobby extends View
 						return;
 					}
 
-					if(message.origin_server_ts < 1664646570000)
+					if(message.origin_server_ts < 1664651274000)
 					{
 						return;
 					}
@@ -121,6 +121,8 @@ export class Lobby extends View
 	onAttached()
 	{
 		Bgm.fadeOut(250);
+
+		this.onTimeout(250, () => Bgm.stop());
 	}
 
 	checkEventSender(sender)
