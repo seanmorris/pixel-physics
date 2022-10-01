@@ -5,6 +5,9 @@ import { LobbyMessage } from './LobbyMessage';
 import { LobbyStatus } from './LobbyStatus';
 import { CryptoMessageService } from './CryptoMessageService';
 
+import { Bgm } from '../audio/Bgm';
+import { Sfx } from '../audio/Sfx';
+
 export class Lobby extends View
 {
 	template       = require('./lobby.html');
@@ -83,12 +86,12 @@ export class Lobby extends View
 
 					const user = this.users.get(message.sender);
 
-					// if(!message.type.match(/^sonic-3000/))
-					// {
-					// 	console.log(message.type);
-					// }
+					if(message.type !== 'sonic-3000.lobby.message')
+					{
+						return;
+					}
 
-					if(message.type !== 'sonic-3000.lobby.message' || message.origin_server_ts < 1664646573000)
+					if(message.origin_server_ts < 1664646570000)
 					{
 						return;
 					}
@@ -97,6 +100,8 @@ export class Lobby extends View
 						message: message.content.body
 						, user
 					}));
+
+					Sfx.play('ALT_BEEP');
 
 					this.onNextFrame(() => {
 						this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
@@ -111,6 +116,11 @@ export class Lobby extends View
 		});
 
 		this.args.input = '';
+	}
+
+	onAttached()
+	{
+		Bgm.fadeOut(250);
 	}
 
 	checkEventSender(sender)
@@ -145,7 +155,10 @@ export class Lobby extends View
 		)
 		.then(response => this.args.input = '')
 		.catch(error => console.error(error))
-		.finally(() => this.tags.input.focus());
+		.finally(() => {
+			this.tags.input.focus()
+			Sfx.play('SWITCH_HIT');
+		});
 	}
 
 	logOut(event)
@@ -177,6 +190,11 @@ export class Lobby extends View
 			this.args.messages.push(new LobbyStatus({
 				message: `You invited ${to} to play!`
 			}));
+
+			this.onNextFrame(() => {
+				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+				this.sortUsers();
+			});
 		})
 		.catch(error => console.error(error))
 		.finally(() => this.tags.input.focus());
@@ -198,13 +216,20 @@ export class Lobby extends View
 
 		if(floodControl.invite && Date.now() - floodControl.invite < 15000)
 		{
-			this.rejectCryptoGameInvite(event, event.detail, 'flood_control');
+			this.rejectCryptoGameInvite(event, event.detail, 'flood_control', true);
 			return;
 		}
+
+		Sfx.play('KNOCK_PLATFORM');
 
 		this.args.messages.push(new LobbyStatus({
 			message: `${event.detail.sender} invited you to play!`
 		}));
+
+		this.onNextFrame(() => {
+			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+			this.sortUsers();
+		});
 
 		this.args.invites.add(event.detail);
 
@@ -220,6 +245,11 @@ export class Lobby extends View
 
 		this.args.messages.push(new LobbyStatus({message: `You accepted the invite from ${invite.sender}!`}))
 
+		this.onNextFrame(() => {
+			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+			this.sortUsers();
+		});
+
 		this.isClient = true;
 
 		const getIceCandidates = this.client.getIceCandidates();
@@ -234,24 +264,37 @@ export class Lobby extends View
 
 		this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
 		this.args.showInvites = 'hiding-invites';
+		Sfx.play('EMERALD_COLLECTED');
 	}
 
-	rejectCryptoGameInvite(event, invite, reason = '')
+	rejectCryptoGameInvite(event, invite, reason = '', silent = false)
 	{
 		this.args.invites.delete(invite);
 
 		const replyToUuid = invite.content.uuid;
 		const replyToUser = invite.sender;
 
-		this.args.messages.push(new LobbyStatus({message: `You rejected the invite from ${invite.sender}.`}))
+		if(!silent)
+		{
+			this.args.messages.push(new LobbyStatus({message: `You rejected the invite from ${invite.sender}.`}))
+			this.onNextFrame(() => {
+				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+				this.sortUsers();
+			});
+		}
 
 		this.messageService.accept(invite).then(cryptoMessage => {
 			cryptoMessage.createReply(reason)
 			.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-reject', reply));
 		});
 
-		this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
-		this.args.showInvites = 'hiding-invites';
+		if(!silent)
+		{
+			this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
+			this.args.showInvites = 'hiding-invites';
+
+			Sfx.play('OBJECT_DESTROYED');
+		}
 	}
 
 	handleCryptoGameOffer(event)
@@ -268,6 +311,10 @@ export class Lobby extends View
 		this.messageService.accept(message).then(cryptoMessage => {
 
 			this.args.messages.push(new LobbyStatus({message: `Initializing RTC handshake...`}))
+			this.onNextFrame(() => {
+				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+				this.sortUsers();
+			});
 
 			let {content: offerString} = cryptoMessage;
 
@@ -294,6 +341,10 @@ export class Lobby extends View
 			})
 
 			this.args.messages.push(new LobbyStatus({message: `${message.sender} accepted your invite!`}));
+			this.onNextFrame(() => {
+				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+				this.sortUsers();
+			});
 		});
 	}
 
@@ -341,6 +392,12 @@ export class Lobby extends View
 			}
 
 			this.args.messages.push(new LobbyStatus({message}));
+
+			this.onNextFrame(() => {
+				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+				this.sortUsers();
+			});
+
 		});
 	}
 
@@ -364,6 +421,11 @@ export class Lobby extends View
 			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
 			this.sortUsers();
 		});
+
+		if(message.sender !== this.args.username)
+		{
+			Sfx.play('ALT_BEEP');
+		}
 	}
 
 	refreshRtc()
