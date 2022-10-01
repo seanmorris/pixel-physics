@@ -95,7 +95,7 @@ export class TitleScreenCard extends Card
 			return;
 		}
 
-		const startButton = controller.axes[7] ? 7 : 9;
+		const startButton = 9;
 
 
 		if(controller.buttons[startButton] && controller.buttons[startButton].time === 1)

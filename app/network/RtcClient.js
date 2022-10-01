@@ -55,13 +55,13 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		const candidates = new Set;
 
 		return new Promise(accept => this.peerClient.addEventListener('icecandidate', event => {
+			candidates.add(event.candidate);
+
 			if(!event.candidate)
 			{
 				accept([...candidates]);
 				return;
 			}
-
-			candidates.add(event.candidate);
 		}));
 	}
 
