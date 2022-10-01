@@ -52,26 +52,7 @@ export class CryptoMessageService
 			['encrypt', 'decrypt']
 		);
 
-		const exportPublicKey = generateKeyPair.then(keyPair => window.crypto.subtle.exportKey('spki', keyPair.publicKey));
-
 		generateKeyPair.then(keyPair => this.requests.set(uuid, {keyPair}));
-
-		const getSymmetricKey = window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-		const exportSymmetricKey = getSymmetricKey.then(symmetricKey => window.crypto.subtle.exportKey('raw', symmetricKey));
-
-		const iv = window.crypto.getRandomValues(new Uint8Array(12));
-
-		const encryptSymmetricKey = Promise.all([importForeignKey, exportSymmetricKey])
-		.then(([foreignKey, rawSymmetricKey]) => {
-
-			const fullKey = new Uint8Array([...iv, ...new Uint8Array(rawSymmetricKey)]);
-
-			return window.crypto.subtle.encrypt(
-				{ name: 'RSA-OAEP' }
-				, foreignKey
-				, fullKey
-			);
-		});
 
 		let decryptContent = Promise.resolve();
 
@@ -125,12 +106,10 @@ export class CryptoMessageService
 			});
 		}
 
-		return Promise.all([getSymmetricKey, encryptSymmetricKey, exportPublicKey, decryptContent])
-		.then(([symmetricKey, encryptedSymmetricKey, publicKey, content]) => new CryptoMessage({
+		return Promise.all([generateKeyPair, importForeignKey, decryptContent])
+		.then(([{publicKey}, foreignKey, content]) => new CryptoMessage({
 				uuid
-				, encryptedSymmetricKey
-				, symmetricKey
-				, iv
+				, foreignKey
 				, publicKey
 				, content
 				, sender
