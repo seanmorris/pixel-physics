@@ -170,8 +170,18 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 			const drop = () => {
 
-				if(!this.viewport || !this.hooked)
+				if(!this.viewport)
 				{
+					return;
+				}
+
+				if(!this.hooked)
+				{
+					this.args.x = this.def.get('x');
+					this.args.y = this.def.get('y');
+
+					this.viewport.setColCell(this);
+
 					return;
 				}
 

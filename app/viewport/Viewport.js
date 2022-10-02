@@ -182,9 +182,11 @@ export class Viewport extends View
 			, username: 'player'
 			, graphicsLevel: 'High'
 			, matrixUrl: 'https://matrix.org/_matrix'
+			, iceServer1: 'stun:stun1.l.google.com:19302'
+			, iceServer2: 'stun:stun2.l.google.com:19302'
 		});
 
-		// this.vizi = true;
+		this.defaults = Object.assign({}, this.settings);
 
 		this.args.shakeX = 0;
 		this.args.shakeY = 0;
@@ -4174,8 +4176,8 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				{urls: 'stun:stun1.l.google.com:19302'},
-				{urls: 'stun:stun2.l.google.com:19302'},
+				{urls: this.settings.iceServer1},
+				{urls: this.settings.iceServer2},
 			]
 		};
 
@@ -4231,8 +4233,8 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				{urls: 'stun:stun1.l.google.com:19302'},
-				{urls: 'stun:stun2.l.google.com:19302'},
+				{urls: this.settings.iceServer1},
+				{urls: this.settings.iceServer2},
 			]
 		};
 

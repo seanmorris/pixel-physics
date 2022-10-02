@@ -50,7 +50,7 @@
 	--break-speed: 0.5s;
 	--x-speed:  0.75s;
 	--y-speed: 1.0s;
-	--spread: 450%;
+	--spread: 250%;
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken {

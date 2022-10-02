@@ -19,6 +19,11 @@ export class Series extends View
 
 	play()
 	{
+		if(!this.cards.length)
+		{
+			return;
+		}
+
 		const card  = this.cards.shift();
 		const early = new Promise(accept => card.onRemove(accept));
 		const play  = card.play();

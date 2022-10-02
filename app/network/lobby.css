@@ -89,6 +89,7 @@
 	width: 1rem;
 	height: 1rem;
 	border: none;
+	background-color: transparent;
 }
 
 .lobby .users .sort-buttons button.sort-time {
@@ -161,7 +162,7 @@
 
 .lobby .users,
 .lobby {
-	font-family: monospace;
+	font-family: 'anonymous pro', monospace;
 	font-size: 0.6rem;
 }
 

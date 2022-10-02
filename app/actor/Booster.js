@@ -86,6 +86,19 @@ export class Booster extends PointActor
 			this.viewport.setColCell(this);
 
 			console.log(this.args.x, this.args.y);
+
+			const exploded = new CustomEvent('exploded', {detail: {actor:this}});
+
+			this.dispatchEvent(exploded);
 		});
 	}
+
+	sleep()
+	{
+		if(this.args.launched)
+		{
+			this.explode();
+		}
+	}
+
 }
