@@ -75,39 +75,23 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 	answer(offer)
 	{
-		return new Promise(accept => {
-			this.peerServer.setRemoteDescription(offer);
+		return this.peerServer.setRemoteDescription(offer)
+		.then(() => this.peerServer.createAnswer())
+		.then(answer => this.peerServer.setLocalDescription(answer))
+		.then(() => this.peerServer.localDescription);
+	}
 
-			this.peerServer.createAnswer(
-				answer => this.peerServer.setLocalDescription(answer)
-				, error => console.error(error)
-			);
-
-			const candidates = new Set;
-
-			let timeout = null;
-
-			this.peerServer.addEventListener('icecandidate', event => {
-
-				// if(!event.candidate)
-				// {
-				// 	return;
-				// }
-				// else
-				// {
-				// 	candidates.add(event.candidate);
-				// }
-
-				if(timeout)
-				{
-					clearTimeout(timeout);
-				}
-
-				timeout = setTimeout(
-					() => accept(this.peerServer.localDescription)
-					, this.candidateTimeout
-				);
-			});
+	fullAnswer({offer, candidates})
+	{
+		return this.answer(offer).then(answer => {
+			return Promise.all(candidates.map(c => this.addIceCandidate(c)))
+			.then(() => {
+				return this.getIceCandidates().then(candidates => {
+					return {answer, candidates};
+				})
+			})
 		});
+
+
 	}
 }

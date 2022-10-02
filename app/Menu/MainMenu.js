@@ -371,7 +371,7 @@ export class MainMenu extends Menu
 									this.args.joinGame   = true;
 									this.args.copy       = 'copy';
 
-									this.client.offer().then(token => {
+									this.client.fullOffer().then(token => {
 										const tokenString    = JSON.stringify(token);
 										const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
 										this.args.joinOutput = encodedToken;
@@ -457,20 +457,19 @@ export class MainMenu extends Menu
 
 	disconnect()
 	{
-		this.clear();
+		this.server.close();
+		this.client.close();
 
-		if(this.args.hostGame)
-		{
-			this.server.close();
-		}
-		else if(this.args.joinGame)
-		{
-			this.client.close();
-		}
+		this.parent.quit(2);
+
+		this.parent.args.networked = false;
+		this.parent.args.chatBox = null;
 
 		this.args.connected = false;
 		this.args.hostGame  = false;
 		this.args.joinGame  = false;
+
+		this.clear();
 
 		this.refreshConnection();
 	}
@@ -515,7 +514,7 @@ export class MainMenu extends Menu
 
 		const offer = JSON.parse(offerString);
 
-		const answer = this.server.answer(offer);
+		const answer = this.server.fullAnswer(offer);
 
 		answer.then(token => {
 			const tokenString    = JSON.stringify(token);
@@ -540,7 +539,7 @@ export class MainMenu extends Menu
 
 		const answer = JSON.parse(answerString);
 
-		this.client.accept(answer);
+		this.client.fullAccept(answer);
 	}
 
 	select()
@@ -611,10 +610,10 @@ export class MainMenu extends Menu
 
 		const onOpen  = event => {
 			this.parent
-			.loadMap({mapUrl: '/map/empty-zone-2.json', networked: true})
+			.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true})
 			.then(() => console.log('Peer connection opened!'));
 		};
-		const onClose = event => this.disconnect();
+		const onClose = event => this.disconnect(event);
 
 		this.listen(server, 'open', onOpen);
 		this.listen(server, 'close', onClose);

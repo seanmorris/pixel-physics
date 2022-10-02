@@ -109,9 +109,6 @@ export class Lobby extends View
 					});
 				}
 				, Date.now() - (7 * 24 * 60 * 60 * 1000)
-				// , Math.max(1664596800000, Date.now() - (7 * 24 * 60 * 60 * 1000))
-				// , Date.now() - (60 * 1000)
-				// , 1664646573000
 			);
 		});
 
@@ -364,11 +361,8 @@ export class Lobby extends View
 		this.messageService.accept(message)
 		.then(cryptoMessage => {
 			const {token, candidates} = JSON.parse(cryptoMessage.content);
-			this.client.accept(token).then(() => {
-				candidates.map(c => {
-					this.client.addIceCandidate(c)
-				});
-			});
+			this.client.accept(token)
+			.then(() => candidates.map(c => this.client.addIceCandidate(c)));
 		});
 
 		// this.args.messages.push(new LobbyStatus({message: `Completing RTC handshake...`}));
