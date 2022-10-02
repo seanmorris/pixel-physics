@@ -12,7 +12,7 @@
 
 			<ul cv-ref = "bound" cv-each = "items:item:title">
 
-				<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(event, item):c; keyup(event, item):c;" tabindex="0">
+				<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(event, item):c; auxclick:altRun(item, event); keyup(event, item):c;" tabindex="0">
 					[[item.prefix]]
 					<span class = "title">[[item._title]]</span>
 					<span class = "subtext">[[item.subtext]]</span>

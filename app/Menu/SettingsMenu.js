@@ -91,6 +91,7 @@ export const SettingsMenu = (parent) => { return {
 				'Mute': {
 					input: 'boolean'
 					, subtext: 'Mute all audio'
+					, revert: () => parent.settings.audio = parent.defaults.audio
 					, set: value => parent.args.audio = !value
 					, get: () => !parent.args.audio
 				}
@@ -98,6 +99,7 @@ export const SettingsMenu = (parent) => { return {
 					input: 'number'
 					, subtext: 'Background music volume - 0% - 100%'
 					// , available: 'unavailable'
+					, revert: () => parent.settings.musicVol = parent.defaults.musicVol
 					, set: value => parent.settings.musicVol = value
 					, get: () => parent.settings.musicVol
 					, max: 100
@@ -107,6 +109,7 @@ export const SettingsMenu = (parent) => { return {
 					input: 'number'
 					, subtext: 'Sound effect music volume - 0% - 100%'
 					// , available: 'unavailable'
+					, revert: () => parent.settings.sfxVol = parent.defaults.sfxVol
 					, set: value => parent.settings.sfxVol = value
 					, get: () => parent.settings.sfxVol
 					, max: 100
@@ -191,6 +194,7 @@ export const SettingsMenu = (parent) => { return {
 				'Username': {
 					input: 'string'
 					, subtext: 'Name to display in online games'
+					, revert: () => parent.settings.username = parent.defaults.username
 					, set: value => parent.settings.username = value
 					, get: () => parent.settings.username
 					, max: 15
@@ -200,6 +204,7 @@ export const SettingsMenu = (parent) => { return {
 				, 'Matrix URL': {
 					input: 'string'
 					, subtext: 'Matrix Server URL for lobby.'
+					, revert: () => parent.settings.matrixUrl = parent.defaults.matrixUrl
 					, set: value => parent.settings.matrixUrl = value
 					, get: () => parent.settings.matrixUrl
 					// , max: 15
@@ -213,22 +218,16 @@ export const SettingsMenu = (parent) => { return {
 						'ICE Server #1': {
 							input: 'string'
 							, subtext: 'ICE candidate server.'
-							, available: 'unavailable'
+							, revert: () => parent.settings.iceServer1 = parent.defaults.iceServer1
+							, set: value => parent.settings.iceServer1 = value
+							, get: () => parent.settings.iceServer1
 						}
 						, 'ICE Server #2': {
 							input: 'string'
 							, subtext: 'ICE candidate server.'
-							, available: 'unavailable'
-						}
-						, 'ICE Server #3': {
-							input: 'string'
-							, subtext: 'ICE candidate server.'
-							, available: 'unavailable'
-						}
-						, 'ICE Server #4': {
-							input: 'string'
-							, subtext: 'ICE candidate server.'
-							, available: 'unavailable'
+							, revert: () => parent.settings.iceServer2 = parent.defaults.iceServer2
+							, set: value => parent.settings.iceServer2 = value
+							, get: () => parent.settings.iceServer2
 						}
 					}
 				}

@@ -71,37 +71,50 @@ export class Lobby extends View
 					return;
 				}
 
-				this.checkEventSender(event.detail.sender);
+				this.checkEventSender(event.detail);
+
+				this.sortUsers();
 			});
 
-			matrix.syncRoomHistory(
+			const r = matrix.syncRoomHistory(
 				this.args.roomId
 				, message => {
+					if(this.removed)
+					{
+						return false;
+					}
+
 					if(!message.sender)
 					{
 						return;
 					}
-
-					this.checkEventSender(message.sender);
-
-					const user = this.users.get(message.sender);
 
 					if(message.type !== 'sonic-3000.lobby.message')
 					{
 						return;
 					}
 
+					this.checkEventSender(message);
+
 					if(message.origin_server_ts < 1664651274000)
 					{
 						return;
 					}
 
+					if(!message.content.body)
+					{
+						return;
+					}
+
+					const user = this.users.get(message.sender);
+
 					this.args.messages.unshift(new LobbyMessage({
 						message: message.content.body
+						, time: String(new Date(message.origin_server_ts))
 						, user
 					}));
 
-					Sfx.play('ALT_BEEP');
+					Sfx.play('READY_TONE');
 
 					this.onNextFrame(() => {
 						this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
@@ -122,8 +135,9 @@ export class Lobby extends View
 		this.onTimeout(250, () => Bgm.stop());
 	}
 
-	checkEventSender(sender)
+	checkEventSender(message)
 	{
+		const sender = message.sender;
 		const [username,host] = sender.slice(1).split(':');
 
 		if(!this.users.has(sender))
@@ -138,15 +152,27 @@ export class Lobby extends View
 			this.users.set(sender, user);
 
 			this.args.users.add(user);
+
+			Sfx.play('SS_BWIP_HIGH');
 		}
 
 		const user = this.users.get(sender);
 
-		user.lastSeen = Date.now();
+		user.lastSeen = Math.max(user.lastSeen, message.origin_server_ts);
 	}
 
 	sendMessage(event)
 	{
+		if(!this.args.input)
+		{
+			return;
+		}
+
+		if(!this.args.input.trim())
+		{
+			return;
+		}
+
 		this.matrix.putEvent(
 			this.args.roomId
 			, 'sonic-3000.lobby.message'
@@ -156,7 +182,7 @@ export class Lobby extends View
 		.catch(error => console.error(error))
 		.finally(() => {
 			this.tags.input.focus()
-			Sfx.play('SWITCH_HIT');
+			Sfx.play('WAIT_TONE');
 		});
 	}
 
@@ -263,7 +289,7 @@ export class Lobby extends View
 
 		this.onTimeout(200, ()=> this.args.showInvites = 'hide-invites');
 		this.args.showInvites = 'hiding-invites';
-		Sfx.play('EMERALD_COLLECTED');
+		Sfx.play('STAR_TWINKLE');
 	}
 
 	rejectCryptoGameInvite(event, invite, reason = '', silent = false)
@@ -340,6 +366,9 @@ export class Lobby extends View
 			})
 
 			this.args.messages.push(new LobbyStatus({message: `${message.sender} accepted your invite!`}));
+
+			Sfx.play('STAR_TWINKLE');
+
 			this.onNextFrame(() => {
 				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
 				this.sortUsers();
@@ -399,17 +428,18 @@ export class Lobby extends View
 
 	handleLobbyMessage({detail:message})
 	{
-		if(message.room_id !== this.args.roomId)
+		if(message.room_id !== this.args.roomId || !message.content.body)
 		{
 			return;
 		}
 
-		this.checkEventSender(message.sender);
+		this.checkEventSender(message);
 
 		const user = this.users.get(message.sender);
 
 		this.args.messages.push(new LobbyMessage({
 			message: message.content.body
+			, time: String(new Date(message.origin_server_ts))
 			, user
 		}));
 
@@ -420,7 +450,7 @@ export class Lobby extends View
 
 		if(message.sender !== this.args.username)
 		{
-			Sfx.play('ALT_BEEP');
+			Sfx.play('READY_TONE');
 		}
 	}
 
@@ -514,7 +544,7 @@ export class Lobby extends View
 		this.onTimeout(100, () => {
 			const userList = this.args.users.items();
 
-			userList.sort(this.userSorter || this.sortByName);
+			userList.sort(this.userSorter || this.sortByTime);
 
 			this.args.userList = userList;
 

@@ -20,6 +20,8 @@ const keys = {
 	, 'Digit1': 6
 	, 'Digit3': 7
 
+	, 'KeyBackspace': 8
+
 	, 'KeyW': 12
 	, 'KeyA': 14
 	, 'KeyS': 13
@@ -39,6 +41,8 @@ const keys = {
 	, 'ArrowDown':  13
 	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
+
+	, 'KeyMeta': 16
 
 	, 'Numpad4': 112
 	, 'Numpad2': 113

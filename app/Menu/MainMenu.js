@@ -60,6 +60,11 @@ export class MainMenu extends Menu
 			, font: this.font
 		});
 
+		this.args.back = new CharacterString({
+			value:  '❸ default (hold)'
+			, font: this.font
+		});
+
 		this.args.select = new CharacterString({
 			value:  '✚ select'
 			, font: this.font
@@ -350,6 +355,10 @@ export class MainMenu extends Menu
 						callback: () => {
 							this.parent.matrixConnect().then(matrix => {
 								this.args.override = new Lobby({},this.parent);
+								this.args.override.onRemove(() => {
+									this.args.override = null;
+									this.onNextFrame(()=>this.focusFirst());
+								});
 							});
 						}
 					}
@@ -459,8 +468,6 @@ export class MainMenu extends Menu
 	{
 		this.server.close();
 		this.client.close();
-
-		this.parent.quit(2);
 
 		this.parent.args.networked = false;
 		this.parent.args.chatBox = null;
@@ -613,7 +620,10 @@ export class MainMenu extends Menu
 			.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true})
 			.then(() => console.log('Peer connection opened!'));
 		};
-		const onClose = event => this.disconnect(event);
+		const onClose = event => {
+			this.disconnect(event);
+			this.parent.quit(2);
+		};
 
 		this.listen(server, 'open', onOpen);
 		this.listen(server, 'close', onClose);

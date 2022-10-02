@@ -265,6 +265,14 @@ export class Menu extends Card
 
 			this.beep();
 		}
+		else if(controller.buttons[3] && controller.buttons[3].time === 30)
+		{
+			this.currentItem && this.currentItem.dispatchEvent(new MouseEvent('auxclick', {button:1}));
+
+			this.args.last = 'Y';
+
+			this.beep();
+		}
 
 		let next;
 
@@ -320,6 +328,21 @@ export class Menu extends Card
 
 	run(item, event)
 	{
+		if(event && event.target)
+		{
+			let element = event.target;
+
+			while(element && element.matches)
+			{
+				if(element.matches('[data-click-barrier]'))
+				{
+					return;
+				}
+
+				element = element.parentNode;
+			}
+		}
+
 		if(this.zeroMe)
 		{
 			this.zeroMe.zero();
@@ -361,6 +384,24 @@ export class Menu extends Card
 		if(item.callback)
 		{
 			item.callback(item, this);
+		}
+	}
+
+	altRun(item, event)
+	{
+		if(!event || event.button !== 1)
+		{
+			return;
+		}
+
+		if(item.revert)
+		{
+			item.revert(item, this);
+
+			if(item.get)
+			{
+				item.setting = item.get();
+			}
 		}
 	}
 
