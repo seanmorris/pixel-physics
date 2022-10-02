@@ -72,38 +72,14 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 
 	offer()
 	{
-		this.peerClient.createOffer().then(offer => {
-			this.peerClient.setLocalDescription(offer);
-		});
+		return this.peerClient.createOffer()
+		.then(offer => this.peerClient.setLocalDescription(offer))
+		.then(() => this.peerClient.localDescription);
+	}
 
-		const candidates = new Set;
-
-		return new Promise(accept => {
-
-			let timeout = null;
-
-			this.peerClient.addEventListener('icecandidate', event => {
-
-				// if(!event.candidate)
-				// {
-				// 	return;
-				// }
-				// else
-				// {
-				// 	candidates.add(event.candidate);
-				// }
-
-				if(timeout)
-				{
-					clearTimeout(timeout);
-				}
-
-				timeout = setTimeout(
-					() => accept(this.peerClient.localDescription)
-					, this.candidateTimeout
-				);
-			});
-		});
+	fullOffer()
+	{
+		return this.offer().then(offer => this.getIceCandidates().then(candidates => ({offer, candidates})));
 	}
 
 	accept(answer)
@@ -111,5 +87,10 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 		const session = new RTCSessionDescription(answer);
 
 		return this.peerClient.setRemoteDescription(session);
+	}
+
+	fullAccept({answer, candidates})
+	{
+		return this.accept(answer).then(() => candidates.map(c => this.addIceCandidate(c)));
 	}
 }
