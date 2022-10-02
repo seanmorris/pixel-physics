@@ -42,6 +42,12 @@ export class Lobby extends View
 		parent.matrixConnect().then(matrix => {
 			this.matrix = matrix;
 
+			this.matrix.putEvent(
+				this.args.roomId
+				, 'sonic-3000.lobby.step-in'
+				, {}
+			);
+
 			matrix.whoAmI().then(userId => {
 				this.user = userId
 				this.args.username = userId.user_id;
@@ -54,7 +60,9 @@ export class Lobby extends View
 			matrix.joinRoom(this.args.roomId);
 
 			this.listen(matrix, 'matrix-event', event => console.log(event.detail.type, event));
-			this.listen(matrix, 'sonic-3000.lobby.message', event => this.handleLobbyMessage(event));
+			this.listen(matrix, 'sonic-3000.lobby.message',  event => this.handleLobbyMessage(event));
+			this.listen(matrix, 'sonic-3000.lobby.step-out', event => this.handleLobbyStepOut(event));
+			this.listen(matrix, 'sonic-3000.lobby.step-in',  event => this.handleLobbyStepIn(event));
 
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-invite', event => this.handleCryptoGameInvite(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-offer',  event => this.handleCryptoGameOffer(event));
@@ -64,6 +72,14 @@ export class Lobby extends View
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-invite',  event => this.handleCryptoCandidateInvite(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-present', event => this.handleCryptoCandidatePresent(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-ack',     event => this.handleCryptoCandidateAck(event));
+
+			this.listen(window, 'unload', event => {
+				this.matrix.putEvent(
+					this.args.roomId
+					, 'sonic-3000.lobby.step-out'
+					, {}
+				);
+			});
 
 			this.listen(matrix, 'matrix-event', event => {
 				if(!event.detail.sender)
@@ -108,13 +124,16 @@ export class Lobby extends View
 
 					const user = this.users.get(message.sender);
 
+					if(this.args.messages.length <= 3)
+					{
+						Sfx.play('READY_TONE');
+					}
+
 					this.args.messages.unshift(new LobbyMessage({
 						message: message.content.body
 						, time: String(new Date(message.origin_server_ts))
 						, user
 					}));
-
-					Sfx.play('READY_TONE');
 
 					this.onNextFrame(() => {
 						this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
@@ -152,8 +171,6 @@ export class Lobby extends View
 			this.users.set(sender, user);
 
 			this.args.users.add(user);
-
-			Sfx.play('SS_BWIP_HIGH');
 		}
 
 		const user = this.users.get(sender);
@@ -188,6 +205,12 @@ export class Lobby extends View
 
 	logOut(event)
 	{
+		this.matrix.putEvent(
+			this.args.roomId
+			, 'sonic-3000.lobby.step-out'
+			, {}
+		);
+
 		this.matrix.logOut();
 		this.remove();
 	}
@@ -214,6 +237,7 @@ export class Lobby extends View
 		.then(response => {
 			this.args.messages.push(new LobbyStatus({
 				message: `You invited ${to} to play!`
+				, time: String(new Date(message.origin_server_ts))
 			}));
 
 			this.onNextFrame(() => {
@@ -249,6 +273,7 @@ export class Lobby extends View
 
 		this.args.messages.push(new LobbyStatus({
 			message: `${event.detail.sender} invited you to play!`
+			, time: String(new Date(event.detail.origin_server_ts))
 		}));
 
 		this.onNextFrame(() => {
@@ -301,7 +326,10 @@ export class Lobby extends View
 
 		if(!silent)
 		{
-			this.args.messages.push(new LobbyStatus({message: `You rejected the invite from ${invite.sender}.`}))
+			this.args.messages.push(new LobbyStatus({
+				message: `You rejected the invite from ${invite.sender}.`
+				, time: String(new Date(event.detail.origin_server_ts))
+			}))
 			this.onNextFrame(() => {
 				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
 				this.sortUsers();
@@ -335,7 +363,10 @@ export class Lobby extends View
 
 		this.messageService.accept(message).then(cryptoMessage => {
 
-			this.args.messages.push(new LobbyStatus({message: `Initializing RTC handshake...`}))
+			this.args.messages.push(new LobbyStatus({
+				message: `Initializing RTC handshake...`
+				, time: String(new Date(event.detail.origin_server_ts))
+			}))
 			this.onNextFrame(() => {
 				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
 				this.sortUsers();
@@ -365,7 +396,10 @@ export class Lobby extends View
 				.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-accept', reply));
 			})
 
-			this.args.messages.push(new LobbyStatus({message: `${message.sender} accepted your invite!`}));
+			this.args.messages.push(new LobbyStatus({
+				message: `${message.sender} accepted your invite!`
+				, time: String(new Date(message.origin_server_ts))
+			}));
 
 			Sfx.play('STAR_TWINKLE');
 
@@ -555,5 +589,31 @@ export class Lobby extends View
 	closeMotd(event)
 	{
 		this.args.motdClosed = 'closed';
+	}
+
+	handleLobbyStepOut(event)
+	{
+		this.args.messages.push(new LobbyStatus({
+			message: `${event.detail.sender} stepped out.`
+			, time: String(new Date(event.detail.origin_server_ts))
+		}));
+		this.onNextFrame(() => {
+			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+			this.sortUsers();
+		});
+		Sfx.play('MECHASONIC_SLAP');
+	}
+
+	handleLobbyStepIn(event)
+	{
+		this.args.messages.push(new LobbyStatus({
+			message: `${event.detail.sender} stepped in.`
+			, time: String(new Date(event.detail.origin_server_ts))
+		}));
+		this.onNextFrame(() => {
+			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
+			this.sortUsers();
+		});
+		Sfx.play('SS_BWIP_HIGH');
 	}
 }
