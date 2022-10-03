@@ -181,7 +181,8 @@ export class Viewport extends View
 			, sfxVol: 75
 			, username: 'player'
 			, graphicsLevel: 'High'
-			, matrixUrl: 'https://matrix.org/_matrix'
+			, matrixUrl:  'https://matrix.org/_matrix'
+			, matrixRoom: '!hJzXrccruagKGXTFUQ:matrix.org'
 			, iceServer1: 'stun:stun1.l.google.com:19302'
 			, iceServer2: 'stun:stun2.l.google.com:19302'
 		});

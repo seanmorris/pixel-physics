@@ -29,7 +29,7 @@ export class Lobby extends View
 
 		this.refreshRtc();
 
-		this.args.roomId   = '!hJzXrccruagKGXTFUQ:matrix.org';
+		this.args.roomId   = this.args.roomId || '!hJzXrccruagKGXTFUQ:matrix.org';
 		this.args.invites  = new Bag;
 		this.args.loading  = true;
 		this.args.userList = [];;
@@ -64,12 +64,10 @@ export class Lobby extends View
 			this.listen(matrix, 'sonic-3000.lobby.message',  event => this.handleLobbyMessage(event));
 			this.listen(matrix, 'sonic-3000.lobby.step-out', event => this.handleLobbyStepOut(event));
 			this.listen(matrix, 'sonic-3000.lobby.step-in',  event => this.handleLobbyStepIn(event));
-
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-invite', event => this.handleCryptoGameInvite(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-offer',  event => this.handleCryptoGameOffer(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-accept', event => this.handleCryptoGameAccept(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-game-reject', event => this.handleCryptoGameReject(event));
-
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-invite',  event => this.handleCryptoCandidateInvite(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-present', event => this.handleCryptoCandidatePresent(event));
 			this.listen(matrix, 'sonic-3000.lobby.crypto-candidate-ack',     event => this.handleCryptoCandidateAck(event));
@@ -93,7 +91,7 @@ export class Lobby extends View
 				this.sortUsers();
 			});
 
-			const r = matrix.syncRoomHistory(
+			const sync = matrix.syncRoomHistory(
 				this.args.roomId
 				, message => {
 					if(this.removed)
@@ -111,8 +109,6 @@ export class Lobby extends View
 						return;
 					}
 
-					this.checkEventSender(message);
-
 					if(message.origin_server_ts < 1664651274000)
 					{
 						this.args.loading = false;
@@ -124,26 +120,35 @@ export class Lobby extends View
 						return;
 					}
 
-					const user = this.users.get(message.sender);
-
 					if(this.args.messages.length <= 3)
 					{
 						Sfx.play('READY_TONE');
 					}
 
-					this.args.messages.unshift(new LobbyMessage({
-						message: message.content.body
-						, time: String(new Date(message.origin_server_ts))
-						, user
-					}));
-
-					this.onNextFrame(() => {
-						this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-						this.sortUsers();
-					});
+					this.handleLobbyMessage({detail:message}, this);
 				}
 				, Date.now() - (7 * 24 * 60 * 60 * 1000)
+				, null
+				, {
+					types: ['sonic-3000.lobby.message']
+					// types: ['sonic-3000.lobby.*']
+					// types: ['sonic-3000.*']
+					// types: ['*']
+					// , not_types: [
+					// 	'sonic-3000.lobby.step-out'
+					// 	, 'sonic-3000.lobby.step-in'
+					// 	, 'sonic-3000.lobby.crypto-game-invite'
+					// 	, 'sonic-3000.lobby.crypto-game-offer'
+					// 	, 'sonic-3000.lobby.crypto-game-accept'
+					// 	, 'sonic-3000.lobby.crypto-game-reject'
+					// 	, 'sonic-3000.lobby.crypto-candidate-invite'
+					// 	, 'sonic-3000.lobby.crypto-candidate-present'
+					// 	, 'sonic-3000.lobby.crypto-candidate-ack'
+					// ]
+				}
 			);
+
+			sync.then(() => this.args.loading = false);
 		});
 
 		this.args.input = '';
@@ -462,7 +467,7 @@ export class Lobby extends View
 		});
 	}
 
-	handleLobbyMessage({detail:message})
+	handleLobbyMessage({detail:message}, fromSync = false)
 	{
 		if(message.room_id !== this.args.roomId || !message.content.body)
 		{
@@ -473,7 +478,7 @@ export class Lobby extends View
 
 		const user = this.users.get(message.sender);
 
-		this.args.messages.push(new LobbyMessage({
+		this.args.messages[fromSync ? 'unshift' : 'push'](new LobbyMessage({
 			message: message.content.body
 			, time: String(new Date(message.origin_server_ts))
 			, user
@@ -486,7 +491,10 @@ export class Lobby extends View
 
 		if(message.sender !== this.args.username)
 		{
-			Sfx.play('READY_TONE');
+			if(!fromSync || this.args.messages.length <= 3)
+			{
+				Sfx.play('READY_TONE');
+			}
 		}
 	}
 

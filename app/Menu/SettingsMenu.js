@@ -191,24 +191,31 @@ export const SettingsMenu = (parent) => { return {
 		, Network: {
 			subtext: 'Network settings.'
 			, children: {
-				'Username': {
-					input: 'string'
-					, subtext: 'Name to display in online games'
-					, revert: () => parent.settings.username = parent.defaults.username
-					, set: value => parent.settings.username = value
-					, get: () => parent.settings.username
-					, max: 15
-					, min: 0
-				}
+				// 'Username': {
+				// 	input: 'string'
+				// 	, subtext: 'Name to display in online games'
+				// 	, revert: () => parent.settings.username = parent.defaults.username
+				// 	, set: value => parent.settings.username = value
+				// 	, get: () => parent.settings.username
+				// }
+				'Matrix Settings': {
+					children: {
+						'Matrix URL': {
+							input: 'string'
+							, subtext: 'Matrix Server URL for lobby.'
+							, revert: () => parent.settings.matrixUrl = parent.defaults.matrixUrl
+							, set: value => parent.settings.matrixUrl = value
+							, get: () => parent.settings.matrixUrl
+						}
 
-				, 'Matrix URL': {
-					input: 'string'
-					, subtext: 'Matrix Server URL for lobby.'
-					, revert: () => parent.settings.matrixUrl = parent.defaults.matrixUrl
-					, set: value => parent.settings.matrixUrl = value
-					, get: () => parent.settings.matrixUrl
-					// , max: 15
-					, min: 0
+						, 'Lobby': {
+							input: 'string'
+							, subtext: 'Matrix Room for lobby.'
+							, revert: () => parent.settings.matrixRoom = parent.defaults.matrixRoom
+							, set: value => parent.settings.matrixRoom = value
+							, get: () => parent.settings.matrixRoom
+						}
+					}
 				}
 
 				// , 'Subspace Hub Servers': {}
