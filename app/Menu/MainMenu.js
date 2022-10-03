@@ -34,6 +34,8 @@ export class MainMenu extends Menu
 			this.args.initialPath = JSON.parse(Router.query.menuPath);
 		}
 
+		this.loggingIn = null;
+
 		this.args.cardName = 'main-menu';
 
 		this.args.haveToken = false;
@@ -355,13 +357,22 @@ export class MainMenu extends Menu
 					'Matrix Lobby': {
 						tags: 'new'
 						, callback: () => {
-							this.parent.matrixConnect().then(matrix => {
-								this.args.override = new Lobby({},this.parent);
-								this.args.override.onRemove(() => {
-									this.args.override = null;
-									this.onNextFrame(()=>this.focusFirst());
+							if(!this.loggingIn)
+							{
+								this.loggingIn = this.parent.matrixConnect();
+								this.loggingIn.finally(() => this.loggingIn = null);
+								this.loggingIn.then(matrix => {
+									this.args.override = new Lobby({roomId:this.parent.settings.matrixRoom},this.parent);
+									this.args.override.onRemove(() => {
+										this.args.override = null;
+										this.onNextFrame(()=>this.focusFirst());
+									});
 								});
-							});
+							}
+							else
+							{
+								this.parent.matrixConnect();
+							}
 						}
 					}
 
