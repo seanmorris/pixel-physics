@@ -350,9 +350,11 @@ export class MainMenu extends Menu
 			}
 
 			, 'Multiplayer': {
-				children: {
+				tags: 'new'
+				, children: {
 					'Matrix Lobby': {
-						callback: () => {
+						tags: 'new'
+						, callback: () => {
 							this.parent.matrixConnect().then(matrix => {
 								this.args.override = new Lobby({},this.parent);
 								this.args.override.onRemove(() => {

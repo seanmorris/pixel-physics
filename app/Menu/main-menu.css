@@ -424,6 +424,25 @@
 .screen-card-main-menu li {
 	scroll-snap-align: center;
 	position: relative;
+	overflow: visible;
+}
+
+.screen-card-main-menu li[data-tags="new"] .title:after {
+	content: '';
+	position: relative;
+	top: 3px;
+	margin-left: 0.25em;
+	background-image: url(/custom/new.png);
+	width: 24px;
+	height: 12px;
+	display: inline-block;
+	opacity: 1;
+	background-position-y: -12px;
+	animation: new-flicker 300ms infinite steps(2) forwards;
+}
+
+.screen-card-main-menu li[data-tags="new"]:not(.focused) .title:after {
+	/*animation: new-flicker 400ms infinite steps(2) forwards;*/
 }
 
 .screen-card-main-menu li .zone-suffix {
@@ -787,5 +806,14 @@ input::-webkit-inner-spin-button {
 	}
 	100% {
 		background-position-x: -64px;
+	}
+}
+
+@keyframes new-flicker {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: -24px;
 	}
 }

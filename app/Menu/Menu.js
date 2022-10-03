@@ -35,6 +35,8 @@ export class Menu extends Card
 		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
+
+		this.listen(window, 'focus', event => this.refocus(event));
 	}
 
 	onRendered(event)
@@ -152,6 +154,18 @@ export class Menu extends Card
 		element && this.focus(element);
 	}
 
+	refocus(event)
+	{
+		this.onNextFrame(() => {
+			if(!this.currentItem)
+			{
+				this.focusFirst();
+			}
+
+			this.focus(this.currentItem, true);
+		});
+	}
+
 	findNext(current, bounds, reverse = false)
 	{
 		const elements = bounds.querySelectorAll(this.include);
@@ -208,9 +222,9 @@ export class Menu extends Card
 		return this.findNext(undefined, bounds, reverse);
 	}
 
-	focus(element)
+	focus(element, force = false)
 	{
-		if(this.currentItem && this.currentItem !== element)
+		if(!force && this.currentItem && this.currentItem !== element)
 		{
 			this.blur(this.currentItem);
 		}

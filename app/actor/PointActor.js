@@ -246,8 +246,6 @@ export class PointActor extends View
 
 		this.args.charStrings = [];
 
-		this.args.charStrings.bindTo(v => console.log(v));
-
 		this.args.display = this.args.display || 'initial';
 
 		this.args.rings = 0;
@@ -733,6 +731,23 @@ export class PointActor extends View
 		this.args.bindTo('angle', v => this.args.angleDeg = this.rad2deg(v));
 
 		this.sprite = this.findTag('div.sprite');
+
+		this.args.charStrings.bindTo(v => {
+			if(!this.labels && this.args.charStrings.length)
+			{
+				this.labels = View.from(
+					'<div class = "labels" cv-ref = "labels" cv-each = "charStrings:charString:c">[[charString]]</div>'
+					, {charStrings: this.args.charStrings}
+				);
+				this.labels.render(this.sprite);
+			}
+			else if(this.labels && !this.args.charStrings.length)
+			{
+				this.labels.remove();
+				this.labels = null;
+			}
+		});
+
 
 		if(this.controllable)
 		{

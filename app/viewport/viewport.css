@@ -595,7 +595,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .viewport.mouse-hide .labels {
-	display: none;
+	/*display: none;*/
 }
 
 .viewport .shade {

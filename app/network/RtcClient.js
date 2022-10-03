@@ -47,7 +47,7 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 
 	close()
 	{
-		this.peerClientChannel && this.peerClientChannel.close();
+		return this.peerClient.close();
 	}
 
 	getIceCandidates()
