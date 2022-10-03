@@ -97,7 +97,6 @@ export class TitleScreenCard extends Card
 
 		const startButton = 9;
 
-
 		if(controller.buttons[startButton] && controller.buttons[startButton].time === 1)
 		{
 			this.onTimeout(200, () => this.startPressed = true);

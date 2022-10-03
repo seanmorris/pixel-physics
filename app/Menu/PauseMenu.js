@@ -96,7 +96,7 @@ export class PauseMenu extends Menu
 						parent.clearCheckpoints();
 						parent.unpauseGame();
 						parent.quit();
-						parent.playCards();
+						// parent.playCards();
 					}}
 				}
 			}
@@ -141,7 +141,7 @@ export class PauseMenu extends Menu
 			this.parent.focus();
 			this.args.hideMenu = 'pause-menu-hide';
 		}
-		else if(controller.buttons[1012] && controller.buttons[1012].time < 0)
+		else if(controller.buttons[1020] && controller.buttons[1020].time > 0)
 		{
 			this.args.hideMenu = '';
 		}

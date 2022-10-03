@@ -1312,6 +1312,11 @@ export class Viewport extends View
 					element = element.parentNode;
 				}
 
+				if(this.tags.viewport.contains(document.activeElement))
+				{
+					return;
+				}
+
 				this.tags.viewport.focus()
 			}
 			, {capture: true}
@@ -1771,14 +1776,17 @@ export class Viewport extends View
 
 		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
 		{
-			if(!this.args.fullscreen)
+			if(this.args.fullscreen)
+			{
+				this.exitFullscreen();
+			}
+
+			if(this.args.started)
 			{
 				this.args.paused
 					? this.unpauseGame()
 					: this.pauseGame();
 			}
-
-			this.exitFullscreen();
 		}
 
 		if(!this.args.networked && controller.buttons[1011] && controller.buttons[1011].time > 0)
@@ -3967,6 +3975,12 @@ export class Viewport extends View
 
 	quit(quick = false)
 	{
+		if(this.args.networked)
+		{
+			this.server && this.server.close();
+			this.client && this.client.close();
+		}
+
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade     = true;
@@ -3992,6 +4006,13 @@ export class Viewport extends View
 		for(const actor of this.actors.items())
 		{
 			this.actors.remove(actor);
+		}
+
+		for(const particle of this.particles.items())
+		{
+			this.particles.remove(particle);
+
+			particle.remove();
 		}
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
@@ -4067,13 +4088,12 @@ export class Viewport extends View
 
 		this.args.titlecard = new Series({cards}, this);
 
+		Keyboard.get().reset();
+		this.controller.zero();
+
 		this.args.titlecard.play();
 
 		this.args.bg = this.args.backdrop = null;
-
-		Keyboard.get().reset();
-
-		this.controller.zero();
 	}
 
 	introCards()

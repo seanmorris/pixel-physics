@@ -50,7 +50,7 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 	close()
 	{
-		this.peerServerChannel && this.peerServerChannel.close()
+		return this.peerServer.close()
 	}
 
 	getIceCandidates()

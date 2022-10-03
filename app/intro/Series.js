@@ -42,9 +42,7 @@ export class Series extends View
 		return Promise.race(racers).then(done => {
 			if(done)
 			{
-				this.parent.onFrameOut(10, () => {
-					Promise.all(done).then(() => card.remove());
-				});
+				this.parent.onFrameOut(10, () => card.remove());
 			}
 
 			if(this.cards.length)

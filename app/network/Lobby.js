@@ -31,6 +31,7 @@ export class Lobby extends View
 
 		this.args.roomId   = '!hJzXrccruagKGXTFUQ:matrix.org';
 		this.args.invites  = new Bag;
+		this.args.loading  = true;
 		this.args.userList = [];;
 		this.args.users    = new Bag((i,a,s) => {
 			this.sortUsers();
@@ -114,6 +115,7 @@ export class Lobby extends View
 
 					if(message.origin_server_ts < 1664651274000)
 					{
+						this.args.loading = false;
 						return;
 					}
 
@@ -237,7 +239,7 @@ export class Lobby extends View
 		.then(response => {
 			this.args.messages.push(new LobbyStatus({
 				message: `You invited ${to} to play!`
-				, time: String(new Date(message.origin_server_ts))
+				, time: String(new Date(event.detail.origin_server_ts))
 			}));
 
 			this.onNextFrame(() => {
@@ -496,7 +498,10 @@ export class Lobby extends View
 		const server = this.server;
 		const client = this.client;
 
-		const onOpen  = event => this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true});
+		const onOpen  = event => {
+			this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true});
+			this.remove();
+		};
 
 		const onClose = event => this.disconnect();
 
