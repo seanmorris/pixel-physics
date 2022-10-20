@@ -4973,7 +4973,7 @@
         {
          "name":"backdrop",
          "type":"string",
-         "value":"wood"
+         "value":"mushroom-hill"
         }, 
         {
          "name":"deathLine",
@@ -4986,7 +4986,7 @@
          "value":1
         }],
  "renderorder":"right-down",
- "tiledversion":"1.7.1",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {
@@ -5017,6 +5017,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.6",
+ "version":1.4,
  "width":128
 }

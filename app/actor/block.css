@@ -3,7 +3,7 @@
 .actor-item.actor-breakable-block .sprite,
 .actor-item.actor-marble-companion-block .sprite,
 .actor-item.actor-block-marble .sprite {
-	--hoverWidth: -1px;
+	--hoverWidth: calc(1px  / var(--scale));
 }
 
 .actor-item.actor-block svg {
@@ -219,6 +219,13 @@
 	background-position: bottom center;
 	height: 40px;
 	width: 101px;
+}
+
+.actor-item.actor-block[data-design="emerald-isle"] .sprite {
+	background-position: top center;
+	top: -5px;
+	height: 52px;
+	width: 96px;
 }
 
 @keyframes companion-block-shake {

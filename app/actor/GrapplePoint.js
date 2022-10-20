@@ -13,7 +13,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		// this.args.width  = this.args.width  || 32;
 		// this.args.height = this.args.height || 32;
 
-		this.args.width  = 22;
+		this.args.width  = 28;
 		this.args.height = 32;
 
 		this.args.type   = 'actor-item actor-grapple-point';
@@ -30,7 +30,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	{
 		super.update();
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		if(tiedTo)
 		{
@@ -97,20 +97,11 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 	update()
 	{
-		if(!this.args.tiedTo)
-		{
-			return;
-		}
-
-		if(!this.args._tiedTo)
-		{
-			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
-		}
 	}
 
 	collideB(other)
 	{
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		if(!tiedTo || tiedTo.noClip)
 		{
@@ -158,9 +149,9 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		other.args.hangingFrom = this;
 		other.args.jumping = false;
 
-		if(this.args._tiedTo)
+		if(this.others.tiedTo)
 		{
-			const tiedTo = this.args._tiedTo;
+			const tiedTo = this.others.tiedTo;
 
 			tiedTo.dispatchEvent(new CustomEvent('hooked'), {detail: {
 				hook: this, subject: other
@@ -222,7 +213,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return;
 		}
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		hooked.args.ignore = hooked.args.float = 0;
 

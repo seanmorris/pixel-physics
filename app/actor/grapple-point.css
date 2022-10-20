@@ -14,3 +14,8 @@
 	z-index: calc(var(--z) + 100);
 	background-position: -85px -4px;
 }
+
+[data-bg="mushroom-hill"] .actor-item.actor-grapple-point .sprite {
+	z-index: calc(var(--z) + 100);
+	background-position: -150px -4px;
+}

@@ -80,7 +80,7 @@ export class RedEyeJet extends PointActor
 			this.box.setAttribute('data-phase', 'exploding');
 			this.args.phase = 'exploding';
 
-			this.viewport.clearCheckpoints(other.args.id);
+			this.viewport.clearCheckpoints();
 
 			const viewport = this.viewport;
 

@@ -4,12 +4,12 @@ export const Constrainable = {
 
 	wakeUp: function() {
 
-		if(!this.args._tiedTo)
+		if(!this.others.tiedTo)
 		{
-			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+			return;
 		}
 
-		const _tiedTo = this.args._tiedTo;
+		const _tiedTo = this.others.tiedTo;
 
 		if(_tiedTo && !_tiedTo.hanging.has(this.constructor))
 		{
@@ -47,12 +47,12 @@ export const Constrainable = {
 
 	, setPos: function()
 	{
-		if(!this.args._tiedTo)
+		if(!this.others.tiedTo)
 		{
-			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+			return;
 		}
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		if(!tiedTo)
 		{

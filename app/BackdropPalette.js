@@ -10,7 +10,8 @@ import { Wood           } from 'backdrop/Wood';
 import { Underground    } from 'backdrop/Underground';
 import { Moon           } from 'backdrop/Moon';
 import { SouthRidge     } from 'backdrop/SouthRidge';
-
+import { MushroomHill   } from 'backdrop/MushroomHill';
+import { IceCap         } from 'backdrop/IceCap';
 
 export const BackdropPalette = {
 	'west-side-cloudy': WestSideCloudy
@@ -25,4 +26,6 @@ export const BackdropPalette = {
 	, 'industrial':     Industrial
 	, 'mystic-cave':    MysticCave
 	, 'underground':    Underground
+	, 'mushroom-hill':  MushroomHill
+	, 'ice-cap':        IceCap
 }

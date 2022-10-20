@@ -49,7 +49,7 @@ export class SkidDust extends Behavior
 		}
 
 		const viewport  = host.viewport;
-		const dustFreq  = host.distFreq || 2;
+		const dustFreq  = host.dustFreq || 3;
 
 		if(viewport.args.frameId % dustFreq !== 0)
 		{

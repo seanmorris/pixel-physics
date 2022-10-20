@@ -47,7 +47,7 @@ export class Ring extends PointActor
 		}
 		else if(!this.args.decoration)
 		{
-			if(this.args.ySpeed < 0 || age < 15)
+			if(this.args.ySpeed < 0)
 			{
 				this.noClip = true;
 			}

@@ -20,22 +20,22 @@ export class DarkRegion extends Region
 		super.onRendered(event);
 
 		this.basePath = `M 0 0
-    					L 0 ${32 * 17}
-    					L ${32 * 17} ${32 * 17}
+    					L 0 ${32 * 17 + 1}
+    					L ${32 * 17} ${32 * 17 + 1}
     					L ${32 * 17} 0
     					Z`;
 
-    	this.mask = View.from(`<svg style = "width: 100vw;height: 100vh">
+    	this.mask = View.from(`<svg style = "position:absolute; width: calc(100vw + 2px); height: calc(100vh + 2px); top: -1px; left: -1px">
 			<defs>
 				<clipPath id = "mask-${this.args.id}" clipPathUnits="userSpaceOnUse">
-					<path />
+					<path data-lights />
 				</clipPath>
 			</defs>
 		<svg>`);
 
 		this.mask.render(this.tags.sprite);
 
-		this.path = this.mask.findTag('clipPath > path');
+		this.path = this.mask.findTag('path[data-lights]');
 
 		this.path.attr({d: `${this.basePath} ${this.lightPath}`});
 
@@ -70,19 +70,41 @@ export class DarkRegion extends Region
 		{
 			const lightSize = 128;
 
-			const x = actor.x + actor.viewport.args.x;
-			const y = actor.y + actor.viewport.args.y - actor.args.height * 0.5;
+			const topBoundry  = -this.viewport.args.y - (this.args.y - this.args.height);
 
-			this.paths.set(
-				actor,
-				`M ${x} ${y + lightSize * 0.5}
-				 A ${lightSize * 0.5} ${lightSize * 0.5}, 0, 1 1, ${x} ${y + -lightSize * 0.5}
-				 A ${lightSize * 0.5} ${lightSize * 0.5}, 0, 0 1, ${x} ${y + lightSize * 0.5}
-        		 Z`
-			);
+			const x = actor.x + actor.viewport.args.x;
+			const y = actor.y + actor.viewport.args.y - actor.args.height * 0.5 + (topBoundry < 0 ? topBoundry : 0);
+
+			if(!actor.args.polygon)
+			{
+				continue;
+				this.paths.set(
+					actor,
+					`M ${x} ${y + lightSize * 0.5}
+					 A ${lightSize * 0.5} ${lightSize * 0.5}, 0, 1 1, ${x} ${y + -lightSize * 0.5}
+					 A ${lightSize * 0.5} ${lightSize * 0.5}, 0, 0 1, ${x} ${y + lightSize * 0.5}
+	        		 Z`
+				);
+			}
+			else
+			{
+				const polygon  = Object.assign([], actor.args.polygon);
+
+				const first = polygon.shift();
+
+				const polyPath = polygon.map(p => `L ${x + p.x} ${y + p.y}`).join(' ');
+
+				this.paths.set(
+					actor,
+					`M ${x + first.x} ${y + first.y}
+					 ${polyPath}
+					 Z`
+				);
+			}
+
 		}
 
-		this.path.attr({d: this.basePath + [...this.paths.values()].join(' ')});
+		this.path.attr({d: this.basePath + ' ' + [...this.paths.values()].join(' ')});
 
 		this.actors.clear();
 		this.paths.clear();
@@ -92,7 +114,7 @@ export class DarkRegion extends Region
 	{
 		if(!actor.controllable)
 		{
-			return;
+			// return;
 		}
 
 		this.actors.add(actor);

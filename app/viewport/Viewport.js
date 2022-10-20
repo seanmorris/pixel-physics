@@ -2509,6 +2509,11 @@ export class Viewport extends View
 
 		for(const actor of this.actors.items())
 		{
+			for(const o in actor.others)
+			{
+				actor.others[o] = this.actorsById[actor.others[o]];
+			}
+
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
 				actor.args.display = actor.defaultDisplay || null;
@@ -4775,7 +4780,7 @@ export class Viewport extends View
 		this.args.interacted = true;
 	}
 
-	matrixConnect()
+	matrixConnect(refresh = false)
 	{
 		if(!this.settings.matrixUrl)
 		{
@@ -4784,7 +4789,7 @@ export class Viewport extends View
 
 		const redirectUrl = location.origin + '/accept-sso';
 
-		if(this.matrix)
+		if(!refresh && this.matrix)
 		{
 			if(!this.matrix.isLoggedIn)
 			{

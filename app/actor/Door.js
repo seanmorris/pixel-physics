@@ -27,9 +27,18 @@ export class Door extends PointActor
 
 	open(other)
 	{
+		if(this.others.waitFor.args.opened)
+		{
+			this.args.opening = this.args.opened = false;
+			return;
+		}
+
 		this.args.opening = true;
 
 		this.viewport.onFrameOut(15, () => this.args.opened = true);
+
+		this.viewport.onFrameOut(150, () => this.args.opening = false);
+		this.viewport.onFrameOut(155, () => this.args.opened = false);
 	}
 
 	collideA(other, type)
@@ -39,7 +48,10 @@ export class Door extends PointActor
 			return !this.args.opened;
 		}
 
-		this.open(other);
+		if(!this.args.opened)
+		{
+			this.open(other);
+		}
 
 		return !this.args.opened;
 	}

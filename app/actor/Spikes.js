@@ -26,9 +26,10 @@ export class Spikes extends PointActor
 
 		this.args.pointing = this.args.pointing || 0;
 
-		this.args.beat        = this.args.beat || 90;
 		this.args.retractible = this.args.retractible ?? false;
 		this.args.retracted   = false;
+		this.args.offset      = this.args.offset || 0;
+		this.args.beat        = this.args.beat   || 90;
 
 		this.hazard = true;
 
@@ -41,11 +42,11 @@ export class Spikes extends PointActor
 		{
 			this.args.wasRetracted = this.args.retracted;
 
-			this.args.retracted = !!(Math.floor(this.age / this.args.beat) % 2);
+			this.args.retracted = !!(Math.floor((this.viewport.args.frameId + -this.args.offset) / this.args.beat) % 2);
 
 			if(!this.args.retracted && this.args.wasRetracted)
 			{
-				Sfx.play('SPIKES_OUT');
+				this.vizi && Sfx.play('SPIKES_OUT');
 
 				const actors = this.viewport.actorsAtPoint(this.args.x, this.args.y, this.args.width, this.args.height);
 
@@ -81,7 +82,7 @@ export class Spikes extends PointActor
 			}
 			if(this.args.retracted && !this.args.wasRetracted)
 			{
-				Sfx.play('SPIKES_IN');
+				this.vizi && Sfx.play('SPIKES_IN');
 			}
 		}
 

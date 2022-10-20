@@ -236,7 +236,7 @@ export class Block extends PointActor
 			return;
 		}
 
-		if(this.args.platform && !(other instanceof Ring))
+		if(this.args.platform && !other.args.dead && !(other instanceof Ring))
 		{
 			const otherTop  = other.args.y - other.args.height;
 			const blockTop  = this.args.y  - this.args.height;

@@ -120,6 +120,31 @@ export class BreakableBlock extends Block
 		{
 			if(!this.broken && other.y <= this.y - this.args.height)
 			{
+				const up  = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height + -1);
+
+				if(Array.isArray(up))
+				{
+					for(const actor of up)
+					{
+						if(!(actor instanceof BreakableBlock))
+						{
+							continue;
+						}
+
+						if(!actor.args.collapse)
+						{
+							continue;
+						}
+
+						if(actor.broken)
+						{
+							continue;
+						}
+
+						return false;
+					}
+				}
+
 				this.fragmentsX.style.setProperty('--xSpeed', 0);
 
 				if(!other.args.falling)
@@ -302,19 +327,22 @@ export class BreakableBlock extends Block
 		this.viewport.setColCell(this);
 	}
 
-	delayedBreak(delay = 30, other = null)
+	delayedBreak(delay = 30, other = null, silent = false)
 	{
-		if(other && other.args.falling)
+		if(this.delay || (other && other.args.falling))
 		{
 			return;
 		}
 
 		this.box.append(this.fragmentsX);
 
-		this.viewport.onFrameOut(delay, () => this.break(other));
+		this.delay = this.viewport.onFrameOut(delay, () => {
+			this.break(other, silent)
+			this.delay = false;
+		});
 	}
 
-	break(other)
+	break(other, silent = false)
 	{
 		const wasBroken = this.broken;
 
@@ -339,10 +367,14 @@ export class BreakableBlock extends Block
 				// });
 			}
 
-			this.viewport.onFrameOut(
-				Math.floor(Math.random() * 3)
-				, () => Sfx.play('BLOCK_DESTROYED')
-			);
+			if(!silent)
+			{
+				this.viewport.onFrameOut(
+					Math.floor(Math.random() * 3)
+					, () => Sfx.play('BLOCK_DESTROYED')
+				);
+			}
+
 
 			const o = (other && other.occupant) || other;
 
@@ -419,7 +451,7 @@ export class BreakableBlock extends Block
 						continue;
 					}
 
-					actor.delayedBreak(8)
+					actor.delayedBreak(8, null, silent);
 				}
 			}
 
@@ -442,7 +474,7 @@ export class BreakableBlock extends Block
 						continue;
 					}
 
-					actor.delayedBreak(8)
+					actor.delayedBreak(8, null, silent);
 				}
 			}
 
@@ -465,7 +497,7 @@ export class BreakableBlock extends Block
 						continue;
 					}
 
-					actor.delayedBreak(8)
+					actor.delayedBreak(8, null, true);
 				}
 			}
 		}
@@ -492,7 +524,7 @@ export class BreakableBlock extends Block
 						continue;
 					}
 
-					actor.delayedBreak(8)
+					actor.delayedBreak(8, null, silent)
 				}
 			}
 		}

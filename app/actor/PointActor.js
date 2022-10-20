@@ -85,9 +85,17 @@ export class PointActor extends View
 			def.set(i, objArgs[i]);
 		}
 
+		const others = {};
+
 		for(const i in objDef.properties)
 		{
 			const property = objDef.properties[i];
+
+			if(objDef.properties[i].type === 'object')
+			{
+				others[ property.name ] = property.value;
+				// continue;
+			}
 
 			objArgs[ property.name ] = property.value;
 
@@ -97,6 +105,8 @@ export class PointActor extends View
 		objArgs.tileId = objDef.gid;
 
 		const instance =  new this(Object.assign({}, objArgs));
+
+		instance.others = others;
 
 		instance.def = def;
 		instance.objDef = objDef;
@@ -117,6 +127,8 @@ export class PointActor extends View
 		Object.defineProperty(this.nodes, Bindable.NoGetters, {value:true});
 
 		this.defaultDisplay = 'initial';
+
+		this.others = {};
 
 		this.springing = false;
 
@@ -746,7 +758,7 @@ export class PointActor extends View
 				this.labels.remove();
 				this.labels = null;
 			}
-		});
+		}, {wait:0});
 
 
 		if(this.controllable)
@@ -881,6 +893,11 @@ export class PointActor extends View
 
 	getLocalDrag()
 	{
+		if(this.args.dead)
+		{
+			return 1;
+		}
+
 		let drag = 1;
 
 		for(const region of this.regions)
@@ -2398,8 +2415,11 @@ export class PointActor extends View
 		{
 			const viewport = this.viewport;
 
-			if(!this.args.gone && region.entryParticle)
-			{
+			if(!this.args.gone
+				&& this.args.moving
+				&& Math.abs(this.args.y - (region.args.y + -region.args.height)) <= Math.abs(this.args.ySpeed || this.args.gSpeed)
+				&& region.entryParticle
+			){
 				const splash = new Tag(region.entryParticle);
 
 				if(splash.node)

@@ -29,7 +29,7 @@ export class LayerSwitch extends PointActor
 
 		this.args.width  = 32;
 		this.args.height = 32;
-		this.static = true;
+		this.args.static = true;
 
 		this.args.fromLayer = this.args.fromLayer ?? 1;
 		this.args.toLayer   = this.args.toLayer   ?? 2;

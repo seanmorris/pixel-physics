@@ -21,6 +21,6 @@
 	transition: background-position-y 240ms linear;
 }
 
-.actor-door[data-opened=true] .sprite:after {
+.actor-door[data-opening=true] .sprite:after {
 	background-position-y: -64px;
 }

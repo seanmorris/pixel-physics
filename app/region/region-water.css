@@ -8,7 +8,13 @@
 }
 
 .region.region-water .region-color {
-	background-color: rgba(0,128,255,0.33);
+	/*--color: rgba(255,0,0,0.33);
+	--color: rgba(255,0,255,0.33);
+	--color: rgba(255,0,255,0.33);
+	--color: rgba(0,192,255,0.33);
+	--color: rgba(0,128,255,0.33);*/
+	background-color: var(--color, rgba(0,128,255,0.33));
+	transition: background-color 2.5s ease-out;
 }
 
 .viewport:not(.displacement-off) .region.region-water .region-filter-wrapper {
