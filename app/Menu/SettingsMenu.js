@@ -37,14 +37,14 @@ export const SettingsMenu = (parent) => { return {
 					, get: () => parent.settings.smoothing
 				}
 
-				// , 'Outline Thickness': {
-				// 	input: 'number'
-				// 	, subtext: 'Change the Outline Thickness'
-				// 	, set: value => parent.settings.outline = value
-				// 	, get: () => parent.settings.outline
-				// 	, max: 15
-				// 	, min: 0
-				// }
+				, 'Outline Thickness': {
+					input: 'number'
+					, subtext: 'Change the Outline Thickness'
+					, set: value => parent.settings.outline = value
+					, get: () => parent.settings.outline
+					, max: 15
+					, min: 0
+				}
 
 				// , 'Frameskip': {
 				// 	input: 'number'

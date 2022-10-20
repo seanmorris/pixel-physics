@@ -798,7 +798,7 @@ export class Platformer
 				: false
 			);
 
-			if(!host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
+			if(!host.args.dead && !host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
 			{
 				let falling = !standingOn;
 
@@ -1859,9 +1859,14 @@ export class Platformer
 				// host.args.gSpeed  = 0;
 			}
 
+			if(host.args.pushing)
+			{
+				host.args.gSpeed = Math.sign(host.args.gSpeed);
+			}
+
 			const hRadius = Math.round(host.args.height / 2);
 
-			if(!host.static && host.args.mode === MODE_FLOOR)
+			if(!host.args.static && host.args.mode === MODE_FLOOR)
 			{
 				while((host.args.gSpeed <= 0 || host.args.modeTime < 3)
 					&& host.getMapSolidAt(host.args.x - radius, host.args.y - hRadius, false)
@@ -2070,11 +2075,20 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < 10)
 						{
-							host.args.gSpeed += 0.65 * slopeFactor * direction;
+							const slopeVector = slopeFactor * direction;
+
+							if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+							{
+								host.args.gSpeed += 1.65 * slopeFactor * direction;
+							}
+							else
+							{
+								host.args.gSpeed += 0.25 * slopeFactor * direction;
+							}
 						}
 						else
 						{
-							host.args.gSpeed += 0.45 * slopeFactor * direction;
+							host.args.gSpeed += 0.65 * slopeFactor * direction;
 						}
 					}
 				}
@@ -2084,7 +2098,7 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 2)
 						{
-							host.args.gSpeed += slopeFactor * direction;
+							host.args.gSpeed += 0.25 * slopeFactor * direction;
 
 							if(Math.abs(host.args.gSpeed) < 2 && Math.abs(Math.sign(host.args.gSpeed) - Math.sign(direction)) < 2)
 							{

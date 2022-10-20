@@ -148,7 +148,43 @@ export class Lobby extends View
 				}
 			);
 
-			sync.then(() => this.args.loading = false);
+			const syncUsers = matrix.syncRoomHistory(
+				this.args.roomId
+				, message => {
+					if(this.removed)
+					{
+						return false;
+					}
+
+					if(!message.sender)
+					{
+						return;
+					}
+
+					this.checkEventSender(message);
+				}
+				, Date.now() - (7 * 24 * 60 * 60 * 1000)
+				, null
+				// , {
+				// 	// types: ['sonic-3000.lobby.message']
+				// 	// types: ['sonic-3000.lobby.*']
+				// 	// types: ['sonic-3000.*']
+				// 	// types: ['*']
+				// 	types: [
+				// 		'sonic-3000.lobby.step-out'
+				// 		, 'sonic-3000.lobby.step-in'
+				// 		, 'sonic-3000.lobby.crypto-game-invite'
+				// 		, 'sonic-3000.lobby.crypto-game-offer'
+				// 		, 'sonic-3000.lobby.crypto-game-accept'
+				// 		, 'sonic-3000.lobby.crypto-game-reject'
+				// 		, 'sonic-3000.lobby.crypto-candidate-invite'
+				// 		, 'sonic-3000.lobby.crypto-candidate-present'
+				// 		, 'sonic-3000.lobby.crypto-candidate-ack'
+				// 	]
+				// }
+			);
+
+			Promise.all([sync, syncUsers]).then(() => this.args.loading = false);
 		});
 
 		this.args.input = '';
@@ -166,6 +202,8 @@ export class Lobby extends View
 		const sender = message.sender;
 		const [username,host] = sender.slice(1).split(':');
 
+		console.log(sender);
+
 		if(!this.users.has(sender))
 		{
 			const user = {
@@ -178,6 +216,8 @@ export class Lobby extends View
 			this.users.set(sender, user);
 
 			this.args.users.add(user);
+
+			this.sortUsers();
 		}
 
 		const user = this.users.get(sender);
@@ -247,10 +287,7 @@ export class Lobby extends View
 				, time: String(new Date(event.detail.origin_server_ts))
 			}));
 
-			this.onNextFrame(() => {
-				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-				this.sortUsers();
-			});
+			this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 		})
 		.catch(error => console.error(error))
 		.finally(() => this.tags.input.focus());
@@ -283,10 +320,7 @@ export class Lobby extends View
 			, time: String(new Date(event.detail.origin_server_ts))
 		}));
 
-		this.onNextFrame(() => {
-			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-			this.sortUsers();
-		});
+		this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 
 		this.args.invites.add(event.detail);
 
@@ -302,10 +336,7 @@ export class Lobby extends View
 
 		this.args.messages.push(new LobbyStatus({message: `You accepted the invite from ${invite.sender}!`}))
 
-		this.onNextFrame(() => {
-			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-			this.sortUsers();
-		});
+		this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 
 		this.isClient = true;
 
@@ -337,10 +368,7 @@ export class Lobby extends View
 				message: `You rejected the invite from ${invite.sender}.`
 				, time: String(new Date(event.detail.origin_server_ts))
 			}))
-			this.onNextFrame(() => {
-				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-				this.sortUsers();
-			});
+			this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 		}
 
 		this.messageService.accept(invite).then(cryptoMessage => {
@@ -374,10 +402,7 @@ export class Lobby extends View
 				message: `Initializing RTC handshake...`
 				, time: String(new Date(event.detail.origin_server_ts))
 			}))
-			this.onNextFrame(() => {
-				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-				this.sortUsers();
-			});
+			this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 
 			let {content: offerString} = cryptoMessage;
 
@@ -410,10 +435,7 @@ export class Lobby extends View
 
 			Sfx.play('STAR_TWINKLE');
 
-			this.onNextFrame(() => {
-				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-				this.sortUsers();
-			});
+			this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 		});
 	}
 
@@ -459,10 +481,7 @@ export class Lobby extends View
 
 			this.args.messages.push(new LobbyStatus({message}));
 
-			this.onNextFrame(() => {
-				this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-				this.sortUsers();
-			});
+			this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 
 		});
 	}
@@ -484,10 +503,7 @@ export class Lobby extends View
 			, user
 		}));
 
-		this.onNextFrame(() => {
-			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-			this.sortUsers();
-		});
+		this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 
 		if(message.sender !== this.args.username)
 		{
@@ -507,7 +523,7 @@ export class Lobby extends View
 		const client = this.client;
 
 		const onOpen  = event => {
-			this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true});
+			this.parent.loadMap({mapUrl: '/map/emerald-isle.json', networked: true});
 			this.remove();
 		};
 
@@ -558,7 +574,10 @@ export class Lobby extends View
 
 		this.refreshRtc();
 
-		this.parent.quit(2);
+		if(this.parent.args.started)
+		{
+			this.parent.quit(2);
+		}
 
 		this.parent.args.networked = false;
 		this.parent.args.chatBox = null;
@@ -610,10 +629,7 @@ export class Lobby extends View
 			message: `${event.detail.sender} stepped out.`
 			, time: String(new Date(event.detail.origin_server_ts))
 		}));
-		this.onNextFrame(() => {
-			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-			this.sortUsers();
-		});
+		this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 		Sfx.play('MECHASONIC_SLAP');
 	}
 
@@ -623,10 +639,7 @@ export class Lobby extends View
 			message: `${event.detail.sender} stepped in.`
 			, time: String(new Date(event.detail.origin_server_ts))
 		}));
-		this.onNextFrame(() => {
-			this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight;
-			this.sortUsers();
-		});
+		this.onNextFrame(() => this.tags.scroller.scrollTop = this.tags.scroller.scrollHeight);
 		Sfx.play('SS_BWIP_HIGH');
 	}
 }

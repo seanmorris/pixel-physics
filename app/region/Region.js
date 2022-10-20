@@ -83,6 +83,7 @@ export class Region extends PointActor
 				, '--topBoundry':     (topBoundry) + 'px'
 				, '--vpX':            (this.viewport.args.x) + 'px'
 				, '--vpY':            (this.viewport.args.y) + 'px'
+				, '--color':          this.args.color ?? 'rgba(0,128,255,0.33)'
 			});
 		}
 	}

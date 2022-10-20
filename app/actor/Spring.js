@@ -179,7 +179,7 @@ export class Spring extends PointActor
 
 		this.viewport.onFrameOut(1,()=>{
 			other.args.float = 2;
-			other.args.direction = Math.sign(xImpulse);
+			other.args.direction = Math.sign(xImpulse) || other.args.direction;
 
 			other.impulse(
 				this.args.power

@@ -12,6 +12,7 @@ export class Emblem extends PointActor
 		this.args.height = 32;
 		this.args.type   = 'actor-item actor-emblem';
 		this.args.float  = -1;
+		this.args.static = true;
 		this.collected   = false;
 	}
 

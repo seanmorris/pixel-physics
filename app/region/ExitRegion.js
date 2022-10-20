@@ -12,6 +12,16 @@ export class ExitRegion extends Region
 
 	updateActor(other)
 	{
+		if(this.args.signpost)
+		{
+			const signpost = this.viewport.actorsById[ this.args.signpost ];
+
+			if(signpost.args.activeTime < 540)
+			{
+				return;
+			}
+		}
+
 		if(other.occupant)
 		{
 			other = other.occupant;
@@ -26,7 +36,7 @@ export class ExitRegion extends Region
 
 		viewport.args.fade = true;
 
-		viewport.clearCheckpoints(other.args.id);
+		viewport.clearCheckpoints();
 
 		viewport.onFrameOut(30, () => {
 
@@ -40,9 +50,9 @@ export class ExitRegion extends Region
 			else
 			{
 				viewport.quit();
-
-				viewport.playCards();
+				// viewport.playCards();
 			}
+
 		});
 	}
 

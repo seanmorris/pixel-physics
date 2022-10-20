@@ -17,14 +17,15 @@ import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
 import { LoadingRegion } from './region/LoadingRegion';
-import { ExplodingRegion } from './region/ExplodingRegion'
-import { SwitchRegion } from './region/SwitchRegion'
-import { RainRegion } from './region/RainRegion'
-import { DebrisRegion } from './region/DebrisRegion'
-import { WaterfallRegion } from './region/WaterfallRegion'
-import { KillRegion } from './region/KillRegion'
-import { VehicleRegion } from './region/VehicleRegion'
-import { DropVehicleRegion } from './region/DropVehicleRegion'
+import { ExplodingRegion } from './region/ExplodingRegion';
+import { SwitchRegion } from './region/SwitchRegion';
+import { RainRegion } from './region/RainRegion';
+import { DebrisRegion } from './region/DebrisRegion';
+import { WaterfallRegion } from './region/WaterfallRegion';
+import { KillRegion } from './region/KillRegion';
+import { VerticalRegion } from './region/VerticalRegion';
+import { VehicleRegion } from './region/VehicleRegion';
+import { DropVehicleRegion } from './region/DropVehicleRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -102,6 +103,7 @@ import { SlotMachine } from './actor/SlotMachine';
 
 import { WaterFall } from './actor/WaterFall';
 import { WaterJet }  from './actor/WaterJet';
+import { WaterSpout }  from './actor/WaterSpout';
 
 import { PowerupGlow } from './actor/PowerupGlow';
 // import { SuperRing }   from './actor/SuperRing';
@@ -168,6 +170,7 @@ import { RollingSign } from './actor/RollingSign';
 import { Bell } from './actor/Bell';
 
 import { Torch } from './actor/Torch';
+import { LightSource } from './actor/LightSource';
 
 import { Signpost } from './actor/Signpost';
 import { Umbrella } from './actor/Umbrella';
@@ -277,6 +280,7 @@ export const ObjectPalette = {
 	, 'debris-region': DebrisRegion
 	, 'waterfall-region': WaterfallRegion
 	, 'kill-region': KillRegion
+	, 'vertical-region': VerticalRegion
 	, 'vehicle-region': VehicleRegion
 	, 'drop-vehicle-region': DropVehicleRegion
 	, 'ring':         Ring
@@ -292,6 +296,7 @@ export const ObjectPalette = {
 	, 'text-actor':   TextActor
 	, 'water-jet':    WaterJet
 	, 'water-fall':   WaterFall
+	, 'water-spout':  WaterSpout
 	, 'balloon':      Balloon
 	, 'star-balloon': StarBalloon
 	, 'web-monitor': WebMonitor
@@ -352,6 +357,7 @@ export const ObjectPalette = {
 	, 'rolling-sign': RollingSign
 	, 'bell': Bell
 	, 'torch': Torch
+	, 'light-source': LightSource
 	, 'orb': Orb
 	, 'chao': Chao
 	, 'egg': Egg

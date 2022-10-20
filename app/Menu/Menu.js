@@ -35,12 +35,12 @@ export class Menu extends Card
 		this.exclude = '[tabindex="-1"]';
 
 		this.onRemove(() => parent.focus());
-
-		this.listen(window, 'focus', event => this.refocus(event));
 	}
 
 	onRendered(event)
 	{
+		this.listen(window, 'focus', event => this.refocus(event));
+
 		this.args.bindTo('items', v => {
 
 			for(const i in this.args.items)

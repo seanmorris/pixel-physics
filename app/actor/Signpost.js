@@ -15,6 +15,8 @@ export class Signpost extends PointActor
 
 		this.args.active = false;
 		this.args.follow = false;
+
+		this.args.activeTime = 0;
 	}
 
 	collideA(other)
@@ -30,7 +32,7 @@ export class Signpost extends PointActor
 
 		this.viewport.onFrameOut(540, () => {
 
-			this.args.charStrings = [];
+			// this.args.charStrings.length = 0;
 
 			other.args.ignore = 0;
 
@@ -47,6 +49,11 @@ export class Signpost extends PointActor
 		});
 
 		this.viewport.onFrameOut(600, () => {
+
+			if(!this.args.boss)
+			{
+				return;
+			}
 
 			const boss = this.viewport.actorsById[ this.args.boss ];
 
@@ -81,9 +88,7 @@ export class Signpost extends PointActor
 
 		other.args.clearSpeed = Math.abs(feetPerSecond);
 
-		this.args.charStrings = [
-			new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`})
-		];
+		this.args.charStrings.push(new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`}));
 
 		this.following = other;
 
@@ -97,6 +102,11 @@ export class Signpost extends PointActor
 
 	update()
 	{
+		if(this.args.active)
+		{
+			this.args.activeTime++;
+		}
+
 		if(this.args.follow)
 		{
 			const other = this.following;
@@ -139,6 +149,11 @@ export class Signpost extends PointActor
 				}
 
 				this.args.x = toX;
+
+				while(this.getMapSolidAt(this.x, this.y - 1))
+				{
+					this.args.y--;
+				}
 			}
 
 		}

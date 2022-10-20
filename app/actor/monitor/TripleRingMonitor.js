@@ -14,8 +14,8 @@ export class TripleRingMonitor extends Monitor
 	{
 		other.args.rings += 30;
 
-		Sfx.play('RING_COLLECTED');
-		this.viewport.onFrameOut(10, () => Sfx.play('RING_COLLECTED'));
-		this.viewport.onFrameOut(20, () => Sfx.play('RING_COLLECTED'));
+		this.viewport.onFrameOut(6, () => Sfx.play('RING_COLLECTED'));
+		this.viewport.onFrameOut(18, () => Sfx.play('RING_COLLECTED'));
+		this.viewport.onFrameOut(32, () => Sfx.play('RING_COLLECTED'));
 	}
 }

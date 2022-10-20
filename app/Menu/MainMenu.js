@@ -29,7 +29,7 @@ export class MainMenu extends Menu
 	{
 		super(args,parent);
 
-		if(Router.query.menuPath)
+		if(!this.args.initialPath && Router.query.menuPath)
 		{
 			this.args.initialPath = JSON.parse(Router.query.menuPath);
 		}
@@ -62,7 +62,7 @@ export class MainMenu extends Menu
 			, font: this.font
 		});
 
-		this.args.back = new CharacterString({
+		this.args.revert = new CharacterString({
 			value:  '❸ default (hold)'
 			, font: this.font
 		});
@@ -212,6 +212,15 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'Agorapolis Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
+							this.accept();
+						}
+					}
+
 					, 'Misty Ruins Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Misty Ruins Zone'
@@ -221,7 +230,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Underground Test': {
+					, 'Underground Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Underground Zone'
 						, callback: () => {
@@ -230,7 +239,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Moon Test': {
+					, 'Moon Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
@@ -239,14 +248,14 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Terrain Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing different terrain types'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
-							this.accept();
-						}
-					}
+					// , 'Terrain Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing different terrain types'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					// , 'Pixel Hill Zone': {
 					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -257,48 +266,48 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Space Pinball Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing pinball physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
-							this.accept();
-						}
-					}
-					, 'Belt and Wheel Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing elastic and rotational physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/belt-test.json'});
-							this.accept();
-						}
-					}
-					, 'See-Saw Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing see-saw physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Space Pinball Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing pinball physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+					// , 'Belt and Wheel Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing elastic and rotational physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/belt-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+					// , 'See-Saw Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing see-saw physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Vehicle Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing vehicles'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Vehicle Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing vehicles'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Spotlight Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing spotlight effects'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/visor-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Spotlight Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing spotlight effects'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/visor-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					, 'Flickie Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -317,13 +326,13 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Block Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/block-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Block Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/block-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					// , 'Half Pipe Test': {
 					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -341,13 +350,13 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Arch Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/arc-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Arch Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/arc-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 				}
 			}
 
@@ -359,14 +368,16 @@ export class MainMenu extends Menu
 						, callback: () => {
 							if(!this.loggingIn)
 							{
-								this.loggingIn = this.parent.matrixConnect();
+								this.loggingIn = this.parent.matrixConnect(true);
 								this.loggingIn.finally(() => this.loggingIn = null);
 								this.loggingIn.then(matrix => {
-									this.args.override = new Lobby({roomId:this.parent.settings.matrixRoom},this.parent);
+									const lobby = new Lobby({roomId:this.parent.settings.matrixRoom},this.parent);
+									this.args.override = lobby;
 									this.args.override.onRemove(() => {
 										this.args.override = null;
 										this.onNextFrame(()=>this.focusFirst());
 									});
+									this.onRemove(() => lobby.remove());
 								});
 							}
 							else
@@ -630,7 +641,7 @@ export class MainMenu extends Menu
 
 		const onOpen  = event => {
 			this.parent
-			.loadMap({mapUrl: '/map/manic-harbor-zone.json', networked: true})
+			.loadMap({mapUrl: '/map/emerald-isle.json', networked: true})
 			.then(() => console.log('Peer connection opened!'));
 		};
 		const onClose = event => {

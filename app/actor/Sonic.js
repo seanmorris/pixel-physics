@@ -1223,7 +1223,7 @@ export class Sonic extends PointActor
 			this.spindashCharge = 15;
 		}
 
-		const direction = this.args.direction;
+		const direction = this.args.direction || Math.sign(this.xSpeedLast);
 		let   dashPower = this.spindashCharge / 40;
 
 		if(dashPower > 1)
@@ -1653,12 +1653,12 @@ export class Sonic extends PointActor
 			dashSpeed = maxDash;
 		}
 
-		const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
+		// const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
 
-		if(space && dashSpeed > space)
-		{
-			dashSpeed = space;
-		}
+		// if(space && dashSpeed > space)
+		// {
+		// 	dashSpeed = space;
+		// }
 
 		const direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
@@ -1673,7 +1673,7 @@ export class Sonic extends PointActor
 
 		const breakGroundAngle = Math.PI / 4;
 
-		this.args.airAngle  = angle;
+		// this.args.airAngle  = angle;
 
 		this.lightDashing = true;
 
@@ -1695,8 +1695,8 @@ export class Sonic extends PointActor
 
 				if(ring)
 				{
-					// this.args.x = pickup.x;
-					// this.args.y = pickup.y;
+					// this.args.x = pickup.args.x;
+					// this.args.y = pickup.args.y;
 
 					this.lightDash(ring);
 				}
