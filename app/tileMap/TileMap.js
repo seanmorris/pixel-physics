@@ -313,7 +313,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 						image, 0, 0, image.width, image.height
 					);
 
-					this.heightMasks.set(tileset, heightMask);
+					this.heightMasks.set(tileset, heightMask.getContext('2d').getImageData(0, 0, heightMask.width, heightMask.height));
 
 					accept(heightMask);
 
@@ -387,7 +387,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		elicit.addEventListener('progress', event => {
 			const {received, length, done} = event.detail;
 
-
 			// const type = 'map';
 
 			// this.dispatchEvent(new CustomEvent(
@@ -417,20 +416,20 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		// const tileKey = x + ',' + y + ',' + layerId;
-		// const cached  = this.tileNumberCache.get(tileKey);
+		const tileKey = x + ',' + y + ',' + layerId;
+		const cached  = this.tileNumberCache.get(tileKey);
 
-		// if(cached !== undefined)
-		// {
-		// 	return cached;
-		// }
+		if(cached !== undefined)
+		{
+			return cached;
+		}
 
 		const tileLayers = this.tileLayers;
 		const mapData    = this.mapData;
 
 		if(!tileLayers[layerId])
 		{
-			// this.tileNumberCache.set(tileKey, false);
+			this.tileNumberCache.set(tileKey, false);
 			return false;
 		}
 
@@ -440,11 +439,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					// this.tileNumberCache.set(tileKey, false);
+					this.tileNumberCache.set(tileKey, false);
 					return false;
 				}
 
-				// this.tileNumberCache.set(tileKey, 1);
+				this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -465,12 +464,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					// this.tileNumberCache.set(tileKey, false);
+					this.tileNumberCache.set(tileKey, false);
 
 					return false;
 				}
 
-				// this.tileNumberCache.set(tileKey, 1);
+				this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -489,12 +488,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const tileNumber = tile > 0 ? tile - 1 : 0;
 
-			// this.tileNumberCache.set(tileKey, tileNumber);
+			this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
 		}
 
-		// this.tileNumberCache.set(tileKey, false);
+		this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}
@@ -632,37 +631,20 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const xPixel = tilePos[0] + x;
 		const yPixel = tilePos[1] + y;
 
-		const heightMaskKey   = [xPixel, yPixel, tileNumber].join('::');
-		const heightMaskCache = this.heightMaskCache;
-
-		if(heightMaskCache.has(heightMaskKey))
-		{
-			return heightMaskCache.get(heightMaskKey);
-		}
-
 		const heightMask = this.heightMasks.get(tileSet);
 
-		const pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data;
+		const iPixel = (xPixel + yPixel * heightMask.width) * 4;
 
 		let result = false;
 
-		// if(pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
-		// {
-		// 	// result = 0xFF0000;
-		// 	result = true;
-		// }
-		// else
-		if(pixel[3] === 255)
+		if(heightMask.data[iPixel + 3] === 255)
 		{
-			// result = 0xFFFFFF;
 			result = this.tileLayers[layerInput];
 		}
 		else
 		{
 			result = false;
 		}
-
-		heightMaskCache.set(heightMaskKey, result);
 
 		return result;
 	}

@@ -109,10 +109,10 @@ export class RollingRegion extends Region
 		super.collideA(other, type);
 	}
 
-	collideB(other, type)
-	{
-		super.collideA(other, type);
-	}
+	// collideB(other, type)
+	// {
+	// 	super.collideA(other, type);
+	// }
 
 	get solid() { return false; }
 	get isEffect() { return true; }
