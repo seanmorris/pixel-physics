@@ -456,6 +456,11 @@ span.arrow-west {
 	opacity: 0;
 }
 
+.viewport .status-message.hide .hud-character,
+.viewport-frame:not(.window-blurred) .viewport:focus-within .focus-me .status-message .hud-character {
+	animation: none;
+}
+
 .status-message {
 	position: absolute;
 	top: 0;

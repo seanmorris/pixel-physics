@@ -559,7 +559,20 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		xInput = Math.trunc(xInput);
 		yInput = Math.trunc(yInput);
 
-		const currentTile = this.coordsToTile(xInput, yInput, layerInput);
+		let offsetX = 0;
+		let offsetY = 0;
+
+		if(this.tileLayers[layerInput])
+		{
+			offsetX = this.tileLayers[layerInput].offsetX ?? 0;
+			offsetY = this.tileLayers[layerInput].offsetY ?? 0;
+		}
+
+		const currentTile = [
+			Math.floor( (xInput - offsetX) / this.blockSize )
+			, Math.floor( (yInput - offsetY) / this.blockSize )
+		];
+
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
 		const solidLayerCount = this.collisionLayers.length;
