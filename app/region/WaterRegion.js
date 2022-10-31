@@ -22,30 +22,52 @@ export class WaterRegion extends Region
 		this.skimSpeed = 15;
 
 		this.draining = 0;
+
+		this.skimParticles = new Map;
 	}
 
 	skim(actor)
 	{
 		super.skim(actor);
 
-		if(this.viewport.args.frameId % 4)
+		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 3);
+
+		if(this.skimParticles.has(actor))
 		{
+			const stuff = this.skimParticles.get(actor);
+			const {skimParticle, timeout} = stuff;
+			timeout();
+			const newTimeout = this.viewport.onFrameOut(6, () => {
+				this.viewport.particles.remove(skimParticle);
+				this.skimParticles.delete(actor);
+			});
+			stuff.timeout = newTimeout;
+			skimParticle.style({
+				'--x': splashPoint[0] + actor.x
+				, '--y': splashPoint[1] + actor.y
+				, 'z-index': 0
+				, '--flip': `${actor.args.direction}`
+			});
 			return;
 		}
 
-		const splashParticle = new Tag(`<div class = "particle-skim">`);
-		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 0);
+		const skimParticle = new Tag(`<div class = "particle-skim">`);
 
-		splashParticle.style({
-			'--x': splashPoint[0] + actor.x + actor.args.gSpeed
+		skimParticle.style({
+			'--x': splashPoint[0] + actor.x
 			, '--y': splashPoint[1] + actor.y
 			, 'z-index': 0
 			, '--flip': `${actor.args.direction}`
 		});
 
-		this.viewport.particles.add(splashParticle);
+		this.viewport.particles.add(skimParticle);
 
-		this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
+		const timeout = this.viewport.onFrameOut(6, () => {
+			this.viewport.particles.remove(skimParticle)
+			this.skimParticles.delete(actor);
+		});
+
+		this.skimParticles.set(actor, {skimParticle, timeout});
 	}
 
 	update()

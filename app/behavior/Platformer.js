@@ -1546,12 +1546,12 @@ export class Platformer
 						behavior.movedGround && behavior.movedGround(host);
 					}
 
-					nextPosition = this.findNextStep(host,step * direction);
-
 					if(host.args.falling || host.locked)
 					{
 						return;
 					}
+
+					nextPosition = this.findNextStep(host, step * direction);
 
 					if(!nextPosition)
 					{
@@ -2098,7 +2098,7 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 2)
 						{
-							host.args.gSpeed += 0.25 * slopeFactor * direction;
+							host.args.gSpeed += 0.125 * slopeFactor * direction;
 
 							if(Math.abs(host.args.gSpeed) < 2 && Math.abs(Math.sign(host.args.gSpeed) - Math.sign(direction)) < 2)
 							{
@@ -2111,6 +2111,10 @@ export class Platformer
 						if(Math.abs(host.args.gSpeed) < 10)
 						{
 							host.args.gSpeed += 0.30 * slopeFactor * direction;
+						}
+						else
+						{
+							// host.args.gSpeed += 0.15 * slopeFactor * direction;
 						}
 					}
 					else if(slopeFactor > 0 && friction < 0.75)
@@ -3376,14 +3380,14 @@ export class Platformer
 		const dir      = Math.sign(speed);
 		const radius   = host.args.width / 2;
 		const scanDist = Math.abs(speed);
-		const viewport = host.viewport;
+		// const viewport = host.viewport;
 
-		if(!viewport)
-		{
-			return;
-		}
+		// if(!viewport)
+		// {
+		// 	return;
+		// }
 
-		const tileMap  = viewport.tileMap;
+		// const 	  = viewport.tileMap;
 
 		const startPoint = host.args.falling
 			? [radius * -dir, -host.args.height * height]

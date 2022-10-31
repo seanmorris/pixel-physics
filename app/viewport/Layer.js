@@ -296,10 +296,10 @@ export class Layer extends View
 					{
 						block.style({display: 'none'});
 					}
-				}
 
-				offsets.set(block, blockOffset);
-				blockSrcs.set(block, blockSrc);
+					offsets.set(block, blockOffset);
+					blockSrcs.set(block, blockSrc);
+				}
 			}
 
 			ii++;

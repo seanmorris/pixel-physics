@@ -72,16 +72,17 @@
 	/*display: none;*/
 }
 .actor-item.actor-breakable-block.broken .fragmentsX,
+.actor-item.actor-breakable-block.broken .fragmentsX,
 .actor-item.actor-breakable-block.breaking .fragmentsX,
 .actor-item.actor-breakable-block.will-break .fragmentsX {
 	display: initial;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
-	--xTarget: calc(var(--xSpeed) * 12px);
+	--xTarget: calc(var(--xSpeed) * 24px);
 	--yTarget: 80vh;
-	transform: translate(var(--xTarget), -128px);
-	transform: translate(var(--xTarget), 0px);
+	transform: translate(var(--xTarget), -144px);
+	/*transform: translate(var(--xTarget), 0px);*/
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken .fragmentsX {
