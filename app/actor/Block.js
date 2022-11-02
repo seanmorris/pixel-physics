@@ -3,6 +3,7 @@ import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
 import { Ring } from './Ring';
+import { LayerSwitch } from './LayerSwitch';
 
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
@@ -148,6 +149,11 @@ export class Block extends PointActor
 
 	collideA(other, type)
 	{
+		if(other instanceof LayerSwitch)
+		{
+			return;
+		}
+
 		if(other instanceof this.constructor && !other.args.falling)
 		{
 			return false;
@@ -259,6 +265,11 @@ export class Block extends PointActor
 			}
 
 			if((other.args.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
+			{
+				return true;
+			}
+
+			if(other.args.falling === false && other.args.mode === 2)
 			{
 				return true;
 			}

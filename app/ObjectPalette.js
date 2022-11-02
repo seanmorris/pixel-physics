@@ -89,6 +89,8 @@ import { Spring }    from './actor/Spring';
 
 import { BrokenMonitor }  from './actor/BrokenMonitor';
 
+import { BoostRing } from './actor/BoostRing';
+
 import { Ring } from './actor/Ring';
 import { Coin } from './actor/Coin';
 
@@ -283,6 +285,7 @@ export const ObjectPalette = {
 	, 'vertical-region': VerticalRegion
 	, 'vehicle-region': VehicleRegion
 	, 'drop-vehicle-region': DropVehicleRegion
+	, 'boost-ring':   BoostRing
 	, 'ring':         Ring
 	, 'antiring':     AntiRing
 	// , 'super-ring':   SuperRing
