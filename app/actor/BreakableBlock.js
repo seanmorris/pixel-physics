@@ -403,7 +403,11 @@ export class BreakableBlock extends Block
 
 		if(!this.args.collapse && other && other.args.mode % 2 === 0)
 		{
-			const x = other.args.xSpeed || other.args.gSpeed;
+			const speed = other.args.xSpeed || other.args.gSpeed;
+			const dir = Math.sign(speed);
+			const mag = Math.abs(speed);
+
+			const x = Math.min(512, mag) * dir;
 
 			if(other.isVehicle)
 			{

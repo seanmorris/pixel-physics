@@ -80,6 +80,7 @@ else
 	Sfx.register('PLAYER_DAMAGED', '/Sonic/S3K_35.wav');
 	Sfx.register('RINGS_SCATTERED', '/Sonic/ring-loss.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0});
 	Sfx.register('BUMPER_BOUNCE', '/Sonic/S3K_AA.wav');
+	Sfx.register('BOOST_RING', '/Sonic/S3K_CA.wav', {maxConcurrent: 1, volume: 0.75, fudgeFactor: 0.2});
 
 	Sfx.register('RING_COLLECTED', '/Sonic/ring-collect.wav', {maxConcurrent: 3, volume: 0.25, fudgeFactor: 0.1});
 	Sfx.register('SPIKE_DAMAGE', '/Sonic/S2_26.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.1});

@@ -2004,6 +2004,11 @@ export class PointActor extends View
 
 		if(x.args.platform || x.isVehicle)
 		{
+			if(this.args.y >= x.args.y && this.args.ySpeed >= 0 && this.args.mode === 2)
+			{
+				return true;
+			}
+
 			if(this.args.y <= x.args.y + -x.args.height && this.args.ySpeed >= 0)
 			{
 				return true;
