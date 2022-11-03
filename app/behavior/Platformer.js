@@ -1093,9 +1093,20 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					host.args.groundAngle = -Math.PI / 2;
-
 					host.args.x += host.args.width/2;
+
+					if(host.args.rolling)
+					{
+						host.args.x += host.args.width/2;
+						host.args.y += host.args.height;
+						host.args.ySpeed = host.args.gSpeed;
+						host.args.float = 1;
+					}
+					else
+					{
+						host.args.groundAngle = -Math.PI / 2;
+					}
+
 
 					host.args.ignore = 30;
 
@@ -1108,8 +1119,19 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					host.args.groundAngle = Math.PI / 2;
 					host.args.x -= host.args.width/2;
+
+					if(host.args.rolling)
+					{
+						host.args.x -= host.args.width/2;
+						host.args.y += host.args.height;
+						host.args.ySpeed = -host.args.gSpeed;
+						host.args.float = 1;
+					}
+					else
+					{
+						host.args.groundAngle = Math.PI / 2;
+					}
 
 					host.args.ignore = 30;
 				}
@@ -1666,13 +1688,13 @@ export class Platformer
 										if(host.args.gSpeed < 0)
 										{
 											host.args.x -= host.args.direction;
-											host.args.y -= host.args.gSpeed + -2;
+											host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+											// host.args.y -= host.args.gSpeed + -2;
 											// host.args.groundAngle = 0;
 										}
 										else
 										{
 											host.args.x += radius;
-											// host.args.y += hRadius;
 										}
 									}
 									else
@@ -1717,13 +1739,13 @@ export class Platformer
 										if(host.args.gSpeed > 0)
 										{
 											host.args.x -= host.args.direction;
-											host.args.y -= host.args.gSpeed + 2;
+											host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+											// host.args.y -= host.args.gSpeed + 2;
 											// host.args.groundAngle = 0;
 										}
 										else
 										{
 											host.args.x -= radius;
-											// host.args.y += hRadius;
 										}
 									}
 									else
