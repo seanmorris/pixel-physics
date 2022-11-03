@@ -433,7 +433,7 @@
 	animation: sonic-animate steps(var(--animation-steps)) 288ms forwards;
 }
 
-.actor-item.actor-sonic[data-falling=true][data-animation="skidding"] .sprite:after {
+.actor-item.actor-sonic[data-animation="skidding-falling"] .sprite:after {
 	--sprite-offset-x: -128px;
 	--sprite-offset-y: -256px;
 	--animation-width: -64px;

@@ -35,6 +35,7 @@ export class BoostRing extends PointActor
 		}
 
 		other.args.rolling = true;
+		other.args.jumping = true;
 		other.dashed  = false;
 
 		other.args.x = this.args.x;

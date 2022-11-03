@@ -2594,8 +2594,10 @@ export class PointActor extends View
 				// ring.args.ySpeed = this.args.ySpeed;
 
 				this.viewport.onFrameOut(circle * 2 + 6, () => {
-					ring.args.xSpeed += -cos * circle * 3;
-					ring.args.ySpeed += -sin * circle * 3;
+					ring.args.xSpeed += -cos * 3;
+					ring.args.ySpeed += -sin * 3;
+
+					ring.args.ySpeed += -(circle + 1) * 0.75;
 				});
 
 				if(current % 3 === 2)
