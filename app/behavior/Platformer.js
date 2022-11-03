@@ -1142,13 +1142,13 @@ export class Platformer
 						{
 							host.args.direction = -1;
 							host.args.facing = 'left'
-							host.args.x++;
+							// host.args.x++;
 						}
 						else if(Math.sign(host.xSpeedLast) === 1)
 						{
 							host.args.direction = 1;
 							host.args.facing = 'right'
-							host.args.x--;
+							// host.args.x--;
 						}
 					}
 				}
@@ -1203,7 +1203,11 @@ export class Platformer
 			host.args.stopped++;
 		}
 
-		if(host.lastAngles.length > 0)
+		if(host.args.falling)
+		{
+			host.lastAngles.length = 0;
+		}
+		else if(host.lastAngles.length > 0)
 		{
 			host.args.groundAngle = host.lastAngles.map(a=>Number(a)).reduce(((a,b)=>a+b)) / host.lastAngles.length;
 		}
@@ -1625,7 +1629,7 @@ export class Platformer
 							case MODE_CEILING:
 
 								host.args.y += host.args.height;
-								// host.args.y++;
+								host.args.y++;
 
 								host.args.float = host.args.float < 0 ? host.args.float : 1;
 
@@ -1645,7 +1649,6 @@ export class Platformer
 								{
 									host.args.facing = host.args.facing === 'left' ? 'right' : 'left';
 								}
-
 
 								host.args.ignore = 3;
 
@@ -1682,8 +1685,17 @@ export class Platformer
 									host.args.xSpeed  =  gSpeed * Math.sin(gAngle);
 									host.args.ySpeed  =  gSpeed * Math.cos(gAngle);
 
-									// host.args.groundAngle = -Math.PI * 0.5;
-									// host.args.mode = MODE_FLOOR;
+									if(!host.args.rolling)
+									{
+										host.args.groundAngle = -Math.PI * 0.5;
+									}
+									else
+									{
+										host.args.x += radius;
+									}
+
+									host.args.mode = MODE_FLOOR;
+
 									// host.onNextFrame(() => {
 									// });
 								}
@@ -1724,8 +1736,16 @@ export class Platformer
 									host.args.xSpeed  = -gSpeed * Math.sin(gAngle);
 									host.args.ySpeed  = -gSpeed * Math.cos(gAngle);
 
-									// host.args.groundAngle = Math.PI * 0.5;
-									// host.args.mode = MODE_FLOOR;
+									if(!host.args.rolling)
+									{
+										host.args.groundAngle = Math.PI * 0.5;
+									}
+									else
+									{
+										host.args.x -= radius;
+									}
+
+									host.args.mode = MODE_FLOOR;
 									// host.onNextFrame(() => {
 									// });
 
@@ -2872,7 +2892,7 @@ export class Platformer
 				);
 
 				const topTest = host.getMapSolidAt(
-					host.args.x, host.args.y - 24
+					host.args.x, host.args.y - host.args.height
 				);
 
 				if(!edgeTest)
@@ -2883,7 +2903,7 @@ export class Platformer
 				if(topTest)
 				{
 					// host.args.ySpeed += topTest.yOffsetChanged;
-					host.args.y += host.args.height;
+					host.args.y += 1;
 				}
 			}
 
