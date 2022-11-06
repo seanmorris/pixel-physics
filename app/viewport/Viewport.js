@@ -3672,6 +3672,26 @@ export class Viewport extends View
 		return list;
 	}
 
+	actorsAtLine(x1, y1, x2, y2)
+	{
+		const colCells = new Set;
+
+		for(const x of Array(Math.abs(x1 - x2)+1).keys())
+		for(const y of Array(Math.abs(y1 - y2)+1).keys())
+		{
+			const name = `${x}:${y}`;
+
+			if(!this.colCells.has(name))
+			{
+				continue;
+			}
+
+			colCells.add( this.colCells.get(name) );
+		}
+
+		console.log([ ...colCells ]);
+	}
+
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;

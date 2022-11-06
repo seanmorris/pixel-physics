@@ -37,7 +37,7 @@ export class WaterRegion extends Region
 			const stuff = this.skimParticles.get(actor);
 			const {skimParticle, timeout} = stuff;
 			timeout();
-			const newTimeout = this.viewport.onFrameOut(6, () => {
+			const newTimeout = this.viewport.onFrameOut(2, () => {
 				this.viewport.particles.remove(skimParticle);
 				this.skimParticles.delete(actor);
 			});
@@ -53,16 +53,9 @@ export class WaterRegion extends Region
 
 		const skimParticle = new Tag(`<div class = "particle-skim">`);
 
-		skimParticle.style({
-			'--x': splashPoint[0] + actor.x
-			, '--y': splashPoint[1] + actor.y
-			, 'z-index': 0
-			, '--flip': `${actor.args.direction}`
-		});
-
 		this.viewport.particles.add(skimParticle);
 
-		const timeout = this.viewport.onFrameOut(6, () => {
+		const timeout = this.viewport.onFrameOut(2, () => {
 			this.viewport.particles.remove(skimParticle)
 			this.skimParticles.delete(actor);
 		});
@@ -177,6 +170,23 @@ export class WaterRegion extends Region
 		}
 
 		super.update();
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		for(const [actor, {skimParticle}] of this.skimParticles)
+		{
+			const splashPoint = actor.rotatePoint(0, 3);
+
+			skimParticle.style({
+				'--x': splashPoint[0] + actor.x - 32 * Math.sign(actor.args.gSpeed)
+				, '--y': splashPoint[1] + actor.y
+				, 'z-index': 0
+				, '--flip': `${actor.args.direction}`
+			});
+		}
 	}
 
 	updateActor(other)

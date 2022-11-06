@@ -134,7 +134,9 @@ export class PointActor extends View
 
 		this.stepCache = {};
 
-		this.fallTime  = 0;
+		this.fallTime    = 0;
+		this.idleTime    = 0;
+		this.groundTime  = 0;
 
 		this.locked = 0;
 
@@ -683,9 +685,11 @@ export class PointActor extends View
 			, '--angle':          'angle'
 			, '--palletShift':    'palletShift'
 			, '--fly-angle':      'flyAngle'
-			, '--display-angle':  'groundAngle'
-			, '--ground-angle':   'groundAngle'
+			, '--display-angle':  'groundAngle8'
+			, '--ground-angle':   'groundAngle8'
+			, '--ground-angle8':  'groundAngle8'
 			, '--air-angle':      'airAngle'
+			, '--corkscrew':      'corkscrew'
 			, '--opacity':        'opacity'
 			, '--height':         'height'
 			, '--width':          'width'
@@ -699,7 +703,10 @@ export class PointActor extends View
 			, 'data-colliding': 'colliding'
 			, 'data-direction': 'direction'
 			, 'data-respawning':'respawning'
+			, 'data-animation':' animation'
 			, 'data-heading':   'heading'
+			, 'data-super':     'isSuper'
+			, 'data-hyper':     'isHyper'
 			, 'data-mercy':     'mercy'
 			, 'data-selected':  'selected'
 			, 'data-following': 'following'
@@ -772,9 +779,11 @@ export class PointActor extends View
 
 		this.init = true;
 
-		this.args.bindTo('animation', v => this.box.setAttribute('data-animation', v));
-		this.bindTo('isSuper',  v => this.box.setAttribute('data-super', v));
-		this.bindTo('isHyper',  v => this.box.setAttribute('data-hyper', v));
+		this.args.bindTo('animation', (v,k,t,d,p) => {
+			// const animations = this.box.getAnimations({subtree:true});
+			// animations.forEach(animation => animation.cancel());
+			this.box.setAttribute('data-animation', v);
+		});
 
 		if(this.controllable)
 		{
@@ -832,6 +841,16 @@ export class PointActor extends View
 		if(lastFocus !== this && lastFocus !== this.focused)
 		{
 			this.viewport && this.viewport.auras.delete(lastFocus);
+		}
+
+		this.args.groundAngle8 = this.args.groundAngle;
+
+		if(!this.args.falling
+			&& !this.args.grinding
+			&& this.args.mode === 0
+			&& Math.abs(this.args.groundAngle8) <= ((Math.PI / 8) + 0.01))
+		{
+			this.args.groundAngle8 = 0;
 		}
 
 		for(const [tag, cssArgs] of this.autoStyle)
@@ -949,6 +968,11 @@ export class PointActor extends View
 	setCameraMode()
 	{
 		if(!this.viewport)
+		{
+			return;
+		}
+
+		if(this.args.cameraIgnore)
 		{
 			return;
 		}
@@ -2560,7 +2584,7 @@ export class PointActor extends View
 				const ring = new Ring;
 
 				const circle = Math.ceil(current / 8);
-				const angle  = (current % 8) * (Math.PI / 4);
+				const angle  = (current % 8) * (Math.PI / 4) + (Math.PI / 4);
 				const radius = 1 * circle;
 
 				const cos = Math.cos(angle);

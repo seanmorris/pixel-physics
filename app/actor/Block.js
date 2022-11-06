@@ -42,14 +42,14 @@ export class Block extends PointActor
 
 		this.args.conveyed = 0;
 
-		this.args.ySpeedMax = 16;
+		this.args.ySpeedMax = 32;
 
 		this.originalX = this.args.x;
 		this.originalY = this.args.y;
 
 		this.args.solid = this.args.solid ?? true;
 
-		this.args.gravity = 0.6;
+		this.args.gravity = 0.4;
 
 		this.args.collapse = args.collapse ?? false;
 		this.args.drop     = args.drop     ?? false;
@@ -159,7 +159,7 @@ export class Block extends PointActor
 			return false;
 		}
 
-		if(other.isRegion || other.noClip)
+		if(other.isRegion || other.noClip || other.args.static)
 		{
 			return false;
 		}
