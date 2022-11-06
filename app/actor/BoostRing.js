@@ -45,6 +45,7 @@ export class BoostRing extends PointActor
 		other.args.ySpeed = 0;
 		other.args.float  = 15;
 		other.args.ignore = 15;
+		other.args.groundAngle = 0;
 
 		this.shooting.add(other);
 

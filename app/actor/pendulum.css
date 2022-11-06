@@ -13,6 +13,8 @@
 
 [data-theme="wood"] .actor-item .chain,
 [data-bg="wood"] .actor-item .chain {
+	width: 4px;
+	left: calc(50% - 3px);
 	background-image: url(/Sonic/rope.png);
 	/*background-repeat: repeat-y;*/
 }

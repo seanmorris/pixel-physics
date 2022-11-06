@@ -37,8 +37,13 @@ export class CorkscrewRegion extends Region
 			return;
 		}
 
-		if(Math.abs(other.args.xSpeed) < 5)
+		if(Math.abs(other.args.xSpeed) < 1 || Math.abs(other.args.ySpeed) > 5)
 		{
+			if(other.args.animation === 'corkscrew')
+			{
+				other.args.animation = 'walking';
+			}
+
 			return;
 		}
 
@@ -52,21 +57,25 @@ export class CorkscrewRegion extends Region
 
 		other.args.ySpeed = 0;
 		other.args.xSpeed = Math.max(Math.abs(other.args.xSpeed) || (other.args.width)) * Math.sign(other.args.xSpeed);
-		other.args.gSpeed = other.args.xSpeed;
 		other.args.mode   = 0;
 		other.args.ignore = -2;
 		other.args.cameraMode = 'corkscrew';
 
-		other.args.xSpeed -= Math.sign(other.args.xSpeed) * (-1+Math.abs(shiftFactor)) * 0.10;
+		other.args.xSpeed += Math.sign(other.args.xSpeed) * (-1 + Math.abs(shiftFactor)) * 0.25;
+
+		other.args.gSpeed = other.args.xSpeed;
 
 		if(xDist > 1 || xDist < 0)
 		{
-			other.args.falling = false;
+			other.args.animation = 'walking';
+			// other.args.falling = false;
 			other.args.y = this.y - 1;
+			other.args.corkscrew = 0;
 		}
 		else
 		{
-			other.args.animation = 'rolling';
+			other.args.animation = 'corkscrew';
+			other.args.corkscrew = xDist;
 		}
 	}
 

@@ -578,6 +578,11 @@ export class Platformer
 			host.args.ignore--;
 		}
 
+		if(host.args.cameraIgnore > 0)
+		{
+			host.args.cameraIgnore--;
+		}
+
 		if(host.args.mercy > 0)
 		{
 			host.args.mercy--;
@@ -904,6 +909,11 @@ export class Platformer
 					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
 
+				if(host.args.mode === 0 && host.getMapSolidAt(host.args.x, host.args.y - 1))
+				{
+					host.args.y--;
+				}
+
 				this.updateGroundPosition(host);
 
 				host.args.groundTimeTotal++;
@@ -1093,11 +1103,10 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					host.args.x += host.args.width/2;
 
 					if(host.args.rolling)
 					{
-						host.args.x += host.args.width/2;
+						host.args.x += host.args.width;
 						host.args.y += host.args.height;
 						host.args.ySpeed = host.args.gSpeed;
 						host.args.float = 1;
@@ -1105,9 +1114,10 @@ export class Platformer
 					else
 					{
 						host.args.groundAngle = -Math.PI / 2;
+						host.args.x++;
 					}
 
-
+					host.args.cameraIgnore = 30;
 					host.args.ignore = 30;
 
 				}
@@ -1119,11 +1129,10 @@ export class Platformer
 
 					host.args.mode = MODE_FLOOR
 					host.args.falling = true;
-					host.args.x -= host.args.width/2;
 
 					if(host.args.rolling)
 					{
-						host.args.x -= host.args.width/2;
+						host.args.x -= host.args.width;
 						host.args.y += host.args.height;
 						host.args.ySpeed = -host.args.gSpeed;
 						host.args.float = 1;
@@ -1131,8 +1140,10 @@ export class Platformer
 					else
 					{
 						host.args.groundAngle = Math.PI / 2;
+						host.args.x--;
 					}
 
+					host.args.cameraIgnore = 30;
 					host.args.ignore = 30;
 				}
 				else if(mode === MODE_CEILING)
@@ -1239,7 +1250,7 @@ export class Platformer
 			console.log(host.lastAngles, host.lastAngles.length);
 		}
 
-		if(!host.args.float && !host.args.static)
+		if(!host.args.float && !host.args.static && !host.noClip)
 		{
 			const standingOn = host.getMapSolidAt(...host.groundPoint);
 
@@ -1382,11 +1393,13 @@ export class Platformer
 
 		if(host.args.falling)
 		{
+			host.args.groundTime = 0;
 			host.args.rolling = false;
 			host.fallTime++;
 		}
 		else
 		{
+			host.args.groundTime++;
 			host.args.idleTime++;
 
 			if(host.yAxis || host.xAxis)
@@ -1687,8 +1700,8 @@ export class Platformer
 									{
 										if(host.args.gSpeed < 0)
 										{
-											host.args.x -= host.args.direction;
-											host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+											// host.args.x -= host.args.direction;
+											// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
 											// host.args.y -= host.args.gSpeed + -2;
 											// host.args.groundAngle = 0;
 										}
@@ -1717,6 +1730,7 @@ export class Platformer
 									}
 
 									host.args.mode = MODE_FLOOR;
+									host.args.cameraIgnore = 30;
 
 									// host.onNextFrame(() => {
 									// });
@@ -1734,12 +1748,12 @@ export class Platformer
 
 								if(!host.args.climbing)
 								{
-									if(Math.abs(host.args.gSpeed) < 2 && !host.args.rolling)
+									if(Math.abs(host.args.gSpeed) < 3 && !host.args.rolling)
 									{
 										if(host.args.gSpeed > 0)
 										{
-											host.args.x -= host.args.direction;
-											host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+											// host.args.x -= host.args.direction;
+											// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
 											// host.args.y -= host.args.gSpeed + 2;
 											// host.args.groundAngle = 0;
 										}
@@ -1768,6 +1782,8 @@ export class Platformer
 									}
 
 									host.args.mode = MODE_FLOOR;
+									host.args.cameraIgnore = 30;
+
 									// host.onNextFrame(() => {
 									// });
 
@@ -2361,11 +2377,16 @@ export class Platformer
 			return;
 		}
 
-		if(host.controllable || host.isVehicle)
+		if(host.fallTime > 8 && (host.controllable || host.isVehicle))
 		{
-			const quickSpin = host.springing;
+			let spinBack = 20;
 
-			host.args.groundAngle += -Math.sign(host.args.groundAngle) * 0.001 * (quickSpin ? 125 : 50);
+			if(host.springing)
+			{
+				spinBack = 125;
+			}
+
+			host.args.groundAngle += -Math.sign(host.args.groundAngle) * 0.001 * spinBack;
 		}
 
 		if(Math.abs(host.args.groundAngle) < 0.04)

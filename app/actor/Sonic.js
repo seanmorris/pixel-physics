@@ -650,7 +650,7 @@ export class Sonic extends PointActor
 			this.args.animation = 'walking';
 		}
 
-		if(this.args.animation === 'skidding' && this.fallTime > 8)
+		if(this.args.animation === 'skidding' && this.fallTime > 16)
 		{
 			this.args.animation = 'skidding-falling';
 		}

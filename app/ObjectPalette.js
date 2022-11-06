@@ -39,6 +39,8 @@ import { Tree }          from './actor/Tree';
 import { Coconut }       from './actor/Coconut';
 import { Mushroom }      from './actor/Mushroom';
 import { Door }          from './actor/Door';
+import { PlatformFlare } from './actor/PlatformFlare';
+import { GravityPad }    from './actor/GravityPad';
 
 import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
@@ -209,6 +211,13 @@ import { Spawner } from './actor/Spawner';
 
 import { NeverBetter } from './actor/NeverBetter';
 
+import { AsteroidLarge } from './actor/AsteroidLarge';
+import { AsteroidMedium } from './actor/AsteroidMedium';
+import { AsteroidSmall } from './actor/AsteroidSmall';
+import { Asteroid } from './actor/Asteroid';
+
+import { RocketPlatform } from './actor/RocketPlatform';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -226,6 +235,8 @@ export const ObjectPalette = {
 	, 'coconut':         Coconut
 	, 'mushroom':        Mushroom
 	, 'door':            Door
+	, 'platform-flare':  PlatformFlare
+	, 'gravity-pad':     GravityPad
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock
@@ -372,4 +383,9 @@ export const ObjectPalette = {
 	, 'tester': Tester
 	, 'spawner': Spawner
 	, 'never-better': NeverBetter
+	, 'asteroid-large': AsteroidLarge
+	, 'asteroid-medium': AsteroidMedium
+	, 'asteroid-small': AsteroidSmall
+	, 'asteroid': Asteroid
+	, 'rocket-platform': RocketPlatform
 };
