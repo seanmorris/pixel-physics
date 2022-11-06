@@ -3674,22 +3674,100 @@ export class Viewport extends View
 
 	actorsAtLine(x1, y1, x2, y2)
 	{
-		const colCells = new Set;
+		const testActors = new Set;
 
-		for(const x of Array(Math.abs(x1 - x2)+1).keys())
-		for(const y of Array(Math.abs(y1 - y2)+1).keys())
+		const cellX1 = Math.floor(x1 / this.colCellDiv);
+		const cellY1 = Math.floor(y1 / this.colCellDiv);
+		const cellX2 = Math.floor(x2 / this.colCellDiv);
+		const cellY2 = Math.floor(y2 / this.colCellDiv);
+
+		for(const x of Array(1 + Math.abs(cellX1 + -cellX2)).keys())
+		for(const y of Array(1 + Math.abs(cellY1 + -cellY2)).keys())
 		{
-			const name = `${x}:${y}`;
+			const name = `${x + Math.min(cellX1, cellX2)}:${y + Math.min(cellY1, cellY2)}`;
 
 			if(!this.colCells.has(name))
 			{
 				continue;
 			}
 
-			colCells.add( this.colCells.get(name) );
+			for(const actor of this.colCells.get(name))
+			{
+				testActors.add(actor)
+			}
 		}
 
-		console.log([ ...colCells ]);
+		const actors = new Map;
+
+		for(const actor of testActors)
+		{
+			const intersection = this.actorIntersectsLine(actor, x1, y1, x2, y2)
+
+			if(!intersection)
+			{
+				continue;
+			}
+
+			const distance = Math.sqrt((x1 - intersection[0]) **2 + (y1 - intersection[1]) **2);
+
+			actors.set(actor, {intersection, distance});
+		}
+
+		return new Map([...actors.entries()].sort((a,b) => a[1].distance - b[1].distance));
+	}
+
+	lineIntersectsLine(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y)
+	{
+		const ax = a2x - a1x;
+		const ay = a2y - a1y;
+
+		const bx = b2x - b1x;
+		const by = b2y - b1y;
+
+		const crossProduct = ax * by - ay * bx;
+
+		if(crossProduct === 0)
+		{
+			return false;
+		}
+
+		const cx = b1x - a1x;
+		const cy = b1y - a1y;
+
+		const d = (cx * by - cy * bx) / crossProduct;
+
+		if(d < 0 || d > 1)
+		{
+			return false;
+		}
+
+		const e = (cx * ay - cy * ax) / crossProduct;
+
+		if(e < 0 || e > 1)
+		{
+			return false;
+		}
+
+		return [a1x + d * ax, a1y + d * ay];
+	}
+
+	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
+	{
+		const points    = actor.getBoundingLines()
+		.map(line => this.lineIntersectsLine(...line, b1x, b1y, b2x, b2y))
+		.filter(x => x);
+
+		if(!points.length)
+		{
+			return false;
+		}
+
+		const distances = points
+		.map(point => Math.sqrt((b1x - point[0]) ** 2 + (b1y - point[1]) ** 2));
+
+		const closest = points[ distances.indexOf(Math.min(...distances)) ];
+
+		return closest;
 	}
 
 	padConnected(event)

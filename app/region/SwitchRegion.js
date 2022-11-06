@@ -62,6 +62,8 @@ export class SwitchRegion extends Region
 					this.args.delay || 1
 					, ()=>target.activate(actor, this)
 				);
+
+				actor.explode();
 			}
 
 			return;

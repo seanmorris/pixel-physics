@@ -909,8 +909,15 @@ export class Platformer
 					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
 
-				if(host.args.mode === 0 && host.getMapSolidAt(host.args.x, host.args.y - 1))
+				let popOut = 8;
+
+				while(host.args.mode === 0 && host.getMapSolidAt(host.args.x, host.args.y - 1))
 				{
+					if(--popOut <= 0)
+					{
+						return;
+					}
+
 					host.args.y--;
 				}
 
@@ -2413,12 +2420,6 @@ export class Platformer
 
 		host.upScan = true;
 
-		// const upDistance = host.castRay(
-		// 	Math.abs(host.args.ySpeed) + upMargin
-		// 	, -Math.PI / 2
-		// 	, host.findSolid
-		// );
-
 		const upScanDist = host.args.ySpeed < 0
 			? (-host.args.ySpeed + upMargin)
 			: 0;
@@ -2436,13 +2437,6 @@ export class Platformer
 			, [host.args.width/2, 0]
 			, host.findSolid
 		);
-
-		// const upDistanceM = host.castRay(
-		// 	upScanDist
-		// 	, -Math.PI / 2
-		// 	, [0, 0]
-		// 	, host.findSolid
-		// );
 
 		const upDistance = (upDistanceL || upDistanceR)
 			? Math.min(...[upDistanceL, upDistanceR].filter(x => x !== false))
@@ -3443,27 +3437,47 @@ export class Platformer
 		const dir      = Math.sign(speed);
 		const radius   = host.args.width / 2;
 		const scanDist = Math.abs(speed);
-		// const viewport = host.viewport;
-
-		// if(!viewport)
-		// {
-		// 	return;
-		// }
-
-		// const 	  = viewport.tileMap;
 
 		const startPoint = host.args.falling
 			? [radius * -dir, -host.args.height * height]
 			: host.rotatePoint(radius * -dir, host.args.height * height);
 
-		return host.castRay(
+		const angle = host.args.falling
+			? [Math.PI,0,0][dir+1]
+			: host.realAngle + [0,0,Math.PI][dir+1]
+
+		const magnitude = host.castRay(
 			scanDist + host.args.width
-			, host.args.falling
-				? [Math.PI,0,0][dir+1]
-				: host.realAngle + [0,0,Math.PI][dir+1]
+			, angle
 			, startPoint
-			, scanActors ? host.findSolid : host.findSolidTile
+			, host.findSolidTile
+			// , scanActors ? host.findSolid : host.findSolidTile
 		);
+
+		if(scanActors && magnitude !== false)
+		{
+			const endPoint = [
+				startPoint[0] + Math.cos(angle) * magnitude
+				, startPoint[1] + Math.sin(angle) * magnitude
+			];
+
+			const actorsAtLine = host.viewport.actorsAtLine(
+				startPoint[0] + host.args.x
+				, -startPoint[1] + host.args.y
+				, endPoint[0] + host.args.x
+				, -endPoint[1] + host.args.y
+			);
+
+			for(const [actor, {intersection, distance}] of actorsAtLine)
+			{
+				if(host.checkSolidActors(actor))
+				{
+					return distance;
+				}
+			}
+		}
+
+		return magnitude;
 	}
 
 	scanBottomEdge(direction = 1)

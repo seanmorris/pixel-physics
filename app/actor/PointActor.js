@@ -1791,9 +1791,17 @@ export class PointActor extends View
 
 	findSolidTile(i, point, actor)
 	{
+		if(!actor.viewport)
+		{
+			return;
+		}
+
+		const viewport = actor.viewport;
+		const tileMap  = viewport.tileMap;
+
 		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
 
-		if(this.upScan)
+		if(actor.upScan)
 		{
 			actor.lastLayer = solid;
 		}
@@ -2745,6 +2753,22 @@ export class PointActor extends View
 		}
 
 		return result;
+	}
+
+	getBoundingLines()
+	{
+
+		const left   = this.args.x - (this.isRegion ? 0 : this.args.width / 2);
+		const right  = this.args.x + (this.isRegion ? this.args.width : this.args.width / 2);
+		const top    = this.args.y - this.args.height;
+		const bottom = this.args.y;
+
+		return [
+			[right, top, right, bottom]
+			, [left, top, left, bottom]
+			, [right, top, left, top]
+			, [right, bottom, left, bottom]
+		]
 	}
 }
 
