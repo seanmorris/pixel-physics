@@ -51,7 +51,6 @@ export class Asteroid extends PointActor
 			}
 		}
 
-
 		if(viewport.args.frameId - this.args.firedAt < 90)
 		{
 			super.update();

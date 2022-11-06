@@ -33,7 +33,7 @@ export class AsteroidBase extends PointActor
 
 		const viewport = this.viewport;
 
-		if(!this.args.falling && (Math.abs(this.args.gSpeed) < 3 || this.args.groundTime > 3))
+		if(!this.args.falling)
 		{
 			this.break();
 		}

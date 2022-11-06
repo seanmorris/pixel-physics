@@ -41,10 +41,10 @@ export class AsteroidMedium extends AsteroidBase
 		const ySpeed = this.ySpeedLast || 0;
 
 		const pieces = [
-			  new AsteroidSmall({falling:true, x:this.args.x +  0, y:this.args.y - 24, ySpeed: ySpeed * -0.5 - 0.3, xSpeed:xSpeed + 0.00})
-			, new AsteroidSmall({falling:true, x:this.args.x +  0, y:this.args.y +  0, ySpeed: ySpeed * -0.5 + 0.3, xSpeed:xSpeed + 0.00})
-			, new AsteroidSmall({falling:true, x:this.args.x - 14, y:this.args.y - 12, ySpeed: ySpeed * -0.5 + 0.0, xSpeed:xSpeed - 0.15})
-			, new AsteroidSmall({falling:true, x:this.args.x + 14, y:this.args.y - 12, ySpeed: ySpeed * -0.5 + 0.0, xSpeed:xSpeed + 0.15})
+			  new AsteroidSmall({falling:true, x:this.args.x +  0, y:this.args.y - 24, ySpeed: ySpeed * -0.5 - 1, xSpeed:xSpeed + 0.00})
+			, new AsteroidSmall({falling:true, x:this.args.x +  0, y:this.args.y +  0, ySpeed: ySpeed * -0.5 - 1, xSpeed:xSpeed + 0.00})
+			, new AsteroidSmall({falling:true, x:this.args.x - 14, y:this.args.y - 12, ySpeed: ySpeed * -0.5 - 1, xSpeed:xSpeed - 0.15})
+			, new AsteroidSmall({falling:true, x:this.args.x + 14, y:this.args.y - 12, ySpeed: ySpeed * -0.5 - 1, xSpeed:xSpeed + 0.15})
 		];
 
 		pieces.forEach(object => viewport.spawn.add({object}));
