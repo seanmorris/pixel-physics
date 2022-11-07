@@ -60,6 +60,9 @@ export class Block extends PointActor
 
 		this.activatedAt = null;
 
+		this.originalModes = new Map;
+		this.watching = new Set;
+
 		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
 
@@ -167,6 +170,44 @@ export class Block extends PointActor
 		if(other.args.standingOn === this)
 		{
 			this.weighted = true;
+		}
+
+		let xDist  = 0.5 + (other.x - this.x) / this.args.width;
+
+		if(other.args.gSpeed < 0)
+		{
+			xDist = -xDist + 1;
+		}
+
+		if(other.args.mode)
+		{
+			xDist = -xDist + 1;
+		}
+
+		if(this.args.hSwap
+			&& other.args.groundTime > 5
+			&& Math.abs(other.args.gSpeed) > 8
+			&& (xDist < 0.2)
+		){
+
+			if(!this.watching.has(other))
+			{
+				this.watching.add(other);
+			}
+
+			if(!this.originalModes.has(other))
+			{
+				this.originalModes.set(other, {
+					mode: other.args.mode
+					, rolling: other.args.rolling
+					, gSpeed: other.args.gSpeed
+				});
+			}
+
+			if(this.originalModes.has(other))
+			{
+				other.args.gSpeed = this.originalModes.get(other).gSpeed;
+			}
 		}
 
 		if(!other.args.falling
@@ -597,10 +638,112 @@ export class Block extends PointActor
 	{
 		super.updateEnd();
 
-		// if(!this.viewport.collisions.has(this))
-		// {
-		// 	return;
-		// }
+		for(const other of this.watching)
+		{
+			const {mode, rolling, gSpeed} = this.originalModes.get(other);
+
+			let xDist  = 0.5 + (other.x - this.x) / this.args.width;
+
+			const direction = Math.sign(gSpeed);
+
+			if(direction < 0)
+			{
+				xDist = -xDist + 1;
+			}
+
+			if(mode)
+			{
+				xDist = -xDist + 1;
+			}
+
+			if(xDist < 0.1)
+			{
+				if(mode === 0)
+				{
+					other.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
+				}
+
+				if(mode === 2)
+				{
+					other.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
+				}
+			}
+
+			if(xDist < 0 || xDist > 1)
+			{
+				other.args.xSpeed = other.xSpeedLast;
+				other.args.float = 0;
+				other.args.falling = false;
+				other.noClip = false;
+				this.originalModes.delete(other);
+				this.watching.delete(other);
+			}
+			else if(xDist >= 0.75)
+			{
+				other.args.float = 0;
+				other.args.falling = false;
+				other.noClip = false;
+				other.args.rolling = rolling;
+				other.args.xSpeed = other.xSpeedLast;
+
+				other.args.ignore = 6;
+				// other.xAxis = Math.sign(other.args.gSpeed);
+
+				if(mode === 0)
+				{
+					other.args.gSpeed = -other.xSpeedLast;
+					other.args.y = this.args.y;
+					other.args.mode = 2;
+					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
+				}
+
+				if(mode === 2)
+				{
+					other.args.gSpeed = other.xSpeedLast;
+					other.args.y = this.args.y + -this.args.height;
+					other.args.mode = 0;
+					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
+				}
+			}
+			else if(xDist < 0.9)
+			{
+				other.args.gSpeed = mode ? -other.xSpeedLast : other.xSpeedLast;
+				other.args.xSpeed = other.xSpeedLast;
+				other.args.float = -1;
+				other.noClip = true;
+				other.args.ignore = 1;
+				// other.xAxis = Math.sign(other.args.gSpeed);
+
+				other.args.direction = -Math.sign(gSpeed);
+
+				const shiftFactor = Math.min(Math.max(xDist * 1.333, 0), 1);
+
+				if(!rolling)
+				{
+					other.args.corkscrew = Math.min(shiftFactor * 0.5, 0.375);
+					other.args.animation = 'barrel-roll';
+				}
+				else
+				{
+					other.args.rolling = true;
+				}
+
+				if(mode === 0)
+				{
+					other.args.y = this.y + -this.args.height + this.args.height * shiftFactor * 2;
+				}
+
+				if(mode === 2)
+				{
+					other.args.y = this.y + -this.args.height * shiftFactor * 2;
+				}
+			}
+		}
+
+		if(!this.viewport.collisions.has(this))
+		{
+			return;
+		}
 
 		if(!this.viewport || !this.viewport.collisions.has(this))
 		{

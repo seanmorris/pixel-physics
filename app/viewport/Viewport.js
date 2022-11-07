@@ -3753,6 +3753,16 @@ export class Viewport extends View
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
 	{
+		const left   = actor.args.x - actor.args.width * 0.5;
+		const right  = actor.args.x + actor.args.width * 0.5;
+		const top    = actor.args.y - actor.args.height;
+		const bottom = actor.args.y;
+
+		if(left < b1x && b1x < right && top < b1y && b1y < bottom)
+		{
+			return [b1x, b1y];
+		}
+
 		const points    = actor.getBoundingLines()
 		.map(line => this.lineIntersectsLine(...line, b1x, b1y, b2x, b2y))
 		.filter(x => x);
