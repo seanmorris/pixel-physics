@@ -568,6 +568,11 @@ export class Platformer
 			host.viewport.onFrameOut(1, () => host.args.ignore = 0);
 		}
 
+		if(host.args.ignore === -4 && !host.args.falling)
+		{
+			host.args.ignore = 30;
+		}
+
 		if(host.args.ignore < 1 && host.args.ignore > 0)
 		{
 			host.args.ignore = 0;
@@ -869,8 +874,8 @@ export class Platformer
 					host.args.grinding = false;
 				}
 
-				host.args.mode    = MODE_FLOOR;
-				host.args.gSpeed  = 0;
+				// host.args.mode    = MODE_FLOOR;
+				// host.args.gSpeed  = 0;
 				host.args.pushing = false;
 
 				if(host.args.xSpeed || host.args.ySpeed)
@@ -909,7 +914,7 @@ export class Platformer
 					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
 
-				let popOut = 8;
+				let popOut = 16;
 
 				while(host.args.mode === 0 && host.getMapSolidAt(host.args.x, host.args.y - 1))
 				{
@@ -1125,7 +1130,7 @@ export class Platformer
 					}
 
 					host.args.cameraIgnore = 30;
-					host.args.ignore = 30;
+					host.args.ignore = -4;
 
 				}
 				else if(mode === MODE_RIGHT && (host.args.groundAngle > -Math.PI * 0.15))
@@ -1151,7 +1156,7 @@ export class Platformer
 					}
 
 					host.args.cameraIgnore = 30;
-					host.args.ignore = 30;
+					host.args.ignore = -4;
 				}
 				else if(mode === MODE_CEILING)
 				{
@@ -1160,7 +1165,6 @@ export class Platformer
 					host.args.xSpeed = 0;
 
 					// host.args.y -= host.args.height;
-					host.args.ignore = 8;
 					host.args.falling = true;
 					host.willJump = false;
 
@@ -1191,6 +1195,9 @@ export class Platformer
 							// host.args.x--;
 						}
 					}
+
+					host.args.cameraIgnore = 30;
+					host.args.ignore = -2;
 				}
 			}
 		}
@@ -2403,6 +2410,9 @@ export class Platformer
 
 		if(host.noClip)
 		{
+			host.xLast = host.args.x;
+			host.yLast = host.args.y;
+
 			host.args.x += host.args.xSpeed;
 			host.args.y += host.args.ySpeed;
 
@@ -2642,6 +2652,7 @@ export class Platformer
 			// if(!host.viewport.tileMap.getSolid(stickX, stickY))
 			// {
 			// }
+
 			host.args.x = stickX;
 			host.args.y = stickY;
 

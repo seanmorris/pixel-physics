@@ -147,6 +147,15 @@
 	animation-play-state: paused;
 }
 
+.actor-item.actor-sonic[data-animation="barrel-roll"] .sprite:after {
+	--sprite-offset-y: -960px;
+	--sprite-offset-x: -0px;
+	animation: sonic-corkscrew steps(12) infinite 1s calc(-1s + calc(-1s * var(--corkscrew))) forwards;
+	animation-play-state: paused;
+	/*transform: rotate(90deg);*/
+	/*transition: transform 1s;*/
+}
+
 .actor-item.actor-sonic[data-animation="flip"] .sprite:after {
 	--sprite-offset-y: -960px;
 	--sprite-offset-x: -0px;

@@ -34,7 +34,7 @@ export class GravityPad extends PointActor
 		other.args.float = 1;
 		other.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
 
-		if(Math.abs(other.args.xSpeed) > 5)
+		if(Math.abs(other.xLast - other.args.x) > 5)
 		{
 			other.args.ignore = 1;
 		}
