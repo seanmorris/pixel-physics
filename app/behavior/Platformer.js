@@ -2115,7 +2115,7 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 4)
 						{
-							host.args.gSpeed += 0.45 * slopeFactor * direction;
+							host.args.gSpeed += 0.60 * slopeFactor * direction;
 						}
 
 						if(Math.abs(host.args.gSpeed) < 1)
@@ -2149,13 +2149,16 @@ export class Platformer
 						{
 							const slopeVector = slopeFactor * direction;
 
-							if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+							if(host.args.gSpeed || Math.abs(slopeFactor) > 0.075)
 							{
-								host.args.gSpeed += 1.65 * slopeFactor * direction;
-							}
-							else
-							{
-								host.args.gSpeed += 0.25 * slopeFactor * direction;
+								if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+								{
+									host.args.gSpeed += 1.65 * slopeFactor * direction;
+								}
+								else
+								{
+									host.args.gSpeed += 0.25 * slopeFactor * direction;
+								}
 							}
 						}
 						else
@@ -2178,7 +2181,7 @@ export class Platformer
 							}
 						}
 					}
-					else if(slopeFactor < 0)
+					else if(slopeFactor < -0.075)
 					{
 						if(Math.abs(host.args.gSpeed) < 10)
 						{

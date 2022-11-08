@@ -2492,6 +2492,7 @@ export class PointActor extends View
 		this.args.jumping = false;
 		this.args.falling = true;
 		this.args.ignore  = -1;
+		this.args.mercy   = 0;
 		this.args.float   = 0;
 
 		this.args.rings = 0;
