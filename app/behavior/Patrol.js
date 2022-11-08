@@ -20,5 +20,9 @@ export class Patrol extends Behavior
 				host.args.gSpeed = speed;
 			}
 		}
+		else
+		{
+			host.args.direction = -Math.sign(host.gSpeedLast);
+		}
 	}
 }

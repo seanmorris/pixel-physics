@@ -740,6 +740,143 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		}
 	}
 
+	castRay(startX, startY, angle, maxDistance = 320, layerId = 0)
+	{
+		const cos = Math.cos(angle);
+		const sin = Math.sin(angle);
+
+		const endX = startX + (Math.abs(cos) > Number.EPSILON ? cos : 0) * maxDistance;
+		const endY = startY + (Math.abs(sin) > Number.EPSILON ? sin : 0) * maxDistance;
+
+		const bs = this.blockSize;
+
+		const dx = endX - startX;
+		const dy = endY - startY;
+
+		const ox = Math.sign(dx);
+		const oy = Math.sign(dy);
+
+		const sx = dx ? Math.sqrt(1 + (dy / dx) ** 2) : 0;
+		const sy = dy ? Math.sqrt(1 + (dx / dy) ** 2) : 0;
+
+		let checkX = 0;
+		let checkY = 0;
+
+		let currentDistance = 0;
+
+		let found = false;
+
+		const [tx, ty] = this.coordsToTile(startX ,startY, layerId);
+
+		const initMode = this.getTileNumber(tx, ty, layerId);
+		let modeX = initMode;
+		let modeY = initMode;
+
+		// console.log({tx, ty, initMode});
+
+		let bf = initMode ? 1 : bs;
+
+		const ax = startX % bf;
+		const ay = bf - startY % bf;
+
+		let rayX = ax * sx * ox;
+		let rayY = ay * sy * oy;
+
+		const pa = new Set;
+		const pb = new Set;
+		const pas = new Set;
+		const pbs = new Set;
+
+		const magX = Math.abs(rayX);
+		const magY = Math.abs(rayY);
+
+		const tests = new Set;
+
+		console.log({rayX, rayY, modeX, modeY});
+
+		console.time('rayCast');
+
+		while(!found && Math.abs(currentDistance) < maxDistance)
+		{
+			if(ox && (!oy || Math.abs(rayX) < Math.abs(rayY)))
+			{
+
+
+				const mag = Math.abs(rayX);
+
+				const px = Math.trunc(startX + mag * Math.cos(angle));
+				const py = Math.trunc(startY + mag * Math.sin(angle));
+
+				pa.add([px, py]);
+
+				const [tx, ty] = this.coordsToTile(-1+px, -1+py, layerId);
+				modeX = this.getTileNumber(tx, ty, layerId);
+
+				// console.log({px, py, rayX, layerId, modeX});
+
+				if(modeX && this.getSolid(px, py, layerId))
+				{
+					pas.add([px, py]);
+				}
+
+				bf = modeX ? 1 : bs;
+
+				checkX += bf * ox;
+				currentDistance = Math.abs(rayX);
+				rayX += bf * sx * ox;
+			}
+			else
+			{
+
+
+				const mag = Math.abs(rayY);
+
+				const px = Math.trunc(startX + mag * Math.cos(angle));
+				const py = Math.trunc(startY + mag * Math.sin(angle));
+
+				pb.add([px, py]);
+
+				const [tx, ty] = this.coordsToTile(px, py, layerId);
+				modeY = this.getTileNumber(tx, ty, layerId);
+
+				// console.log({px, py, rayY, layerId, modeY});
+
+				if(modeY && this.getSolid(px, py, layerId))
+				{
+					pbs.add([px, py]);
+				}
+
+				bf = modeY ? 1 : bs;
+
+				checkY += bf * oy;
+				currentDistance = Math.abs(rayY);
+				rayY += bf * sy * oy;
+			}
+		}
+
+		console.timeEnd('rayCast');
+
+		const qa = JSON.stringify([...pa]).replace(/\[/g,'(').replace(/]/g,')');
+		const qb = JSON.stringify([...pb]).replace(/\[/g,'(').replace(/]/g,')');
+		const qas = JSON.stringify([...pas]).replace(/\[/g,'(').replace(/]/g,')');
+		const qbs = JSON.stringify([...pbs]).replace(/\[/g,'(').replace(/]/g,')');
+		// const t = JSON.stringify([...tiles]).replace(/\[/g,'(').replace(/]/g,')');
+
+		// console.log(`(${startX}, ${startY})`)
+		console.log( qa.substring(1, qa.length - 1) );
+		console.log( qb.substring(1, qb.length - 1) );
+		console.log( qas.substring(1, qas.length - 1) );
+		console.log( qbs.substring(1, qbs.length - 1) );
+		// console.log( t.substring(1, t.length - 1) );
+		// console.log(`(${endX}, ${endY})`)
+
+
+		// console.log({dx, dy, sx, sy, ox, oy});
+		// console.log({currentDistance, rayX, rayY, checkX, checkY});
+
+		// console.log(bs * sx * ox, bs * sy * oy);
+	}
+
 	get blockSize()
 	{
 		return this.mapData.tilewidth;

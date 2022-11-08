@@ -1937,6 +1937,26 @@ export class Viewport extends View
 				cameraSpeed = 8;
 				break;
 
+			case 'boost-ring':
+				const angle = actor.args.angle;
+
+				console.log(angle);
+
+				if(!angle || Math.abs(angle - Math.PI) < 0.1)
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.5;
+					cameraSpeed = 24;
+				}
+				else
+				{
+					this.args.xOffsetTarget = 0.5 - 0.5 * Math.cos(angle);
+					this.args.yOffsetTarget = 0.5 - 0.2 * Math.sin(angle);
+					cameraSpeed = 16;
+				}
+
+				break;
+
 			case 'cutScene':
 				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
 				this.args.yOffsetTarget = [0.75, 0.50, 0.25, 0.50][actor.args.mode];

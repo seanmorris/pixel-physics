@@ -61,22 +61,23 @@ import { Cinematic } from './actor/Cinematic';
 
 import { Flickie } from './actor/Flickie';
 
-import { Bubbles  } from './actor/Bubbles';
-import { Redz     } from './actor/Redz';
-import { GuardBot } from './actor/GuardBot';
-import { Sping    } from './actor/Sping';
-import { CrabMeat } from './actor/CrabMeat';
-import { BuzzBomber  } from './actor/BuzzBomber';
-import { MechaFroggy } from './actor/MechaFroggy';
-import { DrainFly    } from './actor/DrainFly';
-import { GohlaBall   } from './actor/GohlaBall';
-import { Voltorb     } from './actor/Voltorb';
-import { Balkiry     } from './actor/Balkiry';
-import { Jawz        } from './actor/Jawz';
-import { SnailBot    } from './actor/SnailBot';
-import { Motobug     } from './actor/Motobug';
-import { BFish       } from './actor/BFish';
-import { Grounder    } from './actor/Grounder';
+import { Bubbles      } from './actor/Bubbles';
+import { Redz         } from './actor/Redz';
+import { GuardBot     } from './actor/GuardBot';
+import { Sping        } from './actor/Sping';
+import { CrabMeat     } from './actor/CrabMeat';
+import { BuzzBomber   } from './actor/BuzzBomber';
+import { MechaFroggy  } from './actor/MechaFroggy';
+import { DrainFly     } from './actor/DrainFly';
+import { GohlaBall    } from './actor/GohlaBall';
+import { Voltorb      } from './actor/Voltorb';
+import { Balkiry      } from './actor/Balkiry';
+import { Jawz         } from './actor/Jawz';
+import { SnailBot     } from './actor/SnailBot';
+import { Motobug      } from './actor/Motobug';
+import { BFish        } from './actor/BFish';
+import { Grounder     } from './actor/Grounder';
+import { TechnoSqueak } from './actor/TechnoSqueak';
 import { SpringTurtle } from './actor/SpringTurtle';
 
 import { SpitFire    } from './actor/SpitFire';
@@ -339,6 +340,7 @@ export const ObjectPalette = {
 	, 'motobug': Motobug
 	, 'b-fish': BFish
 	, 'grounder': Grounder
+	, 'techno-squeak': TechnoSqueak
 	, 'spring-turtle': SpringTurtle
 	, 'spitfire': SpitFire
 	, 'grapple-point': GrapplePoint
