@@ -2115,7 +2115,7 @@ export class Platformer
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 4)
 						{
-							host.args.gSpeed += 0.45 * slopeFactor * direction;
+							host.args.gSpeed += 0.60 * slopeFactor * direction;
 						}
 
 						if(Math.abs(host.args.gSpeed) < 1)
@@ -2149,13 +2149,16 @@ export class Platformer
 						{
 							const slopeVector = slopeFactor * direction;
 
-							if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+							if(host.args.gSpeed || Math.abs(slopeFactor) > 0.075)
 							{
-								host.args.gSpeed += 1.65 * slopeFactor * direction;
-							}
-							else
-							{
-								host.args.gSpeed += 0.25 * slopeFactor * direction;
+								if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+								{
+									host.args.gSpeed += 1.65 * slopeFactor * direction;
+								}
+								else
+								{
+									host.args.gSpeed += 0.25 * slopeFactor * direction;
+								}
 							}
 						}
 						else
@@ -2178,7 +2181,7 @@ export class Platformer
 							}
 						}
 					}
-					else if(slopeFactor < 0)
+					else if(slopeFactor < -0.075)
 					{
 						if(Math.abs(host.args.gSpeed) < 10)
 						{
@@ -3457,13 +3460,39 @@ export class Platformer
 			? [Math.PI,0,0][dir+1]
 			: host.realAngle + [0,0,Math.PI][dir+1]
 
-		const magnitude = host.castRay(
-			scanDist + host.args.width
+		const solidPoint = host.viewport.tileMap.castRay(
+			host.args.x + startPoint[0]
+			, host.args.y + startPoint[1]
 			, angle
-			, startPoint
-			, host.findSolidTile
-			// , scanActors ? host.findSolid : host.findSolidTile
+			, scanDist + host.args.width
+			, host.args.layer
 		);
+
+		const hostPoint = [
+			host.args.x + startPoint[0]
+			, host.args.y + startPoint[1]
+		];
+
+		let magnitude = false;
+		let mag = false;
+
+		if(solidPoint)
+		{
+			mag = Math.sqrt(
+				(hostPoint[0] - solidPoint[0]) ** 2
+				 + (hostPoint[1] - solidPoint[1]) ** 2
+			);
+		}
+
+		magnitude = (mag < scanDist + host.args.width) ? mag : false;
+
+		// const m = host.castRay(
+		// 	scanDist + host.args.width
+		// 	, angle
+		// 	, startPoint
+		// 	, host.findSolidTile
+		// 	// , scanActors ? host.findSolid : host.findSolidTile
+		// );
 
 		if(scanActors && magnitude !== false)
 		{

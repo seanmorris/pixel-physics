@@ -1,0 +1,52 @@
+.actor-item.actor-techno-squeak .sprite::before {
+	content: '';
+	position: absolute;
+	bottom: 0px;
+	left: calc(-100% * var(--direction));
+	transition: left 0.25s ease-out;
+	background-image: url(/Sonic/techno-squeak-tail.png);
+	background-position-x: calc(-0.35px * var(--tailOffset));
+	height: 5px;
+	width: 24px;
+}
+
+
+.actor-item.actor-techno-squeak .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	background-image: url(/Sonic/techno-squeak.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 14px;
+	width: 24px;
+	z-index: 1;
+}
+
+.actor-item.actor-techno-squeak[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: -32px;
+}
+
+.actor-item.actor-techno-squeak[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: -128px;
+	/*animation: grounder-walk steps(3) infinite 160ms;*/
+}
+
+.actor-item.actor-techno-squeak[data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-techno-squeak[data-animation="shooting"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-x: -320px;
+}
+/*
+@keyframes grounder-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+*/

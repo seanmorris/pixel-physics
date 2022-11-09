@@ -556,6 +556,18 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getSolid(xInput, yInput, layerInput = 0)
 	{
+
+
+		if(layerInput !== 0)
+		{
+			const ground = this.getSolid(xInput, yInput, 0);
+
+			if(ground)
+			{
+				return this.tileLayers[0];
+			}
+		}
+
 		xInput = Math.trunc(xInput);
 		yInput = Math.trunc(yInput);
 
@@ -577,7 +589,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const solidLayerCount = this.collisionLayers.length;
 
-		if(1||layerInput <= 3)
+		if(layerInput <= 3)
 		{
 			if(tileNumber === 0)
 			{
@@ -592,11 +604,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(layerInput > 0  && layerInput < solidLayerCount)
 		{
-			if(this.getSolid(xInput, yInput, 0))
-			{
-				return this.tileLayers[0];
-			}
-
 			for(let i = 0 + solidLayerCount; i < this.tileLayers.length; i++)
 			{
 				const layer = this.tileLayers[i];
@@ -738,6 +745,143 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		{
 			tileset.image = tileset.original;
 		}
+	}
+
+	castRay(startX, startY, angle, maxDistance = 320, layerId = 0)
+	{
+		maxDistance = Math.ceil(maxDistance);
+
+		const cos = Math.cos(angle);
+		const sin = Math.sin(angle);
+
+		const endX = startX + (Math.abs(cos) > Number.EPSILON ? cos : 0) * maxDistance;
+		const endY = startY + (Math.abs(sin) > Number.EPSILON ? sin : 0) * maxDistance;
+
+		const bs = this.blockSize;
+
+		const dx = endX - startX;
+		const dy = endY - startY;
+
+		const ox = Math.sign(dx);
+		const oy = Math.sign(dy);
+
+		const sx = dx ? Math.sqrt(1 + (dy / dx) ** 2) : 0;
+		const sy = dy ? Math.sqrt(1 + (dx / dy) ** 2) : 0;
+
+		let checkX = 0;
+		let checkY = 0;
+
+		let currentDistance = 0;
+
+		let found = false;
+
+		const [tx, ty] = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
+
+		const initMode = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0);
+		let modeX = initMode;
+		let modeY = initMode;
+
+		let bf = initMode ? bs : 1;
+
+		const ax = startX % bf;
+		const ay = bf - startY % bf;
+
+		let rayX = ax * sx * ox;
+		let rayY = ay * sy * oy;
+
+		const magX = Math.abs(rayX);
+		const magY = Math.abs(rayY);
+
+		let foundX = null;
+		let foundY = null;
+
+		// const pa = new Set;
+		// const pb = new Set;
+		// const pas = new Set;
+		// const pbs = new Set;
+
+		// console.time('rayCast');
+
+		while(!found && Math.abs(currentDistance) < maxDistance)
+		{
+			if(ox && (!oy || Math.abs(rayX) < Math.abs(rayY)))
+			{
+				const mag = Math.abs(rayX);
+
+				const px = (startX + mag * Math.cos(angle));
+				const py = (startY + mag * Math.sin(angle));
+
+				// pa.add([px, py]);
+
+				const [tx, ty] = this.coordsToTile(px, py, layerId);
+				modeX = this.getTileNumber(tx, ty, layerId);
+
+				if(this.getSolid(px, py, layerId))
+				{
+					foundX = [px, py];
+				}
+
+				bf = modeX ? bs : 1;
+
+				checkX += bf * ox;
+				currentDistance = Math.abs(rayX);
+				rayX += bf * sx * ox;
+			}
+			else
+			{
+				const mag = Math.abs(rayY);
+
+				const px = (startX + mag * Math.cos(angle));
+				const py = (startY + mag * Math.sin(angle));
+
+				// pb.add([px, py]);
+
+				const [tx, ty] = this.coordsToTile(px, py, layerId);
+				modeY = this.getTileNumber(tx, ty, layerId);
+
+				if(this.getSolid(px, py, layerId))
+				{
+					foundY = [px, py];
+				}
+
+				bf = modeY ? bs : 1;
+
+				checkY += bf * oy;
+				currentDistance = Math.abs(rayY);
+				rayY += bf * sy * oy;
+			}
+
+			if((foundX || !ox) && (foundY || !oy))
+			{
+				break;
+			}
+		}
+
+		// console.timeEnd('rayCast');
+
+		const distA = foundX ? (foundX[0] - startX) ** 2 + (foundX[1] - startY) ** 2 : Infinity;
+		const distB = foundY ? (foundY[0] - startX) ** 2 + (foundY[1] - startY) ** 2 : Infinity;
+
+		// const qa = JSON.stringify([...pa]).replace(/\[/g,'(').replace(/]/g,')');
+		// const qb = JSON.stringify([...pb]).replace(/\[/g,'(').replace(/]/g,')');
+		// const qas = JSON.stringify([...pas]).replace(/\[/g,'(').replace(/]/g,')');
+		// const qbs = JSON.stringify([...pbs]).replace(/\[/g,'(').replace(/]/g,')');
+
+		// console.log(`(${startX}, ${startY})`)
+		// console.log(`(${endX}, ${endY})`)
+		// console.log( qa.substring(1, qa.length - 1) );
+		// console.log( qb.substring(1, qb.length - 1) );
+		// console.log( qas.substring(1, qas.length - 1) );
+		// console.log( qbs.substring(1, qbs.length - 1) );
+
+		// console.log(foundX, foundY);
+
+		if(distA < distB)
+		{
+			return foundX;
+		}
+
+		return foundY;
 	}
 
 	get blockSize()

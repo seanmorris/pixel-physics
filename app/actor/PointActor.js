@@ -1454,6 +1454,55 @@ export class PointActor extends View
 		return false;
 	}
 
+	castRayQuick(length, angle, offset)
+	{
+		const thisPoint = [this.args.x + offset[0], this.args.y + offset[1]];
+
+		const solidPoint = this.viewport.tileMap.castRay(
+			...thisPoint
+			, angle
+			, length
+			, this.args.layer
+		);
+
+		let magnitude = length;
+
+		if(solidPoint)
+		{
+			magnitude = Math.sqrt(
+				(thisPoint[0] - solidPoint[0]) ** 2
+				 + (thisPoint[1] - solidPoint[1]) ** 2
+			);
+		}
+
+		const endPoint = [
+			thisPoint[0] + Math.cos(angle) * magnitude
+			, thisPoint[1] + Math.sin(angle) * magnitude
+		];
+
+		const actorsAtLine = this.viewport.actorsAtLine(
+			thisPoint[0]
+			, thisPoint[1]
+			, endPoint[0]
+			, endPoint[1]
+		);
+
+		for(const [actor, {intersection, distance}] of actorsAtLine)
+		{
+			if(this.checkSolidActors(actor))
+			{
+				return distance;
+			}
+		}
+
+		if(solidPoint)
+		{
+			return magnitude;
+		}
+
+		return false;
+	}
+
 	impulse(magnitude, direction, willFall = false)
 	{
 		this.impulseMag = magnitude;
@@ -2492,6 +2541,7 @@ export class PointActor extends View
 		this.args.jumping = false;
 		this.args.falling = true;
 		this.args.ignore  = -1;
+		this.args.mercy   = 0;
 		this.args.float   = 0;
 
 		this.args.rings = 0;
