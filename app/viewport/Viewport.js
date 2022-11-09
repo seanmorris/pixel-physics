@@ -1547,6 +1547,19 @@ export class Viewport extends View
 
 					this.setColCell(this.nextControl.follower);
 				}
+
+				if(Router.query.impulse)
+				{
+					const impulse = Router.query.impulse;
+
+					if(impulse.match(/\d+(\.\d+)?,\d+(\.\d+)?/))
+					{
+						const [x = 0, y = 0] = impulse.split(',');
+
+						this.nextControl.args.xSpeed = Number(x);
+						this.nextControl.args.ySpeed = Number(y);
+					}
+				}
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
 			{
@@ -1935,6 +1948,24 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.85;
 				cameraSpeed = 8;
+				break;
+
+			case 'boost-ring':
+				const angle = actor.args.angle;
+
+				if(!angle || Math.abs(angle - Math.PI) < 0.1)
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.5;
+					cameraSpeed = 24;
+				}
+				else
+				{
+					this.args.xOffsetTarget = 0.5 - 0.5 * Math.cos(angle);
+					this.args.yOffsetTarget = 0.5 - 0.2 * Math.sin(angle);
+					cameraSpeed = 16;
+				}
+
 				break;
 
 			case 'cutScene':

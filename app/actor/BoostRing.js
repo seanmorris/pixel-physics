@@ -29,7 +29,7 @@ export class BoostRing extends PointActor
 
 	collideA(other)
 	{
-		if(!other.controllable || this.shooting.has(other))
+		if(!other.controllable || this.shooting.has(other) || other.args.mercy > 120)
 		{
 			return;
 		}
@@ -45,7 +45,10 @@ export class BoostRing extends PointActor
 		other.args.ySpeed = 0;
 		other.args.float  = 15;
 		other.args.ignore = 15;
+		other.args.cameraIgnore = 30;
 		other.args.groundAngle = 0;
+		other.args.cameraMode = 'boost-ring';
+		other.args.angle = this.args.pointing;
 
 		this.shooting.add(other);
 
