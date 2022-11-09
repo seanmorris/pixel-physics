@@ -1547,6 +1547,19 @@ export class Viewport extends View
 
 					this.setColCell(this.nextControl.follower);
 				}
+
+				if(Router.query.impulse)
+				{
+					const impulse = Router.query.impulse;
+
+					if(impulse.match(/\d+(\.\d+)?,\d+(\.\d+)?/))
+					{
+						const [x = 0, y = 0] = impulse.split(',');
+
+						this.nextControl.args.xSpeed = Number(x);
+						this.nextControl.args.ySpeed = Number(y);
+					}
+				}
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
 			{
@@ -1939,8 +1952,6 @@ export class Viewport extends View
 
 			case 'boost-ring':
 				const angle = actor.args.angle;
-
-				console.log(angle);
 
 				if(!angle || Math.abs(angle - Math.PI) < 0.1)
 				{

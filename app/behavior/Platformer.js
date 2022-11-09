@@ -3460,13 +3460,39 @@ export class Platformer
 			? [Math.PI,0,0][dir+1]
 			: host.realAngle + [0,0,Math.PI][dir+1]
 
-		const magnitude = host.castRay(
-			scanDist + host.args.width
+		const solidPoint = host.viewport.tileMap.castRay(
+			host.args.x + startPoint[0]
+			, host.args.y + startPoint[1]
 			, angle
-			, startPoint
-			, host.findSolidTile
-			// , scanActors ? host.findSolid : host.findSolidTile
+			, scanDist + host.args.width
+			, host.args.layer
 		);
+
+		const hostPoint = [
+			host.args.x + startPoint[0]
+			, host.args.y + startPoint[1]
+		];
+
+		let magnitude = false;
+		let mag = false;
+
+		if(solidPoint)
+		{
+			mag = Math.sqrt(
+				(hostPoint[0] - solidPoint[0]) ** 2
+				 + (hostPoint[1] - solidPoint[1]) ** 2
+			);
+		}
+
+		magnitude = (mag < scanDist + host.args.width) ? mag : false;
+
+		// const m = host.castRay(
+		// 	scanDist + host.args.width
+		// 	, angle
+		// 	, startPoint
+		// 	, host.findSolidTile
+		// 	// , scanActors ? host.findSolid : host.findSolidTile
+		// );
 
 		if(scanActors && magnitude !== false)
 		{
