@@ -4,6 +4,8 @@ import { BubbleSheild } from '../../powerups/BubbleSheild';
 
 export class SheildWaterMonitor extends Monitor
 {
+	name = 'Bubble Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

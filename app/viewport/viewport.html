@@ -202,6 +202,16 @@
  				<div class = "debug-spawn" cv-ref = "spawnPreview"></div>
  				<div class = "debug-spawn">[[debugObjectName]]</div>
  			</div>
+			<div class = "hud hud-top-right hud-table combo-table">
+				<span cv-if = "showCombo">
+					<span class = "combo-list" cv-each = "combo:pop:p">
+						<div>[[pop.label]]</div>
+					</span>
+					<span cv-if = "combo">[[popTopLine]]</span>
+				</span>
+				<span class = "comboFail">[[comboFail]]</span>
+				<span class = "comboResult">[[comboResult]]</span>
+			</div>
 			<div class = "hud hud-top-right hud-table"  cv-if = "debugOsd">
 				<table>
 					<tr>
@@ -261,6 +271,16 @@
 					<tr>
 						<td>[[labelAngle]]</td>
 						<td>[[angle]]</td>
+					</tr>
+
+					<tr>
+						<td>[[labelActors]]</td>
+						<td>[[actorCount]]</td>
+					</tr>
+
+					<tr>
+						<td>[[labelRegions]]</td>
+						<td>[[regionCount]]</td>
 					</tr>
 
 					<tr>

@@ -1,5 +1,5 @@
 .particle-score {
-	transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
+
 	transform-origin: bottom center;
 
 	width: 24px;
@@ -13,7 +13,7 @@
 
 	z-index: 10000;
 
-	animation: score-rise 0.15s 0.2s ease-in-out forwards;
+	animation: score-rise 0.4s 0.2s ease-in-out forwards 1;
 }
 
 .particle-score.score-10  { background-image: url(/Sonic/score-10.png); }
@@ -29,6 +29,6 @@
 		transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
 	}
 	to{
-		transform: translate(-50%, calc(-350% + 6px)) scale(var(--particleScale, 1));
+		transform: translate(-50%, calc(-450% + 6px)) scale(var(--particleScale, 1));
 	}
 }

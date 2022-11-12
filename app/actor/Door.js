@@ -27,7 +27,7 @@ export class Door extends PointActor
 
 	open(other)
 	{
-		if(this.others.waitFor.args.opened)
+		if(this.others.waitFor && this.others.waitFor.args.opened)
 		{
 			this.args.opening = this.args.opened = false;
 			return;

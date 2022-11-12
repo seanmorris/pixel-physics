@@ -24,14 +24,20 @@ export class StarBalloon extends Balloon
 		{
 			if(!this.launched)
 			{
-				this.args.ySpeed = 0;
-				// this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
+				this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
 			}
 			else
 			{
-				const maxSpeed = this.args.target - this.y;
+				if(this.args.ySpeed > -8)
+				{
+					this.args.ySpeed -= 0.08;
+				}
 
-				this.args.ySpeed = Math.min(8, Math.abs(maxSpeed)) * Math.sign(maxSpeed);
+				if(this.args.y < this.args.target)
+				{
+					this.args.y = this.args.target;
+					this.args.ySpeed = 0;
+				}
 			}
 		}
 
@@ -41,7 +47,9 @@ export class StarBalloon extends Balloon
 
 	activate()
 	{
-		this.launched = true;
+		this.args.ySpeed = 2;
+
+		this.viewport.onFrameOut(20, () => this.launched = true);
 	}
 
 	collideA(other)
@@ -66,6 +74,11 @@ export class StarBalloon extends Balloon
 
 	sleep()
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		this.tags.sprite && this.tags.sprite.classList.remove('popped');
 
 		this.args.x = this.def.get('x');

@@ -17,11 +17,17 @@ export class RocketPlatform extends Block
 
 	update()
 	{
-		super.update();
-
-		if(this.args.active)
+		for(const other of this.standingUnder)
 		{
+			if(other.args.dead)
+			{
+				// this.args.y += -this.args.ySpeed;
+				this.args.ySpeed = 0;
+				this.standingUnder.delete(other);
+			}
 		}
+
+		super.update();
 	}
 
 	collideA(other, type)
@@ -37,10 +43,16 @@ export class RocketPlatform extends Block
 		}
 
 		this.args.ySpeed -= 0.1;
+		this.args.float = 1;
 
 		if(this.args.ySpeed < -3)
 		{
 			this.args.ySpeed = -3;
+		}
+
+		if(!this.args.falling)
+		{
+			this.args.y--;
 		}
 
 		this.args.falling = true;

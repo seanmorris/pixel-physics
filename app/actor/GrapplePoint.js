@@ -99,8 +99,13 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	{
 	}
 
-	collideB(other)
+	collideA(other)
 	{
+		if(!other.controllable)
+		{
+			return false;
+		}
+
 		const tiedTo = this.others.tiedTo;
 
 		if(!tiedTo || tiedTo.noClip)
@@ -118,10 +123,15 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return false;
 		}
 
-		if((other.args.falling && Math.abs(other.args.y - this.args.y) > 8) || !other.controllable || this.hooked)
-		{
-			return;
-		}
+		// if((
+		// 	(other.args.falling && Math.abs(other.args.y + -this.args.y + other.args.height) > 8)
+		// 	&& (other.args.falling && Math.abs(other.args.y + -this.args.y) > 8)
+		// )
+		// || !other.controllable
+		// || this.hooked)
+		// {
+		// 	return;
+		// }
 
 		other.args.falling = true;
 		other.swing = true;
@@ -131,6 +141,12 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		this.viewport.auras.add(this);
 
 		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
+
+		if(other.args.mode === 2)
+		{
+			this.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
+		}
+
 		this.args.ySpeed = other.args.ySpeed;
 
 		other.args.xSpeed = 0;
@@ -157,7 +173,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 				hook: this, subject: other
 			}});
 
-			tiedTo.activate && tiedTo.activate();
+			tiedTo.activate && tiedTo.activate(other);
 
 			const drop = () => {
 

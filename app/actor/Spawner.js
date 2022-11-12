@@ -42,6 +42,7 @@ export class Spawner extends PointActor
 		spawned.args[ name ] = this.args.spawn;
 
 		this.viewport.spawn.add({object:spawned});
+		this.viewport.setColCell(spawned);
 	}
 
 	get solid() { return false; }

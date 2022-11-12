@@ -270,15 +270,15 @@ export class Block extends PointActor
 
 		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
-			if(other.args.y < this.args.y)
-			{
-				other.args.y = this.y + -this.args.height + this.args.ySpeed;
-				other.args.ySpeed = this.args.ySpeed;
-			}
-			this.onNextFrame(() => {
-				other.args.y = this.y + -this.args.height;
-				other.args.falling = false;
-			});
+			other.args.y = other.yLast;
+			// if(other.args.y < this.args.y)
+			// {
+			// 	other.args.y = this.y + -this.args.height + this.args.ySpeed;
+			// 	other.args.ySpeed = this.args.ySpeed;
+			// }
+			// this.onNextFrame(() => {
+			// 	other.args.falling = false;
+			// });
 
 			return;
 		}
@@ -290,12 +290,12 @@ export class Block extends PointActor
 			const halfWidth = this.args.width / 2;
 
 			if(other.args.falling
-				&& other.args.y - blockTop < 16
+				&& Math.abs(other.args.y - blockTop) < 4
 				&& other.args.ySpeed >= 0
 				&& !other.args.float
-				&& Math.abs(other.args.x - this.args.x) < (halfWidth - 16)
+				&& (!other.args.dashed || other.args.ySpeed > other.args.xSpeed)
 			){
-				if(other.controllable)
+				if(other.controllable || other.args.npc)
 				{
 					other.args.y = -1 + blockTop;
 				}
@@ -711,7 +711,7 @@ export class Block extends PointActor
 				other.args.xSpeed = other.xSpeedLast;
 				other.args.float = -1;
 				other.noClip = true;
-				other.args.ignore = 1;
+				other.args.antiSkid = 15;
 				// other.xAxis = Math.sign(other.args.gSpeed);
 
 				other.args.direction = -Math.sign(gSpeed);
@@ -738,11 +738,6 @@ export class Block extends PointActor
 					other.args.y = this.y + -this.args.height * shiftFactor * 2;
 				}
 			}
-		}
-
-		if(!this.viewport.collisions.has(this))
-		{
-			return;
 		}
 
 		if(!this.viewport || !this.viewport.collisions.has(this))

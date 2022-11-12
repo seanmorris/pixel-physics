@@ -3,6 +3,8 @@ import { Sfx } from '../../audio/Sfx';
 
 export class TripleRingMonitor extends Monitor
 {
+	name = 'Triple Ring Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

@@ -4,6 +4,8 @@ import { NormalSheild } from '../../powerups/NormalSheild';
 
 export class SheildNormalMonitor extends Monitor
 {
+	name = 'Shield Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

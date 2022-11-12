@@ -1,3 +1,4 @@
+import { Tag } from 'curvature/base/Tag';
 import { PointActor } from './PointActor';
 import { Block } from './Block';
 
@@ -15,6 +16,33 @@ export class AsteroidLarge extends AsteroidBase
 		this.args.gravity = 0.45;
 		this.args.width   = 64;
 		this.args.height  = 80;
+	}
+
+	update()
+	{
+		super.update();
+
+		if(!this.viewport || this.viewport.args.frameId % 3)
+		{
+			return;
+		}
+
+		const dustParticle = new Tag(document.createElement('div'));
+
+		dustParticle.classList.add('particle-dust');
+
+		dustParticle.style({
+			'--x': this.args.x
+			, '--y': this.args.y + -this.args.height -0.75
+			, 'z-index': 0
+			, opacity: Math.random() * 0.25 + 0.5
+		});
+
+		viewport.particles.add(dustParticle);
+
+		viewport.onFrameOut(30, () => {
+			viewport.particles.remove(dustParticle);
+		});
 	}
 
 	collideA(other)
@@ -44,7 +72,7 @@ export class AsteroidLarge extends AsteroidBase
 		const pieces = [
 			  new AsteroidMedium({falling:true, x:this.args.x - 20, y:this.args.y - 20, xSpeed, ySpeed:-ySpeed * 0.25 + -1.5, xSpeed:xSpeed * 0.333 - 0.5})
 			, new AsteroidMedium({falling:true, x:this.args.x + 20, y:this.args.y - 20, xSpeed, ySpeed:-ySpeed * 0.25 + -1.5, xSpeed:xSpeed * 0.333 + 0.5})
-			, new AsteroidMedium({falling:true, x:this.args.x +  0, y:this.args.y +  0, xSpeed, ySpeed:-ySpeed * 0.25 + -1.0, xSpeed:xSpeed * 0.333 + 0.0})
+			, new AsteroidMedium({falling:true, x:this.args.x +  0, y:this.args.y -  4, xSpeed, ySpeed:-ySpeed * 0.25 + -1.0, xSpeed:xSpeed * 0.333 + 0.0})
 			, new AsteroidMedium({falling:true, x:this.args.x +  0, y:this.args.y - 40, xSpeed, ySpeed:-ySpeed * 0.25 + -2.0, xSpeed:xSpeed * 0.333 + 0.0})
 		];
 

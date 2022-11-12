@@ -20,9 +20,11 @@ export class Monitor extends PointActor
 
 		this.args.type = 'actor-item actor-monitor';
 
-		this.args.width  = 30;
-		this.args.height = 32;
-		this.args.decel  = 0.25;
+		this.args.width    = 30;
+		this.args.height   = 32;
+		this.args.decel    = 0.25;
+		this.args.canHide  = true;
+		this.args.platform = true;
 
 		this.args.gone = false;
 	}
@@ -132,8 +134,10 @@ export class Monitor extends PointActor
 
 		if(other)
 		{
+			const reward = {label: this.args.name || this.name, points:10, multiplier:1};
+
+			other.args.popChain.push(reward);
 			other.args.popCombo += 1;
-			other.args.score += 100;
 		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});

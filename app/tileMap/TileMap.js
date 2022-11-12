@@ -556,8 +556,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getSolid(xInput, yInput, layerInput = 0)
 	{
-
-
 		if(layerInput !== 0)
 		{
 			const ground = this.getSolid(xInput, yInput, 0);
@@ -749,6 +747,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	castRay(startX, startY, angle, maxDistance = 320, layerId = 0)
 	{
+		startX = Math.trunc(startX);
+		startY = Math.trunc(startY);
+
 		maxDistance = Math.ceil(maxDistance);
 
 		const cos = Math.cos(angle);
@@ -777,11 +778,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const [tx, ty] = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
 
+		if(this.getSolid(startX, startY, layerId))
+		{
+			return [startX, startY];
+		}
+
 		const initMode = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0);
 		let modeX = initMode;
 		let modeY = initMode;
 
-		let bf = initMode ? bs : 1;
+		let bf = initMode ? 1 : 1;
 
 		const ax = startX % bf;
 		const ay = bf - startY % bf;
@@ -792,15 +798,13 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const magX = Math.abs(rayX);
 		const magY = Math.abs(rayY);
 
-		let foundX = null;
-		let foundY = null;
+		const pa = new Set;
+		const pb = new Set;
 
-		// const pa = new Set;
-		// const pb = new Set;
-		// const pas = new Set;
-		// const pbs = new Set;
+		const solidsX = new Set;
+		const solidsY = new Set;
 
-		// console.time('rayCast');
+		window.logPoints && console.time('rayCast');
 
 		while(!found && Math.abs(currentDistance) < maxDistance)
 		{
@@ -811,14 +815,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const px = (startX + mag * Math.cos(angle));
 				const py = (startY + mag * Math.sin(angle));
 
-				// pa.add([px, py]);
+				window.logPoints && pa.add([px, py]);
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				modeX = this.getTileNumber(tx, ty, layerId);
 
 				if(this.getSolid(px, py, layerId))
 				{
-					foundX = [px, py];
+					solidsX.add([px, py]);
 				}
 
 				bf = modeX ? bs : 1;
@@ -834,14 +838,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const px = (startX + mag * Math.cos(angle));
 				const py = (startY + mag * Math.sin(angle));
 
-				// pb.add([px, py]);
+				window.logPoints && pb.add([px, py]);
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				modeY = this.getTileNumber(tx, ty, layerId);
 
 				if(this.getSolid(px, py, layerId))
 				{
-					foundY = [px, py];
+					solidsY.add([px, py]);
 				}
 
 				bf = modeY ? bs : 1;
@@ -850,38 +854,34 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				currentDistance = Math.abs(rayY);
 				rayY += bf * sy * oy;
 			}
-
-			if((foundX || !ox) && (foundY || !oy))
-			{
-				break;
-			}
 		}
 
-		// console.timeEnd('rayCast');
+		window.logPoints && console.timeEnd('rayCast');
 
-		const distA = foundX ? (foundX[0] - startX) ** 2 + (foundX[1] - startY) ** 2 : Infinity;
-		const distB = foundY ? (foundY[0] - startX) ** 2 + (foundY[1] - startY) ** 2 : Infinity;
+		const points = [...solidsX, ...solidsY];
+		const distSquares = points.map(s => (s[0] - startX) ** 2 + (s[1] - startY) ** 2);
+		const minDist = Math.min(...distSquares);
 
-		// const qa = JSON.stringify([...pa]).replace(/\[/g,'(').replace(/]/g,')');
-		// const qb = JSON.stringify([...pb]).replace(/\[/g,'(').replace(/]/g,')');
-		// const qas = JSON.stringify([...pas]).replace(/\[/g,'(').replace(/]/g,')');
-		// const qbs = JSON.stringify([...pbs]).replace(/\[/g,'(').replace(/]/g,')');
+		const nearest = points[ distSquares.indexOf(minDist) ];
 
-		// console.log(`(${startX}, ${startY})`)
-		// console.log(`(${endX}, ${endY})`)
-		// console.log( qa.substring(1, qa.length - 1) );
-		// console.log( qb.substring(1, qb.length - 1) );
-		// console.log( qas.substring(1, qas.length - 1) );
-		// console.log( qbs.substring(1, qbs.length - 1) );
-
-		// console.log(foundX, foundY);
-
-		if(distA < distB)
+		if(window.logPoints)
 		{
-			return foundX;
+			const qa = JSON.stringify([...pa]).replace(/\[/g,'(').replace(/]/g,')');
+			const qb = JSON.stringify([...pb]).replace(/\[/g,'(').replace(/]/g,')');
+			const qas = JSON.stringify([...solidsX]).replace(/\[/g,'(').replace(/]/g,')');
+			const qbs = JSON.stringify([...solidsY]).replace(/\[/g,'(').replace(/]/g,')');
+
+			console.log(`(${startX}, ${startY})`)
+			console.log(`(${endX}, ${endY})`)
+			console.log( qa.substring(1, qa.length - 1) );
+			console.log( qb.substring(1, qb.length - 1) );
+			console.log( qas.substring(1, qas.length - 1) );
+			console.log( qbs.substring(1, qbs.length - 1) );
+
+			console.log(nearest);
 		}
 
-		return foundY;
+		return nearest;
 	}
 
 	get blockSize()

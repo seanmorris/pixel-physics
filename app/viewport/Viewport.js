@@ -120,6 +120,8 @@ export class Viewport extends View
 
 		this.meta = {};
 
+		this.args.combo = [];
+
 		this.loadSaves().then(saves => {
 			if(saves.length)
 			{
@@ -448,6 +450,8 @@ export class Viewport extends View
 		this.args.labelYSpeed = new CharacterString({value:'Y air spd: '});
 		this.args.labelLayer  = new CharacterString({value:'Layer: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
+		this.args.labelActors = new CharacterString({value:'Actors: '});
+		this.args.labelRegions = new CharacterString({value:'Regions: '});
 		this.args.labelFrame  = new CharacterString({value:'Frame ID: '});
 		this.args.labelIgnore = new CharacterString({value:'Ignore: '});
 		this.args.labelFps    = new CharacterString({value:'FPS: '});
@@ -466,6 +470,8 @@ export class Viewport extends View
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
 		this.args.ignore = new CharacterString({value:0});
+		this.args.actorCount = new CharacterString({value:0});
+		this.args.regionCount = new CharacterString({value:0});
 
 		this.args.cameraMode = new CharacterString({value:0});
 
@@ -1014,10 +1020,10 @@ export class Viewport extends View
 
 	getZoneState(zone)
 	{
-		const currentSave = this.currentSave ?? {};
+		const currentSave = this.currentSave;
 		const currentZone = this.currentMap ?? '';
 
-		return currentSave.getZoneState(zone || currentZone);
+		return currentSave ? currentSave.getZoneState(zone || currentZone) : {};
 	}
 
 	loadMap({mapUrl, networked = false})
@@ -1552,13 +1558,25 @@ export class Viewport extends View
 				{
 					const impulse = Router.query.impulse;
 
-					if(impulse.match(/\d+(\.\d+)?,\d+(\.\d+)?/))
+					if(impulse.match(/-?\d+(\.\d+)?,-?\d+(\.\d+)?/))
 					{
 						const [x = 0, y = 0] = impulse.split(',');
 
 						this.nextControl.args.xSpeed = Number(x);
 						this.nextControl.args.ySpeed = Number(y);
 					}
+				}
+
+				if(Number(Router.query.noClip))
+				{
+					this.nextControl.args.float = -1;
+					this.nextControl.noClip = 1;
+				}
+
+				if(Number(Router.query.pause))
+				{
+					this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
+					this.args.paused = -1;
 				}
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
@@ -3343,6 +3361,8 @@ export class Viewport extends View
 					this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 					this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
+					this.args.actorCount.args.value = this.actors.size;
+					this.args.regionCount.args.value = this.regions.size;
 					this.args.ignore.args.value   = this.controlActor.args.ignore;
 
 					const modes = ['FLOOR (0)', 'L-WALL (1)', 'CEILING (2)', 'R-WALL (3)'];
@@ -3556,6 +3576,35 @@ export class Viewport extends View
 			this.moveCamera();
 
 			this.applyMotionBlur();
+
+			this.args.popTopLine = this.args.popTopLine || new CharacterString({color:'yellow'});
+
+			let multiply = 0;
+			let base = 0;
+
+			this.args.showCombo = this.controlActor.args.popChain.length > 1;
+
+			if(this.controlActor.args.popChain)
+			{
+				for(const i in this.controlActor.args.popChain)
+				{
+					const pop = this.controlActor.args.popChain[i];
+					this.args.combo[i] = this.args.combo[i] || {score:new CharacterString, label:new CharacterString};
+
+					this.args.combo[i].score.args.value = pop.points;
+					this.args.combo[i].label.args.value = pop.label;
+
+					multiply += pop.multiplier;
+					base += pop.points;
+
+					this.args.combo[i].score.preserve = true;
+					this.args.combo[i].label.preserve = true;
+				}
+
+				this.args.combo.length = this.controlActor.args.popChain.length;
+			}
+
+			this.args.popTopLine.args.value =  multiply + ' x ' + base;
 		}
 
 		if(this.args.networked && this.controlActor)
@@ -3712,10 +3761,10 @@ export class Viewport extends View
 		const cellX2 = Math.floor(x2 / this.colCellDiv);
 		const cellY2 = Math.floor(y2 / this.colCellDiv);
 
-		for(const x of Array(1 + Math.abs(cellX1 + -cellX2)).keys())
-		for(const y of Array(1 + Math.abs(cellY1 + -cellY2)).keys())
+		for(const x of Array(3 + Math.abs(cellX1 + -cellX2)).keys())
+		for(const y of Array(3 + Math.abs(cellY1 + -cellY2)).keys())
 		{
-			const name = `${x + Math.min(cellX1, cellX2)}:${y + Math.min(cellY1, cellY2)}`;
+			const name = `${x + Math.min(cellX1, cellX2) + -1}:${y + Math.min(cellY1, cellY2) + -1}`;
 
 			if(!this.colCells.has(name))
 			{
@@ -3800,6 +3849,11 @@ export class Viewport extends View
 
 		if(!points.length)
 		{
+			if(left < b2x && b2x < right && top < b2y && b2y < bottom)
+			{
+				return [b2x, b2y];
+			}
+
 			return false;
 		}
 

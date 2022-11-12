@@ -1,6 +1,8 @@
 import { BreakableBlock } from './BreakableBlock';
+import { Platformer } from '../behavior/Platformer';
 import { Projectile } from './Projectile';
 import { Spring } from './Spring';
+import { Block } from './Block';
 
 export class WoodenCrate extends BreakableBlock
 {
@@ -18,13 +20,18 @@ export class WoodenCrate extends BreakableBlock
 
 	updateStart()
 	{
-		this.args.static = (!this.args.falling && !this.args.standingOn);
+		this.args.static = this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
 
 		super.updateStart();
 	}
 
 	collideA(other, type)
 	{
+		if(other instanceof Block)
+		{
+			return true;
+		}
+
 		if(type === 0 && other.controllable)
 		{
 			return true;
@@ -43,11 +50,11 @@ export class WoodenCrate extends BreakableBlock
 			return true;
 		}
 
-		if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
-		{
-			this.break(other);
-			return false;
-		}
+		// if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
+		// {
+		// 	this.break(other);
+		// 	return false;
+		// }
 
 		if(type !== 1 && type !== 3 || other.y <= this.y - this.args.height)
 		{
