@@ -41,6 +41,11 @@ export class AsteroidBase extends PointActor
 		super.update();
 
 		this.args.groundAngle = 0;
+
+		if(!this.viewport.actorIsOnScreen(this, 128))
+		{
+			this.viewport && this.viewport.actors.remove(this);
+		}
 	}
 
 	get rotateLock() { return true };

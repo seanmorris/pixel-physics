@@ -41,9 +41,9 @@ export const Constrainable = {
 		});
 	}
 
-	, findNextStep: function() {
-		return false;
-	}
+	// , findNextStep: function() {
+	// 	return false;
+	// }
 
 	, setPos: function()
 	{
@@ -94,6 +94,8 @@ export const Constrainable = {
 
 			this.args.xSpeed += Math.cos(gravityAngle) * overshot;
 			this.args.ySpeed += Math.sin(gravityAngle) * overshot;
+
+			this.args.gSpeed = this.args.xSpeed;
 
 			this.args.x = xNext;
 			this.args.y = yNext;

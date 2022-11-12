@@ -249,7 +249,9 @@ export class Sonic extends PointActor
 
 		if(this.isSuper)
 		{
-			if(this.viewport.args.frameId % 60 === 0)
+			const tick = this.isHyper ? 30 : 60;
+
+			if(this.viewport.args.frameId % tick === 0)
 			{
 				if(this.args.rings < 2)
 				{
@@ -260,11 +262,6 @@ export class Sonic extends PointActor
 				if(this.args.rings > 0)
 				{
 					this.args.rings--;
-
-					if(this.isHyper)
-					{
-						this.args.rings--;
-					}
 				}
 				else
 				{
@@ -461,6 +458,7 @@ export class Sonic extends PointActor
 
 			this.dashed = false;
 			this.lightDashed = false;
+			this.lightDashReward = null;
 
 			this.args.height = this.args.normalHeight;
 
@@ -495,7 +493,7 @@ export class Sonic extends PointActor
 			{
 				this.args.crouching = false;
 
-				if(friction > 0.5 && Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
+				if(friction > 0.5 && Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction) && !this.args.antiSkid)
 				{
 					this.args.animation = 'skidding';
 				}
@@ -1637,6 +1635,20 @@ export class Sonic extends PointActor
 			return false;
 		}
 
+		if(this.args.popChain.length)
+		{
+			if(!this.lightDashReward)
+			{
+				this.lightDashReward = {label: 'lightdash', points:10, multiplier:1};
+
+				this.args.popChain.push(this.lightDashReward);
+			}
+			else
+			{
+				this.lightDashReward.points += 10;
+			}
+		}
+
 		this.lightDashed = true;
 
 		let currentAngle;
@@ -1745,9 +1757,9 @@ export class Sonic extends PointActor
 		}
 	}
 
-	startle()
+	startle(other)
 	{
-		super.startle();
+		super.startle(other);
 
 		this.onNextFrame(() => this.args.animation = 'startle');
 	}
@@ -1803,6 +1815,14 @@ export class Sonic extends PointActor
 		{
 			if(!entered)
 			{
+				for(const r of this.regions)
+				{
+					if(r !== region && r instanceof GrindingRegion)
+					{
+						return;
+					}
+				}
+
 				if(this.args.falling)
 				{
 					this.args.animation = 'springdash';

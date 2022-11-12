@@ -1,6 +1,8 @@
 import { PointActor } from './PointActor';
 import { Sfx } from '../audio/Sfx';
 
+import { Block } from './Block';
+
 export class Spikes extends PointActor
 {
 	static fromDef(objDef)
@@ -120,7 +122,7 @@ export class Spikes extends PointActor
 			return;
 		}
 
-		if(type === this.args.pointing)
+		if(!(other instanceof Block) && type === this.args.pointing)
 		{
 			if(this.args.pointing === 3)
 			{

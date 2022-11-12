@@ -4,6 +4,8 @@ import { StarSheild } from '../../powerups/StarSheild';
 
 export class SheildStarMonitor extends Monitor
 {
+	name = 'Star Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

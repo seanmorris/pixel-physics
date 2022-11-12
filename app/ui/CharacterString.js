@@ -12,7 +12,7 @@ export class CharacterString extends View
 				style      = "--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];"
 			>[[char.original]]</span></div>`;
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		args[ Bindable.NoGetters ] = true;
 

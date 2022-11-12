@@ -380,7 +380,13 @@ export class BreakableBlock extends Block
 
 			if(o && o.controllable)
 			{
-				o.args.popCombo += 1;
+				if(o.args.popChain.length)
+				{
+					const reward = {label: this.args.name, points:10, multiplier:1};
+
+					o.args.popCombo += 1;
+					o.args.popChain.push(reward);
+				}
 
 				const scoreNode = document.createElement('div');
 				scoreNode.classList.add('particle-score');

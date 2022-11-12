@@ -148,7 +148,10 @@ export class PointActor extends View
 		this.args.rings  = 0;
 
 		this.args.mercy = false;
-		this.args.popCombo = 0;
+		this.args.R = 0;
+		this.args.popChain = [];
+
+		this.args.canHide = false;
 
 		this.args.opacity = this.args.opacity ?? 1;
 		this.args.pushing = false;
@@ -370,6 +373,7 @@ export class PointActor extends View
 		this.stayStuck = false;
 
 		this.args.startled = this.args.startled || 0;
+		this.args.antiSkid = this.args.antiSkid || 0;
 		this.args.halted = this.args.halted || 0;
 		this.args.ignore = this.args.ignore || 0;
 		this.args.float  = this.args.float  || 0;
@@ -377,6 +381,8 @@ export class PointActor extends View
 		this.colliding = false;
 
 		this.args.flyAngle = 0;
+
+		this.standingUnder = new Set;
 
 		this.args.bindTo(['x','y'], (v, k, t) => {
 			isNaN(v) && console.trace(k, v)
@@ -497,6 +503,8 @@ export class PointActor extends View
 				prevGroundObject.yAxis = 0;
 
 				prevGroundObject.args.active = false;
+
+				prevGroundObject.standingUnder.delete(this);
 			}
 
 			const Switch = this.viewport.objectPalette['switch'];
@@ -520,6 +528,8 @@ export class PointActor extends View
 				this.viewport.auras.delete(this.args.standingOn);
 				return;
 			}
+
+			groundObject.standingUnder.add(this);
 
 			if(this.controllable && groundObject.isVehicle && !groundObject.dead)
 			{
@@ -845,7 +855,8 @@ export class PointActor extends View
 
 		this.args.groundAngle8 = this.args.groundAngle;
 
-		if(!this.args.falling
+		if(!this.isVehicle
+			&& !this.args.falling
 			&& !this.args.grinding
 			&& this.args.mode === 0
 			&& Math.abs(this.args.groundAngle8) <= ((Math.PI / 8) + 0.01))
@@ -1276,7 +1287,7 @@ export class PointActor extends View
 							this.args.ignore = 10;
 						}
 					}
-					else if(!this.args.ignore)
+					else if(!this.args.ignore && !this.args.antiSkid)
 					{
 						gSpeed += xAxis * friction * this.args.accel * drag * this.args.skidTraction;
 					}
@@ -1454,7 +1465,7 @@ export class PointActor extends View
 		return false;
 	}
 
-	castRayQuick(length, angle, offset)
+	castRayQuick(length, angle, offset = [0,0])
 	{
 		const thisPoint = [this.args.x + offset[0], this.args.y + offset[1]];
 
@@ -1487,11 +1498,28 @@ export class PointActor extends View
 			, endPoint[1]
 		);
 
-		for(const [actor, {intersection, distance}] of actorsAtLine)
+		actorsAtLine.delete(this);
+
+		const collisions = new Map;
+
+		for(const [actor, collision] of actorsAtLine)
 		{
+			if(actor.callCollideHandler(this) !== false)
+			{
+				collisions.set(actor, collision);
+			}
+		}
+
+		for(const [actor, collision] of collisions)
+		{
+			if(collision.distance > magnitude)
+			{
+				continue;
+			}
+
 			if(this.checkSolidActors(actor))
 			{
-				return distance;
+				return Math.round(collision.distance);
 			}
 		}
 
@@ -1640,6 +1668,53 @@ export class PointActor extends View
 		return false;
 	}
 
+	totalCombo(fail = false)
+	{
+		if(this.eraseCombo)
+		{
+			this.eraseCombo();
+			this.eraseCombo = false;
+		}
+
+		this.args.popCombo = 0;
+
+		let multiply = 0;
+		let base = 0;
+
+		for(const pop of this.args.popChain)
+		{
+			multiply += pop.multiplier;
+			base += pop.points;
+		}
+
+		const total = base * multiply;
+
+		this.args.score += total;
+		this.args.popChain.length = 0;
+
+		if(!total)
+		{
+			this.viewport.args.comboResult = null;
+			this.viewport.args.comboFail = null;
+			return;
+		}
+
+		if(fail)
+		{
+			this.viewport.args.comboFail = new CharacterString({value:total, color:'red-light'});
+			this.viewport.args.comboResult = null;
+			return;
+		}
+
+		this.viewport.args.comboResult = new CharacterString({value:'+'+total, color:'green-light'});
+		this.viewport.args.comboFail = null;
+
+		this.eraseCombo = this.viewport.onFrameOut(120, () => {
+			this.viewport.args.comboResult = null;
+			this.viewport.args.comboFail = null;
+		});
+	}
+
 	damage(other, type = 'normal')
 	{
 		if(this.args.mercy)
@@ -1682,6 +1757,8 @@ export class PointActor extends View
 						});
 					}
 
+					this.totalCombo(true);
+					this.lightDashReward = this.grindReward = null;
 				}
 
 				return;
@@ -1698,6 +1775,7 @@ export class PointActor extends View
 			this.args.rings = 0;
 			this.onNextFrame(()=> this.startle(other));
 			this.args.mercy = 180;
+			this.totalCombo(true);
 
 			if(this.viewport.settings.rumble)
 			{
@@ -1715,11 +1793,12 @@ export class PointActor extends View
 					});
 				});
 			}
-
 		}
 		else if(this.controllable)
 		{
 			this.die();
+
+			this.totalCombo(true);
 
 			if(this.viewport.settings.rumble)
 			{
@@ -1740,13 +1819,14 @@ export class PointActor extends View
 		}
 
 		const direction = Math.sign(
-			(this.x - this.xLast)
+			other && (
+				other.args.xSpeed
+				|| (other.args.x - other.xLast)
+				|| (other.args.x - this.args.x)
+			)
+			|| (this.x - this.xLast)
 			|| this.args.xSpeed
 			|| this.args.gSpeed
-			|| other && (
-				other.args.xSpeed
-				|| (this.args.x - other.args.x)
-			)
 			|| this.args.direction
 		);
 
@@ -1758,6 +1838,8 @@ export class PointActor extends View
 
 		this.args.xSpeed = -2.25 * direction;
 		this.args.ySpeed = -8;
+
+		this.args.x += this.args.xSpeed;
 
 		this.args.flying = false;
 
@@ -1771,8 +1853,9 @@ export class PointActor extends View
 
 		if(this.args.mode === MODE_CEILING)
 		{
-			this.args.xSpeed *= -1;
-			this.args.ySpeed = 0;
+			this.args.mode = 0;
+			this.args.y += this.args.height;
+			this.args.ySpeed = 4;
 		}
 		else
 		{
@@ -2090,7 +2173,7 @@ export class PointActor extends View
 				return true;
 			}
 
-			if(this.args.y <= x.args.y + -x.args.height && this.args.ySpeed >= 0)
+			if(this.args.y <= x.args.y + -x.args.height + 1 && this.args.ySpeed >= 0)
 			{
 				return true;
 			}
@@ -2142,6 +2225,7 @@ export class PointActor extends View
 	get controllable() { return false; }
 	get skidding() {
 		return Math.abs(this.args.gSpeed)
+			&& !this.args.antiSkid
 			&& !this.args.grinding
 			&& Math.sign(this.args.gSpeed) !== this.args.direction
 	}
@@ -2553,11 +2637,11 @@ export class PointActor extends View
 		this.args.dead = true;
 		this.noClip = true;
 
-		this.args.ySpeed = -14;
+		this.args.ySpeed = -12;
 
 		if(this.y > this.viewport.meta.deathLine)
 		{
-			this.args.ySpeed = -16;
+			this.args.ySpeed = -14;
 		}
 
 		this.args.xSpeed = 0;
@@ -2807,18 +2891,62 @@ export class PointActor extends View
 
 	getBoundingLines()
 	{
+		let left, right, top, bottom;
 
-		const left   = this.args.x - (this.isRegion ? 0 : this.args.width / 2);
-		const right  = this.args.x + (this.isRegion ? this.args.width : this.args.width / 2);
-		const top    = this.args.y - this.args.height;
-		const bottom = this.args.y;
+		switch(this.args.mode)
+		{
+			case MODE_FLOOR:
+				left   = this.args.x - (this.isRegion ? 0 : this.args.width / 2) + -1;
+				right  = this.args.x + (this.isRegion ? this.args.width : this.args.width / 2);
+				top    = this.args.y - this.args.height;
+				bottom = this.args.y;
 
-		return [
-			[right, top, right, bottom]
-			, [left, top, left, bottom]
-			, [right, top, left, top]
-			, [right, bottom, left, bottom]
-		]
+				return [
+					[right, top, right, bottom]
+					, [left, top, left, bottom]
+					, [right, top, left, top]
+					, [right, bottom, left, bottom]
+				]
+
+			case MODE_CEILING:
+				left   = this.args.x - this.args.width / 2;
+				right  = this.args.x + this.args.width / 2;
+				top    = this.args.y;
+				bottom = this.args.y + this.args.height;
+
+				return [
+					[right, top, right, bottom]
+					, [left, top, left, bottom]
+					, [right, top, left, top]
+					, [right, bottom, left, bottom]
+				]
+
+			case MODE_LEFT:
+				left   = this.args.x;
+				right  = this.args.x + this.args.height;
+				top    = this.args.y - this.args.width / 2;
+				bottom = this.args.y + this.args.width / 2;
+
+				return [
+					[right, top, right, bottom]
+					, [left, top, left, bottom]
+					, [right, top, left, top]
+					, [right, bottom, left, bottom]
+				]
+
+			case MODE_RIGHT:
+				left   = this.args.x - this.args.height;
+				right  = this.args.x;
+				top    = this.args.y - this.args.width / 2;
+				bottom = this.args.y + this.args.width / 2;
+
+				return [
+					[right, top, right, bottom]
+					, [left, top, left, bottom]
+					, [right, top, left, top]
+					, [right, bottom, left, bottom]
+				]
+		}
+
 	}
 }
-

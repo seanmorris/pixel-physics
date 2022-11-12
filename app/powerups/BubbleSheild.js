@@ -42,7 +42,7 @@ export class BubbleSheild extends Sheild
 
 			host.removeEventListener('damage', invertDamage);
 
-			host.startle();
+			host.startle(other);
 		};
 
 		host.addEventListener('damage', invertDamage);

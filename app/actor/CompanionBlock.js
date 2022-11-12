@@ -38,7 +38,7 @@ export class CompanionBlock extends MarbleBlock
 	{
 		let isInLava = false;
 
-		for(const region of this.regions)
+		for(const region of this.viewport.regionsAtPoint(this.args.x, this.args.y + 2))
 		{
 			if(region instanceof LavaRegion)
 			{

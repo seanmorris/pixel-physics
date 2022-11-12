@@ -3,6 +3,8 @@ import { Sfx } from '../../audio/Sfx';
 
 export class InfoMonitor extends Monitor
 {
+	name = 'Info Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

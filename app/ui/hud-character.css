@@ -75,6 +75,11 @@ li.focused.unavailable .small-menu-font .hud-character {
 	background-image: url(/Sonic/font-red.png);
 }
 
+.dialog-frame.red-light .hud-character,
+.hud-character-string.red-light .hud-character {
+	background-image: url(/Sonic/font-red-light.png);
+}
+
 .dialog-frame.yellow .hud-character,
 .hud-character-string.yellow .hud-character {
 	background-image: url(/Sonic/font-yellow.png);
@@ -87,6 +92,11 @@ li.focused.unavailable .small-menu-font .hud-character {
 
 .hud-character-string.green .hud-character {
 	background-image: url(/Sonic/font-green.png);
+}
+
+.dialog-frame.green-light .hud-character,
+.hud-character-string.green-light .hud-character {
+	background-image: url(/Sonic/font-green-light.png);
 }
 
 .hud-character[data-type="letter"] {

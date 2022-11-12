@@ -156,6 +156,10 @@
 	/*transition: transform 1s;*/
 }
 
+/*.actor-item.actor-sonic[data-facing=left][data-animation="barrel-roll"] .sprite:after {
+	transform: scaleX(-1);
+}*/
+
 .actor-item.actor-sonic[data-animation="flip"] .sprite:after {
 	--sprite-offset-y: -960px;
 	--sprite-offset-x: -0px;
@@ -187,7 +191,8 @@
 
 }
 
-.actor-item.actor-sonic:not([data-pushing=false]) .sprite:after {
+.actor-item.actor-sonic[data-pushing="-1"] .sprite:after,
+.actor-item.actor-sonic[data-pushing="1"] .sprite:after {
 	left: 10px;
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -640px;
@@ -195,7 +200,7 @@
 	animation: sonic-run steps(4) infinite max(500ms, calc(calc(1 - var(--animation-bias)) * 2500ms));
 }
 
-.actor-item.actor-sonic:not([data-pushing=false]) .sprite:after {}
+/*.actor-item.actor-sonic:not([data-pushing=false]) .sprite:after {}*/
 
 .actor-item.actor-sonic[data-falling="true"][data-animation="dropping-start"] .sprite:after,
 .actor-item.actor-sonic[data-falling="true"][data-animation="wall-dropping-start"] .sprite:after {
