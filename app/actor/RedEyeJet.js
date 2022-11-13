@@ -30,6 +30,17 @@ export class RedEyeJet extends PointActor
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 	}
 
+	wakeUp()
+	{
+		for(const [type, others] of this.hanging)
+		{
+			for(const other of others)
+			{
+				other.setPos();
+			}
+		}
+	}
+
 	collideA(other, type)
 	{
 		let name;
@@ -152,8 +163,7 @@ export class RedEyeJet extends PointActor
 
 		if(type === 1)
 		{
-			Sfx.play('BOSS_DAMAGED');
-
+			this.handleDamage(other);
 			damaged = true;
 
 			// other.args.x = this.x - (this.args.width / 2) * Math.sign(other.x - this.x);
@@ -174,8 +184,7 @@ export class RedEyeJet extends PointActor
 
 		if(type === 3)
 		{
-			Sfx.play('BOSS_DAMAGED');
-
+			this.handleDamage(other);
 			damaged = true;
 
 			// other.args.x = this.x + (this.args.width / 2) * Math.sign(other.x - this.x);
@@ -305,6 +314,21 @@ export class RedEyeJet extends PointActor
 		}
 
 		return true;
+	}
+
+	handleDamage(other)
+	{
+		Sfx.play('BOSS_DAMAGED');
+
+		if(other)
+		{
+			const label = ['LUCKY SHOT', 'IM GOING EASY', 'OKAY', 'NICE', 'WOW', 'JEEZ', 'DAMN!', 'STOP!'][other.args.popChain.length];
+
+			const reward = {label, points:1000, multiplier:1};
+
+			other.args.popChain.push(reward);
+			other.args.popCombo += 1;
+		}
 	}
 
 	update()

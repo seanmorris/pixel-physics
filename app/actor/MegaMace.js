@@ -9,6 +9,7 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 	{
 		super(...args);
 
+		this.args.decel  = 0.0;
 		this.args.width  = 64;
 		this.args.height = 64 - 12;
 		this.args.type   = 'actor-item actor-mega-mace';
@@ -19,6 +20,9 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 
 		this.args.gravity = 0.8;
 		// this.alwaysSkidding  = true;
+
+		this.args.xSpeedMax = 256;
+		this.args.ySpeedMax = 256;
 	}
 
 	update()
@@ -69,12 +73,14 @@ export class MegaMace extends Mixin.from(PointActor, Constrainable)
 
 	collideB(other)
 	{
-		if(this.args._tiedTo && !this.args._tiedTo === other)
+		const _tiedTo = this.others.tiedTo;
+
+		if(_tiedTo && !_tiedTo === other)
 		{
 			return false;
 		}
 
-		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
+		if(_tiedTo && !_tiedTo.args.hitPoints)
 		{
 			return;
 		}

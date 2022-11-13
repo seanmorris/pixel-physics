@@ -179,5 +179,5 @@ export class PogoSpring extends Vehicle
 	// }
 
 	get solid() { return !this.occupant; }
-	get rotateLock() { return true; }
+	get rotateLock() { return false; }
 }

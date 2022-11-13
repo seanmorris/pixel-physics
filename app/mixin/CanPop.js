@@ -9,6 +9,12 @@ export class CanPop
 	{
 		const viewport = this.viewport;
 
+		if(this.args.invincible)
+		{
+			other.damage(this);
+			return;
+		}
+
 		if(other.knocked)
 		{
 			other.pop && other.pop(other.knocked);
@@ -77,6 +83,11 @@ export class CanPop
 
 	damage(other, type)
 	{
+		if(this.args.invincible)
+		{
+			return;
+		}
+
 		if(!other)
 		{
 			this.pop();
@@ -99,7 +110,7 @@ export class CanPop
 	{
 		const viewport = this.viewport;
 
-		if(!viewport || this.args.gone || (other && other.args.owner === this))
+		if(!viewport || this.args.gone || this.args.invincible || (other && other.args.owner === this))
 		{
 			return;
 		}

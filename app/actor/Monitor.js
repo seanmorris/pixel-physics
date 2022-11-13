@@ -134,7 +134,7 @@ export class Monitor extends PointActor
 
 		if(other)
 		{
-			const reward = {label: this.args.name || this.name, points:10, multiplier:1};
+			const reward = {label: this.name || this.args.name, points:10, multiplier:1};
 
 			other.args.popChain.push(reward);
 			other.args.popCombo += 1;
@@ -144,7 +144,7 @@ export class Monitor extends PointActor
 
 		const scoreNode = document.createElement('div');
 		scoreNode.classList.add('particle-score');
-		scoreNode.classList.add('score-100');
+		scoreNode.classList.add('score-10');
 		const scoreTag = new Tag(scoreNode);
 
 		scoreTag.style({'--x': this.args.x, '--y': this.args.y-16});

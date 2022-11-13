@@ -325,7 +325,7 @@ export class PointActor extends View
 		this.args.ySpeedMax = 512;
 		this.args.gSpeedMax    = WALKING_SPEED;
 		this.args.rollSpeedMax = 23;
-		this.args.gravity   = 0.65;
+		this.args.gravity   = this.args.gravity ?? 0.65;
 		this.args.decel     = 0.85;
 		this.args.accel     = 0.2;
 		this.args.airAccel  = 0.3;
@@ -1670,6 +1670,11 @@ export class PointActor extends View
 
 	totalCombo(fail = false)
 	{
+		if(!this.args.popChain.length)
+		{
+			return;
+		}
+
 		if(this.eraseCombo)
 		{
 			this.eraseCombo();
@@ -1689,7 +1694,6 @@ export class PointActor extends View
 
 		const total = base * multiply;
 
-		this.args.score += total;
 		this.args.popChain.length = 0;
 
 		if(!total)
@@ -1698,6 +1702,11 @@ export class PointActor extends View
 			this.viewport.args.comboFail = null;
 			return;
 		}
+
+		this.eraseCombo = this.viewport.onFrameOut(360, () => {
+			this.viewport.args.comboResult = null;
+			this.viewport.args.comboFail = null;
+		});
 
 		if(fail)
 		{
@@ -1709,10 +1718,7 @@ export class PointActor extends View
 		this.viewport.args.comboResult = new CharacterString({value:'+'+total, color:'green-light'});
 		this.viewport.args.comboFail = null;
 
-		this.eraseCombo = this.viewport.onFrameOut(120, () => {
-			this.viewport.args.comboResult = null;
-			this.viewport.args.comboFail = null;
-		});
+		this.args.score += total;
 	}
 
 	damage(other, type = 'normal')

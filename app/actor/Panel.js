@@ -132,8 +132,6 @@ export class Panel extends PointActor
 
 			const point = this.rotatePoint(0, 8);
 
-			console.log(point);
-
 			other.args.x = this.x + point[0];
 			other.args.y = this.y + point[1];
 
