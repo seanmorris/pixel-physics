@@ -19,6 +19,13 @@ export class Projectile extends PointActor
 
 		this.args.type = 'actor-item actor-projectile';
 
+		if(this.args.subType)
+		{
+			this.args.type = this.args.type + ' ' + this.args.subType;
+		}
+
+		this.args.damageType = this.args.damageType ?? 'normal';
+
 		this.behaviors.add(new Platformer);
 
 		this.args.width  = 8;
@@ -26,7 +33,7 @@ export class Projectile extends PointActor
 
 		this.args.strength = this.args.strength || 1;
 
-		this.args.gravity   = 0.15;
+		this.args.gravity = this.args.gravity ?? 0.15;
 
 		this.removeTimer = null;
 		this.noClip = true;
@@ -99,7 +106,7 @@ export class Projectile extends PointActor
 
 		if(this.args.owner && !this.args.owner.args.gone)
 		{
-			(other.controllable || (other instanceof BreakableBlock)) && other.damage();
+			(other.controllable || (other instanceof BreakableBlock)) && other.damage(this, this.args.damageType);
 		}
 
 		// this.args.x += Math.cos(this.args.angle) * (other.args.width / 2) * Math.sign(this.args.xSpeed);

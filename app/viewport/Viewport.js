@@ -425,6 +425,14 @@ export class Viewport extends View
 
 		this.args.currentActor = '';
 
+		this.args.xMouse = 0;
+		this.args.YMouse = 0;
+
+		this.args.xMouseOffset = 0;
+		this.args.YMouseOffset = 0;
+
+		this.mouseState = {position: [0,0], buttons: []};
+
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
 
@@ -2544,7 +2552,7 @@ export class Viewport extends View
 
 		const actor = Bindable.make(rawActor);
 
-		actor.name = objDef.name;
+		actor.name = actor.name || objDef.name;
 
 		this.actors.add( actor );
 	}
@@ -2585,6 +2593,11 @@ export class Viewport extends View
 			{
 				actor.args.display = actor.defaultDisplay || null;
 			}
+		}
+
+		for(const actor of this.actors.items())
+		{
+			actor.initialize && actor.initialize();
 		}
 	}
 
@@ -2839,15 +2852,9 @@ export class Viewport extends View
 						}
 					}
 
-					if(isRegion)
-					{
-						actorSpawned = true;
-					}
-					else
-					{
-						actorSpawned = true;
-					}
+					actorSpawned = true;
 
+					spawn.object.initialize && spawn.object.initialize();
 				}
 			}
 			else
@@ -3634,6 +3641,14 @@ export class Viewport extends View
 		else
 		{
 			this.settings.frameSkip = 1;
+		}
+
+		for(const b of this.mouseState.buttons)
+		{
+			if(this.mouseState.buttons[b])
+			{
+				this.mouseState.buttons[b]++;
+			}
 		}
 	}
 
@@ -4695,9 +4710,53 @@ export class Viewport extends View
 	{
 		this.args.mouse = 'moved';
 
-		this.onTimeout(5000, () => {
+		const xOrigin = event.currentTarget.offsetLeft;
+		const yOrigin = event.currentTarget.offsetTop;
+
+		const xMouse = (event.pageX + -xOrigin) / this.args.scale;
+		const yMouse = (event.pageY + -yOrigin) / this.args.scale;
+
+		this.args.xMouseOffset = xMouse;
+		this.args.yMouseOffset = yMouse;
+
+		this.onTimeout(2000, () => {
 			this.args.mouse = 'hide';
 		});
+	}
+
+	mousedown(event)
+	{
+		// this.mouseState.buttons = event.buttons;
+		this.setMouseButtons(event);
+
+		console.log(this.mouseState.buttons);
+	}
+
+	mouseup(event)
+	{
+		// this.mouseState.buttons = event.buttons;
+		this.setMouseButtons(event);
+
+		console.log(this.mouseState.buttons);
+	}
+
+	setMouseButtons(event)
+	{
+		for(let i = 0; i < 8; i++)
+		{
+			const bit = 2 ** i;
+
+			if(event.buttons & bit)
+			{
+				this.mouseState.buttons[i]++;
+			}
+			else
+			{
+				this.mouseState.buttons[i] = 0;
+			}
+
+			console.log(this.mouseState.buttons);
+		}
 	}
 
 	hyphenate(string)
@@ -4998,5 +5057,12 @@ export class Viewport extends View
 		});
 
 		return this.matrix.logIn(redirectUrl).then(() => this.matrix);
+	}
+
+	get mouse() {
+		this.mouseState.position[0] = this.args.xMouseOffset + -this.args.x;
+		this.mouseState.position[1] = this.args.yMouseOffset + -this.args.y;
+
+		return this.mouseState;
 	}
 }

@@ -13,7 +13,7 @@
 	--sprite-offset-y: -32px;
 	background-image: url(/Sonic/redz.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
-	height: 64px;
+	height: 32px;
 	width: 64px;
 	z-index: 1;
 }

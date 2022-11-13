@@ -2,8 +2,7 @@ import { Tag } from 'curvature/base/Tag';
 
 export const Constrainable = {
 
-	wakeUp: function() {
-
+	initialize: function() {
 		if(!this.others.tiedTo)
 		{
 			return;
@@ -21,6 +20,12 @@ export const Constrainable = {
 			this.sprite.appendChild(this.chain.node);
 			this.onRemove(() => hangList.delete(this));
 		}
+
+		this.setPos();
+	}
+
+	, wakeUp: function() {
+
 	}
 
 	, sleep: function() {
@@ -94,6 +99,16 @@ export const Constrainable = {
 
 			this.args.xSpeed += Math.cos(gravityAngle) * overshot;
 			this.args.ySpeed += Math.sin(gravityAngle) * overshot;
+
+			if(this.args.xSpeedMax < Math.abs(this.args.xSpeed))
+			{
+				this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
+			}
+
+			if(this.args.ySpeedMax < Math.abs(this.args.ySpeed))
+			{
+				this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
+			}
 
 			this.args.gSpeed = this.args.xSpeed;
 

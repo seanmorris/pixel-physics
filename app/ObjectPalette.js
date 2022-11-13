@@ -79,6 +79,8 @@ import { BFish        } from './actor/BFish';
 import { Grounder     } from './actor/Grounder';
 import { TechnoSqueak } from './actor/TechnoSqueak';
 import { SpringTurtle } from './actor/SpringTurtle';
+import { Sparkle      } from './actor/Sparkle';
+import { Splats       } from './actor/Splats';
 
 import { SpitFire    } from './actor/SpitFire';
 
@@ -208,6 +210,7 @@ import { HtmlFrame } from './actor/HtmlFrame';
 import { Panel } from './actor/Panel';
 import { Tester } from './actor/Tester';
 import { Cursor } from './actor/Cursor';
+import { MouseIndicator } from './actor/MouseIndicator';
 import { Spawner } from './actor/Spawner';
 
 import { NeverBetter } from './actor/NeverBetter';
@@ -342,6 +345,8 @@ export const ObjectPalette = {
 	, 'grounder': Grounder
 	, 'techno-squeak': TechnoSqueak
 	, 'spring-turtle': SpringTurtle
+	, 'sparkle': Sparkle
+	, 'splats': Splats
 	, 'spitfire': SpitFire
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
@@ -383,6 +388,8 @@ export const ObjectPalette = {
 	, 'html-frame': HtmlFrame
 	, 'panel': Panel
 	, 'tester': Tester
+	, 'cursor': Cursor
+	, 'mouse-indicator': MouseIndicator
 	, 'spawner': Spawner
 	, 'never-better': NeverBetter
 	, 'asteroid-large': AsteroidLarge
