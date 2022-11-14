@@ -905,7 +905,7 @@ export class Platformer
 				host.args.gSpeed  = 0;
 			}
 
-			if(!host.willStick && host.args.falling && host.controllable)
+			if(!host.willStick && host.args.falling && host.controllable && !host.noClip)
 			{
 				let popOut = 16;
 
@@ -975,7 +975,7 @@ export class Platformer
 					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
 
-				if(!host.args.canHide)
+				if(!host.args.canHide && !host.noClip)
 				{
 					let popOut = 16;
 
@@ -1385,7 +1385,7 @@ export class Platformer
 			}
 		}
 
-		if(!host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
+		if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
 		{
 			host.args.falling = false;
 		}

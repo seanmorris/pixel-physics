@@ -270,15 +270,13 @@ export class Block extends PointActor
 
 		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
-			other.args.y = other.yLast;
-			// if(other.args.y < this.args.y)
-			// {
-			// 	other.args.y = this.y + -this.args.height + this.args.ySpeed;
-			// 	other.args.ySpeed = this.args.ySpeed;
-			// }
-			// this.onNextFrame(() => {
-			// 	other.args.falling = false;
-			// });
+			// other.args.y = other.yLast;
+			if(other.args.y < this.args.y)
+			{
+				other.args.y = this.y + -this.args.height;
+				other.args.falling = false;
+				// other.args.ySpeed = this.args.ySpeed;
+			}
 
 			return;
 		}

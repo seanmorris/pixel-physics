@@ -77,7 +77,12 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
-		if(this.activator === other && other.y > this.y)
+		if(!other.args.falling && other.args.y == this.args.y)
+		{
+			return false;
+		}
+
+		if(this.activator === other && other.y > this.args.y)
 		{
 			this.ignore = 8;
 			return true;
@@ -85,10 +90,10 @@ export class Switch extends PointActor
 
 		if(other.args.ySpeed < 0)
 		{
-			if(other.args.ySpeed === 0 && other.y > this.y)
-			{
-				return true;
-			}
+			// if(other.args.ySpeed === 0 && other.y > this.y)
+			// {
+			// 	return true;
+			// }
 
 			return false;
 		}

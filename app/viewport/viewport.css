@@ -674,6 +674,10 @@ input[type=number]::-webkit-outer-spin-button {
 	animation: combo-pulse 400ms 1 linear;
 }
 
+.combo-table .comboResult .hud-character {
+	animation: combo-reward 750ms calc(1200ms + calc(15ms * calc(var(--index) * var(--index)))) 1 ease-in forwards;
+}
+
 .combo-table .comboFail .hud-character {
 	/*transform: translate(0, calc(1px * var(--index)));*/
 	animation: combo-fail 750ms calc(1200ms + calc(15ms * calc(var(--index) * var(--index)))) 1 ease-in forwards;
@@ -706,6 +710,26 @@ input[type=number]::-webkit-outer-spin-button {
 	}
 	100% {
 		transform: scale(1) rotate(0);
+	}
+}
+
+@keyframes combo-reward {
+	0% {
+		filter: saturate(0) brightness(3);
+		transform: translateY(0px);
+		opacity: 1;
+	}
+	25% {
+		filter: saturate(1) brightness(1);
+	}
+	33% {
+		transform: translateY(0px);
+		opacity: 1;
+	}
+	100% {
+		filter: saturate(1) brightness(1);
+		transform: translateY(-16px);
+		opacity: 0;
 	}
 }
 

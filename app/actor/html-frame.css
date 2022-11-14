@@ -25,6 +25,7 @@
 	height: 400%;
 	max-width: none;
 	pointer-events: initial;
+	pointer-events: none;
 }
 
 .actor-html-frame {

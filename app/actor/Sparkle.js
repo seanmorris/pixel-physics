@@ -17,8 +17,6 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 	{
 		super(...args);
 
-		this.behaviors.add(new SkidDust);
-
 		this.args.type      = 'actor-item actor-sparkle';
 
 		this.args.animation = 'standing';
@@ -32,6 +30,14 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 		this.args.float  = -1;
 		this.args.static = true;
 		this.args.invincible = true;
+		this.args.offset = this.args.offset ?? 0;
+	}
+
+	collideA(other, type)
+	{
+		if(other instanceof Projectile) return false;
+
+		super.collideA(other, type);
 	}
 
 	onRendered(event)
@@ -55,11 +61,18 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
-		if(this.viewport.args.frameId % 120 > 90)
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const frameId = this.viewport.args.frameId + -this.args.offset;
+
+		if(frameId % 180 > 150)
 		{
 			this.args.animation = 'flicker-fast';
 		}
-		else if(this.viewport.args.frameId % 120 > 60)
+		else if(frameId % 180 > 120)
 		{
 			this.args.animation = 'flicker';
 		}
@@ -71,8 +84,7 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 		const direction = this.args.mode === 0 ? 1 : -1;
 		const angle  = -Math.PI/2 * direction;
 
-
-		if(this.viewport.args.frameId % 120 > 108)
+		if(frameId % 180 > 168)
 		{
 			const length = this.castRayQuick(2048, angle);
 
@@ -100,7 +112,7 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 			this.args.invincible = false;
 		}
 
-		if(this.viewport.args.frameId % 120 === 0)
+		if(frameId % 180 === 0)
 		{
 			const length = this.castRayQuick(2048, angle);
 

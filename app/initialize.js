@@ -96,6 +96,7 @@ else
 	Sfx.register('ROCK_BREAK_2',  '/Sonic/S1_CB.wav', {maxConcurrent: 1, volume: 0.50, fudgeFactor: 0.1});
 
 	Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
+	Sfx.register('HALLBOOSTER_HIT', '/Sonic/S3K_74.wav', {maxConcurrent: 1, volume: 0.75, fudgeFactor: 0.1});
 	Sfx.register('SPRING_HIT', '/Sonic/spring-activated.wav', {maxConcurrent: 2, volume: 0.5, fudgeFactor: 0.1});
 	Sfx.register('SWITCH_HIT', '/Sonic/switch-activated.wav', {maxConcurrent: 3, volume: 0.3, fudgeFactor: 0.2});
 
