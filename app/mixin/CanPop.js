@@ -160,7 +160,7 @@ export class CanPop
 					points = 10000;
 				}
 
-				const reward = {label: this.args.name || this.name, points, multiplier:1};
+				const reward = {label: this.name || this.args.name, points, multiplier:1};
 
 				other.args.popCombo += 1;
 				other.args.popChain.push(reward);

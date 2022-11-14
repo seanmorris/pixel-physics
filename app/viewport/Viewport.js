@@ -3599,7 +3599,7 @@ export class Viewport extends View
 					this.args.combo[i] = this.args.combo[i] || {score:new CharacterString, label:new CharacterString};
 
 					this.args.combo[i].score.args.value = pop.points;
-					this.args.combo[i].label.args.value = pop.label;
+					this.args.combo[i].label.args.value = String(pop.label).replace(/-/g, ' ');
 
 					multiply += pop.multiplier;
 					base += pop.points;
