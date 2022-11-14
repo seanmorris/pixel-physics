@@ -12,6 +12,8 @@ import { Projectile } from '../actor/Projectile';
 
 export class Sping extends Mixin.from(PointActor, CanPop)
 {
+	name = 'Spiny';
+
 	constructor(...args)
 	{
 		super(...args);

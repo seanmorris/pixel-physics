@@ -82,6 +82,9 @@ import { SpringTurtle } from './actor/SpringTurtle';
 import { Sparkle      } from './actor/Sparkle';
 import { Splats       } from './actor/Splats';
 
+// Newtron
+// Bomb
+
 import { SpitFire    } from './actor/SpitFire';
 
 import { Explosion } from './actor/Explosion';
@@ -154,6 +157,7 @@ import { Balloon } from './actor/Balloon';
 import { StarBalloon } from './actor/StarBalloon';
 
 import { Spinner } from './actor/Spinner';
+import { HallBooster } from './actor/HallBooster';
 import { Springboard } from './actor/Springboard';
 
 import { GrapplePoint } from './actor/GrapplePoint';
@@ -352,6 +356,7 @@ export const ObjectPalette = {
 	, 'rocket': Rocket
 	, 'booster': Booster
 	, 'spinner': Spinner
+	, 'hall-booster': HallBooster
 	, 'springboard': Springboard
 	, 'wooden-crate': WoodenCrate
 	, 'steel-crate': SteelCrate

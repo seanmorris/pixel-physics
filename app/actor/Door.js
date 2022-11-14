@@ -27,6 +27,11 @@ export class Door extends PointActor
 
 	open(other)
 	{
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		if(this.others.waitFor && this.others.waitFor.args.opened)
 		{
 			this.args.opening = this.args.opened = false;
@@ -34,8 +39,7 @@ export class Door extends PointActor
 		}
 
 		this.args.opening = true;
-
-		this.viewport.onFrameOut(2, () => this.args.opened = true);
+		this.viewport.onFrameOut(10, () => this.args.opened = true);
 
 		this.viewport.onFrameOut(50, () => this.args.opening = false);
 		this.viewport.onFrameOut(55, () => this.args.opened = false);
@@ -50,7 +54,7 @@ export class Door extends PointActor
 
 		if(!this.args.opened)
 		{
-			this.open(other);
+			this.viewport.onFrameOut(20, () => this.open(other));
 		}
 
 		return !this.args.opened;

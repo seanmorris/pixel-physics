@@ -324,7 +324,7 @@ export class RedEyeJet extends PointActor
 		{
 			const label = ['LUCKY SHOT', 'IM GOING EASY', 'OKAY', 'NICE', 'WOW', 'JEEZ', 'DAMN!', 'STOP!'][other.args.popChain.length];
 
-			const reward = {label, points:1000, multiplier:1};
+			const reward = {label, points:1000 * other.args.popChain.length, multiplier:1};
 
 			other.args.popChain.push(reward);
 			other.args.popCombo += 1;

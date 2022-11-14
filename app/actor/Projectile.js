@@ -70,12 +70,22 @@ export class Projectile extends PointActor
 
 	collideA(other)
 	{
-		if(this.args.strength <= 1 && other instanceof BreakableBlock)
+		if(other instanceof Projectile)
+		{
+			return;
+		}
+
+		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
 		{
 			return false;
 		}
 
-		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
+		if(!this.args.owner.controllable && !other.controllable)
+		{
+			return;
+		}
+
+		if(this.args.strength <= 1 && other instanceof BreakableBlock)
 		{
 			return false;
 		}
@@ -132,7 +142,7 @@ export class Projectile extends PointActor
 
 		viewport.particles.add(particle);
 
-		setTimeout(() => viewport.particles.remove(particle), 350);
+		this.viewport.onFrameOut(20, () => viewport.particles.remove(particle));
 
 		this.viewport.actors.remove( this );
 		this.remove();

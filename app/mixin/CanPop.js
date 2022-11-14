@@ -56,7 +56,7 @@ export class CanPop
 			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
 		){
 			const otherShield = other.args.currentSheild;
-			this.damage(other, otherShield ? otherShield.type : 'normal');
+			this.damage(other, otherShield ? otherShield.type : (other.args.damageType || 'normal'));
 			return;
 		}
 

@@ -8,7 +8,7 @@
 
 [data-paused="0"] .viewport-particles > *,
 [data-paused="-1"] .viewport-particles > * {
-	/*animation-play-state: paused !important;*/
+	animation-play-state: paused !important;
 }
 
 @keyframes particle-animate {
