@@ -703,8 +703,8 @@ export class PointActor extends View
 			, '--opacity':        'opacity'
 			, '--height':         'height'
 			, '--width':          'width'
-			, '--x':              'x'
-			, '--y':              'y'
+			, '--x':              'xWrapped'
+			, '--y':              'yWrapped'
 			, '--z':              'z'
 		});
 
@@ -893,6 +893,25 @@ export class PointActor extends View
 			}
 
 			tag.attr(attrs);
+		}
+
+		if(this.viewport && this.viewport.controlActor !== this)
+		{
+			const mapWidth  = this.viewport.tileMap.mapData.width  * this.viewport.tileMap.mapData.tileheight;
+			const mapHeight = this.viewport.tileMap.mapData.height * this.viewport.tileMap.mapData.tileheight;
+
+			console.log(this.viewport.args.xWrap);
+
+			// this.viewport.args.xWrap
+			// this.viewport.args.yWrap
+
+			this.args.xWrapped = this.args.x + mapWidth * this.viewport.args.xWrap;
+			this.args.yWrapped = this.args.y + mapHeight * this.viewport.args.yWrap;
+		}
+		else
+		{
+			this.args.xWrapped = this.args.x;
+			this.args.yWrapped = this.args.y;
 		}
 	}
 

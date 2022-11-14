@@ -1,0 +1,35 @@
+.actor-item.actor-hall-booster {
+	position: absolute;
+	width: 64px;
+	height: 64px;
+}
+
+.actor-item.actor-hall-booster .sprite {
+	transform:
+		translate(-50%, calc(-100% - var(--hoverWidth)))
+		rotate(calc(-1rad * var(--display-angle)))
+		scaleX(var(--direction))
+		!important;
+}
+
+.actor-item.actor-hall-booster .sprite:after {
+	content: 'lol';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background-position: 0 0;
+	background-image: url(/Sonic/hall-effect-booster.png);
+	width: 64px;
+	height: 96px;
+	/*animation: spinner-spin steps(2) infinite 50ms;*/
+}
+/*
+@keyframes spinner-spin {
+	from{
+		background-position: 0 0;
+	}
+	to{
+		background-position: 0 -48px;
+	}
+}
+*/

@@ -425,6 +425,9 @@ export class Viewport extends View
 
 		this.args.currentActor = '';
 
+		this.args.xWrap = 0;
+		this.args.yWrap = 0;
+
 		this.args.xMouse = 0;
 		this.args.YMouse = 0;
 
@@ -2325,6 +2328,12 @@ export class Viewport extends View
 			this.args.x = x + this.args.shakeX;
 			this.args.y = y + this.args.shakeY;
 		}
+
+		const mapWidth  = this.tileMap.mapData.width  * this.tileMap.mapData.tileheight;
+		const mapHeight = this.tileMap.mapData.height * this.tileMap.mapData.tileheight;
+
+		this.args.xWrap = Math.floor(-this.args.x / mapWidth);
+		this.args.yWrap = Math.floor(-this.args.y / mapHeight);
 	}
 
 	applyMotionBlur()
@@ -2784,25 +2793,34 @@ export class Viewport extends View
 		const width  = this.args.width;
 		const height = this.args.height;
 
-		const camLeft   = -this.args.x + -16 + -margin;
-		const camRight  = -this.args.x +  16 +  margin + width;
+		const mapWidth  = this.tileMap.mapData.width  * this.tileMap.mapData.tileheight;
+		const mapHeight = this.tileMap.mapData.height * this.tileMap.mapData.tileheight;
 
-		const camTop    = -this.args.y - margin;
-		const camBottom = -this.args.y + height + margin * 0.5;
+		const wrappedActorX = actor.args.x % mapWidth;
+		const wrappedActorY = actor.args.y % mapHeight;
+
+		const wrappedCameraX = -this.args.x % mapWidth;
+		const wrappedCameraY = -this.args.y % mapHeight;
+
+		const camLeft   = wrappedCameraX + -16 + -margin;
+		const camRight  = wrappedCameraX +  16 +  margin + width;
+
+		const camTop    = wrappedCameraY - margin;
+		const camBottom = wrappedCameraY + height + margin * 0.5;
 
 		const actorWidth = actor.args.width;
 
-		const actorTop   = actor.args.y - actor.args.height;
+		const actorTop   = wrappedActorY - actor.args.height;
 
-		const actorLeft  = actor.args.x - (actor.isRegion ? 0 : actorWidth / 2);
-		const actorRight = actor.args.x + (actor.isRegion ? actorWidth : (actorWidth / 2));
+		const actorLeft  = wrappedActorX - (actor.isRegion ? 0 : actorWidth / 2);
+		const actorRight = wrappedActorX + (actor.isRegion ? actorWidth : (actorWidth / 2));
 
 		if(camLeft > actorRight || actorLeft > camRight)
 		{
 			return false;
 		}
 
-		if(camTop > actor.args.y || actorTop > camBottom)
+		if(camTop > wrappedActorY || actorTop > camBottom)
 		{
 			return false;
 		}
@@ -3701,8 +3719,11 @@ export class Viewport extends View
 		return regions;
 	}
 
-	actorsAtPoint(x, y, w = 0, h = 0)
+	actorsAtPoint(globalX, globalY, w = 0, h = 0)
 	{
+		const x = globalX % (this.tileMap.mapData.width * this.tileMap.mapData.tileheight);
+		const y = globalY % (this.tileMap.mapData.height * this.tileMap.mapData.tileheight);
+
 		const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		const actorPointCache = this[ActorPointCache];
 
@@ -3942,8 +3963,14 @@ export class Viewport extends View
 		const colCellDiv = this.colCellDiv;
 		const colCells   = this.colCells;
 
-		const cellX = Math.floor( point.x / colCellDiv );
-		const cellY = Math.floor( point.y / colCellDiv );
+		const mapWidth  = this.tileMap.mapData.width  * this.tileMap.mapData.tileheight;
+		const mapHeight = this.tileMap.mapData.height * this.tileMap.mapData.tileheight;
+
+		const wrappedX = point.x % mapWidth;
+		const wrappedY = point.y % mapHeight;
+
+		const cellX = Math.floor(wrappedX / colCellDiv );
+		const cellY = Math.floor(wrappedY / colCellDiv );
 
 		const name = `${cellX}:${cellY}`;
 
@@ -3972,7 +3999,7 @@ export class Viewport extends View
 		const actorLeft  = actor.args.x - actorWidth / 2;
 		const actorRight = actor.args.x + actorWidth / 2;
 
-		const cellMinX = Math.floor( actorLeft  / colCellDiv );
+		const cellMinX = Math.floor( actorLeft / colCellDiv );
 		const cellMaxX = Math.ceil( actorRight / colCellDiv );
 
 		const cellMinY = Math.floor( actorTop / colCellDiv );
@@ -3980,11 +4007,18 @@ export class Viewport extends View
 
 		const cells = new Set;
 
+		const mapWidth  = this.tileMap.mapData.width  * this.tileMap.mapData.tileheight;
+		const mapHeight = this.tileMap.mapData.height * this.tileMap.mapData.tileheight;
+
 		for(let x = cellMinX; x <= cellMaxX; x++)
 		{
 			for(let y = cellMinY; y <= cellMaxY; y++)
 			{
-				cells.add( this.getColCell({x:x*colCellDiv,y:y*colCellDiv}) );
+
+				const wrappedX = (x*colCellDiv) % mapWidth;
+				const wrappedY = (y*colCellDiv) % mapHeight;
+
+				cells.add( this.getColCell({x:wrappedX,y:wrappedY}) );
 			}
 		}
 
