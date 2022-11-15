@@ -884,6 +884,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return nearest;
 	}
 
+	negSafeMod(a,b)
+	{
+	    if(a >= 0) return a % b;
+	    return (b + a % b) % b;
+	}
+
 	get blockSize()
 	{
 		return this.mapData.tilewidth;
