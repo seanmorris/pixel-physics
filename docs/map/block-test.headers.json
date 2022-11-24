@@ -1,0 +1,123 @@
+{
+    "compressionlevel": -1,
+    "height": 82,
+    "infinite": false,
+    "nextlayerid": 11,
+    "nextobjectid": 395,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "industrial"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "BLOCK TEST"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 689,
+            "image": "lz-ground.png",
+            "imageheight": 3200,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "lz-ground",
+            "spacing": 0,
+            "tilecount": 2200,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 2889,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 3145,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 256,
+    "types": [
+        "block",
+        "marble-block",
+        "rolling-region",
+        "stopper",
+        "switch",
+        "text-actor"
+    ],
+    "map": "/map/block-test.json"
+}

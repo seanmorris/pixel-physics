@@ -268,7 +268,7 @@ export class Block extends PointActor
 			// }
 		}
 
-		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
+		if(type === 0 && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
 			// other.args.y = other.yLast;
 			if(other.args.y < this.args.y)
@@ -444,16 +444,62 @@ export class Block extends PointActor
 		this.xLast = this.args.x;
 		this.yLast = this.args.y;
 
+		if(this.otherDefs.path)
+		{
+			let next = this.pathNext || this.otherDefs.path;
+
+			if(next)
+			{
+				for(const prop of next.properties)
+				{
+					if(prop.name === 'next')
+					{
+						next = this.viewport.objDefs.get(prop.value);
+					}
+				}
+
+				const speed = this.args.pathSpeed ?? 8;
+
+				const xDiff = this.args.x - next.x;
+				const yDiff = this.args.y - next.y;
+
+				if(Math.abs(xDiff) < speed && Math.abs(yDiff) < speed)
+				{
+					this.pathNext = next;
+				}
+
+				if(Math.abs(xDiff) < speed)
+				{
+					this.args.x = next.x;
+				}
+				else
+				{
+					this.args.x -= speed * Math.sign(xDiff);
+				}
+
+				if(Math.abs(yDiff) < speed)
+				{
+					this.args.y = next.y;
+				}
+				else
+				{
+					this.args.y -= speed * Math.sign(yDiff);
+				}
+			}
+		}
+
 		if(this.args.float && (this.args.oscillateX && this.args.oscillateY))
 		{
+			const timeFrame = this.viewport.args.frameId + (this.args.offset ?? 0) * Math.PI;
+
 			{
-				const current = Math.sin(this.viewport.args.frameId/this.args.timeX);
+				const current = Math.sin(timeFrame/this.args.timeX);
 				const moveX = (current * this.args.oscillateX);
 				this.args.x = this.originalX - moveX;
 			}
 
 			{
-				const current = Math.cos(this.viewport.args.frameId/this.args.timeY);
+				const current = Math.cos(timeFrame/this.args.timeY);
 				const moveY = -(current * this.args.oscillateY);
 				this.args.y = this.originalY - moveY;
 			}
@@ -705,8 +751,9 @@ export class Block extends PointActor
 			}
 			else if(xDist < 0.9)
 			{
-				other.args.gSpeed = mode ? -other.xSpeedLast : other.xSpeedLast;
-				other.args.xSpeed = other.xSpeedLast;
+				const speed = other.args.xSpeed || other.xSpeedLast;
+				other.args.gSpeed = mode ? -speed : speed;
+				other.args.xSpeed = speed;
 				other.args.float = -1;
 				other.noClip = true;
 				other.args.antiSkid = 15;

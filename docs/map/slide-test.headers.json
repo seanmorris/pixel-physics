@@ -1,0 +1,97 @@
+{
+    "compressionlevel": -1,
+    "height": 256,
+    "infinite": false,
+    "nextlayerid": 3,
+    "nextobjectid": 482,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "industrial"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "BLOCK TEST"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 689,
+            "image": "../Sonic/marble-companion-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-companion-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 8192,
+    "types": [
+        "knuckles",
+        "marble-block",
+        "ring",
+        "seymour",
+        "sonic",
+        "tails"
+    ],
+    "map": "/map/slide-test.json"
+}

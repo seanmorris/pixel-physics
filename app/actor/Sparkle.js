@@ -101,6 +101,11 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 
 			for(const [b,p] of blocking)
 			{
+				if(!b.controllable)
+				{
+					continue;
+				}
+
 				b.damage(this, 'electric');
 
 				b.pop && b.pop(this);
@@ -131,32 +136,35 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 
 			this.args.mode = this.args.mode === 0 ? 2 : 0;
 
-			const speed = 0.75;
+			if(this.vizi)
+			{
+				const speed = 0.75;
 
-			const sparkL = new Projectile({
-				owner: this
-				, subType:'spark'
-				, damageType: 'electric'
-				, gravity: 0
-				, ySpeed: speed * direction
-				, xSpeed: -speed
-				, x:this.args.x
-				, y:this.args.y
-			});
+				const sparkL = new Projectile({
+					owner: this
+					, subType:'spark'
+					, damageType: 'electric'
+					, gravity: 0
+					, ySpeed: speed * direction
+					, xSpeed: -speed
+					, x:this.args.x
+					, y:this.args.y
+				});
 
-			const sparkR = new Projectile({
-				owner: this
-				, subType:'spark'
-				, damageType: 'electric'
-				, gravity: 0
-				, ySpeed: speed * direction
-				, xSpeed: speed
-				, x:this.args.x
-				, y:this.args.y
-			});
+				const sparkR = new Projectile({
+					owner: this
+					, subType:'spark'
+					, damageType: 'electric'
+					, gravity: 0
+					, ySpeed: speed * direction
+					, xSpeed: speed
+					, x:this.args.x
+					, y:this.args.y
+				});
 
-			this.viewport.spawn.add({object:sparkL});
-			this.viewport.spawn.add({object:sparkR});
+				this.viewport.spawn.add({object:sparkL});
+				this.viewport.spawn.add({object:sparkR});
+			}
 		}
 
 		super.update();

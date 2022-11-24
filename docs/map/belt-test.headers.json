@@ -1,0 +1,139 @@
+{
+    "compressionlevel": -1,
+    "height": 42,
+    "infinite": false,
+    "nextlayerid": 6,
+    "nextobjectid": 114,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "south-ridge"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 177,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 178,
+            "image": "../Sonic/tiles/lava-reef/bridge.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "bridge",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 0,
+            "firstgid": 179,
+            "image": "../Sonic/rope-horizontal.png",
+            "imageheight": 4,
+            "imagewidth": 16,
+            "margin": 0,
+            "name": "rope-horizontal",
+            "spacing": 0,
+            "tilecount": 0,
+            "tileheight": 4,
+            "tilewidth": 18
+        },
+        {
+            "columns": 1,
+            "firstgid": 179,
+            "image": "../Sonic/rope-horizontal.png",
+            "imageheight": 4,
+            "imagewidth": 16,
+            "margin": 0,
+            "name": "rope-horizontal",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 4,
+            "tilewidth": 16
+        },
+        {
+            "columns": 13,
+            "firstgid": 180,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 414,
+            "image": "../Sonic/big-wheel.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "big-wheel",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 430,
+            "image": "big-wheel.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "big-wheel",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 44,
+    "types": [
+        "block",
+        "pulley",
+        "rolling-region"
+    ],
+    "map": "/map/belt-test.json"
+}

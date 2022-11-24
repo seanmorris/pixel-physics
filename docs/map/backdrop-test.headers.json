@@ -1,0 +1,53 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 8,
+    "nextobjectid": 24,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": false
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 146,
+    "types": [
+        "backdrop",
+        "rain-region",
+        "spring"
+    ],
+    "map": "/map/backdrop-test.json"
+}

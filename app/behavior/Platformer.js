@@ -14,6 +14,7 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		host.args.sliding = false;
 		host.lastLayer = null;
 
 		host.args.localCameraMode = null;
@@ -905,22 +906,22 @@ export class Platformer
 				host.args.gSpeed  = 0;
 			}
 
-			if(!host.willStick && host.args.falling && host.controllable && !host.noClip)
+			if(!host.willStick && host.args.falling && host.controllable && !host.args.static && !host.noClip)
 			{
 				let popOut = 16;
 
 				const radius = host.args.width * 0.5;
 
-				if(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0)
-					&& !host.getMapSolidAt(host.args.x + 1, host.args.y - host.args.height * 0)
+				if(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
+					&& !host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
 					host.args.x += 1;
 					popOut--;
 				}
 
-				if(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0)
-					&& !host.getMapSolidAt(host.args.x - 1, host.args.y - host.args.height * 0)
+				if(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+					&& !host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
 					host.args.x -= 1;
@@ -2055,7 +2056,11 @@ export class Platformer
 
 				if(!host.args.climbing && host.args.gSpeed && (!pushFoward || host.args.rolling))
 				{
-					if(host.args.grinding)
+					if(host.args.sliding)
+					{
+
+					}
+					else if(host.args.grinding)
 					{
 						if(host.yAxis > 0.5)
 						{
@@ -2566,7 +2571,7 @@ export class Platformer
 
 		let hits = [];
 
-		if(!host.args.hLock)
+		if(!host.args.hLock && !host.noClip)
 		{
 			const hScanDist = Math.trunc(host.args.xSpeed);
 
@@ -2706,8 +2711,8 @@ export class Platformer
 		);
 
 		const airPointQ = airMag !== false && [
-			Math.cos(host.airAngle) * (airMag) + host.args.x
-			, Math.sin(host.airAngle) * (airMag) + host.args.y
+			Math.cos(host.airAngle) * airMag + host.args.x
+			, Math.sin(host.airAngle) * airMag + host.args.y
 		].map(Math.round);
 
 		let airPointBQ = airPointQ;
@@ -2715,6 +2720,7 @@ export class Platformer
 		if(!host.rotateLock)
 		{
 			const bOffset = -3 * Math.sign(host.args.ySpeed || 1);
+
 			const airMag = host.castRayQuick(
 				scanDist
 				, host.airAngle
@@ -2722,8 +2728,8 @@ export class Platformer
 			);
 
 			airPointBQ = airMag !== false ? [
-				Math.cos(host.airAngle) * (airMag) + host.args.x
-				, Math.sin(host.airAngle) * (airMag) + host.args.y + bOffset
+				Math.cos(host.airAngle) * airMag + host.args.x
+				, Math.sin(host.airAngle) * airMag + host.args.y + bOffset
 			].map(Math.round) : airPointBQ;
 		}
 

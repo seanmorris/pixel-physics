@@ -1,0 +1,111 @@
+{
+    "compressionlevel": -1,
+    "height": 8192,
+    "infinite": false,
+    "nextlayerid": 5,
+    "nextobjectid": 322,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "marble-garden"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "VEHICLE"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "TEST ZONE"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": true
+        },
+        {
+            "name": "wrapY",
+            "type": "bool",
+            "value": true
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.9.0",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 689,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.9",
+    "width": 256,
+    "types": [
+        "block",
+        "drill-car",
+        "egg-mobile",
+        "egg-shuttle",
+        "egg-walker",
+        "pogo-spring",
+        "rail-car",
+        "ring",
+        "snow-board",
+        "tornado"
+    ],
+    "map": "/map/vehicle-test.json"
+}

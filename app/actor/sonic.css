@@ -110,17 +110,22 @@
 	animation: sonic-animate steps(3) infinite 800ms;
 }
 
+.actor-item.actor-sonic[data-animation="sliding"] .sprite:after,
 .actor-item.actor-sonic[data-animation="startle"] .sprite:after {
 	--sprite-offset-x: -192px;
+
 	--sprite-offset-y: -768px;
 
 	--animation-width: -64px;
 	--animation-steps: 3;
 
-	animation: sonic-animate steps(3) 1 160ms
-		, sonic-animate-echo steps(2) infinite 192ms 160ms;
+	animation: sonic-animate steps(3) 1 192ms
+		, sonic-animate-echo steps(2) infinite 192ms 192ms;
 }
 
+.actor-item.actor-sonic[data-animation="sliding"] .sprite:after{
+	--sprite-offset-y: -758px;
+}
 .actor-item.actor-sonic[data-animation="crouching"] .sprite:after {
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: -576px;
@@ -445,8 +450,8 @@
 
 /*.actor-item.actor-sonic[data-animation] .sprite:after,*/
 .actor-item.actor-sonic[data-animation="skidding"] .sprite:after {
-	/*--sprite-offset-x: -0px;*/
-	/*--sprite-offset-y: -256px;*/
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -256px;
 	--animation-width: 64px;
 	/*--animation-steps: -2;*/
 	/*animation: sonic-animate steps(var(--animation-steps)) infinite 192ms;*/
@@ -515,6 +520,16 @@
 	/*z-index: 100;*/
 }
 
+.actor-item.actor-sonic[data-animation="landing"] .sprite:after {
+	/*z-index: 100;*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -1088px;
+	--animation-width: -64px;
+	--animation-steps: 2;
+	background-position-y: var(--sprite-offset-y);
+	animation: sonic-animate steps(2) infinite 90ms;
+
+}
 .actor-item.actor-sonic[data-animation="holding"] .sprite:after {
 	/*--sprite-offset-x: -64px;*/
 	/*--sprite-offset-x: -256px;*/

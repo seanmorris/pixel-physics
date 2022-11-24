@@ -1,0 +1,303 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 360,
+    "infinite": false,
+    "nextlayerid": 16,
+    "nextobjectid": 2166,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "industrial"
+        },
+        {
+            "name": "bgm",
+            "type": "string",
+            "value": "RADICAL_CITY"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 11400
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 2
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "RADICAL CITY"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 177,
+            "image": "mz-ground-red.png",
+            "imageheight": 4480,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "mz-ground-red",
+            "spacing": 0,
+            "tilecount": 3080,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 3257,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 3491,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tiles": [
+                {
+                    "id": 60,
+                    "properties": [
+                        {
+                            "name": "period",
+                            "type": "int",
+                            "value": 750
+                        }
+                    ]
+                }
+            ],
+            "tilewidth": 32
+        },
+        {
+            "columns": 62,
+            "firstgid": 3555,
+            "image": "../custom/red-starlight.png",
+            "imageheight": 1344,
+            "imagewidth": 1984,
+            "margin": 0,
+            "name": "red-starlight",
+            "spacing": 0,
+            "tilecount": 2604,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 6159,
+            "image": "../Sonic/tiles/interior-red.png",
+            "imageheight": 160,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "interior-red",
+            "spacing": 0,
+            "tilecount": 20,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 6179,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 6739,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 6995,
+            "image": "../Sonic/tiles/common.png",
+            "imageheight": 32,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "common",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 3,
+            "firstgid": 6999,
+            "image": "../Sonic/tiles/wing-fortress/industrial-platform-1.png",
+            "imageheight": 32,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "industrial-platform-1",
+            "spacing": 0,
+            "tilecount": 3,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 7002,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 7034,
+            "image": "../Sonic/tiles/emerald-hill/corkscrew.png",
+            "imageheight": 160,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "corkscrew",
+            "spacing": 0,
+            "tilecount": 60,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 6,
+            "firstgid": 7094,
+            "image": "../Sonic/tiles/scrap-brain/scrap-brain-tube.png",
+            "imageheight": 352,
+            "imagewidth": 192,
+            "margin": 0,
+            "name": "scrap-brain-tube",
+            "spacing": 0,
+            "tilecount": 66,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 7160,
+            "image": "../Sonic/weight-small.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "weight-small",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 2800,
+    "types": [
+        "arrow-sign",
+        "bell",
+        "big",
+        "block",
+        "boss-region",
+        "breakable-block",
+        "buzz-bomber",
+        "caution-sign",
+        "cone",
+        "corkscrew-region",
+        "crabmeat",
+        "emblem",
+        "exit-region",
+        "force-region",
+        "fountain",
+        "grapple-point",
+        "grinding-region",
+        "layer-switch",
+        "marble-block",
+        "mega-mace",
+        "red-eye-jet",
+        "ring",
+        "ring-monitor",
+        "road-barrier",
+        "rocket",
+        "rolling-region",
+        "sheild-electric-monitor",
+        "sheild-normal-monitor",
+        "sheild-star-monitor",
+        "sheild-water-monitor",
+        "signpost",
+        "spikes",
+        "spinner",
+        "spring",
+        "star-balloon",
+        "star-post",
+        "steel-crate",
+        "stopper",
+        "switch",
+        "switch-region",
+        "unbreakable-crate",
+        "wooden-crate"
+    ],
+    "map": "/map/empty-zone-2.json"
+}

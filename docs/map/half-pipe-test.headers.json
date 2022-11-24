@@ -1,0 +1,108 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 125,
+    "infinite": false,
+    "nextlayerid": 11,
+    "nextobjectid": 353,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "industrial"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "HALF PIPE"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "TEST ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 737,
+            "image": "lz-ground.png",
+            "imageheight": 3200,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "lz-ground",
+            "spacing": 0,
+            "tilecount": 2200,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 2937,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 28,
+    "types": [],
+    "map": "/map/half-pipe-test.json"
+}

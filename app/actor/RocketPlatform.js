@@ -17,6 +17,16 @@ export class RocketPlatform extends Block
 
 	update()
 	{
+		this.args.cameraBias = 0.2;
+
+		if(this.standingUnder.size && !this.args.falling)
+		{
+			this.args.ySpeed -= 0.1;
+			this.args.float = 1
+			this.args.falling = true;
+			this.args.y--;
+		}
+
 		for(const other of this.standingUnder)
 		{
 			if(other.args.dead)
@@ -49,13 +59,6 @@ export class RocketPlatform extends Block
 		{
 			this.args.ySpeed = -3;
 		}
-
-		if(!this.args.falling)
-		{
-			this.args.y--;
-		}
-
-		this.args.falling = true;
 
 		return super.collideA(other, type);
 	}

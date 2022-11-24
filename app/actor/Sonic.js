@@ -898,6 +898,21 @@ export class Sonic extends PointActor
 				}
 			}
 		}
+
+		if(Math.abs(this.ySpeedLast) > 16)
+		{
+			const landingFrames = Math.min(8, this.ySpeedLast / 4) * (this.args.rolling ? 0.5 : 1);
+
+			if(this.args.groundTime && this.args.groundTime < landingFrames && this.ySpeedLast)
+			{
+				this.args.animation = 'landing';
+			}
+		}
+
+		if(this.args.sliding)
+		{
+			this.args.animation = 'sliding';
+		}
 	}
 
 	readInput()

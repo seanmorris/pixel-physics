@@ -1,0 +1,10 @@
+.actor-pumpkin .sprite {
+	background-image: url(/custom/pumpkin.png);
+	width: 18px;
+	height: 18px;
+}
+
+.actor-pumpkin[data-face=true] .sprite {
+	background-position-y: -18px
+}
+

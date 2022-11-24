@@ -1,0 +1,24 @@
+.actor-notch-spring .sprite:before {
+	display: block;
+	content: ' ';
+	width: 8px;
+	height: 32px;
+	background-image: url(/Sonic/notch-spring.png);
+	background-repeat: no-repeat;
+	transition: background-position-x 20ms 30ms ease-out;
+}
+
+.actor-notch-spring[data-direction="-1"] .sprite:before {
+	transform: scaleX(-1);
+}
+
+.actor-notch-spring {
+	width: 8px;
+	height: 32px;
+	filter: none !important;
+}
+
+.actor-notch-spring[data-animation="springing"] .sprite::before {
+	transition: background-position-x 0s ease-in;
+	background-position-x: -5px;
+}

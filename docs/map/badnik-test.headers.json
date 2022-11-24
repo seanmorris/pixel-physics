@@ -1,0 +1,98 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 32,
+    "infinite": false,
+    "nextlayerid": 7,
+    "nextobjectid": 101,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "city"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 177,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 62,
+            "firstgid": 178,
+            "image": "../custom/red-starlight.png",
+            "imageheight": 1344,
+            "imagewidth": 1984,
+            "margin": 0,
+            "name": "red-starlight",
+            "spacing": 0,
+            "tilecount": 2604,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 128,
+    "types": [
+        "b-fish",
+        "balkiry",
+        "block",
+        "bubbles",
+        "buzz-bomber",
+        "crabmeat",
+        "drainfly",
+        "grounder",
+        "jawz",
+        "motobug",
+        "redz",
+        "ring",
+        "sheild-electric-monitor",
+        "sheild-fire-monitor",
+        "snailbot",
+        "sparkle",
+        "spikes",
+        "sping",
+        "splats",
+        "spring-turtle",
+        "techno-squeak",
+        "voltorb"
+    ],
+    "map": "/map/badnik-test.json"
+}

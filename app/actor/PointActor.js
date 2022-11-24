@@ -129,6 +129,7 @@ export class PointActor extends View
 		this.defaultDisplay = 'initial';
 
 		this.others = {};
+		this.otherDefs = {};
 
 		this.springing = false;
 
@@ -344,6 +345,7 @@ export class PointActor extends View
 		this.frontStep = 0;
 
 		this.args.rolling = false;
+		this.args.sliding = false;
 
 		this.args.skidTraction = 2.25;
 		this.args.skidTraction = 5;
@@ -493,16 +495,19 @@ export class PointActor extends View
 
 			const prevGroundObject = target[key];
 
-			if(prevGroundObject && prevGroundObject.isVehicle)
+			if(prevGroundObject)
 			{
-				prevGroundObject.occupant  = null;
-				prevGroundObject.stayStuck = false;
-				prevGroundObject.willStick = false;
+				if(prevGroundObject.isVehicle)
+				{
+					prevGroundObject.occupant  = null;
+					prevGroundObject.stayStuck = false;
+					prevGroundObject.willStick = false;
 
-				prevGroundObject.xAxis = 0;
-				prevGroundObject.yAxis = 0;
+					prevGroundObject.xAxis = 0;
+					prevGroundObject.yAxis = 0;
 
-				prevGroundObject.args.active = false;
+					prevGroundObject.args.active = false;
+				}
 
 				prevGroundObject.standingUnder.delete(this);
 			}
@@ -1276,7 +1281,7 @@ export class PointActor extends View
 				const friction = this.getLocalFriction();
 				let gSpeed     = this.args.gSpeed;
 
-				if(!this.args.rolling && !this.args.climbing && !this.args.ignore && !this.args.wallSticking)
+				if(!this.args.rolling  && !this.args.sliding && !this.args.climbing && !this.args.ignore && !this.args.wallSticking)
 				{
 					if(axisSign === sign || !sign)
 					{
@@ -1467,6 +1472,11 @@ export class PointActor extends View
 
 	castRayQuick(length, angle, offset = [0,0])
 	{
+		if(!this.viewport || !this.viewport.tileMap)
+		{
+			return;
+		}
+
 		const thisPoint = [this.args.x + offset[0], this.args.y + offset[1]];
 
 		const solidPoint = this.viewport.tileMap.castRay(
@@ -2902,8 +2912,8 @@ export class PointActor extends View
 		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
-				left   = this.args.x - (this.isRegion ? 0 : this.args.width / 2) + -1;
-				right  = this.args.x + (this.isRegion ? this.args.width : this.args.width / 2);
+				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2)) + -1;
+				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2));
 				top    = this.args.y - this.args.height;
 				bottom = this.args.y;
 

@@ -1,0 +1,332 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 320,
+    "infinite": false,
+    "nextlayerid": 13,
+    "nextobjectid": 536,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "angel-island"
+        },
+        {
+            "name": "bgm",
+            "type": "string",
+            "value": "MANIC_HARBOR"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "MANIC HARBOR"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": false
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 18,
+            "firstgid": 177,
+            "image": "sand-hill.png",
+            "imageheight": 96,
+            "imagewidth": 576,
+            "margin": 0,
+            "name": "sand-hill",
+            "spacing": 0,
+            "tilecount": 54,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 21,
+            "firstgid": 231,
+            "image": "../Sonic/tiles/sandopolis/sand-hill.png",
+            "imageheight": 224,
+            "imagewidth": 672,
+            "margin": 0,
+            "name": "sand-hill",
+            "spacing": 0,
+            "tilecount": 147,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 378,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 6,
+            "firstgid": 612,
+            "image": "../Sonic/tiles/scrap-brain/scrap-brain-tube.png",
+            "imageheight": 352,
+            "imagewidth": 192,
+            "margin": 0,
+            "name": "scrap-brain-tube",
+            "spacing": 0,
+            "tilecount": 66,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 678,
+            "image": "mystic-cave-tiles.png",
+            "imageheight": 896,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "mystic-cave-tiles",
+            "spacing": 0,
+            "tilecount": 448,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1126,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 1382,
+            "image": "../Sonic/tiles/common.png",
+            "imageheight": 32,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "common",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 6,
+            "firstgid": 1386,
+            "image": "../ecco-jr/kelp-and-coral.png",
+            "imageheight": 288,
+            "imagewidth": 192,
+            "margin": 0,
+            "name": "kelp-and-coral",
+            "spacing": 0,
+            "tilecount": 54,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1440,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 62,
+            "firstgid": 2000,
+            "image": "../custom/red-starlight.png",
+            "imageheight": 1344,
+            "imagewidth": 1984,
+            "margin": 0,
+            "name": "red-starlight",
+            "spacing": 0,
+            "tilecount": 2604,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 4604,
+            "image": "../Sonic/tiles/death-egg-3/tank.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "tank",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 4636,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 4668,
+            "image": "../Sonic/tiles/lava-reef/rocks.png",
+            "imageheight": 576,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "lava-reef-rocks",
+            "spacing": 0,
+            "tilecount": 144,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 4812,
+            "image": "../Sonic/tiles/techno-tower/ground.png",
+            "imageheight": 704,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "ground",
+            "spacing": 0,
+            "tilecount": 352,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 5164,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 5228,
+            "image": "../Sonic/wooden-crate.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "wooden-crate",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 5232,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 5488,
+            "image": "../Sonic/tiles/lava-reef/rocks-small.png",
+            "imageheight": 128,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "rocks-small",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 2400,
+    "types": [
+        "balkiry",
+        "block",
+        "booster",
+        "bubbles",
+        "crabmeat",
+        "dish",
+        "emerald",
+        "exit-region",
+        "grapple-point",
+        "kill-region",
+        "layer-switch",
+        "region",
+        "ring",
+        "rocket",
+        "rolling-region",
+        "spikes",
+        "spinner",
+        "spring",
+        "star-balloon",
+        "star-post",
+        "umbrella",
+        "unbreakable-crate",
+        "vehicle-region"
+    ],
+    "map": "/map/manic-harbor-zone.json"
+}

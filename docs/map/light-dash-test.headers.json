@@ -1,0 +1,109 @@
+{
+    "compressionlevel": -1,
+    "height": 72,
+    "infinite": false,
+    "nextlayerid": 11,
+    "nextobjectid": 508,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "south-ridge"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "LIGHT DASH"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "TEST ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 689,
+            "image": "lz-ground.png",
+            "imageheight": 3200,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "lz-ground",
+            "spacing": 0,
+            "tilecount": 2200,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 2889,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 180,
+    "types": [
+        "ring",
+        "sheild-electric-monitor",
+        "sheild-fire-monitor",
+        "sheild-water-monitor",
+        "text-actor"
+    ],
+    "map": "/map/light-dash-test.json"
+}

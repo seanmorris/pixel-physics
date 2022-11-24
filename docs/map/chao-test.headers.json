@@ -1,0 +1,183 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 15,
+    "nextobjectid": 81,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "angel-island"
+        },
+        {
+            "name": "fieldType",
+            "type": "string",
+            "value": "garden"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "CHAO TEST"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/angel-island/ground-recolor.png",
+            "imageheight": 864,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "ground-recolor",
+            "spacing": 0,
+            "tilecount": 324,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 501,
+            "image": "../Sonic/rope-bridge.png",
+            "imageheight": 32,
+            "imagewidth": 48,
+            "margin": 0,
+            "name": "rope-bridge",
+            "spacing": 0,
+            "tilecount": 2,
+            "tileheight": 16,
+            "tilewidth": 48
+        },
+        {
+            "columns": 41,
+            "firstgid": 503,
+            "image": "../Sonic/tiles/angel-island/flora.png",
+            "imageheight": 638,
+            "imagewidth": 1312,
+            "margin": 0,
+            "name": "flora",
+            "spacing": 0,
+            "tilecount": 779,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 28,
+            "firstgid": 1282,
+            "image": "../custom/ruins.png",
+            "imageheight": 672,
+            "imagewidth": 896,
+            "margin": 0,
+            "name": "ruins",
+            "spacing": 0,
+            "tilecount": 588,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 1870,
+            "image": "../Sonic/stone-platform.png",
+            "imageheight": 72,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "stone-platform",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 72,
+            "tilewidth": 64
+        },
+        {
+            "columns": 4,
+            "firstgid": 1871,
+            "image": "../Sonic/tiles/interior-red.png",
+            "imageheight": 160,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "interior-red",
+            "spacing": 0,
+            "tilecount": 20,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 7,
+            "firstgid": 1891,
+            "image": "../Sonic/tiles/aquatic-ruin/log.png",
+            "imageheight": 192,
+            "imagewidth": 224,
+            "margin": 0,
+            "name": "log",
+            "spacing": 0,
+            "tilecount": 42,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1933,
+            "image": "mystic-cave-tiles.png",
+            "imageheight": 896,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "mystic-cave-tiles",
+            "spacing": 0,
+            "tilecount": 448,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 96,
+    "types": [
+        "block",
+        "chao-crate",
+        "door",
+        "mushroom",
+        "region",
+        "spring",
+        "tree",
+        "waterfall-region",
+        "wooden-crate"
+    ],
+    "map": "/map/chao-test.json"
+}
