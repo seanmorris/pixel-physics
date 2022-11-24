@@ -10,6 +10,7 @@ import { WaterRegion } from './region/WaterRegion';
 import { DarkRegion } from './region/DarkRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { RollingRegion } from './region/RollingRegion';
+import { SlidingRegion } from './region/SlidingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
 import { FrictionRegion } from './region/FrictionRegion';
@@ -81,11 +82,13 @@ import { TechnoSqueak } from './actor/TechnoSqueak';
 import { SpringTurtle } from './actor/SpringTurtle';
 import { Sparkle      } from './actor/Sparkle';
 import { Splats       } from './actor/Splats';
+import { Relief       } from './actor/Relief';
 
 // Newtron
 // Bomb
 
 import { SpitFire    } from './actor/SpitFire';
+import { SpitSteam   } from './actor/SpitSteam';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -95,6 +98,7 @@ import { FakeEmerald }   from './actor/FakeEmerald';
 import { Window }    from './actor/Window';
 import { Spring }    from './actor/Spring';
 
+import { NotchSpring }    from './actor/NotchSpring';
 import { BrokenMonitor }  from './actor/BrokenMonitor';
 
 import { BoostRing } from './actor/BoostRing';
@@ -169,6 +173,8 @@ import { Rocket } from './actor/Rocket';
 import { Booster } from './actor/Booster';
 
 import { WindStone } from './actor/WindStone';
+import { Skull } from './actor/Skull';
+import { Pumpkin } from './actor/Pumpkin';
 import { RoadBarrier } from './actor/RoadBarrier';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
@@ -291,6 +297,7 @@ export const ObjectPalette = {
 	, 'friction-region': FrictionRegion
 	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
+	, 'sliding-region': SlidingRegion
 	, 'grinding-region': GrindingRegion
 	, 'exploding-region': ExplodingRegion
 	, 'boss-region': BossRegion
@@ -310,6 +317,7 @@ export const ObjectPalette = {
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
 	, 'emblem':       Emblem
+	, 'notch-spring': NotchSpring
 	, 'apple':        Apple
 	, 'drop-cage':    DropCage
 	, 'slot-machine': SlotMachine
@@ -351,7 +359,9 @@ export const ObjectPalette = {
 	, 'spring-turtle': SpringTurtle
 	, 'sparkle': Sparkle
 	, 'splats': Splats
+	, 'relief': Relief
 	, 'spitfire': SpitFire
+	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'booster': Booster
@@ -378,6 +388,8 @@ export const ObjectPalette = {
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
 	, 'wind-stone': WindStone
+	, 'skull': Skull
+	, 'pumpkin': Pumpkin
 	, 'fountain': Fountain
 	, 'caution-sign': CautionSign
 	, 'rolling-sign': RollingSign

@@ -675,7 +675,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .combo-table .comboResult .hud-character {
-	animation: combo-reward 750ms calc(1200ms + calc(15ms * calc(var(--index) * var(--index)))) 1 ease-in forwards;
+	animation: combo-reward 350ms calc(1200ms + calc(15ms * calc(var(--index) * var(--index)))) 1 ease-in forwards;
 }
 
 .combo-table .comboFail .hud-character {

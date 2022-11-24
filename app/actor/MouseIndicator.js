@@ -20,19 +20,18 @@ export class MouseIndicator extends Cursor
 			this.args.x = mouse.position[0];
 			this.args.y = mouse.position[1];
 		}
-		else if(mouse.buttons[0] && this.endPoint)
+		else if(mouse.buttons[0] === 1 && this.endPoint)
 		{
 			this.viewport.actors.remove(this.endPoint);
 			this.endPoint = null;
 		}
+		else if(mouse.buttons[0] === 1 && !this.endPoint)
+		{
+			this.endPoint = new Cursor({x:this.args.x,y:this.args.y});
+			this.viewport.spawn.add({object:this.endPoint});
+		}
 		else
 		{
-			if(!this.endPoint)
-			{
-				this.endPoint = new Cursor({x:this.args.x,y:this.args.y});
-				this.viewport.spawn.add({object:this.endPoint});
-			}
-
 			const length = Math.sqrt(
 				(this.args.y - mouse.position[1]) ** 2
 				+ (this.args.x - mouse.position[0]) ** 2

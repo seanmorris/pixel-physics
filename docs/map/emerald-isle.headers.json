@@ -1,0 +1,175 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 14,
+    "nextobjectid": 622,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "mushroom-hill"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 4012
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "aegan"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "AGORAPOLIS"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/aquatic-ruin/emerald-isle.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "emerald-isle",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 689,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 1249,
+            "image": "../Sonic/tiles/aquatic-ruin/ruin-loop.png",
+            "imageheight": 224,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "ruin-loop",
+            "spacing": 0,
+            "tilecount": 56,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 1305,
+            "image": "../Sonic/emerald-isle-platform.png",
+            "imageheight": 52,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "emerald-isle-platform",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 52,
+            "tilewidth": 96
+        },
+        {
+            "columns": 1,
+            "firstgid": 1306,
+            "image": "../Sonic/rock-flat-top.png",
+            "imageheight": 35,
+            "imagewidth": 46,
+            "margin": 0,
+            "name": "rock-flat-top",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 35,
+            "tilewidth": 46
+        },
+        {
+            "columns": 13,
+            "firstgid": 1307,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 800,
+    "types": [
+        "block",
+        "breakable-block",
+        "emblem",
+        "emerald",
+        "exit-region",
+        "force-region",
+        "grapple-point",
+        "kill-region",
+        "layer-switch",
+        "region",
+        "ring",
+        "ring-monitor",
+        "rolling-region",
+        "sheild-star-monitor",
+        "sheild-water-monitor",
+        "signpost",
+        "spikes",
+        "spring",
+        "star-post",
+        "triple-ring-monitor",
+        "vertical-region",
+        "water-spout"
+    ],
+    "map": "/map/emerald-isle.json"
+}

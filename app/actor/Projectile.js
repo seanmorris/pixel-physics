@@ -13,9 +13,11 @@ import { Block } from './Block';
 
 export class Projectile extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		const gravity = args.gravity;
+
+		super(args, parent);
 
 		this.args.type = 'actor-item actor-projectile';
 
@@ -33,7 +35,7 @@ export class Projectile extends PointActor
 
 		this.args.strength = this.args.strength || 1;
 
-		this.args.gravity = this.args.gravity ?? 0.15;
+		this.args.gravity = gravity ?? 0.15;
 
 		this.removeTimer = null;
 		this.noClip = true;
@@ -64,7 +66,7 @@ export class Projectile extends PointActor
 
 		if(this.viewport && !this.removeTimer)
 		{
-			this.removeTimer = this.viewport.onFrameOut(150, () => this.explode());
+			this.removeTimer = this.viewport.onFrameOut(200, () => this.explode());
 		}
 	}
 

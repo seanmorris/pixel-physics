@@ -195,7 +195,15 @@ export class Monitor extends PointActor
 		{
 			const ySpeed = other.args.ySpeed;
 
-			if(other.args.falling)
+			if(other && other.dashed)
+			{
+				other.args.gSpeed = 0;
+				other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
+				other.args.ySpeed = -10;
+
+				other.dashed = false;
+			}
+			else if(other && other.args.falling)
 			{
 				this.onNextFrame(() => {
 					other.args.ySpeed  = -ySpeed

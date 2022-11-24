@@ -13,7 +13,7 @@ export class SkidDust extends Behavior
 
 	update(host)
 	{
-		if(host.args.falling || host.args.rolling || host.spindashCharge)
+		if(host.args.falling || host.args.rolling || host.args.sliding || host.spindashCharge)
 		{
 			return;
 		}

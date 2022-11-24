@@ -1,0 +1,70 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "format": "json",
+            "target": "infinite-rail.json"
+        }
+    },
+    "height": 32,
+    "infinite": false,
+    "nextlayerid": 7,
+    "nextobjectid": 369,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "mushroom-hill"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 1020
+        },
+        {
+            "name": "wrapX",
+            "type": "int",
+            "value": 1
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 28,
+            "firstgid": 1,
+            "image": "../custom/ruins.png",
+            "imageheight": 672,
+            "imagewidth": 896,
+            "margin": 0,
+            "name": "ruins",
+            "spacing": 0,
+            "tilecount": 588,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 589,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 128,
+    "types": [
+        "breakable-block"
+    ],
+    "map": "/map/infinite-ruin.json"
+}

@@ -1,0 +1,75 @@
+{
+    "compressionlevel": -1,
+    "height": 64,
+    "infinite": false,
+    "nextlayerid": 5,
+    "nextobjectid": 13,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 18,
+            "firstgid": 177,
+            "image": "sand-hill.png",
+            "imageheight": 96,
+            "imagewidth": 576,
+            "margin": 0,
+            "name": "sand-hill",
+            "spacing": 0,
+            "tilecount": 54,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 21,
+            "firstgid": 231,
+            "image": "../Sonic/tiles/sandopolis/sand-hill.png",
+            "imageheight": 224,
+            "imagewidth": 672,
+            "margin": 0,
+            "name": "sand-hill",
+            "spacing": 0,
+            "tilecount": 147,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 378,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 1024,
+    "types": [
+        "rail-car",
+        "region",
+        "snow-board"
+    ],
+    "map": "/map/sand-pit-zone.json"
+}

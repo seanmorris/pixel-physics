@@ -53,7 +53,7 @@ export class CanPop
 		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
+			&& (immune || other.dashed || other.args.jumping || other.args.spinning || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
 		){
 			const otherShield = other.args.currentSheild;
 			this.damage(other, otherShield ? otherShield.type : (other.args.damageType || 'normal'));
@@ -131,10 +131,8 @@ export class CanPop
 		if(other && other.dashed)
 		{
 			other.args.gSpeed = 0;
-			other.args.xSpeed = 0;
-			other.args.ySpeed = -9;
-
-			other.args.x = this.args.x;
+			other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
+			other.args.ySpeed = -10;
 
 			other.dashed = false;
 		}
@@ -206,17 +204,13 @@ export class CanPop
 				this.effect(other);
 			}
 
-			if(other.dashed)
-			{
-				other.args.xSpeed /= 4;
-			}
-
 			const ySpeed = other.args.ySpeed;
 
 			if(other.args.falling && !other.punching)
 			{
 				this.onNextFrame(() => {
-					if(ySpeed > 0)
+
+					if(ySpeed >= 0)
 					{
 						other.args.ySpeed = Math.min(-ySpeed, -7);
 					}

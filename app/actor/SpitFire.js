@@ -10,6 +10,7 @@ export class SpitFire extends PointActor
 		this.args.width  = 99;
 		this.args.height = 32;
 		this.args.float  = -1;
+		this.noClip = true;
 
 		this.age = 0;
 	}
@@ -18,6 +19,7 @@ export class SpitFire extends PointActor
 	{
 		if(this.age > 45)
 		{
+			this.args.gone = true;
 			this.viewport.actors.remove(this);
 			this.remove();
 			return;

@@ -49,6 +49,7 @@ import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
 
 import { Layer } from './Layer';
+import { Plot } from './Plot';
 
 import { Controller } from '../controller/Controller';
 
@@ -121,6 +122,8 @@ export class Viewport extends View
 		this.meta = {};
 
 		this.args.combo = [];
+
+		this.args.plot = new Plot;
 
 		this.loadSaves().then(saves => {
 			if(saves.length)
@@ -1937,9 +1940,16 @@ export class Viewport extends View
 
 		let actor = this.controlActor;
 
-		if(actor.args.standingOn && actor.args.standingOn.isVehicle)
+		let groundBias = 0;
+
+		if(actor.args.standingOn)
 		{
-			actor = actor.args.standingOn;
+			groundBias = actor.args.standingOn.args.cameraBias
+
+			if(actor.args.standingOn.isVehicle)
+			{
+				actor = actor.args.standingOn;
+			}
 		}
 
 		if(actor.focused)
@@ -2239,7 +2249,7 @@ export class Viewport extends View
 			}
 		}
 
-		this.args.yOffsetTarget += actor.args.cameraBias - ySpeedBias;
+		this.args.yOffsetTarget += groundBias + actor.args.cameraBias - ySpeedBias;
 
 		if(actor.args.mode === 0 && Math.abs(actor.args.groundAngle - -Math.PI / 4) < 0.001)
 		{
@@ -2536,7 +2546,6 @@ export class Viewport extends View
 		}
 
 		this.defsByName.set(objDef.name, objDef);
-		this.objDefs.set(objDef.id, objDef);
 
 		if(!ObjectPalette[objType])
 		{
@@ -2561,6 +2570,8 @@ export class Viewport extends View
 	{
 		for(let i in objDefs)
 		{
+			this.objDefs.set(objDefs[i].id, objDefs[i]);
+
 			this.spawnFromDef(objDefs[i]);
 		}
 
@@ -2569,6 +2580,17 @@ export class Viewport extends View
 			for(const o in actor.others)
 			{
 				actor.others[o] = this.actorsById[actor.others[o]];
+			}
+
+			if(actor.objDef && actor.objDef.properties)
+			{
+				for(const property of actor.objDef.properties)
+				{
+					if(property.type === 'object')
+					{
+						actor.otherDefs[property.name] = this.objDefs.get(property.value);
+					}
+				}
 			}
 
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
@@ -3643,7 +3665,7 @@ export class Viewport extends View
 			this.settings.frameSkip = 1;
 		}
 
-		for(const b of this.mouseState.buttons)
+		for(const b in this.mouseState.buttons)
 		{
 			if(this.mouseState.buttons[b])
 			{
@@ -3848,8 +3870,8 @@ export class Viewport extends View
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
 	{
-		const left   = actor.args.x - actor.args.width * 0.5;
-		const right  = actor.args.x + actor.args.width * 0.5;
+		const left   = actor.args.x - actor.isRegion ? 0 : (actor.args.width * 0.5);
+		const right  = actor.args.x + actor.isRegion ? actor.args.width : (actor.args.width * 0.5);
 		const top    = actor.args.y - actor.args.height;
 		const bottom = actor.args.y;
 
@@ -4726,18 +4748,12 @@ export class Viewport extends View
 
 	mousedown(event)
 	{
-		// this.mouseState.buttons = event.buttons;
 		this.setMouseButtons(event);
-
-		console.log(this.mouseState.buttons);
 	}
 
 	mouseup(event)
 	{
-		// this.mouseState.buttons = event.buttons;
 		this.setMouseButtons(event);
-
-		console.log(this.mouseState.buttons);
 	}
 
 	setMouseButtons(event)
@@ -4745,6 +4761,8 @@ export class Viewport extends View
 		for(let i = 0; i < 8; i++)
 		{
 			const bit = 2 ** i;
+
+			this.mouseState.buttons[i] = this.mouseState.buttons[i] || 0;
 
 			if(event.buttons & bit)
 			{
@@ -4754,8 +4772,6 @@ export class Viewport extends View
 			{
 				this.mouseState.buttons[i] = 0;
 			}
-
-			console.log(this.mouseState.buttons);
 		}
 	}
 

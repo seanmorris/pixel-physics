@@ -33,6 +33,7 @@
 	background-color: #12173c;
 }
 
+.backdrop.dark-clouds.lightning .parallax,
 .backdrop.west-side-cloudy.lightning .parallax {
 	animation: west-side-lightning 1s ease-out infinite forwards;
 }
@@ -129,4 +130,15 @@
 .backdrop.mushroom-hill-summer .parallax {
 	background-color: #00d8fc;
 	background-color: #00c26c;
+}
+
+.backdrop.city .parallax {
+	background-color: #2050c8;
+}
+
+.backdrop.dark-clouds {
+/*	background-color: #00d8fc;*/
+/*	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 90%);*/
+	background-image: linear-gradient(0deg, #081230 40%, #222640 75%);
+	filter: hue-rotate(120deg) saturate(50%);
 }

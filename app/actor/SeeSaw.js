@@ -51,12 +51,12 @@ export class SeeSaw extends PointActor
 			return;
 		}
 
-		other.args.groundAngle = 0;
-
 		if(!other.args.falling || other.args.ySpeed <= 0)
 		{
 			return false;
 		}
+
+		other.args.groundAngle = 0;
 
 		if(Math.abs(other.x - this.x) > 4)
 		{
@@ -117,6 +117,11 @@ export class SeeSaw extends PointActor
 
 		for(const other of collisions.keys())
 		{
+			if(other.args.falling)
+			{
+				continue;
+			}
+
 			other.args.groundAngle = 0;
 
 			const armDist = other.x - this.x;
