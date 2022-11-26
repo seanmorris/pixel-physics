@@ -1,9 +1,14 @@
 {
     "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
     "height": 256,
     "infinite": false,
     "nextlayerid": 8,
-    "nextobjectid": 523,
+    "nextobjectid": 524,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -38,7 +43,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.4.3",
     "tileheight": 32,
     "tilesets": [
         {
@@ -58,18 +63,18 @@
             "columns": 16,
             "firstgid": 177,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 22,
-            "firstgid": 689,
+            "firstgid": 737,
             "image": "lz-ground.png",
             "imageheight": 3200,
             "imagewidth": 704,
@@ -83,18 +88,16 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": 1.4,
     "width": 2048,
     "types": [
         "",
         "breakable-block",
-        "cut-scene",
         "mini-boss",
         "panel",
         "region",
         "ring",
-        "snow-board",
-        "switch-region"
+        "snow-board"
     ],
     "map": "/map/water-test.json"
 }

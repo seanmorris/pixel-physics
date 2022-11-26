@@ -683,7 +683,6 @@ export class Platformer
 
 		const drag = host.getLocalDrag();
 
-
 		let gSpeedMax = host.args.gSpeedMax;
 
 		let regions = new Set;
@@ -848,9 +847,9 @@ export class Platformer
 				for(const region of regionsBelow)
 				{
 					if(host.broad || (
-						!host.args.falling
-						&& (host.args.y === region.args.y - region.args.height
-							|| host.args.y + 1 === region.args.y - region.args.height
+						!Math.round(host.args.ySpeed)
+						&& (Math.round(host.args.y) === region.args.y - region.args.height
+							|| Math.round(host.args.y + 1) === region.args.y - region.args.height
 						)
 					)){
 						if(Math.max(Math.abs(host.args.gSpeed), Math.abs(host.args.xSpeed)) >= region.skimSpeed)
@@ -859,7 +858,7 @@ export class Platformer
 
 							host.args.gSpeed = speed * Math.sign(host.args.gSpeed || host.args.xSpeed);
 
-							if(host.y - 16 < region.y - region.args.height)
+							if(host.args.y - 32 < region.args.y - region.args.height)
 							{
 								host.args.skimming = true;
 								host.args.y = region.y - region.args.height + -1;
@@ -962,6 +961,23 @@ export class Platformer
 				if(host.args.animationBias > 1)
 				{
 					host.args.animationBias = 1;
+				}
+
+				if(!host.args.canHide && !host.noClip)
+				{
+					let popOut = 16;
+
+					while(!host.args.static
+						&& host.args.mode === 0
+						&& host.getMapSolidAt(host.args.x, host.args.y - 1, host.args.layer, 0)
+					){
+						if(--popOut <= 0)
+						{
+							return;
+						}
+
+						host.args.y--;
+					}
 				}
 			}
 			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion &&!host.isEffect && !host.args.falling)))
@@ -2399,67 +2415,67 @@ export class Platformer
 		// }
 	}
 
-	findAirPointA(i, point, actor)
-	{
-		if(!actor.viewport)
-		{
-			return;
-		}
+	// findAirPointA(i, point, actor)
+	// {
+	// 	if(!actor.viewport)
+	// 	{
+	// 		return;
+	// 	}
 
-		const viewport = actor.viewport;
-		const tileMap  = viewport.tileMap;
+	// 	const viewport = actor.viewport;
+	// 	const tileMap  = viewport.tileMap;
 
-		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x =>
-				x.args !== actor.args
-				&& x.callCollideHandler(actor)
-				&& x.solid
-			);
+	// 	const actors = viewport.actorsAtPoint(point[0], point[1])
+	// 		.filter(x =>
+	// 			x.args !== actor.args
+	// 			&& x.callCollideHandler(actor)
+	// 			&& x.solid
+	// 		);
 
-		if(actors.length > 0)
-		{
-			return actor.lastPointA;
-		}
+	// 	if(actors.length > 0)
+	// 	{
+	// 		return actor.lastPointA;
+	// 	}
 
-		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+	// 	const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
 
-		if(solid)
-		{
-			return actor.lastPointA;
-		}
+	// 	if(solid)
+	// 	{
+	// 		return actor.lastPointA;
+	// 	}
 
-		Object.assign(actor.lastPointA, point.map(Math.trunc));
-	}
+	// 	Object.assign(actor.lastPointA, point.map(Math.trunc));
+	// }
 
-	findAirPointB(i, point, actor)
-	{
-		if(!actor.viewport)
-		{
-			return;
-		}
+	// findAirPointB(i, point, actor)
+	// {
+	// 	if(!actor.viewport)
+	// 	{
+	// 		return;
+	// 	}
 
-		const viewport = actor.viewport;
-		const tileMap  = viewport.tileMap;
+	// 	const viewport = actor.viewport;
+	// 	const tileMap  = viewport.tileMap;
 
-		const actors = viewport.actorsAtPoint(point[0], point[1])
-			.filter(x =>
-				x.args !== actor.args
-				&& x.callCollideHandler(actor)
-				&& x.solid
-			);
+	// 	const actors = viewport.actorsAtPoint(point[0], point[1])
+	// 		.filter(x =>
+	// 			x.args !== actor.args
+	// 			&& x.callCollideHandler(actor)
+	// 			&& x.solid
+	// 		);
 
-		if(actors.length > 0)
-		{
-			return actor.lastPointB;
-		}
+	// 	if(actors.length > 0)
+	// 	{
+	// 		return actor.lastPointB;
+	// 	}
 
-		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
-		{
-			return actor.lastPointB;
-		}
+	// 	if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+	// 	{
+	// 		return actor.lastPointB;
+	// 	}
 
-		Object.assign(actor.lastPointB, point.map(Math.trunc));
-	}
+	// 	Object.assign(actor.lastPointB, point.map(Math.trunc));
+	// }
 
 	updateAirPosition(host)
 	{
@@ -2674,7 +2690,7 @@ export class Platformer
 		// Object.assign(host.lastPointA, [host.args.x, host.args.y].map(Math.trunc));
 		// Object.assign(host.lastPointB, [host.args.x, host.args.y].map(Math.trunc));
 
-		const scanDist = Math.round(airSpeed);
+		const scanDist = airSpeed;
 
 		// const airPointP = host.castRay(
 		// 	scanDist
@@ -2710,10 +2726,19 @@ export class Platformer
 			, [+tiny, 0]
 		);
 
+		if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
+		{
+			airMag -= Math.abs(Math.sin(host.airAngle));
+		}
+		else if(airMag && Math.abs(host.args.xSpeed) > Math.abs(host.args.ySpeed))
+		{
+			airMag -= Math.abs(Math.cos(host.airAngle));
+		}
+
 		const airPointQ = airMag !== false && [
 			Math.cos(host.airAngle) * airMag + host.args.x
 			, Math.sin(host.airAngle) * airMag + host.args.y
-		].map(Math.round);
+		];
 
 		let airPointBQ = airPointQ;
 
@@ -2730,7 +2755,7 @@ export class Platformer
 			airPointBQ = airMag !== false ? [
 				Math.cos(host.airAngle) * airMag + host.args.x
 				, Math.sin(host.airAngle) * airMag + host.args.y + bOffset
-			].map(Math.round) : airPointBQ;
+			] : airPointBQ;
 		}
 
 		const airPoint   = airPointQ;

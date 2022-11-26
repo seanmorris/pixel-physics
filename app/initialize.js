@@ -98,6 +98,7 @@ else
 	Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
 	Sfx.register('HALLBOOSTER_HIT', '/Sonic/S3K_74.wav', {maxConcurrent: 1, volume: 0.75, fudgeFactor: 0.1});
 	Sfx.register('SPRING_HIT', '/Sonic/spring-activated.wav', {maxConcurrent: 2, volume: 0.5, fudgeFactor: 0.1});
+	Sfx.register('NOTCH_SPRING_HIT', '/Sonic/S3K_7B.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.2});
 	Sfx.register('SWITCH_HIT', '/Sonic/switch-activated.wav', {maxConcurrent: 3, volume: 0.3, fudgeFactor: 0.2});
 
 	Sfx.register('ALT_BEEP', '/Sonic/S2_28.wav', {maxConcurrent: 8, volume: 0.5, fudgeFactor: 0.2});
@@ -146,6 +147,7 @@ else
 	Sfx.register('SPIKES_OUT', '/Sonic/S3K_A6.wav');
 	Sfx.register('SPIKES_IN', '/Sonic/S3K_52.wav');
 	Sfx.register('LID_POP', '/Sonic/S2_54.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.25});
+	Sfx.register('PROP_PLAT', '/Sonic/S3K_PropPlat.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.25});
 
 	Sfx.register('POGO_BOUNCE', '/Sonic/0A8H.wav', {maxConcurrent: 3, volume: 0.5, fudgeFactor: 0.25});
 }

@@ -509,7 +509,7 @@ export class PointActor extends View
 					prevGroundObject.args.active = false;
 				}
 
-				prevGroundObject.standingUnder.delete(this);
+				prevGroundObject.standingUnder && prevGroundObject.standingUnder.delete(this);
 			}
 
 			const Switch = this.viewport.objectPalette['switch'];
@@ -1904,61 +1904,61 @@ export class PointActor extends View
 		return true;
 	}
 
-	findSolid(i, point, actor)
-	{
-		if(!actor.viewport)
-		{
-			return;
-		}
+	// findSolid(i, point, actor)
+	// {
+	// 	if(!actor.viewport)
+	// 	{
+	// 		return;
+	// 	}
 
-		const viewport = actor.viewport;
-		const tileMap  = viewport.tileMap;
+	// 	const viewport = actor.viewport;
+	// 	const tileMap  = viewport.tileMap;
 
-		const actors = viewport.actorsAtPoint(point[0], point[1]);
+	// 	const actors = viewport.actorsAtPoint(point[0], point[1]);
 
-		for(const a of actors)
-		{
-			if(actor.checkSolidActors(a))
-			{
-				return i;
-			}
-		}
+	// 	for(const a of actors)
+	// 	{
+	// 		if(actor.checkSolidActors(a))
+	// 		{
+	// 			return i;
+	// 		}
+	// 	}
 
-		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+	// 	const solid = tileMap.getSolid(point[0], point[1], actor.args.layer, Math.sign(this.args.ySpeed));
 
-		if(actor.upScan)
-		{
-			actor.lastLayer = solid;
-		}
+	// 	if(actor.upScan)
+	// 	{
+	// 		actor.lastLayer = solid;
+	// 	}
 
-		if(solid)
-		{
-			return i;
-		}
-	}
+	// 	if(solid)
+	// 	{
+	// 		return i;
+	// 	}
+	// }
 
-	findSolidTile(i, point, actor)
-	{
-		if(!actor.viewport)
-		{
-			return;
-		}
+	// findSolidTile(i, point, actor)
+	// {
+	// 	if(!actor.viewport)
+	// 	{
+	// 		return;
+	// 	}
 
-		const viewport = actor.viewport;
-		const tileMap  = viewport.tileMap;
+	// 	const viewport = actor.viewport;
+	// 	const tileMap  = viewport.tileMap;
 
-		const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+	// 	const solid = tileMap.getSolid(point[0], point[1], actor.args.layer, Math.sign(this.args.ySpeed));
 
-		if(actor.upScan)
-		{
-			actor.lastLayer = solid;
-		}
+	// 	if(actor.upScan)
+	// 	{
+	// 		actor.lastLayer = solid;
+	// 	}
 
-		if(solid)
-		{
-			return i;
-		}
-	}
+	// 	if(solid)
+	// 	{
+	// 		return i;
+	// 	}
+	// }
 
 	scanBottomEdge(direction = 1)
 	{
@@ -2912,7 +2912,7 @@ export class PointActor extends View
 		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
-				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2)) + -1;
+				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2) + -1);
 				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2));
 				top    = this.args.y - this.args.height;
 				bottom = this.args.y;

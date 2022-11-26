@@ -1018,6 +1018,31 @@
          "value":"south-ridge"
         }, 
         {
+         "name":"theme",
+         "type":"string",
+         "value":"none"
+        }, 
+        {
+         "name":"titlecard-author",
+         "type":"string",
+         "value":"SEAN MORRIS"
+        }, 
+        {
+         "name":"titlecard-number",
+         "type":"int",
+         "value":1
+        }, 
+        {
+         "name":"titlecard-title-1",
+         "type":"string",
+         "value":"VAPOR VALLEY"
+        }, 
+        {
+         "name":"titlecard-title-2",
+         "type":"string",
+         "value":"ZONE"
+        }, 
+        {
          "name":"wrapX",
          "type":"bool",
          "value":false

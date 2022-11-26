@@ -1,0 +1,42 @@
+.actor-item.actor-blastoid .sprite:after {
+	--sprite-offset-y: -0px;
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	background-image: url(/Sonic/blastoid.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 21px;
+	width: 35px;
+	z-index: 1;
+}
+
+.actor-item.actor-blastoid[data-color="blue"] .sprite:after {
+	--sprite-offset-x: -35px;
+}
+
+.actor-item.actor-blastoid[data-color="grey"] .sprite:after {
+	--sprite-offset-x: -35px;
+}
+
+.actor-item.actor-blastoid[data-color="brown"] .sprite:after {
+	--sprite-offset-x: -70px;
+}
+
+.actor-item.actor-blastoid[data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-blastoid[data-animation="shooting"] .sprite:after {
+	--sprite-offset-y: -21px;
+}
+
+.actor-item.actor-blastoid[data-flipped="true"] .sprite:after {
+	transform: rotate(180deg);
+	transition: transform 0.25s ease-out;
+	--sprite-offset-y: -42px;
+}
+
+.actor-item.actor-blastoid[data-flipped="true"][data-direction="-1"] .sprite:after {
+	transform: scaleX(-1) rotate(180deg);
+}

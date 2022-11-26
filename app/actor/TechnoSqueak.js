@@ -28,8 +28,8 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 		this.args.width     = 24;
 		this.args.height    = 14;
 
-		this.willStick = false;
-		this.stayStuck = false;
+		this.willStick = true;
+		this.stayStuck = true;
 
 		this.args.patrolPause   = this.args.patrolPause   ?? 20;
 		this.args.patrolBeat    = this.args.patrolBeat    ?? 120;

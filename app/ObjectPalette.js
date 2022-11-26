@@ -79,6 +79,8 @@ import { Motobug      } from './actor/Motobug';
 import { BFish        } from './actor/BFish';
 import { Grounder     } from './actor/Grounder';
 import { TechnoSqueak } from './actor/TechnoSqueak';
+import { Blastoid     } from './actor/Blastoid';
+import { Meanie       } from './actor/Meanie';
 import { SpringTurtle } from './actor/SpringTurtle';
 import { Sparkle      } from './actor/Sparkle';
 import { Splats       } from './actor/Splats';
@@ -176,6 +178,7 @@ import { WindStone } from './actor/WindStone';
 import { Skull } from './actor/Skull';
 import { Pumpkin } from './actor/Pumpkin';
 import { RoadBarrier } from './actor/RoadBarrier';
+import { CautionPanel } from './actor/CautionPanel';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
 import { Cone } from './actor/Cone';
@@ -231,6 +234,8 @@ import { AsteroidSmall } from './actor/AsteroidSmall';
 import { Asteroid } from './actor/Asteroid';
 
 import { RocketPlatform } from './actor/RocketPlatform';
+import { PropellerPlatform } from './actor/PropellerPlatform';
+import { HexNut } from './actor/HexNut';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -356,6 +361,8 @@ export const ObjectPalette = {
 	, 'b-fish': BFish
 	, 'grounder': Grounder
 	, 'techno-squeak': TechnoSqueak
+	, 'blastoid': Blastoid
+	, 'meanie': Meanie
 	, 'spring-turtle': SpringTurtle
 	, 'sparkle': Sparkle
 	, 'splats': Splats
@@ -373,6 +380,7 @@ export const ObjectPalette = {
 	, 'chao-crate': ChaoCrate
 	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
+	, 'caution-panel': CautionPanel
 	, 'signpost': Signpost
 	, 'umbrella': Umbrella
 	, 'dish': Dish
@@ -414,4 +422,6 @@ export const ObjectPalette = {
 	, 'asteroid-small': AsteroidSmall
 	, 'asteroid': Asteroid
 	, 'rocket-platform': RocketPlatform
+	, 'propeller-platform': PropellerPlatform
+	, 'hex-nut': HexNut
 };
