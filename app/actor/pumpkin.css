@@ -1,7 +1,12 @@
+.actor-pumpkin {
+	z-index: var(--z, -10);
+}
+
 .actor-pumpkin .sprite {
 	background-image: url(/custom/pumpkin.png);
 	width: 18px;
 	height: 18px;
+	z-index: 100;
 }
 
 .actor-pumpkin[data-face=true] .sprite {

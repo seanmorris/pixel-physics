@@ -1,15 +1,50 @@
 {
     "compressionlevel": -1,
-    "height": 64,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 288,
     "infinite": false,
-    "nextlayerid": 6,
-    "nextobjectid": 5,
+    "nextlayerid": 12,
+    "nextobjectid": 168,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
             "value": "dark-clouds"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 8192
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "STRATORAIL"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
         }
     ],
     "renderorder": "right-down",
@@ -41,15 +76,139 @@
             "tilecount": 324,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 62,
+            "firstgid": 501,
+            "image": "../custom/red-starlight.png",
+            "imageheight": 1344,
+            "imagewidth": 1984,
+            "margin": 0,
+            "name": "red-starlight",
+            "spacing": 0,
+            "tilecount": 2604,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 3105,
+            "image": "../Sonic/metropolis-screw.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "metropolis-screw",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 3106,
+            "image": "../Sonic/tiles/techno-tower/ground.png",
+            "imageheight": 704,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "ground",
+            "spacing": 0,
+            "tilecount": 352,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 3458,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 3522,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 3756,
+            "image": "../Sonic/tiles/common.png",
+            "imageheight": 32,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "common",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 20,
+            "firstgid": 3760,
+            "image": "wide-tube.png",
+            "imageheight": 1280,
+            "imagewidth": 640,
+            "margin": 0,
+            "name": "wide-tube",
+            "spacing": 0,
+            "tilecount": 800,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 20,
+            "firstgid": 4560,
+            "image": "../Sonic/tiles/angel-island/wide-tube.png",
+            "imageheight": 1280,
+            "imagewidth": 640,
+            "margin": 0,
+            "name": "wide-tube-dirt",
+            "spacing": 0,
+            "tilecount": 800,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": 1.4,
-    "width": 32,
+    "width": 864,
     "types": [
+        "blastoid",
+        "block",
+        "caution-panel",
+        "emblem",
+        "exit-region",
+        "grapple-point",
+        "grinding-region",
+        "grounder",
+        "layer-switch",
+        "meanie",
+        "propeller-platform",
         "pumpkin",
-        "skull"
+        "ring",
+        "rocket",
+        "rolling-region",
+        "sheild-water-monitor",
+        "signpost",
+        "skull",
+        "spikes",
+        "spring",
+        "triple-ring-monitor",
+        "wooden-crate"
     ],
     "map": "/map/pumpkin-test.json"
 }

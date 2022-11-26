@@ -239,6 +239,24 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'StratoRail Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art for Moon Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/pumpkin-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Peak Vape Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art for Peak Vape Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/quartz-test.json'});
+							this.accept();
+						}
+					}
+
 					, 'Moon Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'

@@ -30,6 +30,8 @@ export class NotchSpring extends PointActor
 
 		this.args.animation = 'springing';
 
+		Sfx.play('NOTCH_SPRING_HIT');
+
 		this.viewport.onFrameOut(1, () => this.args.animation = 'idle');
 	}
 

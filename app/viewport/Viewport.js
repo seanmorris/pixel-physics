@@ -3870,8 +3870,8 @@ export class Viewport extends View
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
 	{
-		const left   = actor.args.x - actor.isRegion ? 0 : (actor.args.width * 0.5);
-		const right  = actor.args.x + actor.isRegion ? actor.args.width : (actor.args.width * 0.5);
+		const left   = actor.args.x - (actor.isRegion ? 0 : (actor.args.width * 0.5));
+		const right  = actor.args.x + (actor.isRegion ? actor.args.width : (actor.args.width * 0.5));
 		const top    = actor.args.y - actor.args.height;
 		const bottom = actor.args.y;
 

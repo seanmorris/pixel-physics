@@ -903,7 +903,7 @@ export class Sonic extends PointActor
 		{
 			const landingFrames = Math.min(8, this.ySpeedLast / 4) * (this.args.rolling ? 0.5 : 1);
 
-			if(this.args.groundTime && this.args.groundTime < landingFrames && this.ySpeedLast)
+			if(this.args.groundTime && this.args.groundTime > 2 && this.args.groundTime < landingFrames && this.ySpeedLast)
 			{
 				this.args.animation = 'landing';
 			}

@@ -795,6 +795,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -823,6 +828,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -3308,6 +3318,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"int",
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"block",
@@ -3497,6 +3512,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -9970,12 +9990,12 @@
                 }],
          "opacity":0.44,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":622,
+ "nextobjectid":623,
  "orientation":"orthogonal",
  "properties":[
         {
