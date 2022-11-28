@@ -85,6 +85,7 @@ import { SpringTurtle } from './actor/SpringTurtle';
 import { Sparkle      } from './actor/Sparkle';
 import { Splats       } from './actor/Splats';
 import { Relief       } from './actor/Relief';
+import { Barnacle     } from './actor/Barnacle';
 
 // Newtron
 // Bomb
@@ -367,6 +368,7 @@ export const ObjectPalette = {
 	, 'sparkle': Sparkle
 	, 'splats': Splats
 	, 'relief': Relief
+	, 'barnacle': Barnacle
 	, 'spitfire': SpitFire
 	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint

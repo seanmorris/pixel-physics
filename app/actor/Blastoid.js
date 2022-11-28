@@ -32,8 +32,8 @@ export class Blastoid extends Mixin.from(PointActor, CanPop)
 		this.args.careening = false;
 		this.args.color = this.args.color ?? 'blue';
 
-		this.willStick = false;
-		this.stayStuck = false;
+		this.willStick = true;
+		this.stayStuck = true;
 
 		// this.args.patrolPause   = this.args.patrolPause   ?? 20;
 		this.args.patrolBeat = this.args.patrolBeat    ?? 120;
@@ -57,8 +57,9 @@ export class Blastoid extends Mixin.from(PointActor, CanPop)
 			super.update();
 
 			const xMoved = this.args.x - this.xLast;
+			const yMoved = this.args.y - this.yLast;
 
-			if(this.args.careening && !xMoved && !this.args.falling)
+			if(this.args.careening && !xMoved && !yMoved && !this.args.falling)
 			{
 				super.pop();
 				return;
@@ -106,45 +107,51 @@ export class Blastoid extends Mixin.from(PointActor, CanPop)
 		// })});
 	}
 
-	collideA(other, type)
-	{
-		if(typeof other.pop === 'function')
-		{
-			other.pop(other, type);
-		}
+	// collideA(other, type)
+	// {
+	// 	if(typeof other.pop === 'function')
+	// 	{
+	// 		other.pop(other, type);
+	// 	}
 
-		if(this.args.flipped && other.args.ySpeed)
-		{
-			other.args.ySpeed *= -1;
-			this.args.gSpeed = 12 * Math.sign(this.args.x - other.args.x);
-			this.args.careening = true;
-			this.args.decel = 0;
-			return;
-		}
+	// 	if(this.args.careening && other.controllable)
+	// 	{
+	// 		super.pop(other);
+	// 		return;
+	// 	}
 
-		return super.collideA(other, type);
-	}
+	// 	if(this.args.flipped)
+	// 	{
+	// 		other.args.ySpeed *= -1;
+	// 		this.args.gSpeed = 12 * Math.sign(this.args.x - other.args.x);
+	// 		this.args.careening = true;
+	// 		this.args.decel = 0;
+	// 		return;
+	// 	}
 
-	pop(other)
-	{
-		if(!this.args.flipped)
-		{
-			this.args.flipped = true;
-			this.args.falling = true;
-			this.args.ySpeed = -6;
-			this.args.y--;
+	// 	return super.collideA(other, type);
+	// }
 
-			if(other)
-			{
-				this.ignores.set(other, 10);
-				other.args.ySpeed *= -1;
-			}
+	// pop(other)
+	// {
+	// 	if(!this.args.flipped)
+	// 	{
+	// 		this.args.flipped = true;
+	// 		this.args.falling = true;
+	// 		this.args.ySpeed = -6;
+	// 		this.args.y--;
 
-			return;
-		}
+	// 		if(other)
+	// 		{
+	// 			this.ignores.set(other, 10);
+	// 			other.args.ySpeed *= -1;
+	// 		}
 
-		// return super.pop(other);
-	}
+	// 		return;
+	// 	}
+
+	// 	// return super.pop(other);
+	// }
 
 	get solid() { return false; }
 	get isEffect() { return false; }

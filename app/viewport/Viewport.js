@@ -2902,6 +2902,8 @@ export class Viewport extends View
 				}
 
 				actorSpawned = true;
+
+				spawn.object.initialize && spawn.object.initialize();
 			}
 		}
 

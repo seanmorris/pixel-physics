@@ -152,6 +152,7 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 			const hat = this.hat;
 
 			this.viewport.onFrameOut(3, () => {
+				this.args.xSpeed += -2 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
 				hat.args.xSpeed = -4 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
 				hat.args.ySpeed = Math.min(-4, -Math.abs(other.args.ySpeed));
 				hat.args.float  = 1;
@@ -165,6 +166,8 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 			other.args.gSpeed *= -1;
 			other.args.xSpeed *= -1;
 			other.args.ySpeed = -4;
+
+			other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
 
 			return;
 		}

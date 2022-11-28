@@ -63,7 +63,7 @@
 	transform: translate(-50%) rotateY(180deg);
 }
 
-.point-actor:not([data-mercy="0"]):not([data-mercy=false]) {
+.point-actor[data-mercy]:not([data-mercy="0"]):not([data-mercy=false]) {
 	animation: mercy-flicker 250ms 500ms infinite steps(1) forwards;
 }
 

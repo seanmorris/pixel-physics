@@ -1,5 +1,6 @@
 import { LayerSwitch } from './LayerSwitch';
 import { PointActor } from './PointActor';
+import { BreakableBlock } from './BreakableBlock';
 import { Region }     from '../region/Region';
 import { Sfx } from '../audio/Sfx';
 
@@ -65,10 +66,35 @@ export class Spring extends PointActor
 		this.args.static = true;
 
 		this.args.actingOn = new Set;
+
+		this.args.blocked = false;
 	}
 
-	collideA(other)
+	updateEnd()
 	{
+		super.updateEnd();
+
+		this.args.blocked = false;
+
+		if(this.viewport.collisions.has(this))
+		{
+			for(const [third, thirdType] of this.viewport.collisions.get(this))
+			{
+				if(!third.broken && third instanceof BreakableBlock)
+				{
+					this.args.blocked = true;
+				}
+			}
+		}
+	}
+
+	collideA(other, type)
+	{
+		if(this.args.blocked)
+		{
+			return false;
+		}
+
 		if(other.carriedBy)
 		{
 			return false;
@@ -99,7 +125,7 @@ export class Spring extends PointActor
 			return false;
 		}
 
-		super.collideA(other);
+		super.collideA(other, type);
 
 		if(this.args.actingOn.has(other))
 		{

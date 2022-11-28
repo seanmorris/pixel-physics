@@ -34,6 +34,20 @@ export class Rocket extends PointActor
 			return;
 		}
 
+		if(!this.thrusterSound)
+		{
+			this.thrusterSound = new Audio('/Sonic/mecha-sonic-thruster.wav');
+		}
+		else
+		{
+			this.thrusterSound.volume = 0.2 + (Math.random() * -0.05);
+
+			if(this.thrusterSound.currentTime > 1.5)
+			{
+				this.thrusterSound.currentTime = 0.5;
+			}
+		}
+
 		super.update();
 
 		if(this.args.launched && Math.abs(this.args.xSpeed) < Math.abs(this.args.xMax))
@@ -55,6 +69,8 @@ export class Rocket extends PointActor
 	activate()
 	{
 		this.viewport.auras.add(this);
+
+		this.viewport.args.audio && this.thrusterSound && this.thrusterSound.play();
 
 		this.args.launched = true;
 
@@ -94,6 +110,10 @@ export class Rocket extends PointActor
 			return;
 		}
 
+		Sfx.play('OBJECT_DESTROYED');
+
+		this.thrusterSound && this.thrusterSound.pause();
+
 		const explosion = new Tag('<div class = "particle-explosion">');
 
 		explosion.style({'--x': this.x, '--y': this.y-8});
@@ -101,8 +121,6 @@ export class Rocket extends PointActor
 		viewport.particles.add(explosion);
 
 		setTimeout(() => viewport.particles.remove(explosion), 512);
-
-		Sfx.play('OBJECT_DESTROYED');
 
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
