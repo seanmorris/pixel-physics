@@ -149,6 +149,7 @@ export class PointActor extends View
 		this.args.rings  = 0;
 
 		this.args.mercy = false;
+		this.args.stuck = false;
 		this.args.R = 0;
 		this.args.popChain = [];
 
@@ -340,7 +341,7 @@ export class PointActor extends View
 		this.args.deepJump = false;
 		this.args.highJump = false;
 
-		this.maxStep   = 8;
+		this.maxStep   = 10;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
@@ -1337,7 +1338,7 @@ export class PointActor extends View
 			// }
 		}
 
-		if(xAxis < 0 && this.args.gSpeed && !this.args.ignore)
+		if(xAxis < 0 && (this.args.gSpeed || this.args.stuck) && !this.args.ignore)
 		{
 			if(!this.args.climbing)
 			{
@@ -1350,7 +1351,7 @@ export class PointActor extends View
 			}
 		}
 
-		if(xAxis > 0 && this.args.gSpeed && !this.args.ignore)
+		if(xAxis > 0 && (this.args.gSpeed || this.args.stuck) && !this.args.ignore)
 		{
 			if(!this.args.climbing)
 			{

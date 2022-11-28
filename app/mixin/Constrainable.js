@@ -35,15 +35,18 @@ export const Constrainable = {
 			return;
 		}
 
-		this.viewport.onFrameOut(5, () => {
-			this.args.x = this.def.get('x');
-			this.args.y = this.def.get('y');
+		if(this.def)
+		{
+			this.viewport.onFrameOut(5, () => {
+				this.args.x = this.def.get('x');
+				this.args.y = this.def.get('y');
 
-			this.args.xSpeed = 0;
-			this.args.ySpeed = 0;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
 
-			this.viewport.setColCell(this);
-		});
+				this.viewport.setColCell(this);
+			});
+		}
 	}
 
 	// , findNextStep: function() {

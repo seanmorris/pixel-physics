@@ -13,14 +13,22 @@ export class WoodenCrate extends BreakableBlock
 		this.args.type   = 'actor-item actor-breakable-block actor-wooden-crate';
 		this.args.width  = 60;
 		this.args.height = 60;
-		this.args.static = this.args.static ?? false;
+		this.args.static = false;
 
 		this[Spring.WontSpring] = true;
 	}
 
 	updateStart()
 	{
-		this.args.static = this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+		if(this.args.static)
+		{
+			this.args.static = !!this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+		}
+		else
+		{
+			this.args.static = !this.args.falling;
+		}
+
 
 		super.updateStart();
 	}

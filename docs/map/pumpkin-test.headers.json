@@ -8,18 +8,18 @@
     "height": 288,
     "infinite": false,
     "nextlayerid": 12,
-    "nextobjectid": 168,
+    "nextobjectid": 193,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
-            "value": "dark-clouds"
+            "value": "overcast"
         },
         {
             "name": "deathLine",
             "type": "int",
-            "value": 8192
+            "value": 8448
         },
         {
             "name": "theme",
@@ -180,13 +180,27 @@
             "tilecount": 800,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 7,
+            "firstgid": 5360,
+            "image": "../Sonic/tiles/marble/trim-recolor.png",
+            "imageheight": 64,
+            "imagewidth": 224,
+            "margin": 0,
+            "name": "trim-recolor",
+            "spacing": 0,
+            "tilecount": 14,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": 1.4,
-    "width": 864,
+    "width": 960,
     "types": [
+        "barnacle",
         "blastoid",
         "block",
         "caution-panel",

@@ -14,6 +14,7 @@ import { MushroomHill   } from 'backdrop/MushroomHill';
 import { IceCap         } from 'backdrop/IceCap';
 import { City           } from 'backdrop/City';
 import { DarkClouds     } from 'backdrop/DarkClouds';
+import { Overcast       } from 'backdrop/Overcast';
 
 export const BackdropPalette = {
 	'west-side-cloudy': WestSideCloudy
@@ -32,4 +33,5 @@ export const BackdropPalette = {
 	, 'ice-cap':        IceCap
 	, 'city':           City
 	, 'dark-clouds':    DarkClouds
+	, 'overcast':       Overcast
 }

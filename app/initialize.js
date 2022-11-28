@@ -87,7 +87,7 @@ else
 	Sfx.register('EMBLEM_COLLECTED', '/custom/emblem-collect.wav', {maxConcurrent: 3, volume: 0.25, fudgeFactor: 0.1});
 	Sfx.register('EMERALD_COLLECTED', '/Sonic/S3K_9C.wav');
 
-	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
+	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 8, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.4});
 
 	Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
@@ -139,6 +139,9 @@ else
 	Sfx.register('MECHASONIC_SLAP', '/Sonic/mecha-sonic-thruster-close.wav');
 
 	Sfx.register('TAILS_FLY', '/Sonic/tails-flying.wav');
+
+	Sfx.register('HOOK_GRABBED', '/Sonic/S3K_4A.wav');
+	// Sfx.register('ROCKET_THRUST', '/Sonic/S3K_47.wav');
 
 	Sfx.register('LIGTNING_STRIKE', '/Sonic/S3K_4E.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0})
 	Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');

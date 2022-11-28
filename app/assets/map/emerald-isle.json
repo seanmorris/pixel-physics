@@ -4722,7 +4722,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4755,7 +4755,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4788,7 +4788,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4821,7 +4821,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4854,7 +4854,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4887,7 +4887,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4920,7 +4920,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4953,7 +4953,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -4986,7 +4986,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5075,7 +5075,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5108,7 +5108,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5141,7 +5141,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5174,7 +5174,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5207,7 +5207,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5240,7 +5240,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5273,7 +5273,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5306,7 +5306,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5339,7 +5339,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5372,7 +5372,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5405,7 +5405,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5565,7 +5565,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5598,7 +5598,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5631,7 +5631,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5664,7 +5664,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5697,7 +5697,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5730,7 +5730,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5763,7 +5763,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5796,7 +5796,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",
@@ -5829,7 +5829,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":1
+                         "value":0
                         }, 
                         {
                          "name":"static",

@@ -4,6 +4,7 @@ import { Orb } from './Orb';
 import { Tag } from 'curvature/base/Tag';
 import { Sfx } from '../audio/Sfx';
 import { Platformer } from '../behavior/Platformer';
+import { ObjectPalette } from '../ObjectPalette';
 
 export class BreakableBlock extends Block
 {
@@ -399,6 +400,20 @@ export class BreakableBlock extends Block
 				setTimeout(() => this.viewport.particles.remove(scoreTag), 768);
 
 				o.args.score += 10;
+			}
+
+			console.log(this.args.contains);
+
+			if(this.args.contains && ObjectPalette[this.args.contains])
+			{
+				const object = new ObjectPalette[this.args.contains];
+
+				object.args.x = this.args.x;
+				object.args.y = this.args.y - this.args.height * 0.5;
+
+				object.args.ySpeed = -6;
+
+				this.viewport.spawn.add({object});
 			}
 		}
 

@@ -8,7 +8,7 @@
     "height": 32,
     "infinite": false,
     "nextlayerid": 7,
-    "nextobjectid": 101,
+    "nextobjectid": 102,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -73,6 +73,7 @@
     "types": [
         "b-fish",
         "balkiry",
+        "barnacle",
         "block",
         "bubbles",
         "buzz-bomber",

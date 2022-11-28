@@ -925,7 +925,7 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
-		if(this.carrying.size)
+		if(this.args.stuck || this.carrying.size)
 		{
 			return;
 		}
@@ -1290,7 +1290,7 @@ export class Sonic extends PointActor
 		// 	return;
 		// }
 
-		this.yAxis = 1;
+		this.yAxis = this.yAxis || 1;
 
 		if(this.args.ignore || this.args.rolling)
 		{
@@ -1401,7 +1401,7 @@ export class Sonic extends PointActor
 
 	hold_2()
 	{
-		if(!this.args.falling)
+		if(this.args.stuck || !this.args.falling)
 		{
 			return;
 		}
