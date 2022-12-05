@@ -21,14 +21,6 @@ export class HexNut extends Block
 		this.args.treadmill = true;
 	}
 
-	// onRendered()
-	// {
-	// 	super.onRendered();
-
-	// 	this.autoAttr.get(this.box)['data-spinning'] = 'spinning';
-	// 	this.autoAttr.get(this.box)['data-bouncing'] = 'bouncing';
-	// }
-
 	update()
 	{
 		this.args.treadmill = true;
@@ -86,62 +78,4 @@ export class HexNut extends Block
 	{
 		this.args.y = this.originalY;
 	}
-
-	// collideA(other, type)
-	// {
-	// 	if(other.args.falling
-	// 		&& other.args.y > this.args.y + -this.args.height
-	// 		&& other.args.y < this.args.y + -(this.args.height * 0.75)
-	// 	){
-	// 		other.args.y = this.args.y + -this.args.height;
-	// 		return super.collideA(other, type);
-	// 	}
-
-	// 	if(!other.args.falling || other.args.ySpeed < 0)
-	// 	{
-	// 		return super.collideA(other, type);
-	// 	}
-
-	// 	// if(!other.controllable)
-	// 	// {
-	// 	// 	return super.collideA(other, type);
-	// 	// }
-
-	// 	this.args.ySpeed += Math.min(-4, -Math.abs(other.args.ySpeed) * 0.5);
-	// 	this.args.float    = 10;
-	// 	this.args.spinning = 30;
-	// 	this.args.bouncing = 10;
-
-	// 	other.args.xSpeed *= 0.5;
-	// 	other.doubleSpin = false;
-
-	// 	if(other.dashed)
-	// 	{
-	// 		other.dashed = false;
-	// 		other.args.xSpeed = 0;
-	// 		other.args.ySpeed = -other.args.airSpeed;
-	// 		other.args.ySpeed *= 1.25;
-	// 		this.args.ySpeed *= 1.75;
-	// 	}
-	// 	else
-	// 	{
-	// 		if(other.args.ySpeed > 0)
-	// 		{
-	// 			other.args.ySpeed = Math.min(-4, Math.max(-6, -Math.abs(other.args.ySpeed)));
-	// 			other.args.ySpeed += this.args.ySpeed;
-	// 		}
-
-	// 		if(other.args.ySpeed > this.args.ySpeed)
-	// 		{
-	// 			other.args.ySpeed = this.args.ySpeed + -6;
-	// 		}
-	// 	}
-
-	// 	Sfx.play('PROP_PLAT');
-
-	// 	this.args.y--;
-	// 	this.args.falling = true;
-
-	// 	return super.collideA(other, type);
-	// }
 }

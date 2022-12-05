@@ -277,6 +277,19 @@
             "tilecount": 1,
             "tileheight": 24,
             "tilewidth": 48
+        },
+        {
+            "columns": 4,
+            "firstgid": 8748,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,

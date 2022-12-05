@@ -8,7 +8,7 @@
     "height": 288,
     "infinite": false,
     "nextlayerid": 12,
-    "nextobjectid": 193,
+    "nextobjectid": 196,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -191,6 +191,32 @@
             "name": "trim-recolor",
             "spacing": 0,
             "tilecount": 14,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 5374,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 5406,
+            "image": "../Sonic/x-fence.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "x-fence",
+            "spacing": 0,
+            "tilecount": 16,
             "tileheight": 32,
             "tilewidth": 32
         }

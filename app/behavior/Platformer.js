@@ -992,7 +992,7 @@ export class Platformer
 				host.xLast = host.args.x;
 				host.yLast = host.args.y;
 
-				if(host.args.grinding && !host.args.gSpeed)
+				if(host.args.grinding && !host.args.gSpeed && host.args.modeTime > 4)
 				{
 					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
 				}
@@ -1610,7 +1610,7 @@ export class Platformer
 
 			let iter = 0
 
-			const headBlock = host.args.modeTime > 10 && this.scanForward(host, host.args.gSpeed, 1);
+			const headBlock = host.args.modeTime > 10 && this.scanForward(host, host.args.gSpeed ?? 0, 1);
 
 			if(headBlock === false || headBlock > 0)
 			{
@@ -2570,11 +2570,15 @@ export class Platformer
 
 		// window.logPoints = upScanDist && true;
 
+		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-l-scan '+label);
+
 		const upDistanceL = host.castRayQuick(
 			upScanDist
 			, -Math.PI / 2
 			, [-host.args.width * 0.5 + 1 , 0]
 		);
+
+		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-r-scan '+label);
 
 		const upDistanceR = host.castRayQuick(
 			upScanDist
@@ -2582,7 +2586,7 @@ export class Platformer
 			, [host.args.width * 0.5 + -1, 0]
 		);
 
-		window.logPoints = false;
+		// window.logPoints = false;
 
 		// if(upDistanceL !== upDistanceLQ || upDistanceR !== upDistanceRQ)
 		// {
@@ -2600,7 +2604,7 @@ export class Platformer
 
 		if(!host.args.hLock && !host.noClip)
 		{
-			const hScanDist = Math.trunc(host.args.xSpeed);
+			const hScanDist = (host.args.xSpeed);
 
 			const foreDistanceHead  = hScanDist ? this.scanForward(host, hScanDist, 0.9) : false;
 			const foreDistanceWaist = hScanDist ? this.scanForward(host, hScanDist, 0.5) : false;
@@ -2657,9 +2661,11 @@ export class Platformer
 			return;
 		}
 
+		const originalAngle = host.airAngle;
+
 		if(!host.willStick
 			&& hits.length > 1
-			&& (upDistance === false || upDistance < host.args.height)
+			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
 		){
 			const xDirection = Math.sign(host.args.xSpeed);
 
@@ -2672,9 +2678,9 @@ export class Platformer
 			// const shiftBy = radius + -maxHit;
 			const shift = shiftBy * -xDirection;
 
-			if(!isNaN(shift) && (!shift || shiftBy < width || Math.sign(shift) === Math.sign(host.args.xSpeed)))
+			if(!isNaN(shift) && (!shift || Math.abs(shiftBy) < width || Math.sign(shift) !== Math.sign(host.args.xSpeed)))
 			{
-				host.args.x += shift;
+				// host.args.x -= shift;
 
 				host.args.flySpeed = 0;
 				host.args.xSpeed   = 0;
@@ -2682,7 +2688,7 @@ export class Platformer
 				host.args.mode     = MODE_FLOOR;
 			}
 
-			host.viewport.actorsAtPoint(
+			host.viewport && host.viewport.actorsAtPoint(
 				host.x + (0+radius) * xDirection
 				, host.y
 				, host.args.width
@@ -2722,18 +2728,20 @@ export class Platformer
 
 		let airMag = host.castRayQuick(
 			scanDist
-			, host.airAngle
+			, originalAngle
 		);
+
+		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
 
 		airMag = airMag !== false ? airMag : host.castRayQuick(
 			scanDist
-			, host.airAngle
+			, originalAngle
 			, [-tiny, 0]
 		);
 
 		airMag = airMag !== false ? airMag : host.castRayQuick(
 			scanDist
-			, host.airAngle
+			, originalAngle
 			, [+tiny, 0]
 		);
 
@@ -2755,11 +2763,13 @@ export class Platformer
 
 		if(!host.rotateLock)
 		{
+			// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'alt-scan '+label);
+
 			const bOffset = -3 * Math.sign(host.args.ySpeed || 1);
 
 			const airMag = host.castRayQuick(
 				scanDist
-				, host.airAngle
+				, originalAngle
 				, [0, bOffset]
 			);
 
@@ -2768,6 +2778,8 @@ export class Platformer
 				, Math.sin(host.airAngle) * airMag + host.args.y + bOffset
 			] : airPointBQ;
 		}
+
+		// window.logPoints = false;
 
 		const airPoint   = airPointQ;
 		const airPointB = airPointBQ;
@@ -2852,11 +2864,11 @@ export class Platformer
 			host.args.x = stickX;
 			host.args.y = stickY;
 
-			if(angleIsWall && !host.willStick)
-			{
-				host.args.x -= host.args.width * 0.5 *  Math.sign(host.xSpeedLast);
-				host.args.falling = true;
-			}
+			// if(angleIsWall && !host.willStick)
+			// {
+			// 	host.args.x -= host.args.width * 0.5 *  Math.sign(host.xSpeedLast);
+			// 	host.args.falling = true;
+			// }
 
 			blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
 

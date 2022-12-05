@@ -72,6 +72,9 @@
 	top:   -32px;
 	left:  -12px;
 	z-index: 100;
+/*	background-position-y: -120px;
+	animation: red-eye-spin infinite steps(8) reverse;
+	animation-duration: 350ms;*/
 }
 
 .actor-item.actor-red-eye-jet[data-looking=left] .orange-eye {
@@ -151,5 +154,14 @@
 	}
 	to{
 		filter: hue-rotate(0deg) invert(0);
+	}
+}
+
+@keyframes red-eye-spin {
+	from{
+		background-position-x: 0;
+	}
+	to{
+		background-position-x: -192px;
 	}
 }

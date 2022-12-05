@@ -8,7 +8,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 623,
+    "nextobjectid": 633,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -141,6 +141,19 @@
             "tilecount": 234,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 1541,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -168,6 +181,7 @@
         "spring",
         "star-post",
         "triple-ring-monitor",
+        "turtloid",
         "vertical-region",
         "water-spout"
     ],

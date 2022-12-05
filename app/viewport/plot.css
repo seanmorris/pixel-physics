@@ -1,0 +1,62 @@
+svg.plot {
+	width: calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	position: absolute;
+	left:0;
+	top:0;
+	transform-origin: top left;
+	transform: scale(var(--scale));
+}
+
+circle {
+	display: none;
+	position: relative;
+}
+
+circle.rayX {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.5);
+	display: initial;
+	opacity: 0.3;
+}
+
+
+circle.rayY {
+	fill: transparent;
+	stroke: rgba(255,255,0,0.5);
+	display: initial;
+	opacity: 0.3;
+}
+
+circle.rayX.bf-32,
+circle.rayY.bf-32 {
+	opacity: 1;
+}
+
+circle.start {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.125);
+	display: initial;
+	z-index: 1;
+}
+
+circle.end {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.125);
+	display: initial;
+	z-index: 1;
+}
+
+circle.nearest {
+	fill: rgba(255,0,0,0.75);
+	display: initial;
+	z-index: 1;
+}
+
+circle.alt-scan {
+	filter: hue-rotate(20deg);
+}
+
+circle:hover {
+	opacity: 1;
+}

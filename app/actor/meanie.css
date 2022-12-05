@@ -24,7 +24,7 @@
 }
 
 .actor-item.actor-meanie[data-falling=false] .sprite:after {
-	background-position: calc(-16px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	animation: meanie-walk steps(3) 1 180ms reverse forwards;
 }
 
 .actor-item.actor-meanie[data-falling=true] .sprite:after {

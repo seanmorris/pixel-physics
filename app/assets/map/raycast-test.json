@@ -10,11 +10,11 @@
  "infinite":false,
  "layers":[
         {
-         "data":[2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2],
+         "data":[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 555, 555, 240, 739, 740, 741, 742, 743, 744, 241, 555, 555, 2, 2, 2, 2, 0, 0, 539, 747, 0, 0, 0, 0, 752, 584, 0, 0, 2, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 69, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 2, 2, 2, 2, 0, 0, 539, 787, 0, 0, 0, 0, 792, 584, 0, 0, 2, 2, 2, 2, 568, 568, 224, 795, 796, 797, 798, 799, 800, 225, 568, 568, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
          "height":9,
          "id":1,
          "name":"Collision 0",
-         "opacity":0.9,
+         "opacity":0.5,
          "type":"tilelayer",
          "visible":true,
          "width":16,
@@ -28,7 +28,7 @@
          "name":"Collision 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":16,
          "x":0,
          "y":0
@@ -40,13 +40,25 @@
          "name":"Collision 2",
          "opacity":1,
          "type":"tilelayer",
+         "visible":false,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":9,
+         "id":7,
+         "name":"Grinding 0",
+         "opacity":1,
+         "type":"tilelayer",
          "visible":true,
          "width":16,
          "x":0,
          "y":0
         }, 
         {
-         "data":[2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2],
+         "data":[23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23],
          "height":9,
          "id":4,
          "name":"Art 0",
@@ -63,123 +75,15 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":177,
-                 "height":64,
-                 "id":6,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":32,
-                 "y":224
-                }, 
-                {
-                 "gid":177,
-                 "height":128,
-                 "id":7,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":416,
-                 "y":288
-                }, 
-                {
                  "height":0,
-                 "id":9,
-                 "name":"",
+                 "id":24,
+                 "name":"mouse-indicator",
                  "point":true,
                  "rotation":0,
-                 "type":"",
+                 "type":"mouse-indicator",
                  "visible":true,
                  "width":0,
-                 "x":296,
-                 "y":287
-                }, 
-                {
-                 "gid":177,
-                 "height":64,
-                 "id":12,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":288,
-                 "y":288
-                }, 
-                {
-                 "gid":177,
-                 "height":64,
-                 "id":13,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":160,
-                 "y":288
-                }, 
-                {
-                 "gid":177,
-                 "height":128,
-                 "id":14,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":32,
-                 "y":160
-                }, 
-                {
-                 "gid":177,
-                 "height":64,
-                 "id":15,
-                 "name":"block",
-                 "properties":[
-                        {
-                         "name":"float",
-                         "type":"int",
-                         "value":-1
-                        }],
-                 "rotation":0,
-                 "type":"block",
-                 "visible":true,
-                 "width":64,
-                 "x":416,
+                 "x":256,
                  "y":96
                 }],
          "opacity":1,
@@ -188,9 +92,15 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":20,
+ "nextlayerid":8,
+ "nextobjectid":28,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"theme",
+         "type":"string",
+         "value":"construct"
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.4.3",
  "tileheight":32,
@@ -218,6 +128,32 @@
          "name":"marble-zone-block",
          "spacing":0,
          "tilecount":1,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":16,
+         "firstgid":178,
+         "image":"rolling.png",
+         "imageheight":1120,
+         "imagewidth":512,
+         "margin":0,
+         "name":"rolling",
+         "spacing":0,
+         "tilecount":560,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":8,
+         "firstgid":738,
+         "image":"big-loop.png",
+         "imageheight":256,
+         "imagewidth":256,
+         "margin":0,
+         "name":"big-loop",
+         "spacing":0,
+         "tilecount":64,
          "tileheight":32,
          "tilewidth":32
         }],

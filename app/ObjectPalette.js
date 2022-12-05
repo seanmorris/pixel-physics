@@ -237,6 +237,7 @@ import { Asteroid } from './actor/Asteroid';
 import { RocketPlatform } from './actor/RocketPlatform';
 import { PropellerPlatform } from './actor/PropellerPlatform';
 import { HexNut } from './actor/HexNut';
+import { Turtloid } from './actor/Turtloid';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -426,4 +427,5 @@ export const ObjectPalette = {
 	, 'rocket-platform': RocketPlatform
 	, 'propeller-platform': PropellerPlatform
 	, 'hex-nut': HexNut
+	, 'turtloid': Turtloid
 };
