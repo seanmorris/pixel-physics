@@ -4,6 +4,9 @@ export class MouseIndicator extends Cursor
 {
 	endPoint = null;
 
+	lastMouseX = null;
+	lastMouseY = null;
+
 	onRendered(event)
 	{
 		super.onRendered(event);
@@ -22,13 +25,13 @@ export class MouseIndicator extends Cursor
 		}
 		else if(mouse.buttons[0] === 1 && this.endPoint)
 		{
-			this.viewport.actors.remove(this.endPoint);
+			// this.viewport.actors.remove(this.endPoint);
 			this.endPoint = null;
 		}
 		else if(mouse.buttons[0] === 1 && !this.endPoint)
 		{
 			this.endPoint = new Cursor({x:this.args.x,y:this.args.y});
-			this.viewport.spawn.add({object:this.endPoint});
+			// this.viewport.spawn.add({object:this.endPoint});
 		}
 		else
 		{
@@ -44,12 +47,23 @@ export class MouseIndicator extends Cursor
 
 			this.args.airAngle = angle;
 
-			this.args.falling = false;
-			const magnitude = this.castRayQuick(length, angle);
-			this.args.falling = true;
+			// this.args.falling = false;
 
-			this.endPoint.args.x = this.args.x + Math.cos(angle) * magnitude;
-			this.endPoint.args.y = this.args.y + Math.sin(angle) * magnitude;
+			if(this.lastMouseX !== mouse.position[0] || this.lastMouseY !== mouse.position[1])
+			{
+				// this.viewport.args.plot.clearPoints();
+				window.logPoints = (x,y,label) => this.viewport.args.plot.addPoint(x,y,'main-scan '+label);
+				const magnitude = this.castRayQuick(length, angle);
+				window.logPoints = false;
+
+				this.args.falling = true;
+
+				this.endPoint.args.x = this.args.x + Math.cos(angle) * magnitude;
+				this.endPoint.args.y = this.args.y + Math.sin(angle) * magnitude;
+			}
+
+			this.lastMouseX = mouse.position[0];
+			this.lastMouseY = mouse.position[1];
 		}
 	};
 }

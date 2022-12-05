@@ -28,6 +28,11 @@ export class StarBalloon extends Balloon
 			}
 			else
 			{
+				if(!this.args.ySpeed)
+				{
+					this.args.ySpeed = -1;
+				}
+
 				if(this.args.ySpeed > -8)
 				{
 					this.args.ySpeed -= 0.08;

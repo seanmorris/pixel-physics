@@ -265,8 +265,21 @@ export class Layer extends View
 					Object.assign(tileXY, tileMap.getTile(blockId));
 				}
 
+				const tileset = tileXY[4];
+
 				const existingOffset = offsets.get(block);
 				const existingSrc    = blockSrcs.get(block);
+
+				if(tileset && tileset.meta && tileset.meta.animated)
+				{
+					const frames     = tileset.meta.frames;
+					const oneFrame   = viewport.args.frameId;
+					const speed      = tileset.meta.speed ?? 1;
+					const speedFrame = Math.floor(oneFrame / speed);
+					const frameIndex = speedFrame % frames;
+
+					tileXY[1] += tileset.meta.frameSize * frameIndex;
+				}
 
 				const blockOffset = -1 * (tileXY[0] * blockSize)
 					+ 'px '
@@ -284,13 +297,15 @@ export class Layer extends View
 				{
 					if(blockId !== false && blockId !== 0)
 					{
-						block.style({
+						const blockStyle = {
 							display: 'initial'
 							, 'background-position': blockOffset
 							, 'background-image': `url(${blockSrc})`
 							, '--screenX': (centerX - ii) / centerX
 							, '--screenY': (j - centerY) / centerY
-						});
+						};
+
+						block.style(blockStyle);
 					}
 					else
 					{

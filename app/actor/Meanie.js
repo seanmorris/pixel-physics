@@ -41,6 +41,8 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 
 		// this.args.hatType = this.args.hatType ?? 'skull';
 		this.args.hatType = this.args.hatType ?? 'pumpkin';
+
+		this.args.maxBoost = 0;
 	}
 
 	wakeUp(event)
@@ -73,6 +75,8 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
+		this.args.maxBoost = Math.max(this.args.ySpeed, this.args.maxBoost);
+
 		const direction = this.args.direction;
 
 		const telegraph = this.args.shotTelegraph;
@@ -93,6 +97,7 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 		super.update();
 
 		this.args.groundAngle = 0;
+		this.args.mode = 0;
 
 		this.args.direction = Math.sign(this.args.xSpeed || this.args.gSpeed);
 
@@ -100,8 +105,8 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 
 		if(!this.args.falling && !this.jumpTimer)
 		{
-			this.jumpTimer = this.onNextFrame(() => {
-				this.args.ySpeed = Math.max(-this.ySpeedLast, -12) || -6;
+			this.jumpTimer = this.viewport.onFrameOut(2, () => {
+				this.args.ySpeed = -Math.min(this.args.maxBoost, 9);
 				this.args.xSpeed = this.args.gSpeed;
 				this.args.falling = true;
 				this.fallTime  = 0;
@@ -142,7 +147,7 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 
 	pop(other)
 	{
-		if(!other.controllable)
+		if(other && !other.controllable)
 		{
 			return;
 		}
@@ -152,22 +157,32 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 			const hat = this.hat;
 
 			this.viewport.onFrameOut(3, () => {
-				this.args.xSpeed += -2 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
-				hat.args.xSpeed = -4 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
-				hat.args.ySpeed = Math.min(-4, -Math.abs(other.args.ySpeed));
-				hat.args.float  = 1;
+				if(other)
+				{
+					this.args.xSpeed += -2 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
+					hat.args.xSpeed = -4 * (Math.sign(other.args.xSpeed || other.args.gSpeed) || 1);
+					hat.args.ySpeed = Math.min(-4, -Math.abs(other.args.ySpeed));
+					hat.args.float  = 1;
+				}
+				else
+				{
+					hat.args.float = 10;
+				}
 				hat.noClip      = false;
 
 				this.hat = null;
 			});
 
-			this.ignores.set(other, 10);
+			if(other)
+			{
+				this.ignores.set(other, 10);
 
-			other.args.gSpeed *= -1;
-			other.args.xSpeed *= -1;
-			other.args.ySpeed = -4;
+				other.args.gSpeed *= -1;
+				other.args.xSpeed *= -1;
+				other.args.ySpeed = -4;
 
-			other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
+				other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
+			}
 
 			return;
 		}

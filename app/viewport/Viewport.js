@@ -1573,6 +1573,8 @@ export class Viewport extends View
 					{
 						const [x = 0, y = 0] = impulse.split(',');
 
+						console.log({x,y});
+
 						this.nextControl.args.xSpeed = Number(x);
 						this.nextControl.args.ySpeed = Number(y);
 					}
@@ -1587,7 +1589,7 @@ export class Viewport extends View
 				if(Number(Router.query.pause))
 				{
 					this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
-					this.args.paused = -1;
+					this.args.paused = Number(Router.query.pause);
 				}
 			}
 			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
@@ -2410,6 +2412,9 @@ export class Viewport extends View
 			'--x': this.args.x
 			, '--y': this.args.y
 		});
+
+		this.args.plot.args.x = this.args.x;
+		this.args.plot.args.y = this.args.y;
 
 		this.tags.content.style({
 			'--x': this.args.x

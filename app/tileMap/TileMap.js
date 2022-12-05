@@ -334,13 +334,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const layers = tilemapData.layers || [];
 
-		tilemapData.layers.forEach(layer => {
+		tilemapData.layers.forEach((layer,index) => {
 			layer.offsetX        = false;
 			layer.offsetY        = false;
 			layer.offsetXChanged = false;
 			layer.offsetYChanged = false;
 			layer.destroyed      = false;
 			layer.layer          = null;
+			layer.index          = index;
 			Object.preventExtensions(layer);
 		});
 
@@ -535,6 +536,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const tileset = this.getTileset(tileNumber);
 		const image   = this.tileImages.get(tileset);
 
+		if(!tileset.meta && tileset.properties)
+		{
+			tileset.meta = {};
+
+			for(const property of tileset.properties)
+			{
+				tileset.meta[ property.name ] = property.value;
+			}
+		}
+
 		if(tileNumber)
 		{
 			const localTileNumber = tileNumber + -tileset.firstgid + 1;
@@ -547,7 +558,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			original = tileset.original;
 		}
 
-		const result = [x,y,src,original];
+		const result = [x,y,src,original,tileset];
 
 		this.tileCache.set(tileNumber, result);
 
@@ -769,12 +780,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const sx = dx ? Math.sqrt(1 + (dy / dx) ** 2) : 0;
 		const sy = dy ? Math.sqrt(1 + (dx / dy) ** 2) : 0;
 
-		let checkX = 0;
-		let checkY = 0;
-
 		let currentDistance = 0;
-
-		let found = false;
 
 		const [tx, ty] = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
 
@@ -783,17 +789,23 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			return [startX, startY];
 		}
 
-		const initMode = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0);
+		const initMode = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0) || this.getTileNumber(tx, ty, 3);
 		let modeX = initMode;
 		let modeY = initMode;
 
+		let oldModeX = false;
+		let oldModeY = false;
+
 		let bf = initMode ? 1 : 1;
 
-		const ax = startX % bf;
-		const ay = bf - startY % bf;
+		const ax = ox > 0 ? (bs - startX % bs) : ((startX % bs) + 1);
+		const ay = oy > 0 ? (bs - startY % bs) : ((startY % bs) + 1);
 
-		let rayX = ax * sx * ox;
-		let rayY = ay * sy * oy;
+		let checkX = initMode ? 0 : ax;
+		let checkY = initMode ? 0 : ay;
+
+		let rayX = checkX * sx * ox;
+		let rayY = checkY * sy * oy;
 
 		const magX = Math.abs(rayX);
 		const magY = Math.abs(rayY);
@@ -806,7 +818,9 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		window.logPoints && console.time('rayCast');
 
-		while(!found && Math.abs(currentDistance) < maxDistance)
+		let iterations = 0;
+
+		while(Math.abs(currentDistance) < maxDistance && !solidsX.size && !solidsY.size)
 		{
 			if(ox && (!oy || Math.abs(rayX) < Math.abs(rayY)))
 			{
@@ -815,21 +829,29 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const px = (startX + mag * Math.cos(angle));
 				const py = (startY + mag * Math.sin(angle));
 
-				window.logPoints && pa.add([px, py]);
-
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
-				modeX = this.getTileNumber(tx, ty, layerId);
+				oldModeX = modeX;
+				modeX = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0) || this.getTileNumber(tx, ty, 3);
+
+				bf = modeX ? 1:bs;
+
+				if(!modeX && oldModeX)
+				{
+					bf = ox < 0
+						? ((startX + -checkX + 1) % bs)
+						: (bs - ((startX + checkX) % bs));
+				}
+
+				window.logPoints && pa.add([px, py, `rayX tile-${tx}-${ty} mode-${modeX} bf-${bf} layer-${layerId} `]);
 
 				if(this.getSolid(px, py, layerId))
 				{
-					solidsX.add([px, py]);
+					solidsX.add([px, py, `solidX tile-${tx}-${ty} mode-${modeX} bf-${bf} layer-${layerId} `]);
 				}
 
-				bf = modeX ? bs : 1;
-
-				checkX += bf * ox;
 				currentDistance = Math.abs(rayX);
-				rayX += bf * sx * ox;
+				checkX += bf;
+				rayX = checkX * sx * ox;
 			}
 			else
 			{
@@ -838,47 +860,59 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const px = (startX + mag * Math.cos(angle));
 				const py = (startY + mag * Math.sin(angle));
 
-				window.logPoints && pb.add([px, py]);
-
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
-				modeY = this.getTileNumber(tx, ty, layerId);
+				oldModeY = modeY;
+				modeY = this.getTileNumber(tx, ty, layerId) || this.getTileNumber(tx, ty, 0) || this.getTileNumber(tx, ty, 3);
+
+				bf = modeY ? 1:bs;
+
+				if(!modeY && oldModeY)
+				{
+					bf = oy < 0
+						? ((startY + -checkY + 1) % bs)
+						: (bs - ((startY + checkY) % bs));
+				}
+
+				window.logPoints && pb.add([px, py, `rayY tile-${tx}-${ty} mode-${modeY} bf-${bf} layer-${layerId} `]);
 
 				if(this.getSolid(px, py, layerId))
 				{
-					solidsY.add([px, py]);
+					solidsY.add([px, py, `solidY tile-${tx}-${ty} mode-${modeY} bf-${bf} layer-${layerId} `]);
 				}
 
-				bf = modeY ? bs : 1;
-
-				checkY += bf * oy;
 				currentDistance = Math.abs(rayY);
-				rayY += bf * sy * oy;
+				checkY += bf;
+				rayY = checkY * sy * oy;
 			}
-		}
 
-		window.logPoints && console.timeEnd('rayCast');
+			iterations++;
+		}
 
 		const points = [...solidsX, ...solidsY];
 		const distSquares = points.map(s => (s[0] - startX) ** 2 + (s[1] - startY) ** 2);
-		const minDist = Math.min(...distSquares);
+		const minDistSq   = Math.min(...distSquares);
+		const nearest     = points[ distSquares.indexOf(minDistSq) ];
 
-		const nearest = points[ distSquares.indexOf(minDist) ];
+		window.logPoints && console.timeEnd('rayCast');
+		window.logPoints && console.log({iterations});
+
+		if(Math.sqrt(minDistSq) > maxDistance)
+		{
+			return;
+		}
 
 		if(window.logPoints)
 		{
-			const qa = JSON.stringify([...pa]).replace(/\[/g,'(').replace(/]/g,')');
-			const qb = JSON.stringify([...pb]).replace(/\[/g,'(').replace(/]/g,')');
-			const qas = JSON.stringify([...solidsX]).replace(/\[/g,'(').replace(/]/g,')');
-			const qbs = JSON.stringify([...solidsY]).replace(/\[/g,'(').replace(/]/g,')');
+			window.logPoints(startX, startY, 'start');
+			window.logPoints(endX, endY, 'end');
 
-			console.log(`(${startX}, ${startY})`)
-			console.log(`(${endX}, ${endY})`)
-			console.log( qa.substring(1, qa.length - 1) );
-			console.log( qb.substring(1, qb.length - 1) );
-			console.log( qas.substring(1, qas.length - 1) );
-			console.log( qbs.substring(1, qbs.length - 1) );
+			[...pa].map(p => window.logPoints(p[0],p[1],p[2]));
+			[...pb].map(p => window.logPoints(p[0],p[1],p[2]));
 
-			console.log(nearest);
+			// [...solidsX].map(p => window.logPoints(p[0],p[1],p[2]));
+			// [...solidsY].map(p => window.logPoints(p[0],p[1],p[2]));
+
+			nearest && window.logPoints(nearest[0], nearest[1], 'nearest');
 		}
 
 		return nearest;

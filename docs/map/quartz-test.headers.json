@@ -7,8 +7,8 @@
     },
     "height": 128,
     "infinite": false,
-    "nextlayerid": 8,
-    "nextobjectid": 57,
+    "nextlayerid": 10,
+    "nextobjectid": 58,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -141,6 +141,41 @@
             "tilecount": 1,
             "tileheight": 48,
             "tilewidth": 96
+        },
+        {
+            "columns": 29,
+            "firstgid": 2332,
+            "image": "../Sonic/tiles/labrynth/water-slide-animated_4_64.png",
+            "imageheight": 256,
+            "imagewidth": 928,
+            "margin": 0,
+            "name": "water-slide-animated_4_64",
+            "properties": [
+                {
+                    "name": "animated",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "frameSize",
+                    "type": "int",
+                    "value": 2
+                },
+                {
+                    "name": "frames",
+                    "type": "int",
+                    "value": 4
+                },
+                {
+                    "name": "speed",
+                    "type": "int",
+                    "value": 4
+                }
+            ],
+            "spacing": 0,
+            "tilecount": 464,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,

@@ -189,8 +189,10 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 			{
 				if(typeof other.pop === 'function')
 				{
-					this.trap.stuck.delete(other);
-					other.pop();
+					this.viewport.onFrameOut(10, () => {
+						this.trap.stuck.delete(other);
+						other.pop();
+					});
 				}
 			}
 		}

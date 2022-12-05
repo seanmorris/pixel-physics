@@ -7,9 +7,16 @@
     },
     "height": 9,
     "infinite": false,
-    "nextlayerid": 6,
-    "nextobjectid": 20,
+    "nextlayerid": 8,
+    "nextobjectid": 28,
     "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        }
+    ],
     "renderorder": "right-down",
     "tiledversion": "1.4.3",
     "tileheight": 32,
@@ -39,14 +46,38 @@
             "tilecount": 1,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 178,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 738,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": 1.4,
     "width": 16,
-    "types": [
-        "block"
-    ],
+    "types": [],
     "map": "/map/raycast-test.json"
 }

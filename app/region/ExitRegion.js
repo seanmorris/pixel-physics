@@ -18,6 +18,8 @@ export class ExitRegion extends Region
 
 			if(signpost.args.activeTime < 540)
 			{
+				other.args.bossMode = true;
+
 				return;
 			}
 		}
