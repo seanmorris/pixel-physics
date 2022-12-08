@@ -7,6 +7,7 @@
 	background-position: -20px -4px;
 	height: calc(var(--height) * 1px);
 	width: 22px;
+	height: 32px;
 	position: absolute;
 }
 
