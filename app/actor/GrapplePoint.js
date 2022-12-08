@@ -14,7 +14,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		// this.args.height = this.args.height || 32;
 
 		this.args.width  = 28;
-		this.args.height = 32;
+		this.args.height = 16;
 
 		this.args.type   = 'actor-item actor-grapple-point';
 
@@ -22,7 +22,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.args.gravity = 0.6;
 
-		this.noClip = true;
+		// this.noClip = true;
 		this[Spring.WontSpring] = true;
 	}
 
