@@ -341,7 +341,7 @@ export class PointActor extends View
 		this.args.deepJump = false;
 		this.args.highJump = false;
 
-		this.maxStep   = 10;
+		this.maxStep   = 11;
 		this.backStep  = 0;
 		this.frontStep = 0;
 
@@ -539,7 +539,10 @@ export class PointActor extends View
 
 			if(this.controllable && groundObject.isVehicle && !groundObject.dead)
 			{
-				this.args.pushing = false;
+				if(!this.args.gSpeed)
+				{
+					this.args.pushing = false;
+				}
 
 				groundObject.args.active = true;
 

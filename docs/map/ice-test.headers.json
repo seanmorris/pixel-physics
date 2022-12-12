@@ -17,6 +17,11 @@
             "value": "ice-cap"
         },
         {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
             "name": "wrapX",
             "type": "bool",
             "value": false
@@ -101,6 +106,19 @@
             "name": "ground-recolor",
             "spacing": 0,
             "tilecount": 324,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 2325,
+            "image": "../Sonic/snowman.png",
+            "imageheight": 128,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "snowman",
+            "spacing": 0,
+            "tilecount": 32,
             "tileheight": 32,
             "tilewidth": 32
         }

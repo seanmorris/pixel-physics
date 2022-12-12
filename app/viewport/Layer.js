@@ -48,11 +48,40 @@ export class Layer extends View
 			for(const property of layerDef.properties)
 			{
 				this.meta[property.name] = property.value;
+			}
+		}
 
+		if(this.meta.offsetX)
+		{
+			this.args.offsetX = this.meta.offsetX;
+		}
+
+		if(this.meta.offsetY)
+		{
+			this.args.offsetY = this.meta.offsetY;
+		}
+
+		layerDef['offsetX'] = this.args.offsetX;
+		layerDef['offsetY'] = this.args.offsetY;
+
+		layerDef.layer = this;
+
+		if(this.args.name.match(/^(Collision|Grinding)\s\d+/))
+		{
+			if(this.args.name.match(/[12]$/))
+			{
+				this.meta.switchable = true;
 			}
 
-			layerDef.layer = this;
+			this.meta.solid = true;
 		}
+
+		if(this.args.name.match(/^(Grinding)\s\d+/))
+		{
+			this.meta.grinding = true;
+		}
+
+		console.log(this.meta);
 
 		this.offsetXChanged = 0;
 		this.offsetYChanged = 0;

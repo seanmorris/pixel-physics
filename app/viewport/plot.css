@@ -8,12 +8,13 @@ svg.plot {
 	transform: scale(var(--scale));
 }
 
-circle {
+svg.plot circle {
 	display: none;
 	position: relative;
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
 }
 
-circle.rayX {
+svg.plot circle.rayX {
 	fill: transparent;
 	stroke: rgba(0,255,255,0.5);
 	display: initial;
@@ -21,42 +22,42 @@ circle.rayX {
 }
 
 
-circle.rayY {
+svg.plot circle.rayY {
 	fill: transparent;
 	stroke: rgba(255,255,0,0.5);
 	display: initial;
 	opacity: 0.3;
 }
 
-circle.rayX.bf-32,
-circle.rayY.bf-32 {
+svg.plot circle.rayX.bf-32,
+svg.plot circle.rayY.bf-32 {
 	opacity: 1;
 }
 
-circle.start {
+svg.plot circle.start {
 	fill: transparent;
 	stroke: rgba(0,255,255,0.125);
 	display: initial;
 	z-index: 1;
 }
 
-circle.end {
+svg.plot circle.end {
 	fill: transparent;
 	stroke: rgba(0,255,255,0.125);
 	display: initial;
 	z-index: 1;
 }
 
-circle.nearest {
+svg.plot circle.nearest {
 	fill: rgba(255,0,0,0.75);
 	display: initial;
 	z-index: 1;
 }
 
-circle.alt-scan {
+svg.plot circle.alt-scan {
 	filter: hue-rotate(20deg);
 }
 
-circle:hover {
+svg.plot circle:hover {
 	opacity: 1;
 }

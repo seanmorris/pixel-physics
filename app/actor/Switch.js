@@ -28,6 +28,8 @@ export class Switch extends PointActor
 		this.args.threshold = this.args.threshold ?? 100;
 
 		this.ignore = 0;
+
+		this.args.activeTime = 0;
 	}
 
 	update()
@@ -45,9 +47,27 @@ export class Switch extends PointActor
 			return;
 		}
 
-		if(!this.activator
-			|| this.activator.args.standingOn !== this
-			|| this.activator.y === this.args.y
+		// if(this.activator && this.activator.args.ySpeed > 0)
+		// {
+		// 	this.activator.args.ySpeed = Math.sign(this.activator.args.ySpeed);
+		// }
+
+
+
+		if(this.args.active)
+		{
+			this.args.activeTime++
+		}
+		else
+		{
+			this.args.activeTime = 0;
+		}
+
+		if(this.args.activeTime > 2
+			&& (!this.activator
+				|| this.activator.args.standingOn !== this
+				|| this.activator.y === this.args.y
+			)
 		){
 			this.args.active = false;
 			this.activator   = null;
@@ -132,6 +152,25 @@ export class Switch extends PointActor
 			this.args.active = true;
 
 			this.activator = other;
+
+			if(other.args.falling && other.args.ySpeed > 1)
+			{
+				other.args.ySpeed = 1;
+			}
+
+			if(this.activator && Math.abs(this.activator.args.x - this.args.x) > 4 && this.args.activeTime < 1)
+			{
+				const originalXSpeed = this.activator.args.xSpeed;
+
+				this.activator.args.x -= (this.activator.args.x - this.args.x);
+				this.activator.args.xSpeed = 0;
+				this.activator.args.groundAngle = 0;
+
+				this.viewport.onFrameOut(1, () => {
+					this.activator.args.gSpeed = originalXSpeed;
+					this.activator.args.groundAngle = 0;
+				});
+			}
 
 			// if(type === 1 || type === 3)
 			// {
@@ -226,5 +265,5 @@ export class Switch extends PointActor
 		});
 	}
 
-	get solid() { return true; }
+	get solid() { return this.args.active; }
 }

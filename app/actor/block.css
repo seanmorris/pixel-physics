@@ -234,10 +234,10 @@
 		transform: translateX(0px);
 	}
 	25%{
-		transform: translateX(-2px);
+		transform: translateX(-1px);
 	}
 	75%{
-		transform: translateX(2px);
+		transform: translateX(1px);
 	}
 	100%{
 		transform: translateX(0px);
@@ -249,10 +249,10 @@
 		transform: translateX(0px);
 	}
 	25%{
-		transform: translateX(-4px);
+		transform: translateX(-2px);
 	}
 	75%{
-		transform: translateX(4px);
+		transform: translateX(2px);
 	}
 	100%{
 		transform: translateX(0px);

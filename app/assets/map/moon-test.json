@@ -2341,7 +2341,7 @@
                 }, 
                 {
                  "gid":2,
-                 "height":224,
+                 "height":232,
                  "id":182,
                  "name":"layer-switch",
                  "properties":[
@@ -2355,7 +2355,7 @@
                  "visible":true,
                  "width":64,
                  "x":10624,
-                 "y":4288
+                 "y":4296
                 }, 
                 {
                  "gid":2,
