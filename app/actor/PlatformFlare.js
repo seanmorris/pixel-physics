@@ -25,8 +25,6 @@ export class PlatformFlare extends PointActor
 
 		if(other.controllable && this.args.active)
 		{
-			console.log(other.args.y - this.args.y);
-
 			other.damage(this, 'fire');
 		}
 

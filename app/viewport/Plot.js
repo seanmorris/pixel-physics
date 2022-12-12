@@ -2,7 +2,7 @@ import { View } from 'curvature/base/View';
 
 export class Plot extends View
 {
-	template = `<svg cv-each = "points:point" class = "plot">
+	template = `<svg style = "--x:[[x]];--y:[[y]]" cv-each = "points:point" class = "plot">
 		<circle cx="[[point.x]]" cy="[[point.y]]" r="2" class="[[point.color]]" />
 	</svg>`;
 

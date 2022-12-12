@@ -30,6 +30,11 @@ export class WaterRegion extends Region
 	{
 		super.skim(actor);
 
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 3);
 
 		if(this.skimParticles.has(actor))
@@ -176,12 +181,17 @@ export class WaterRegion extends Region
 	{
 		super.updateEnd();
 
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
 		for(const [actor, {skimParticle}] of this.skimParticles)
 		{
 			const splashPoint = actor.rotatePoint(0, 3);
 
 			skimParticle.style({
-				'--x': splashPoint[0] + actor.x - 32 * Math.sign(actor.args.gSpeed)
+				'--x': splashPoint[0] + actor.x + -32 * Math.sign(actor.args.gSpeed)
 				, '--y': splashPoint[1] + actor.y
 				, 'z-index': 0
 				, '--flip': `${actor.args.direction}`

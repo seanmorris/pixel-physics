@@ -1,5 +1,10 @@
 {
     "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
     "height": 14,
     "infinite": false,
     "nextlayerid": 3,
@@ -18,7 +23,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.4.3",
     "tileheight": 32,
     "tilesets": [
         {
@@ -37,10 +42,9 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": 1.4,
     "width": 13,
     "types": [
-        "sonic",
         "switch"
     ],
     "map": "/map/switch-test.json"

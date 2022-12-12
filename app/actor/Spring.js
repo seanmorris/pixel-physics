@@ -68,6 +68,8 @@ export class Spring extends PointActor
 		this.args.actingOn = new Set;
 
 		this.args.blocked = false;
+
+		this.holding = new Set;
 	}
 
 	updateEnd()
@@ -85,6 +87,18 @@ export class Spring extends PointActor
 					this.args.blocked = true;
 				}
 			}
+		}
+
+		if(this.args.blocked)
+		{
+			return false;
+		}
+
+		for(const other of this.holding)
+		{
+			this.springActor(other);
+
+			this.holding.delete(other);
 		}
 	}
 
@@ -142,6 +156,13 @@ export class Spring extends PointActor
 			return false;
 		}
 
+		this.holding.add(other);
+
+		return false;
+	}
+
+	springActor(other)
+	{
 		Sfx.play('SPRING_HIT');
 
 		if(other[WillSpring])
@@ -171,9 +192,9 @@ export class Spring extends PointActor
 		other[WillSpring] = true;
 
 		other.args.mercy  = 0;
-		other.args.gSpeed = 0;
-		other.args.xSpeed = 0;
-		other.args.ySpeed = 0;
+		// other.args.gSpeed = 0;
+		// other.args.xSpeed = 0;
+		// other.args.ySpeed = 0;
 
 		const rounded = this.roundAngle(this.args.angle, 8, true);
 
@@ -259,8 +280,6 @@ export class Spring extends PointActor
 		other.args.groundAngle = 0;
 		other.args.airAngle = -Math.PI / 2;
 		other.args.mode = 0;
-
-		return false;
 	}
 
 	sleep()

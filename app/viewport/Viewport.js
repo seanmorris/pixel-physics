@@ -69,6 +69,8 @@ import { Pos as PosTask } from '../console/task/Pos';
 import { Spawn as SpawnTask } from '../console/task/Spawn';
 import { Chao as ChaoTask } from '../console/task/Chao';
 
+import { Socket } from 'subspace-client/Socket';
+
 import { RtcClient } from '../network/RtcClient';
 import { RtcServer } from '../network/RtcServer';
 
@@ -124,6 +126,16 @@ export class Viewport extends View
 		this.args.combo = [];
 
 		this.args.plot = new Plot;
+
+		this.args.publishTime = 0;
+
+		this.netId = String(new Uuid);
+
+		// this.subspaceConnect();
+
+		this.netPlayers = new Map;
+
+		this.bytesReceived = 0;
 
 		this.loadSaves().then(saves => {
 			if(saves.length)
@@ -3002,6 +3014,11 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.socket && this.args.frameId % 120 === 0)
+		{
+			this.socket.publish('keepalive', '');
+		}
+
 		if(this.args.loadingMap)
 		{
 			return;
@@ -3656,6 +3673,18 @@ export class Viewport extends View
 				this.client.send(JSON.stringify(netState));
 			}
 		}
+
+		if(this.socket && this.args.publishTime <= 0)
+		{
+			this.packPlayerFrame().arrayBuffer().then(buffer => this.socket.publish(0, buffer));
+
+			this.args.publishTime = 10;
+		}
+		else
+		{
+			this.args.publishTime--;
+		}
+
 
 		this.spawnActors();
 
@@ -4560,34 +4589,138 @@ export class Viewport extends View
 
 		const frame = this.args.frameId;
 		const input = this.controlActor.controller.serialize();
+		const actorArgs = this.controlActor.args;
 		const args  = {
 
-			x: this.controlActor.args.x
-			, y: this.controlActor.args.y
+			x: actorArgs.x
+			, y: actorArgs.y
 
-			, gSpeed: this.controlActor.args.gSpeed
-			, xSpeed: this.controlActor.args.xSpeed
-			, ySpeed: this.controlActor.args.ySpeed
+			, gSpeed: actorArgs.gSpeed
+			, xSpeed: actorArgs.xSpeed
+			, ySpeed: actorArgs.ySpeed
 
-			, direction: this.controlActor.args.direction
-			, facing: this.controlActor.args.facing
+			, direction: actorArgs.direction
+			, facing: actorArgs.facing
 
-			, falling: this.controlActor.args.falling
-			, rolling: this.controlActor.args.rolling
-			, jumping: this.controlActor.args.jumping
-			, flying:  this.controlActor.args.flying
-			, float:   this.controlActor.args.float
-			, angle:   this.controlActor.args.angle
-			, mode:    this.controlActor.args.mode
+			, falling: actorArgs.falling
+			, rolling: actorArgs.rolling
+			, jumping: actorArgs.jumping
+			, flying:  actorArgs.flying
+			, float:   actorArgs.float
+			, angle:   actorArgs.angle
+			, mode:    actorArgs.mode
 
-			, rings:    this.controlActor.args.rings
+			, rings:    actorArgs.rings
 
-			, groundAngle: this.controlActor.args.groundAngle
-			, respawning:  this.controlActor.args.respawning
-			, dead:        this.controlActor.args.dead ? true : false
+			, groundAngle: actorArgs.groundAngle
+			, respawning:  actorArgs.respawning
+			, dead:        actorArgs.dead ? true : false
 		};
 
 		return {frame, input, args};
+	}
+
+	packPlayerFrame()
+	{
+		const actorArgs = this.controlActor.args;
+
+		const axisInts   = new Int8Array(8);
+		const buttonInts = new Int8Array(16);
+
+		const playerInts   = new Int32Array(11);
+		const playerFloats = new Float32Array(7);
+
+		const gameInts     = new Int32Array(1);
+
+		playerInts[0] = actorArgs.direction;
+		playerInts[1] = actorArgs.facing === 'left' ? -1 : 1;
+		playerInts[2] = actorArgs.falling;
+		playerInts[3] = actorArgs.rolling;
+		playerInts[4] = actorArgs.jumping;
+		playerInts[5] = actorArgs.flying;
+		playerInts[6] = actorArgs.float;
+		playerInts[7] = actorArgs.mode;
+		playerInts[8] = actorArgs.rings;
+		playerInts[9] = actorArgs.respawning;
+		playerInts[10] = Number(actorArgs.dead);
+
+		playerFloats[0] = actorArgs.x;
+		playerFloats[1] = actorArgs.y;
+		playerFloats[2] = actorArgs.gSpeed;
+		playerFloats[3] = actorArgs.xSpeed;
+		playerFloats[4] = actorArgs.ySpeed;
+		playerFloats[5] = actorArgs.angle;
+		playerFloats[6] = actorArgs.groundAngle;
+
+		gameInts[0] = this.args.frameId;
+
+		const {axes, buttons} = this.controlActor.controller.serialize();
+
+		for(const i in axisInts)
+		{
+			axisInts[i] = 127 * (axes[i] ?? 0);
+		}
+
+		for(const i in buttonInts)
+		{
+			buttonInts[i] = 127 * (buttons[i] ?? 0);
+		}
+
+		const packed = new Blob([
+			axisInts.buffer
+			, buttonInts.buffer
+			, playerInts.buffer
+			, playerFloats.buffer
+			, gameInts.buffer
+		]);
+
+		return packed;
+	}
+
+	unpackPlayerFrame(buffer)
+	{
+		const axisView        = new DataView(buffer, 0);
+		const buttonView      = new DataView(buffer, 8);
+		const playerIntView   = new DataView(buffer, 24);
+		const playerFloatView = new DataView(buffer, 68);
+		const gameIntView     = new DataView(buffer, 96);
+
+		const input = {axes:{},buttons:{}};
+		const args = {};
+
+		for(let i = 0; i < 8; i++)
+		{
+			input.axes[i] = axisView.getInt8(i) / 127;
+		}
+
+		for(let i = 0; i < 16; i++)
+		{
+			input.buttons[i] = buttonView.getInt8(i) / 127;
+		}
+
+		args.direction  = playerIntView.getInt32(0, true);
+		args.facing     = playerIntView.getInt32(4, true) === -1 ? 'left' : 'right';
+		args.falling    = playerIntView.getInt32(8, true);
+		args.rolling    = playerIntView.getInt32(12, true);
+		args.jumping    = playerIntView.getInt32(16, true);
+		args.flying     = playerIntView.getInt32(20, true);
+		args.float      = playerIntView.getInt32(24, true);
+		args.mode       = playerIntView.getInt32(28, true);
+		args.rings      = playerIntView.getInt32(32, true);
+		args.respawning = playerIntView.getInt32(36, true);
+		args.dead       = playerIntView.getInt32(40, true);
+
+		args.x      = playerFloatView.getFloat32(0, true);
+		args.y      = playerFloatView.getFloat32(4, true);
+		args.gSpeed = playerFloatView.getFloat32(8, true);
+		args.xSpeed = playerFloatView.getFloat32(12, true);
+		args.ySpeed = playerFloatView.getFloat32(16, true);
+		args.angle  = playerFloatView.getFloat32(20, true);
+		args.groundAngle = playerFloatView.getFloat32(24, true);
+
+		const frame = gameIntView.getInt32(0, true);
+
+		return {frame: {input, args, frame}};
 	}
 
 	onRenderedFrameOut(frames, callback)
@@ -5080,6 +5213,106 @@ export class Viewport extends View
 		});
 
 		return this.matrix.logIn(redirectUrl).then(() => this.matrix);
+	}
+
+	subspaceConnect()
+	{
+		this.socket = Socket.get('ws://localhost:9998');
+		this.socket.subscribe('open',  () => {
+			console.log('socket ready!');
+
+			fetch('http://localhost:2020/auth?api')
+			.then(r => r.text())
+			.then(token => {
+				console.log(token)
+				this.socket.send(`auth ${token}`);
+
+				const channel = 'testing';
+				const message = 'This is the payload.';
+
+				this.socket.subscribe('message', (event, message, channel, origin, originId, originalChannel) => {
+					if(origin === 'user')
+					{
+						return;
+					}
+
+					console.log(event.data);
+
+					if(event.data[0] !== '{')
+					{
+						return;
+					}
+
+					const packet = JSON.parse(event.data);
+
+					if('youruid' in packet)
+					{
+						this.netId = packet.youruid;
+					}
+				});
+
+				this.socket.send('uid');
+
+				this.socket.subscribe('message:0', (event, message, channel, origin, originId, originalChannel) => {
+
+					this.bytesReceived += message.length || message.byteLength;
+
+					if(origin !== 'user')
+					{
+						console.log(message);
+						return;
+					}
+
+					if(!this.controlActor || originId === this.netId)
+					{
+						return;
+					}
+
+					const packet = this.unpackPlayerFrame(message);
+
+					if(!this.netPlayers.has(originId))
+					{
+						const netPlayer = new Sonic({name:'Player ' + originId, id: String(new Uuid), netplayer: true}, this);
+						this.netPlayers.set(originId, netPlayer);
+						this.spawn.add({object: netPlayer});
+						this.actors.add(netPlayer);
+						this.auras.add(netPlayer);
+					}
+
+					const netPlayer = this.netPlayers.get(originId);
+
+					if(packet.frame)
+					{
+						if(packet.frame.frame > this.args.frameId)
+						{
+							this.args.frameId = packet.frame.frame;
+						}
+
+						if(packet.frame.input)
+						{
+							netPlayer.controller.replay(packet.frame.input);
+							netPlayer.readInput();
+						}
+
+						if(packet.frame.args)
+						{
+							Object.assign(netPlayer.args, packet.frame.args);
+						}
+
+						netPlayer.noClip = netPlayer.args.dead;
+					}
+
+					// console.log('message received!', {event, message, channel, origin, originId, originalChannel});
+				});
+
+				this.socket.publish(channel, message);
+			});
+		});
+
+		this.socket.subscribe('close', () => {
+			console.log('socket closed!');
+			this.quit(2);
+		});
 	}
 
 	get mouse() {

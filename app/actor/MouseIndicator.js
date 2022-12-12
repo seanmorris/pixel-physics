@@ -1,4 +1,5 @@
 import { Cursor } from './Cursor';
+import { CharacterString } from '../ui/CharacterString';
 
 export class MouseIndicator extends Cursor
 {
@@ -11,7 +12,15 @@ export class MouseIndicator extends Cursor
 	{
 		super.onRendered(event);
 
+		this.args.type = 'point-actor actor-generic actor-mouse-indicator'
+
 		this.autoStyle.get(this.box)['--magnitude'] = 'magnitude';
+
+		this.magnitudeLabel = new CharacterString({value: 0});
+		this.angleLabel     = new CharacterString({value: 0});
+		this.colorLabel     = new CharacterString({value: 0});
+
+		Object.assign(this.args.charStrings, [this.magnitudeLabel, this.angleLabel, this.colorLabel]);
 	}
 
 	update()
@@ -60,6 +69,17 @@ export class MouseIndicator extends Cursor
 
 				this.endPoint.args.x = this.args.x + Math.cos(angle) * magnitude;
 				this.endPoint.args.y = this.args.y + Math.sin(angle) * magnitude;
+
+				const color = this.viewport.tileMap.getColor(
+					Math.trunc(this.endPoint.args.x)
+					, Math.trunc(this.endPoint.args.y)
+					, 0
+				);
+
+
+				this.magnitudeLabel.args.value = magnitude === false ? false : Number(magnitude).toFixed(2);
+				this.angleLabel.args.value     = Number(angle).toFixed(2);
+				this.colorLabel.args.value     = Number(color).toString(16).padStart(8, '0');
 			}
 
 			this.lastMouseX = mouse.position[0];

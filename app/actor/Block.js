@@ -4,6 +4,7 @@ import { Tag } from 'curvature/base/Tag';
 
 import { Ring } from './Ring';
 import { LayerSwitch } from './LayerSwitch';
+import { GrapplePoint } from './GrapplePoint';
 
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
@@ -153,6 +154,11 @@ export class Block extends PointActor
 	collideA(other, type)
 	{
 		if(other instanceof LayerSwitch)
+		{
+			return;
+		}
+
+		if(other instanceof GrapplePoint && this.args.platform)
 		{
 			return;
 		}
@@ -700,42 +706,46 @@ export class Block extends PointActor
 				xDist = -xDist + 1;
 			}
 
+			const xMoved = other.args.x - other.xLast;
+
 			if(xDist < 0.1)
 			{
-				if(mode === 0)
-				{
-					other.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
-				}
+				other.args.xSpeed = xMoved;
+				// if(mode === 0)
+				// {
+				// 	other.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
+				// }
 
-				if(mode === 2)
-				{
-					other.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
-				}
+				// if(mode === 2)
+				// {
+				// 	other.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
+				// }
 			}
 
 			if(xDist < 0 || xDist > 1)
 			{
-				other.args.xSpeed = other.xSpeedLast;
+				other.args.xSpeed = xMoved;
 				other.args.float = 0;
 				other.args.falling = false;
 				other.noClip = false;
 				this.originalModes.delete(other);
 				this.watching.delete(other);
 			}
-			else if(xDist >= 0.75)
+
+			if(xDist >= 0.75)
 			{
 				other.args.float = 0;
 				other.args.falling = false;
 				other.noClip = false;
 				other.args.rolling = rolling;
-				other.args.xSpeed = other.xSpeedLast;
+				other.args.xSpeed = xMoved;
 
 				other.args.ignore = 6;
 				// other.xAxis = Math.sign(other.args.gSpeed);
 
 				if(mode === 0)
 				{
-					other.args.gSpeed = -other.xSpeedLast;
+					other.args.gSpeed = -other.args.xSpeed;
 					other.args.y = this.args.y;
 					other.args.mode = 2;
 					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
@@ -743,7 +753,7 @@ export class Block extends PointActor
 
 				if(mode === 2)
 				{
-					other.args.gSpeed = other.xSpeedLast;
+					other.args.gSpeed = other.args.xSpeed;
 					other.args.y = this.args.y + -this.args.height;
 					other.args.mode = 0;
 					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
@@ -751,7 +761,7 @@ export class Block extends PointActor
 			}
 			else if(xDist < 0.9)
 			{
-				const speed = other.args.xSpeed || other.xSpeedLast;
+				const speed = xMoved;
 				other.args.gSpeed = mode ? -speed : speed;
 				other.args.xSpeed = speed;
 				other.args.float = -1;

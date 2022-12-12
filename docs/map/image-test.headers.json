@@ -1,0 +1,32 @@
+{
+    "compressionlevel": -1,
+    "height": 9,
+    "infinite": false,
+    "nextlayerid": 2,
+    "nextobjectid": 1,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 16,
+            "firstgid": 1,
+            "image": "image-test.png",
+            "imageheight": 288,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "image-test",
+            "spacing": 0,
+            "tilecount": 144,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 16,
+    "types": [],
+    "map": "/map/image-test.json"
+}

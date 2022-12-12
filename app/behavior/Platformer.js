@@ -850,6 +850,7 @@ export class Platformer
 						!Math.round(host.args.ySpeed)
 						&& (Math.round(host.args.y) === region.args.y - region.args.height
 							|| Math.round(host.args.y + 1) === region.args.y - region.args.height
+							|| Math.round(host.args.y + 2) === region.args.y - region.args.height
 						)
 					)){
 						if(Math.max(Math.abs(host.args.gSpeed), Math.abs(host.args.xSpeed)) >= region.skimSpeed)
@@ -1195,7 +1196,7 @@ export class Platformer
 				{
 					host.args.gSpeed = -1;
 				}
-				else if(mode === MODE_LEFT && (host.args.groundAngle < Math.PI * 0.15))
+				else if(mode === MODE_LEFT && (host.args.groundAngle < Math.PI * 0.05))
 				{
 					host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
 
@@ -1221,7 +1222,7 @@ export class Platformer
 					host.args.ignore = -4;
 
 				}
-				else if(mode === MODE_RIGHT && (host.args.groundAngle > -Math.PI * 0.15))
+				else if(mode === MODE_RIGHT && (host.args.groundAngle > -Math.PI * 0.05))
 				{
 					host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
 
@@ -1252,7 +1253,7 @@ export class Platformer
 
 					host.args.xSpeed = 0;
 
-					// host.args.y -= host.args.height;
+					host.args.y++;
 					host.args.falling = true;
 					host.willJump = false;
 
@@ -1618,7 +1619,10 @@ export class Platformer
 				{
 					if(host.args.height > 8 && host.args.modeTime > 1)
 					{
-						host.args.pushing = false;
+						if(!host.args.gSpeed)
+						{
+							host.args.pushing = false;
+						}
 
 						if(!host.args.rolling)
 						{
@@ -1655,23 +1659,28 @@ export class Platformer
 							}
 						}
 
-						if(host.args.groundAngle === 0)
+						if(host.controllable && host.args.groundAngle === 0)
 						{
-							const waistPoint = host.rotatePoint(radius * -direction, host.args.height * 0.5);
+							const waistPoint = host.rotatePoint(-radius * Math.sign(host.args.gSpeed), host.args.height * 0.5);
 
-							let waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
+							// let waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
+							let waistBlock = host.castRayQuick(
+								Math.abs(host.args.gSpeed)
+								, host.realAngle + [0,0,Math.PI][direction+1]
+								, waistPoint
+							);
 
-							if(Array.isArray(waistBlock))
-							{
-								waistBlock = waistBlock.filter(x =>
-									x.args !== host.args
-									&& x.callCollideHandler(host)
-									&& x.solid
-								)
-								.length;
-							}
+							// if(Array.isArray(waistBlock))
+							// {
+							// 	waistBlock = waistBlock.filter(x =>
+							// 		x.args !== host.args
+							// 		&& x.callCollideHandler(host)
+							// 		&& x.solid
+							// 	)
+							// 	.length;
+							// }
 
-							if(waistBlock)
+							if(waistBlock !== false && waistBlock <= radius)
 							{
 								if(host.args.mode === MODE_CEILING)
 								{
@@ -1679,9 +1688,14 @@ export class Platformer
 									host.args.y += host.args.rollingeight || host.args.height;
 
 									host.args.mode = MODE_FLOOR;
+									host.args.gSpeed = 0;
+								}
+								else if(host.args.mode === MODE_FLOOR)
+								{
+									host.args.gSpeed = Math.min(1,waistBlock) * Math.sign(host.args.gSpeed);
 								}
 
-								host.args.pushing = Math.sign(host.args.gSpeed);
+								host.args.gSpeed && (host.args.pushing = Math.sign(host.args.gSpeed));
 								break;
 							}
 						}
@@ -2300,6 +2314,8 @@ export class Platformer
 					}
 					else if(slopeFactor < -0.075)
 					{
+						const originalSign = Math.sign(host.args.gSpeed);
+
 						if(Math.abs(host.args.gSpeed) < 10)
 						{
 							host.args.gSpeed += 0.30 * slopeFactor * direction;
@@ -2307,6 +2323,15 @@ export class Platformer
 						else
 						{
 							// host.args.gSpeed += 0.15 * slopeFactor * direction;
+						}
+
+						if(Math.sign(host.args.gSpeed) !== originalSign)
+						{
+							host.args.ignore = host.args.ignore || 5;
+
+							host.args.antiSkid = 10;
+
+							host.args.gSpeed += Math.sign(host.args.gSpeed) * 0.5;
 						}
 					}
 					else if(slopeFactor > 0 && friction < 0.75)
@@ -2747,16 +2772,16 @@ export class Platformer
 
 		if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
 		{
-			airMag -= Math.abs(Math.sin(host.airAngle));
+			airMag -= Math.abs(Math.sin(originalAngle));
 		}
 		else if(airMag && Math.abs(host.args.xSpeed) > Math.abs(host.args.ySpeed))
 		{
-			airMag -= Math.abs(Math.cos(host.airAngle));
+			airMag -= Math.abs(Math.cos(originalAngle));
 		}
 
 		const airPointQ = airMag !== false && [
-			Math.cos(host.airAngle) * airMag + host.args.x
-			, Math.sin(host.airAngle) * airMag + host.args.y
+			Math.cos(originalAngle) * airMag + host.args.x
+			, Math.sin(originalAngle) * airMag + host.args.y
 		];
 
 		let airPointBQ = airPointQ;
@@ -2774,8 +2799,8 @@ export class Platformer
 			);
 
 			airPointBQ = airMag !== false ? [
-				Math.cos(host.airAngle) * airMag + host.args.x
-				, Math.sin(host.airAngle) * airMag + host.args.y + bOffset
+				Math.cos(originalAngle) * airMag + host.args.x
+				, Math.sin(originalAngle) * airMag + host.args.y + bOffset
 			] : airPointBQ;
 		}
 
@@ -2827,12 +2852,17 @@ export class Platformer
 			if(!host.willStick)
 			{
 				// host.args.gSpeed = xSpeedOriginal || host.args.gSpeed;
-				host.args.gSpeed = xSpeedOriginal;
+				host.args.gSpeed = host.args.xSpeed;
 
 				if(solid && typeof solid === 'object' && solid.offsetXChanged)
 				{
 					host.args.gSpeed -= solid.offsetXChanged;
 				}
+			}
+			else
+			{
+				airPoint[0] = Math.round(airPoint[0]);
+				airPoint[1] = Math.round(airPoint[1]);
 			}
 
 			const stickX = airPoint[0];
@@ -2864,11 +2894,11 @@ export class Platformer
 			host.args.x = stickX;
 			host.args.y = stickY;
 
-			// if(angleIsWall && !host.willStick)
-			// {
-			// 	host.args.x -= host.args.width * 0.5 *  Math.sign(host.xSpeedLast);
-			// 	host.args.falling = true;
-			// }
+			if(angleIsWall && !host.willStick)
+			{
+				host.args.x -= host.args.width * 0.5 *  Math.sign(xSpeedOriginal);
+				host.args.falling = true;
+			}
 
 			blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
 
@@ -3066,7 +3096,8 @@ export class Platformer
 						|| ( (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
 					)
 				){
-					const speed = xSpeedOriginal || host.xSpeedLast;
+					// const speed = xSpeedOriginal || host.xSpeedLast;
+					const speed = xSpeedOriginal;
 
 					host.args.falling = false;
 					host.args.gSpeed  = speed;
