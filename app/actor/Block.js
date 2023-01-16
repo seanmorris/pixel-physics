@@ -191,15 +191,12 @@ export class Block extends PointActor
 		}
 
 		if(this.args.hSwap
-			&& other.args.groundTime > 5
+			&& other.groundTime > 2
 			&& Math.abs(other.args.gSpeed) > 8
-			&& (xDist < 0.2)
+			&& xDist < 0.2
 		){
 
-			if(!this.watching.has(other))
-			{
-				this.watching.add(other);
-			}
+			this.watching.add(other);
 
 			if(!this.originalModes.has(other))
 			{
@@ -274,14 +271,14 @@ export class Block extends PointActor
 			// }
 		}
 
-		if(type === 0 && !this.args.platform && other.controllable && other.args.ySpeed)
+		if((type === 0 || type === -1) && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
 			// other.args.y = other.yLast;
 			if(other.args.y < this.args.y)
 			{
 				other.args.y = this.y + -this.args.height;
 				other.args.falling = false;
-				// other.args.ySpeed = this.args.ySpeed;
+				other.args.ySpeed = this.args.ySpeed;
 			}
 
 			return;
@@ -290,7 +287,7 @@ export class Block extends PointActor
 		if(this.args.platform && !other.args.dead && !(other instanceof Ring))
 		{
 			const otherTop  = other.args.y - other.args.height;
-			const blockTop  = this.args.y  - this.args.height;
+			const blockTop  = this.args.y - this.args.height;
 			const halfWidth = this.args.width / 2;
 
 			if(other.args.falling
@@ -664,6 +661,7 @@ export class Block extends PointActor
 		}
 
 		super.update();
+
 	}
 
 	updateStart()
@@ -682,11 +680,6 @@ export class Block extends PointActor
 		}
 
 		this.weighted = false;
-	}
-
-	updateEnd()
-	{
-		super.updateEnd();
 
 		for(const other of this.watching)
 		{
@@ -708,65 +701,47 @@ export class Block extends PointActor
 
 			const xMoved = other.args.x - other.xLast;
 
-			if(xDist < 0.1)
+			if(xDist >= 1)
 			{
-				other.args.xSpeed = xMoved;
-				// if(mode === 0)
-				// {
-				// 	other.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
-				// }
-
-				// if(mode === 2)
-				// {
-				// 	other.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
-				// }
-			}
-
-			if(xDist < 0 || xDist > 1)
-			{
-				other.args.xSpeed = xMoved;
-				other.args.float = 0;
-				other.args.falling = false;
-				other.noClip = false;
 				this.originalModes.delete(other);
 				this.watching.delete(other);
+				other.noClip = false;
 			}
 
 			if(xDist >= 0.75)
 			{
+				other.args.xSpeed = xMoved;
 				other.args.float = 0;
 				other.args.falling = false;
-				other.noClip = false;
 				other.args.rolling = rolling;
-				other.args.xSpeed = xMoved;
 
-				other.args.ignore = 6;
+				other.args.ignore = 9;
 				// other.xAxis = Math.sign(other.args.gSpeed);
 
 				if(mode === 0)
 				{
-					other.args.gSpeed = -other.args.xSpeed;
-					other.args.y = this.args.y;
+					other.args.gSpeed = -gSpeed;
+					other.args.y = this.args.y + 1;
 					other.args.mode = 2;
 					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
 				}
 
 				if(mode === 2)
 				{
-					other.args.gSpeed = other.args.xSpeed;
+					other.args.gSpeed = -gSpeed;
 					other.args.y = this.args.y + -this.args.height;
 					other.args.mode = 0;
 					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
 				}
 			}
-			else if(xDist < 0.9)
+			else
 			{
 				const speed = xMoved;
 				other.args.gSpeed = mode ? -speed : speed;
 				other.args.xSpeed = speed;
 				other.args.float = -1;
 				other.noClip = true;
-				other.args.antiSkid = 15;
+				other.args.antiSkid = 35;
 				// other.xAxis = Math.sign(other.args.gSpeed);
 
 				other.args.direction = -Math.sign(gSpeed);
@@ -794,6 +769,11 @@ export class Block extends PointActor
 				}
 			}
 		}
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
 
 		if(!this.viewport || !this.viewport.collisions.has(this))
 		{
@@ -856,6 +836,34 @@ export class Block extends PointActor
 
 				collidee.args.x += conveyTo[0];
 				collidee.args.y += conveyTo[1];
+			}
+		}
+
+		if(!this.args.platform)
+		{
+			return;
+		}
+
+		const moveUp = Math.min(this.args.ySpeed, (this.args.y - this.yLast), 0);
+
+		if(moveUp < 0)
+		{
+			for(let x = -this.args.width * 0.5 + 4; x < this.args.width * 0.5; x += 4)
+			{
+				const xx = this.args.x + x;
+				const actors = this.viewport.actorsAtLine(xx, this.args.y + -this.args.height, xx, this.args.y + -moveUp + -this.args.height);
+
+				for(const [actor, point] of actors)
+				{
+					if(!actor.controllable || !actor.args.falling || actor.args.y < this.args.y)
+					{
+						continue
+					}
+
+					actor.args.y = this.args.y + moveUp + -this.args.height;
+					actor.args.ySpeed = this.args.ySpeed;
+					actor.args.falling = false;
+				}
 			}
 		}
 	}

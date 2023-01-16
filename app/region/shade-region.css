@@ -182,6 +182,7 @@
 }
 
 .region.region-lava,
+.region.region-toxic,
 .region.region-shade.lava {
 	/*mix-blend-mode: screen;*/
 	z-index: 10000;
@@ -191,16 +192,19 @@
 }
 
 .region.region-lava .region-color-wrapper,
+.region.region-toxic .region-color-wrapper,
 .region.region-shade.lava .region-color-wrapper {
 }
 
-.region.region-lava .region-filter {
+.region.region-lava .region-filter,
+.region.region-toxic .region-filter {
 	background-clip: content-box;
 	padding-top: 16px;
 	/*opacity: 0.25;*/
 }
 
 .region.region-lava .region-color,
+.region.region-toxic .region-color,
 .region.region-shade.lava .sprite .region-color {
 	animation:
 		lava-ripple linear infinite 3.5s
@@ -210,7 +214,15 @@
 	opacity: 0.75;
 }
 
+.region.region-toxic .region-color {
+	animation:
+		toxic-ripple linear infinite 1.5s
+		, lava-flow linear infinite 11.5s;
+	background-image: url(Sonic/toxic-1.png);
+}
+
 .region.region-lava .region-filter,
+.region.region-toxic .region-filter,
 .region.region-shade.lava .region-filter {
 /*	filter: contrast(4);
 	backdrop-filter:
@@ -221,6 +233,7 @@
 }
 
 .region.region-lava .region-color-wrapper:after,
+.region.region-toxic .region-color-wrapper:after,
 .region.region-shade.lava .sprite .region-color-wrapper:after {
 	content: ' ';
 	position: absolute;
@@ -243,7 +256,16 @@
 		, lava-flow linear infinite 11.5s;
 }
 
-.region.region-lava .region-color-wrapper:after {
+.region.region-toxic .region-color-wrapper:after{
+	background-image: url(Sonic/toxic-surface-1.png);
+
+	animation:
+		toxic-waves linear infinite 0.75s
+		, toxic-flow linear infinite 11.5s;
+}
+
+.region.region-lava .region-color-wrapper:after,
+.region.region-toxic .region-color-wrapper:after {
 	transform: translateY(0px);
 }
 
@@ -417,5 +439,35 @@
 	}
 	100% {
 		background-position-x: calc(128px + calc(var(--vpX) + min(0.0001px, var(--leftBoundry))));
+	}
+}
+
+@keyframes toxic-waves {
+	0% {
+		background-image: url(Sonic/toxic-surface-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/toxic-surface-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/toxic-surface-3.png);
+	}
+	100% {
+		background-image: url(Sonic/toxic-surface-1.png);
+	}
+}
+
+@keyframes toxic-ripple {
+	0% {
+		background-image: url(Sonic/toxic-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/toxic-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/toxic-3.png);
+	}
+	100% {
+		background-image: url(Sonic/toxic-1.png);
 	}
 }

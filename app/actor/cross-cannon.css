@@ -1,0 +1,163 @@
+.actor-item.actor-cross-cannon {
+	z-index: 100;
+	--spread: 11px;
+}
+
+.actor-item.actor-cross-cannon[data-firing="firing"] .barrel {
+	transition: transform 80ms 20ms ease-out;
+	--spread: 24px;
+}
+
+.actor-item.actor-cross-cannon[data-firing="fired"] .barrel {
+	transition: transform 40ms ease-in;
+	--spread: 8px;
+}
+
+.actor-item.actor-cross-cannon .sprite::after {
+	position: absolute;
+	width: 36px;
+	height: 36px;
+	content:'';
+	left:0;
+	background-image: url(/Sonic/cross-cannon-hub.png);
+	transition: transform 220ms ease-out;
+}
+
+.actor-item.actor-cross-cannon[data-grabbing=grabbing] .sprite::after {
+	transition: transform 20ms 30ms ease-out;
+	transform: scale(1.4);
+}
+
+.actor-item.actor-cross-cannon[data-grabbing=grabbed] .sprite::after {
+	transition: transform 120ms ease-in !important;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=""][data-grabbing=""] .sprite::after {
+	transition: transform 280ms ease-out;
+}
+
+.actor-item.actor-cross-cannon[data-grabbing=""]  .sprite::after {
+	transform: rotate(var(--turn));
+}
+
+.actor-item.actor-cross-cannon[data-firing="firing"] .sprite::after {
+/*	background-position-y: -36px; */
+	transition: transform 10ms 25ms ease-out;
+	transform: scale(0.9) rotate(var(--turn)) translateY(-9px);
+}
+
+.actor-item.actor-cross-cannon .barrel {
+	position: absolute;
+	left: -22px;
+	top: 0;
+	width: 32px;
+	height: 6px;
+	background-image: url(/Sonic/cross-cannon-barrel.png);
+	transition: transform 240ms ease-out;
+	transform-origin: 16px -23px;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=""] .barrel {
+	transition: transform 120ms ease-out;
+}
+
+.actor-item.actor-cross-cannon .barrel.barrel-up {
+	transform: rotate(180deg);
+}
+
+.actor-item.actor-cross-cannon .barrel.barrel-down {
+	transform: rotate(0deg);
+}
+
+.actor-item.actor-cross-cannon .barrel.barrel-right {
+	transform: rotate(-90deg);
+}
+
+.actor-item.actor-cross-cannon .barrel.barrel-left {
+	transform: rotate(90deg);
+}
+
+/* LEFT  */
+.actor-item.actor-cross-cannon[data-aiming=left] .sprite::after {
+	--turn: 90deg;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=left] .barrel.barrel-up {
+	transform: rotate(90deg);
+}
+
+.actor-item.actor-cross-cannon[data-aiming=left] .barrel.barrel-down {
+	transform: rotate(90deg) translateY(var(--spread));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=left] .barrel.barrel-right {
+	transform: rotate(450deg) translateY(calc(2 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=left] .barrel.barrel-left {
+	transform: rotate(-270deg) translateY(calc(3 * var(--spread)));
+}
+
+
+/* RIGHT  */
+.actor-item.actor-cross-cannon[data-aiming=right] .sprite::after {
+	--turn: -90deg;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=right] .barrel.barrel-up {
+	transform: rotate(270deg);
+}
+
+.actor-item.actor-cross-cannon[data-aiming=right] .barrel.barrel-down {
+	transform: rotate(-90deg) translateY(var(--spread));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=right] .barrel.barrel-right {
+	transform: rotate(-450deg) translateY(calc(3 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=right] .barrel.barrel-left {
+	transform: rotate(630deg) translateY(calc(2 * var(--spread)));
+}
+
+/* DOWN  */
+.actor-item.actor-cross-cannon[data-aiming=down] .sprite::after {
+	--turn: -360deg;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=down] .barrel.barrel-up {
+	transform: rotate(720deg) translateY(calc(2 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=down] .barrel.barrel-down {
+	transform: rotate(-360deg) translateY(calc(3 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=down] .barrel.barrel-right {
+	transform: rotate(0deg) translateY(var(--spread));;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=down] .barrel.barrel-left {
+	transform: rotate(0deg)
+}
+
+/* UP  */
+.actor-item.actor-cross-cannon[data-aiming=up] .sprite::after {
+	--turn: -180deg;
+}
+
+.actor-item.actor-cross-cannon[data-aiming=up] .barrel.barrel-up {
+	transform: rotate(-180deg) translateY(calc(3 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=up] .barrel.barrel-down {
+	transform: rotate(540deg) translateY(calc(2 * var(--spread)));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=up] .barrel.barrel-right {
+	transform: rotate(-180deg) translateY(var(--spread));
+}
+
+.actor-item.actor-cross-cannon[data-aiming=up] .barrel.barrel-left {
+	transform: rotate(180deg)
+}

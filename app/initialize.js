@@ -24,6 +24,12 @@ else
 
 	document.addEventListener('DOMContentLoaded', function() {
 
+		const getFPS = () => new Promise(accept =>
+			requestAnimationFrame(t1 =>
+				requestAnimationFrame(t2 => accept(1000 / (t2 - t1)))
+			)
+		);
+
 		console.log('Starting...');
 
 		if(navigator.serviceWorker)
@@ -33,14 +39,11 @@ else
 
 		let lastTime = 0;
 
-		viewportA.render(document.body);
-
 		const frameTimes = [];
 
-		const update = ()=>{
+		const update = now => {
 			requestAnimationFrame(update);
 
-			const now         = performance.now();
 			const frameTime   = (now - lastTime);
 			const frameAgeMin = (1000 / (viewportA.args.maxFps || 61));
 
@@ -54,6 +57,7 @@ else
 			lastTime = now;
 		};
 
+		viewportA.render(document.body);
 		update();
 	});
 
@@ -105,8 +109,10 @@ else
 	Sfx.register('KNOCK_PLATFORM', '/Sonic/S2_57.wav', {maxConcurrent: 3, volume: 0.8, fudgeFactor: 0.2});
 	Sfx.register('STAR_TWINKLE', '/Sonic/S2_27.wav', {maxConcurrent: 3, volume: 0.8, fudgeFactor: 0.2});
 	Sfx.register('PAD_BOUNCE', '/Sonic/S2_58.wav', {maxConcurrent: 3, volume: 0.8, fudgeFactor: 0.2});
+	Sfx.register('SPRING_SHOT', '/Sonic/S2_62.wav', {maxConcurrent: 3, volume: 0.8, fudgeFactor: 0.2});
+	Sfx.register('QUICK_SLIDE', '/Sonic/S2_5B.wav', {maxConcurrent: 1, volume: 0.3, fudgeFactor: 0.2});
 
-	Sfx.register('SS_BWIP', '/Sonic/S1_A9.wav', {maxConcurrent: 8, volume: 0.85, fudgeFactor: 0.2});
+	Sfx.register('SS_BWIP', '/Sonic/S1_A9.wav', {maxConcurrent: 1, volume: 0.7, fudgeFactor: 0.2});
 	Sfx.register('SS_BWIP_HIGH', '/Sonic/S2_29.wav', {maxConcurrent: 8, volume: 0.85, fudgeFactor: 0.2});
 
 	Sfx.register('WAIT_TONE', '/Sonic/S3K_A7.wav', {maxConcurrent: 8, volume: 0.5, fudgeFactor: 0.2});

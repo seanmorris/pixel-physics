@@ -9,6 +9,7 @@ import { FgShadeRegion } from './region/FgShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { DarkRegion } from './region/DarkRegion';
 import { LavaRegion } from './region/LavaRegion';
+import { ToxicRegion } from './region/ToxicRegion';
 import { RollingRegion } from './region/RollingRegion';
 import { SlidingRegion } from './region/SlidingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
@@ -239,6 +240,8 @@ import { PropellerPlatform } from './actor/PropellerPlatform';
 import { HexNut } from './actor/HexNut';
 import { Turtloid } from './actor/Turtloid';
 
+import { CrossCannon } from './actor/CrossCannon';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -298,6 +301,7 @@ export const ObjectPalette = {
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
+	, 'toxic-region': ToxicRegion
 	, 'dark-region':  DarkRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
@@ -428,4 +432,5 @@ export const ObjectPalette = {
 	, 'propeller-platform': PropellerPlatform
 	, 'hex-nut': HexNut
 	, 'turtloid': Turtloid
+	, 'cross-cannon': CrossCannon
 };

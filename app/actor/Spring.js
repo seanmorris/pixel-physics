@@ -98,7 +98,10 @@ export class Spring extends PointActor
 		{
 			this.springActor(other);
 
-			this.holding.delete(other);
+			this.viewport.onFrameOut(5,() => {
+				this.holding.delete(other);
+			});
+
 		}
 	}
 
@@ -119,7 +122,7 @@ export class Spring extends PointActor
 			other.args.hangingFrom.unhook();
 		}
 
-		if(other[WontSpring])
+		if(other[WillSpring] || other[WontSpring])
 		{
 			return false;
 		}
@@ -156,6 +159,8 @@ export class Spring extends PointActor
 			return false;
 		}
 
+		other.args.falling = true;
+
 		this.holding.add(other);
 
 		return false;
@@ -163,14 +168,19 @@ export class Spring extends PointActor
 
 	springActor(other)
 	{
-		Sfx.play('SPRING_HIT');
-
 		if(other[WillSpring])
 		{
 			return false;
 		}
 
-		this.args.actingOn.add(other)
+		Sfx.play('SPRING_HIT');
+
+		const rounded = this.roundAngle(this.args.angle, 8, true);
+
+		other.args.x = this.args.x + Math.cos(rounded) * 4;
+		other.args.y = this.args.y + Math.sin(rounded) * 4;
+
+		this.args.actingOn.add(other);
 
 		this.viewport.onFrameOut(1, () => {
 			this.args.active = true;
@@ -182,21 +192,23 @@ export class Spring extends PointActor
 			this.args.actingOn.delete(other);
 		});
 
+
 		if(other.noClip)
 		{
 			return false;
 		}
+
+		other.args.gSpeed = 0;
+		other.args.xSpeed = 0;
+		other.args.ySpeed = 0;
 
 		// other.args.direction = Math.sign(this.args.gSpeed);
 
 		other[WillSpring] = true;
 
 		other.args.mercy  = 0;
-		// other.args.gSpeed = 0;
-		// other.args.xSpeed = 0;
-		// other.args.ySpeed = 0;
 
-		const rounded = this.roundAngle(this.args.angle, 8, true);
+		// const rounded = this.roundAngle(this.args.angle, 8, true);
 
 		if(this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{
@@ -215,17 +227,14 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.x = this.args.x + Math.cos(rounded) * 4;
-		other.args.y = this.args.y + Math.sin(rounded) * 4;
-
 		other.locked = 2;
 
 		other.args.jumping = false;
 		other.args.ignore = other.args.ignore || (other.args.falling ? 12 : 2);
-		other.args.float = 2;
+		other.args.float = Math.max(2, other.args.float);
 
 		this.viewport.onFrameOut(1,()=>{
-			other.args.float = 2;
+			other.args.float = Math.max(2, other.args.float);
 			other.args.mode = 0;
 			other.args.direction = Math.sign(xImpulse) || other.args.direction;
 

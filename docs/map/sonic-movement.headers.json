@@ -68,18 +68,18 @@
             "columns": 16,
             "firstgid": 177,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 22,
-            "firstgid": 689,
+            "firstgid": 737,
             "image": "lz-ground.png",
             "imageheight": 3200,
             "imagewidth": 704,
@@ -92,7 +92,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 2889,
+            "firstgid": 2937,
             "image": "chemical-plant-tiles.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -105,7 +105,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 3145,
+            "firstgid": 3193,
             "image": "../Sonic/marble-zone-block.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -118,7 +118,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 3146,
+            "firstgid": 3194,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -131,7 +131,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 3210,
+            "firstgid": 3258,
             "image": "../Sonic/tiles/common.png",
             "imageheight": 32,
             "imagewidth": 128,

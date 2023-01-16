@@ -2,21 +2,26 @@
 	z-index: calc(var(--z) + 10000);
 }
 
-.actor-item.actor-grapple-point .sprite {
+.actor-item.actor-grapple-point .sprite::after {
+	content: '';
 	background-image: url(/Sonic/hook.png);
 	background-position: -20px -4px;
 	height: calc(var(--height) * 1px);
+	left:1px;
+	bottom: 0;
 	width: 22px;
 	height: 32px;
 	position: absolute;
 }
 
-[data-bg="wood"] .actor-item.actor-grapple-point .sprite {
+[data-bg="wood"] .actor-item.actor-grapple-point .sprite::after {
+	left: 3px;
 	z-index: calc(var(--z) + 100);
 	background-position: -85px -4px;
 }
 
-[data-bg="mushroom-hill"] .actor-item.actor-grapple-point .sprite {
+[data-bg="mushroom-hill"] .actor-item.actor-grapple-point .sprite::after {
+	left: 3px;
 	z-index: calc(var(--z) + 100);
 	background-position: -150px -4px;
 }

@@ -99,9 +99,10 @@ export class Png
 				this.ready = Promise.resolve();
 
 				this.buffer = source.buffer.slice(0);
+				this.chunks = source.chunks.slice(0);
 
-				this.checkHeader();
-				this.indexChunks();
+				// this.checkHeader();
+				// this.indexChunks();
 			}
 		}
 	}
@@ -169,9 +170,6 @@ export class Png
 		for(const i in palette)
 		{
 			const color = palette[i];
-
-			const rgba = color.valueOf();
-			const mean = color.mean();
 			const hex  = color.hex();
 
 			if(colorMap[hex])

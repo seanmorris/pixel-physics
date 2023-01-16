@@ -2018,6 +2018,18 @@ export class Viewport extends View
 
 				break;
 
+			case 'cross-cannon':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.4;
+				cameraSpeed = 18;
+				break;
+
+			case 'cross-cannon-quick':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.4;
+				cameraSpeed = 5;
+				break;
+
 			case 'cutScene':
 				this.args.xOffsetTarget = [0.50, 0.25, 0.50, 0.75][actor.args.mode];
 				this.args.yOffsetTarget = [0.75, 0.50, 0.25, 0.50][actor.args.mode];
@@ -3761,6 +3773,8 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y, w = 0, h = 0)
 	{
+		x = Math.trunc(x);
+
 		const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		const actorPointCache = this[ActorPointCache];
 
@@ -3796,7 +3810,7 @@ export class Viewport extends View
 			const otherLeft   = actorX - (isRegion ? 0 : offset);
 			const otherRight  = actorX + (isRegion ? width : offset);
 
-			if(myRight < otherLeft || otherRight <= myLeft)
+			if(myRight < otherLeft || otherRight < myLeft)
 			{
 				continue;
 			}

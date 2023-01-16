@@ -161,6 +161,32 @@
 	/*transition: transform 1s;*/
 }
 
+.actor-item.actor-sonic[data-animation="teeter"] .sprite:after {
+	--sprite-offset-y: -1152px;
+	--sprite-offset-x: -0px;
+	--animation-steps: 4;
+	--animation-width: -64px;
+
+	animation: sonic-animate steps(4) infinite 480ms forwards;
+}
+
+.actor-item.actor-sonic[data-animation="teeter-2"] .sprite:after {
+	--sprite-offset-y: -1152px;
+	--sprite-offset-x: -384px;
+	--animation-steps: 4;
+	--animation-width: -64px;
+
+	animation: sonic-animate steps(4) infinite 240ms forwards;
+}
+
+.actor-item.actor-sonic[data-animation="teeter--1"] .sprite:after {
+	--sprite-offset-y: -1152px;
+	--sprite-offset-x: -256px;
+	--animation-steps: 2;
+	--animation-width: -64px;
+
+	animation: sonic-animate steps(2) infinite 320ms;
+}
 /*.actor-item.actor-sonic[data-facing=left][data-animation="barrel-roll"] .sprite:after {
 	transform: scaleX(-1);
 }*/
@@ -407,7 +433,7 @@
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
-	animation: sonic-jump steps(4) infinite 96ms;
+	animation: sonic-jump steps(4) infinite 160ms;
 
 	/*animation: sonic-animate steps(4) infinite 1280ms;*/
 	--sprite-offset-x: -0px;

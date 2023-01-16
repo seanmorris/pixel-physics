@@ -81,8 +81,6 @@ export class Layer extends View
 			this.meta.grinding = true;
 		}
 
-		console.log(this.meta);
-
 		this.offsetXChanged = 0;
 		this.offsetYChanged = 0;
 
