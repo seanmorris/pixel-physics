@@ -83,7 +83,7 @@ export class Platformer
 			host.grindReward = null;
 		}
 
-		if(!host.args.falling && (!host.args.grinding && host.args.groundTime > 1))
+		if(!host.args.falling && (!host.args.grinding && host.groundTime > 1))
 		{
 			host.grindReward = null;
 		}
@@ -129,7 +129,7 @@ export class Platformer
 			}
 		}
 
-		if(!host.args.falling && !host.args.rolling && (!host.args.grinding  && host.args.groundTime > 1))
+		if(!host.args.falling && !host.args.rolling && (!host.args.grinding  && host.groundTime > 1))
 		{
 			if(host.args.popChain.length)
 			{
@@ -414,6 +414,7 @@ export class Platformer
 			}
 
 			if(!host.args.hangingFrom
+				&& !host.noClip
 				&& !host.args.falling
 				&& this.checkBelow(host, host.args.x, host.args.y) && jumpBlock
 			){
@@ -906,13 +907,13 @@ export class Platformer
 				host.args.gSpeed  = 0;
 			}
 
-			if(!host.willStick && host.args.falling && host.controllable && !host.args.static && !host.noClip)
+			if(!host.willStick && host.args.falling && !host.args.static && !host.noClip)
 			{
 				let popOut = 16;
 
 				const radius = host.args.width * 0.5;
 
-				if(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
 					&& !host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
@@ -920,7 +921,7 @@ export class Platformer
 					popOut--;
 				}
 
-				if(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
 					&& !host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
@@ -1501,18 +1502,18 @@ export class Platformer
 
 		if(host.args.falling)
 		{
-			host.args.groundTime = 0;
+			host.groundTime = 0;
 			host.args.rolling = false;
 			host.fallTime++;
 		}
 		else
 		{
-			host.args.groundTime++;
-			host.args.idleTime++;
+			host.groundTime++;
+			host.idleTime++;
 
 			if(host.yAxis || host.xAxis)
 			{
-				host.args.idleTime = 0;
+				host.idleTime = 0;
 			}
 		}
 
@@ -1525,7 +1526,7 @@ export class Platformer
 				host.args.gSpeed = 8 * Math.sign(host.args.gSpeed);
 			}
 
-			host.args.idleTime = 0;
+			host.idleTime = 0;
 			host.args.rolling = false;
 		}
 	}
@@ -1659,7 +1660,7 @@ export class Platformer
 							}
 						}
 
-						if(host.controllable && host.args.groundAngle === 0)
+						if(!host.noClip && host.controllable && host.args.groundAngle === 0)
 						{
 							const waistPoint = host.rotatePoint(-radius * Math.sign(host.args.gSpeed), host.args.height * 0.5);
 
@@ -2518,6 +2519,8 @@ export class Platformer
 		const xSpeedOriginal = host.args.xSpeed;
 		const ySpeedOriginal = host.args.ySpeed;
 
+		const originalAngle = host.airAngle;
+
 		host.args.standingLayer = null;
 
 		const viewport  = host.viewport;
@@ -2555,11 +2558,14 @@ export class Platformer
 
 		if(host.noClip)
 		{
-			host.xLast = host.args.x;
-			host.yLast = host.args.y;
+			if(host.args.falling)
+			{
+				host.xLast = host.args.x;
+				host.yLast = host.args.y;
 
-			host.args.x += host.args.xSpeed;
-			host.args.y += host.args.ySpeed;
+				host.args.x += host.args.xSpeed;
+				host.args.y += host.args.ySpeed;
+			}
 
 			return;
 		}
@@ -2686,13 +2692,11 @@ export class Platformer
 			return;
 		}
 
-		const originalAngle = host.airAngle;
-
 		if(!host.willStick
 			&& hits.length > 1
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
 		){
-			const xDirection = Math.sign(host.args.xSpeed);
+			const xDirection = Math.sign(xSpeedOriginal);
 
 			const maxHit = -1 + Math.max(...hits);
 			const minHit = -1 + Math.min(...hits);
@@ -2705,7 +2709,7 @@ export class Platformer
 
 			if(!isNaN(shift) && (!shift || Math.abs(shiftBy) < width || Math.sign(shift) !== Math.sign(host.args.xSpeed)))
 			{
-				// host.args.x -= shift;
+				host.args.x += shift;
 
 				host.args.flySpeed = 0;
 				host.args.xSpeed   = 0;
@@ -3017,7 +3021,11 @@ export class Platformer
 				// 	host.args.groundAngle = 0;
 				// }
 				// else
-				if(forePosition && backPosition && !forePosition[2] && !backPosition[2] && !(forePosition[3] && backPosition[3]))
+				if(angleIsWall && !host.willStick)
+				{
+
+				}
+				else if(forePosition && backPosition && !forePosition[2] && !backPosition[2] && !(forePosition[3] && backPosition[3]))
 				{
 					// host.args.groundAngle = host.args.angle = newAngle;
 
@@ -3439,12 +3447,16 @@ export class Platformer
 					break;
 			}
 
+			// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'down-walk-solid ' + label);
+
 			downFirstSolid = host.castRay(
 				maxStep// * (1+col)
 				, host.downAngle
 				, offsetPoint
 				, this.findDownSolid
 			);
+
+			window.logPoints = null;
 
 			if(downFirstSolid === false)
 			{
@@ -3483,12 +3495,16 @@ export class Platformer
 
 				const upLength = +1 + maxStep;
 
+				// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-walk-space ' + label);
+
 				upFirstSpace = host.castRay(
 					upLength
 					, host.upAngle
 					, offsetPoint
 					, this.findUpSpace
 				);
+
+				window.logPoints = null;
 
 				const upDiff = Math.abs(prevUp - upFirstSpace);
 

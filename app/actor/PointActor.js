@@ -1031,6 +1031,10 @@ export class PointActor extends View
 			}
 			else if(!this.args.falling || this.getMapSolidAt(this.args.x, this.args.y + 24))
 			{
+				const nearSolid1 = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 6);
+				const nearSolid2 = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 6);
+				const backSolid1 = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 6);
+
 				const forwardSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 24);
 				const forwardDeepSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 96);
 				const underSolid   = this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 48);
@@ -1039,6 +1043,24 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
+						if(!this.args.falling && !backSolid1)
+						{
+							this.args.teeter = -1;
+						}
+						else if(!this.args.falling && !nearSolid1)
+						{
+							this.args.teeter = 1;
+
+							if(!nearSolid2)
+							{
+								this.args.teeter = 2;
+							}
+						}
+						else
+						{
+							this.args.teeter = 0;
+						}
+
 						if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
 						{
 							this.args.cameraMode = 'bridge';
@@ -1458,10 +1480,12 @@ export class PointActor extends View
 
 		for(let i = 0; i < Math.floor(length); i++)
 		{
-			const bottom  = [
-				this.args.x + offset[0] + (i * Math.cos(angle))
-				, this.args.y + offset[1] + (i * Math.sin(angle))
-			];
+			const x = this.args.x + offset[0] + (i * Math.cos(angle));
+			const y = this.args.y + offset[1] + (i * Math.sin(angle));
+
+			window.logPoints && window.logPoints(x, y, 'mode-' + this.args.mode)
+
+			const bottom  = [x, y];
 
 			const retVal = callback(i, bottom, this);
 

@@ -7,9 +7,36 @@
     },
     "height": 256,
     "infinite": false,
-    "nextlayerid": 4,
-    "nextobjectid": 10,
+    "nextlayerid": 6,
+    "nextobjectid": 19,
     "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "mushroom-hill"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "SPRING AND WALL"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "STRESS TEST ZONE"
+        }
+    ],
     "renderorder": "right-down",
     "tiledversion": "1.4.3",
     "tileheight": 32,
@@ -26,6 +53,31 @@
             "tilecount": 176,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 177,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tiles": [
+                {
+                    "id": 60,
+                    "properties": [
+                        {
+                            "name": "period",
+                            "type": "int",
+                            "value": 750
+                        }
+                    ]
+                }
+            ],
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -33,7 +85,11 @@
     "version": 1.4,
     "width": 256,
     "types": [
-        "spring"
+        "block",
+        "cross-cannon",
+        "ring-monitor",
+        "spring",
+        "toxic-region"
     ],
     "map": "/map/collider-test.json"
 }

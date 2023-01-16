@@ -76,7 +76,6 @@ export class MouseIndicator extends Cursor
 					, 0
 				);
 
-
 				this.magnitudeLabel.args.value = magnitude === false ? false : Number(magnitude).toFixed(2);
 				this.angleLabel.args.value     = Number(angle).toFixed(2);
 				this.colorLabel.args.value     = Number(color).toString(16).padStart(8, '0');

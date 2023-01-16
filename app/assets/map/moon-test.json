@@ -2301,18 +2301,18 @@
                         }, 
                         {
                          "name":"hSwap",
-                         "type":"int",
-                         "value":1
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"hidden",
-                         "type":"int",
-                         "value":1
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
-                         "type":"int",
-                         "value":1
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",

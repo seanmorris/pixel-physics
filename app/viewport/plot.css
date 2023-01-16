@@ -6,6 +6,7 @@ svg.plot {
 	top:0;
 	transform-origin: top left;
 	transform: scale(var(--scale));
+	pointer-events: none;
 }
 
 svg.plot circle {
@@ -60,4 +61,33 @@ svg.plot circle.alt-scan {
 
 svg.plot circle:hover {
 	opacity: 1;
+}
+
+svg.plot circle.down-walk-solid {
+	fill: transparent;
+	stroke: rgba(255,0,0,0.25);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.up-walk-space {
+	fill: transparent;
+	stroke: rgba(255,64,128,0.25);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.up-walk-space.mode-1,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(90deg);
+}
+
+svg.plot circle.up-walk-space.mode-2,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(180deg);
+}
+
+svg.plot circle.up-walk-space.mode-3,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(270deg);
 }
