@@ -20,6 +20,8 @@ const keys = {
 	, 'Digit1': 6
 	, 'Digit3': 7
 
+	, 'KeyBackspace': 8
+
 	, 'KeyW': 12
 	, 'KeyA': 14
 	, 'KeyS': 13
@@ -30,8 +32,8 @@ const keys = {
 	, 'KeyK': 114
 	, 'KeyL': 115
 
-	, 'KeyP':  9
-	, 'Pause': 9
+	, 'KeyP':  1020
+	, 'Pause': 1020
 
 	, 'Tab': 11
 
@@ -39,6 +41,8 @@ const keys = {
 	, 'ArrowDown':  13
 	, 'ArrowLeft':  14
 	, 'ArrowRight': 15
+
+	, 'KeyMeta': 16
 
 	, 'Numpad4': 112
 	, 'Numpad2': 113
@@ -66,6 +70,13 @@ const axisMap = {
 	, 113: +3
 	, 114: -3
 	, 115: +2
+};
+
+const buttonMap = {
+	'-6': 14
+	, '+6': 15
+	, '-7': 12
+	, '+7': 13
 };
 
 export class Controller
@@ -270,6 +281,46 @@ export class Controller
 			else if(!tilted[axisId])
 			{
 				this.tilt(axisId, 0);
+			}
+		}
+
+		for(let axisMove in buttonMap)
+		{
+			const buttonId = buttonMap[axisMove];
+
+			if(released[buttonId])
+			{
+				continue;
+			}
+
+			if(pressed[buttonId])
+			{
+				continue;
+			}
+
+			const [move, axisId] = [axisMove.slice(0, 1), axisMove.slice(1)];
+
+			if(!this.axes[axisId])
+			{
+				this.axes[axisId] = new Axis({deadZone:this.deadZone})
+			}
+
+			const axis = this.axes[axisId];
+
+			if(axis.magnitude && Math.sign(axisMove) !== Math.sign(axis.magnitude))
+			{
+				continue;
+			}
+
+			const pressure = Math.abs(axis.magnitude);
+
+			if(pressure)
+			{
+				this.press(buttonId, pressure);
+			}
+			else
+			{
+				this.release(buttonId, pressure);
 			}
 		}
 	}

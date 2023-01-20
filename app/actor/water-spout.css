@@ -1,0 +1,65 @@
+.actor-item.actor-water-spout .sprite::before {
+	content:  '';
+	position: absolute;
+	top: -16px;
+	width: 16px;
+	height: 16px;
+	right: -3px;
+	background-image: url(/Sonic/water-spout-tip.png);
+	animation: water-spout-animate steps(4) 400ms -100ms infinite;
+}
+
+.actor-item.actor-water-spout .sprite::after {
+	content:  '';
+	position: absolute;
+	bottom: 0px;
+	width: 48px;
+	height: 32px;
+	right: -16px;
+	background-image: url(/Sonic/water-splash.png);
+	animation:
+		water-splash-animate-color steps(4) 200ms infinite
+		, water-splash-animate-shape steps(3) 400ms infinite;
+}
+
+.actor-item.actor-water-spout {
+	filter: none;
+}
+
+.actor-item.actor-water-spout .sprite {
+	top: 2px;
+	bottom: auto;
+	width: 16px;
+	height: calc(calc(1px * calc(var(--height) - 16)) - 1px);
+	background-image: url(/Sonic/water-spout-wide.png);
+	animation: water-spout-animate steps(4) 275ms infinite;
+	background-repeat: repeat-y;
+}
+
+@keyframes water-spout-animate {
+	from {
+		background-position-x: 0px;
+	}
+	to {
+		background-position-x: -64px;
+	}
+}
+
+@keyframes water-splash-animate-color {
+	from {
+		background-position-x: 0px;
+	}
+	to {
+		background-position-x: -192px;
+	}
+}
+
+
+@keyframes water-splash-animate-shape {
+	from {
+		background-position-y: 0px;
+	}
+	to {
+		background-position-y: -96px;
+	}
+}

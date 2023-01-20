@@ -24,8 +24,13 @@ export class Spinner extends PointActor
 		super.update();
 	}
 
-	collideB(other)
+	collideA(other)
 	{
+		if(other.isRegion || other.args.static)
+		{
+			return;
+		}
+
 		if(other instanceof Spinner)
 		{
 			return;

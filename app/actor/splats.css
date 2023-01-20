@@ -1,0 +1,47 @@
+.actor-item.actor-splats .sprite {
+	height: 40px;
+	width: 20px;
+}
+
+.actor-item.actor-splats .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/splats.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 40px;
+	width: 24px;
+	z-index: 1;
+}
+
+.actor-item.actor-splats[data-animation="standing"] .sprite:after {
+}
+
+.actor-item.actor-splats[data-falling=false] .sprite:after {
+	background-position: calc(-24px + var(--sprite-offset-x)) var(--sprite-offset-y);
+}
+
+.actor-item.actor-splats[data-falling=true] .sprite:after {
+	animation: splats-walk steps(2) 1 120ms forwards;
+}
+
+.actor-item.actor-splats[data-falling=true] .sprite:after {
+	animation: splats-walk steps(2) 1 -120ms 240ms forwards;
+}
+
+.actor-item.actor-splats[data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+@keyframes splats-walk {
+	from{
+		background-position: calc(-48px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+}

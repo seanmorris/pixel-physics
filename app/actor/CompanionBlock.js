@@ -20,11 +20,11 @@ export class CompanionBlock extends MarbleBlock
 	{
 		if(this.args.falling && other.y > 8 + this.y + -this.args.height)
 		{
-			return false;
+			// return false;
 		}
 		else if(this.args.falling && other.y > this.y - this.args.height)
 		{
-			other.args.y = this.y - this.args.height
+			// other.args.y = this.y - this.args.height
 		}
 		else if(this.args.falling && other.args.modeTime < 3)
 		{
@@ -38,17 +38,19 @@ export class CompanionBlock extends MarbleBlock
 	{
 		let isInLava = false;
 
-		for(const region of this.regions)
+
+		for(const region of this.viewport.regionsAtPoint(this.args.x, this.args.y + 2))
 		{
+			this.args.y = Math.round(this.args.y);
+
 			if(region instanceof LavaRegion)
 			{
 				isInLava = true;
 
-				if(this.args.height > 16)
+				if(this.args.height > 18)
 				{
-					this.args.height -= 0.5;
+					this.args.height = 18;
 				}
-
 
 				if(!this.played)
 				{
@@ -82,18 +84,24 @@ export class CompanionBlock extends MarbleBlock
 		{
 			if(isInLava)
 			{
+				this.args.float = -1;
+
 				const tileMap = this.viewport.tileMap;
 
 				const solid = tileMap.getSolid(this.x + this.args.width / 2 * (this.args.pushed || 0), this.y);
 
 				if(!solid)
 				{
-					this.args.x = preX + this.args.pushed;
+					this.args.x = preX + this.args.pushed * (this.standingUnder.size ? 1 : 0.5);
 				}
 				else
 				{
 					this.args.pushed = 0;
 				}
+			}
+			else
+			{
+				this.args.float = 0;
 			}
 		}
 

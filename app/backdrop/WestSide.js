@@ -12,8 +12,14 @@ export class WestSide extends Backdrop
 			{
 				autoscroll: 0.001
 				, parallax: 0.001
+				, url:      '/Sonic/backdrop/west-side/stars-before.png'
+				, height:   64
+			}
+			, {
+				autoscroll: 0.001
+				, parallax: 0.001
 				, url:      '/Sonic/backdrop/west-side/stars.png'
-				, height:   0
+				, height:   205
 			}
 			, {
 				autoscroll: 0
@@ -33,17 +39,17 @@ export class WestSide extends Backdrop
 				, url:      '/Sonic/backdrop/west-side/water-shine-1.png'
 				, height:   3
 			}
-			, {
-				autoscroll: 0
-				, parallax: 0.0004
-				, url:      '/Sonic/backdrop/west-side/water-shine-2.png'
-				, height:   3
-			}
+			// , {
+			// 	autoscroll: 0
+			// 	, parallax: 0.0004
+			// 	, url:      '/Sonic/backdrop/west-side/water-shine-2.png'
+			// 	, height:   3
+			// }
 			, {
 				autoscroll: 0
 				, parallax: 0.004
-				, url:      '/Sonic/backdrop/west-side/water.png'
-				, height:   142
+				, url:      '/Sonic/backdrop/west-side/water-night.png'
+				, height:   144
 			}
 			, {
 				autoscroll: 0.001
@@ -74,6 +80,12 @@ export class WestSide extends Backdrop
 				, parallax: 0.05
 				, url:      '/Sonic/backdrop/launch-base/bushes-2-night.png'
 				, height:   48
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.05
+				, url:      '/Sonic/backdrop/launch-base/bushes-3-night.png'
+				, height:   128
 			}
 		];
 	}

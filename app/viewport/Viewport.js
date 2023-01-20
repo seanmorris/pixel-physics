@@ -1,6 +1,7 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Bag  }     from 'curvature/base/Bag';
 import { Tag  }     from 'curvature/base/Tag';
+import { Uuid }     from 'curvature/base/Uuid';
 import { View }     from 'curvature/base/View';
 import { Router }   from 'curvature/base/Router';
 import { Keyboard } from 'curvature/input/Keyboard';
@@ -34,6 +35,7 @@ import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
 import { GamepadCard } from '../intro/GamepadCard';
 import { WarningCard } from '../intro/WarningCard';
+import { SaneCard } from '../intro/SaneCard';
 import { NoWayCard } from '../intro/NoWayCard';
 import { SeanCard } from    '../intro/SeanCard';
 
@@ -47,6 +49,7 @@ import { CharacterString } from '../ui/CharacterString';
 import { HudFrame } from '../ui/HudFrame';
 
 import { Layer } from './Layer';
+import { Plot } from './Plot';
 
 import { Controller } from '../controller/Controller';
 
@@ -59,10 +62,14 @@ import { Console as Terminal } from 'subspace-console/Console';
 
 import { Input as InputTask } from '../console/task/Input';
 import { Impulse as ImpulseTask } from '../console/task/Impulse';
+import { Mark as MarkTask } from '../console/task/Mark';
 import { Settings as SettingsTask } from '../console/task/Settings';
 import { Move as MoveTask } from '../console/task/Move';
 import { Pos as PosTask } from '../console/task/Pos';
 import { Spawn as SpawnTask } from '../console/task/Spawn';
+import { Chao as ChaoTask } from '../console/task/Chao';
+
+import { Socket } from 'subspace-client/Socket';
 
 import { RtcClient } from '../network/RtcClient';
 import { RtcServer } from '../network/RtcServer';
@@ -83,6 +90,7 @@ import { SaveDatabase } from '../save/SaveDatabase';
 import { Save } from '../save/Save';
 
 import { Platformer } from '../behavior/Platformer';
+import { Matrix } from 'matrix-api/Matrix';
 
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
@@ -111,9 +119,23 @@ export class Viewport extends View
 
 		Router.listen(this, { '': () => '' });
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		this.meta = {};
+
+		this.args.combo = [];
+
+		this.args.plot = new Plot;
+
+		this.args.publishTime = 0;
+
+		this.netId = String(new Uuid);
+
+		// this.subspaceConnect();
+
+		this.netPlayers = new Map;
+
+		this.bytesReceived = 0;
 
 		this.loadSaves().then(saves => {
 			if(saves.length)
@@ -139,8 +161,11 @@ export class Viewport extends View
 
 		this.quadCell = null;
 
+		this.visible = new Set;
+
 		this.callIntervals = new Map;
 		this.callFrames    = new Map;
+		this.callRenderedFrames = new Map;
 		this.willDetach    = new Map;
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
@@ -159,7 +184,9 @@ export class Viewport extends View
 		this.settings = Bindable.make({
 			audio: true
 			, blur: true
+			, smoothing: false
 			, displace: true
+			, scaling: true
 			, rumble: true
 			, showHud: true
 			, shortcuts: true
@@ -170,9 +197,14 @@ export class Viewport extends View
 			, musicVol: 50
 			, sfxVol: 75
 			, username: 'player'
+			, graphicsLevel: 'High'
+			, matrixUrl:  'https://matrix.org/_matrix'
+			, matrixRoom: '!hJzXrccruagKGXTFUQ:matrix.org'
+			, iceServer1: 'stun:stun1.l.google.com:19302'
+			, iceServer2: 'stun:stun2.l.google.com:19302'
 		});
 
-		this.vizi = true;
+		this.defaults = Object.assign({}, this.settings);
 
 		this.args.shakeX = 0;
 		this.args.shakeY = 0;
@@ -404,10 +436,17 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps = 120;
-		this.args.maxFps = 60;
+		this.args.maxFps = 75;
 
 		this.args.currentActor = '';
+
+		this.args.xMouse = 0;
+		this.args.YMouse = 0;
+
+		this.args.xMouseOffset = 0;
+		this.args.YMouseOffset = 0;
+
+		this.mouseState = {position: [0,0], buttons: []};
 
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
@@ -434,6 +473,8 @@ export class Viewport extends View
 		this.args.labelYSpeed = new CharacterString({value:'Y air spd: '});
 		this.args.labelLayer  = new CharacterString({value:'Layer: '});
 		this.args.labelMode   = new CharacterString({value:'Mode: '});
+		this.args.labelActors = new CharacterString({value:'Actors: '});
+		this.args.labelRegions = new CharacterString({value:'Regions: '});
 		this.args.labelFrame  = new CharacterString({value:'Frame ID: '});
 		this.args.labelIgnore = new CharacterString({value:'Ignore: '});
 		this.args.labelFps    = new CharacterString({value:'FPS: '});
@@ -452,6 +493,8 @@ export class Viewport extends View
 		this.args.mode   = new CharacterString({value:0});
 		this.args.angle  = new CharacterString({value:0});
 		this.args.ignore = new CharacterString({value:0});
+		this.args.actorCount = new CharacterString({value:0});
+		this.args.regionCount = new CharacterString({value:0});
 
 		this.args.cameraMode = new CharacterString({value:0});
 
@@ -567,12 +610,41 @@ export class Viewport extends View
 
 		this.args.frameId = -1;
 
+		this.settings.bindTo('scaling',  v => this.fitScale(false), {wait:0});
+
+		this.settings.bindTo('graphicsLevel',  v => {
+			switch(v)
+			{
+				case 'High':
+					this.settings.displace = true;
+					this.settings.scaling  = true;
+					this.settings.blur     = true;
+					break;
+				case 'Medium':
+					this.settings.scaling  = true;
+					this.settings.displace = true;
+					this.settings.blur     = false;
+					break;
+				case 'Low':
+					this.settings.scaling  = true;
+					this.settings.displace = false;
+					this.settings.blur     = false;
+					break;
+				case 'Very Low':
+					this.settings.displace = false;
+					this.settings.scaling  = false;
+					this.settings.blur     = false;
+					break;
+			}
+		});
+
 		this.settings.bindTo('displace',  v => this.args.displacement = v ? 'on' : 'off');
 		this.settings.bindTo('outline',   v => this.args.outline   = v);
 		this.settings.bindTo('debugOsd',  v => this.args.debugOsd  = v);
 		this.settings.bindTo('showHud',   v => this.args.showHud   = v);
 		this.settings.bindTo('shortcuts', v => this.args.shortcuts = v);
 		this.settings.bindTo('showFps',   v => this.args.showFps   = v);
+		this.settings.bindTo('smoothing', v => this.args.smoothing = v);
 
 		this.settings.bindTo('musicVol',  v => Bgm.setVolume(v / 100));
 		this.settings.bindTo('sfxVol',  v => Sfx.setVolume(v / 100));
@@ -618,7 +690,7 @@ export class Viewport extends View
 
 		this.args.width  = 32 * 16;
 		this.args.height = 32 * 9;
-		this.args.scale  = 2;
+		this.args.scale  = 1;
 
 		if(Router.query.tinyScale)
 		{
@@ -823,16 +895,25 @@ export class Viewport extends View
 						scroller: this.tags.subspace
 						, path:{
 							'input': InputTask
-							, 'move': MoveTask
+							, 'mark': MarkTask
 							, 'impulse': ImpulseTask
+							, 'move': MoveTask
 							, 'pos': PosTask
 							, 'set': SettingsTask
 							, 'spawn': SpawnTask
+							, 'chao': ChaoTask
 						}
 					});
 				}
 
-				this.args.showConsole = this.args.showConsole ? null : 'showConsole';
+				if(this.args.networked)
+				{
+					this.args.showConsole = false;
+				}
+				else
+				{
+					this.args.showConsole = this.args.showConsole ? null : 'showConsole';
+				}
 
 				event.preventDefault();
 			}
@@ -962,10 +1043,10 @@ export class Viewport extends View
 
 	getZoneState(zone)
 	{
-		const currentSave = this.currentSave ?? {};
+		const currentSave = this.currentSave;
 		const currentZone = this.currentMap ?? '';
 
-		return currentSave.getZoneState(zone || currentZone);
+		return currentSave ? currentSave.getZoneState(zone || currentZone) : {};
 	}
 
 	loadMap({mapUrl, networked = false})
@@ -1110,16 +1191,23 @@ export class Viewport extends View
 
 	fitScale(fill = false)
 	{
-		const hScale = window.innerHeight / this.args.height;
-		const vScale = window.innerWidth / this.args.width;
-
-		if(fill)
+		if(!this.settings.scaling)
 		{
-			this.args.scale = hScale > vScale ? hScale : vScale;
+			this.args.scale = 1;
 		}
 		else
 		{
-			this.args.scale = hScale > vScale ? vScale : hScale;
+			const hScale = window.innerHeight / this.args.height;
+			const vScale = window.innerWidth / this.args.width;
+
+			if(fill)
+			{
+				this.args.scale = hScale > vScale ? hScale : vScale;
+			}
+			else
+			{
+				this.args.scale = hScale > vScale ? vScale : hScale;
+			}
 		}
 
 		this.tags.frame && this.tags.frame.style({
@@ -1160,9 +1248,11 @@ export class Viewport extends View
 		SettingsTask.viewport = this;
 		ImpulseTask.viewport = this;
 		InputTask.viewport = this;
+		MarkTask.viewport = this;
 		MoveTask.viewport  = this;
 		PosTask.viewport   = this;
 		SpawnTask.viewport = this;
+		ChaoTask.viewport = this;
 
 		this.buildDetect();
 		this.cpuDetect();
@@ -1177,7 +1267,7 @@ export class Viewport extends View
 		const enableKeyboardMessage = ' Click here to enable keyboard control. ';
 		const enableAudioMessage = ' Click here to enable audio. ';
 
-		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 8000, () => {
+		this.onTimeout((Router.query.map || Router.query.nointro) ? 0 : 36000, () => {
 			this.args.bindTo('interacted', v => {
 				const focusMeMessage = (!v && audioWasEnabled)
 					? enableAudioMessage
@@ -1238,7 +1328,27 @@ export class Viewport extends View
 		this.listen(
 			document.body
 			, 'click'
-			, event => this.tags.viewport.focus()
+			, event => {
+
+				let element = event.target;
+
+				while(element && element.matches)
+				{
+					if(element.matches('[data-click-barrier]'))
+					{
+						return;
+					}
+
+					element = element.parentNode;
+				}
+
+				if(this.tags.viewport.contains(document.activeElement))
+				{
+					return;
+				}
+
+				this.tags.viewport.focus()
+			}
 			, {capture: true}
 		);
 
@@ -1356,8 +1466,8 @@ export class Viewport extends View
 
 		if(this.args.networked)
 		{
-			const sonic = new Chalmers({name:'Player 1'}, this);
-			const tails = new Seymour({name:'Player 2'}, this);
+			const sonic = new Sonic({name:'Player 1', id: String(new Uuid)}, this);
+			const tails = new Sonic({name:'Player 2', id: String(new Uuid)}, this);
 
 			const startDef = this.defsByName.get('player-start');
 
@@ -1380,11 +1490,15 @@ export class Viewport extends View
 			{
 				this.nextControl  = sonic;
 				this.remotePlayer = tails;
+
+				tails.args.netplayer = true;
 			}
 			else if(this.args.playerId === 2)
 			{
 				this.remotePlayer = sonic;
 				this.nextControl  = tails;
+
+				sonic.args.netplayer = true;
 			}
 		}
 
@@ -1462,8 +1576,35 @@ export class Viewport extends View
 
 					this.setColCell(this.nextControl.follower);
 				}
+
+				if(Router.query.impulse)
+				{
+					const impulse = Router.query.impulse;
+
+					if(impulse.match(/-?\d+(\.\d+)?,-?\d+(\.\d+)?/))
+					{
+						const [x = 0, y = 0] = impulse.split(',');
+
+						console.log({x,y});
+
+						this.nextControl.args.xSpeed = Number(x);
+						this.nextControl.args.ySpeed = Number(y);
+					}
+				}
+
+				if(Number(Router.query.noClip))
+				{
+					this.nextControl.args.float = -1;
+					this.nextControl.noClip = 1;
+				}
+
+				if(Number(Router.query.pause))
+				{
+					this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
+					this.args.paused = Number(Router.query.pause);
+				}
 			}
-			else if(!this.args.isReplaying && !this.args.isRecording)
+			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
 			{
 				this.args.demoIndicator = null;
 
@@ -1549,7 +1690,7 @@ export class Viewport extends View
 				{
 					const gamepadId = String(gamepad.id);
 
-					if(gamepadId.match(/xbox/i))
+					if(gamepadId.match(/xbo?x/i))
 					{
 						this.args.inputType = 'input-xbox';
 					}
@@ -1692,14 +1833,17 @@ export class Viewport extends View
 
 		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
 		{
-			if(!this.args.fullscreen)
+			if(this.args.fullscreen)
+			{
+				this.exitFullscreen();
+			}
+
+			if(this.args.started)
 			{
 				this.args.paused
 					? this.unpauseGame()
 					: this.pauseGame();
 			}
-
-			this.exitFullscreen();
 		}
 
 		if(!this.args.networked && controller.buttons[1011] && controller.buttons[1011].time > 0)
@@ -1742,9 +1886,11 @@ export class Viewport extends View
 					: '';
 			}
 
-			if(controller.buttons[9]
-				&& controller.buttons[9].active
-				&& controller.buttons[9].time === 1
+			const pauseButton = 9;
+
+			if(controller.buttons[pauseButton]
+				&& controller.buttons[pauseButton].active
+				&& controller.buttons[pauseButton].time === 1
 			){
 				if(this.args.paused)
 				{
@@ -1808,9 +1954,16 @@ export class Viewport extends View
 
 		let actor = this.controlActor;
 
-		if(actor.args.standingOn && actor.args.standingOn.isVehicle)
+		let groundBias = 0;
+
+		if(actor.args.standingOn)
 		{
-			actor = actor.args.standingOn;
+			groundBias = actor.args.standingOn.args.cameraBias
+
+			if(actor.args.standingOn.isVehicle)
+			{
+				actor = actor.args.standingOn;
+			}
 		}
 
 		if(actor.focused)
@@ -1845,6 +1998,36 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.5;
 				this.args.yOffsetTarget = 0.85;
 				cameraSpeed = 8;
+				break;
+
+			case 'boost-ring':
+				const angle = actor.args.angle;
+
+				if(!angle || Math.abs(angle - Math.PI) < 0.1)
+				{
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.5;
+					cameraSpeed = 24;
+				}
+				else
+				{
+					this.args.xOffsetTarget = 0.5 - 0.5 * Math.cos(angle);
+					this.args.yOffsetTarget = 0.5 - 0.2 * Math.sin(angle);
+					cameraSpeed = 16;
+				}
+
+				break;
+
+			case 'cross-cannon':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.4;
+				cameraSpeed = 18;
+				break;
+
+			case 'cross-cannon-quick':
+				this.args.xOffsetTarget = 0.5;
+				this.args.yOffsetTarget = 0.4;
+				cameraSpeed = 5;
 				break;
 
 			case 'cutScene':
@@ -1936,7 +2119,6 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.50;
 				this.maxCameraBound     = 1;
 				cameraSpeed = 0;
-
 				break;
 
 			case 'cliff':
@@ -1969,6 +2151,14 @@ export class Viewport extends View
 				this.args.yOffsetTarget = 0.5;
 				this.maxCameraBound     = 48;
 				cameraSpeed = 3;
+				break;
+
+
+			case 'locked':
+				this.args.xOffsetTarget = 0.50;
+				this.args.yOffsetTarget = 0.25;
+				this.maxCameraBound     = 32;
+				cameraSpeed = 16;
 				break;
 
 			default:
@@ -2085,7 +2275,7 @@ export class Viewport extends View
 			}
 		}
 
-		this.args.yOffsetTarget += actor.args.cameraBias - ySpeedBias;
+		this.args.yOffsetTarget += groundBias + actor.args.cameraBias - ySpeedBias;
 
 		if(actor.args.mode === 0 && Math.abs(actor.args.groundAngle - -Math.PI / 4) < 0.001)
 		{
@@ -2247,6 +2437,9 @@ export class Viewport extends View
 			, '--y': this.args.y
 		});
 
+		this.args.plot.args.x = this.args.x;
+		this.args.plot.args.y = this.args.y;
+
 		this.tags.content.style({
 			'--x': this.args.x
 			, '--y': this.args.y
@@ -2312,9 +2505,10 @@ export class Viewport extends View
 				}
 			}
 
-			const leftIntersect   = this.args.width  + -this.args.x + -backdrop.x;
-			const rightIntersect  = -(-backdrop.width + -this.args.x + -backdrop.x);
-			const topIntersect    = this.args.height + -this.args.y + -backdrop.y;
+			const leftIntersect   =   this.args.width  + -this.args.x + -backdrop.x;
+			const topIntersect    =   this.args.height + -this.args.y + -backdrop.y;
+
+			const rightIntersect  = -(-backdrop.width  + -this.args.x + -backdrop.x);
 			const bottomIntersect = -(-backdrop.height + -this.args.y + -backdrop.y);
 
 			const xMax = this.tileMap ? -(this.tileMap.mapData.width * 32) : 2 ** 9;
@@ -2322,6 +2516,7 @@ export class Viewport extends View
 
 			backdrop.view && Object.assign(backdrop.view.args, ({
 				x: this.args.x
+				, xOffset: -this.args.x + -backdrop.x
 				, xPan: this.args.x
 				, xMax: xMax
 				, y: this.args.y + backdrop.y
@@ -2355,51 +2550,77 @@ export class Viewport extends View
 		});
 	}
 
+	spawnFromDef(objDef)
+	{
+		const objType = objDef.type || objDef.class || objDef.name;
+
+		if(objDef.id > this.maxObjectId)
+		{
+			this.maxObjectId = objDef.id;
+		}
+
+		if(objType === 'particle')
+		{
+			const particle = new Particle3d;
+
+			particle.style({'--x': objDef.x, '--y': objDef.y});
+
+			this.particles.add(particle.node);
+		}
+
+		if(objType === 'backdrop')
+		{
+			this.backdrops.set(objDef.id, objDef);
+			return;
+		}
+
+		this.defsByName.set(objDef.name, objDef);
+
+		if(!ObjectPalette[objType])
+		{
+			return;
+		}
+
+		const objClass = ObjectPalette[objType];
+		const rawActor = objClass.fromDef(objDef);
+
+		rawActor[Run] = this[Run];
+
+		rawActor[ Bindable.NoGetters ] = true;
+
+		const actor = Bindable.make(rawActor);
+
+		actor.name = actor.name || objDef.name;
+
+		this.actors.add( actor );
+	}
+
 	spawnInitialObjects(objDefs)
 	{
 		for(let i in objDefs)
 		{
-			const objDef  = objDefs[i];
-			const objType = objDef.type;
+			this.objDefs.set(objDefs[i].id, objDefs[i]);
 
-			if(objDef.id > this.maxObjectId)
+			this.spawnFromDef(objDefs[i]);
+		}
+
+		for(const actor of this.actors.items())
+		{
+			for(const o in actor.others)
 			{
-				this.maxObjectId = objDef.id;
+				actor.others[o] = this.actorsById[actor.others[o]];
 			}
 
-			if(objType === 'particle')
+			if(actor.objDef && actor.objDef.properties)
 			{
-				const particle = new Particle3d;
-
-				particle.style({'--x': objDef.x, '--y': objDef.y});
-
-				this.particles.add(particle.node);
+				for(const property of actor.objDef.properties)
+				{
+					if(property.type === 'object')
+					{
+						actor.otherDefs[property.name] = this.objDefs.get(property.value);
+					}
+				}
 			}
-
-			if(objType === 'backdrop')
-			{
-				this.backdrops.set(objDef.id, objDef);
-				continue;
-			}
-
-			this.defsByName.set(objDef.name, objDef);
-			this.objDefs.set(objDef.id, objDef);
-
-			if(!ObjectPalette[objType])
-			{
-				continue;
-			}
-
-			const objClass = ObjectPalette[objType];
-			const rawActor = objClass.fromDef(objDef);
-
-			rawActor[Run] = this[Run];
-
-			rawActor[ Bindable.NoGetters ] = true;
-
-			const actor = Bindable.make(rawActor);
-
-			this.actors.add( actor );
 
 			if(this.actorIsOnScreen(actor) || actor.isRegion)
 			{
@@ -2421,10 +2642,13 @@ export class Viewport extends View
 
 			if(actor.controllable)
 			{
-				actor.name = objDef.name;
-
 				actor.args.display = actor.defaultDisplay || null;
 			}
+		}
+
+		for(const actor of this.actors.items())
+		{
+			actor.initialize && actor.initialize();
 		}
 	}
 
@@ -2522,9 +2746,9 @@ export class Viewport extends View
 
 			const startDef = this.defsByName.get(startType);
 
-			character.args.x = startDef.x;
-			character.args.y = startDef.y;
-			character.args.z = startDef.z = 10;
+			character.args.x = startDef ? startDef.x : mapWidth  / 2;
+			character.args.y = startDef ? startDef.y : mapHeight / 2;
+			character.args.z = startDef ? startDef.z ?? 10 : 10;
 
 			character.args.animation = 'dropping';
 
@@ -2553,14 +2777,13 @@ export class Viewport extends View
 			this.auras.add(character)
 			this.actors.add(character);
 
-			if(startDef.properties)
+			if(startDef && startDef.properties)
 			{
 				for(const property of startDef.properties)
 				{
 					character.args[property.name] = property.value;
 				}
 			}
-
 
 			this.nextControl = character;
 		}
@@ -2616,7 +2839,7 @@ export class Viewport extends View
 		const camRight  = -this.args.x +  16 +  margin + width;
 
 		const camTop    = -this.args.y - margin;
-		const camBottom = -this.args.y + height + margin;
+		const camBottom = -this.args.y + height + margin * 0.5;
 
 		const actorWidth = actor.args.width;
 
@@ -2659,6 +2882,7 @@ export class Viewport extends View
 					spawn.object[Run] = this[Run];
 
 					spawn.object.startFrame = this.args.frameId;
+					spawn.object.args.id = ++this.maxObjectId;
 
 					this.actors.add(Bindable.make(spawn.object));
 
@@ -2679,15 +2903,9 @@ export class Viewport extends View
 						}
 					}
 
-					if(isRegion)
-					{
-						actorSpawned = true;
-					}
-					else
-					{
-						actorSpawned = true;
-					}
+					actorSpawned = true;
 
+					spawn.object.initialize && spawn.object.initialize();
 				}
 			}
 			else
@@ -2699,6 +2917,7 @@ export class Viewport extends View
 				spawn.object[Run] = this[Run];
 
 				spawn.object.startFrame = this.args.frameId;
+				spawn.object.args.id = ++this.maxObjectId;
 
 				this.actors.add(Bindable.make(spawn.object));
 
@@ -2712,6 +2931,8 @@ export class Viewport extends View
 				}
 
 				actorSpawned = true;
+
+				spawn.object.initialize && spawn.object.initialize();
 			}
 		}
 
@@ -2783,29 +3004,18 @@ export class Viewport extends View
 
 	nearbyActors(x, y)
 	{
-		// const x = this.args.x;
-		// const y = this.args.y;
-		// const width  = this.args.width;
-		// const height = this.args.height;
-
-		// const nearbyActors = this.quadCell.select(actor.args.x, actor.args.y, width, height);
-
-		// return nearbyActors;
-
 		const nearbyCells = this.getNearbyColCells(x, y);
 
 		const result = new Set;
 
-		for(const i in nearbyCells)
+		for(const actors of nearbyCells)
 		{
-			const actors = nearbyCells[i];
-
 			for(const actor of actors)
 			{
-				if(actor.removed)
-				{
-					continue;
-				}
+				// if(actor.removed)
+				// {
+				// 	continue;
+				// }
 
 				result.add(actor);
 			}
@@ -2816,6 +3026,11 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.socket && this.args.frameId % 120 === 0)
+		{
+			this.socket.publish('keepalive', '');
+		}
+
 		if(this.args.loadingMap)
 		{
 			return;
@@ -2870,6 +3085,7 @@ export class Viewport extends View
 		if(this.args.paused === false || this.args.paused > 0 || this.args.networked)
 		{
 			this.callFrameOuts();
+			this.callRenderedFrameOut();
 			this.callFrameIntervals();
 
 			for(const [key, timer] of this.timers)
@@ -2929,7 +3145,7 @@ export class Viewport extends View
 			this.args.ringLabel.args.color = 'yellow';
 		}
 
-		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(2);
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(0);
 
 		const time  = (this.args.frameId - this.args.startFrameId) / 60;
 		let minutes = String(Math.trunc(Math.abs(time) / 60)).padStart(2,'0')
@@ -3210,6 +3426,8 @@ export class Viewport extends View
 					this.args.angle.args.value    = (Math.round((this.controlActor.args.groundAngle) * 1000) / 1000).toFixed(3);
 					this.args.airAngle.args.value = (Math.round((this.controlActor.args.airAngle) * 1000) / 1000).toFixed(3);
 
+					this.args.actorCount.args.value = this.actors.size;
+					this.args.regionCount.args.value = this.regions.size;
 					this.args.ignore.args.value   = this.controlActor.args.ignore;
 
 					const modes = ['FLOOR (0)', 'L-WALL (1)', 'CEILING (2)', 'R-WALL (3)'];
@@ -3314,6 +3532,7 @@ export class Viewport extends View
 
 						this.willDetach.delete(actor);
 
+						this.visible.add(actor);
 						actor.vizi = true;
 					}
 
@@ -3323,7 +3542,7 @@ export class Viewport extends View
 				}
 			}
 
-			for(const actor of this.recent)
+			for(const actor of new Set([...this.recent, ...this.visible]))
 			{
 				if(actor[Run] !== this[Run])
 				{
@@ -3340,6 +3559,7 @@ export class Viewport extends View
 						actor.sleep();
 						actor.args.display = 'none';
 						actor.detach();
+						this.visible.delete(actor);
 						actor.vizi = false;
 						actor.willhide = null;
 
@@ -3386,6 +3606,7 @@ export class Viewport extends View
 
 			this.controlActor.nodes.map(n => this.tags.actors.append(n));
 
+			this.visible.add(this.controlActor);
 			this.controlActor.vizi = true;
 
 			this.args.maxSpeed = null;
@@ -3420,6 +3641,35 @@ export class Viewport extends View
 			this.moveCamera();
 
 			this.applyMotionBlur();
+
+			this.args.popTopLine = this.args.popTopLine || new CharacterString({color:'yellow'});
+
+			let multiply = 0;
+			let base = 0;
+
+			this.args.showCombo = this.controlActor.args.popChain.length > 1;
+
+			if(this.controlActor.args.popChain)
+			{
+				for(const i in this.controlActor.args.popChain)
+				{
+					const pop = this.controlActor.args.popChain[i];
+					this.args.combo[i] = this.args.combo[i] || {score:new CharacterString, label:new CharacterString};
+
+					this.args.combo[i].score.args.value = pop.points;
+					this.args.combo[i].label.args.value = String(pop.label).replace(/-/g, ' ');
+
+					multiply += pop.multiplier;
+					base += pop.points;
+
+					this.args.combo[i].score.preserve = true;
+					this.args.combo[i].label.preserve = true;
+				}
+
+				this.args.combo.length = this.controlActor.args.popChain.length;
+			}
+
+			this.args.popTopLine.args.value =  multiply + ' x ' + base;
 		}
 
 		if(this.args.networked && this.controlActor)
@@ -3436,6 +3686,18 @@ export class Viewport extends View
 			}
 		}
 
+		if(this.socket && this.args.publishTime <= 0)
+		{
+			this.packPlayerFrame().arrayBuffer().then(buffer => this.socket.publish(0, buffer));
+
+			this.args.publishTime = 10;
+		}
+		else
+		{
+			this.args.publishTime--;
+		}
+
+
 		this.spawnActors();
 
 		if(this.args.fps < 30)
@@ -3449,6 +3711,14 @@ export class Viewport extends View
 		else
 		{
 			this.settings.frameSkip = 1;
+		}
+
+		for(const b in this.mouseState.buttons)
+		{
+			if(this.mouseState.buttons[b])
+			{
+				this.mouseState.buttons[b]++;
+			}
 		}
 	}
 
@@ -3503,6 +3773,8 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y, w = 0, h = 0)
 	{
+		x = Math.trunc(x);
+
 		const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		const actorPointCache = this[ActorPointCache];
 
@@ -3522,42 +3794,42 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
-			if(actor[Run] !== this[Run])
-			{
-				continue;
-			}
-
-			const actorArgs = actor.args;
-
-			const actorX = actorArgs.x;
-			const actorY = actorArgs.y;
-
-			const width  = actorArgs.width;
-			const height = actorArgs.height;
-
 			const myRadius = Math.max(Math.floor(w / 2), 0);
 
 			const myLeft   = x - myRadius;
 			const myRight  = x + myRadius;
-			const myTop    = y - Math.max(h, 0);
-			const myBottom = y;
+
+			const actorArgs = actor.args;
+
+			const actorX = actorArgs.x;
+			const width  = actorArgs.width;
 
 			const offset = width / 2;
 
 			const isRegion = actor.isRegion;
-
 			const otherLeft   = actorX - (isRegion ? 0 : offset);
 			const otherRight  = actorX + (isRegion ? width : offset);
-			const otherTop    = actorY - height ;
+
+			if(myRight < otherLeft || otherRight < myLeft)
+			{
+				continue;
+			}
+
+			const myTop    = y - Math.max(h, 0);
+			const myBottom = y;
+
+			const actorY = actorArgs.y;
+			const height = actorArgs.height;
+
+			const otherTop    = actorY - height;
 			const otherBottom = actorY;
 
-			if(myRight >= otherLeft && otherRight > myLeft)
+			if(otherBottom < myTop || myBottom < otherTop)
 			{
-				if(otherBottom >= myTop && myBottom >= otherTop)
-				{
-					actors.add( actor );
-				}
+				continue;
 			}
+
+			actors.add( actor );
 		}
 
 		const list = [...actors];
@@ -3565,6 +3837,119 @@ export class Viewport extends View
 		actorPointCache.set(cacheKey, list);
 
 		return list;
+	}
+
+	actorsAtLine(x1, y1, x2, y2)
+	{
+		const testActors = new Set;
+
+		const cellX1 = Math.floor(x1 / this.colCellDiv);
+		const cellY1 = Math.floor(y1 / this.colCellDiv);
+		const cellX2 = Math.floor(x2 / this.colCellDiv);
+		const cellY2 = Math.floor(y2 / this.colCellDiv);
+
+		for(const x of Array(3 + Math.abs(cellX1 + -cellX2)).keys())
+		for(const y of Array(3 + Math.abs(cellY1 + -cellY2)).keys())
+		{
+			const name = `${x + Math.min(cellX1, cellX2) + -1}:${y + Math.min(cellY1, cellY2) + -1}`;
+
+			if(!this.colCells.has(name))
+			{
+				continue;
+			}
+
+			for(const actor of this.colCells.get(name))
+			{
+				testActors.add(actor)
+			}
+		}
+
+		const actors = new Map;
+
+		for(const actor of testActors)
+		{
+			const intersection = this.actorIntersectsLine(actor, x1, y1, x2, y2)
+
+			if(!intersection)
+			{
+				continue;
+			}
+
+			const distance = Math.sqrt((x1 - intersection[0]) **2 + (y1 - intersection[1]) **2);
+
+			actors.set(actor, {intersection, distance});
+		}
+
+		return new Map([...actors.entries()].sort((a,b) => a[1].distance - b[1].distance));
+	}
+
+	lineIntersectsLine(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y)
+	{
+		const ax = a2x - a1x;
+		const ay = a2y - a1y;
+
+		const bx = b2x - b1x;
+		const by = b2y - b1y;
+
+		const crossProduct = ax * by - ay * bx;
+
+		if(crossProduct === 0)
+		{
+			return false;
+		}
+
+		const cx = b1x - a1x;
+		const cy = b1y - a1y;
+
+		const d = (cx * by - cy * bx) / crossProduct;
+
+		if(d < 0 || d > 1)
+		{
+			return false;
+		}
+
+		const e = (cx * ay - cy * ax) / crossProduct;
+
+		if(e < 0 || e > 1)
+		{
+			return false;
+		}
+
+		return [a1x + d * ax, a1y + d * ay];
+	}
+
+	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
+	{
+		const left   = actor.args.x - (actor.isRegion ? 0 : (actor.args.width * 0.5));
+		const right  = actor.args.x + (actor.isRegion ? actor.args.width : (actor.args.width * 0.5));
+		const top    = actor.args.y - actor.args.height;
+		const bottom = actor.args.y;
+
+		if(left < b1x && b1x < right && top < b1y && b1y < bottom)
+		{
+			return [b1x, b1y];
+		}
+
+		const points    = actor.getBoundingLines()
+		.map(line => this.lineIntersectsLine(...line, b1x, b1y, b2x, b2y))
+		.filter(x => x);
+
+		if(!points.length)
+		{
+			if(left < b2x && b2x < right && top < b2y && b2y < bottom)
+			{
+				return [b2x, b2y];
+			}
+
+			return false;
+		}
+
+		const distances = points
+		.map(point => Math.sqrt((b1x - point[0]) ** 2 + (b1y - point[1]) ** 2));
+
+		const closest = points[ distances.indexOf(Math.min(...distances)) ];
+
+		return closest;
 	}
 
 	padConnected(event)
@@ -3793,6 +4178,7 @@ export class Viewport extends View
 
 		this.tileMap.reset();
 
+		this.visible.clear();
 		this.callFrames.clear();
 		this.callIntervals.clear();
 		this.collisions.clear();
@@ -3815,7 +4201,7 @@ export class Viewport extends View
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		const layers = this.tileMap.tileLayers;
 
@@ -3875,11 +4261,17 @@ export class Viewport extends View
 
 	quit(quick = false)
 	{
+		if(this.args.networked)
+		{
+			this.server && this.server.close();
+			this.client && this.client.close();
+		}
+
 		this.args.actClear = false;
 		this.args.cutScene = false;
 		this.args.fade     = true;
 
-		this.args.screenEffects = [];
+		this.args.screenEffects = new Bag;
 
 		this.callFrames.clear();
 		this.callIntervals.clear();
@@ -3900,6 +4292,13 @@ export class Viewport extends View
 		for(const actor of this.actors.items())
 		{
 			this.actors.remove(actor);
+		}
+
+		for(const particle of this.particles.items())
+		{
+			this.particles.remove(particle);
+
+			particle.remove();
 		}
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
@@ -3951,9 +4350,16 @@ export class Viewport extends View
 
 		const cards = [];
 
-		if(quick === 2)
+		if(quick === 2 || this.args.networked)
 		{
-			cards.push(new MainMenu({timeout: -1}, this));
+			const menu = new MainMenu({timeout: -1}, this);
+
+			if(this.args.networked)
+			{
+				menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
+			}
+
+			cards.push(menu);
 		}
 		else if(quick)
 		{
@@ -3966,14 +4372,14 @@ export class Viewport extends View
 			cards.push(...this.returnHomeCards());
 		}
 
-
 		this.args.titlecard = new Series({cards}, this);
 
-		this.args.bg = this.args.backdrop = null;
-
 		Keyboard.get().reset();
-
 		this.controller.zero();
+
+		this.args.titlecard.play();
+
+		this.args.bg = this.args.backdrop = null;
 	}
 
 	introCards()
@@ -3981,9 +4387,10 @@ export class Viewport extends View
 		return [
 			new LoadingCard({timeout: 3500, text: 'loading'}, this)
 			, new BootCard({timeout: 3500})
+			, new WarningCard({timeout: 8500})
 			, new DebianCard({timeout: 4500})
 			, new WebkitCard({timeout: 3500})
-			, new WarningCard({timeout: 8000})
+			, new SaneCard({timeout: 4500})
 			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
@@ -4075,15 +4482,15 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				{urls: 'stun:stun1.l.google.com:19302'},
-				{urls: 'stun:stun2.l.google.com:19302'},
+				{urls: this.settings.iceServer1},
+				{urls: this.settings.iceServer2},
 			]
 		};
 
 		const server = (!refresh && server) || new RtcServer(rtcConfig);
 
 		const onOpen = event => {
-			console.log('Connection opened!');
+			// console.log('Connection opened!');
 			this.args.chatBox  = new ChatBox({pipe: server});
 			this.args.playerId = 1;
 		};
@@ -4132,15 +4539,15 @@ export class Viewport extends View
 	{
 		const rtcConfig = {
 			iceServers: [
-				{urls: 'stun:stun1.l.google.com:19302'},
-				{urls: 'stun:stun2.l.google.com:19302'},
+				{urls: this.settings.iceServer1},
+				{urls: this.settings.iceServer2},
 			]
 		};
 
 		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
 
 		const onOpen = event => {
-			console.log('Connection opened!')
+			// console.log('Connection opened!')
 			this.args.chatBox = new ChatBox({pipe: client});
 			this.args.playerId = 2;
 		};
@@ -4196,32 +4603,149 @@ export class Viewport extends View
 
 		const frame = this.args.frameId;
 		const input = this.controlActor.controller.serialize();
+		const actorArgs = this.controlActor.args;
 		const args  = {
 
-			x: this.controlActor.args.x
-			, y: this.controlActor.args.y
+			x: actorArgs.x
+			, y: actorArgs.y
 
-			, gSpeed: this.controlActor.args.gSpeed
-			, xSpeed: this.controlActor.args.xSpeed
-			, ySpeed: this.controlActor.args.ySpeed
+			, gSpeed: actorArgs.gSpeed
+			, xSpeed: actorArgs.xSpeed
+			, ySpeed: actorArgs.ySpeed
 
-			, direction: this.controlActor.args.direction
-			, facing: this.controlActor.args.facing
+			, direction: actorArgs.direction
+			, facing: actorArgs.facing
 
-			, falling: this.controlActor.args.falling
-			, rolling: this.controlActor.args.rolling
-			, jumping: this.controlActor.args.jumping
-			, flying:  this.controlActor.args.flying
-			, float:   this.controlActor.args.float
-			, angle:   this.controlActor.args.angle
-			, mode:    this.controlActor.args.mode
+			, falling: actorArgs.falling
+			, rolling: actorArgs.rolling
+			, jumping: actorArgs.jumping
+			, flying:  actorArgs.flying
+			, float:   actorArgs.float
+			, angle:   actorArgs.angle
+			, mode:    actorArgs.mode
 
-			, groundAngle: this.controlActor.args.groundAngle
-			, respawning:  this.controlActor.args.respawning
-			, dead:        this.controlActor.args.dead ? true : false
+			, rings:    actorArgs.rings
+
+			, groundAngle: actorArgs.groundAngle
+			, respawning:  actorArgs.respawning
+			, dead:        actorArgs.dead ? true : false
 		};
 
 		return {frame, input, args};
+	}
+
+	packPlayerFrame()
+	{
+		const actorArgs = this.controlActor.args;
+
+		const axisInts   = new Int8Array(8);
+		const buttonInts = new Int8Array(16);
+
+		const playerInts   = new Int32Array(11);
+		const playerFloats = new Float32Array(7);
+
+		const gameInts     = new Int32Array(1);
+
+		playerInts[0] = actorArgs.direction;
+		playerInts[1] = actorArgs.facing === 'left' ? -1 : 1;
+		playerInts[2] = actorArgs.falling;
+		playerInts[3] = actorArgs.rolling;
+		playerInts[4] = actorArgs.jumping;
+		playerInts[5] = actorArgs.flying;
+		playerInts[6] = actorArgs.float;
+		playerInts[7] = actorArgs.mode;
+		playerInts[8] = actorArgs.rings;
+		playerInts[9] = actorArgs.respawning;
+		playerInts[10] = Number(actorArgs.dead);
+
+		playerFloats[0] = actorArgs.x;
+		playerFloats[1] = actorArgs.y;
+		playerFloats[2] = actorArgs.gSpeed;
+		playerFloats[3] = actorArgs.xSpeed;
+		playerFloats[4] = actorArgs.ySpeed;
+		playerFloats[5] = actorArgs.angle;
+		playerFloats[6] = actorArgs.groundAngle;
+
+		gameInts[0] = this.args.frameId;
+
+		const {axes, buttons} = this.controlActor.controller.serialize();
+
+		for(const i in axisInts)
+		{
+			axisInts[i] = 127 * (axes[i] ?? 0);
+		}
+
+		for(const i in buttonInts)
+		{
+			buttonInts[i] = 127 * (buttons[i] ?? 0);
+		}
+
+		const packed = new Blob([
+			axisInts.buffer
+			, buttonInts.buffer
+			, playerInts.buffer
+			, playerFloats.buffer
+			, gameInts.buffer
+		]);
+
+		return packed;
+	}
+
+	unpackPlayerFrame(buffer)
+	{
+		const axisView        = new DataView(buffer, 0);
+		const buttonView      = new DataView(buffer, 8);
+		const playerIntView   = new DataView(buffer, 24);
+		const playerFloatView = new DataView(buffer, 68);
+		const gameIntView     = new DataView(buffer, 96);
+
+		const input = {axes:{},buttons:{}};
+		const args = {};
+
+		for(let i = 0; i < 8; i++)
+		{
+			input.axes[i] = axisView.getInt8(i) / 127;
+		}
+
+		for(let i = 0; i < 16; i++)
+		{
+			input.buttons[i] = buttonView.getInt8(i) / 127;
+		}
+
+		args.direction  = playerIntView.getInt32(0, true);
+		args.facing     = playerIntView.getInt32(4, true) === -1 ? 'left' : 'right';
+		args.falling    = playerIntView.getInt32(8, true);
+		args.rolling    = playerIntView.getInt32(12, true);
+		args.jumping    = playerIntView.getInt32(16, true);
+		args.flying     = playerIntView.getInt32(20, true);
+		args.float      = playerIntView.getInt32(24, true);
+		args.mode       = playerIntView.getInt32(28, true);
+		args.rings      = playerIntView.getInt32(32, true);
+		args.respawning = playerIntView.getInt32(36, true);
+		args.dead       = playerIntView.getInt32(40, true);
+
+		args.x      = playerFloatView.getFloat32(0, true);
+		args.y      = playerFloatView.getFloat32(4, true);
+		args.gSpeed = playerFloatView.getFloat32(8, true);
+		args.xSpeed = playerFloatView.getFloat32(12, true);
+		args.ySpeed = playerFloatView.getFloat32(16, true);
+		args.angle  = playerFloatView.getFloat32(20, true);
+		args.groundAngle = playerFloatView.getFloat32(24, true);
+
+		const frame = gameIntView.getInt32(0, true);
+
+		return {frame: {input, args, frame}};
+	}
+
+	onRenderedFrameOut(frames, callback)
+	{
+		if(frames < 0)
+		{
+			callback();
+			return;
+		}
+
+		this.callRenderedFrames.set(callback, frames);
 	}
 
 	onFrameOut(frames, callback)
@@ -4287,6 +4811,25 @@ export class Viewport extends View
 		}
 	}
 
+	callRenderedFrameOut()
+	{
+		if(this.args.frameId % this.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
+		for(const [callback, framesLeft] of this.callRenderedFrames)
+		{
+			if(framesLeft <=0)
+			{
+				callback();
+				continue;
+			}
+
+			this.callRenderedFrames.set(callback, -1 + frames);
+		}
+	}
+
 	callFrameIntervals()
 	{
 		for(let i = this.args.lastFrameId; i <= this.args.frameId; i++)
@@ -4343,9 +4886,47 @@ export class Viewport extends View
 	{
 		this.args.mouse = 'moved';
 
-		this.onTimeout(5000, () => {
+		const xOrigin = event.currentTarget.offsetLeft;
+		const yOrigin = event.currentTarget.offsetTop;
+
+		const xMouse = (event.pageX + -xOrigin) / this.args.scale;
+		const yMouse = (event.pageY + -yOrigin) / this.args.scale;
+
+		this.args.xMouseOffset = xMouse;
+		this.args.yMouseOffset = yMouse;
+
+		this.onTimeout(2000, () => {
 			this.args.mouse = 'hide';
 		});
+	}
+
+	mousedown(event)
+	{
+		this.setMouseButtons(event);
+	}
+
+	mouseup(event)
+	{
+		this.setMouseButtons(event);
+	}
+
+	setMouseButtons(event)
+	{
+		for(let i = 0; i < 8; i++)
+		{
+			const bit = 2 ** i;
+
+			this.mouseState.buttons[i] = this.mouseState.buttons[i] || 0;
+
+			if(event.buttons & bit)
+			{
+				this.mouseState.buttons[i]++;
+			}
+			else
+			{
+				this.mouseState.buttons[i] = 0;
+			}
+		}
 	}
 
 	hyphenate(string)
@@ -4619,5 +5200,139 @@ export class Viewport extends View
 	interact()
 	{
 		this.args.interacted = true;
+	}
+
+	matrixConnect(refresh = false)
+	{
+		if(!this.settings.matrixUrl)
+		{
+			console.error('No matrixUrl defined!!!');
+		}
+
+		const redirectUrl = location.origin + '/accept-sso';
+
+		if(!refresh && this.matrix)
+		{
+			if(!this.matrix.isLoggedIn)
+			{
+				return this.matrix.logIn(redirectUrl).then(() => this.matrix);
+			}
+
+			return Promise.resolve(this.matrix);
+		}
+
+		this.matrix = new Matrix(this.settings.matrixUrl, {
+			interval:  0
+			// , storage: localStorage
+		});
+
+		return this.matrix.logIn(redirectUrl).then(() => this.matrix);
+	}
+
+	subspaceConnect()
+	{
+		this.socket = Socket.get('ws://localhost:9998');
+		this.socket.subscribe('open',  () => {
+			console.log('socket ready!');
+
+			fetch('http://localhost:2020/auth?api')
+			.then(r => r.text())
+			.then(token => {
+				console.log(token)
+				this.socket.send(`auth ${token}`);
+
+				const channel = 'testing';
+				const message = 'This is the payload.';
+
+				this.socket.subscribe('message', (event, message, channel, origin, originId, originalChannel) => {
+					if(origin === 'user')
+					{
+						return;
+					}
+
+					console.log(event.data);
+
+					if(event.data[0] !== '{')
+					{
+						return;
+					}
+
+					const packet = JSON.parse(event.data);
+
+					if('youruid' in packet)
+					{
+						this.netId = packet.youruid;
+					}
+				});
+
+				this.socket.send('uid');
+
+				this.socket.subscribe('message:0', (event, message, channel, origin, originId, originalChannel) => {
+
+					this.bytesReceived += message.length || message.byteLength;
+
+					if(origin !== 'user')
+					{
+						console.log(message);
+						return;
+					}
+
+					if(!this.controlActor || originId === this.netId)
+					{
+						return;
+					}
+
+					const packet = this.unpackPlayerFrame(message);
+
+					if(!this.netPlayers.has(originId))
+					{
+						const netPlayer = new Sonic({name:'Player ' + originId, id: String(new Uuid), netplayer: true}, this);
+						this.netPlayers.set(originId, netPlayer);
+						this.spawn.add({object: netPlayer});
+						this.actors.add(netPlayer);
+						this.auras.add(netPlayer);
+					}
+
+					const netPlayer = this.netPlayers.get(originId);
+
+					if(packet.frame)
+					{
+						if(packet.frame.frame > this.args.frameId)
+						{
+							this.args.frameId = packet.frame.frame;
+						}
+
+						if(packet.frame.input)
+						{
+							netPlayer.controller.replay(packet.frame.input);
+							netPlayer.readInput();
+						}
+
+						if(packet.frame.args)
+						{
+							Object.assign(netPlayer.args, packet.frame.args);
+						}
+
+						netPlayer.noClip = netPlayer.args.dead;
+					}
+
+					// console.log('message received!', {event, message, channel, origin, originId, originalChannel});
+				});
+
+				this.socket.publish(channel, message);
+			});
+		});
+
+		this.socket.subscribe('close', () => {
+			console.log('socket closed!');
+			this.quit(2);
+		});
+	}
+
+	get mouse() {
+		this.mouseState.position[0] = this.args.xMouseOffset + -this.args.x;
+		this.mouseState.position[1] = this.args.yMouseOffset + -this.args.y;
+
+		return this.mouseState;
 	}
 }

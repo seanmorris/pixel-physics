@@ -3,6 +3,8 @@ import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 
 import { Ring } from './Ring';
+import { LayerSwitch } from './LayerSwitch';
+import { GrapplePoint } from './GrapplePoint';
 
 import { QuintInOut } from 'curvature/animate/ease/QuintInOut';
 import { CubicInOut } from 'curvature/animate/ease/CubicInOut';
@@ -41,7 +43,7 @@ export class Block extends PointActor
 
 		this.args.conveyed = 0;
 
-		this.args.ySpeedMax = 16;
+		this.args.ySpeedMax = 32;
 
 		this.originalX = this.args.x;
 		this.originalY = this.args.y;
@@ -51,10 +53,16 @@ export class Block extends PointActor
 		this.args.gravity = 0.4;
 
 		this.args.collapse = args.collapse ?? false;
+		this.args.drop     = args.drop     ?? false;
 
 		this.args.active = -1;
 
 		this.weighted = false;
+
+		this.activatedAt = null;
+
+		this.originalModes = new Map;
+		this.watching = new Set;
 
 		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
@@ -101,6 +109,7 @@ export class Block extends PointActor
 
 		this.args.collapse && this.tags.sprite.classList.add('collapse');
 		this.args.platform && this.tags.sprite.classList.add('platform');
+		this.args.drop     && this.tags.sprite.classList.add('drop');
 
 		if(this.args.hidden)
 		{
@@ -115,11 +124,51 @@ export class Block extends PointActor
 	wakeUp()
 	{
 		this.setTile();
+
+		this.noClip = false;
+
+		if(!this.args.tiedTo)
+		{
+			return;
+		}
+
+		if(!this.args._tiedTo)
+		{
+			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+		}
+
+		const _tiedTo = this.args._tiedTo;
+
+		if(_tiedTo && !_tiedTo.hanging.has(this.constructor))
+		{
+			_tiedTo.hanging.set(this.constructor, new Set);
+			const hangList = _tiedTo.hanging.get(this.constructor);
+			hangList.add(this);
+
+			this.chain = new Tag('<div class = "chain">');
+			this.sprite.appendChild(this.chain.node);
+			this.onRemove(() => hangList.delete(this));
+		}
 	}
 
 	collideA(other, type)
 	{
-		if(other.isRegion || other.noClip)
+		if(other instanceof LayerSwitch)
+		{
+			return;
+		}
+
+		if(other instanceof GrapplePoint && this.args.platform)
+		{
+			return;
+		}
+
+		if(other instanceof this.constructor && !other.args.falling)
+		{
+			return false;
+		}
+
+		if(other.isRegion || other.noClip || other.args.static)
 		{
 			return false;
 		}
@@ -129,9 +178,39 @@ export class Block extends PointActor
 			this.weighted = true;
 		}
 
-		if(other instanceof this.constructor && !other.args.falling)
+		let xDist  = 0.5 + (other.x - this.x) / this.args.width;
+
+		if(other.args.gSpeed < 0)
 		{
-			return false;
+			xDist = -xDist + 1;
+		}
+
+		if(other.args.mode)
+		{
+			xDist = -xDist + 1;
+		}
+
+		if(this.args.hSwap
+			&& other.groundTime > 2
+			&& Math.abs(other.args.gSpeed) > 8
+			&& xDist < 0.2
+		){
+
+			this.watching.add(other);
+
+			if(!this.originalModes.has(other))
+			{
+				this.originalModes.set(other, {
+					mode: other.args.mode
+					, rolling: other.args.rolling
+					, gSpeed: other.args.gSpeed
+				});
+			}
+
+			if(this.originalModes.has(other))
+			{
+				other.args.gSpeed = this.originalModes.get(other).gSpeed;
+			}
 		}
 
 		if(!other.args.falling
@@ -192,54 +271,32 @@ export class Block extends PointActor
 			// }
 		}
 
-		if(type === -1 && !this.args.platform && other.controllable && other.args.ySpeed)
+		if((type === 0 || type === -1) && !this.args.platform && other.controllable && other.args.ySpeed)
 		{
-			// if(other.args.y < this.args.y)
-			// {
-			// 	other.args.y = this.y + -this.args.height + this.args.ySpeed + -1
-
-			// 	if(other.args.ySpeed < 0)
-			// 	{
-			// 		other.args.ySpeed = this.args.ySpeed
-			// 	}
-			// 	else
-			// 	{
-			// 		other.args.y = this.y + other.args.height + -this.args.ySpeed + 1;
-			// 		other.args.ySpeed = this.args.ySpeed;
-			// 	}
-			// }
-
+			// other.args.y = other.yLast;
 			if(other.args.y < this.args.y)
 			{
-				other.args.y = this.y + -this.args.height + this.args.ySpeed;
-				other.args.ySpeed = this.args.ySpeed;
-			}
-			this.onNextFrame(() => {
 				other.args.y = this.y + -this.args.height;
 				other.args.falling = false;
-			});
+				other.args.ySpeed = this.args.ySpeed;
+			}
 
 			return;
 		}
 
-		if(this.args.platform && !(other instanceof Ring))
+		if(this.args.platform && !other.args.dead && !(other instanceof Ring))
 		{
-			// if(other.willStick)
-			// {
-			// 	return false;
-			// }
-
 			const otherTop  = other.args.y - other.args.height;
-			const blockTop  = this.args.y  - this.args.height;
+			const blockTop  = this.args.y - this.args.height;
 			const halfWidth = this.args.width / 2;
 
 			if(other.args.falling
-				&& other.args.y - blockTop < 16
+				&& Math.abs(other.args.y - blockTop) < 4
 				&& other.args.ySpeed >= 0
 				&& !other.args.float
-				&& Math.abs(other.args.x - this.args.x) < (halfWidth - 16)
+				&& (!other.args.dashed || other.args.ySpeed > other.args.xSpeed)
 			){
-				if(other.controllable)
+				if(other.controllable || other.args.npc)
 				{
 					other.args.y = -1 + blockTop;
 				}
@@ -250,6 +307,11 @@ export class Block extends PointActor
 			}
 
 			if((other.args.y <= blockTop) && (other.args.falling === false || other.args.ySpeed > 0))
+			{
+				return true;
+			}
+
+			if(other.args.falling === false && other.args.mode === 2)
 			{
 				return true;
 			}
@@ -265,6 +327,12 @@ export class Block extends PointActor
 		if(!other.controllable && !other.isVehicle)
 		{
 			return true;
+		}
+
+		if(!this.switch && this.args.drop && (type === 0 || type === 2) && this.args.float <= 0)
+		{
+			this.args.float = 1;
+			this.args.goBack = false;
 		}
 
 		if(!this.switch && this.args.collapse && (type === 0 || type === 2) && this.args.float <= 0)
@@ -297,6 +365,8 @@ export class Block extends PointActor
 			{
 				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 			}
+
+			this.viewport.onFrameOut(1, () => this.args.falling = true);
 		}
 
 		return true;
@@ -319,23 +389,53 @@ export class Block extends PointActor
 			return;
 		}
 
+		if(this.args.active > 0)
+		{
+			if(!this.activatedAt)
+			{
+				this.activatedAt = this.viewport.args.frameId;
+			}
+		}
+
 		if(this.args.switch && !this.switch)
 		{
 			this.switch = this.viewport.actorsById[ this.args.switch ];
+		}
+
+		if(this.args.static)
+		{
+			super.update();
+			return;
 		}
 
 		if(this.args.collapse)
 		{
 			this.args.gSpeed = 0;
 
-			if(this.switch && this.switch.args.active)
+			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
 			{
-				this.args.float  = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
+				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 
 				if(!this.args.float)
 				{
 					this.args.ySpeed = this.args.ySpeed || 12;
 				}
+			}
+		}
+
+		if(this.args.drop)
+		{
+			this.args.gSpeed = 0;
+
+			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
+			{
+				this.args.float  = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
+
+				this.noClip = true;
+
+				this.args.active = false;
+
+				this.args.falling = true;
 			}
 		}
 
@@ -347,7 +447,67 @@ export class Block extends PointActor
 		this.xLast = this.args.x;
 		this.yLast = this.args.y;
 
-		if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
+		if(this.otherDefs.path)
+		{
+			let next = this.pathNext || this.otherDefs.path;
+
+			if(next)
+			{
+				for(const prop of next.properties)
+				{
+					if(prop.name === 'next')
+					{
+						next = this.viewport.objDefs.get(prop.value);
+					}
+				}
+
+				const speed = this.args.pathSpeed ?? 8;
+
+				const xDiff = this.args.x - next.x;
+				const yDiff = this.args.y - next.y;
+
+				if(Math.abs(xDiff) < speed && Math.abs(yDiff) < speed)
+				{
+					this.pathNext = next;
+				}
+
+				if(Math.abs(xDiff) < speed)
+				{
+					this.args.x = next.x;
+				}
+				else
+				{
+					this.args.x -= speed * Math.sign(xDiff);
+				}
+
+				if(Math.abs(yDiff) < speed)
+				{
+					this.args.y = next.y;
+				}
+				else
+				{
+					this.args.y -= speed * Math.sign(yDiff);
+				}
+			}
+		}
+
+		if(this.args.float && (this.args.oscillateX && this.args.oscillateY))
+		{
+			const timeFrame = this.viewport.args.frameId + (this.args.offset ?? 0) * Math.PI;
+
+			{
+				const current = Math.sin(timeFrame/this.args.timeX);
+				const moveX = (current * this.args.oscillateX);
+				this.args.x = this.originalX - moveX;
+			}
+
+			{
+				const current = Math.cos(timeFrame/this.args.timeY);
+				const moveY = -(current * this.args.oscillateY);
+				this.args.y = this.originalY - moveY;
+			}
+		}
+		else if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
 		{
 			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);
 
@@ -368,59 +528,59 @@ export class Block extends PointActor
 
 		if(!this.switch && this.args.collapse)
 		{
-			if(!this.reset && !this.args.once)
-			{
-				this.reset = true;
+			// if(!this.reset && !this.args.once)
+			// {
+			// 	this.reset = true;
 
-				this.viewport.onFrameOut(300, () => {
-					this.args.groundAngle = 0;
-					this.args.falling = true;
-					this.args.goBack = true;
-					this.args.float = -1;
-					this.reset = false;
-				});
-			}
+			// 	this.viewport.onFrameOut(300, () => {
+			// 		this.args.groundAngle = 0;
+			// 		this.args.falling = true;
+			// 		this.args.goBack = true;
+			// 		this.args.float = -1;
+			// 		this.reset = false;
+			// 	});
+			// }
 
-			if(!this.args.worm && this.args.goBack)
-			{
-				this.args.float = -1;
+			// if(!this.args.worm && this.args.goBack)
+			// {
+			// 	this.args.float = -1;
 
-				this.noClip = true;
+			// 	this.noClip = true;
 
-				const distX = this.originalX - this.args.x;
-				const distY = this.originalY - this.args.y;
+			// 	const distX = this.originalX - this.args.x;
+			// 	const distY = this.originalY - this.args.y;
 
-				this.args.xSpeed = 0;
-				this.args.ySpeed = 0;
-				this.args.gSpeed = 0;
+			// 	this.args.xSpeed = 0;
+			// 	this.args.ySpeed = 0;
+			// 	this.args.gSpeed = 0;
 
-				if(Math.abs(distX) > 3)
-				{
-					this.args.x += Math.sign(distX) * 3;
-				}
-				else
-				{
-					this.args.x	= this.originalX;
-				}
+			// 	if(Math.abs(distX) > 3)
+			// 	{
+			// 		this.args.x += Math.sign(distX) * 3;
+			// 	}
+			// 	else
+			// 	{
+			// 		this.args.x	= this.originalX;
+			// 	}
 
-				if(Math.abs(distY) > 3)
-				{
-					this.args.y += Math.sign(distY) * 3;
-				}
-				else
-				{
-					this.args.y	= this.originalY;
-				}
+			// 	if(Math.abs(distY) > 3)
+			// 	{
+			// 		this.args.y += Math.sign(distY) * 3;
+			// 	}
+			// 	else
+			// 	{
+			// 		this.args.y	= this.originalY;
+			// 	}
 
-				if(this.args.x === this.originalX && this.args.y === this.originalY)
-				{
-					this.args.goBack = false;
-					this.noClip = false;
-				}
+			// 	if(this.args.x === this.originalX && this.args.y === this.originalY)
+			// 	{
+			// 		this.args.goBack = false;
+			// 		this.noClip = false;
+			// 	}
 
-				this.args.groundAngle = 0;
-				this.args.airAngle = 0;
-			}
+			// 	this.args.groundAngle = 0;
+			// 	this.args.airAngle = 0;
+			// }
 		}
 		else if(this.args.droop)
 		{
@@ -429,7 +589,11 @@ export class Block extends PointActor
 			if(!this.args.colliding && this.args.yForce && this.viewport)
 			{
 				this.viewport.onFrameOut(4, () => {
-					if(!this.args.colliding)
+					const colliding = this.viewport.collisions.has(this);
+
+					const collisions = colliding ? [...this.viewport.collisions.get(this).keys()] : [];
+
+					if(!colliding || !collisions.filter(a => a.controllable).length)
 					{
 						this.snapBack = true;
 					}
@@ -485,7 +649,19 @@ export class Block extends PointActor
 		this.box && this.box.style({'--conveyed': this.args.conveyed*0.8});
 		this.box && this.box.setAttribute('data-design', this.args.design);
 
+		const _tiedTo = this.args._tiedTo;
+
+		if(_tiedTo && this.chain)
+		{
+			const point = {x:this.args.x, y:this.args.y - this.args.height};
+			this.chain.style({
+				'--distance': _tiedTo.distanceFrom(point) + this.args.height
+				, '--angle':  _tiedTo.angleTo(point) + (Math.PI/2)
+			});
+		}
+
 		super.update();
+
 	}
 
 	updateStart()
@@ -504,16 +680,100 @@ export class Block extends PointActor
 		}
 
 		this.weighted = false;
+
+		for(const other of this.watching)
+		{
+			const {mode, rolling, gSpeed} = this.originalModes.get(other);
+
+			let xDist  = 0.5 + (other.x - this.x) / this.args.width;
+
+			const direction = Math.sign(gSpeed);
+
+			if(direction < 0)
+			{
+				xDist = -xDist + 1;
+			}
+
+			if(mode)
+			{
+				xDist = -xDist + 1;
+			}
+
+			const xMoved = other.args.x - other.xLast;
+
+			if(xDist >= 1)
+			{
+				this.originalModes.delete(other);
+				this.watching.delete(other);
+				other.noClip = false;
+			}
+
+			if(xDist >= 0.75)
+			{
+				other.args.xSpeed = xMoved;
+				other.args.float = 0;
+				other.args.falling = false;
+				other.args.rolling = rolling;
+
+				other.args.ignore = 9;
+				// other.xAxis = Math.sign(other.args.gSpeed);
+
+				if(mode === 0)
+				{
+					other.args.gSpeed = -gSpeed;
+					other.args.y = this.args.y + 1;
+					other.args.mode = 2;
+					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
+				}
+
+				if(mode === 2)
+				{
+					other.args.gSpeed = -gSpeed;
+					other.args.y = this.args.y + -this.args.height;
+					other.args.mode = 0;
+					other.args.facing = Math.sign(gSpeed) < 0 ? 'right' : 'left';
+				}
+			}
+			else
+			{
+				const speed = xMoved;
+				other.args.gSpeed = mode ? -speed : speed;
+				other.args.xSpeed = speed;
+				other.args.float = -1;
+				other.noClip = true;
+				other.args.antiSkid = 35;
+				// other.xAxis = Math.sign(other.args.gSpeed);
+
+				other.args.direction = -Math.sign(gSpeed);
+
+				const shiftFactor = Math.min(Math.max(xDist * 1.333, 0), 1);
+
+				if(!rolling)
+				{
+					other.args.corkscrew = Math.min(shiftFactor * 0.5, 0.375);
+					other.args.animation = 'barrel-roll';
+				}
+				else
+				{
+					other.args.rolling = true;
+				}
+
+				if(mode === 0)
+				{
+					other.args.y = this.y + -this.args.height + this.args.height * shiftFactor * 2;
+				}
+
+				if(mode === 2)
+				{
+					other.args.y = this.y + -this.args.height * shiftFactor * 2;
+				}
+			}
+		}
 	}
 
 	updateEnd()
 	{
 		super.updateEnd();
-
-		// if(!this.viewport.collisions.has(this))
-		// {
-		// 	return;
-		// }
 
 		if(!this.viewport || !this.viewport.collisions.has(this))
 		{
@@ -578,13 +838,63 @@ export class Block extends PointActor
 				collidee.args.y += conveyTo[1];
 			}
 		}
+
+		if(!this.args.platform)
+		{
+			return;
+		}
+
+		const moveUp = Math.min(this.args.ySpeed, (this.args.y - this.yLast), 0);
+
+		if(moveUp < 0)
+		{
+			for(let x = -this.args.width * 0.5 + 4; x < this.args.width * 0.5; x += 4)
+			{
+				const xx = this.args.x + x;
+				const actors = this.viewport.actorsAtLine(xx, this.args.y + -this.args.height, xx, this.args.y + -moveUp + -this.args.height);
+
+				for(const [actor, point] of actors)
+				{
+					if(!actor.controllable || !actor.args.falling || actor.args.y < this.args.y)
+					{
+						continue
+					}
+
+					actor.args.y = this.args.y + moveUp + -this.args.height;
+					actor.args.ySpeed = this.args.ySpeed;
+					actor.args.falling = false;
+				}
+			}
+		}
 	}
 
 	sleep()
 	{
-		if(this.args.collapse && this.args.once && !this.args.float)
+		if(this.args.drop && this.args.once && !this.args.float)
 		{
 			this.viewport.actors.remove(this);
+		}
+
+		if(this.args.drop && this.args.float >= 0)
+		{
+			this.args.ySpeed  = 0;
+			this.args.float   = -1;
+			this.args.active  = false;
+			this.args.falling = false;
+
+			this.viewport.onFrameOut(120, () => {
+				this.args.y       = this.originalY;
+				this.activatedAt  = null;
+				this.args.goBack  = false;
+				this.noClip       = false;
+
+				this.args.ySpeed  = 0;
+				this.args.float   = -1;
+				this.args.active  = false;
+				this.args.falling = false;
+
+				this.viewport.setColCell(this);
+			});
 		}
 	}
 

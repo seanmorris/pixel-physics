@@ -1,0 +1,26 @@
+.actor-door {
+	z-index: 10;
+}
+
+.actor-door .sprite {
+	width: 32px;
+	height: 64px;
+	position: relative;
+}
+
+.actor-door .sprite:after {
+	content: '';
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 32px;
+	height: 64px;
+	background-image: url(/Sonic/door-death-egg-3k.png);
+	background-position-y: 0px;
+	background-repeat: no-repeat;
+	transition: background-position-y 240ms linear;
+}
+
+.actor-door[data-opening=true] .sprite:after {
+	background-position-y: -64px;
+}

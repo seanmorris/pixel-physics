@@ -1,0 +1,54 @@
+{
+    "compressionlevel": -1,
+    "height": 32,
+    "infinite": false,
+    "nextlayerid": 6,
+    "nextobjectid": 45,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 177,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 64,
+    "types": [
+        "drainfly"
+    ],
+    "map": "/map/drainfly-test.json"
+}

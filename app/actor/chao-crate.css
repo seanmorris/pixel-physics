@@ -1,12 +1,12 @@
 .actor-chao-crate {
 	z-index: 1;
 }
-
-.actor-chao-crate .sprite.actor-chao-crate {
+/*
+.actor-chao-crate .sprite {
 	background-image: url(/Sonic/chao-crate.png);
 	height: 64px;
 	width: 64px;
-}
+}*/
 
 .actor-item.actor-breakable-block.actor-chao-crate .fragment {
 	background-image: url(/Sonic/chao-crate.png);

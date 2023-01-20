@@ -15,31 +15,15 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":2,
-                 "height":64,
-                 "id":1,
-                 "name":"sonic",
-                 "properties":[
-                        {
-                         "name":"animation",
-                         "type":"string",
-                         "value":"dropping"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
+                 "height":0,
+                 "id":352,
+                 "name":"player-start",
+                 "point":true,
                  "rotation":0,
-                 "type":"sonic",
+                 "type":"player-start",
                  "visible":true,
-                 "width":32,
-                 "x":96,
+                 "width":0,
+                 "x":112,
                  "y":192
                 }],
          "opacity":1,
@@ -177,7 +161,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":352,
+ "nextobjectid":353,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -231,18 +215,18 @@
          "columns":16,
          "firstgid":177,
          "image":"rolling.png",
-         "imageheight":1024,
+         "imageheight":1120,
          "imagewidth":512,
          "margin":0,
          "name":"rolling",
          "spacing":0,
-         "tilecount":512,
+         "tilecount":560,
          "tileheight":32,
          "tilewidth":32
         }, 
         {
          "columns":22,
-         "firstgid":689,
+         "firstgid":737,
          "image":"lz-ground.png",
          "imageheight":3200,
          "imagewidth":704,
@@ -255,7 +239,7 @@
         }, 
         {
          "columns":16,
-         "firstgid":2889,
+         "firstgid":2937,
          "image":"chemical-plant-tiles.png",
          "imageheight":512,
          "imagewidth":512,

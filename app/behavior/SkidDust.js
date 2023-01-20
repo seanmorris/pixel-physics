@@ -13,7 +13,7 @@ export class SkidDust extends Behavior
 
 	update(host)
 	{
-		if(host.args.falling || host.args.rolling || host.spindashCharge)
+		if(host.args.falling || host.args.rolling || host.args.sliding || host.spindashCharge)
 		{
 			return;
 		}
@@ -49,7 +49,7 @@ export class SkidDust extends Behavior
 		}
 
 		const viewport  = host.viewport;
-		const dustFreq  = host.distFreq || 2;
+		const dustFreq  = host.dustFreq || 3;
 
 		if(viewport.args.frameId % dustFreq !== 0)
 		{

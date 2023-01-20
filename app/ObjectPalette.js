@@ -9,7 +9,9 @@ import { FgShadeRegion } from './region/FgShadeRegion';
 import { WaterRegion } from './region/WaterRegion';
 import { DarkRegion } from './region/DarkRegion';
 import { LavaRegion } from './region/LavaRegion';
+import { ToxicRegion } from './region/ToxicRegion';
 import { RollingRegion } from './region/RollingRegion';
+import { SlidingRegion } from './region/SlidingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
 import { ForceRegion } from './region/ForceRegion';
 import { FrictionRegion } from './region/FrictionRegion';
@@ -17,13 +19,15 @@ import { CorkscrewRegion } from './region/CorkscrewRegion';
 import { BossRegion } from './region/BossRegion';
 import { ExitRegion } from './region/ExitRegion';
 import { LoadingRegion } from './region/LoadingRegion';
-import { ExplodingRegion } from './region/ExplodingRegion'
-import { SwitchRegion } from './region/SwitchRegion'
-import { RainRegion } from './region/RainRegion'
-import { WaterfallRegion } from './region/WaterfallRegion'
-import { KillRegion } from './region/KillRegion'
-import { VehicleRegion } from './region/VehicleRegion'
-import { DropVehicleRegion } from './region/DropVehicleRegion'
+import { ExplodingRegion } from './region/ExplodingRegion';
+import { SwitchRegion } from './region/SwitchRegion';
+import { RainRegion } from './region/RainRegion';
+import { DebrisRegion } from './region/DebrisRegion';
+import { WaterfallRegion } from './region/WaterfallRegion';
+import { KillRegion } from './region/KillRegion';
+import { VerticalRegion } from './region/VerticalRegion';
+import { VehicleRegion } from './region/VehicleRegion';
+import { DropVehicleRegion } from './region/DropVehicleRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -33,9 +37,18 @@ import { Stopper }        from './actor/Stopper';
 import { Zipline }        from './actor/Zipline';
 import { Block }          from './actor/Block';
 
+import { Tree }          from './actor/Tree';
+import { Coconut }       from './actor/Coconut';
+import { Mushroom }      from './actor/Mushroom';
+import { Door }          from './actor/Door';
+import { PlatformFlare } from './actor/PlatformFlare';
+import { GravityPad }    from './actor/GravityPad';
+
 import { Monitor }   from './actor/Monitor';
 import { WebMonitor } from './actor/monitor/WebMonitor';
 import { RingMonitor } from './actor/monitor/RingMonitor';
+import { TripleRingMonitor } from './actor/monitor/TripleRingMonitor';
+import { InfoMonitor } from './actor/monitor/InfoMonitor';
 import { SheildStarMonitor } from './actor/monitor/SheildStarMonitor';
 import { SheildNormalMonitor } from './actor/monitor/SheildNormalMonitor';
 import { SheildFireMonitor } from './actor/monitor/SheildFireMonitor';
@@ -50,24 +63,36 @@ import { Cinematic } from './actor/Cinematic';
 
 import { Flickie } from './actor/Flickie';
 
-import { Bubbles  } from './actor/Bubbles';
-import { Redz     } from './actor/Redz';
-import { GuardBot } from './actor/GuardBot';
-import { Sping    } from './actor/Sping';
-import { CrabMeat } from './actor/CrabMeat';
-import { BuzzBomber  } from './actor/BuzzBomber';
-import { MechaFroggy } from './actor/MechaFroggy';
-import { DrainFly    } from './actor/DrainFly';
-import { GohlaBall   } from './actor/GohlaBall';
-import { Voltorb     } from './actor/Voltorb';
-import { Balkiry     } from './actor/Balkiry';
-import { Jawz        } from './actor/Jawz';
-import { SnailBot    } from './actor/SnailBot';
-import { Motobug     } from './actor/Motobug';
-import { BFish       } from './actor/BFish';
-import { Grounder    } from './actor/Grounder';
+import { Bubbles      } from './actor/Bubbles';
+import { Redz         } from './actor/Redz';
+import { GuardBot     } from './actor/GuardBot';
+import { Sping        } from './actor/Sping';
+import { CrabMeat     } from './actor/CrabMeat';
+import { BuzzBomber   } from './actor/BuzzBomber';
+import { MechaFroggy  } from './actor/MechaFroggy';
+import { DrainFly     } from './actor/DrainFly';
+import { GohlaBall    } from './actor/GohlaBall';
+import { Voltorb      } from './actor/Voltorb';
+import { Balkiry      } from './actor/Balkiry';
+import { Jawz         } from './actor/Jawz';
+import { SnailBot     } from './actor/SnailBot';
+import { Motobug      } from './actor/Motobug';
+import { BFish        } from './actor/BFish';
+import { Grounder     } from './actor/Grounder';
+import { TechnoSqueak } from './actor/TechnoSqueak';
+import { Blastoid     } from './actor/Blastoid';
+import { Meanie       } from './actor/Meanie';
+import { SpringTurtle } from './actor/SpringTurtle';
+import { Sparkle      } from './actor/Sparkle';
+import { Splats       } from './actor/Splats';
+import { Relief       } from './actor/Relief';
+import { Barnacle     } from './actor/Barnacle';
+
+// Newtron
+// Bomb
 
 import { SpitFire    } from './actor/SpitFire';
+import { SpitSteam   } from './actor/SpitSteam';
 
 import { Explosion } from './actor/Explosion';
 import { StarPost }  from './actor/StarPost';
@@ -77,7 +102,10 @@ import { FakeEmerald }   from './actor/FakeEmerald';
 import { Window }    from './actor/Window';
 import { Spring }    from './actor/Spring';
 
+import { NotchSpring }    from './actor/NotchSpring';
 import { BrokenMonitor }  from './actor/BrokenMonitor';
+
+import { BoostRing } from './actor/BoostRing';
 
 import { Ring } from './actor/Ring';
 import { Coin } from './actor/Coin';
@@ -93,6 +121,7 @@ import { SlotMachine } from './actor/SlotMachine';
 
 import { WaterFall } from './actor/WaterFall';
 import { WaterJet }  from './actor/WaterJet';
+import { WaterSpout }  from './actor/WaterSpout';
 
 import { PowerupGlow } from './actor/PowerupGlow';
 // import { SuperRing }   from './actor/SuperRing';
@@ -107,6 +136,7 @@ import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
 import { EggWalker }  from './actor/EggWalker';
 import { EggShuttle }  from './actor/EggShuttle';
+import { PogoSpring }  from './actor/PogoSpring';
 
 import { NuclearSuperball } from './actor/NuclearSuperball';
 
@@ -135,6 +165,7 @@ import { Balloon } from './actor/Balloon';
 import { StarBalloon } from './actor/StarBalloon';
 
 import { Spinner } from './actor/Spinner';
+import { HallBooster } from './actor/HallBooster';
 import { Springboard } from './actor/Springboard';
 
 import { GrapplePoint } from './actor/GrapplePoint';
@@ -146,7 +177,10 @@ import { Rocket } from './actor/Rocket';
 import { Booster } from './actor/Booster';
 
 import { WindStone } from './actor/WindStone';
+import { Skull } from './actor/Skull';
+import { Pumpkin } from './actor/Pumpkin';
 import { RoadBarrier } from './actor/RoadBarrier';
+import { CautionPanel } from './actor/CautionPanel';
 import { Spikes } from './actor/Spikes';
 import { SpikesSmall } from './actor/SpikesSmall';
 import { Cone } from './actor/Cone';
@@ -158,6 +192,7 @@ import { RollingSign } from './actor/RollingSign';
 import { Bell } from './actor/Bell';
 
 import { Torch } from './actor/Torch';
+import { LightSource } from './actor/LightSource';
 
 import { Signpost } from './actor/Signpost';
 import { Umbrella } from './actor/Umbrella';
@@ -190,9 +225,22 @@ import { HtmlFrame } from './actor/HtmlFrame';
 import { Panel } from './actor/Panel';
 import { Tester } from './actor/Tester';
 import { Cursor } from './actor/Cursor';
+import { MouseIndicator } from './actor/MouseIndicator';
 import { Spawner } from './actor/Spawner';
 
 import { NeverBetter } from './actor/NeverBetter';
+
+import { AsteroidLarge } from './actor/AsteroidLarge';
+import { AsteroidMedium } from './actor/AsteroidMedium';
+import { AsteroidSmall } from './actor/AsteroidSmall';
+import { Asteroid } from './actor/Asteroid';
+
+import { RocketPlatform } from './actor/RocketPlatform';
+import { PropellerPlatform } from './actor/PropellerPlatform';
+import { HexNut } from './actor/HexNut';
+import { Turtloid } from './actor/Turtloid';
+
+import { CrossCannon } from './actor/CrossCannon';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -207,6 +255,12 @@ export const ObjectPalette = {
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
 	, 'block':           Block
+	, 'tree':            Tree
+	, 'coconut':         Coconut
+	, 'mushroom':        Mushroom
+	, 'door':            Door
+	, 'platform-flare':  PlatformFlare
+	, 'gravity-pad':     GravityPad
 	, 'q-block':         QuestionBlock
 	, 'marble-block':    MarbleBlock
 	, 'companion-block': CompanionBlock
@@ -223,6 +277,7 @@ export const ObjectPalette = {
 	, 'snow-board':   SnowBoard
 	, 'egg-mobile':   EggMobile
 	, 'egg-shuttle':  EggShuttle
+	, 'pogo-spring':  PogoSpring
 	, 'rocks-tall':   Rocks
 	, 'rocks-med':    Rocks
 	, 'rocks-short':  Rocks
@@ -246,12 +301,14 @@ export const ObjectPalette = {
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
+	, 'toxic-region': ToxicRegion
 	, 'dark-region':  DarkRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
 	, 'friction-region': FrictionRegion
 	, 'corkscrew-region': CorkscrewRegion
 	, 'rolling-region': RollingRegion
+	, 'sliding-region': SlidingRegion
 	, 'grinding-region': GrindingRegion
 	, 'exploding-region': ExplodingRegion
 	, 'boss-region': BossRegion
@@ -259,15 +316,19 @@ export const ObjectPalette = {
 	, 'loading-region': LoadingRegion
 	, 'switch-region': SwitchRegion
 	, 'rain-region': RainRegion
+	, 'debris-region': DebrisRegion
 	, 'waterfall-region': WaterfallRegion
 	, 'kill-region': KillRegion
+	, 'vertical-region': VerticalRegion
 	, 'vehicle-region': VehicleRegion
 	, 'drop-vehicle-region': DropVehicleRegion
+	, 'boost-ring':   BoostRing
 	, 'ring':         Ring
 	, 'antiring':     AntiRing
 	// , 'super-ring':   SuperRing
 	, 'coin':         Coin
 	, 'emblem':       Emblem
+	, 'notch-spring': NotchSpring
 	, 'apple':        Apple
 	, 'drop-cage':    DropCage
 	, 'slot-machine': SlotMachine
@@ -276,10 +337,13 @@ export const ObjectPalette = {
 	, 'text-actor':   TextActor
 	, 'water-jet':    WaterJet
 	, 'water-fall':   WaterFall
+	, 'water-spout':  WaterSpout
 	, 'balloon':      Balloon
 	, 'star-balloon': StarBalloon
 	, 'web-monitor': WebMonitor
 	, 'ring-monitor': RingMonitor
+	, 'triple-ring-monitor': TripleRingMonitor
+	, 'info-monitor': InfoMonitor
 	, 'sheild-fire-monitor': SheildFireMonitor
 	, 'sheild-normal-monitor': SheildNormalMonitor
 	, 'sheild-star-monitor': SheildStarMonitor
@@ -302,17 +366,28 @@ export const ObjectPalette = {
 	, 'motobug': Motobug
 	, 'b-fish': BFish
 	, 'grounder': Grounder
+	, 'techno-squeak': TechnoSqueak
+	, 'blastoid': Blastoid
+	, 'meanie': Meanie
+	, 'spring-turtle': SpringTurtle
+	, 'sparkle': Sparkle
+	, 'splats': Splats
+	, 'relief': Relief
+	, 'barnacle': Barnacle
 	, 'spitfire': SpitFire
+	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint
 	, 'rocket': Rocket
 	, 'booster': Booster
 	, 'spinner': Spinner
+	, 'hall-booster': HallBooster
 	, 'springboard': Springboard
 	, 'wooden-crate': WoodenCrate
 	, 'steel-crate': SteelCrate
 	, 'chao-crate': ChaoCrate
 	, 'unbreakable-crate': UnbreakableCrate
 	, 'road-barrier': RoadBarrier
+	, 'caution-panel': CautionPanel
 	, 'signpost': Signpost
 	, 'umbrella': Umbrella
 	, 'dish': Dish
@@ -328,11 +403,14 @@ export const ObjectPalette = {
 	, 'spikes-small': SpikesSmall
 	, 'cone': Cone
 	, 'wind-stone': WindStone
+	, 'skull': Skull
+	, 'pumpkin': Pumpkin
 	, 'fountain': Fountain
 	, 'caution-sign': CautionSign
 	, 'rolling-sign': RollingSign
 	, 'bell': Bell
 	, 'torch': Torch
+	, 'light-source': LightSource
 	, 'orb': Orb
 	, 'chao': Chao
 	, 'egg': Egg
@@ -342,6 +420,17 @@ export const ObjectPalette = {
 	, 'html-frame': HtmlFrame
 	, 'panel': Panel
 	, 'tester': Tester
+	, 'cursor': Cursor
+	, 'mouse-indicator': MouseIndicator
 	, 'spawner': Spawner
 	, 'never-better': NeverBetter
+	, 'asteroid-large': AsteroidLarge
+	, 'asteroid-medium': AsteroidMedium
+	, 'asteroid-small': AsteroidSmall
+	, 'asteroid': Asteroid
+	, 'rocket-platform': RocketPlatform
+	, 'propeller-platform': PropellerPlatform
+	, 'hex-nut': HexNut
+	, 'turtloid': Turtloid
+	, 'cross-cannon': CrossCannon
 };

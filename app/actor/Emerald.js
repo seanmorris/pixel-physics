@@ -14,23 +14,23 @@ export class Emerald extends PointActor
 		this.args.height = 12;
 	}
 
-	update()
-	{
-		super.update();
+	// update()
+	// {
+	// 	super.update();
 
-		const viewport = this.viewport;
+	// 	const viewport = this.viewport;
 
-		if(!viewport)
-		{
-			return;
-		}
-	}
+	// 	if(!viewport)
+	// 	{
+	// 		return;
+	// 	}
+	// }
 
 	collideA(other)
 	{
 		super.collideA(other);
 
-		if(this.args.gone)
+		if(this.args.gone || !other.controllable)
 		{
 			return;
 		}

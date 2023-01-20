@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Ring } from './Ring';
 import { Tag } from 'curvature/base/Tag';
 
 const Side = Symbol('Side');
@@ -45,12 +46,17 @@ export class SeeSaw extends PointActor
 
 	collideA(other, type)
 	{
-		other.args.groundAngle = 0;
+		if(other instanceof Ring)
+		{
+			return;
+		}
 
 		if(!other.args.falling || other.args.ySpeed <= 0)
 		{
 			return false;
 		}
+
+		other.args.groundAngle = 0;
 
 		if(Math.abs(other.x - this.x) > 4)
 		{
@@ -111,6 +117,11 @@ export class SeeSaw extends PointActor
 
 		for(const other of collisions.keys())
 		{
+			if(other.args.falling)
+			{
+				continue;
+			}
+
 			other.args.groundAngle = 0;
 
 			const armDist = other.x - this.x;
@@ -130,7 +141,7 @@ export class SeeSaw extends PointActor
 
 			const power  = Math.abs(this.reflectForce / other.args.weight);
 
-			const torque = Math.min(1, Math.ceil(hang * 5) / 5);
+			const torque = Math.min(1, Math.ceil(hang * 3) / 3);
 
 			other.args.gSpeed = 0;
 

@@ -1,0 +1,313 @@
+{
+    "compressionlevel": -1,
+    "height": 13,
+    "infinite": false,
+    "nextlayerid": 53,
+    "nextobjectid": 1178,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "west-side"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 0
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "SEAVIEW PARK"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": false
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 62,
+            "firstgid": 177,
+            "image": "../custom/red-starlight.png",
+            "imageheight": 1344,
+            "imagewidth": 1984,
+            "margin": 0,
+            "name": "red-starlight",
+            "spacing": 0,
+            "tilecount": 2604,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 2781,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 3037,
+            "image": "../Sonic/tiles/azure-lake/azure-lake.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "azure-lake",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 4061,
+            "image": "rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 4573,
+            "image": "slopes.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "slopes",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4829,
+            "image": "../Sonic/tiles/lava-reef/bridge.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "bridge",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 4830,
+            "image": "../Sonic/tiles/emerald-hill/corkscrew.png",
+            "imageheight": 160,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "corkscrew",
+            "spacing": 0,
+            "tilecount": 60,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 4890,
+            "image": "../custom/steel-crate.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "steel-crate",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 4894,
+            "image": "../Sonic/tiles/wood-zone/treehouse.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "treehouse",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 5150,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 5182,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tiles": [
+                {
+                    "id": 60,
+                    "properties": [
+                        {
+                            "name": "period",
+                            "type": "int",
+                            "value": 750
+                        }
+                    ]
+                }
+            ],
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 5246,
+            "image": "../Sonic/tiles/azure-lake/azure-lake-shapes.png",
+            "imageheight": 128,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "azure-lake-shapes",
+            "spacing": 0,
+            "tilecount": 88,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 5334,
+            "image": "../Sonic/tiles/azure-lake/rolling.png",
+            "imageheight": 1024,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 512,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 5846,
+            "image": "giant-loop.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "giant-loop",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 6870,
+            "image": "../Sonic/tiles/azure-lake/giant-loop.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "giant-loop",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 10,
+            "firstgid": 7894,
+            "image": "../Sonic/tiles/marble/props.png",
+            "imageheight": 480,
+            "imagewidth": 320,
+            "margin": 0,
+            "name": "props",
+            "spacing": 0,
+            "tilecount": 150,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 8044,
+            "image": "lz-ground.png",
+            "imageheight": 3200,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "lz-ground",
+            "spacing": 0,
+            "tilecount": 2200,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 50,
+    "types": [
+        "companion-block",
+        "lava-region",
+        "ring",
+        "sheild-electric-monitor",
+        "sonic"
+    ],
+    "map": "/map/lava-test.json"
+}

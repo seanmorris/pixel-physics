@@ -1,0 +1,22 @@
+.actor-skull {
+	z-index: var(--z, -10);
+}
+
+.actor-skull .sprite {
+	width: 17px;
+	height: 15px;
+	z-index: 10;
+}
+
+.actor-skull .sprite::after {
+	content:'';
+	position: absolute;
+	background-image: url(/Sonic/skull.png);
+	width: 17px;
+	height: 15px;
+	left: 0;
+}
+
+.actor-skull[data-direction="-1"] .sprite::after {
+	transform: scaleX(-1);
+}

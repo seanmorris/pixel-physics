@@ -6,34 +6,59 @@
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	width: calc(100% / var(--scale));
+	width: 100%;
 	height: calc(calc(300% / var(--scale)) + 0px);
-	transform-origin: top left;
-	transform: scale(var(--scale));
 	backdrop-filter:  blur(0px);
 }
 
 .screen-effects .screen-fire {
 	position: absolute;
+	left: 0;
 	width: 100%;
-	height:  300%;
+	height:  2400px;
 	display: flex;
 	filter:  url(#waves);
 	opacity: 0.7;
-	transform: translateY(33.3%);
+	transform-origin: top left;
+	--scaleX: 1;
+	transform: translateY(50%) scaleX(var(--scaleX));
 }
 
 .screen-effects .screen-fire .fire-strip > div {
-	width: 16px;
-	height:  150%;
-	background-image: url(/Sonic/angel-island-fire.png);
+	width: 32px;
+	height: calc(100% - calc(63px + 53px));
+	background-image: url(/Sonic/angel-island-fire-center.png);
 	background-position: calc(var(--index, 0) * -32px) 0;
-	background-repeat: repeat-x;
 	opacity: 1;
 }
 
+.screen-effects .screen-fire .fire-strip > div::before {
+	content: "";
+	width: 32px;
+	height: 63px;
+	background-image: url(/Sonic/angel-island-fire-top.png);
+	background-position: calc(var(--index, 0) * -32px) 0;
+	position: absolute;
+	top: -63px;
+}
+
+.screen-effects .screen-fire .fire-strip > div::after {
+	content: "";
+	width: 32px;
+	height: 53px;
+	background-image: url(/Sonic/angel-island-fire-bottom.png);
+	background-position: calc(var(--index, 0) * -32px) 0;
+	position: absolute;
+	bottom: -53px;
+}
+
 .screen-effects .screen-fire.playing {
-	animation: screen-fire-slide 6s -0.5s linear 1;
+	animation: screen-fire-slide 5s linear 1;
+}
+
+[data-paused="-1"] .screen-effects .screen-fire.playing,
+[data-paused="0"] .screen-effects .screen-fire.playing {
+	animation-play-state: paused !important;
 }
 
 /*.screen-effects .screen-fire.playing .fire-strip:nth-child(8n) {
@@ -115,16 +140,16 @@
 
 	}
 	to {
-		transform: scale(1.1, 0.93);
+		transform: scale(1.1, 0.875);
 	}
 }
 
 @keyframes screen-fire-slide {
-	from {
-		transform: translateY(33.3%);
+	0% {
+		transform: translateY(288px)  scaleX(var(--scaleX));
 
 	}
-	to {
-		transform: translateY(-100%);
+	100% {
+		transform: translateY(-100%)  scaleX(var(--scaleX));
 	}
 }

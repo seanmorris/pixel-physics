@@ -5,7 +5,7 @@
 	position: absolute;
 	left: calc(1px * var(--x));
 	top: calc(1px * var(--y));
-	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);
+/*	box-shadow: 0 0 4px 4px rgba(0,255,0,0.45);*/
 }
 
 .point-actor.actor-generic:before {
@@ -32,7 +32,7 @@
 }
 
 .actor-generic .sprite:after {
-	filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
+	/*filter: invert(25%) brightness(200%) sepia(100%) hue-rotate(100deg) saturate(200%);
 	display: block;
 	position: absolute;
 	content: ' ';
@@ -47,7 +47,7 @@
 	--translate: translate(5px, calc(-50%));
 	transform-origin: -5px 50%;
 	transform: var(--translate) rotate(calc(0deg + calc(1rad * var(--ground-angle))));
-	opacity: 0.75;
+	opacity: 0.25;*/
 }
 
 .actor-generic {

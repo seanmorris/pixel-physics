@@ -11,7 +11,12 @@ export class ChaoCrate extends BreakableBlock
 		this.args.width  = 60;
 		this.args.height = 60;
 		this.args.static = false;
+		this.args.spriteSheet = '/Sonic/chao-crate.png';
+
+		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
+
+	setTile(){}
 
 	collideA(other, type)
 	{
@@ -63,15 +68,12 @@ export class ChaoCrate extends BreakableBlock
 		{
 			for(let i = 0; i < 5; i++)
 			{
-				const egg = new Egg({x: this.x, y: this.y});
+				const egg = new Egg({x: this.x, y: this.y - 3});
 
 				this.viewport.spawn.add({object:egg});
-
-				this.onNextFrame(() => {
-					egg.args.falling = true;
-					egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
-					egg.args.ySpeed  = -7;
-				});
+				egg.args.falling = true;
+				egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
+				egg.args.ySpeed  = -7;
 			}
 		}
 

@@ -22,30 +22,50 @@ export class WaterRegion extends Region
 		this.skimSpeed = 15;
 
 		this.draining = 0;
+
+		this.skimParticles = new Map;
 	}
 
 	skim(actor)
 	{
 		super.skim(actor);
 
-		if(this.viewport.args.frameId % 4)
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip !== 0)
 		{
 			return;
 		}
 
-		const splashParticle = new Tag(`<div class = "particle-skim">`);
-		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 0);
+		const splashPoint = actor.rotatePoint(actor.args.gSpeed, 3);
 
-		splashParticle.style({
-			'--x': splashPoint[0] + actor.x + actor.args.gSpeed
-			, '--y': splashPoint[1] + actor.y
-			, 'z-index': 0
-			, '--flip': `${actor.args.direction}`
+		if(this.skimParticles.has(actor))
+		{
+			const stuff = this.skimParticles.get(actor);
+			const {skimParticle, timeout} = stuff;
+			timeout();
+			const newTimeout = this.viewport.onFrameOut(2, () => {
+				this.viewport.particles.remove(skimParticle);
+				this.skimParticles.delete(actor);
+			});
+			stuff.timeout = newTimeout;
+			skimParticle.style({
+				'--x': splashPoint[0] + actor.x
+				, '--y': splashPoint[1] + actor.y
+				, 'z-index': 0
+				, '--flip': `${actor.args.direction}`
+			});
+			return;
+		}
+
+		const skimParticle = new Tag(`<div class = "particle-skim">`);
+
+		this.viewport.particles.add(skimParticle);
+
+		const timeout = this.viewport.onFrameOut(2, () => {
+			this.viewport.particles.remove(skimParticle)
+			this.skimParticles.delete(actor);
 		});
 
-		this.viewport.particles.add(splashParticle);
-
-		this.viewport.onFrameOut(16, () => this.viewport.particles.remove(splashParticle));
+		this.skimParticles.set(actor, {skimParticle, timeout});
 	}
 
 	update()
@@ -155,6 +175,28 @@ export class WaterRegion extends Region
 		}
 
 		super.update();
+	}
+
+	updateEnd()
+	{
+		super.updateEnd();
+
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip !== 0)
+		{
+			return;
+		}
+
+		for(const [actor, {skimParticle}] of this.skimParticles)
+		{
+			const splashPoint = actor.rotatePoint(0, 3);
+
+			skimParticle.style({
+				'--x': splashPoint[0] + actor.x + -32 * Math.sign(actor.args.gSpeed)
+				, '--y': splashPoint[1] + actor.y
+				, 'z-index': 0
+				, '--flip': `${actor.args.direction}`
+			});
+		}
 	}
 
 	updateActor(other)

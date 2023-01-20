@@ -4,6 +4,8 @@ import { FireSheild } from '../../powerups/FireSheild';
 
 export class SheildFireMonitor extends Monitor
 {
+	name = 'Fire Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

@@ -6,22 +6,36 @@ import { Tag }        from 'curvature/base/Tag';
 
 import { Region } from '../region/Region';
 import { Spring } from './Spring';
+import { BreakableBlock } from './BreakableBlock';
+import { Block } from './Block';
+
 // import { StarPost } from './StarPost';
 
 export class Projectile extends PointActor
 {
-	constructor(...args)
+	constructor(args, parent)
 	{
-		super(...args);
+		const gravity = args.gravity;
+
+		super(args, parent);
 
 		this.args.type = 'actor-item actor-projectile';
+
+		if(this.args.subType)
+		{
+			this.args.type = this.args.type + ' ' + this.args.subType;
+		}
+
+		this.args.damageType = this.args.damageType ?? 'normal';
 
 		this.behaviors.add(new Platformer);
 
 		this.args.width  = 8;
 		this.args.height = 8;
 
-		this.args.gravity   = 0.15;
+		this.args.strength = this.args.strength || 1;
+
+		this.args.gravity = gravity ?? 0.15;
 
 		this.removeTimer = null;
 		this.noClip = true;
@@ -52,13 +66,28 @@ export class Projectile extends PointActor
 
 		if(this.viewport && !this.removeTimer)
 		{
-			this.removeTimer = this.viewport.onFrameOut(150, () => this.explode());
+			this.removeTimer = this.viewport.onFrameOut(200, () => this.explode());
 		}
 	}
 
 	collideA(other)
 	{
+		if(other instanceof Projectile)
+		{
+			return;
+		}
+
 		if(other === this.args.owner || other instanceof Region || other instanceof Spring)
+		{
+			return false;
+		}
+
+		if(!this.args.owner.controllable && !other.controllable)
+		{
+			return;
+		}
+
+		if(this.args.strength <= 1 && other instanceof BreakableBlock)
 		{
 			return false;
 		}
@@ -89,7 +118,7 @@ export class Projectile extends PointActor
 
 		if(this.args.owner && !this.args.owner.args.gone)
 		{
-			other.controllable && other.damage();
+			(other.controllable || (other instanceof BreakableBlock)) && other.damage(this, this.args.damageType);
 		}
 
 		// this.args.x += Math.cos(this.args.angle) * (other.args.width / 2) * Math.sign(this.args.xSpeed);
@@ -115,7 +144,7 @@ export class Projectile extends PointActor
 
 		viewport.particles.add(particle);
 
-		setTimeout(() => viewport.particles.remove(particle), 350);
+		this.viewport.onFrameOut(20, () => viewport.particles.remove(particle));
 
 		this.viewport.actors.remove( this );
 		this.remove();

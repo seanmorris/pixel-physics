@@ -1,0 +1,54 @@
+.actor-item.actor-spring-turtle .sprite {
+	height: 32px;
+	width: 32px;
+}
+.actor-item.actor-spring-turtle .sprite:before {
+	content: '';
+	position: absolute;
+	top: -25px;
+	left: 0;
+	height: 32px;
+	width: 32px;
+	background-image: url(/custom/spring-turtle-spring.png);
+}
+
+.actor-item.actor-spring-turtle[data-spring=true] .sprite:before {
+	background-position-x: -32px;
+}
+
+.actor-item.actor-spring-turtle .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/custom/spring-turtle.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 32px;
+	width: 32px;
+	z-index: 1;
+}
+
+.actor-item.actor-spring-turtle[data-animation="standing"] .sprite:after {
+	/*--sprite-offset-x: 0px;
+	--sprite-offset-y: 32px;*/
+}
+
+.actor-item.actor-spring-turtle[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: 0px;
+	animation: spring-turtle-walk steps(2) infinite 280ms;
+}
+
+.actor-item.actor-spring-turtle[data-animation="walking"][data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+@keyframes spring-turtle-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

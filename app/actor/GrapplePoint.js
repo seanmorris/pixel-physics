@@ -13,8 +13,8 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		// this.args.width  = this.args.width  || 32;
 		// this.args.height = this.args.height || 32;
 
-		this.args.width  = 22;
-		this.args.height = 32;
+		this.args.width  = 28;
+		this.args.height = 16;
 
 		this.args.type   = 'actor-item actor-grapple-point';
 
@@ -22,7 +22,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.args.gravity = 0.6;
 
-		this.noClip = true;
+		// this.noClip = true;
 		this[Spring.WontSpring] = true;
 	}
 
@@ -30,7 +30,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	{
 		super.update();
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		if(tiedTo)
 		{
@@ -96,11 +96,17 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 	}
 
 	update()
-	{}
-
-	collideB(other)
 	{
-		const tiedTo = this.args._tiedTo;
+	}
+
+	collideA(other)
+	{
+		if(!other.controllable)
+		{
+			return false;
+		}
+
+		const tiedTo = this.others.tiedTo;
 
 		if(!tiedTo || tiedTo.noClip)
 		{
@@ -117,20 +123,30 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return false;
 		}
 
-		if(Math.abs(other.args.y - this.args.y) > 8 || !other.controllable || this.hooked)
-		{
-			return;
-		}
+		// if((
+		// 	(other.args.falling && Math.abs(other.args.y + -this.args.y + other.args.height) > 8)
+		// 	&& (other.args.falling && Math.abs(other.args.y + -this.args.y) > 8)
+		// )
+		// || !other.controllable
+		// || this.hooked)
+		// {
+		// 	return;
+		// }
 
 		other.args.falling = true;
 		other.swing = true;
 
 		this.hooked = other;
 
-
 		this.viewport.auras.add(this);
 
 		this.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
+
+		if(other.args.mode === 2)
+		{
+			this.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
+		}
+
 		this.args.ySpeed = other.args.ySpeed;
 
 		other.args.xSpeed = 0;
@@ -149,20 +165,30 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		other.args.hangingFrom = this;
 		other.args.jumping = false;
 
-		if(this.args._tiedTo)
+		if(this.others.tiedTo)
 		{
-			const tiedTo = this.args._tiedTo;
+			const tiedTo = this.others.tiedTo;
 
 			tiedTo.dispatchEvent(new CustomEvent('hooked'), {detail: {
 				hook: this, subject: other
 			}});
 
-			tiedTo.activate && tiedTo.activate();
+			tiedTo.activate && tiedTo.activate(other);
 
 			const drop = () => {
 
-				if(!this.viewport || !this.hooked)
+				if(!this.viewport)
 				{
+					return;
+				}
+
+				if(!this.hooked)
+				{
+					this.args.x = this.def.get('x');
+					this.args.y = this.def.get('y');
+
+					this.viewport.setColCell(this);
+
 					return;
 				}
 
@@ -203,7 +229,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			return;
 		}
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		hooked.args.ignore = hooked.args.float = 0;
 

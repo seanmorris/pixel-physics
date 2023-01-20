@@ -1,0 +1,33 @@
+.actor-boost-ring .sprite {
+	display: contents;
+	/*--pointing: calc(3.14rad + 1.57rad);*/
+	/*--pointing: calc(-0.25 * 3.14rad);*/
+	/*--pointing: 1.57rad;*/
+}
+
+.actor-boost-ring .sprite:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: -38px;
+	background-image: url(/Sonic/boost-ring-front.png);
+	width: 14px;
+	height: 46px;
+	z-index: 10000;
+	transform: rotate(calc(1rad * var(--pointing, 0))) translateX(-5px);
+	transition: transform 0.25s ease-out;
+	transform-origin: 0% center;
+}
+
+.actor-boost-ring .sprite:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: -38px;
+	background-image: url(/Sonic/boost-ring-back.png);
+	width: 14px;
+	height: 46px;
+	transform: rotate(calc(1rad * var(--pointing, 0))) translateX(-5px);
+	transform-origin: 0% center;
+	transition: transform 0.25s ease-out;
+}

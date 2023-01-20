@@ -19,6 +19,11 @@ export class Series extends View
 
 	play()
 	{
+		if(!this.cards.length)
+		{
+			return;
+		}
+
 		const card  = this.cards.shift();
 		const early = new Promise(accept => card.onRemove(accept));
 		const play  = card.play();
@@ -37,9 +42,7 @@ export class Series extends View
 		return Promise.race(racers).then(done => {
 			if(done)
 			{
-				this.parent.onFrameOut(10, () => {
-					Promise.all(done).then(() => card.remove());
-				});
+				this.parent.onFrameOut(10, () => card.remove());
 			}
 
 			if(this.cards.length)

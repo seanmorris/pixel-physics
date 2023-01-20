@@ -1,0 +1,39 @@
+{
+    "compressionlevel": -1,
+    "height": 32,
+    "infinite": false,
+    "nextlayerid": 6,
+    "nextobjectid": 3,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 8,
+    "tilesets": [
+        {
+            "columns": 1,
+            "firstgid": 1,
+            "image": "tileset-23.png",
+            "imageheight": 560,
+            "imagewidth": 8,
+            "margin": 0,
+            "name": "map-000_tileset-0",
+            "spacing": 0,
+            "tilecount": 70,
+            "tileheight": 8,
+            "tilewidth": 8
+        }
+    ],
+    "tilewidth": 8,
+    "type": "map",
+    "version": "1.6",
+    "width": 32,
+    "types": [],
+    "map": "/map/empty-map.json"
+}

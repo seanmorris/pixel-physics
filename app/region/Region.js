@@ -13,7 +13,7 @@ export class Region extends PointActor
 		obj.args.x = obj.originalX = -0 + Math.floor(objDef.x);
 		obj.args.y = obj.originalY = -0 + Math.floor(objDef.y);
 
-		this.static = true;
+		obj.args.static = true;
 
 		return obj;
 	}
@@ -83,6 +83,7 @@ export class Region extends PointActor
 				, '--topBoundry':     (topBoundry) + 'px'
 				, '--vpX':            (this.viewport.args.x) + 'px'
 				, '--vpY':            (this.viewport.args.y) + 'px'
+				, '--color':          this.args.color ?? 'rgba(0,128,255,0.33)'
 			});
 		}
 	}

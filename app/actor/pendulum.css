@@ -7,10 +7,19 @@
 	left: calc(50% - 4px);
 	background-image: url(/Sonic/chain-link.png);
 	background-position: bottom;
+	transform-origin: bottom center;
+	transform: rotate(calc(1rad * var(--angle, 0)));
 }
 
-
+[data-theme="wood"] .actor-item .chain,
 [data-bg="wood"] .actor-item .chain {
+	width: 4px;
+	left: calc(50% - 3px);
 	background-image: url(/Sonic/rope.png);
-	background-repeat: repeat-y;
+	/*background-repeat: repeat-y;*/
+}
+
+[data-theme="aegan"] .actor-item .chain {
+	background-image: url(/Sonic/chain-link-brass.png);
+	/*background-repeat: repeat-y;*/
 }

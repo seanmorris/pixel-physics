@@ -10,11 +10,27 @@
 	animation: projectile-animate steps(2) infinite 200ms;
 }
 
+.actor-item.actor-projectile.spark .sprite {
+	background-image: url(/Sonic/sparkle-spark.png);
+	animation: projectile-spark-animate steps(2) infinite 90ms;
+	height: 16px;
+	width: 16px;
+}
+
 @keyframes projectile-animate {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-16px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes projectile-spark-animate {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-32px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

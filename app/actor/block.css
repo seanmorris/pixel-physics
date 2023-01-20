@@ -3,7 +3,7 @@
 .actor-item.actor-breakable-block .sprite,
 .actor-item.actor-marble-companion-block .sprite,
 .actor-item.actor-block-marble .sprite {
-	--hoverWidth: -1px;
+	--hoverWidth: calc(1px  / var(--scale));
 }
 
 .actor-item.actor-block svg {
@@ -39,8 +39,8 @@
 
 .actor-item.actor-breakable-block {
 	--break-speed: 0s;
-	--x-speed:  0s;
-	--y-speed: 0s;
+	--x-speed:  0.75s;
+	--y-speed: 1.0s;
 	--xTarget: 0vh;
 	--yTarget: 0vh;
 	--spread: 0%;
@@ -50,11 +50,11 @@
 	--break-speed: 0.5s;
 	--x-speed:  0.75s;
 	--y-speed: 1.0s;
-	--spread: 450%;
+	--spread: 250%;
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken {
-	/*--y-speed: 1.5s;*/
+	--y-speed: 1.5s;
 	--spread: 10%;
 }
 
@@ -62,15 +62,27 @@
 	z-index: 100;
 }
 
-.actor-item.actor-breakable-block.broken .sprite {
-	background-image: none !important;
-	opacity: 0 !important;
+.actor-item.actor-breakable-block:not(.broken) .sprite {
+	background-image: var(--sprite-sheet, url(/Sonic/marble-companion-block.png));
+	background-position-x: calc(var(--sprite-x) * -32px);
+	background-position-y: calc(var(--sprite-y) * -32px);
+}
+
+.actor-item.actor-breakable-block .fragmentsX {
+	/*display: none;*/
+}
+.actor-item.actor-breakable-block.broken .fragmentsX,
+.actor-item.actor-breakable-block.broken .fragmentsX,
+.actor-item.actor-breakable-block.breaking .fragmentsX,
+.actor-item.actor-breakable-block.will-break .fragmentsX {
+	display: initial;
 }
 
 .actor-item.actor-breakable-block.broken .fragmentsX {
 	--xTarget: calc(var(--xSpeed) * 24px);
-	transform: translate(var(--xTarget), -128px);
-	--yTarget: 50vh;
+	--yTarget: 80vh;
+	transform: translate(var(--xTarget), -144px);
+	/*transform: translate(var(--xTarget), 0px);*/
 }
 
 .actor-item.actor-breakable-block.collapsible-block.broken .fragmentsX {
@@ -79,7 +91,7 @@
 }
 
 .actor-item.actor-breakable-block.breaking .fragmentsX {
-	filter: brightness(1.15) saturate(0.25) contrast(1.25);
+	/*filter: brightness(1.15) saturate(0.25) contrast(1.25);*/
 }
 
 .actor-item.actor-breakable-block .fragmentsX {
@@ -210,15 +222,22 @@
 	width: 101px;
 }
 
+.actor-item.actor-block[data-design="emerald-isle"] .sprite {
+	background-position: top center;
+	top: -5px;
+	height: 52px;
+	width: 96px;
+}
+
 @keyframes companion-block-shake {
 	0%{
 		transform: translateX(0px);
 	}
 	25%{
-		transform: translateX(-2px);
+		transform: translateX(-1px);
 	}
 	75%{
-		transform: translateX(2px);
+		transform: translateX(1px);
 	}
 	100%{
 		transform: translateX(0px);
@@ -230,10 +249,10 @@
 		transform: translateX(0px);
 	}
 	25%{
-		transform: translateX(-4px);
+		transform: translateX(-2px);
 	}
 	75%{
-		transform: translateX(4px);
+		transform: translateX(2px);
 	}
 	100%{
 		transform: translateX(0px);

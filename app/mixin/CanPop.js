@@ -3,10 +3,17 @@ import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { Sfx } from '../audio/Sfx';
 
-export const CanPop = {
-	collideA: function(other, type) {
-
+export class CanPop
+{
+	collideA(other, type)
+	{
 		const viewport = this.viewport;
+
+		if(this.args.invincible)
+		{
+			other.damage(this);
+			return;
+		}
 
 		if(other.knocked)
 		{
@@ -46,13 +53,10 @@ export const CanPop = {
 		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
+			&& (immune || other.dashed || other.args.jumping || other.args.spinning || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
 		){
 			const otherShield = other.args.currentSheild;
-			if(other.args.mercy < 45)
-			{
-				this.damage(other, otherShield ? otherShield.type : 'normal');
-			}
+			this.damage(other, otherShield ? otherShield.type : (other.args.damageType || 'normal'));
 			return;
 		}
 
@@ -70,13 +74,19 @@ export const CanPop = {
 			if(!other.args.mercy)
 			{
 				other.damage(this, shield ? shield.type : 'normal');
+				this.ignores.set(other, 10);
 			}
 		}
 
 		return false;
 	}
 
-	, damage: function(other, type) {
+	damage(other, type)
+	{
+		if(this.args.invincible)
+		{
+			return;
+		}
 
 		if(!other)
 		{
@@ -96,10 +106,11 @@ export const CanPop = {
 		}
 	}
 
-	, pop: function(other) {
+	pop(other)
+	{
 		const viewport = this.viewport;
 
-		if(!viewport || this.args.gone || (other && other.args.owner === this))
+		if(!viewport || this.args.gone || this.args.invincible || (other && other.args.owner === this))
 		{
 			return;
 		}
@@ -120,10 +131,8 @@ export const CanPop = {
 		if(other && other.dashed)
 		{
 			other.args.gSpeed = 0;
-			other.args.xSpeed = 0;
-			other.args.ySpeed = -9;
-
-			other.args.x = this.args.x;
+			other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
+			other.args.ySpeed = -10;
 
 			other.dashed = false;
 		}
@@ -144,7 +153,15 @@ export const CanPop = {
 			{
 				let points = 100;
 
+				if(this.args.gold)
+				{
+					points = 10000;
+				}
+
+				const reward = {label: this.name || this.args.name, points, multiplier:1};
+
 				other.args.popCombo += 1;
+				other.args.popChain.push(reward);
 
 				const scoreNode = document.createElement('div');
 				scoreNode.classList.add('particle-score');
@@ -155,63 +172,58 @@ export const CanPop = {
 				switch(true)
 				{
 					case this.args.gold:
-						scoreNode.classList.add('score-10000');
+						// scoreNode.classList.add('score-10000');
 						points = 10000;
 						break;
 					case other.args.popCombo === 1:
-						scoreNode.classList.add('score-100');
+						// scoreNode.classList.add('score-100');
 						points = 100;
 						break;
 					case other.args.popCombo === 2:
-						scoreNode.classList.add('score-200');
+						// scoreNode.classList.add('score-200');
 						points = 200;
 						break;
 					case other.args.popCombo === 3:
-						scoreNode.classList.add('score-300');
+						// scoreNode.classList.add('score-300');
 						points = 300;
 						break;
 					case other.args.popCombo === 4:
-						scoreNode.classList.add('score-400');
+						// scoreNode.classList.add('score-400');
 						points = 400;
 						break;
 					case other.args.popCombo === 5:
-						scoreNode.classList.add('score-500');
+						// scoreNode.classList.add('score-500');
 						points = 500;
 						break;
 					case other.args.popCombo === 6:
-						scoreNode.classList.add('score-600');
+						// scoreNode.classList.add('score-600');
 						points = 600;
 						break;
 					case other.args.popCombo === 7:
-						scoreNode.classList.add('score-700');
+						// scoreNode.classList.add('score-700');
 						points = 700;
 						break;
 					case other.args.popCombo === 8:
-						scoreNode.classList.add('score-800');
+						// scoreNode.classList.add('score-800');
 						points = 800;
 						break;
 					case other.args.popCombo === 9:
-						scoreNode.classList.add('score-900');
+						// scoreNode.classList.add('score-900');
 						points = 900;
 						break;
 					case other.args.popCombo >= 10:
-						scoreNode.classList.add('score-1000');
+						// scoreNode.classList.add('score-1000');
 						points = 1000;
 						break;
 				}
 
-				viewport.particles.add(scoreTag);
+				// viewport.particles.add(scoreTag);
 
-				setTimeout(() => viewport.particles.remove(scoreTag), 768);
+				// viewport.onFrameOut(80, () => viewport.particles.remove(scoreTag));
 
-				other.args.score += points;
+				// other.args.score += points;
 
 				this.effect(other);
-			}
-
-			if(other.dashed)
-			{
-				other.args.xSpeed /= 4;
 			}
 
 			const ySpeed = other.args.ySpeed;
@@ -219,7 +231,8 @@ export const CanPop = {
 			if(other.args.falling && !other.punching)
 			{
 				this.onNextFrame(() => {
-					if(ySpeed > 0)
+
+					if(ySpeed >= 0)
 					{
 						other.args.ySpeed = Math.min(-ySpeed, -7);
 					}

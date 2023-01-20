@@ -1,0 +1,17 @@
+.actor-tree .sprite {
+	width: 10px;
+	height: calc(-64px + calc(1px * var(--height)));
+	background-image: url(/Sonic/tree-trunk.png);
+	background-repeat: repeat-y;
+}
+
+.actor-tree .tree-top {
+	position: absolute;
+	top: calc(-1px * var(--height));
+	left:  -40px;
+	width: 80px;
+	height: 64px;
+	background-image: url(/Sonic/tree-top.png);
+	background-repeat: repeat-y;
+	background-position: 0 calc(-64px * calc(4 - var(--count)));
+}

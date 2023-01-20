@@ -1,0 +1,139 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 10,
+    "nextobjectid": 12,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "ice-cap"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": false
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/ice-cap/ground.png",
+            "imageheight": 1888,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "ice-cap-ground",
+            "spacing": 0,
+            "tilecount": 944,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 1121,
+            "image": "../Sonic/tiles/ice-cap/ice-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "ice-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1185,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1745,
+            "image": "slopes.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "slopes",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 2001,
+            "image": "../Sonic/tiles/angel-island/ground-recolor.png",
+            "imageheight": 864,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "ground-recolor",
+            "spacing": 0,
+            "tilecount": 324,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 2325,
+            "image": "../Sonic/snowman.png",
+            "imageheight": 128,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "snowman",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 320,
+    "types": [
+        "",
+        "friction-region",
+        "layer-switch",
+        "region",
+        "sheild-water-monitor",
+        "spring"
+    ],
+    "map": "/map/ice-test.json"
+}

@@ -86,9 +86,12 @@ export class LayerController extends PointActor
 
 			this.args.yLayer = this.args.yLayerLimit;
 
-			const target = this.viewport.actorsById[ this.args.target ];
+			if(this.args.target)
+			{
+				const target = this.viewport.actorsById[ this.args.target ];
+				this.viewport.auras.delete(target);
+			}
 
-			this.viewport.auras.delete(target);
 			this.viewport.auras.delete(this);
 		}
 
@@ -99,9 +102,12 @@ export class LayerController extends PointActor
 
 			this.args.xLayer = this.args.xLayerLimit;
 
-			const target = this.viewport.actorsById[ this.args.target ];
+			if(this.args.target)
+			{
+				const target = this.viewport.actorsById[ this.args.target ];
+				this.viewport.auras.delete(target);
+			}
 
-			this.viewport.auras.delete(target);
 			this.viewport.auras.delete(this);
 		}
 	}

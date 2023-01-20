@@ -9,31 +9,32 @@
 		<span>[[select]]</span>
 		<span>[[ok]]</span>
 		<span>[[back]]</span>
+		<span>[[revert]]</span>
 	</section>
 
 	<section class = "contents" cv-if = "!connected">
 		<div class = "menu-container" data-current-menu = "[[currentKey]]">
-
+			<div>[[title]]</div>
 			<div>
-				[[title]]
-			</div>
-
-			<div>
-
 				<ul cv-ref = "bound" cv-each = "items:item:title">
 
-					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item, event); keyup(event, item):c" tabindex="0">
+					<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item, event); auxclick:altRun(item, event); keyup(event, item):c" tabindex="0" data-tags = "[[item.tags]]">
 						[[item.prefix]]
 						<span class = "title">[[item._title]]</span>
 						<span class = "subtext">[[item.subtext]]</span>
+						<span cv-if = "item.input" cv-is = "output">
+							:
+							<span data-wraps = "output">
+								[[item._value]]
+							</span>
+						</span>
 						<span cv-if = "item.input" cv-is = "string" class = "field">
-							: <span data-wraps = "string"><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event, title)" tabindex="-1" /></span>
+							<span data-wraps = "string" data-click-barrier><input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event, title)" tabindex="-1" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "number" class = "field">
-							: <span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event, title)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
+							<span data-wraps = "number"><input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event, title)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" /></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "boolean" class = "field">
-							:
 							<span data-wraps = "select">
 								[[item._boolValue]]
 								<select
@@ -45,7 +46,6 @@
 							</select></span>
 						</span>
 						<span cv-if = "item.input" cv-is = "select" class = "field">
-							:
 							<span data-wraps = "select">
 								[[item._selectValue]]
 								<select
@@ -60,20 +60,15 @@
 						</span>
 						[[item.suffix]]
 					</li>
-
-
 				</ul>
-
 			</div>
-
 		</div>
 	</section>
 
 	<section class = "contents" cv-if = "!connected">
-
+		<section class = "contents" cv-if = "lobby">[[lobby]]</section>
 		<section class = "contents" cv-if = "hostGame">
 			<div class = "token-exchange" data-have-token = "[[haveToken]]">
-
 				<label>
 					<p>Input the token from your friend here.</p>
 					<textarea cv-bind = "input" cv-on = "click:paste(event)"></textarea>
@@ -84,16 +79,13 @@
 					<p>Send this token to your friend to get started.</p>
 					<textarea cv-on = "click:copy" cv-ref = "hostOutput" cv-bind = "hostOutput" readonly = "true"></textarea>
 					<button cv-on = "click:copy">[[copy]]</button>
-
 					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
-
 			</div>
 		</section>
 
 		<section class = "contents" cv-if = "joinGame">
 			<div class = "token-exchange">
-
 				<label cv-if = "haveToken">
 					<p>Send this token to your friend to get started.</p>
 					<textarea cv-on = "click:copy" cv-ref = "joinOutput" cv-bind = "joinOutput" readonly = "true"></textarea>
@@ -106,9 +98,8 @@
 					<button cv-on = "click:acceptRtp">go!</button>
 					<div class = "close" cv-on = "click:disconnect"></div>
 				</label>
-
 			</div>
 		</section>
-
 	</section>
+	<section class = "override">[[override]]</section>
 </div>

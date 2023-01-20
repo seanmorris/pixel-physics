@@ -10,6 +10,8 @@ export class WaterfallRegion extends Region
 		super(...args);
 
 		this.args.type = 'region region-shade region-waterfall';
+
+		this.args.density = 0;
 	}
 
 	update()

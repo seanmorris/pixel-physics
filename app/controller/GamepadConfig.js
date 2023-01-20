@@ -1,7 +1,7 @@
 import { View } from 'curvature/base/View';
 import { Card } from '../intro/Card';
 
-export class GamepadConfig extends Card
+export class GamepadConfig extends View
 {
 	constructor(args, parent)
 	{
@@ -50,7 +50,7 @@ export class GamepadConfig extends Card
 
 	exit()
 	{
-		this.parent.quit(2);
+		this.remove();
 	}
 
 	input(controller)

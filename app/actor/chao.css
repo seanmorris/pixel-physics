@@ -13,7 +13,7 @@
 	top: 0;
 	left: 0;
 	background-image: var(--sprite-sheet);
-	transition: background-image 0.5s ease-out;
+	/*transition: background-image 0.5s ease-out;*/
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	width:  24px;
 	height: 24px;
@@ -106,13 +106,35 @@
 	--sprite-offset-y: -144px;
 }
 
+.actor-item.actor-chao[data-animation=eating] .sprite:after {
+	animation: chao-animate steps(5) infinite 700ms;
+	--animation-steps: -5;
+	--sprite-offset-y: -168px;
+}
+
+.actor-item.actor-chao[data-animation=crawling] .sprite:after {
+	animation: chao-animate steps(4) infinite 700ms;
+	--animation-steps: -4;
+	--sprite-offset-y: -192px;
+}
+
+.actor-item.actor-chao[data-animation=tripping] .sprite:after {
+	animation: chao-animate steps(5) 1 forwards 300ms !important;
+	--animation-steps: -5;
+	--sprite-offset-y: -216px;
+}
+
+.actor-item.actor-chao:not([data-current-state=hatching]) .sprite:after,
+.actor-item.actor-chao:not([data-current-state=hatching]) .sprite:before {
+	transition: background-image 0.5s ease-out;
+}
+
 .actor-item.actor-chao .sprite:before {
 	content: '';
 	position: absolute;
 	top: -16px;
 	left: 1px;
 	background-image: var(--sprite-sheet);
-	transition: background-image 0.5s ease-out;
 	width:  24px;
 	height: 24px;
 	z-index: 1;

@@ -41,14 +41,28 @@ export class HtmlFrame extends PointActor
 
 		this.args.collapse = args.collapse ?? false;
 
-		this.args.url = 'https://www.youtube.com/embed/pxIofYrt0kE?controls=0&autoplay=1';
+
+		const urls = [
+			'pxIofYrt0kE'
+			, 'aRsOBFhNjVM'
+			, 'obtGE_8NAp8'
+			, 'uRjoPlWWljk'
+		];
+
+		const ytUrt = v => `https://www.youtube.com/embed/${v}?controls=0&autoplay=1`
+
+		const random = Math.random();
+
+		console.log(random);
+
+		this.args.url = ytUrt(urls[Math.trunc(random * urls.length)]);
 	}
 
 	onRendered(event)
 	{
 		super.onRendered(event);
 
-		this.droop(0);
+		// this.droop(0);
 
 		if(this.screen)
 		{
@@ -58,7 +72,7 @@ export class HtmlFrame extends PointActor
 		this.screen = new Tag(`<iframe width="560" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
 		this.sprite.appendChild(this.screen.node);
 
-		this.screen.style({'pointer-events':'initial'});
+		// this.screen.style({'pointer-events':'initial'});
 
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 

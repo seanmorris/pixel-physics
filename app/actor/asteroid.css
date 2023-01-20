@@ -1,0 +1,27 @@
+.actor-item.actor-asteroid-large {
+	z-index: 11;
+}
+
+.actor-item.actor-asteroid-large .sprite {
+	background-image: url(/Sonic/asteroid.png);
+	width: 80px;
+}
+
+.actor-item.actor-asteroid-medium {
+	z-index: 11;
+}
+
+.actor-item.actor-asteroid-medium .sprite {
+	background-image: url(/Sonic/asteroid.png);
+	background-position-y: -80px;
+}
+
+.actor-item.actor-asteroid-small {
+	z-index: 11;
+}
+
+.actor-item.actor-asteroid-small .sprite {
+	background-image: url(/Sonic/asteroid.png);
+	background-position-x: -48px;
+	background-position-y: -80px;
+}

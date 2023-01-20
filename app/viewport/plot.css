@@ -1,0 +1,93 @@
+svg.plot {
+	width: calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	position: absolute;
+	left:0;
+	top:0;
+	transform-origin: top left;
+	transform: scale(var(--scale));
+	pointer-events: none;
+}
+
+svg.plot circle {
+	display: none;
+	position: relative;
+	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+}
+
+svg.plot circle.rayX {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.5);
+	display: initial;
+	opacity: 0.3;
+}
+
+
+svg.plot circle.rayY {
+	fill: transparent;
+	stroke: rgba(255,255,0,0.5);
+	display: initial;
+	opacity: 0.3;
+}
+
+svg.plot circle.rayX.bf-32,
+svg.plot circle.rayY.bf-32 {
+	opacity: 1;
+}
+
+svg.plot circle.start {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.125);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.end {
+	fill: transparent;
+	stroke: rgba(0,255,255,0.125);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.nearest {
+	fill: rgba(255,0,0,0.75);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.alt-scan {
+	filter: hue-rotate(20deg);
+}
+
+svg.plot circle:hover {
+	opacity: 1;
+}
+
+svg.plot circle.down-walk-solid {
+	fill: transparent;
+	stroke: rgba(255,0,0,0.25);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.up-walk-space {
+	fill: transparent;
+	stroke: rgba(255,64,128,0.25);
+	display: initial;
+	z-index: 1;
+}
+
+svg.plot circle.up-walk-space.mode-1,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(90deg);
+}
+
+svg.plot circle.up-walk-space.mode-2,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(180deg);
+}
+
+svg.plot circle.up-walk-space.mode-3,
+svg.plot circle.down-walk-solid.mode-1 {
+	filter: hue-rotate(270deg);
+}

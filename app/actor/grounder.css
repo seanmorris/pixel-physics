@@ -3,6 +3,18 @@
 	width: 32px;
 }
 
+.actor-item.actor-grounder[data-color="red"] .sprite:after {
+	--sprite-offset-y: -0px;
+}
+
+.actor-item.actor-grounder[data-color="green"] .sprite:after {
+	--sprite-offset-y: -40px;
+}
+
+.actor-item.actor-grounder[data-color="white"] .sprite:after {
+	--sprite-offset-y: -80px;
+}
+
 .actor-item.actor-grounder .sprite:after {
 	content: '';
 	position: absolute;
@@ -10,7 +22,6 @@
 	left: 0;
 	/*background-image: url(/secret/super-seymour.png);*/
 	--sprite-offset-x: 0px;
-	--sprite-offset-y: -40px;
 	background-image: url(/Sonic/grounder.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 40px;

@@ -66,4 +66,9 @@ export class SteelCrate extends BreakableBlock
 
 		return true;
 	}
+
+	setTile()
+	{
+		this.args.spriteSheet = '/custom/steel-crate.png';
+	}
 }

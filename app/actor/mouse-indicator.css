@@ -1,0 +1,11 @@
+.point-actor.actor-mouse-indicator .labels {
+	display: initial;
+	filter: hue-rotate(90deg);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.point-actor.actor-mouse-indicator .labels > * {
+	display: initial;
+}

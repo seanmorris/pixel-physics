@@ -48,10 +48,37 @@ export class Layer extends View
 			for(const property of layerDef.properties)
 			{
 				this.meta[property.name] = property.value;
+			}
+		}
 
+		if(this.meta.offsetX)
+		{
+			this.args.offsetX = this.meta.offsetX;
+		}
+
+		if(this.meta.offsetY)
+		{
+			this.args.offsetY = this.meta.offsetY;
+		}
+
+		layerDef['offsetX'] = this.args.offsetX;
+		layerDef['offsetY'] = this.args.offsetY;
+
+		layerDef.layer = this;
+
+		if(this.args.name.match(/^(Collision|Grinding)\s\d+/))
+		{
+			if(this.args.name.match(/[12]$/))
+			{
+				this.meta.switchable = true;
 			}
 
-			layerDef.layer = this;
+			this.meta.solid = true;
+		}
+
+		if(this.args.name.match(/^(Grinding)\s\d+/))
+		{
+			this.meta.grinding = true;
 		}
 
 		this.offsetXChanged = 0;
@@ -211,7 +238,7 @@ export class Layer extends View
 
 			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
 			{
-				const xy = String(i) + '::' + String(j);
+				const xy = i  * (1+Math.abs(blocksHigh)) + j;
 
 				// const tileY = j - Math.ceil(this.y / blockSize);
 
@@ -237,7 +264,7 @@ export class Layer extends View
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
-					const scale  = '1.02';
+					const scale  = '1.021';
 
 					block.style({
 						transform: `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
@@ -265,8 +292,21 @@ export class Layer extends View
 					Object.assign(tileXY, tileMap.getTile(blockId));
 				}
 
+				const tileset = tileXY[4];
+
 				const existingOffset = offsets.get(block);
 				const existingSrc    = blockSrcs.get(block);
+
+				if(tileset && tileset.meta && tileset.meta.animated)
+				{
+					const frames     = tileset.meta.frames;
+					const oneFrame   = viewport.args.frameId;
+					const speed      = tileset.meta.speed ?? 1;
+					const speedFrame = Math.floor(oneFrame / speed);
+					const frameIndex = speedFrame % frames;
+
+					tileXY[1] += tileset.meta.frameSize * frameIndex;
+				}
 
 				const blockOffset = -1 * (tileXY[0] * blockSize)
 					+ 'px '
@@ -284,22 +324,24 @@ export class Layer extends View
 				{
 					if(blockId !== false && blockId !== 0)
 					{
-						block.style({
+						const blockStyle = {
 							display: 'initial'
 							, 'background-position': blockOffset
 							, 'background-image': `url(${blockSrc})`
 							, '--screenX': (centerX - ii) / centerX
 							, '--screenY': (j - centerY) / centerY
-						});
+						};
+
+						block.style(blockStyle);
 					}
 					else
 					{
 						block.style({display: 'none'});
 					}
-				}
 
-				offsets.set(block, blockOffset);
-				blockSrcs.set(block, blockSrc);
+					offsets.set(block, blockOffset);
+					blockSrcs.set(block, blockSrc);
+				}
 			}
 
 			ii++;

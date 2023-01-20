@@ -13,6 +13,11 @@ export class Stopper extends BreakableBlock
 
 	collideA(other, type)
 	{
+		if(other.isVehicle)
+		{
+			return true;
+		}
+
 		if(this.broken)
 		{
 			return false;
