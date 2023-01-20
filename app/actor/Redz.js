@@ -76,7 +76,11 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 				, z: this.z + 1
 			});
 
-			this.viewport.spawn.add({object:spitFire});
+			const viewport = this.viewport;
+
+			viewport.spawn.add({object:spitFire});
+
+			this._onRemove.add(() => viewport.actors.remove(spitFire));
 		}
 
 		this.age++;

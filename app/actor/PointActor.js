@@ -2471,6 +2471,17 @@ export class PointActor extends View
 		}
 	}
 
+	command_11()
+	{
+		if(!(this.args.currentSheild instanceof StarSheild))
+		{
+			const item = this.args.currentSheild;
+			item.unequip && item.unequip(this);
+
+			this.args.currentSheild = null;
+		}
+	}
+
 	release_0()
 	{
 		if(this.args.float)

@@ -37,6 +37,11 @@ export class SpitFire extends PointActor
 			return;
 		}
 
+		if(other.immune(this, 'fire'))
+		{
+			return;
+		}
+
 		if(this.args.owner && !this.args.owner.args.gone)
 		{
 			other.controllable && other.damage(this, 'fire');
