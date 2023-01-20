@@ -10,8 +10,8 @@ export class ForceRegion extends Region
 
 		this.args.type = 'region region-force';
 
-		this.args.xForce = this.args.xForce || 0;
-		this.args.yForce = this.args.yForce || -5;
+		this.args.xForce = this.args.xForce ?? 0;
+		this.args.yForce = this.args.yForce ?? -5;
 
 		this.args.active = this.args.active ?? 1;
 	}
@@ -23,6 +23,11 @@ export class ForceRegion extends Region
 			this.originalHeight = this.args.height;
 		}
 
+		if(this.switch && this.switch.args.active > 0 && !this.args.active)
+		{
+			this.args.active = true;
+		}
+
 		super.update();
 	}
 
@@ -32,17 +37,11 @@ export class ForceRegion extends Region
 		{
 			return;
 		}
+	}
 
+	wakeUp()
+	{
 		this.switch = this.viewport.actorsById[ this.args.switch ];
-
-		if(!this.switch)
-		{
-			return;
-		}
-
-		this.switch.args.bindTo('active', v => {
-			this.args.active = v || this.args.active;
-		});
 	}
 
 	activate()
@@ -64,21 +63,49 @@ export class ForceRegion extends Region
 
 		if(other.args.falling)
 		{
-			this.onNextFrame(()=>{
-				other.args.xSpeed += Math.sign(this.args.xForce);
-				other.args.ySpeed += Math.sign(this.args.yForce);
-				other.args.animation = 'springdash';
-				other.args.groundAngle = 0;
-			});
+			const xProjected = other.args.xSpeed + Number(this.args.xForce);
+
+			if(Math.abs(xProjected) > Math.abs(this.args.xForceMax) && Math.sign(this.args.xForceMax) === Math.sign(xProjected))
+			{
+				other.args.xSpeed = this.args.xForceMax;
+			}
+			else
+			{
+				other.args.xSpeed = xProjected;
+			}
+
+			const yProjected = other.args.ySpeed + Number(this.args.yForce)
+
+			if(Math.abs(yProjected) > Math.abs(this.args.yForceMax) && Math.sign(this.args.yForceMax) === Math.sign(yProjected))
+			{
+				other.args.ySpeed = this.args.yForceMax;
+			}
+			else
+			{
+				other.args.ySpeed = yProjected;
+			}
+
+			// other.args.animation = 'springdash';
+			other.args.groundAngle = 0;
 
 			return;
 		}
 
+		let projected;
+
 		switch(other.args.mode)
 		{
 			case 0:
+				projected = other.args.gSpeed + this.args.xForce;
 
-				other.args.gSpeed += Math.sign(this.args.xForce);
+				if(Math.abs(projected) > Math.abs(this.args.xForceMax) && Math.sign(this.args.xForceMax) === Math.sign(projected))
+				{
+					other.args.gSpeed = this.args.xForceMax;
+				}
+				else
+				{
+					other.args.gSpeed = projected;
+				}
 
 				break;
 

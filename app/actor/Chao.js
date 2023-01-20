@@ -1,5 +1,7 @@
 import { Png } from '../sprite/Png';
 import { PointActor } from './PointActor';
+import { Coconut } from './Coconut';
+import { Mushroom } from './Mushroom';
 
 export class Chao extends PointActor
 {
@@ -11,10 +13,16 @@ export class Chao extends PointActor
 
 		this.args.type = 'actor-item actor-chao';
 
-		this.args.spriteSheet = this.spriteSheet = '/DBurraki/chao-normal.png';
+		this.args.particleScale = 0.75;
+		this.args.spriteSheet   = this.spriteSheet = '/DBurraki/chao-normal.png';
 
 		this.args.width  = 14;
 		this.args.height = 18;
+
+		this.xHold = 8;
+		this.yHold = 0;
+
+		this.maxFlight = 180;
 
 		this.emotes = ['normal', 'alert', 'inquire', 'like', 'love', 'angry'];
 		this.emoteIndex = 0;
@@ -35,6 +43,7 @@ export class Chao extends PointActor
 				carrier.carrying.add(this);
 
 				this.args.float = -1;
+				this.args.groundAngle = 0;
 			}
 			else if(this.carriedBy)
 			{
@@ -57,17 +66,60 @@ export class Chao extends PointActor
 
 		this.args.direction = 1;
 
-		this.args.currentState = 'sitting';
+		this.args.currentState = this.args.currentState || 'sitting';
 
 		this.args.bindTo('currentState', () => {
 			this.args.stateTime = 0;
 		});
+
+		this.stats = {
+			intelligence: 0
+			, stamina:    0
+			, luck:       0
+			, run:        0
+			, swim:       0
+			, fly:        0
+			, power:      0
+
+		};
+
+		this.traits = {
+			appetite: 0
+			, sociable: 0
+			,
+		};
+
+		this.mood = {
+			attitude: 0
+			, hunger: 0
+			, health: 100
+			, social: 0
+		}
+
+		this.defaultColors = ['addef8', '2ebee9', '0e6d89', 'ecde2f', 'dcb936', '985000', 'f8b0c0', 'f85080', 'e4e0e4', 'e0e0e0', 'f8f820', '606080'];
+
+		this.customColors = [null,null,null,null,null,null,null,null,null,null,null,null];
+
+		this.customColors.bindTo(() => {
+
+			const colorMap = {};
+
+			for(const i in this.defaultColors)
+			{
+				colorMap[ this.defaultColors[i] ] = this.customColors[i] ?? this.defaultColors[i];
+			}
+
+			this.png.ready.then(()=>{
+				const customSheet = this.png.recolor(colorMap).toUrl();
+				this.args.spriteSheet = customSheet;
+				console.log('!!!');
+			});
+
+		}, {wait:0});
 	}
 
 	onRendered(event)
 	{
-		console.log(event);
-
 		super.onRendered(event);
 
 		if(!this.listening)
@@ -77,9 +129,10 @@ export class Chao extends PointActor
 			this.listening = true;
 		}
 
-		this.setAutoAttr('emote',     'data-emote');
+		this.setAutoAttr('currentState', 'data-current-state');
 		this.setAutoAttr('alignment', 'data-alignment');
 		this.setAutoAttr('direction', 'data-direction');
+		this.setAutoAttr('emote',     'data-emote');
 
 		this.viewport.onInterval(1500, () => {
 			if(this.emoteIndex >= this.emotes.length)
@@ -108,8 +161,6 @@ export class Chao extends PointActor
 
 		// 	this.animationIndex++;
 		// });
-
-		console.log(event);
 
 		const heroColors = {
 			'addef8': 'e4e0e4',
@@ -275,8 +326,6 @@ export class Chao extends PointActor
 			this.mimeSheet  = this.png.recolor(mimeColors).toUrl();
 			this.whiteSheet = this.png.recolor(whiteColors).toUrl();
 			this.limeRubySheet = this.png.recolor(limeRubyColors).toUrl();
-
-			console.log(this.heroSheet);
 		});
 	}
 
@@ -296,85 +345,123 @@ export class Chao extends PointActor
 		this.args.currentState = 'held';
 	}
 
-	onClick(event)
-	{
-		if(this.args.spriteSheet === this.heroSheet)
-		{
-			this.args.spriteSheet = this.darkSheet;
-			this.args.alignment = 'dark';
-		}
-		else if(this.args.spriteSheet === this.darkSheet)
-		{
-			this.args.spriteSheet = this.rubySheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.rubySheet)
-		{
-			this.args.spriteSheet = this.tangySheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.tangySheet)
-		{
-			this.args.spriteSheet = this.limeSheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.limeSheet)
-		{
-			this.args.spriteSheet = this.coalSheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.coalSheet)
-		{
-			this.args.spriteSheet = this.whiteSheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.whiteSheet)
-		{
-			this.args.spriteSheet = this.mimeSheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.mimeSheet)
-		{
-			this.args.spriteSheet = this.limeRubySheet;
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.spriteSheet === this.limeRubySheet)
-		{
-			this.args.spriteSheet = this.spriteSheet;
-			this.args.alignment = 'normal';
-		}
-		else
-		{
-			this.args.spriteSheet = this.heroSheet;
-			this.args.alignment = 'hero';
-		}
-	}
-
-	onRightClick(event)
-	{
-		event.preventDefault();
-		event.stopPropagation();
-
-		if(this.args.alignment === 'dark')
-		{
-			this.args.alignment = 'normal';
-		}
-		else if(this.args.alignment === 'normal')
-		{
-			this.args.alignment = 'hero';
-		}
-		else
-		{
-			this.args.alignment = 'dark';
-		}
-	}
-
 	get solid() { return false; }
 
 	update()
 	{
+		let inWater = false;
+
+		const floatRegions = [...this.regions].filter(r => r.args.density >= 1);
+
+		if(floatRegions.length)
+		{
+			if(this.args.currentState !== 'flying' || this.args.ySpeed > 0)
+			{
+				const floatTarget = floatRegions[0].args.y - floatRegions[0].args.height + 6;
+				const snapSpace = 3;
+
+				if(this.args.currentState !== 'walking')
+				{
+					this.args.xSpeed = this.args.xSpeed * 0.95;
+				}
+
+				if(this.args.y > floatTarget)
+				{
+					this.args.falling = true;
+					this.args.ySpeed += -0.25;
+					this.args.float = -1;
+
+					if(this.args.ySpeed > snapSpace)
+					{
+						this.args.ySpeed = snapSpace;
+					}
+
+					if(this.args.ySpeed < -snapSpace)
+					{
+						this.args.ySpeed = -snapSpace;
+					}
+				}
+				else
+				{
+					if(this.args.ySpeed > 0 && Math.abs(this.args.y - floatTarget) < snapSpace)
+					{
+						this.args.y = floatTarget;
+					}
+
+					this.args.ySpeed = 0;
+					this.args.float = 1;
+				}
+
+				this.args.groundAngle = 0;
+			}
+
+			inWater = true;
+		}
+		else
+		{
+			if(this.args.currentState !== 'flying')
+			{
+				this.args.float = 0;
+			}
+		}
+
+		const eating = new Set;
+
+		for(const carrying of this.carrying)
+		{
+			if(carrying instanceof Coconut || carrying instanceof Mushroom)
+			{
+				this.args.currentState = 'eating';
+
+				eating.add(carrying);
+			}
+		}
+
 		switch(this.args.currentState)
 		{
+			case 'eating':
+				if(!this.args.falling)
+				{
+					this.args.ySpeed = 0;
+				}
+
+				if(!this.carriedBy)
+				{
+					this.args.float = 0;
+				}
+				else
+				{
+					this.args.float = -1;
+				}
+
+				this.args.xSpeed = 0;
+				this.args.animation = 'eating';
+				this.args.emote = 'love';
+
+				if(this.args.stateTime && this.args.stateTime % 75 === 0)
+				{
+					for(const e of eating)
+					{
+						e.args.size--;
+
+						if(!e.args.size)
+						{
+							if(!this.carriedBy)
+							{
+								this.args.currentState = 'thinking';
+							}
+							else
+							{
+								this.args.currentState = 'held';
+							}
+							e.lift(this);
+							this.viewport.actors.remove(e);
+						}
+					}
+				}
+
+				break;
+
 			case 'held':
 
 				this.args.falling = false;
@@ -399,6 +486,12 @@ export class Chao extends PointActor
 			case 'standing':
 				this.args.animation = 'standing';
 
+				if(!this.args.falling)
+				{
+					this.args.xSpeed = 0;
+					this.args.ySpeed = 0;
+				}
+
 				if(this.args.stateTime > 120)
 				{
 					this.args.currentState = 'thinking';
@@ -407,6 +500,12 @@ export class Chao extends PointActor
 				break;
 
 			case 'thinking':
+
+				if(!this.args.falling)
+				{
+					this.args.xSpeed = 0;
+					this.args.ySpeed = 0;
+				}
 
 				this.args.animation = 'thinking';
 
@@ -438,9 +537,21 @@ export class Chao extends PointActor
 				{
 					this.args.direction = Math.sign(Math.random() - 0.5);
 
-					if(Math.random() > 0.25)
+					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
 					{
-						this.args.currentState = 'sitting';
+						this.args.direction *= -1;
+					}
+
+					if(Math.random() > 0.15)
+					{
+						if(this.args.groundAngle || inWater)
+						{
+							this.args.currentState = 'walking';
+						}
+						else
+						{
+							this.args.currentState = 'sitting';
+						}
 					}
 					else
 					{
@@ -452,7 +563,14 @@ export class Chao extends PointActor
 
 			case 'walking':
 
-				this.args.animation = 'walking';
+				if(inWater)
+				{
+					this.args.animation = 'flying';
+				}
+				else
+				{
+					this.args.animation = 'walking';
+				}
 
 				if(this.args.stateTime < 15)
 				{
@@ -463,11 +581,62 @@ export class Chao extends PointActor
 					this.args.emote = 'normal';
 				}
 
-				this.args.gSpeed = 0.01 * this.args.direction;
+				if(inWater)
+				{
+					this.args.xSpeed = 1 * this.args.direction;
+				}
+				else
+				{
+					this.args.gSpeed = 0.01 * this.args.direction;
+				}
 
 				if(this.args.stateTime > 40)
 				{
-					this.args.currentState = 'flying';
+					if(!inWater && Math.random() > 0.9)
+					{
+						this.args.currentState = 'tripping';
+					}
+
+					if(Math.random() > 0.95)
+					{
+						this.args.currentState = 'flying';
+					}
+
+					if(Math.random() > 0.98)
+					{
+						this.args.currentState = 'searching';
+					}
+				}
+
+				break;
+
+			case 'tripping':
+				this.args.animation = 'tripping';
+
+				if(this.args.stateTime > 10)
+				{
+					this.args.gSpeed = 0;
+				}
+				else
+				{
+					this.args.gSpeed = 1 * this.args.direction;
+				}
+
+				if(this.args.stateTime > 20)
+				{
+					if(this.args.stateTime < 30	 && Math.random() > 0.6)
+					{
+						this.args.emote = 'angry';
+					}
+				}
+				else
+				{
+					this.args.emote = 'alert';
+				}
+
+				if(this.args.stateTime > 120)
+				{
+					this.args.currentState = 'sitting';
 				}
 
 				break;
@@ -476,21 +645,42 @@ export class Chao extends PointActor
 
 				this.args.animation = 'flying';
 
-				if(this.args.stateTime < 45)
+				if(this.args.stateTime === 1)
 				{
-					if(!this.args.falling)
+					this.flightTime = (this.maxFlight/2) + Math.round((this.maxFlight/2) * Math.random());
+				}
+
+				if(this.args.stateTime > 60 && this.args.ySpeed < 0)
+				{
+					this.args.ySpeed *= 0.1;
+				}
+
+				if(this.args.stateTime < this.flightTime)
+				{
+					this.args.groundAngle = 0;
+
+					if(!this.args.ySpeed || !this.args.falling)
 					{
+						if(!this.args.xSpeed && !this.args.gSpeed)
+						{
+							this.args.direction = Math.sign(Math.random() - 0.5);
+						}
+
 						this.args.falling = true;
-						this.args.direction = Math.sign(Math.random() - 0.5);
 						this.args.ySpeed  = -Math.sin(this.args.stateTime / 0.05);
 						this.args.xSpeed  =  1.25 * this.args.direction;
-						this.args.float   = 45;
+						this.args.float   =  -1;
 					}
 					else if(this.args.ySpeed >= 0)
 					{
 						this.args.currentState = 'flying';
 					}
 
+					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
+					{
+						this.args.direction *= -1;
+						this.args.xSpeed *= -1;
+					}
 				}
 				else
 				{
@@ -499,12 +689,30 @@ export class Chao extends PointActor
 
 				break;
 
+			case 'hatching':
 			case 'sitting':
-				this.args.animation = 'sitting';
+
+				this.args.xSpeed = 0;
+
+				if(inWater)
+				{
+					this.args.animation = 'standing';
+				}
+				else
+				{
+					this.args.animation = 'sitting';
+				}
 
 				if(this.args.stateTime > 120)
 				{
-					this.args.currentState = 'thinking';
+					if(Math.random() > 0.35)
+					{
+						this.args.currentState = 'walking';
+					}
+					else
+					{
+						this.args.currentState = 'thinking';
+					}
 				}
 
 				break;
@@ -517,6 +725,24 @@ export class Chao extends PointActor
 		super.update();
 
 		this.args.stateTime++;
+	}
+
+	collideA(other, type)
+	{
+		super.collideA(other, type);
+
+		if(other.carriedBy || this.carrying.size)
+		{
+			return;
+		}
+
+		if(other instanceof Coconut || other instanceof Mushroom)
+		{
+			if(other.args.size)
+			{
+				other.lift(this);
+			}
+		}
 	}
 
 	stateStanding() {}
@@ -532,4 +758,39 @@ export class Chao extends PointActor
 	stateSwimming() {}
 
 	stateFlyingLooking() {}
+
+	store()
+	{
+		const frozen = {
+			name:       this.args.name
+			, colors:   this.customColors
+			, align:    this.args.alignment
+			, garden:   null
+			, position: [this.args.x, this.args.y]
+			, stats:    this.stats
+			, mood:     this.mood
+		};
+
+		return frozen;
+	}
+
+	load(frozen)
+	{
+		if(typeof frozen === 'string')
+		{
+			frozen = JSON.parse(frozen);
+		}
+
+		this.args.name = frozen.name ?? '';
+
+		if(frozen.position)
+		{
+			this.args.x = frozen.position[0];
+			this.args.y = frozen.position[1];
+		}
+
+		frozen.colors && Object.assign(this.customColors, frozen.colors);
+		frozen.stats  && Object.assign(this.stats, frozen.stats);
+		frozen.mood   && Object.assign(this.mood, frozen.mood);
+	}
 }

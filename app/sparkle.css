@@ -1,0 +1,40 @@
+.actor-item.actor-sparkle .sprite {
+	background-image: url(/Sonic/sparkle-badnik.png);
+}
+
+.actor-item.actor-sparkle[data-animation=flicker] .sprite {
+	animation: sparkle-badnik-flicker 150ms infinite steps(2);
+}
+
+.actor-item.actor-sparkle[data-animation=flicker-fast] .sprite {
+	animation: sparkle-badnik-flicker 50ms infinite steps(2);
+}
+
+.particle-sparkle-lightning {
+	width: 24px;
+	background-repeat: repeat-y;
+	background-position-x: center;
+	/*height: 240px;*/
+	animation: sparkle-lightning-fade 50ms infinite linear;
+}
+
+@keyframes sparkle-badnik-flicker {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -48px;
+	}
+}
+
+@keyframes sparkle-lightning-fade {
+	0% {
+		background-image: url(/Sonic/sparkle-lightning-2.png);
+		filter: brightness(2.5) saturate(0);
+	}
+	100% {
+		background-image: url(/Sonic/sparkle-lightning-1.png);
+		filter: brightness(0);
+		background-position-y: 8px;
+	}
+}

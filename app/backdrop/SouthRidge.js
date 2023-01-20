@@ -14,7 +14,6 @@ export class SouthRidge extends Backdrop
 				, parallax: 0.11
 				, url:      '/Sonic/backdrop/south-ridge/clouds-10.png'
 				, height:   10
-
 			}
 			, {
 				autoscroll: 0

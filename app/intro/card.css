@@ -11,7 +11,7 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: calc(100% + 1px);
+	height: 100%;
 
 	display: flex;
 	align-items: center;
@@ -346,6 +346,27 @@
 
 .screen-card.opened .player-waving {
 	transform: scale(2) rotate(-10deg) translateY(0px) ;
+}
+
+.screen-card-sane-card {
+	text-align: center;
+}
+
+.screen-card-sean-card,
+.screen-card-gamepad-card,
+.screen-card-sane-card {
+	background-color: black;
+}
+
+.screen-card-sane-card .main-elements-container > div:nth-child(1) img {
+	width: 50%;
+}
+.screen-card-sane-card .main-elements-container > div:nth-child(2) img {
+	width: 33%;
+}
+
+.screen-card-sane-card.closed .main-elements-container > div:nth-child(2) img {
+	display: none;
 }
 
 @keyframes press-start {

@@ -11,6 +11,7 @@ export class Panel extends PointActor
 
 		this.args.width  = 64;
 		this.args.height = 8;
+		this.args.static = 1;
 
 		this.args.float = -1;
 
@@ -18,6 +19,8 @@ export class Panel extends PointActor
 		this.holding = new Set;
 
 		this.cancels = new Map;
+
+		// this.args.bindTo('mode', (k,v) => console.trace(this.args.id,k,v));
 	}
 
 	collideA(other, type)
@@ -71,7 +74,7 @@ export class Panel extends PointActor
 
 			other.args.falling = false;
 
-			if(this.holding.has(other) && other.willJump)
+			if(this.args.next && this.holding.has(other) && other.willJump)
 			{
 				const nextPanel = this.viewport.actorsById[ this.args.next ];
 
@@ -137,7 +140,7 @@ export class Panel extends PointActor
 		 	return false;
 		}
 
-		const nextPanel = this.viewport.actorsById[ this.args.next ];
+		const nextPanel = this.others.next;
 
 		if(nextPanel)
 		{
@@ -148,9 +151,9 @@ export class Panel extends PointActor
 			return true;
 		}
 
-		other.args.gSpeed = 0;
-		other.args.xSpeed = 0;
-		other.args.ySpeed = 0;
+		// other.args.gSpeed = 0;
+		// other.args.xSpeed = 0;
+		// other.args.ySpeed = 0;
 
 		other.args.ignore = 10;
 

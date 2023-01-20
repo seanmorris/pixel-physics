@@ -57,4 +57,11 @@ export class EggShellBottom extends PointActor
 	}
 
 	get solid() { return false; }
+
+	sleep()
+	{
+		this.viewport.actors.remove(this);
+
+		console.log(this);
+	}
 }

@@ -61,3 +61,11 @@
 		rotate(calc(-1rad* var(--display-angle)))
 		scaleY(-1);
 }
+
+.actor-item.actor-spikes-small[data-pointing="2"] .sprite {
+	transform-origin: center;
+	transform:
+		translate(-50%, calc(-80% - var(--hoverWidth)))
+		rotate(calc(-1rad* var(--display-angle)))
+		scaleY(-1);
+}

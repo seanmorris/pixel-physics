@@ -1,0 +1,18 @@
+.actor-relief .sprite:before {
+	display: block;
+	content: ' ';
+	width: 24px;
+	height: 80px;
+	background-image: url(/Sonic/relief.png);
+	background-repeat: no-repeat;
+/*	transition: background-position-x 20ms 30ms ease-out;*/
+}
+
+.actor-relief[data-direction="-1"] .sprite:before {
+	transform: scaleX(-1);
+}
+
+.actor-relief {
+/*	filter: none !important;*/
+}
+

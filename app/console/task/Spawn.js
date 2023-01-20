@@ -30,9 +30,11 @@ export class Spawn extends Task
 
 		const type = palette[typeName];
 
+		const mouse = Spawn.viewport.mouse.position;
+
 		Spawn.viewport.spawn.add({object: new type({
-			x: actor.x + 128
-			, y: actor.y - 128
+			x: mouse[0]
+			, y: mouse[1]
 		})});
 	}
 }

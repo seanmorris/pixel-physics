@@ -36,6 +36,12 @@ export class PauseMenu extends Menu
 				, get: () => !parent.args.audio
 			}
 			, Settings: SettingsMenu(parent)
+			, Graphics: {
+				input: 'select'
+				, options: ['High', 'Medium', 'Low', 'Very Low']
+				, set: value => parent.settings.graphicsLevel = value
+				, get: ()    => parent.settings.graphicsLevel
+			}
 			, Reset:    {
 				subtext: 'Reset the run.'
 				, children: {
@@ -90,7 +96,7 @@ export class PauseMenu extends Menu
 						parent.clearCheckpoints();
 						parent.unpauseGame();
 						parent.quit();
-						parent.playCards();
+						// parent.playCards();
 					}}
 				}
 			}
@@ -119,11 +125,13 @@ export class PauseMenu extends Menu
 			}
 		}
 
+		const pauseButton = 9;
+
 		if(!this.args.hideMenu)
 		{
 			super.input(controller);
 		}
-		else if(controller.buttons[9] && controller.buttons[9].active)
+		else if(controller.buttons[pauseButton] && controller.buttons[pauseButton].active)
 		{
 			this.args.hideMenu = '';
 		}
@@ -133,7 +141,7 @@ export class PauseMenu extends Menu
 			this.parent.focus();
 			this.args.hideMenu = 'pause-menu-hide';
 		}
-		else if(controller.buttons[1012] && controller.buttons[1012].time < 0)
+		else if(controller.buttons[1020] && controller.buttons[1020].time > 0)
 		{
 			this.args.hideMenu = '';
 		}

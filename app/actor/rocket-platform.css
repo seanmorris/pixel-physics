@@ -1,0 +1,32 @@
+.actor-item.actor-rocket-platform .sprite {
+	background-image: url(/custom/rocket-platform.png);
+}
+
+.actor-item.actor-rocket-platform[data-active=true] {
+	transform: translateY(2px);
+}
+.actor-item.actor-rocket-platform[data-active=true] .sprite::after {
+	animation: rocket-boost-flicker 20ms infinite steps(3);
+	background-image: url(/Sonic/rocket-boost.png);
+	position: absolute;
+	width: 48px;
+	height: 80px;
+	left: 24px;
+	top: 100%;
+	content: '';
+	transform-origin: top;
+}
+
+@keyframes rocket-boost-flicker {
+	0% {
+		transform: scale(0.5, 1.5);
+		/*background-position-y: 0px;*/
+	}
+	90% {
+		/*background-position-y: -72px;*/
+	}
+	100% {
+		opacity: 0;
+	}
+}
+

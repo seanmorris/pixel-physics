@@ -2,9 +2,7 @@
 	background-color: #411 !important;
 }
 
-.viewport.construct .viewport-background[data-name^="Moving"] > div,
-.viewport.construct .viewport-background[data-name^="Destructible"] > div,
-.viewport.construct .viewport-background[data-name^="Collision"] > div {
+.viewport.construct .viewport-background > div {
 	filter: invert(0.15);
 	box-shadow: inset 0 0 2px rgba(0,255,0,0.5), 0 0 2px rgba(0,255,0,0.5);
 

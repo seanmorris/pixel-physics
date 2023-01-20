@@ -600,8 +600,8 @@ export class Beelzebub extends Mixin.from(PointActor)
 			}
 			else
 			{
-				other.args.xSpeed = -xSign;
-				this.args.xSpeed  = xSign;
+				other.args.xSpeed = -xSign * impactSpeed * 0.5;
+				this.args.xSpeed  = xSign * impactSpeed * 0.5;
 			}
 		}
 

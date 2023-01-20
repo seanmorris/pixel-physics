@@ -1,0 +1,18 @@
+.actor-item.actor-platform-flare .sprite {
+	animation: actor-platform-flare-animate 60ms infinite alternate steps(3);
+	background-position-x: -32px;
+	height: 32px;
+}
+
+.actor-item.actor-platform-flare[data-active=true] .sprite {
+	background-image: url(/Sonic/platform-flare.png);
+}
+
+@keyframes actor-platform-flare-animate {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: -96px;
+	}
+}

@@ -35,41 +35,52 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.maps = new Map;
 
 		this.replacements = new Map;
+		this.emptyCache = new Map;
 
-		const elicit = new Elicit(url);
+		if(String(url).substr(-4) === 'json')
+		{
+			const elicit = new Elicit(url);
 
-		elicit.addEventListener('progress', event => {
-			const {received, length, done} = event.detail;
+			elicit.addEventListener('progress', event => {
+				const {received, length, done} = event.detail;
 
-			const type = 'map';
+				const type = 'map';
 
-			this.dispatchEvent(new CustomEvent(
-				'level-progress', { detail: {length, received, done, url}}
-			));
-		});
+				this.dispatchEvent(new CustomEvent(
+					'level-progress', { detail: {length, received, done, url}}
+				));
+			});
 
-		this.ready = elicit.stream()
-		.then(response => response.json())
-		.then(tilemapData => {
+			this.ready = elicit.stream()
+			.then(response => response.json())
+			.then(tilemapData => {
 
-			this.mapData = tilemapData;
+				this.mapData = tilemapData;
 
-			if(tilemapData && tilemapData.properties)
-			{
-				for(const property of tilemapData.properties)
+				if(tilemapData && tilemapData.properties)
 				{
-					const name = property.name.replace(/-/g, '_');
+					for(const property of tilemapData.properties)
+					{
+						const name = property.name.replace(/-/g, '_');
 
-					this.meta.set(name, property.value);
+						this.meta.set(name, property.value);
+					}
 				}
-			}
 
-			this.desparseLayers(tilemapData)
+				console.log(tilemapData);
 
-			this.loadLayers(tilemapData);
+				this.desparseLayers(tilemapData)
 
-			return this.loadTilesets(tilemapData);
-		});
+				this.loadLayers(tilemapData);
+
+				return this.loadTilesets(tilemapData);
+			});
+		}
+		else if(String(url).substr(-3) === 'png')
+		{
+			this.ready = this.fromImage(url, 32);
+		}
+
 
 		Object.preventExtensions(this);
 	}
@@ -258,6 +269,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const imageProgress  = new Map;
 		const imageSize      = new Map;
 
+		this.emptyCache.clear();
+
 		for(const i in mapData.tilesets)
 		{
 			const tileset = mapData.tilesets[i];
@@ -313,7 +326,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 						image, 0, 0, image.width, image.height
 					);
 
-					this.heightMasks.set(tileset, heightMask);
+					this.heightMasks.set(tileset, heightMask.getContext('2d').getImageData(0, 0, heightMask.width, heightMask.height));
 
 					accept(heightMask);
 
@@ -334,18 +347,21 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const layers = tilemapData.layers || [];
 
-		tilemapData.layers.forEach(layer => {
+		tilemapData.layers.forEach((layer,index) => {
 			layer.offsetX        = false;
 			layer.offsetY        = false;
 			layer.offsetXChanged = false;
 			layer.offsetYChanged = false;
 			layer.destroyed      = false;
 			layer.layer          = null;
+			layer.index          = null;
 			Object.preventExtensions(layer);
 		});
 
 		this.objectLayers = tilemapData.layers.filter(l => l.type === 'objectLayers');
 		this.tileLayers   = tilemapData.layers.filter(l => l.type === 'tilelayer');
+
+		this.tileLayers.forEach((layer, index) => layer.index = index);
 
 		// layerGroup.objectLayers = this.objectLayers;
 		layerGroup.tileLayers = this.tileLayers;
@@ -386,7 +402,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		elicit.addEventListener('progress', event => {
 			const {received, length, done} = event.detail;
-
 
 			// const type = 'map';
 
@@ -431,7 +446,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		if(!tileLayers[layerId])
 		{
 			this.tileNumberCache.set(tileKey, false);
-
 			return false;
 		}
 
@@ -442,7 +456,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				if(layerId !== 0)
 				{
 					this.tileNumberCache.set(tileKey, false);
-
 					return false;
 				}
 
@@ -491,6 +504,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const tileNumber = tile > 0 ? tile - 1 : 0;
 
+			if(this.checkEmpty(tileNumber))
+			{
+				this.tileNumberCache.set(tileKey, false);
+				return false;
+			}
+
 			this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
@@ -538,6 +557,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const tileset = this.getTileset(tileNumber);
 		const image   = this.tileImages.get(tileset);
 
+		if(!tileset.meta && tileset.properties)
+		{
+			tileset.meta = {};
+
+			for(const property of tileset.properties)
+			{
+				tileset.meta[ property.name ] = property.value;
+			}
+		}
+
 		if(tileNumber)
 		{
 			const localTileNumber = tileNumber + -tileset.firstgid + 1;
@@ -550,7 +579,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			original = tileset.original;
 		}
 
-		const result = [x,y,src,original];
+		const result = [x,y,src,original,tileset];
 
 		this.tileCache.set(tileNumber, result);
 
@@ -559,15 +588,38 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getSolid(xInput, yInput, layerInput = 0)
 	{
+		if(layerInput !== 0)
+		{
+			const ground = this.getSolid(xInput, yInput, 0);
+
+			if(ground)
+			{
+				return this.tileLayers[0];
+			}
+		}
+
 		xInput = Math.trunc(xInput);
 		yInput = Math.trunc(yInput);
 
-		const currentTile = this.coordsToTile(xInput, yInput, layerInput);
+		let offsetX = 0;
+		let offsetY = 0;
+
+		if(this.tileLayers[layerInput])
+		{
+			offsetX = this.tileLayers[layerInput].offsetX ?? 0;
+			offsetY = this.tileLayers[layerInput].offsetY ?? 0;
+		}
+
+		const currentTile = [
+			Math.floor( (xInput - offsetX) / this.blockSize )
+			, Math.floor( (yInput - offsetY) / this.blockSize )
+		];
+
 		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
 
 		const solidLayerCount = this.collisionLayers.length;
 
-		if(1||layerInput <= 3)
+		if(layerInput <= 3)
 		{
 			if(tileNumber === 0)
 			{
@@ -582,16 +634,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(layerInput > 0  && layerInput < solidLayerCount)
 		{
-			if(this.getSolid(xInput, yInput, 0))
-			{
-				return this.tileLayers[0];
-			}
-
 			for(let i = 0 + solidLayerCount; i < this.tileLayers.length; i++)
 			{
 				const layer = this.tileLayers[i];
 
 				if(layer.name.substring(0, 3) === 'Art')
+				{
+					continue;
+				}
+
+				if(layer.name.substring(0, 8) === 'Platform')
 				{
 					continue;
 				}
@@ -634,29 +686,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const xPixel = tilePos[0] + x;
 		const yPixel = tilePos[1] + y;
 
-		const heightMaskKey   = [xPixel, yPixel, tileNumber].join('::');
-		const heightMaskCache = this.heightMaskCache;
-
-		if(heightMaskCache.has(heightMaskKey))
-		{
-			return heightMaskCache.get(heightMaskKey);
-		}
-
 		const heightMask = this.heightMasks.get(tileSet);
 
-		const pixel = heightMask.getContext('2d').getImageData(xPixel, yPixel, 1, 1).data;
+		const iPixel = (xPixel + yPixel * heightMask.width) * 4;
 
 		let result = false;
 
-		// if(pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 255)
-		// {
-		// 	// result = 0xFF0000;
-		// 	result = true;
-		// }
-		// else
-		if(pixel[3] === 255)
+		if(heightMask.data[iPixel + 3] === 255)
 		{
-			// result = 0xFFFFFF;
 			result = this.tileLayers[layerInput];
 		}
 		else
@@ -664,9 +701,85 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			result = false;
 		}
 
-		heightMaskCache.set(heightMaskKey, result);
-
 		return result;
+	}
+
+	getColor(xInput, yInput, layerInput)
+	{
+		let offsetX = 0;
+		let offsetY = 0;
+
+		if(this.tileLayers[layerInput])
+		{
+			offsetX = this.tileLayers[layerInput].offsetX ?? 0;
+			offsetY = this.tileLayers[layerInput].offsetY ?? 0;
+		}
+
+		const currentTile = [
+			Math.floor( (xInput - offsetX) / this.blockSize )
+			, Math.floor( (yInput - offsetY) / this.blockSize )
+		];
+
+		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
+
+		const tileSet   = this.getTileset(tileNumber);
+		const mapData   = this.mapData;
+		const blockSize = mapData.tilewidth;
+
+		const tileCoords = this.getTile(tileNumber);
+		const tilePos = [tileCoords[0] * blockSize, tileCoords[1] * blockSize];
+
+		const x = (Number(xInput) % blockSize);
+		const y = (Number(yInput) % blockSize);
+
+		const xPixel = tilePos[0] + x;
+		const yPixel = tilePos[1] + y;
+
+		const heightMask = this.heightMasks.get(tileSet);
+
+		const iPixel = (xPixel + yPixel * heightMask.width) * 4;
+
+		return (heightMask.data[iPixel + 0] << 24)
+		+ (heightMask.data[iPixel + 1] << 16)
+		+ (heightMask.data[iPixel + 2] << 8)
+		+ (heightMask.data[iPixel + 3] << 0)
+	}
+
+	checkEmpty(tileNumber)
+	{
+		if(this.emptyCache.has(tileNumber))
+		{
+			return this.emptyCache.get(tileNumber);
+		}
+
+		const tile = this.getTile(tileNumber);
+
+		const tileSet   = this.getTileset(tileNumber);
+		const mapData   = this.mapData;
+		const blockSize = mapData.tilewidth;
+
+		const tileCoords = this.getTile(tileNumber);
+		const tilePos = [tileCoords[0] * blockSize, tileCoords[1] * blockSize];
+
+		for(let x = 0; x < blockSize; x++)
+		for(let y = 0; y < blockSize; y++)
+		{
+			const xPixel = tilePos[0] + x;
+			const yPixel = tilePos[1] + y;
+
+			const heightMask = this.heightMasks.get(tileSet);
+
+			const iPixel = (xPixel + yPixel * heightMask.width) * 4;
+
+			if(heightMask.data[iPixel + 3] === 255)
+			{
+				this.emptyCache.set(tileNumber, false);
+				return false;
+			}
+		}
+
+		this.emptyCache.set(tileNumber, true);
+		return true;
 	}
 
 	getTileset(tileNumber)
@@ -747,8 +860,357 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		}
 	}
 
+	castRay(startX, startY, angle, maxDistance = 320, layerId = 0)
+	{
+		const checkLayers = new Set;
+		const xOffDir = new Map;
+		const yOffDir = new Map;
+
+		for(const layer of this.tileLayers)
+		{
+			if(!layer.layer || !layer.layer.meta || !layer.layer.meta.solid)
+			{
+				continue;
+			}
+
+			if(layer.layer.meta.switchable && layer.index !== layerId)
+			{
+				continue;
+			}
+
+			if(layer.layer.meta.platform)
+			{
+				if(angle < 0 || angle > Math.PI)
+				{
+					continue;
+				}
+			}
+
+			checkLayers.add(layer.index);
+
+			xOffDir.set(layer.index, Math.sign(layer.layer.args.offsetX));
+			yOffDir.set(layer.index, Math.sign(layer.layer.args.offsetY));
+		}
+
+		startX = Math.trunc(startX);
+		startY = Math.trunc(startY);
+
+		maxDistance = Math.ceil(maxDistance);
+
+		const cos = Math.cos(angle);
+		const sin = Math.sin(angle);
+
+		const endX = startX + (Math.abs(cos) > Number.EPSILON ? cos : 0) * maxDistance;
+		const endY = startY + (Math.abs(sin) > Number.EPSILON ? sin : 0) * maxDistance;
+
+		const bs = this.blockSize;
+
+		const dx = endX - startX;
+		const dy = endY - startY;
+
+		const ox = Math.sign(dx);
+		const oy = Math.sign(dy);
+
+		const sx = dx ? Math.sqrt(1 + (dy / dx) ** 2) : 0;
+		const sy = dy ? Math.sqrt(1 + (dx / dy) ** 2) : 0;
+
+		let currentDistance = 0;
+
+		const [tx, ty] = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
+
+		if(this.getSolid(startX, startY, layerId))
+		{
+			return [startX, startY];
+		}
+
+		let initMode;
+
+		for(const layerId of checkLayers)
+		{
+			if(initMode = this.getTileNumber(tx, ty, layerId))
+			{
+				break;
+			}
+		}
+
+		let modeX = initMode;
+		let modeY = initMode;
+
+		let oldModeX = false;
+		let oldModeY = false;
+
+		let bf = initMode ? 1 : 1;
+
+		const ax = ox > 0 ? (bs - startX % bs) : ((startX % bs) + 1);
+		const ay = oy > 0 ? (bs - startY % bs) : ((startY % bs) + 1);
+
+		let checkX = initMode ? 0 : ax;
+		let checkY = initMode ? 0 : ay;
+
+		let rayX = checkX * sx * ox;
+		let rayY = checkY * sy * oy;
+
+		const magX = Math.abs(rayX);
+		const magY = Math.abs(rayY);
+
+		const pa = new Set;
+		const pb = new Set;
+
+		const solidsX = new Set;
+		const solidsY = new Set;
+
+		window.logPoints && console.time('rayCast');
+
+		let iterations = 0;
+
+		while(Math.abs(currentDistance) < maxDistance && !solidsX.size && !solidsY.size)
+		{
+			if(ox && (!oy || Math.abs(rayX) < Math.abs(rayY)))
+			{
+				const mag = Math.abs(rayX);
+
+				const px = (startX + mag * Math.cos(angle));
+				const py = (startY + mag * Math.sin(angle));
+
+				const [tx, ty] = this.coordsToTile(px, py, layerId);
+				oldModeX = modeX;
+
+				for(const layerId of checkLayers)
+				{
+					if(modeX = this.getTileNumber(tx, ty, layerId))
+					{
+						break;
+					}
+
+					if(!modeX && (xOffDir.has(layerId) || yOffDir.has(layerId)))
+					{
+						if(modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId))
+						{
+							break;
+						}
+
+						if(modeX = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId))
+						{
+							break;
+						}
+
+						if(modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId))
+						{
+							break;
+						}
+					}
+				}
+
+				bf = modeX ? 1:bs;
+
+				if(!modeX && oldModeX)
+				{
+					bf = ox < 0
+						? ((startX + -checkX + 1) % bs)
+						: (bs - ((startX + checkX) % bs));
+				}
+
+				window.logPoints && pa.add([px, py, `rayX tile-${tx}-${ty} mode-${modeX} bf-${bf} layer-${layerId} `]);
+
+				for(const layerId of checkLayers)
+				{
+					if(this.getSolid(px, py, layerId))
+					{
+						solidsX.add([px, py]);
+						break;
+					}
+				}
+
+				currentDistance = Math.abs(rayX);
+				checkX += bf;
+				rayX = checkX * sx * ox;
+			}
+			else
+			{
+				const mag = Math.abs(rayY);
+
+				const px = (startX + mag * Math.cos(angle));
+				const py = (startY + mag * Math.sin(angle));
+
+				const [tx, ty] = this.coordsToTile(px, py, layerId);
+				oldModeY = modeY;
+
+				for(const layerId of checkLayers)
+				{
+					if(modeY = this.getTileNumber(tx, ty, layerId))
+					{
+						break;
+					}
+
+					if(!modeY && (xOffDir.has(layerId) || yOffDir.has(layerId)))
+					{
+						if(modeY = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId))
+						{
+							break;
+						}
+
+						if(modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId))
+						{
+							break;
+						}
+
+						if(modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId))
+						{
+							break;
+						}
+					}
+				}
+
+				bf = modeY ? 1:bs;
+
+				if(!modeY && oldModeY)
+				{
+					bf = oy < 0
+						? ((startY + -checkY + 1) % bs)
+						: (bs - ((startY + checkY) % bs));
+				}
+
+				window.logPoints && pb.add([px, py, `rayY tile-${tx}-${ty} mode-${modeY} bf-${bf} layer-${layerId} `]);
+
+				for(const layerId of checkLayers)
+				{
+					if(this.getSolid(px, py, layerId))
+					{
+						solidsY.add([px, py]);
+						break;
+					}
+				}
+
+				currentDistance = Math.abs(rayY);
+				checkY += bf;
+				rayY = checkY * sy * oy;
+			}
+
+			iterations++;
+		}
+
+		const points = [...solidsX, ...solidsY];
+		const distSquares = points.map(s => (s[0] - startX) ** 2 + (s[1] - startY) ** 2);
+		const minDistSq   = Math.min(...distSquares);
+		const nearest     = points[ distSquares.indexOf(minDistSq) ];
+
+		window.logPoints && console.timeEnd('rayCast');
+		window.logPoints && console.log({iterations});
+
+		if(Math.sqrt(minDistSq) > maxDistance)
+		{
+			return;
+		}
+
+		if(window.logPoints)
+		{
+			window.logPoints(startX, startY, 'start');
+			window.logPoints(endX, endY, 'end');
+
+			[...pa].map(p => window.logPoints(p[0],p[1],p[2]));
+			[...pb].map(p => window.logPoints(p[0],p[1],p[2]));
+
+			// [...solidsX].map(p => window.logPoints(p[0],p[1],p[2]));
+			// [...solidsY].map(p => window.logPoints(p[0],p[1],p[2]));
+
+			nearest && window.logPoints(nearest[0], nearest[1], 'nearest');
+		}
+
+		return nearest;
+	}
+
+	negSafeMod(a,b)
+	{
+	    if(a >= 0) return a % b;
+	    return (b + a % b) % b;
+	}
+
 	get blockSize()
 	{
 		return this.mapData.tilewidth;
+	}
+
+	fromImage(url, blockSize)
+	{
+		return new Promise(accept => {
+			const image = new Image;
+
+			image.addEventListener('load', event => {
+
+				// const heightMask = new Tag('<canvas>');
+
+				// heightMask.width  = image.width;
+				// heightMask.height = image.height;
+
+				const tilecount   = Math.floor((image.width * image.height) / 32**2);
+
+				const tileset = {
+					columns:     Math.floor(image.width / blockSize),
+					firstgid:    1,
+					image:       url.substr(4),
+					original:    url.substr(4),
+					imageheight: image.height,
+					imagewidth:  image.width,
+					margin:      0,
+					name:        "image-map",
+					spacing:     0,
+					tileheight:  blockSize,
+					tilewidth:   blockSize,
+					tilecount
+				};
+
+				const layer = {
+					"data": Object.assign({}, [...Array(tilecount)].map((_,k) => k)),
+					"width":Math.floor(image.width / blockSize),
+					"height": Math.floor(image.height / blockSize),
+					"id":1,
+					"name":"Tile Layer 1",
+					"opacity":1,
+					"properties":[{
+						"name":"solid",
+						"type":"bool",
+						"value":true
+					}],
+					"type":"tilelayer",
+					"visible":true,
+					"x":0,
+					"y":0
+				};
+
+				const mapData = {
+					tilewidth: blockSize
+					, tileheight: blockSize
+					, layers:[layer]
+					, tilesets:[tileset]
+					, width:Math.floor(image.width / blockSize)
+					, height: Math.floor(image.height / blockSize)
+				};
+
+				this.mapData = mapData;
+
+				console.log(mapData);
+
+				this.loadLayers(mapData);
+
+				this.loadTilesets(mapData).then(accept);
+
+				// this.tileImages.set(tileset, image);
+
+				// console.log(tileset, layer);
+
+				// heightMask.getContext('2d').drawImage(
+				// 	image, 0, 0, image.width, image.height
+				// );
+
+				// this.heightMasks.set(tileset, heightMask.getContext('2d').getImageData(0, 0, heightMask.width, heightMask.height));
+
+				// new Elicit(url).objectUrl().then(url => tileset.image = tileset.cachedImage = url);
+
+
+			}, {once:true});
+
+			image.src = url;
+
+		})
 	}
 }

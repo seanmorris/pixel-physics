@@ -20,9 +20,11 @@ export class Monitor extends PointActor
 
 		this.args.type = 'actor-item actor-monitor';
 
-		this.args.width  = 30;
-		this.args.height = 32;
-		this.args.decel  = 0.25;
+		this.args.width    = 30;
+		this.args.height   = 32;
+		this.args.decel    = 0.25;
+		this.args.canHide  = true;
+		this.args.platform = true;
 
 		this.args.gone = false;
 	}
@@ -73,10 +75,17 @@ export class Monitor extends PointActor
 
 		super.collideA(other, type);
 
-		if(type === 1 && !other.args.spinning)
+		if(other.passPop && other.occupant&& !other.args.dead)
 		{
-			return true;
+			other = other.occupant;
+			this.pop(other);
+			return;
 		}
+		
+		// if(type === 1 && !other.args.spinning)
+		// {
+		// 	return true;
+		// }
 
 		if(type === 2 && this.args.float && other.controllable)
 		{
@@ -125,15 +134,17 @@ export class Monitor extends PointActor
 
 		if(other)
 		{
+			const reward = {label: this.name || this.args.name, points:10, multiplier:1};
+
+			other.args.popChain.push(reward);
 			other.args.popCombo += 1;
-			other.args.score += 100;
 		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});
 
 		const scoreNode = document.createElement('div');
 		scoreNode.classList.add('particle-score');
-		scoreNode.classList.add('score-100');
+		scoreNode.classList.add('score-10');
 		const scoreTag = new Tag(scoreNode);
 
 		scoreTag.style({'--x': this.args.x, '--y': this.args.y-16});
@@ -184,7 +195,15 @@ export class Monitor extends PointActor
 		{
 			const ySpeed = other.args.ySpeed;
 
-			if(other.args.falling)
+			if(other && other.dashed)
+			{
+				other.args.gSpeed = 0;
+				other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
+				other.args.ySpeed = -10;
+
+				other.dashed = false;
+			}
+			else if(other && other.args.falling)
 			{
 				this.onNextFrame(() => {
 					other.args.ySpeed  = -ySpeed

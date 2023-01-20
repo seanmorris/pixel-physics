@@ -1,0 +1,194 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 10,
+    "nextobjectid": 58,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "south-ridge"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "VAPOR VALLEY"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": false
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/hidden-palace/quartz-cathedral.png",
+            "imageheight": 2110,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "quartz-cathedral",
+            "spacing": 0,
+            "tilecount": 1040,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1217,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1777,
+            "image": "slopes.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "slopes",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 2033,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 2267,
+            "image": "big-loop.png",
+            "imageheight": 256,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "big-loop",
+            "spacing": 0,
+            "tilecount": 64,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 2331,
+            "image": "../Sonic/crystal-platform.png",
+            "imageheight": 48,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "crystal-platform",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 48,
+            "tilewidth": 96
+        },
+        {
+            "columns": 29,
+            "firstgid": 2332,
+            "image": "../Sonic/tiles/labrynth/water-slide-animated_4_64.png",
+            "imageheight": 256,
+            "imagewidth": 928,
+            "margin": 0,
+            "name": "water-slide-animated_4_64",
+            "properties": [
+                {
+                    "name": "animated",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "frameSize",
+                    "type": "int",
+                    "value": 2
+                },
+                {
+                    "name": "frames",
+                    "type": "int",
+                    "value": 4
+                },
+                {
+                    "name": "speed",
+                    "type": "int",
+                    "value": 4
+                }
+            ],
+            "spacing": 0,
+            "tilecount": 464,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 192,
+    "types": [
+        "block",
+        "layer-switch",
+        "relief",
+        "rolling-region",
+        "sliding-region",
+        "spikes"
+    ],
+    "map": "/map/quartz-test.json"
+}

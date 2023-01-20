@@ -25,6 +25,10 @@ import { Marker } from './Marker';
 
 import { SkidDust } from '../behavior/SkidDust';
 
+import { Color } from '../lib/Color';
+
+import { Router } from 'curvature/base/Router';
+
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
 const MODE_CEILING = 2;
@@ -121,6 +125,13 @@ export class Sonic extends PointActor
 		});
 	}
 
+	shiftColor(color, h, s, v)
+	{
+		const c = new Color(color);
+
+		return c.rotate(h, s, v);
+	}
+
 	onRendered(event)
 	{
 		super.onRendered(event);
@@ -129,61 +140,75 @@ export class Sonic extends PointActor
 			'8080e0': 'e0e080',
 			'6060c0': 'e0e000',
 			'4040a0': 'e0e001',
-			'202080': 'a0a000'
+			'202080': 'a0a000',
 		};
 
 		const hyperColorsRed = {
 			'8080e0': 'fcfcfc',
 			'6060c0': 'fcfcfc',
 			'4040a0': 'fcd8d8',
-			'202080': 'fcb4b4'
+			'202080': 'fcb4b4',
 		};
 
 		const hyperColorsPurple = {
 			'8080e0': 'fcfcfc',
 			'6060c0': 'fcfcfc',
 			'4040a0': 'fcd8fc',
-			'202080': 'd8b4d8'
+			'202080': 'd8b4d8',
 		};
 
 		const hyperColorsCyan = {
 			'8080e0': 'd8fcfc',
 			'6060c0': 'fcfcfc',
 			'4040a0': 'b4d8fc',
-			'202080': '90b4fc'
+			'202080': '90b4fc',
 		};
 
 		const hyperColorsBlue = {
 			'8080e0': 'd8d8ff',
 			'6060c0': 'b4b4d8',
 			'4040a0': 'a4a4d8',
-			'202080': '6c6cb4'
+			'202080': '6c6cb4',
 		};
 
 		const hyperColorsGreen = {
 			'8080e0': 'd8fcfc',
 			'6060c0': 'd8fcd8',
 			'4040a0': 'b4fcb4',
-			'202080': '00fc24'
+			'202080': '00fc24',
 		};
 
 		const hyperColorsYellow = {
 			'8080e0': 'd8fcfc',
 			'6060c0': 'd8fcb4',
 			'4040a0': 'd8fc48',
-			'202080': 'd8d800'
+			'202080': 'd8d800',
 		};
 
 		const hyperColorsWhite = {
 			'8080e0': 'ffffff',
 			'6060c0': 'fcfcfc',
 			'4040a0': 'd8d8d8',
-			'202080': 'b4b4b4'
+			'202080': 'b4b4b4',
 		};
 
-		if(!this.superSpriteSheet)
+		// const rH = 180;
+		// const rS = 1;
+		// const rV = 1;
+
+		// const rH2 = 0;
+		// const rS2 = 1;
+		// const rV2 = 1;
+
+		const h = Number(Router.query.h ?? 0);
+		const s = Number(Router.query.s ?? 1);
+		const v = Number(Router.query.v ?? 1);
+
+		this.rotateMainColor(h,s,v);
+
+		if(!this.superSpriteSheetLoader)
 		{
-			this.png.ready.then(()=>{
+			this.superSpriteSheetLoader = this.png.ready.then(()=>{
 
 				const newPng = this.png.recolor(superColors);
 
@@ -191,9 +216,9 @@ export class Sonic extends PointActor
 			});
 		}
 
-		if(!this.hyperSpriteSheets)
+		if(!this.hyperSpriteSheetLoader)
 		{
-			this.png.ready.then(() => this.hyperSpriteSheets = [
+			this.hyperSpriteSheetLoader = this.png.ready.then(() => this.hyperSpriteSheets = [
 				this.png.recolor(hyperColorsRed).toUrl()
 				, this.png.recolor(hyperColorsCyan).toUrl()
 				, this.png.recolor(hyperColorsPurple).toUrl()
@@ -217,6 +242,7 @@ export class Sonic extends PointActor
 		}
 
 		this.autoAttr.get(this.box)['data-doublespin'] = 'doubleSpin';
+
 	}
 
 	updateStart()
@@ -257,16 +283,19 @@ export class Sonic extends PointActor
 
 		if(this.isSuper)
 		{
-			if(this.viewport.args.frameId % 60 === 0)
+			const tick = this.isHyper ? 30 : 60;
+
+			if(this.viewport.args.frameId % tick === 0)
 			{
+				if(this.args.rings < 2)
+				{
+					this.isHyper = false;
+					this.setProfile();
+				}
+
 				if(this.args.rings > 0)
 				{
 					this.args.rings--;
-
-					if(this.isHyper)
-					{
-						this.args.rings--;
-					}
 				}
 				else
 				{
@@ -463,6 +492,7 @@ export class Sonic extends PointActor
 
 			this.dashed = false;
 			this.lightDashed = false;
+			this.lightDashReward = null;
 
 			this.args.height = this.args.normalHeight;
 
@@ -497,7 +527,7 @@ export class Sonic extends PointActor
 			{
 				this.args.crouching = false;
 
-				if(friction > 0.5 && Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction))
+				if(friction > 0.5 && Math.sign(direction) && Math.sign(gSpeed) && Math.sign(gSpeed) !== Math.sign(direction) && !this.args.antiSkid)
 				{
 					this.args.animation = 'skidding';
 				}
@@ -554,7 +584,7 @@ export class Sonic extends PointActor
 				}
 				else
 				{
-					if(this.yAxis > 0.5 && !this.args.ignore)
+					if(this.yAxis > 0.5 && !this.args.ignore && !this.carrying.size)
 					{
 						this.args.animation = 'crouching';
 
@@ -580,15 +610,35 @@ export class Sonic extends PointActor
 					}
 					else
 					{
-						if(this.args.idleTime > 60*300)
+						const fieldType = this.viewport.meta['fieldType'];
+
+						if(this.args.teeter)
+						{
+							this.args.animation = 'teeter';
+
+							if(this.args.teeter === -1)
+							{
+								this.args.animation = 'teeter--1';
+							}
+
+							if(this.args.teeter === 2)
+							{
+								this.args.animation = 'teeter-2';
+							}
+						}
+						else if(fieldType === 'garden' || fieldType === 'adventure')
+						{
+							this.args.animation = 'standing';
+						}
+						else if(this.idleTime > 60*300)
 						{
 							this.args.animation = 'idle-3';
 						}
-						else if(this.args.idleTime > 250)
+						else if(this.idleTime > 250)
 						{
 							this.args.animation = 'idle-2';
 						}
-						else if(this.args.idleTime > 200)
+						else if(this.idleTime > 200)
 						{
 							this.args.animation = 'idle';
 						}
@@ -641,6 +691,16 @@ export class Sonic extends PointActor
 			});
 		}
 
+		if(falling && this.args.animation === 'standing')
+		{
+			this.args.animation = 'walking';
+		}
+
+		if(this.args.animation === 'skidding' && this.fallTime > 16)
+		{
+			this.args.animation = 'skidding-falling';
+		}
+
 		if(this.args.hangingFrom)
 		{
 			this.args.animation = 'hanging';
@@ -687,49 +747,52 @@ export class Sonic extends PointActor
 			this.args.animation = this.args.standingOn.ridingAnimation || 'standing';
 		}
 
-		if(this.args.grinding && !this.args.falling)
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
 		{
-			// `<div class = "particle-sparks">`
+			if(this.args.grinding && !this.args.falling)
+			{
+				// `<div class = "particle-sparks">`
 
-			const sparkTag = document.createElement('div');
-			sparkTag.classList.add('particle-sparks');
-			const sparkParticle = new Tag(sparkTag);
+				const sparkTag = document.createElement('div');
+				sparkTag.classList.add('particle-sparks');
+				const sparkParticle = new Tag(sparkTag);
 
-			// `<div class = "envelope-sparks">`
-			const envelopeTag = document.createElement('div');
-			envelopeTag.classList.add('envelope-sparks');
-			const sparkEnvelope = new Tag(envelopeTag);
+				// `<div class = "envelope-sparks">`
+				const envelopeTag = document.createElement('div');
+				envelopeTag.classList.add('envelope-sparks');
+				const sparkEnvelope = new Tag(envelopeTag);
 
-			sparkEnvelope.appendChild(sparkParticle.node);
+				sparkEnvelope.appendChild(sparkParticle.node);
 
-			const sparkPoint = this.rotatePoint(
-				-this.args.gSpeed * 1.75 * this.args.direction
-				, 8
-			);
+				const sparkPoint = this.rotatePoint(
+					-this.args.gSpeed * 1.75 * this.args.direction
+					, 8
+				);
 
-			const flip = Math.sign(this.args.gSpeed);
+				const flip = Math.sign(this.args.gSpeed);
 
-			sparkEnvelope.style({
-				'--x': sparkPoint[0] + this.x
-				, '--y': sparkPoint[1] + this.y + Math.random * -3
-				, 'z-index': 0
-				, 'animation-delay': (-Math.random()*0.25) + 's'
-				, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
-				, '--flip': flip
-				, '--angle': this.realAngle
-				, opacity: Math.random() * 2
-			});
+				sparkEnvelope.style({
+					'--x': sparkPoint[0] + this.x
+					, '--y': sparkPoint[1] + this.y + Math.random * -3
+					, 'z-index': 0
+					, 'animation-delay': (-Math.random()*0.25) + 's'
+					, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
+					, '--flip': flip
+					, '--angle': this.realAngle
+					, opacity: Math.random() * 2
+				});
 
-			sparkEnvelope.particle = sparkParticle;
+				sparkEnvelope.particle = sparkParticle;
 
-			this.viewport.particles.add(sparkEnvelope);
+				this.viewport.particles.add(sparkEnvelope);
 
-			this.sparks.add(sparkEnvelope);
+				this.sparks.add(sparkEnvelope);
 
-			this.viewport.onFrameOut(30, () => {
-				this.viewport.particles.remove(sparkEnvelope);
-				this.sparks.delete(sparkEnvelope);
-			});
+				this.viewport.onFrameOut(30, () => {
+					this.viewport.particles.remove(sparkEnvelope);
+					this.sparks.delete(sparkEnvelope);
+				});
+			}
 		}
 
 		if(this.pincherBg)
@@ -864,21 +927,39 @@ export class Sonic extends PointActor
 			}
 		}
 
-		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
+		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
 		{
-			for(const spark of this.sparks)
+			if(this.args.grinding && !this.args.falling && this.args.gSpeed)
 			{
-				const sparkPoint = this.rotatePoint(
-					1.75 * this.args.direction
-					, 8
-				);
+				for(const spark of this.sparks)
+				{
+					const sparkPoint = this.rotatePoint(
+						1.75 * this.args.direction
+						, 8
+					);
 
-				spark.style({
-					opacity: Math.random() * 2
-					, '--x': sparkPoint[0] + this.x
-					, '--y': sparkPoint[1] + this.y
-				});
+					spark.style({
+						opacity: Math.random() * 2
+						, '--x': sparkPoint[0] + this.x
+						, '--y': sparkPoint[1] + this.y
+					});
+				}
 			}
+		}
+
+		if(Math.abs(this.ySpeedLast) > 16)
+		{
+			const landingFrames = Math.min(8, this.ySpeedLast / 4) * (this.args.rolling ? 0.5 : 1);
+
+			if(this.groundTime && this.groundTime > 2 && this.groundTime < landingFrames && this.ySpeedLast)
+			{
+				this.args.animation = 'landing';
+			}
+		}
+
+		if(this.args.sliding)
+		{
+			this.args.animation = 'sliding';
 		}
 	}
 
@@ -892,6 +973,11 @@ export class Sonic extends PointActor
 
 	airDash(direction)
 	{
+		if(this.args.stuck || this.carrying.size)
+		{
+			return;
+		}
+
 		if(this.dashed || (this.args.ignore && this.args.ignore !== -2))
 		{
 			return;
@@ -980,6 +1066,10 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping && !this.dashed && !this.args.doubleSpin)
 		{
+			if(this.carrying.size)
+			{
+				return;
+			}
 
 			if(this.args.mercy < 120)
 			{
@@ -1163,9 +1253,9 @@ export class Sonic extends PointActor
 
 				if(solid)
 				{
-					this.viewport.onFrameOut(40, standOrRecheck);
+					this.viewport.onFrameOut(10, standOrRecheck);
 
-					this.args.gSpeed = this.args.direction * 4;
+					this.args.gSpeed = this.args.gSpeed || this.args.direction * 4 || 4;
 					this.args.rolling = true;
 
 					return;
@@ -1201,7 +1291,7 @@ export class Sonic extends PointActor
 			this.spindashCharge = 15;
 		}
 
-		const direction = this.args.direction;
+		const direction = this.args.direction || Math.sign(this.xSpeedLast);
 		let   dashPower = this.spindashCharge / 40;
 
 		if(dashPower > 1)
@@ -1239,12 +1329,18 @@ export class Sonic extends PointActor
 		{
 			return;
 		}
+
+		if(this.carrying.size)
+		{
+			return;
+		}
+
 		// if(this.skidding)
 		// {
 		// 	return;
 		// }
 
-		this.yAxis = 1;
+		this.yAxis = this.yAxis || 1;
 
 		if(this.args.ignore || this.args.rolling)
 		{
@@ -1355,7 +1451,7 @@ export class Sonic extends PointActor
 
 	hold_2()
 	{
-		if(!this.args.falling)
+		if(this.args.stuck || !this.args.falling)
 		{
 			return;
 		}
@@ -1390,10 +1486,14 @@ export class Sonic extends PointActor
 
 			for(const object of objects.keys())
 			{
+				if(this.carrying.size && !this.carrying.has(object))
+				{
+					continue;
+				}
+
 				if(typeof object.lift === 'function')
 				{
 					object.lift(this);
-					return;
 				}
 			}
 		}
@@ -1530,7 +1630,7 @@ export class Sonic extends PointActor
 		}
 		else
 		{
-			this.args.spriteSheet = this.spriteSheet;
+			this.args.spriteSheet = this.rotatedSpriteSheet;
 
 			this.args.gSpeedMax = this.gSpeedMaxNormal;
 			this.args.jumpForce = this.jumpForceNormal;
@@ -1600,6 +1700,20 @@ export class Sonic extends PointActor
 			return false;
 		}
 
+		if(this.args.popChain.length)
+		{
+			if(!this.lightDashReward)
+			{
+				this.lightDashReward = {label: 'lightdash', points:10, multiplier:1};
+
+				this.args.popChain.push(this.lightDashReward);
+			}
+			else
+			{
+				this.lightDashReward.points += 10;
+			}
+		}
+
 		this.lightDashed = true;
 
 		let currentAngle;
@@ -1621,12 +1735,12 @@ export class Sonic extends PointActor
 			dashSpeed = maxDash;
 		}
 
-		const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
+		// const space = this.bMap('scanForward', dashSpeed, 0.5).get(Platformer);
 
-		if(space && dashSpeed > space)
-		{
-			dashSpeed = space;
-		}
+		// if(space && dashSpeed > space)
+		// {
+		// 	dashSpeed = space;
+		// }
 
 		const direction = Math.sign(this.args.xSpeed) || Math.sign(this.args.gSpeed);
 
@@ -1641,7 +1755,7 @@ export class Sonic extends PointActor
 
 		const breakGroundAngle = Math.PI / 4;
 
-		this.args.airAngle  = angle;
+		// this.args.airAngle  = angle;
 
 		this.lightDashing = true;
 
@@ -1663,8 +1777,8 @@ export class Sonic extends PointActor
 
 				if(ring)
 				{
-					// this.args.x = pickup.x;
-					// this.args.y = pickup.y;
+					// this.args.x = pickup.args.x;
+					// this.args.y = pickup.args.y;
 
 					this.lightDash(ring);
 				}
@@ -1708,9 +1822,9 @@ export class Sonic extends PointActor
 		}
 	}
 
-	startle()
+	startle(other)
 	{
-		super.startle();
+		super.startle(other);
 
 		this.onNextFrame(() => this.args.animation = 'startle');
 	}
@@ -1766,6 +1880,14 @@ export class Sonic extends PointActor
 		{
 			if(!entered)
 			{
+				for(const r of this.regions)
+				{
+					if(r !== region && r instanceof GrindingRegion)
+					{
+						return;
+					}
+				}
+
 				if(this.args.falling)
 				{
 					this.args.animation = 'springdash';
@@ -1778,5 +1900,27 @@ export class Sonic extends PointActor
 		}
 
 		super.crossRegionBoundary(region, entered);
+	}
+
+	rotateMainColor(rH = 0, rS = 1, rV = 1)
+	{
+		if(this.rH === rH)
+		{
+			return;
+		}
+
+		this.rH = rH;
+
+		const rotatedColors = {
+			'8080e0': new Color('8080e0').rotate(rH, rS, rV).toString(),
+			'6060c0': new Color('6060c0').rotate(rH, rS, rV).toString(),
+			'4040a0': new Color('4040a0').rotate(rH, rS, rV).toString(),
+			'202080': new Color('202080').rotate(rH, rS, rV).toString(),
+		};
+
+		this.png.ready.then(()=>{
+			const newPng = this.png.recolor(rotatedColors);
+			this.args.spriteSheet = newPng.toUrl();
+		});
 	}
 }

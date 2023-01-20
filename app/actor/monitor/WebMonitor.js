@@ -3,6 +3,8 @@ import { Monitor } from '../Monitor';
 
 export class WebMonitor extends Monitor
 {
+	name = 'Web Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

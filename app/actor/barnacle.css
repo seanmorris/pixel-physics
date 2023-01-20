@@ -1,0 +1,85 @@
+.actor-item.actor-barnacle .sprite {
+	height: 32px;
+	width: 34px;
+}
+
+.actor-item.actor-barnacle .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/barnacle.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 32px;
+	width: 34px;
+	background-repeat: repeat-x;
+}
+
+.actor-item.actor-barnacle {
+	z-index: 10;
+}
+
+.actor-item.actor-barnacle .sprite:after {
+	animation: initial;
+	animation: barnacle-close steps(2) 1 150ms forwards;
+}
+
+.actor-item.actor-barnacle[data-animation="feeding"] .sprite:after {
+	animation: barnacle-retract steps(7) 1 450ms;
+}
+
+.actor-item.actor-barnacle[data-animation="spit"] .sprite:after {
+	animation: barnacle-spit steps(4) 1 350ms;
+}
+
+.actor-item.actor-barnacle-trap .sprite::after {
+	content: '';
+	position: absolute;
+	left: -4.5px;
+	top: -50%;
+	animation: barnacle-trap-bait 1s infinite alternate ease-in-out;
+	background-image: url(/Sonic/plant-trap.png);
+	width: 16px;
+	height: 16px;
+	z-index: -1;
+}
+
+@keyframes barnacle-retract {
+	from{
+		background-position-x: 0px;
+	}
+	to{
+		background-position-x: -238px;
+	}
+}
+
+@keyframes barnacle-spit {
+	from{
+		background-position-x: -136px;
+	}
+	to{
+		background-position-x: 0px;
+	}
+}
+
+@keyframes barnacle-close {
+	from{
+		background-position-x: calc(0px + var(--sprite-offset-x));
+	}
+	to{
+		background-position-x: calc(68px + var(--sprite-offset-x));
+	}
+}
+
+@keyframes barnacle-trap-bait {
+	0%{
+		transform: rotate(0deg);
+	}
+	50%{
+	}
+	100%{
+		transform: rotate(360deg);
+	}
+}

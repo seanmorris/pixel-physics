@@ -19,10 +19,10 @@
     "@babel/preset-env": "^7.12.10",
     "auto-reload-brunch": "^2",
     "babel-brunch": "^7.0.1",
-    "babel-minify": "^0.5.1",
+    "babel-minify": "^0.2.0",
     "brunch": "^4.0.0",
-    "brunch-preval": "^0.0.3",
-    "brunch-chilidogsparser": "^0.0.3",
+    "brunch-chilidogsparser": "^0.0.1",
+    "brunch-preval": "^0.0.4-a",
     "clean-css-brunch": "^3",
     "raw-brunch": "^1.0.2",
     "uglify-es-brunch": "^1"

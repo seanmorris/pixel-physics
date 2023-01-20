@@ -27,6 +27,7 @@ export class Grounder extends Mixin.from(PointActor, CanPop)
 
 		this.args.width     = 24;
 		this.args.height    = 32;
+		this.args.color     = this.args.color ?? 'green';
 
 		this.willStick = false;
 		this.stayStuck = false;
@@ -36,6 +37,13 @@ export class Grounder extends Mixin.from(PointActor, CanPop)
 		this.args.patrolSpeed   = this.args.patrolSpeed   ?? 1;
 
 		this.age = 0;
+	}
+
+	onRendered()
+	{
+		super.onRendered();
+
+		this.autoAttr.get(this.box)['data-color'] = 'color';
 	}
 
 	update()

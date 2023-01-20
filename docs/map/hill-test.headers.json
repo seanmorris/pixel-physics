@@ -1,0 +1,34 @@
+{
+    "compressionlevel": -1,
+    "height": 32,
+    "infinite": false,
+    "nextlayerid": 7,
+    "nextobjectid": 3,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 64,
+    "types": [
+        "friction-region"
+    ],
+    "map": "/map/hill-test.json"
+}

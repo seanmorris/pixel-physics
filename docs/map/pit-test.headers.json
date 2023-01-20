@@ -1,0 +1,67 @@
+{
+    "compressionlevel": -1,
+    "height": 128,
+    "infinite": false,
+    "nextlayerid": 3,
+    "nextobjectid": 28,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "construct"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": true
+        },
+        {
+            "name": "wrapY",
+            "type": "bool",
+            "value": true
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 512,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 208,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 64,
+    "types": [
+        "sheild-electric-monitor",
+        "sheild-fire-monitor",
+        "sheild-water-monitor",
+        "sonic"
+    ],
+    "map": "/map/pit-test.json"
+}

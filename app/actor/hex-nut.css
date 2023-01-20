@@ -1,0 +1,25 @@
+.actor-item.actor-hex-nut .sprite {
+	background-image: url(/Sonic/hexnut.png);
+	animation-name: hex-nut-spin;
+	animation-duration: 300ms;
+	animation-timing-function: steps(4);
+	animation-iteration-count: infinite;
+	animation-play-state: paused;
+	animation-delay: calc(-1000s + calc(2.75ms * var(--conveyed, 0)));
+	height: 24px;
+	top: 0;
+}
+
+.actor-item.actor-hex-nut {
+/*	filter: none !important;*/
+}
+
+@keyframes hex-nut-spin {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: -96px;
+	}
+}
+

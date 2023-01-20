@@ -34,7 +34,6 @@ export class Backdrop extends View
 
 		let stacked = 0;
 
-
 		for(const i in strips)
 		{
 			const recolors = [];
@@ -43,7 +42,7 @@ export class Backdrop extends View
 
 			yPositions.push(`calc(100% - calc(1px * ${stacked}))`);
 
-			let xFormula = `0px`;
+			let xFormula = `calc(var(--xOffset, 0px) * 1px)`;
 
 			if(strip.parallax)
 			{
@@ -76,7 +75,6 @@ export class Backdrop extends View
 			}
 		}
 
-
 		this.urls = urls;
 
 		this.stacked = stacked;
@@ -84,6 +82,8 @@ export class Backdrop extends View
 		const xPos = xPositions.join(', ');
 		const yPos = yPositions.join(', ');
 		const url  = this.urls.map(u=>`url(${u})`).join(', ');
+
+		this.args.xOffset = 0;
 
 		backdrop.style({
 			'background-position-y':   yPos
@@ -94,7 +94,7 @@ export class Backdrop extends View
 		});
 
 		this.args.bindTo(
-			['x', 'y', 'xPan', 'yPan', 'bX', 'bY', 'width', 'height', 'right', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom']
+			['x', 'y', 'xPan', 'yPan', 'bX', 'bY', 'width', 'height', 'right', 'xMax', 'yMax', 'frame', 'stacked', 'top', 'bottom', 'xOffset']
 			, (v,k) => backdrop.style({[`--${k}`]: v})
 		);
 

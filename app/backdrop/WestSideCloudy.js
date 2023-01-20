@@ -12,6 +12,12 @@ export class WestSideCloudy extends Backdrop
 			{
 				autoscroll: 0.14
 				, parallax: 0.02
+				, url:      '/Sonic/backdrop/west-side/clouds--1.png'
+				, height:   64
+			}
+			, {
+				autoscroll: 0.14
+				, parallax: 0.02
 				, url:      '/Sonic/backdrop/west-side/clouds-0.png'
 				, height:   33
 			}
@@ -176,6 +182,12 @@ export class WestSideCloudy extends Backdrop
 				, parallax: 0.004
 				, url:      '/Sonic/backdrop/west-side/water-cloudy.png'
 				, height:   46
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.000
+				, url:      '/Sonic/backdrop/west-side/water-cloudy-after.png'
+				, height:   128
 			}
 		];
 

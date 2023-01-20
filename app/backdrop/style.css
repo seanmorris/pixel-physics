@@ -1,12 +1,3 @@
-/*.backdrop.marble-garden {
-	background-color: #000;
-	transform: scale(2);
-}
-.backdrop.marble-garden {
-	background-color: #000;
-	transform: scale(2);
-}
-*/
 .aurora .backdrop::before {
 	opacity: 0.65;
 }
@@ -27,30 +18,35 @@
 	/*background: linear-gradient(0deg, rgba(10,194,133,1) 40%, rgba(0,114,255,1) 100%);*/
 	background-color: #1e1659;
 	/*filter: blur(0.5px);*/
-	transform: translateZ(0px);
+	/*transform: translateZ(0px);*/
 }
 
-.backdrop.west-side-cloudy {
-	filter: blur(0.5px);
+.backdrop.west-side-day .parallax {
+	background-color: #4848fc;
+}
+
+.backdrop.west-side-cloudy .parallax {
+	/*filter: blur(0.5px);*/
 }
 
 .backdrop.west-side-cloudy .parallax {
 	background-color: #12173c;
 }
 
+.backdrop.dark-clouds.lightning .parallax,
 .backdrop.west-side-cloudy.lightning .parallax {
 	animation: west-side-lightning 1s ease-out infinite forwards;
 }
 
 @keyframes west-side-lightning {
-	0% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
+	0% { background-color: #12173c; filter: brightness(1); }
 	5% {
 		background-color: #CCC;
-		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5) blur(0.5px);
+		filter: opacity(0.75) hue-rotate(180deg) brightness(1.5) invert(1) brightness(0.5);
 	}
-	10% { filter: brightness(1) blur(0.5px); }
-	50% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
-	100% { background-color: #12173c; filter: brightness(1) blur(0.5px); }
+	10% { filter: brightness(1); }
+	50% { background-color: #12173c; filter: brightness(1); }
+	100% { background-color: #12173c; filter: brightness(1); }
 }
 
 .backdrop.angel-island .parallax {
@@ -78,19 +74,14 @@
 	top: 0;
 	width: 100%;
 	height: 100%;
-	/*width: 50%;
-	min-height: 50%;
-	transform-origin: top left;
-	*/
-	/*background-image: url(/Sonic/marble-garden-bg.png);
-	background-size: 100% auto;
-	/*--height: 1024;*/
 }
 
 .backdrops .backdrop .parallax {
 	transition: background-color 0.75s ease-out;
-	left: calc(calc(calc(var(--x) + var(--bX))) * 1px);
-	width: calc(calc(var(--width) + var(--xPan) - var(--xPan)) * 1px);
+	transform:
+		translateX( calc(calc(calc(var(--x) + var(--bX))) * 1px) )
+		translateY(calc(calc(var(--y) / var(--yMax)) * calc(288px + min(-288px, var(--stacked)))));;
+	width: calc(var(--width) * 1px);
 }
 
 .backdrop.marble-garden {
@@ -109,25 +100,9 @@
 	min-height: 100%;
 }
 
-.backdrop.marble-garden .parallax {
-	height: 632px;
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(256px - 512px)));
-}
-
-.backdrop.angel-island .parallax {
+.backdrop .parallax {
 	height: calc(-1 * var(--stacked));
-	/*height: calc(-1 * var(--stacked));*/
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(288px + var(--stacked))));
-}
-
-.backdrop.wood .parallax {
-	height: 632px;
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stackHeight) / 4)));
-}
-
-.backdrop.industrial .parallax {
-	height: calc(-1 * var(--stacked));
-	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(var(--stacked) / 4)));
+	transform: translateY(calc(calc(var(--y) / var(--yMax)) * calc(288px + min(-288px, var(--stacked)))));
 }
 
 .backdrop.industrial {
@@ -138,21 +113,10 @@
 
 	background-size: 100% 300%;
 	background-color: rgba(0, 100, 140, 1);
-	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 85%);
+	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 90%);
 	background-position-y: calc(50% * calc(2 * var(--sunrise)));
 	transition: background-position-y 1800ms ease-out, background-image 3600ms ease-out;
 	z-index: -1;
-}
-
-.backdrop.industrial .parallax {
-	/*background-color: rgba(95, 60, 70, 1);*/
-}
-
-.backdrop.mystic-cave .parallax,
-.backdrop.proto-labrynth .parallax {
-	height: auto;
-	top: max( calc(100% - calc(1px * var(--top))), calc(1% * 0));
-	bottom: max( calc(100% - calc(1px * var(--bottom))), calc(1% * 0));
 }
 
 .backdrop.underground .parallax {
@@ -161,4 +125,27 @@
 
 .backdrop.south-ridge .parallax {
 	background-color: #6c90fc;
+}
+
+.backdrop.mushroom-hill-summer .parallax {
+	background-color: #00d8fc;
+	background-color: #00c26c;
+}
+
+.backdrop.city .parallax {
+	background-color: #2050c8;
+}
+
+.backdrop.dark-clouds {
+/*	background-color: #00d8fc;*/
+/*	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 90%);*/
+	background-image: linear-gradient(0deg, #081230 40%, #222640 75%);
+	filter: hue-rotate(120deg) saturate(50%);
+}
+
+.backdrop.overcast {
+/*	background-image: linear-gradient(rgba(95, 60, 70, 1) 50%, rgba(90, 160, 200, 1), rgba(150, 125, 70, 1) 90%);*/
+/*	background-image: linear-gradient(0deg, #081230 40%, #222640 75%);*/
+	background-color: #240000;
+	filter: invert(1) hue-rotate(190deg) saturate(75%) brightness(40%) contrast(200%);
 }

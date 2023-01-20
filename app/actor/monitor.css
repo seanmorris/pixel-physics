@@ -53,6 +53,11 @@
 	--screen-y: 0;
 }
 
+[data-monitor="triple-ring"] .monitor-screen {
+	--screen-x: 3;
+	--screen-y: 7;
+}
+
 [data-monitor="sheild-normal"] .monitor-screen {
 	--screen-x: 1;
 	--screen-y: 6;
@@ -135,6 +140,11 @@
 [data-monitor="life-atomic-superball"] .monitor-screen {
 	--screen-x: 3;
 	--screen-y: 4;
+}
+
+[data-monitor="info"] .monitor-screen {
+	--screen-x: 3;
+	--screen-y: 5;
 }
 
 [data-monitor="web-monitor"] .monitor-screen {

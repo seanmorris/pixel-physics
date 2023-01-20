@@ -1,0 +1,54 @@
+.actor-item.actor-propeller-platform .sprite {
+	background-image: url(/Sonic/propeller-platform.png);
+	background-repeat: repeat-y;
+	animation-name: propeller-platform-idle;
+	animation-duration: 160ms;
+	animation-timing-function: steps(3);
+	animation-iteration-count: infinite;
+}
+
+.actor-item.actor-propeller-platform:not([data-spinning="0"]) .sprite {
+	animation-name: propeller-platform-idle;
+	animation-duration: 60ms;
+	animation-timing-function: steps(3);
+	animation-iteration-count: infinite;
+}
+
+.actor-item.actor-propeller-platform:not([data-bouncing="0"]) .sprite {
+	animation-name: propeller-platform-idle, propeller-platform-bounce;
+	animation-duration: 160ms, 100ms;
+	animation-timing-function: steps(3), steps(3);
+	animation-iteration-count: infinite, 1;
+	animation-direction: normal, reverse;
+}
+
+.actor-item.actor-propeller-platform[data-active=true] .sprite::after {
+	background-image: url(/Sonic/propeller-boost.png);
+	position: absolute;
+	width: 48px;
+	height: 80px;
+	left: 24px;
+	top: 100%;
+	content: '';
+	transform-origin: top;
+}
+
+@keyframes propeller-platform-idle {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -192px;
+	}
+}
+
+
+@keyframes propeller-platform-bounce {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: -192px;
+	}
+}
+

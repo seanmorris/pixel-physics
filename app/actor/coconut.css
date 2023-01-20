@@ -1,0 +1,10 @@
+.actor-coconut {
+	z-index: 10;
+}
+
+.actor-coconut .sprite {
+	width: 12px;
+	height: 13px;
+	background-image: url(/Sonic/coconut.png);
+	background-position-y: calc(calc(4 + calc(-1 * var(--size, 4))) * -13px);
+}

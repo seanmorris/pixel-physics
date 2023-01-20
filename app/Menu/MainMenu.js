@@ -1,3 +1,4 @@
+import { Router }   from 'curvature/base/Router';
 import { Bgm } from '../audio/Bgm';
 import { Card } from '../intro/Card';
 
@@ -18,6 +19,8 @@ import { CharacterString } from '../ui/CharacterString';
 import { CharacterPreview } from './CharacterPreview';
 import { ZoneSuffix } from './ZoneSuffix';
 
+import { Lobby } from '../network/Lobby';
+
 export class MainMenu extends Menu
 {
 	template = require('./main-menu.html');
@@ -25,6 +28,13 @@ export class MainMenu extends Menu
 	constructor(args,parent)
 	{
 		super(args,parent);
+
+		if(!this.args.initialPath && Router.query.menuPath)
+		{
+			this.args.initialPath = JSON.parse(Router.query.menuPath);
+		}
+
+		this.loggingIn = null;
 
 		this.args.cardName = 'main-menu';
 
@@ -52,11 +62,15 @@ export class MainMenu extends Menu
 			, font: this.font
 		});
 
+		this.args.revert = new CharacterString({
+			value:  '❸ default (hold)'
+			, font: this.font
+		});
+
 		this.args.select = new CharacterString({
 			value:  '✚ select'
 			, font: this.font
 		});
-
 
 		this.refreshConnection();
 
@@ -153,23 +167,6 @@ export class MainMenu extends Menu
 						}
 					}
 
-					// , 'Radical City Zone': {
-					// 	subtext: 'Gotta go fast!'
-					// 	, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, children: {
-					// 		'Act 1': {
-
-					// 		}
-					// 		, 'Act 2': {
-					// 			subtext: 'Incomplete!!!'
-					// 			, callback: () => {
-					// 				this.parent.loadMap({mapUrl:'/map/empty-zone-2.json'});
-					// 				this.accept();
-					// 			}
-					// 		}
-					// 	}
-					// }
-
 					, 'Radical City Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/empty-zone.json'}, this.parent)
@@ -188,7 +185,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Seaview Park Zone': {
+					, 'Seaview Park Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/west-side-zone.json'}, this.parent)
 						, callback: () => {
@@ -197,22 +194,29 @@ export class MainMenu extends Menu
 						}
 					}
 
-					// , 'Seaview Park Zone Act 2': {
-					// 	// characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	characters: []
-					// 	, available: 'unavailable'
-					// 	, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
-					// 		this.accept();
-					// 	}
-					// }
+					, 'Seaview Park Zone Act 2': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
+							this.accept();
+						}
+					}
 
 					, 'Manic Harbor Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Agorapolis Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
 							this.accept();
 						}
 					}
@@ -226,7 +230,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Underground Test': {
+					, 'Underground Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Underground Zone'
 						, callback: () => {
@@ -235,7 +239,25 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Moon Test': {
+					, 'StratoRail Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art for Moon Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/pumpkin-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Peak Vape Test Zone': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art for Peak Vape Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/quartz-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Moon Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
@@ -244,14 +266,14 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Terrain Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing different terrain types'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
-							this.accept();
-						}
-					}
+					// , 'Terrain Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing different terrain types'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					// , 'Pixel Hill Zone': {
 					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -262,48 +284,48 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Space Pinball Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing pinball physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
-							this.accept();
-						}
-					}
-					, 'Belt and Wheel Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing elastic and rotational physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/belt-test.json'});
-							this.accept();
-						}
-					}
-					, 'See-Saw Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing see-saw physics'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Space Pinball Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing pinball physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+					// , 'Belt and Wheel Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing elastic and rotational physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/belt-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+					// , 'See-Saw Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing see-saw physics'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Vehicle Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing vehicles'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Vehicle Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing vehicles'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Spotlight Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing spotlight effects'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/visor-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Spotlight Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing spotlight effects'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/visor-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					, 'Flickie Test': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -322,13 +344,13 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Block Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/block-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Block Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/block-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					// , 'Half Pipe Test': {
 					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -346,51 +368,84 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Arch Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// , 'Arch Test': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/arc-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
+				}
+			}
+
+			, 'Multiplayer': {
+				tags: 'new'
+				, children: {
+					'Matrix Lobby': {
+						tags: 'new'
 						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/arc-test.json'});
-							this.accept();
+							if(!this.loggingIn)
+							{
+								this.loggingIn = this.parent.matrixConnect(true);
+								this.loggingIn.finally(() => this.loggingIn = null);
+								this.loggingIn.then(matrix => {
+									const lobby = new Lobby({roomId:this.parent.settings.matrixRoom},this.parent);
+									this.args.override = lobby;
+									this.args.override.onRemove(() => {
+										this.args.override = null;
+										this.onNextFrame(()=>this.focusFirst());
+									});
+									this.onRemove(() => lobby.remove());
+								});
+							}
+							else
+							{
+								this.parent.matrixConnect();
+							}
+						}
+					}
+
+					, 'Peer to Peer': {
+
+						children: {
+							'Host a game': {
+								callback: () => {
+									this.args.hostOutput = '';
+									this.args.hostGame   = true;
+									this.args.copy       = 'copy';
+								}
+							}
+
+							, 'Join a game': {
+								callback: () => {
+									this.args.joinOutput = '';
+									this.args.joinGame   = true;
+									this.args.copy       = 'copy';
+
+									this.client.fullOffer().then(token => {
+										const tokenString    = JSON.stringify(token);
+										const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
+										this.args.joinOutput = encodedToken;
+										this.args.haveToken  = true;
+									});
+								}
+							}
 						}
 					}
 				}
 			}
 
-			, '2 Player P2P': {
 
-				children: {
-
-					'Host a game': {
-						callback: () => {
-							this.args.hostOutput = '';
-							this.args.hostGame   = true;
-							this.args.copy       = 'copy';
-						}
-					}
-
-					, 'Join a game': {
-						callback: () => {
-							this.args.joinOutput = '';
-							this.args.joinGame   = true;
-							this.args.copy       = 'copy';
-
-							this.client.offer().then(token => {
-								const tokenString    = JSON.stringify(token);
-								const encodedToken   = `s3ktp://request/${btoa(tokenString)}`;
-								this.args.joinOutput = encodedToken;
-								this.args.haveToken  = true;
-							});
-						}
-					}
-
-				}
-			}
-			, 'Connect To Server': {
-
-				available: 'unavailable'
-			}
 			, Settings: SettingsMenu(parent)
 
+			, Graphics: {
+				input: 'select'
+				, options: ['High', 'Medium', 'Low', 'Very Low']
+				, set: value => parent.settings.graphicsLevel = value
+				, get: ()    => parent.settings.graphicsLevel
+			}
+
+			// , 'Connect To Server': { available: 'unavailable' }
 			// , Load: SavestateMenu(parent)
 
 			, About: {
@@ -399,9 +454,7 @@ export class MainMenu extends Menu
 				}
 			}
 
-			, 'Back': {
-				callback: () => parent.quit(true)
-			}
+			// , 'Back': { callback: () => parent.quit(true) }
 		};
 	}
 
@@ -416,28 +469,37 @@ export class MainMenu extends Menu
 	{
 		super.input(controller);
 
-		if(this.args.twist)
-		{
-			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0);
-			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0);
+		let xEffect = 2;
+		let yEffect = 3;
 
-			let pressure = 0;
+		// if(controller.axes[7])
+		// {
+		// 	xEffect = 3;
+		// 	yEffect = 4;
+		// }
 
-			if(controller.buttons[6])
-			{
-				pressure = controller.buttons[6].pressure - controller.buttons[7].pressure;
-			}
+		// if(this.args.twist)
+		// {
+		// 	const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0);
+		// 	const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0);
 
-			this.args.twist.args.scale = pressure * -256;
+		// 	let pressure = 0;
 
-			this.args.twist.args.dx = 64*1.618 * xAxis;
-			this.args.twist.args.dy = 64*1.000 * yAxis;
-		}
+		// 	if(controller.buttons[6])
+		// 	{
+		// 		pressure = controller.buttons[6].pressure - controller.buttons[7].pressure;
+		// 	}
+
+		// 	this.args.twist.args.scale = pressure * -256;
+
+		// 	this.args.twist.args.dx = 64*1.618 * xAxis;
+		// 	this.args.twist.args.dy = 64*1.000 * yAxis;
+		// }
 
 		if(this.args.pinch)
 		{
-			const xAxis = (controller.axes[2] ? controller.axes[2].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
-			const yAxis = (controller.axes[3] ? controller.axes[3].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
+			const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
+			const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
 
 			this.args.pinch.args.dx = 64*1.618 * xAxis;
 			this.args.pinch.args.dy = 64*1.000 * yAxis;
@@ -446,20 +508,17 @@ export class MainMenu extends Menu
 
 	disconnect()
 	{
-		this.clear();
+		this.server.close();
+		this.client.close();
 
-		if(this.args.hostGame)
-		{
-			this.server.close();
-		}
-		else if(this.args.joinGame)
-		{
-			this.client.close();
-		}
+		this.parent.args.networked = false;
+		this.parent.args.chatBox = null;
 
 		this.args.connected = false;
 		this.args.hostGame  = false;
 		this.args.joinGame  = false;
+
+		this.clear();
 
 		this.refreshConnection();
 	}
@@ -468,9 +527,9 @@ export class MainMenu extends Menu
 	{
 		super.onRendered(event);
 
-		this.args.twist = new Twist({
-			id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		});
+		// this.args.twist = new Twist({
+		// 	id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
+		// });
 
 		this.args.pinch = new Pinch({
 			id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
@@ -504,7 +563,7 @@ export class MainMenu extends Menu
 
 		const offer = JSON.parse(offerString);
 
-		const answer = this.server.answer(offer);
+		const answer = this.server.fullAnswer(offer);
 
 		answer.then(token => {
 			const tokenString    = JSON.stringify(token);
@@ -529,7 +588,7 @@ export class MainMenu extends Menu
 
 		const answer = JSON.parse(answerString);
 
-		this.client.accept(answer);
+		this.client.fullAccept(answer);
 	}
 
 	select()
@@ -600,10 +659,13 @@ export class MainMenu extends Menu
 
 		const onOpen  = event => {
 			this.parent
-			.loadMap({mapUrl: '/map/empty-zone-2.json', networked: true})
+			.loadMap({mapUrl: '/map/emerald-isle.json', networked: true})
 			.then(() => console.log('Peer connection opened!'));
 		};
-		const onClose = event => this.disconnect();
+		const onClose = event => {
+			this.disconnect(event);
+			this.parent.quit(2);
+		};
 
 		this.listen(server, 'open', onOpen);
 		this.listen(server, 'close', onClose);

@@ -1,0 +1,60 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 1024,
+    "infinite": false,
+    "nextlayerid": 7,
+    "nextobjectid": 3,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "city"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 177,
+            "image": "giant-loop.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "giant-loop",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 1024,
+    "types": [
+        "mecha-sonic",
+        "sonic"
+    ],
+    "map": "/map/giant-loop.json"
+}

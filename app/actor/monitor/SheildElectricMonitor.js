@@ -4,6 +4,8 @@ import { ElectricSheild } from '../../powerups/ElectricSheild';
 
 export class SheildElectricMonitor extends Monitor
 {
+	name = 'Lightning Monitor';
+
 	onRendered(event)
 	{
 		super.onRendered(event);

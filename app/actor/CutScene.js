@@ -20,6 +20,13 @@ export class CutScene extends PointActor
 
 	playSample(event)
 	{
+		const viewport = this.viewport;
+
+		if(!viewport.args.audio)
+		{
+			return;
+		}
+
 		const tag = new Audio(event.source);
 
 		tag.play();

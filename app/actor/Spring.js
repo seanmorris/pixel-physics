@@ -1,5 +1,6 @@
 import { LayerSwitch } from './LayerSwitch';
 import { PointActor } from './PointActor';
+import { BreakableBlock } from './BreakableBlock';
 import { Region }     from '../region/Region';
 import { Sfx } from '../audio/Sfx';
 
@@ -65,16 +66,63 @@ export class Spring extends PointActor
 		this.args.static = true;
 
 		this.args.actingOn = new Set;
+
+		this.args.blocked = false;
+
+		this.holding = new Set;
 	}
 
-	collideA(other)
+	updateEnd()
 	{
+		super.updateEnd();
+
+		this.args.blocked = false;
+
+		if(this.viewport.collisions.has(this))
+		{
+			for(const [third, thirdType] of this.viewport.collisions.get(this))
+			{
+				if(!third.broken && third instanceof BreakableBlock)
+				{
+					this.args.blocked = true;
+				}
+			}
+		}
+
+		if(this.args.blocked)
+		{
+			return false;
+		}
+
+		for(const other of this.holding)
+		{
+			this.springActor(other);
+
+			this.viewport.onFrameOut(5,() => {
+				this.holding.delete(other);
+			});
+
+		}
+	}
+
+	collideA(other, type)
+	{
+		if(this.args.blocked)
+		{
+			return false;
+		}
+
+		if(other.carriedBy)
+		{
+			return false;
+		}
+
 		if(other.args.hangingFrom)
 		{
 			other.args.hangingFrom.unhook();
 		}
 
-		if(other[WontSpring])
+		if(other[WillSpring] || other[WontSpring])
 		{
 			return false;
 		}
@@ -94,31 +142,45 @@ export class Spring extends PointActor
 			return false;
 		}
 
-		super.collideA(other);
+		super.collideA(other, type);
 
 		if(this.args.actingOn.has(other))
 		{
-			return;
+			return false;
 		}
 
 		if(other.args.platform)
 		{
-			return;
+			return false;
 		}
 
 		if(other instanceof Region)
 		{
-			return;
+			return false;
+		}
+
+		other.args.falling = true;
+
+		this.holding.add(other);
+
+		return false;
+	}
+
+	springActor(other)
+	{
+		if(other[WillSpring])
+		{
+			return false;
 		}
 
 		Sfx.play('SPRING_HIT');
 
-		if(other[WillSpring])
-		{
-			return;
-		}
+		const rounded = this.roundAngle(this.args.angle, 8, true);
 
-		this.args.actingOn.add(other)
+		other.args.x = this.args.x + Math.cos(rounded) * 4;
+		other.args.y = this.args.y + Math.sin(rounded) * 4;
+
+		this.args.actingOn.add(other);
 
 		this.viewport.onFrameOut(1, () => {
 			this.args.active = true;
@@ -130,21 +192,23 @@ export class Spring extends PointActor
 			this.args.actingOn.delete(other);
 		});
 
+
 		if(other.noClip)
 		{
-			return;
+			return false;
 		}
+
+		other.args.gSpeed = 0;
+		other.args.xSpeed = 0;
+		other.args.ySpeed = 0;
 
 		// other.args.direction = Math.sign(this.args.gSpeed);
 
 		other[WillSpring] = true;
 
 		other.args.mercy  = 0;
-		other.args.gSpeed = 0;
-		other.args.xSpeed = 0;
-		other.args.ySpeed = 0;
 
-		const rounded = this.roundAngle(this.args.angle, 8, true);
+		// const rounded = this.roundAngle(this.args.angle, 8, true);
 
 		if(this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{
@@ -163,17 +227,16 @@ export class Spring extends PointActor
 			});
 		}
 
-		other.args.x = this.args.x + Math.cos(rounded) * 16;
-		other.args.y = this.args.y + Math.sin(rounded) * 16;
+		other.locked = 2;
 
 		other.args.jumping = false;
 		other.args.ignore = other.args.ignore || (other.args.falling ? 12 : 2);
-		other.args.float = 2;
+		other.args.float = Math.max(2, other.args.float);
 
-		this.viewport.onFrameOut(2,()=>{
-
-			other.args.float = 2;
-			other.args.direction = Math.sign(xImpulse);
+		this.viewport.onFrameOut(1,()=>{
+			other.args.float = Math.max(2, other.args.float);
+			other.args.mode = 0;
+			other.args.direction = Math.sign(xImpulse) || other.args.direction;
 
 			other.impulse(
 				this.args.power
@@ -197,11 +260,11 @@ export class Spring extends PointActor
 		}
 		else
 		{
-			this.viewport.onFrameOut(3, () => other.args.rolling = isRolling);
-			this.viewport.onFrameOut(2, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(4, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(3, () => other.args.rolling = isRolling);
+			// this.viewport.onFrameOut(2, () => other.args.rolling = isRolling);
 			this.viewport.onFrameOut(1, () => other.args.rolling = isRolling);
 		}
-
 
 		if(Math.abs(other.args.xSpeed) < 3 || Math.sign(other.args.xSpeed) !== Math.sign(xImpulse))
 		{
@@ -225,6 +288,7 @@ export class Spring extends PointActor
 		other.args.displayAngle = 0;
 		other.args.groundAngle = 0;
 		other.args.airAngle = -Math.PI / 2;
+		other.args.mode = 0;
 	}
 
 	sleep()

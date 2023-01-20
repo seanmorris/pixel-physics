@@ -1,0 +1,8 @@
+.actor-caution-panel .sprite:after {
+	content:'';
+	position:absolute;
+	background-image: url(/Sonic/caution-panel.png);
+	width: 80px;
+	height: 48px;
+	left: 0;
+}

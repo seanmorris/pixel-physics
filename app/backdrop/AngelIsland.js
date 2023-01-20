@@ -202,6 +202,12 @@ export class AngelIsland extends Backdrop
 				, frame:    4
 				, recolor
 			}
+			, {
+				autoscroll: 0.000
+				, parallax: 0.000
+				, url:      '/Sonic/backdrop/angel-island/water-18.png'
+				, height:   32
+			}
 		];
 	}
 }

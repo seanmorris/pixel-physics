@@ -52,10 +52,17 @@ export class WaterController extends PointActor
 
 			this.args.level = this.args._levelLimit;
 
-			const target = this.viewport.actorsById[ this.args.target ];
+			const viewport = this.viewport;
 
-			this.viewport.auras.delete(target);
-			this.viewport.auras.delete(this);
+			viewport.onFrameOut(30, () => {
+				viewport.auras.delete(this);
+
+				if(this.args.target !== undefined)
+				{
+					const target = viewport.actorsById[ this.args.target ];
+					viewport.auras.delete(target);
+				}
+			});
 		}
 	}
 
@@ -72,7 +79,7 @@ export class WaterController extends PointActor
 
 		this.args.activated = true;
 
-		if(this.args.target && this.viewport.actorsById[ this.args.target ])
+		if(this.args.target !== undefined && this.viewport.actorsById[ this.args.target ])
 		{
 			const target = this.viewport.actorsById[ this.args.target ];
 

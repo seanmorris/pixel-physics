@@ -1,0 +1,16 @@
+.actor-item.actor-gravity-pad .sprite {
+	background-image: url(/Sonic/gravity-pad.png);
+	background-repeat: repeat-x;
+	animation: actor-gravity-pad-animate 200ms infinite steps(3);
+	height: 24px;
+	width: calc(1px * var(--width, 32px));
+}
+
+@keyframes actor-gravity-pad-animate {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: -72px;
+	}
+}

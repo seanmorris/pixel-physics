@@ -1,6 +1,8 @@
 import { BreakableBlock } from './BreakableBlock';
+import { Platformer } from '../behavior/Platformer';
 import { Projectile } from './Projectile';
 import { Spring } from './Spring';
+import { Block } from './Block';
 
 export class WoodenCrate extends BreakableBlock
 {
@@ -11,20 +13,33 @@ export class WoodenCrate extends BreakableBlock
 		this.args.type   = 'actor-item actor-breakable-block actor-wooden-crate';
 		this.args.width  = 60;
 		this.args.height = 60;
-		this.args.static = this.args.static ?? false;
+		this.args.static = false;
 
 		this[Spring.WontSpring] = true;
 	}
 
 	updateStart()
 	{
-		this.args.static = (!this.args.falling && !this.args.standingOn);
+		if(this.args.static)
+		{
+			this.args.static = !!this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+		}
+		else
+		{
+			this.args.static = !this.args.falling;
+		}
+
 
 		super.updateStart();
 	}
 
 	collideA(other, type)
 	{
+		if(other instanceof Block)
+		{
+			return true;
+		}
+
 		if(type === 0 && other.controllable)
 		{
 			return true;
@@ -43,11 +58,11 @@ export class WoodenCrate extends BreakableBlock
 			return true;
 		}
 
-		if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
-		{
-			this.break(other);
-			return false;
-		}
+		// if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
+		// {
+		// 	this.break(other);
+		// 	return false;
+		// }
 
 		if(type !== 1 && type !== 3 || other.y <= this.y - this.args.height)
 		{
@@ -77,5 +92,10 @@ export class WoodenCrate extends BreakableBlock
 		}
 
 		return true;
+	}
+
+	setTile()
+	{
+		this.args.spriteSheet = '/Sonic/wooden-crate.png';
 	}
 }

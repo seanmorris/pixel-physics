@@ -1,0 +1,41 @@
+.actor-spitsteam .sprite::after {
+	left: 0;
+	content: '';
+	position: absolute;
+	background-image: url(/Sonic/spitsteam.png);
+	width: 79px;
+	height: 16px;
+	animation: spitsteam-shoot 210ms steps(8) 2 forwards;
+	transform: translateY(-1px);
+}
+
+.actor-spitsteam[data-direction="-1"] {
+	transform: translateY(-1px) scaleX(-1);
+}
+
+/*
+@keyframes apple-hover {
+	0% { transform: translateY(0px); }
+	50% { transform: translateY(6px); }
+	100% { transform: translateY(0px); }
+}
+
+@keyframes apple-sparkle {
+	0% { background-position-y: 0px; }
+	100% { background-position-y: -64px; }
+}
+
+@keyframes apple-sparkle-fade {
+	0% { opacity: 0; }
+	99% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+*/
+
+@keyframes spitsteam-shoot {
+	0% { opacity:0; background-position-y: 0px; }
+	15% { opacity:0.75; }
+	75% { opacity:1; }
+	100% { background-position-y: -128px; opacity:0; }
+}

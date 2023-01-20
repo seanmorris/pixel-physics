@@ -32,6 +32,12 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 			messageEvent.originalEvent = event;
 			this.dispatchEvent(messageEvent);
 		});
+
+		this.peerClient.addEventListener('icecandidate', event => {
+			const messageEvent = new CustomEvent('icecandidate', {detail: event.data });
+			messageEvent.originalEvent = event;
+			this.dispatchEvent(messageEvent);
+		});
 	}
 
 	send(input)
@@ -41,49 +47,50 @@ export class RtcClient extends Mixin.with(EventTargetMixin)
 
 	close()
 	{
-		this.peerClientChannel && this.peerClientChannel.close();
+		return this.peerClient.close();
+	}
+
+	getIceCandidates()
+	{
+		const candidates = new Set;
+
+		return new Promise(accept => this.peerClient.addEventListener('icecandidate', event => {
+			candidates.add(event.candidate);
+
+			if(!event.candidate)
+			{
+				accept([...candidates]);
+				return;
+			}
+		}));
+	}
+
+	addIceCandidate(candidate)
+	{
+		this.peerClient.addIceCandidate(candidate);
 	}
 
 	offer()
 	{
-		this.peerClient.createOffer().then(offer => {
-			this.peerClient.setLocalDescription(offer);
-		});
+		return this.peerClient.createOffer()
+		.then(offer => this.peerClient.setLocalDescription(offer))
+		.then(() => this.peerClient.localDescription);
+	}
 
-		const candidates = new Set;
-
-		return new Promise(accept => {
-
-			let timeout = null;
-
-			this.peerClient.addEventListener('icecandidate', event => {
-
-				if(!event.candidate)
-				{
-					return;
-				}
-				else
-				{
-					candidates.add(event.candidate);
-				}
-
-				if(timeout)
-				{
-					clearTimeout(timeout);
-				}
-
-				timeout = setTimeout(
-					() => accept(this.peerClient.localDescription)
-					, this.candidateTimeout
-				);
-			});
-		});
+	fullOffer()
+	{
+		return this.offer().then(offer => this.getIceCandidates().then(candidates => ({offer, candidates})));
 	}
 
 	accept(answer)
 	{
 		const session = new RTCSessionDescription(answer);
 
-		this.peerClient.setRemoteDescription(session);
+		return this.peerClient.setRemoteDescription(session);
+	}
+
+	fullAccept({answer, candidates})
+	{
+		return this.accept(answer).then(() => candidates.map(c => this.addIceCandidate(c)));
 	}
 }

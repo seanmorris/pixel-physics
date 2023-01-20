@@ -1,0 +1,39 @@
+{
+    "compressionlevel": -1,
+    "height": 50,
+    "infinite": false,
+    "nextlayerid": 5,
+    "nextobjectid": 15,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 7,
+            "firstgid": 1,
+            "image": "../../../../movingboxes/asset/Sonic/testTiles2.png",
+            "imageheight": 128,
+            "imagewidth": 224,
+            "margin": 0,
+            "name": "Shapes",
+            "spacing": 0,
+            "tilecount": 28,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "firstgid": 29,
+            "source": "testTiles2.tsx"
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 100,
+    "types": [
+        "Player Start",
+        "red-spring"
+    ],
+    "map": "/map/TestMap002.json"
+}

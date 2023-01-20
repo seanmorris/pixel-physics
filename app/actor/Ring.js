@@ -100,8 +100,10 @@ export class Ring extends PointActor
 			return;
 		}
 
-		if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x, this.args.y + -this.args.height))
-		{
+		if(this.dropped && !this.attract
+			&& this.getMapSolidAt(this.args.x, this.args.y + -this.args.height)
+			&& !this.getMapSolidAt(this.args.x, this.args.y)
+		){
 			this.args.y += this.args.height + 1;
 			this.args.ySpeed = Math.abs(this.args.ySpeed) || 8;
 		}
@@ -113,7 +115,7 @@ export class Ring extends PointActor
 		if((this.dropped || this.scattered) && (!this.args.falling || !this.args.ySpeed))
 		{
 			this.args.xSpeed = this.args.xSpeed || this.xSpeedLast || (Math.random() - 0.5);
-			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, age > 6 ? -5 : 0);
+			this.args.ySpeed = Math.min(-Math.abs(this.args.ySpeed || this.ySpeedLast || 0) * 0.75, age > 6 ? -2 : 0);
 			this.args.gSpeed = 0;
 			this.args.x += this.args.xSpeed;
 			this.args.y += this.args.ySpeed;

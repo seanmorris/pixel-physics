@@ -1,22 +1,27 @@
-.screen-card-gamepad-config-card {
+.screen-card .gamepad-config {
 	background-color: #666 !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
-.screen-card-gamepad-config-card span {
+.screen-card .gamepad-config span {
 	display: contents;
 }
 
-.screen-card-gamepad-config-card svg {
+.screen-card .gamepad-config svg {
 	width: 100%;
 	height: 100%;
 }
 
-.screen-card-gamepad-config-card .buttons {
+.screen-card .gamepad-config .buttons {
 	position: absolute;
 	bottom: 3rem;
 }
 
-.screen-card-gamepad-config-card.input-gc {
+.screen-card .gamepad-config.input-gc {
 	--dpad-travel:    8px;
 	--stick-travel:   56px;
 	--bumper-travel:  16px;
@@ -24,7 +29,7 @@
 	--button-travel:  4px;
 }
 
-.screen-card-gamepad-config-card.input-xb {
+.screen-card .gamepad-config.input-xb {
 	--dpad-travel:    4px;
 	--stick-travel:   12px;
 	--bumper-travel:  4px;
@@ -33,7 +38,7 @@
 	--button-travel:  0.5px;
 }
 
-.screen-card-gamepad-config-card.input-ps {
+.screen-card .gamepad-config.input-ps {
 	--dpad-travel:    4px;
 	--stick-travel:   8px;
 	--bumper-travel:  2px;
@@ -41,7 +46,7 @@
 	--button-travel:  0.25px;
 }
 
-.screen-card-gamepad-config-card.input-dc {
+.screen-card .gamepad-config.input-dc {
 	--dpad-travel:    1.5px;
 	--stick-travel:   8px;
 	--bumper-travel:  2px;

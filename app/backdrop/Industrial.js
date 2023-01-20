@@ -17,6 +17,30 @@ export class Industrial extends Backdrop
 
 		this.args.strips = [
 			{
+				autoscroll: 0.7
+				, parallax: 0.055
+				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
+				, height:   24
+			}
+			, {
+				autoscroll: 0.65
+				, parallax: 0.050
+				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
+				, height:   24
+			}
+			, {
+				autoscroll: 0.5
+				, parallax: 0.045
+				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
+				, height:   24
+			}
+			, {
+				autoscroll: 0.45
+				, parallax: 0.040
+				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
+				, height:   24
+			}
+			, {
 				autoscroll: 0.4
 				, parallax: 0.035
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
@@ -29,26 +53,26 @@ export class Industrial extends Backdrop
 				, height:   24
 			}
 			, {
-				autoscroll: 0.25
-				, parallax: 0.015
+				autoscroll: 0.31
+				, parallax: 0.023
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.125
-				, parallax: 0.0125
+				autoscroll: 0.28
+				, parallax: 0.021
 				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.025
-				, parallax: 0.012
+				autoscroll: 0.25
+				, parallax: 0.020
 				, url:      '/Sonic/backdrop/labrynth-industrial/2.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.015
-				, parallax: 0.011
+				autoscroll: 0.23
+				, parallax: 0.019
 				, url:      '/Sonic/backdrop/labrynth-industrial/3.png'
 				, height:   24
 			}
@@ -111,6 +135,87 @@ export class Industrial extends Backdrop
 					, '/Sonic/backdrop/labrynth-industrial/flame-0.png'
 					, '/Sonic/backdrop/labrynth-industrial/flame-0.png'
 					, '/Sonic/backdrop/labrynth-industrial/flame-0.png'
+				]
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.05
+				, url:      '/Sonic/backdrop/labrynth-industrial/flame-0.png'
+				, height:   1
+				, interval: 1
+				, timeout:  0
+				, frame:    0
+				, frames:   [
+					  '/Sonic/backdrop/labrynth-industrial/flame-b-0a.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-1.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-1.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-4.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-4.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-5.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-b-0.png'
+				]
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.05
+				, url:      '/Sonic/backdrop/labrynth-industrial/flame-0.png'
+				, height:   1
+				, interval: 1
+				, timeout:  0
+				, frame:    0
+				, frames:   [
+					'/Sonic/backdrop/labrynth-industrial/flame-c-0a.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-1.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-1.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-2.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-3.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-4.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-4.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-5.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-0.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-6.png'
+					, '/Sonic/backdrop/labrynth-industrial/flame-c-0.png'
 				]
 			}
 			, {

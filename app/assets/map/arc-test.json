@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":17,
  "infinite":false,
  "layers":[
@@ -99,13 +106,13 @@
                  "properties":[
                         {
                          "name":"maxSpeed",
-                         "type":"int",
-                         "value":32
+                         "type":"float",
+                         "value":3.5
                         }, 
                         {
                          "name":"minSpeed",
-                         "type":"string",
-                         "value":"2"
+                         "type":"float",
+                         "value":3.5
                         }],
                  "rotation":0,
                  "type":"rolling-region",
@@ -190,7 +197,7 @@
          "value":"construct"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.7.1",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {
@@ -247,6 +254,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.6",
+ "version":1.4,
  "width":64
 }

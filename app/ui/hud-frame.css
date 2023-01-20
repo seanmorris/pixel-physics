@@ -1,5 +1,5 @@
 .hud {
-	image-rendering: pixelated;
+	/*image-rendering: pixelated;*/
 	opacity: 0;
 }
 
@@ -284,6 +284,7 @@
 	animation: sine 1.5s ease-in-out infinite;
 	animation-delay: calc(var(--time) * calc( var(--index) - var(--length) ));
 }
+
 .status-message .hud-character-string {
 	transition: opacity 0.333s 0.5s ease-in;
 	opacity: 1;

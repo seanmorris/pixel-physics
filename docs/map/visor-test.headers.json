@@ -1,0 +1,140 @@
+{
+    "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "target": "."
+        }
+    },
+    "height": 65,
+    "infinite": false,
+    "nextlayerid": 9,
+    "nextobjectid": 308,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "angel-island"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "SPOTLIGHT TEST"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.4.3",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 177,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 737,
+            "image": "mz-ground-alt.png",
+            "imageheight": 4480,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "mz-ground-alt",
+            "spacing": 0,
+            "tilecount": 3080,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 3817,
+            "image": "chemical-plant-tiles.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "chemical-plant-tiles",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 4073,
+            "image": "../Sonic/tiles/angel-island/ground-recolor.png",
+            "imageheight": 864,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "ground-recolor",
+            "spacing": 0,
+            "tilecount": 324,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4397,
+            "image": "../Sonic/stone-platform.png",
+            "imageheight": 72,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "stone-platform",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 72,
+            "tilewidth": 64
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.4,
+    "width": 91,
+    "types": [
+        "block",
+        "dark-region",
+        "light-source",
+        "ring",
+        "spikes"
+    ],
+    "map": "/map/visor-test.json"
+}

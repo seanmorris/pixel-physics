@@ -2,14 +2,13 @@ import { Tag } from 'curvature/base/Tag';
 
 export const Constrainable = {
 
-	wakeUp: function() {
-
-		if(!this.args._tiedTo)
+	initialize: function() {
+		if(!this.others.tiedTo)
 		{
-			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+			return;
 		}
 
-		const _tiedTo = this.args._tiedTo;
+		const _tiedTo = this.others.tiedTo;
 
 		if(_tiedTo && !_tiedTo.hanging.has(this.constructor))
 		{
@@ -21,6 +20,12 @@ export const Constrainable = {
 			this.sprite.appendChild(this.chain.node);
 			this.onRemove(() => hangList.delete(this));
 		}
+
+		this.setPos();
+	}
+
+	, wakeUp: function() {
+
 	}
 
 	, sleep: function() {
@@ -30,29 +35,32 @@ export const Constrainable = {
 			return;
 		}
 
-		this.viewport.onFrameOut(5, () => {
-			this.args.x = this.def.get('x');
-			this.args.y = this.def.get('y');
+		if(this.def)
+		{
+			this.viewport.onFrameOut(5, () => {
+				this.args.x = this.def.get('x');
+				this.args.y = this.def.get('y');
 
-			this.args.xSpeed = 0;
-			this.args.ySpeed = 0;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = 0;
 
-			this.viewport.setColCell(this);
-		});
+				this.viewport.setColCell(this);
+			});
+		}
 	}
 
-	, findNextStep: function() {
-		return false;
-	}
+	// , findNextStep: function() {
+	// 	return false;
+	// }
 
 	, setPos: function()
 	{
-		if(!this.args._tiedTo)
+		if(!this.others.tiedTo)
 		{
-			this.args._tiedTo = this.viewport.actorsById[ this.args.tiedTo ];
+			return;
 		}
 
-		const tiedTo = this.args._tiedTo;
+		const tiedTo = this.others.tiedTo;
 
 		if(!tiedTo)
 		{
@@ -94,6 +102,18 @@ export const Constrainable = {
 
 			this.args.xSpeed += Math.cos(gravityAngle) * overshot;
 			this.args.ySpeed += Math.sin(gravityAngle) * overshot;
+
+			if(this.args.xSpeedMax < Math.abs(this.args.xSpeed))
+			{
+				this.args.xSpeed = this.args.xSpeedMax * Math.sign(this.args.xSpeed);
+			}
+
+			if(this.args.ySpeedMax < Math.abs(this.args.ySpeed))
+			{
+				this.args.ySpeed = this.args.ySpeedMax * Math.sign(this.args.ySpeed);
+			}
+
+			this.args.gSpeed = this.args.xSpeed;
 
 			this.args.x = xNext;
 			this.args.y = yNext;

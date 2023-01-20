@@ -70,7 +70,7 @@ export class MiniMace extends Mixin.from(PointActor, Constrainable)
 			return false;
 		}
 
-		if(this.args.tiedTo && !this.args._tiedTo.args.hitPoints)
+		if(this.args._tiedTo && !this.args._tiedTo.args.hitPoints)
 		{
 			return;
 		}

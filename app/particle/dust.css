@@ -21,6 +21,8 @@
 .particle-skim {
 	background-image: url(/Sonic/skim-splash.png);
 
+	opacity: 0.5;
+
 	width: 48px;
 	height: 16px;
 
@@ -31,10 +33,7 @@
 
 	transform: translate(-50%, calc(-100% + 3px)) scaleX(var(--flip, 1)) !important;
 
-	animation:
-		particle-animate steps(var(--animation-steps)) infinite 64ms
-		, particle-fade ease-out 1 192ms forwards
-	;
+	animation: particle-animate steps(var(--animation-steps)) infinite 192ms;
 }
 
 .particle-sparks {
