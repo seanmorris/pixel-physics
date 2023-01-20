@@ -978,8 +978,11 @@ export class Sonic extends PointActor
 
 		this.dropDashCharge = 0;
 
-		if(this.args.jumping && !this.dashed && !this.args.doubleSpin)
-		{
+		if(this.args.jumping
+			&& !this.dashed
+			&& !this.args.doubleSpin
+			&& (!this.args.currentSheild || this.args.currentSheild.type === 'normal')
+		){
 
 			if(this.args.mercy < 120)
 			{
@@ -990,7 +993,7 @@ export class Sonic extends PointActor
 			this.args.xOff  = 0;
 			this.args.yOff  = 32;
 
-			this.viewport.onFrameOut(60, () => this.args.doubleSpin = false);
+			// this.viewport.onFrameOut(15, () => this.args.doubleSpin = false);
 
 			this.pinch(-600, 50);
 

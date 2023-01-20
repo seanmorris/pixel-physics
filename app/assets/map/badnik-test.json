@@ -374,7 +374,7 @@
                         {
                          "name":"electric",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }, 
                         {
                          "name":"facing",
@@ -403,11 +403,6 @@
                          "name":"direction",
                          "type":"int",
                          "value":1
-                        }, 
-                        {
-                         "name":"electric",
-                         "type":"bool",
-                         "value":false
                         }, 
                         {
                          "name":"facing",
@@ -627,8 +622,8 @@
                  "type":"motobug",
                  "visible":true,
                  "width":32,
-                 "x":352,
-                 "y":768
+                 "x":341.333333333333,
+                 "y":672
                 }, 
                 {
                  "gid":2,
@@ -827,6 +822,39 @@
                  "width":32,
                  "x":1733.33333333333,
                  "y":576
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":58,
+                 "name":"bubbles",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"electric",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"left"
+                        }, 
+                        {
+                         "name":"gold",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"bubbles",
+                 "visible":true,
+                 "width":32,
+                 "x":501.333333333333,
+                 "y":656
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -835,7 +863,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":57,
+ "nextobjectid":59,
  "orientation":"orthogonal",
  "properties":[
         {

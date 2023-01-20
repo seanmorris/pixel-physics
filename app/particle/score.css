@@ -35,6 +35,6 @@
 		transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
 	}
 	to{
-		transform: translate(-50%, calc(-350% + 6px)) scale(var(--particleScale, 1));
+		transform: translate(-50%, calc(-550% + 6px)) scale(var(--particleScale, 1));
 	}
 }
