@@ -1503,6 +1503,7 @@ export class Platformer
 		if(host.args.falling)
 		{
 			host.groundTime = 0;
+			host.idleTime = 0;
 			host.args.rolling = false;
 			host.fallTime++;
 		}
@@ -2853,7 +2854,7 @@ export class Platformer
 
 			const solid = this.checkBelow(host, ...airPoint);
 
-			if(!host.willStick)
+			if(!host.willStick || host.args.mode === 0)
 			{
 				// host.args.gSpeed = xSpeedOriginal || host.args.gSpeed;
 				host.args.gSpeed = host.args.xSpeed;
@@ -2864,6 +2865,12 @@ export class Platformer
 				}
 			}
 			else
+			{
+				airPoint[0] = Math.round(airPoint[0]);
+				airPoint[1] = Math.round(airPoint[1]);
+			}
+
+			if(host.willStick)
 			{
 				airPoint[0] = Math.round(airPoint[0]);
 				airPoint[1] = Math.round(airPoint[1]);

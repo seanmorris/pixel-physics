@@ -132,7 +132,7 @@ export class ToxicRegion extends Region
 			other.damage(this, 'toxic');
 		}
 
-		return false;
+		return true;
 	}
 
 	get solid() { return true; }
