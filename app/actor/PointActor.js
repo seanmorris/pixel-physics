@@ -390,7 +390,7 @@ export class PointActor extends View
 		this.args.bindTo(['x','y'], (v, k, t) => {
 			isNaN(v) && console.trace(k, v)
 			this.stepCache = {};
-			this.args.idleTime = 0;
+			this.idleTime = 0;
 		});
 
 		this.args.bindTo(['xSpeed','ySpeed'], (v, k, t) => {

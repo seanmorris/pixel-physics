@@ -20,6 +20,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
+		this.sprites         = new Map;
 
 		this.tileLayers  = [];
 
@@ -322,13 +323,42 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					heightMask.width  = image.width;
 					heightMask.height = image.height;
 
-					heightMask.getContext('2d').drawImage(
+					const maskContext = heightMask.getContext('2d', { willReadFrequently: true });
+
+					maskContext.drawImage(
 						image, 0, 0, image.width, image.height
 					);
 
 					this.heightMasks.set(tileset, heightMask.getContext('2d').getImageData(0, 0, heightMask.width, heightMask.height));
 
-					accept(heightMask);
+					const xTiles = Math.floor(heightMask.width  / this.blockSize);
+					const yTiles = Math.floor(heightMask.height / this.blockSize);
+
+					const spriteLoaders = [];
+
+					// for(let y = 0; y < yTiles; y++)
+					// for(let x = 0; x < xTiles; x++)
+					// {
+					// 	const sprite = new Tag('<canvas>');
+
+					// 	sprite.width  = this.blockSize;
+					// 	sprite.height = this.blockSize;
+
+					// 	sprite.getContext('2d').putImageData(
+					// 		maskContext.getImageData(x * this.blockSize, y * this.blockSize, this.blockSize, this.blockSize)
+					// 		, 0
+					// 		, 0
+					// 	);
+
+					// 	spriteLoaders.push(sprite.toBlob(blob => {
+					// 		const tileNumber = -1 + tileset.firstgid + x + y * xTiles;
+					// 		const url = URL.createObjectURL(blob);
+					// 		console.log(tileNumber, url);
+					// 		this.sprites.set(tileNumber, url);
+					// 	}));
+					// }
+
+					Promise.all(spriteLoaders).then(() => accept(heightMask));
 
 				}, {once:true});
 
@@ -577,6 +607,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			y = Math.floor(localTileNumber/blocksWide);
 			src = tileset.image;
 			original = tileset.original;
+		}
+
+		if(this.sprites.has(tileNumber))
+		{
+			x = y = 0;
+			src = this.sprites.get(tileNumber);
 		}
 
 		const result = [x,y,src,original,tileset];
