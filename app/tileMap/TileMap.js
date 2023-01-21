@@ -20,7 +20,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
-		this.sprites         = new Map;
 
 		this.tileLayers  = [];
 
@@ -323,42 +322,13 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					heightMask.width  = image.width;
 					heightMask.height = image.height;
 
-					const maskContext = heightMask.getContext('2d', { willReadFrequently: true });
-
-					maskContext.drawImage(
+					heightMask.getContext('2d').drawImage(
 						image, 0, 0, image.width, image.height
 					);
 
 					this.heightMasks.set(tileset, heightMask.getContext('2d').getImageData(0, 0, heightMask.width, heightMask.height));
 
-					const xTiles = Math.floor(heightMask.width  / this.blockSize);
-					const yTiles = Math.floor(heightMask.height / this.blockSize);
-
-					const spriteLoaders = [];
-
-					// for(let y = 0; y < yTiles; y++)
-					// for(let x = 0; x < xTiles; x++)
-					// {
-					// 	const sprite = new Tag('<canvas>');
-
-					// 	sprite.width  = this.blockSize;
-					// 	sprite.height = this.blockSize;
-
-					// 	sprite.getContext('2d').putImageData(
-					// 		maskContext.getImageData(x * this.blockSize, y * this.blockSize, this.blockSize, this.blockSize)
-					// 		, 0
-					// 		, 0
-					// 	);
-
-					// 	spriteLoaders.push(sprite.toBlob(blob => {
-					// 		const tileNumber = -1 + tileset.firstgid + x + y * xTiles;
-					// 		const url = URL.createObjectURL(blob);
-					// 		console.log(tileNumber, url);
-					// 		this.sprites.set(tileNumber, url);
-					// 	}));
-					// }
-
-					Promise.all(spriteLoaders).then(() => accept(heightMask));
+					accept(heightMask);
 
 				}, {once:true});
 
@@ -439,6 +409,37 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			// 	'level-progress', {detail: {length, received, done, url}}
 			// ));
 		});
+
+		this.objectLayers = tilemapData.layers.filter(l => l.type === 'objectLayers');
+		this.tileLayers   = tilemapData.layers.filter(l => l.type === 'tilelayer');
+
+		this.tileLayers.forEach((layer, index) => layer.index = index);
+
+		// layerGroup.objectLayers = this.objectLayers;
+		layerGroup.tileLayers = this.tileLayers;
+
+		this.collisionLayers = this.tileLayers.filter(l => {
+
+			if(!l.name.match(/^Collision\s\d+/))
+			{
+				return false;
+			}
+
+			return true;
+		})
+
+		this.destructibleLayers = this.tileLayers.filter(l => {
+
+			if(!l.name.match(/^Destructible\s\d+/))
+			{
+				return false;
+			}
+
+			return true;
+		});
+
+		layerGroup.destructibleLayers = this.destructibleLayers;
+		layerGroup.collisionLayers    = this.collisionLayers;
 	}
 
 	coordsToTile(x, y, layerId)
@@ -607,12 +608,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			y = Math.floor(localTileNumber/blocksWide);
 			src = tileset.image;
 			original = tileset.original;
-		}
-
-		if(this.sprites.has(tileNumber))
-		{
-			x = y = 0;
-			src = this.sprites.get(tileNumber);
 		}
 
 		const result = [x,y,src,original,tileset];

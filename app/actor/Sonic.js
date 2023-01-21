@@ -204,8 +204,6 @@ export class Sonic extends PointActor
 		const s = Number(Router.query.s ?? 1);
 		const v = Number(Router.query.v ?? 1);
 
-		this.rotatedSpriteSheet = this.spriteSheet;
-
 		this.rotateMainColor(h,s,v);
 
 		if(!this.superSpriteSheetLoader)
@@ -1921,7 +1919,7 @@ export class Sonic extends PointActor
 
 		this.png.ready.then(()=>{
 			const newPng = this.png.recolor(rotatedColors);
-			this.args.rotatedSpriteSheet = this.args.spriteSheet = newPng.toUrl();
+			this.args.spriteSheet = newPng.toUrl();
 		});
 	}
 }

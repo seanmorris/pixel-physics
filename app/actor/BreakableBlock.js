@@ -402,7 +402,7 @@ export class BreakableBlock extends Block
 				o.args.score += 10;
 			}
 
-			this.args.contains && console.log(this.args.contains);
+			console.log(this.args.contains);
 
 			if(this.args.contains && ObjectPalette[this.args.contains])
 			{
