@@ -106,6 +106,8 @@ export class ToxicRegion extends Region
 			return false;
 		}
 
+		other.args.y = Math.round(other.args.y);
+
 		super.collideA(other, type);
 
 		if(!other.controllable)

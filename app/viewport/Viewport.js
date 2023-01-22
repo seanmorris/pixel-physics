@@ -1675,6 +1675,8 @@ export class Viewport extends View
 		{
 			const gamepads = navigator.getGamepads();
 
+			controller.readInput({keyboard, gamepads});
+
 			for(let i = 0; i < gamepads.length; i++)
 			{
 				const gamepad = gamepads[i];
@@ -1683,8 +1685,6 @@ export class Viewport extends View
 				{
 					continue;
 				}
-
-				controller.readInput({keyboard, gamepad});
 
 				if(gamepad)
 				{
@@ -2377,8 +2377,10 @@ export class Viewport extends View
 			const xMoved = this.args.x - this.xPrev;
 			const yMoved = this.args.y - this.yPrev;
 
-			let xBlur = ((Number(xMoved) / 5) ** 2);
-			let yBlur = ((Number(yMoved) / 5) ** 2);
+			const blurDenominator = 6;
+
+			let xBlur = ((Number(xMoved) / blurDenominator) ** 2);
+			let yBlur = ((Number(yMoved) / blurDenominator) ** 2);
 
 			const maxBlur = 32;
 
@@ -3955,6 +3957,8 @@ export class Viewport extends View
 	padConnected(event)
 	{
 		this.gamepad = event.gamepad;
+
+		console.log(this.gamepad);
 
 		const shortName = String(this.gamepad.id)
 		.replace(/\(.\)/, ' ')

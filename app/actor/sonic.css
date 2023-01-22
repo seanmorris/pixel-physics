@@ -542,12 +542,17 @@
 	opacity: var(--opacity, 0);
 }
 
-.actor-item.actor-sonic[data-facing="left"] .double-spin {
-	transform: scaleX(-1);
+.actor-item.actor-sonic {
+	--spinScale: 1;
+}
+.actor-item.actor-sonic[data-facing="left"] {
+	--spinScale: -1;
 }
 
 .actor-item.actor-sonic[data-doublespin="true"] .double-spin {
-	animation: sonic-double-spin steps(6) 200ms 1 forwards;
+	animation:
+		sonic-double-spin steps(6) 320ms -100ms 1 forwards,
+		sonic-double-spin-turn ease-in 320ms infinite forwards;
 	background-repeat: no-repeat;
 	background-image: url(/Sonic/double-spin.png);
 	width: 48px;
@@ -556,6 +561,10 @@
 	top: -41px;
 	left: -24px;
 	opacity: 0.75;
+}
+
+.viewport-frame:not([data-paused="false"]) .double-spin {
+	animation-play-state: paused !important;
 }
 
 .actor-item.actor-sonic[data-animation="standing"] {
@@ -750,6 +759,15 @@
 	}
 	to{
 		background-position: -288px -48px;
+	}
+}
+
+@keyframes sonic-double-spin-turn {
+	from{
+		transform: scale(var(--spinScale), 1) rotate(0deg);
+	}
+	to{
+		transform: scale(var(--spinScale), 1) rotate(450deg);
 	}
 }
 

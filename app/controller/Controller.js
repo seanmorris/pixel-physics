@@ -127,13 +127,21 @@ export class Controller
 		this.willRumble = options;
 	}
 
-	readInput({keyboard, gamepad})
+	readInput({keyboard, gamepads = []})
 	{
+		const tilted   = {};
 		const pressed  = {};
 		const released = {};
 
-		if(gamepad)
+		for(let i = 0; i < gamepads.length; i++)
 		{
+			const gamepad = gamepads[i];
+
+			if(!gamepad)
+			{
+				continue;
+			}
+
 			for(const i in gamepad.buttons)
 			{
 				const button = gamepad.buttons[i];
@@ -182,10 +190,22 @@ export class Controller
 			}
 		}
 
-		if(gamepad)
+		for(let i = 0; i < gamepads.length; i++)
 		{
+			const gamepad = gamepads[i];
+
+			if(!gamepad)
+			{
+				continue;
+			}
+
 			for(const i in gamepad.buttons)
 			{
+				if(released[i])
+				{
+					continue;
+				}
+
 				if(pressed[i])
 				{
 					continue;
@@ -247,13 +267,28 @@ export class Controller
 			}
 		}
 
-		const tilted = {};
-
-		if(gamepad)
+		for(let i = 0; i < gamepads.length; i++)
 		{
+			const gamepad = gamepads[i];
+
+			if(!gamepad)
+			{
+				continue;
+			}
+
 			for(const i in gamepad.axes)
 			{
 				const axis = gamepad.axes[i];
+
+				if(Math.abs(axis) < this.deadZone)
+				{
+					if(!tilted[i])
+					{
+						this.tilt(i, 0);
+					}
+
+					continue;
+				}
 
 				tilted[i] = true;
 
@@ -271,6 +306,11 @@ export class Controller
 			const axis   = axisMap[ inputId ];
 			const value  = Math.sign(1/axis);
 			const axisId = Math.abs(axis);
+
+			if(tilted[axisId])
+			{
+				continue;
+			}
 
 			if(this.buttons[inputId].active)
 			{
@@ -317,10 +357,12 @@ export class Controller
 			if(pressure)
 			{
 				this.press(buttonId, pressure);
+				pressed[buttonId] = true;
 			}
 			else
 			{
 				this.release(buttonId, pressure);
+				released[buttonId] = true;
 			}
 		}
 	}

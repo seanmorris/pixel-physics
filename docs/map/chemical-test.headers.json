@@ -1,16 +1,16 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 48,
     "infinite": false,
     "nextlayerid": 9,
-    "nextobjectid": 107,
+    "nextobjectid": 110,
     "orientation": "orthogonal",
     "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "scrap-brain-dark"
+        },
         {
             "name": "theme",
             "type": "string",
@@ -18,7 +18,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -89,8 +89,8 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
-    "width": 320,
+    "version": "1.6",
+    "width": 400,
     "types": [
         "block",
         "hex-nut",

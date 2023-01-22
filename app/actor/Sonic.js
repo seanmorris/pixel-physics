@@ -1067,7 +1067,7 @@ export class Sonic extends PointActor
 		if(this.args.jumping
 			&& !this.dashed
 			&& !this.args.doubleSpin
-			&& (!this.args.currentSheild || this.args.currentSheild.type === 'normal')
+			&& (!this.args.currentSheild || this.args.currentSheild.type === 'normal' || this.args.currentSheild.type === 'super')
 		){
 
 			if(this.args.mercy < 120)
