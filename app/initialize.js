@@ -42,19 +42,20 @@ else
 		const frameTimes = [];
 
 		const update = now => {
-			requestAnimationFrame(update);
-
 			const frameTime   = (now - lastTime);
 			const frameAgeMin = (1000 / (viewportA.args.maxFps || 61));
 
 			if(frameTime < frameAgeMin)
 			{
+				requestAnimationFrame(update);
 				return;
 			}
 
 			viewportA.update();
 			viewportA.args.fps = 1000 / frameTime;
 			lastTime = now;
+
+			requestAnimationFrame(update);
 		};
 
 		viewportA.render(document.body);
