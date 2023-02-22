@@ -1,9 +1,9 @@
 {
     "compressionlevel": -1,
-    "height": 48,
+    "height": 128,
     "infinite": false,
     "nextlayerid": 9,
-    "nextobjectid": 110,
+    "nextobjectid": 254,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -12,9 +12,29 @@
             "value": "scrap-brain-dark"
         },
         {
+            "name": "deathLine",
+            "type": "int",
+            "value": 3300
+        },
+        {
             "name": "theme",
             "type": "string",
             "value": "none"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "TOXIN REFINERY"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
         }
     ],
     "renderorder": "right-down",
@@ -48,21 +68,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 1,
+            "columns": 3,
             "firstgid": 689,
             "image": "../Sonic/metropolis-screw.png",
             "imageheight": 32,
-            "imagewidth": 32,
+            "imagewidth": 96,
             "margin": 0,
             "name": "metropolis-screw",
             "spacing": 0,
-            "tilecount": 1,
+            "tilecount": 3,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 62,
-            "firstgid": 690,
+            "firstgid": 692,
             "image": "../custom/red-starlight.png",
             "imageheight": 1344,
             "imagewidth": 1984,
@@ -75,7 +95,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 3294,
+            "firstgid": 3296,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -85,18 +105,95 @@
             "tilecount": 64,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 3360,
+            "image": "../Sonic/tiles/common.png",
+            "imageheight": 32,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "common",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 3364,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 3924,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4158,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4159,
+            "image": "../Sonic/refinery-platform.png",
+            "imageheight": 32,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "refinery-platform",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 128
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": "1.6",
-    "width": 400,
+    "width": 1024,
     "types": [
+        "",
+        "barnacle",
         "block",
+        "crabmeat",
+        "drainfly",
+        "exit-region",
+        "grounder",
         "hex-nut",
         "ring",
+        "ring-monitor",
         "rolling-region",
+        "sheild-normal-monitor",
+        "sheild-water-monitor",
+        "signpost",
+        "spikes",
         "spring",
+        "star-post",
         "toxic-region"
     ],
     "map": "/map/chemical-test.json"

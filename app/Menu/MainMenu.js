@@ -678,7 +678,7 @@ export class MainMenu extends Menu
 	{
 		super.play();
 
-		Bgm.play('MENU_THEME', true);
+		Bgm.play('MENU_THEME', {loop:true, interlude: true});
 
 		const done = this.done;
 

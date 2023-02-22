@@ -1444,7 +1444,7 @@ export class Viewport extends View
 				Bgm.stop();
 			}
 
-			Bgm.play(this.meta.bgm, true);
+			Bgm.play(this.meta.bgm, {loop:true});
 		}
 		else
 		{
@@ -2187,7 +2187,7 @@ export class Viewport extends View
 			const grounded   = !actor.args.falling;
 			const absSpeed   = Math.abs(grounded ? gSpeed : xSpeed);
 			const shiftSpeed = 17;
-			const speedBias  = Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed);
+			const speedBias  = Math.abs(actor.xLast - actor.args.x) > 1 && (Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed));
 
 			switch(actor.args.mode)
 			{

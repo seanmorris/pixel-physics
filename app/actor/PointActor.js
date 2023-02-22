@@ -2672,6 +2672,10 @@ export class PointActor extends View
 			return;
 		}
 
+		this.args.currentSheild = null;
+
+		this.totalCombo(true);
+
 		this.args.groundAngle = 0;
 
 		this.args.ySpeed = 0;

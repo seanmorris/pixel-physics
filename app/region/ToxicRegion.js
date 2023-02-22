@@ -25,6 +25,10 @@ export class ToxicRegion extends Region
 		this.skimSpeed = 0;
 
 		this.sapped = new Set;
+
+		this.timings = new WeakMap;
+
+		this.onRemove(() => this.sapped.clear());
 	}
 
 	update()
@@ -122,9 +126,25 @@ export class ToxicRegion extends Region
 
 		if(other.args.rings)
 		{
-			if(!this.sapped.has(other) && this.viewport.args.frameId % 60 === 0)
+			if(!this.sapped.has(other))
 			{
-				other.args.rings--;
+				let time = 0;
+
+				if(!this.timings.has(other))
+				{
+					this.timings.set(other, time);
+				}
+
+				time = this.timings.get(other);
+
+				time++;
+
+				this.timings.set(other, time);
+
+				if(time % 27  === 0)
+				{
+					other.args.rings--;
+				}
 			}
 
 			this.sapped.add(other);

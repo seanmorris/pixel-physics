@@ -3,7 +3,7 @@
 	[[warp]]
 	<div class = "menu-container" data-current-menu = "[[currentKey]]">
 		<ul cv-ref = "bound" cv-each = "items:item:title">
-			<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item);cvDomDetached:removeItem(item);" tabindex="0">
+			<li data-title = "[[title]]" class = "[[item.available]]" cv-on = "click:run(item);cvDomDetached:removeItem(item);focus:handleFocus(event)" tabindex="0">
 				<span class = "title">[[item._title]]</span>
 				<span class = "subtext">[[item.subtext]]</span>
 				<span cv-if = "item.input" cv-is = "output">

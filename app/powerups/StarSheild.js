@@ -58,7 +58,8 @@ export class StarSheild extends Sheild
 		});
 
 		host.onRemove(() => Bgm.stop('STAR_SHIELD'));
-		Bgm.play('STAR_SHIELD');
+
+		Bgm.play('STAR_SHIELD', {interlude:true});
 
 		if(!viewport.args.audio)
 		{

@@ -21,6 +21,16 @@ export class HexNut extends Block
 		this.args.treadmill = true;
 	}
 
+	collideA(other, type)
+	{
+		if(other.args.platform)
+		{
+			return false;
+		}
+
+		return super.collideA(other, type);
+	}
+
 	update()
 	{
 		this.args.treadmill = true;
@@ -62,13 +72,21 @@ export class HexNut extends Block
 			}
 		}
 
-		if(Math.abs(this.args.convey ) > 8)
+		if(Math.abs(this.args.convey) > 8)
 		{
 			this.standingUnder.forEach(a => a.args.x = this.args.x);
 		}
 		else
 		{
-			this.standingUnder.forEach(a => a.args.x += Math.sign(this.args.x - a.args.x));
+			this.standingUnder.forEach(a => {
+
+				if(Math.abs(this.args.x - a.args.x) < 1)
+				{
+					a.args.x = this.args.x;
+				}
+
+				a.args.x += Math.sign(this.args.x - a.args.x)
+			});
 		}
 
 		super.update();

@@ -178,6 +178,11 @@ export class Block extends PointActor
 			this.weighted = true;
 		}
 
+		if(this.args.platform && this.objDef.type === 'hex-nut' && other.objDef && other.objDef.type === 'hex-nut')
+		{
+			return false;
+		}
+
 		let xDist  = 0.5 + (other.x - this.x) / this.args.width;
 
 		if(other.args.gSpeed < 0)

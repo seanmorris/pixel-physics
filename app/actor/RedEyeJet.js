@@ -355,7 +355,7 @@ export class RedEyeJet extends PointActor
 					mace.args.ropeLength = 80;
 				}
 
-				Bgm.play('ACT-BOSS', true);
+				Bgm.play('ACT-BOSS', {loop:true, interlude:true});
 			}
 
 			if(this.hanging.has(MegaMace))
@@ -365,7 +365,7 @@ export class RedEyeJet extends PointActor
 					mace.args.ropeLength = 96;
 				}
 
-				Bgm.play('ZONE-BOSS', true);
+				Bgm.play('ZONE-BOSS', {loop:true, interlude:true});
 			}
 
 			this.args.maxSpeed = 12;

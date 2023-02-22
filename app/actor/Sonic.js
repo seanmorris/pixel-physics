@@ -102,6 +102,8 @@ export class Sonic extends PointActor
 
 		this.hyperSheet = 0;
 
+		// this.args.bindTo('doubleSpin', (v,k) => console.trace(k,v));
+
 		this.args.bindTo('falling', v => {
 
 			if(v)
@@ -949,7 +951,7 @@ export class Sonic extends PointActor
 
 		if(Math.abs(this.ySpeedLast) > 16)
 		{
-			const landingFrames = Math.min(8, this.ySpeedLast / 4) * (this.args.rolling ? 0.5 : 1);
+			const landingFrames = Math.min(8, this.ySpeedLast / 3) * (this.args.rolling ? 0.5 : 1);
 
 			if(this.groundTime && this.groundTime > 2 && this.groundTime < landingFrames && this.ySpeedLast)
 			{
@@ -1066,7 +1068,7 @@ export class Sonic extends PointActor
 
 		if(this.args.jumping
 			&& !this.dashed
-			&& !this.args.doubleSpin
+			&& (!this.args.doubleSpin || this.args.doubleSpin === 2)
 			&& (!this.args.currentSheild || this.args.currentSheild.type === 'normal' || this.args.currentSheild.type === 'super')
 		){
 

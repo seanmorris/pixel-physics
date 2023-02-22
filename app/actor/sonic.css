@@ -433,7 +433,7 @@
 }
 
 .actor-item.actor-sonic[data-animation="jumping"] .sprite:after {
-	animation: sonic-jump steps(4) infinite 160ms;
+	animation: sonic-jump steps(4) infinite 120ms;
 
 	/*animation: sonic-animate steps(4) infinite 1280ms;*/
 	--sprite-offset-x: -0px;
@@ -549,7 +549,8 @@
 	--spinScale: -1;
 }
 
-.actor-item.actor-sonic[data-doublespin="true"] .double-spin {
+.actor-item.actor-sonic[data-doublespin="true"] .double-spin,
+.actor-item.actor-sonic[data-doublespin="2"] .double-spin {
 	animation:
 		sonic-double-spin steps(6) 320ms -100ms 1 forwards,
 		sonic-double-spin-turn ease-in 320ms infinite forwards;

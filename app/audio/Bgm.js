@@ -5,8 +5,6 @@ import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
 export class BgmHandler extends Mixin.with(EventTargetMixin)
 {
 	volume  = 1.0;
-	theme   = '/Sonic/carnival-night-zone-act-2-beta.mp3';
-	overlay = '/audio/leslie-wai/feel-the-sunshine.mp3';
 	tracks  = new Map;
 	plays   = new Map;
 	tags    = new Map;
@@ -92,11 +90,22 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 		}));
 	}
 
-	play(tag, loop = false)
+	play(tag, {loop = false, interlude = false, dontClear = false} = {})
 	{
+		if(this.tags.get(this.playing) !== tag && !interlude && !dontClear)
+		{
+			for(const track of this.stack)
+			{
+				track.pause();
+			}
+
+			this.stack.length = 0;
+			this.playing = false;
+		}
+
 		if(!this.playing)
 		{
-			this.playing = this.stack[this.stack.length-1];
+			this.playing = this.stack[this.stack.length - 1];
 		}
 
 		if(this.playing && this.tags.get(this.playing) === tag)
@@ -165,7 +174,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			const onCompleted = event => {
 				this.stack.pop();
 				this.playing = this.stack[this.stack.length-1]
-				this.play();
+				// this.play();
 			};
 
 			if(!loop)
@@ -231,7 +240,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 		if(this.playing)
 		{
-			this.play(this.tags.get(this.playing));
+			this.play(this.tags.get(this.playing), {dontClear:true});
 		}
 	}
 

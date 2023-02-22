@@ -9,9 +9,10 @@
     "build": "brunch build --production"
   },
   "dependencies": {
-    "curvature": "^0.0.68-g",
+    "curvature": "^0.0.68-h",
+    "matrix-api": "^0.0.0-k",
     "subspace-client": "^0.0.8",
-    "subspace-console": "^0.0.1-d"
+    "subspace-console": "^0.0.2-b"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -19,7 +20,7 @@
     "@babel/preset-env": "^7.12.10",
     "auto-reload-brunch": "^2",
     "babel-brunch": "^7.0.1",
-    "babel-minify": "^0.2.0",
+    "babel-minify": "^0.5.2",
     "brunch": "^4.0.0",
     "brunch-chilidogsparser": "^0.0.1",
     "brunch-preval": "^0.0.4-a",

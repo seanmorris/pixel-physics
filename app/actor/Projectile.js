@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 import { Platformer } from '../behavior/Platformer';
 
+import { Marker }     from '../actor/Marker';
 import { Explosion }  from '../actor/Explosion';
 import { Tag }        from 'curvature/base/Tag';
 
@@ -82,7 +83,7 @@ export class Projectile extends PointActor
 			return false;
 		}
 
-		if(!this.args.owner.controllable && !other.controllable)
+		if(!(other instanceof Marker) && !this.args.owner.controllable && !other.controllable)
 		{
 			return;
 		}
@@ -97,7 +98,9 @@ export class Projectile extends PointActor
 			return false;
 		}
 
-		if(other.args.currentSheild && other.args.currentSheild.immune(other, this, 'projectile'))
+		console.log(other);
+
+		if(other instanceof Marker || (other.args.currentSheild && other.args.currentSheild.immune(other, this, 'projectile')))
 		{
 			this.args.xSpeed *= -1;
 			this.args.ySpeed *= -1;

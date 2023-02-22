@@ -20,7 +20,7 @@ export class Emblem extends PointActor
 	{
 		const zoneState = this.viewport.getZoneState();
 
-		if(zoneState.emblems.includes(this.args.id))
+		if(zoneState && zoneState.emblems && zoneState.emblems.includes(this.args.id))
 		{
 			this.args.type = 'actor-item actor-emblem actor-emblem-collected';
 

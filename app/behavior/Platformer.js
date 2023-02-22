@@ -3737,7 +3737,9 @@ export class Platformer
 			: host.realAngle + [0,0,Math.PI][dir+1]
 
 		return host.castRayQuick(
-			scanDist + host.args.width + 1
+			host.args.falling
+				? scanDist + host.args.width + 1
+				: scanDist + 1
 			, angle
 			, startPoint
 		);

@@ -222,6 +222,11 @@ export class Menu extends Card
 		return this.findNext(undefined, bounds, reverse);
 	}
 
+	handleFocus(event)
+	{
+		this.focus(event.target, true);
+	}
+
 	focus(element, force = false)
 	{
 		if(!force && this.currentItem && this.currentItem !== element)

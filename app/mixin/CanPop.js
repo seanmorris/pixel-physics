@@ -130,15 +130,23 @@ export class CanPop
 
 		if(other && other.dashed)
 		{
-			other.args.gSpeed = 0;
-			other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
-			other.args.ySpeed = -10;
+			if(Math.abs(other.args.xSpeed) >Math.abs(other.args.ySpeed))
+			{
+				other.args.gSpeed = 0;
+				other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
+				other.args.ySpeed = -10;
+			}
 
 			other.dashed = false;
 		}
 
 		if(other)
 		{
+			if(other.args.doubleSpin)
+			{
+				other.args.doubleSpin = 2;
+			}
+
 			if(other.occupant)
 			{
 				other = other.occupant;

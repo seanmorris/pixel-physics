@@ -18,6 +18,6 @@ export class NoWayCard extends Card
 
 	onAttached()
 	{
-		Bgm.play('NO_WAY', true);
+		Bgm.play('NO_WAY', {loop:true});
 	}
 }

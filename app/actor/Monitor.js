@@ -195,13 +195,19 @@ export class Monitor extends PointActor
 		{
 			const ySpeed = other.args.ySpeed;
 
-			if(other && other.dashed)
+			if(other.args.doubleSpin)
+			{
+				other.args.doubleSpin = 2;
+			}
+
+			other.dashed = false;
+
+			if(other && other.dashed && Math.abs(other.args.xSpeed) > Math.abs(other.args.ySpeed))
 			{
 				other.args.gSpeed = 0;
 				other.args.xSpeed = -1.5 * Math.sign(other.args.xSpeed);
 				other.args.ySpeed = -10;
 
-				other.dashed = false;
 			}
 			else if(other && other.args.falling)
 			{

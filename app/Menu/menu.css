@@ -30,6 +30,7 @@
 	min-height: 2em;
 }
 
+.screen-card.screen-card-pause-menu li:focus,
 .screen-card.screen-card-pause-menu li.focused {
 	font-weight: bold;
 	background-color: rgba(255,255,255,0.125);
