@@ -436,7 +436,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps = 75;
+		this.args.maxFps = 60;
 
 		this.args.currentActor = '';
 
