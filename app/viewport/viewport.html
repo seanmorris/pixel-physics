@@ -206,8 +206,11 @@
  			</div>
 			<div class = "hud hud-top-right hud-table combo-table">
 				<span cv-if = "showCombo">
-					<span class = "combo-list" cv-each = "combo:pop:p">
-						<div>[[pop.label]]</div>
+					<span>
+						<span class = "combo-list" cv-each = "combo:pop:p">
+							<div>[[pop.label]]</div>
+						</span>
+						<span class = "comboTopLine" cv-if = "combo">[[popBottomLine]]</span>
 					</span>
 					<span class = "comboTopLine" cv-if = "combo">[[popTopLine]]</span>
 				</span>

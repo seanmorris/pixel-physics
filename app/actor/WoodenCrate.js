@@ -45,7 +45,7 @@ export class WoodenCrate extends BreakableBlock
 
 		super.update();
 
-		if(wasFalling && !this.args.falling)
+		if(wasFalling && !this.args.falling && this.ySpeedLast > 9)
 		{
 			Sfx.play('WOOD_THUD');
 		}

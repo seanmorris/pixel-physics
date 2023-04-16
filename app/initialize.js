@@ -132,7 +132,7 @@ else
 	Sfx.register('FAIL', '/Sonic/S2_6D.wav');
 
 	Sfx.register('HEAVY_THUD', '/Sonic/S3K_96.wav', {maxConcurrent: 3, volume: 1, fudgeFactor: 0.2, startTime: 0.00});
-	Sfx.register('WOOD_THUD', '/Sonic/S3K_5F.wav', {maxConcurrent: 3, volume: 1, fudgeFactor: 0.2, startTime: 0.04});
+	Sfx.register('WOOD_THUD', '/Sonic/S3K_5F_smoother.wav', {maxConcurrent: 3, volume: 1, fudgeFactor: 0.2, startTime: 0.04});
 
 	Sfx.register('WATER_ACQUIRE', '/Sonic/S3K_3F.wav', {volume: 0.75, fudgeFactor: 0.1});
 	Sfx.register('WATER_BOUNCE', '/Sonic/S3K_44.wav', {volume: 0.5, fudgeFactor: 0.1});

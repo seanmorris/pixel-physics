@@ -29,50 +29,50 @@ export class Industrial extends Backdrop
 				, height:   24
 			}
 			, {
-				autoscroll: 0.5
+				autoscroll: 0.60
 				, parallax: 0.045
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.45
+				autoscroll: 0.55
 				, parallax: 0.040
 				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.4
+				autoscroll: 0.50
 				, parallax: 0.035
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.35
-				, parallax: 0.025
+				autoscroll: 0.40
+				, parallax: 0.030
 				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.31
-				, parallax: 0.023
+				autoscroll: 0.35
+				, parallax: 0.025
 				, url:      '/Sonic/backdrop/labrynth-industrial/0.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.28
-				, parallax: 0.021
+				autoscroll: 0.30
+				, parallax: 0.020
 				, url:      '/Sonic/backdrop/labrynth-industrial/1.png'
 				, height:   24
 			}
 			, {
 				autoscroll: 0.25
-				, parallax: 0.020
+				, parallax: 0.015
 				, url:      '/Sonic/backdrop/labrynth-industrial/2.png'
 				, height:   24
 			}
 			, {
-				autoscroll: 0.23
-				, parallax: 0.019
+				autoscroll: 0.20
+				, parallax: 0.010
 				, url:      '/Sonic/backdrop/labrynth-industrial/3.png'
 				, height:   24
 			}

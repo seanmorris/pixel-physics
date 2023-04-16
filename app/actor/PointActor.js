@@ -403,6 +403,10 @@ export class PointActor extends View
 			this.idleTime = 0;
 		});
 
+		this.args.bindTo(['width','height'], (v, k, t) => {
+			this[BOUNDS] = false;
+		});
+
 		this.args.bindTo(['xSpeed','ySpeed'], (v, k, t) => {
 			isNaN(v) && console.trace(k, v)
 		});

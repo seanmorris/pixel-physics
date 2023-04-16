@@ -107,7 +107,19 @@ export class BreakableBlock extends Block
 				}
 			}
 
-			if(this.args.x < this.viewport.controlActor.args.x)
+			let offset = 0;
+
+			if(this.viewport.controlActor.args.falling)
+			{
+				offset = -32;
+			}
+
+			if(this.viewport.controlActor.args.startled)
+			{
+				offset = 16;
+			}
+
+			if(this.args.x < this.viewport.controlActor.args.x + offset)
 			{
 				this.box.classList.add('will-break');
 				this.box.classList.add('breaking');

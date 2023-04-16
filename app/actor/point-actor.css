@@ -17,7 +17,7 @@
 }
 
 .point-actor {
-	contain: style;
+	contain: style layout size;
 }
 
 .point-actor.controllable:not([data-driving=true]) {

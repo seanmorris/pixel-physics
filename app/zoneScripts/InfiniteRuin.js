@@ -12,7 +12,7 @@ export class InfiniteRuin
 			return;
 		}
 
-		if(viewport.controlActor.args.dead)
+		if(viewport.controlActor.args.dead || viewport.controlActor.args.startled)
 		{
 			return;
 		}

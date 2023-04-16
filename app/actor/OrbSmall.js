@@ -48,7 +48,6 @@ export class OrbSmall extends Mixin.from(PointActor)
 			if(!this.args.falling)
 			{
 				this.args.xSpeed = this.args.gSpeed;
-				this.args.gravity = 0.15;
 			}
 			this.args.falling = true;
 			this.noClip = true;
@@ -91,23 +90,37 @@ export class OrbSmall extends Mixin.from(PointActor)
 
 	collideA(other)
 	{
-		if(other instanceof this.constructor)
-		{
-			this.args.gSpeed = (this.args.gSpeed + other.args.gSpeed) * 0.5
-			this.args.xSpeed = (this.args.xSpeed + other.args.xSpeed) * 0.5
-			this.args.ySpeed = (this.args.ySpeed + other.args.ySpeed) * 0.5
+		// if(other instanceof this.constructor)
+		// {
+		// 	this.args.gSpeed = (this.args.gSpeed + other.args.gSpeed) * 0.5
+		// 	this.args.xSpeed = (this.args.xSpeed + other.args.xSpeed) * 0.5
+		// 	this.args.ySpeed = (this.args.ySpeed + other.args.ySpeed) * 0.5
 
-			this.args.gSpeed += Math.sign(this.args.x - other.args.x);
-			this.args.xSpeed += Math.sign(this.args.x - other.args.x);
-			this.args.ySpeed += Math.sign(this.args.y - other.args.y);
+		// 	this.args.gSpeed += Math.sign(this.args.x - other.args.x);
+		// 	this.args.xSpeed += Math.sign(this.args.x - other.args.x);
+		// 	this.args.ySpeed += Math.sign(this.args.y - other.args.y);
 
-			Sfx.play('HEAVY_THUD');
+		// 	Sfx.play('HEAVY_THUD');
 
-			return;
-		}
+		// 	return;
+		// }
 
 		if(other.controllable)
 		{
+			const volume = Math.max(0.5, Math.min(this.args.ySpeed, 16) / 16);
+
+			if(!other.args.startled)
+			{
+				this.args.gSpeed = 0;
+				this.noClip = true;
+				this.args.falling = true;
+				this.args.xSpeed = 0;
+				this.args.ySpeed = -3;
+				this.args.float  = 10;
+				this.args.rollSpeed *= 2;
+				Sfx.play('HEAVY_THUD', {volume});
+			}
+
 			if(other.args.rings)
 			{
 				other.damage();
@@ -116,17 +129,12 @@ export class OrbSmall extends Mixin.from(PointActor)
 			{
 				other.startle();
 			}
-			const volume = Math.max(0.5, Math.min(this.args.ySpeed, 16) / 16);
-			this.args.gSpeed = 0;
+		}
+
+		if(this.args.x < this.viewport.controlActor.args.x - 8)
+		{
 			this.noClip = true;
-			this.args.falling = true;
-			this.args.xSpeed = 0;
-			this.args.ySpeed = -3;
-			this.args.float  = 10;
-			this.args.rollSpeed *= 2;
-
-
-			Sfx.play('HEAVY_THUD', {volume});
+			return;
 		}
 
 		if(this.noClip && other.break && !other.broken)

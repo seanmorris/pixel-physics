@@ -3677,15 +3677,19 @@ export class Viewport extends View
 			this.applyMotionBlur();
 
 			this.args.popTopLine = this.args.popTopLine || new CharacterString({color:'yellow'});
+			this.args.popBottomLine = this.args.popBottomLine || new CharacterString({color:'yellow'});
 
 			let multiply = 0;
 			let base = 0;
 
 			this.args.showCombo = this.controlActor.args.popChain.length > 1;
+			let len = 0;
 
 			if(this.controlActor.args.popChain)
 			{
-				for(const i in this.controlActor.args.popChain)
+				len = this.controlActor.args.popChain.length;
+
+				for(let i = 0; i < len; i++)
 				{
 					const pop = this.controlActor.args.popChain[i];
 					this.args.combo[i] = this.args.combo[i] || {score:new CharacterString, label:new CharacterString};
@@ -3704,6 +3708,7 @@ export class Viewport extends View
 			}
 
 			this.args.popTopLine.args.value =  multiply + ' x ' + base;
+			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) + '...' : '';
 		}
 
 		if(this.args.networked && this.controlActor)

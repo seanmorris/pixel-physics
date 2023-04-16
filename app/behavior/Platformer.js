@@ -2607,7 +2607,7 @@ export class Platformer
 		const upDistanceL = host.castRayQuick(
 			upScanDist
 			, -Math.PI / 2
-			, [-host.args.width * 0.5 + 1 , 0]
+			, [host.args.width * -0.5, 0]
 		);
 
 		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-r-scan '+label);
@@ -2615,7 +2615,7 @@ export class Platformer
 		const upDistanceR = host.castRayQuick(
 			upScanDist
 			, -Math.PI / 2
-			, [host.args.width * 0.5 + -1, 0]
+			, [host.args.width * 0.5, 0]
 		);
 
 		// window.logPoints = false;
@@ -2902,8 +2902,8 @@ export class Platformer
 			// {
 			// }
 
-			host.args.x = stickX;
-			host.args.y = stickY;
+			host.args.x = Math.round(stickX);
+			host.args.y = Math.round(stickY);
 
 			if(angleIsWall && !host.willStick)
 			{
