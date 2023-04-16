@@ -1,10 +1,13 @@
 import { Block } from './Block';
 import { Orb } from './Orb';
+import { OrbSmall } from './OrbSmall';
 
 import { Tag } from 'curvature/base/Tag';
 import { Sfx } from '../audio/Sfx';
 import { Platformer } from '../behavior/Platformer';
 import { ObjectPalette } from '../ObjectPalette';
+
+let lastPlay = 0;
 
 export class BreakableBlock extends Block
 {
@@ -87,6 +90,39 @@ export class BreakableBlock extends Block
 			region.updateActor(this);
 		}
 
+		if(this.args.worm && !this.broken && !this.delay2 && this.viewport && this.viewport.controlActor)
+		{
+			if(this.viewport.controlActor.args.dead && this.args.x < this.viewport.controlActor.args.x + 32)
+			{
+				this.box.classList.add('will-break');
+				this.box.classList.add('breaking');
+				this.box.classList.add('worm');
+				this.delayedBreak(1);
+				if(!this.delay2)
+				{
+					this.delay2 = this.viewport.onFrameOut(1, () => {
+						this.box.classList.add('broken');
+						this.delay2 = false;
+					});
+				}
+			}
+
+			if(this.args.x < this.viewport.controlActor.args.x)
+			{
+				this.box.classList.add('will-break');
+				this.box.classList.add('breaking');
+				this.box.classList.add('worm');
+				this.delayedBreak(1);
+				if(!this.delay2)
+				{
+					this.delay2 = this.viewport.onFrameOut(1, () => {
+						this.box.classList.add('broken');
+						this.delay2 = false;
+					});
+				}
+			}
+		}
+
 		super.update();
 	}
 
@@ -152,7 +188,18 @@ export class BreakableBlock extends Block
 				{
 					if(this.args.worm)
 					{
-						this.delayedBreak(5);
+						// this.box.classList.add('will-break');
+						// this.box.classList.add('breaking');
+						// this.box.classList.add('worm');
+						// if(!this.delay2)
+						// {
+						// 	this.delay2 = this.viewport.onFrameOut(1, () => {
+						// 		this.box.classList.add('broken');
+						// 		this.delay2 = false;
+						// 	});
+						// }
+
+						// this.delayedBreak(5);
 					}
 					else
 					{
@@ -230,7 +277,7 @@ export class BreakableBlock extends Block
 			}
 		}
 
-		if(!(other.args.rolling && other.args.mode) && !other.isVehicle && !other.args.spinning)
+		if(!(other.args.rolling && !other.dropDashCharge && other.args.mode) && !other.isVehicle && !other.args.spinning)
 		{
 			if((other.args.falling && !(other.dashed || other.args.jumping))
 				|| (!other.args.falling && type === 0)
@@ -250,9 +297,10 @@ export class BreakableBlock extends Block
 
 		if((other instanceof Orb)
 			|| other.isVehicle
-			|| other.args.spinning
+			|| (other.args.spinning && !other.spinDashCharge)
 			|| other.args.dashed
 			|| other.punching
+			|| (other.dropDashCharge && other.args.ySpeed >= 0)
 		){
 			const top = this.y - this.args.height;
 
@@ -304,12 +352,20 @@ export class BreakableBlock extends Block
 		{
 			this.args.x += this.args.worm;
 		}
-		else
+		else if(this.def)
 		{
 			this.args.x = this.def.get('x');
 		}
 
-		this.args.y = this.def.get('y') + 1;
+		if(this.def)
+		{
+			this.args.y = this.def.get('y') + 1;
+		}
+		else
+		{
+			this.viewport.actors.remove(this);
+			return;
+		}
 
 		if(this.broken)
 		{
@@ -338,18 +394,21 @@ export class BreakableBlock extends Block
 		this.box.append(this.fragmentsX);
 
 		this.delay = this.viewport.onFrameOut(delay, () => {
-			this.break(other, silent)
+			this.break(other, silent, true)
 			this.delay = false;
 		});
 	}
 
-	break(other, silent = false)
+	break(other, silent = false, appended = false)
 	{
 		const wasBroken = this.broken;
 
 		if(!this.broken)
 		{
-			this.box.append(this.fragmentsX);
+			if(!appended)
+			{
+				this.box.append(this.fragmentsX);
+			}
 
 			this.broken = true;
 
@@ -357,25 +416,38 @@ export class BreakableBlock extends Block
 			{
 				const viewport = this.viewport;
 
-				this.box.classList.add('will-break');
-				this.box.classList.add('breaking');
-				viewport.onFrameOut(1, () => {
-					this.box.classList.add('broken');
-				});
-				// viewport.onFrameOut(1, () => {
-				// });
-				// viewport.onFrameOut(1, () => {
-				// });
+				if(!this.args.worm || (other && other.noClip))
+				{
+					this.box.classList.add('will-break');
+					this.box.classList.add('breaking');
+					if(!this.delay3)
+					{
+						this.delay3 = viewport.onFrameOut(3, () => {
+							this.box.classList.add('broken');
+							this.delay3 = false;
+						});
+					}
+				}
 			}
 
-			if(!silent)
+			if(!silent && Date.now() - lastPlay > 100)
 			{
-				this.viewport.onFrameOut(
-					Math.floor(Math.random() * 3)
-					, () => Sfx.play('BLOCK_DESTROYED')
-				);
+				if(this.args.worm)
+				{
+					this.viewport.onFrameOut(
+						Math.trunc(Math.random() * 3)
+						, () => Sfx.play('WORM_BLOCK_DESTROYED')
+					);
+					lastPlay = Date.now();
+				}
+				else
+				{
+					this.viewport.onFrameOut(
+						Math.trunc(Math.random() * 3)
+						, () => Sfx.play(this.breakSound || 'BLOCK_DESTROYED')
+					);
+				}
 			}
-
 
 			const o = (other && other.occupant) || other;
 
@@ -397,12 +469,10 @@ export class BreakableBlock extends Block
 				scoreTag.style({'--x': this.args.x, '--y': this.args.y - this.args.height});
 
 				this.viewport.particles.add(scoreTag);
-				setTimeout(() => this.viewport.particles.remove(scoreTag), 768);
+				setTimeout(() => this.viewport && this.viewport.particles.remove(scoreTag), 768);
 
 				o.args.score += 10;
 			}
-
-			this.args.contains && console.log(this.args.contains);
 
 			if(this.args.contains && ObjectPalette[this.args.contains])
 			{
@@ -411,16 +481,24 @@ export class BreakableBlock extends Block
 				object.args.x = this.args.x;
 				object.args.y = this.args.y - this.args.height * 0.5;
 
+				object.args.falling = true;
+				object.args.xSpeed  = this.xSpeedLast || this.gSpeedLast;
+				object.args.ySpeed  = this.args.ySpeed;
+
 				object.args.ySpeed = -6;
 
 				this.viewport.spawn.add({object});
 			}
 		}
 
-		this.viewport.onFrameOut(30, () => {
-			this.box && this.box.classList.remove('breaking');
-			this.fragmentsX.remove();
-		});
+		if(!this.delay4)
+		{
+			this.delay4 = this.viewport.onFrameOut(20, () => {
+				this.box && this.box.classList.remove('breaking');
+				this.fragmentsX.remove();
+				this.delay4 = false;
+			});
+		}
 
 		if(!this.args.collapse && other && other.args.mode % 2 === 0)
 		{
@@ -579,6 +657,6 @@ export class BreakableBlock extends Block
 		this.break(other);
 	}
 
-	get solid() { return !this.broken && this.args.strength !== -2; }
+	get solid() { return this.args.solid && !this.broken && this.args.strength !== -2; }
 }
 

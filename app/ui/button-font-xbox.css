@@ -38,6 +38,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	width: 1.1em;
+	margin-left: 0.125em;
+	margin-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -48,6 +50,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	width: 1.1em;
+	margin-left: 0.125em;
+	margin-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }

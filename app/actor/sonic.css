@@ -119,8 +119,8 @@
 	--animation-width: -64px;
 	--animation-steps: 3;
 
-	animation: sonic-animate steps(3) 1 192ms
-		, sonic-animate-echo steps(2) infinite 192ms 192ms;
+	animation: sonic-animate steps(3) 1 212ms
+		, sonic-animate-echo steps(2) infinite 192ms 212ms;
 }
 
 .actor-item.actor-sonic[data-animation="sliding"] .sprite:after{

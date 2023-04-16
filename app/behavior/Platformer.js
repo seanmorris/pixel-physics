@@ -898,7 +898,7 @@ export class Platformer
 			}
 			else if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
 			{
-				host.args.falling = !this.checkBelow(host) || host.args.falling;
+				host.args.falling = !host.args.float && !this.checkBelow(host) || host.args.falling;
 			}
 
 			if(!host.args.static && !host.noClip && host.args.falling)
@@ -1120,7 +1120,7 @@ export class Platformer
 		const regionClass  = host.viewport.objectPalette['base-region'];
 		const skipChecking = [regionClass];
 
-		if(!host.isGhost && !host.isStatic && !(skipChecking.some(x => host instanceof x)))
+		if(!host.isGhost && !host.isStatic && !host.isRegion && !(skipChecking.some(x => host instanceof x)))
 		{
 			let collisions;
 
@@ -1164,7 +1164,7 @@ export class Platformer
 					break;
 			}
 
-			collisions.forEach(x => x.args !== host.args && !x.isPushable && x.callCollideHandler(host));
+			collisions.forEach(x => x.args !== host.args && !(host.args.static && x.args.static) && !x.isPushable && x.callCollideHandler(host));
 		}
 
 		if(!host.viewport)
@@ -1617,6 +1617,12 @@ export class Platformer
 
 			if(headBlock === false || headBlock > 0)
 			{
+				const dirs = [0,0,Math.PI];
+				const filterBlockers = x =>
+					x.args !== host.args
+					&& x.callCollideHandler(host)
+					&& x.solid;
+
 				for(let s = 0; s < max; s += step)
 				{
 					if(host.args.height > 8 && host.args.modeTime > 1)
@@ -1626,61 +1632,43 @@ export class Platformer
 							host.args.pushing = false;
 						}
 
-						if(!host.args.rolling)
+						const headPoint = host.rotatePoint(
+							radius * -direction
+							, host.args.height
+						);
+
+						let headBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
+
+						if(Array.isArray(headBlock))
 						{
-							const headPoint = host.rotatePoint(
-								radius * -direction
-								, host.args.height
-							);
-
-							let headBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
-
-							if(Array.isArray(headBlock))
-							{
-								headBlock = headBlock
-								.filter(x =>
-									x.args !== host.args
-									&& x.callCollideHandler(host)
-									&& x.solid
-								)
-								.length;
-							}
-
-							if(headBlock)
-							{
-								if(host.args.mode === MODE_CEILING)
-								{
-									host.args.x += radius * Math.sign(host.args.gSpeed);
-									host.args.y += host.args.height;
-
-									host.args.mode = MODE_FLOOR;
-								}
-
-								host.args.pushing = Math.sign(host.args.gSpeed);
-								break;
-							}
+							headBlock = headBlock.filter(filterBlockers).length;
 						}
+
+						if(headBlock)
+						{
+							if(host.args.mode === MODE_CEILING)
+							{
+								host.args.x += radius * Math.sign(host.args.gSpeed);
+								host.args.y += host.args.height;
+
+								host.args.mode = MODE_FLOOR;
+							}
+
+							host.args.pushing = Math.sign(host.args.gSpeed);
+							break;
+						}
+
+						let waistBlock = false;
 
 						if(!host.noClip && host.controllable && host.args.groundAngle === 0)
 						{
 							const waistPoint = host.rotatePoint(-radius * Math.sign(host.args.gSpeed), host.args.height * 0.5);
 
-							// let waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
-							let waistBlock = host.castRayQuick(
-								Math.abs(host.args.gSpeed)
-								, host.realAngle + [0,0,Math.PI][direction+1]
-								, waistPoint
-							);
-
-							// if(Array.isArray(waistBlock))
-							// {
-							// 	waistBlock = waistBlock.filter(x =>
-							// 		x.args !== host.args
-							// 		&& x.callCollideHandler(host)
-							// 		&& x.solid
-							// 	)
-							// 	.length;
-							// }
+							waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
+							if(Array.isArray(waistBlock))
+							{
+								waistBlock = waistBlock.filter(filterBlockers).length || false;
+							}
 
 							if(waistBlock !== false && waistBlock <= radius)
 							{
@@ -1700,6 +1688,11 @@ export class Platformer
 								host.args.gSpeed && (host.args.pushing = Math.sign(host.args.gSpeed));
 								break;
 							}
+						}
+
+						if(!headBlock && !waistBlock)
+						{
+							host.args.pushing = 0;
 						}
 					}
 
@@ -1955,13 +1948,16 @@ export class Platformer
 					{
 						host.args.moving = true;
 
-						host.args.angle = nextPosition[0]
-							? (Math.atan(nextPosition[1] / nextPosition[0]))
-							: (Math.sign(nextPosition[1]) * Math.PI / 2);
+						if(!host.keepAngle)
+						{
+							host.args.angle = nextPosition[0]
+								? (Math.atan(nextPosition[1] / nextPosition[0]))
+								: (Math.sign(nextPosition[1]) * Math.PI / 2);
 
-						host.lastAngles.unshift(host.args.angle);
+							host.lastAngles.unshift(host.args.angle);
 
-						host.lastAngles.splice(host.angleAvg);
+							host.lastAngles.splice(host.angleAvg);
+						}
 					}
 
 					if(!host.rotateLock)
@@ -2045,6 +2041,11 @@ export class Platformer
 
 							host.args.groundAngle = Number(host.args.groundAngle) + Math.PI / 2;
 						}
+					}
+					else
+					{
+						host.args.x += nextPosition[0];
+						host.args.y -= nextPosition[1];
 					}
 				}
 			}
@@ -2530,8 +2531,7 @@ export class Platformer
 
 		const tileMap = host.viewport.tileMap;
 
-		const cSquared  = host.args.xSpeed**2 + host.args.ySpeed**2;
-		const airSpeed  = cSquared ? Math.sqrt(cSquared) : 0;
+		const airSpeed  = Math.hypot(host.args.xSpeed, host.args.ySpeed);
 
 		host.args.airSpeed = airSpeed;
 
@@ -3158,7 +3158,8 @@ export class Platformer
 
 			if(!host.args.falling && !host.args.gSpeed)
 			{
-				host.args.gSpeed = Math.floor(xSpeedOriginal || host.xSpeedLast);
+				// host.args.gSpeed = Math.floor(xSpeedOriginal || host.xSpeedLast);
+				host.args.gSpeed = Math.floor(xSpeedOriginal);
 			}
 
 			if(airPoint && (yPointDir === ySpeedDir || (!yPointDir && ySpeedDir === 1)))
@@ -3344,25 +3345,21 @@ export class Platformer
 		{
 			const regions = (actor.controllable || actor.args.pushed || actor.isVehicle) ? actor.viewport.regionsAtPoint(point[0], point[1]) : [];
 
+			const actors = viewport.actorsAtPoint(point[0], point[1]).filter(x =>
+				x.args !== actor.args
+				&& x.callCollideHandler(actor)
+				&& x.solid
+			);
+
 			for(const region of regions)
 			{
-				if(actor.args.mode !== MODE_FLOOR
-					|| point[1] !== 1 + region.args.y + -region.args.height
-					|| Math.abs(actor.args.gSpeed) <= region.skimSpeed
-				){
-					const actors = viewport.actorsAtPoint(point[0], point[1])
-					.filter(x =>
-						x.args !== actor.args
-						&& x.callCollideHandler(actor)
-						&& x.solid
-					);
-
-					if(actors.length === 0)
-					{
-						if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
-						{
-							return i;
-						}
+				if(actors.length === 0 && !tileMap.getSolid(point[0], point[1], actor.args.layer))
+				{
+					if(actor.args.mode !== MODE_FLOOR
+						|| point[1] !== 1 + region.args.y + -region.args.height
+						|| Math.abs(actor.args.gSpeed) <= region.skimSpeed
+					){
+						return i;
 					}
 				}
 			}
@@ -3407,10 +3404,10 @@ export class Platformer
 			return;
 		}
 
-		if(host.stepCache[offset] !== undefined)
-		{
-			return host.stepCache[offset];
-		}
+		// if(host.stepCache[offset] !== undefined)
+		// {
+		// 	return host.stepCache[offset];
+		// }
 
 		const viewport = host.viewport;
 		const tileMap  = viewport.tileMap;
@@ -3422,7 +3419,7 @@ export class Platformer
 		let downFirstSolid = false;
 		let upFirstSpace   = false;
 
-		let prevUp = 0, prevDown = 0, prev = 0;
+		let prevUp = 0, prevDown = 0;
 
 		let col = 0;
 
@@ -3525,21 +3522,21 @@ export class Platformer
 					return [false, false, false, true];
 				}
 
-				prev = prevUp = upFirstSpace;
+				prevUp = upFirstSpace;
 			}
 			else
 			{
-				prev = prevDown = downFirstSolid;
+				prevDown = downFirstSolid;
 			}
 
-			if(upFirstSpace !== false)
-			{
-				host.stepCache[col * sign] = [col * sign, upFirstSpace, false];
-			}
-			else
-			{
-				host.stepCache[col * sign] = [col * sign, -downFirstSolid, false];
-			}
+			// if(upFirstSpace !== false)
+			// {
+			// 	host.stepCache[col * sign] = [col * sign, upFirstSpace, false];
+			// }
+			// else
+			// {
+			// 	host.stepCache[col * sign] = [col * sign, -downFirstSolid, false];
+			// }
 		}
 
 		if(upFirstSpace !== false)

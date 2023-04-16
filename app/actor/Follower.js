@@ -48,7 +48,7 @@ export class Follower extends PointActor
 		const yDiff = host.y + -this.y;
 
 		const angle = Math.atan2(yDiff, xDiff);
-		const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
+		const distance = Math.hypot(yDiff, xDiff);
 
 		const maxDistance = 256;
 		const minDistance = 64;

@@ -62,6 +62,8 @@ section.filters {
 
 .viewport .viewport-bg-layers {
 	contain: size layout;
+	width: 0px;
+	height: 0px;
 }
 
 .viewport.mouse-moved {
@@ -235,6 +237,10 @@ section.filters {
 	pointer-events: none;
 }
 
+.viewport-background {
+	contain: size layout style;
+}
+
 .viewport-zoom,
 .viewport-background,
 .viewport-content {
@@ -304,11 +310,11 @@ section.filters {
 
 .viewport-zoom .blurAngle {
 	transform:rotate(calc(1rad * var(--blurAngle)));
-	contain: style;
+	contain: layout size style;
 }
 .viewport-zoom .blurAngleCancel {
 	transform:rotate(calc(-1rad * var(--blurAngle)));
-	contain: layout size;
+	contain: layout size style;
 }
 
 span.arrow-east,

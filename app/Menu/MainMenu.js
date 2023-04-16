@@ -128,6 +128,8 @@ export class MainMenu extends Menu
 		Character.prefix = new CharacterPreview(Character);
 		// Follower.prefix = new CharacterPreview(Follower);
 
+		this.onRemove(() => Character.prefix.remove());
+
 		this.items = this.args.items = {
 
 			'Single Player': {
@@ -496,14 +498,14 @@ export class MainMenu extends Menu
 		// 	this.args.twist.args.dy = 64*1.000 * yAxis;
 		// }
 
-		if(this.args.pinch)
-		{
-			const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
-			const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
+		// if(this.args.pinch)
+		// {
+		// 	const xAxis = (controller.axes[xEffect] ? controller.axes[xEffect].magnitude : 0) + (controller.axes[0] ? controller.axes[0].magnitude : 0) * 0.1;
+		// 	const yAxis = (controller.axes[yEffect] ? controller.axes[yEffect].magnitude : 0) + (controller.axes[1] ? controller.axes[1].magnitude : 0) * 0.1;
 
-			this.args.pinch.args.dx = 64*1.618 * xAxis;
-			this.args.pinch.args.dy = 64*1.000 * yAxis;
-		}
+		// 	this.args.pinch.args.dx = 64*1.618 * xAxis;
+		// 	this.args.pinch.args.dy = 64*1.000 * yAxis;
+		// }
 	}
 
 	disconnect()
@@ -531,9 +533,9 @@ export class MainMenu extends Menu
 		// 	id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
 		// });
 
-		this.args.pinch = new Pinch({
-			id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		});
+		// this.args.pinch = new Pinch({
+		// 	id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
+		// });
 	}
 
 	back()

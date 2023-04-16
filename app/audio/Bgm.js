@@ -1,3 +1,4 @@
+import { Pool } from 'curvature/base/Pool';
 import { Elicit } from 'curvature/net/Elicit';
 import { Mixin } from 'curvature/base/Mixin';
 import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
@@ -12,6 +13,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 	playing = null;
 	id3     = new Map;
 	request = [];
+	pool    = new Pool({max: 3, init: item => { item.open(); return item }})
 
 	setVolume(volume = 1)
 	{
@@ -25,13 +27,17 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 	register(tag, url, maxConcurrent = 1)
 	{
-		const list = Array(maxConcurrent).fill().map(x => new Audio(url));
+		const getTags = new Elicit(url, {defer:true});
 
-		this.tracks.set(tag, list);
+		getTags.addEventListener('error', event => event.preventDefault());
 
-		const getTags = new Elicit(url);
+		this.pool.add(getTags);
 
-		this.request.push(getTags.buffer().then(buffer => {
+		this.request.push(getTags.blob().then(blob => Promise.all([blob.arrayBuffer(), URL.createObjectURL(blob)])).then( ([buffer, objectUrl]) => {
+
+			const list = Array(maxConcurrent).fill().map(x => new Audio(objectUrl));
+
+			this.tracks.set(tag, list);
 
 			const bytes = new Uint8Array(buffer);
 			const prefix = String.fromCharCode(...bytes.slice(0, 3));
@@ -297,6 +303,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			const fade = () => {
 				if(!track)
 				{
+					clearInterval(interval);
 					return;
 				}
 

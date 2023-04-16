@@ -32,7 +32,7 @@ export class Layer extends View
 
 		Object.defineProperty(this, 'blocksXY',  {value: new Map});
 		Object.defineProperty(this, 'blocks',    {value: new Bag});
-		Object.defineProperty(this, 'offsets',   {value: new Map});
+		Object.defineProperty(this, 'blockMeta', {value: new Map});
 		Object.defineProperty(this, 'blockSrcs', {value: new Map});
 
 		this.args.blocks = this.blocks.list;
@@ -209,13 +209,13 @@ export class Layer extends View
 		}
 
 		const blockSize  = this.args.blockSize;
-		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 2;
+		const blocksWide = Math.ceil((this.args.width  / blockSize)) + 1;
 		const blocksHigh = Math.ceil((this.args.height / blockSize)) + 1;
 		const blocksXY   = this.blocksXY;
 		const centerX    = blocksWide / 2;
 		const centerY    = blocksHigh / 2;
 		const blocks     = this.blocks;
-		const offsets    = this.offsets;
+		const blockMetas = this.blockMeta;
 		const blockSrcs  = this.blockSrcs;
 		const offsetX    = this.args.offsetX;
 		const offsetY    = this.args.offsetY;
@@ -229,14 +229,14 @@ export class Layer extends View
 
 		let willDisable = true;
 
-		for(let i = startColumn; i <= endColumn; i += Math.sign(blocksWide))
+		for(let i = startColumn; i < endColumn; i += Math.sign(blocksWide))
 		{
 			const tileX = i
 				+ -Math.ceil(this.x / blockSize)
 				+ -Math.ceil(offsetX / blockSize)
 				+ (offsetX > 0 ? 1 : 0);
 
-			for(let j = 0; j <= blocksHigh; j += Math.sign(blocksHigh))
+			for(let j = 0; j < blocksHigh; j += Math.sign(blocksHigh))
 			{
 				const xy = i  * (1+Math.abs(blocksHigh)) + j;
 
@@ -258,19 +258,24 @@ export class Layer extends View
 				{
 					block = new Tag(document.createElement('div'));
 
-					blocksXY.set(xy, block);
+					const meta = Object.create(null);
+					Object.assign(meta, {x: null, y: null, src: null, visible: false});
+					Object.preventExtensions(meta);
 
-					block.style({width: blockSize + 'px', height: blockSize + 'px'});
+					blocksXY.set(xy, block);
+					blockMetas.set(block, meta);
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
 					const scale  = '1.021';
 
 					block.style({
-						transform: `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
+						transform:  `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
+						, width:    blockSize + 'px'
+						, height:   blockSize + 'px'
 						, position: 'absolute'
-						, left: 0
-						, top: 0
+						, left:     0
+						, top:      0
 					});
 
 					blocks.add(block);
@@ -294,8 +299,11 @@ export class Layer extends View
 
 				const tileset = tileXY[4];
 
-				const existingOffset = offsets.get(block);
-				const existingSrc    = blockSrcs.get(block);
+				const blockMeta = blockMetas.get(block);
+
+				const existingOffsetX = blockMeta.x;
+				const existingOffsetY = blockMeta.y;
+				const existingSrc     = blockMeta.src;
 
 				if(tileset && tileset.meta && tileset.meta.animated)
 				{
@@ -308,10 +316,8 @@ export class Layer extends View
 					tileXY[1] += tileset.meta.frameSize * frameIndex;
 				}
 
-				const blockOffset = -1 * (tileXY[0] * blockSize)
-					+ 'px '
-					+ -1 * (tileXY[1] * blockSize)
-					+ 'px';
+				const blockX = -1 * (tileXY[0] * blockSize);
+				const blockY = -1 * (tileXY[1] * blockSize);
 
 				const blockSrc = tileXY[2];
 
@@ -320,27 +326,31 @@ export class Layer extends View
 					willDisable = false;
 				}
 
-				if(existingOffset !== blockOffset || existingSrc !== blockSrc)
+				if(existingOffsetX !== blockX || existingOffsetY !== blockY || existingSrc !== blockSrc)
 				{
 					if(blockId !== false && blockId !== 0)
 					{
-						const blockStyle = {
+						const blockOffset =  blockX + 'px ' + blockY + 'px';
+
+						block.style({
 							display: 'initial'
 							, 'background-position': blockOffset
 							, 'background-image': `url(${blockSrc})`
-							, '--screenX': (centerX - ii) / centerX
-							, '--screenY': (j - centerY) / centerY
-						};
+							// , '--screenX': (centerX - ii) / centerX
+							// , '--screenY': (j - centerY) / centerY
+						});
 
-						block.style(blockStyle);
+						blockMeta.visible = true;
 					}
-					else
+					else if(blockMeta.visible)
 					{
 						block.style({display: 'none'});
+						blockMeta.visible = false;
 					}
 
-					offsets.set(block, blockOffset);
-					blockSrcs.set(block, blockSrc);
+					blockMeta.src = blockSrc;
+					blockMeta.x   = blockX;
+					blockMeta.y   = blockY;
 				}
 			}
 

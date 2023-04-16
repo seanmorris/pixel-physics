@@ -12,6 +12,7 @@ export class Spring extends PointActor
 	static WontSpring = WontSpring;
 
 	float = -1;
+	keepAngle = true;
 
 	template = `<div
 		class = "point-actor actor-item [[type]] [[collType]] [[active]]"
@@ -82,7 +83,7 @@ export class Spring extends PointActor
 		{
 			for(const [third, thirdType] of this.viewport.collisions.get(this))
 			{
-				if(!third.broken && third instanceof BreakableBlock)
+				if(thirdType === -1 && !third.broken && third instanceof BreakableBlock)
 				{
 					this.args.blocked = true;
 				}
@@ -162,6 +163,12 @@ export class Spring extends PointActor
 		other.args.falling = true;
 
 		this.holding.add(other);
+
+		if(other.controllable)
+		{
+			this.args.gSpeed = 0;
+		}
+
 
 		return false;
 	}

@@ -7,7 +7,7 @@ module.exports = {
 	}
 	, plugins: {
 		babel: {
-			presets:   ['@babel/preset-env']
+			presets:   [['@babel/preset-env', {exclude: ['transform-for-of', 'transform-spread']}]]
 			, plugins: ["@babel/plugin-proposal-class-properties"]
 		}
 		, raw: {

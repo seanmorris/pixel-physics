@@ -210,6 +210,14 @@ export class Egg extends PointActor
 
 		Object.assign(chao.customColors, this.customChaoColors);
 
+		Object.assign(chao.traits, {
+			appetite:   Math.random()
+			, sociable: Math.random()
+			, restless: Math.random()
+		});
+
+		chao.mood.hunger = 0.8;
+
 		this.broken = true;
 	}
 

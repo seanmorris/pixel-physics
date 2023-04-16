@@ -1,7 +1,8 @@
 import { Png } from '../sprite/Png';
 import { PointActor } from './PointActor';
-import { Coconut } from './Coconut';
 import { Mushroom } from './Mushroom';
+import { Coconut } from './Coconut';
+import { Tree } from './Tree';
 
 export class Chao extends PointActor
 {
@@ -22,7 +23,7 @@ export class Chao extends PointActor
 		this.xHold = 8;
 		this.yHold = 0;
 
-		this.maxFlight = 180;
+		this.maxFlight = 270;
 
 		this.emotes = ['normal', 'alert', 'inquire', 'like', 'love', 'angry'];
 		this.emoteIndex = 0;
@@ -31,6 +32,8 @@ export class Chao extends PointActor
 		// this.animationIndex = 0;
 
 		this.args.animation = 'standing';
+
+		this.args.inWater = false;
 
 		this.bindTo('carriedBy', carrier => {
 			if(this.cX) { this.cX(); this.cX = null; }
@@ -72,6 +75,8 @@ export class Chao extends PointActor
 			this.args.stateTime = 0;
 		});
 
+		this.args.alignment = 'hero';
+
 		this.stats = {
 			intelligence: 0
 			, stamina:    0
@@ -80,19 +85,19 @@ export class Chao extends PointActor
 			, swim:       0
 			, fly:        0
 			, power:      0
-
 		};
 
 		this.traits = {
-			appetite: 0
+			appetite:   0
 			, sociable: 0
-			,
+			, restless: 0
 		};
 
 		this.mood = {
 			attitude: 0
+			, happy:  1
 			, hunger: 0
-			, health: 100
+			, health: 1
 			, social: 0
 		}
 
@@ -118,9 +123,9 @@ export class Chao extends PointActor
 		}, {wait:0});
 	}
 
-	onRendered(event)
+	onAttached(event)
 	{
-		super.onRendered(event);
+		// super.onRendered(event);
 
 		if(!this.listening)
 		{
@@ -134,7 +139,9 @@ export class Chao extends PointActor
 		this.setAutoAttr('direction', 'data-direction');
 		this.setAutoAttr('emote',     'data-emote');
 
-		this.viewport.onInterval(1500, () => {
+		const viewport = this.viewport;
+
+		this.onRemove(() => clearInterval(viewport.onInterval(1500, () => {
 			if(this.emoteIndex >= this.emotes.length)
 			{
 				this.emoteIndex = 0;
@@ -144,10 +151,10 @@ export class Chao extends PointActor
 
 			this.emoteIndex++;
 
-			this.viewport.onTimeout(500, () => {
+			this.onRemove(() => viewport.onTimeout(500, () => {
 				this.args.emote = 'normal';
-			});
-		});
+			}));
+		})));
 
 		// this.viewport.onInterval(3000, () => {
 		// 	if(this.animationIndex >= this.animations.length)
@@ -349,13 +356,19 @@ export class Chao extends PointActor
 
 	update()
 	{
-		let inWater = false;
+		for(const carried of this.carrying)
+		{
+			carried.args.x = this.args.x + this.args.direction * this.xHold;
+			carried.args.y = this.args.y + this.yHold;
+		}
+
+		this.args.inWater = false;
 
 		const floatRegions = [...this.regions].filter(r => r.args.density >= 1);
 
 		if(floatRegions.length)
 		{
-			if(this.args.currentState !== 'flying' || this.args.ySpeed > 0)
+			if(this.args.currentState !== 'flying' && this.args.ySpeed >= 0)
 			{
 				const floatTarget = floatRegions[0].args.y - floatRegions[0].args.height + 6;
 				const snapSpace = 3;
@@ -395,7 +408,7 @@ export class Chao extends PointActor
 				this.args.groundAngle = 0;
 			}
 
-			inWater = true;
+			this.args.inWater = true;
 		}
 		else
 		{
@@ -405,321 +418,74 @@ export class Chao extends PointActor
 			}
 		}
 
-		const eating = new Set;
-
-		for(const carrying of this.carrying)
+		if(this.mood.hunger < 1)
 		{
-			if(carrying instanceof Coconut || carrying instanceof Mushroom)
+			if(this.traits.appetite < 0.333)
 			{
-				this.args.currentState = 'eating';
-
-				eating.add(carrying);
+				this.mood.hunger += 0.00002;
+			}
+			else if(this.traits.appetite < 0.666)
+			{
+				this.mood.hunger += 0.00004;
+			}
+			else
+			{
+				this.mood.hunger += 0.00006;
 			}
 		}
 
-		switch(this.args.currentState)
+		if(this.mood.social < 1)
 		{
-			case 'eating':
-				if(!this.args.falling)
-				{
-					this.args.ySpeed = 0;
-				}
+			if(this.traits.sociable < 0.333)
+			{
+				this.mood.social += 0.0002;
+			}
+			else if(this.traits.sociable < 0.666)
+			{
+				this.mood.social += 0.0004;
+			}
+			else
+			{
+				this.mood.social += 0.0006;
+			}
+		}
 
-				if(!this.carriedBy)
-				{
-					this.args.float = 0;
-				}
-				else
-				{
-					this.args.float = -1;
-				}
+		if(!['eating', 'holding'].includes(this.args.currentState))
+		{
+			if(this.carrying.size)
+			{
+				this.args.currentState = 'holding';
+			}
+		}
 
-				this.args.xSpeed = 0;
-				this.args.animation = 'eating';
-				this.args.emote = 'love';
+		const state = String(this.args.currentState).charAt(0).toUpperCase() + String(this.args.currentState).slice(1);
 
-				if(this.args.stateTime && this.args.stateTime % 75 === 0)
-				{
-					for(const e of eating)
-					{
-						e.args.size--;
+		if(typeof this['state' + state] === 'function')
+		{
+			this['state' + state]();
+		}
 
-						if(!e.args.size)
-						{
-							if(!this.carriedBy)
-							{
-								this.args.currentState = 'thinking';
-							}
-							else
-							{
-								this.args.currentState = 'held';
-							}
-							e.lift(this);
-							this.viewport.actors.remove(e);
-						}
-					}
-				}
+		if(this.mood.hunger < 0.3)
+		{
+			this.selectedFood = null;
+			this.selectedTree = null;
+		}
 
-				break;
+		if(this.selectedFood && this.selectedFood.carriedBy)
+		{
+			this.selectedThing = null;
+			this.selectedFood = null;
+		}
 
-			case 'held':
+		if(this.selectedTree && this.selectedTree.args.shaking && this.args.currentState !== 'shakingTree')
+		{
+			this.selectedThing = null;
+			this.selectedTree = null;
+		}
 
-				this.args.falling = false;
-
-				if(this.args.stateTime < 15)
-				{
-					this.args.emote = 'like';
-				}
-				else if(this.args.stateTime < 60)
-				{
-					this.args.emote = 'love';
-					this.args.animation = 'walking';
-				}
-				else if(this.args.stateTime === 61)
-				{
-					this.args.emote = 'normal';
-					this.args.animation = 'searching';
-				}
-
-				break;
-
-			case 'standing':
-				this.args.animation = 'standing';
-
-				if(!this.args.falling)
-				{
-					this.args.xSpeed = 0;
-					this.args.ySpeed = 0;
-				}
-
-				if(this.args.stateTime > 120)
-				{
-					this.args.currentState = 'thinking';
-				}
-
-				break;
-
-			case 'thinking':
-
-				if(!this.args.falling)
-				{
-					this.args.xSpeed = 0;
-					this.args.ySpeed = 0;
-				}
-
-				this.args.animation = 'thinking';
-
-				if(this.args.stateTime > 60)
-				{
-					this.args.currentState = 'searching';
-				}
-				else if(this.args.stateTime == 0)
-				{
-					this.args.emote = 'inquire';
-				}
-
-				break;
-
-			case 'searching':
-				this.args.animation = 'searching';
-				this.args.emote = 'inquire';
-
-				if(this.args.stateTime > 90)
-				{
-					this.args.emote = 'alert';
-				}
-				else
-				{
-					this.args.emote = 'inquire';
-				}
-
-				if(this.args.stateTime > 120)
-				{
-					this.args.direction = Math.sign(Math.random() - 0.5);
-
-					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
-					{
-						this.args.direction *= -1;
-					}
-
-					if(Math.random() > 0.15)
-					{
-						if(this.args.groundAngle || inWater)
-						{
-							this.args.currentState = 'walking';
-						}
-						else
-						{
-							this.args.currentState = 'sitting';
-						}
-					}
-					else
-					{
-						this.args.currentState = 'walking';
-					}
-				}
-
-				break;
-
-			case 'walking':
-
-				if(inWater)
-				{
-					this.args.animation = 'flying';
-				}
-				else
-				{
-					this.args.animation = 'walking';
-				}
-
-				if(this.args.stateTime < 15)
-				{
-					this.args.emote = 'alert';
-				}
-				else if(this.args.stateTime === 16)
-				{
-					this.args.emote = 'normal';
-				}
-
-				if(inWater)
-				{
-					this.args.xSpeed = 1 * this.args.direction;
-				}
-				else
-				{
-					this.args.gSpeed = 0.01 * this.args.direction;
-				}
-
-				if(this.args.stateTime > 40)
-				{
-					if(!inWater && Math.random() > 0.9)
-					{
-						this.args.currentState = 'tripping';
-					}
-
-					if(Math.random() > 0.95)
-					{
-						this.args.currentState = 'flying';
-					}
-
-					if(Math.random() > 0.98)
-					{
-						this.args.currentState = 'searching';
-					}
-				}
-
-				break;
-
-			case 'tripping':
-				this.args.animation = 'tripping';
-
-				if(this.args.stateTime > 10)
-				{
-					this.args.gSpeed = 0;
-				}
-				else
-				{
-					this.args.gSpeed = 1 * this.args.direction;
-				}
-
-				if(this.args.stateTime > 20)
-				{
-					if(this.args.stateTime < 30	 && Math.random() > 0.6)
-					{
-						this.args.emote = 'angry';
-					}
-				}
-				else
-				{
-					this.args.emote = 'alert';
-				}
-
-				if(this.args.stateTime > 120)
-				{
-					this.args.currentState = 'sitting';
-				}
-
-				break;
-
-			case 'flying':
-
-				this.args.animation = 'flying';
-
-				if(this.args.stateTime === 1)
-				{
-					this.flightTime = (this.maxFlight/2) + Math.round((this.maxFlight/2) * Math.random());
-				}
-
-				if(this.args.stateTime > 60 && this.args.ySpeed < 0)
-				{
-					this.args.ySpeed *= 0.1;
-				}
-
-				if(this.args.stateTime < this.flightTime)
-				{
-					this.args.groundAngle = 0;
-
-					if(!this.args.ySpeed || !this.args.falling)
-					{
-						if(!this.args.xSpeed && !this.args.gSpeed)
-						{
-							this.args.direction = Math.sign(Math.random() - 0.5);
-						}
-
-						this.args.falling = true;
-						this.args.ySpeed  = -Math.sin(this.args.stateTime / 0.05);
-						this.args.xSpeed  =  1.25 * this.args.direction;
-						this.args.float   =  -1;
-					}
-					else if(this.args.ySpeed >= 0)
-					{
-						this.args.currentState = 'flying';
-					}
-
-					if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
-					{
-						this.args.direction *= -1;
-						this.args.xSpeed *= -1;
-					}
-				}
-				else
-				{
-					this.args.currentState = 'thinking';
-				}
-
-				break;
-
-			case 'hatching':
-			case 'sitting':
-
-				this.args.xSpeed = 0;
-
-				if(inWater)
-				{
-					this.args.animation = 'standing';
-				}
-				else
-				{
-					this.args.animation = 'sitting';
-				}
-
-				if(this.args.stateTime > 120)
-				{
-					if(Math.random() > 0.35)
-					{
-						this.args.currentState = 'walking';
-					}
-					else
-					{
-						this.args.currentState = 'thinking';
-					}
-				}
-
-				break;
-
-			case 'swimming': break;
-
-			case 'flying-looking': break;
+		if(!this.selectedTree || !this.selectedTree.args.shaking)
+		{
+			this.args.z = 2;
 		}
 
 		super.update();
@@ -731,6 +497,11 @@ export class Chao extends PointActor
 	{
 		super.collideA(other, type);
 
+		if(this.selectedFriend === other && !this.carriedBy && this.args.currentState !== 'flying')
+		{
+			this.args.currentState = 'fun';
+		}
+
 		if(other.carriedBy || this.carrying.size)
 		{
 			return;
@@ -738,35 +509,635 @@ export class Chao extends PointActor
 
 		if(other instanceof Coconut || other instanceof Mushroom)
 		{
-			if(other.args.size)
+			if(other.args.size && other.args.falling === this.args.falling)
 			{
 				other.lift(this);
 			}
 		}
+
+		if(this.selectedFood === other)
+		{
+			this.selectedThing = null;
+			this.selectedFood = null;
+		}
+
+		if(this.selectedTree === other && Math.abs(this.args.x - other.args.x) < 8 && this.args.y <= other.args.y + 3)
+		{
+			this.args.currentState = 'shakingTree';
+		}
 	}
 
-	stateStanding() {}
+	stateStanding()
+	{
+		this.args.animation = 'standing';
 
-	stateThinking() {}
+		if(!this.args.falling)
+		{
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+		}
 
-	stateWalking() {}
+		if(this.args.stateTime > 120)
+		{
+			this.args.currentState = 'thinking';
+		}
+	}
 
-	stateFlying() {}
+	stateThinking()
+	{
+		if(!this.args.falling)
+		{
+			this.args.xSpeed = 0;
+			this.args.ySpeed = 0;
+		}
 
-	stateSitting() {}
+		this.args.animation = 'thinking';
+
+		if(this.args.stateTime > 60)
+		{
+			this.args.currentState = 'searching';
+		}
+		else if(this.args.stateTime == 0)
+		{
+			this.args.emote = 'inquire';
+		}
+	}
+
+	stateSearching()
+	{
+		this.args.animation = 'searching';
+		this.args.emote = 'inquire';
+
+		if(this.args.stateTime > 90)
+		{
+			this.args.emote = 'alert';
+		}
+		else
+		{
+			this.args.emote = 'inquire';
+		}
+
+		if(this.args.stateTime > 120)
+		{
+			this.args.direction = Math.sign(Math.random() - 0.5);
+
+			if(this.getMapSolidAt(this.args.x + this.args.direction * 8, this.args.y))
+			{
+				this.args.direction *= -1;
+			}
+
+			if(this.mood.hunger > 0.5)
+			{
+				this.args.currentState = 'seekingFood';
+			}
+			else if(this.mood.social > 0.75)
+			{
+				this.args.currentState = 'seekingFriend';
+			}
+			else if(Math.random() > 0.15 * this.traits.restless)
+			{
+				if(this.args.groundAngle || this.args.inWater)
+				{
+					this.args.currentState = 'walking';
+				}
+				else
+				{
+					this.args.currentState = 'sitting';
+				}
+			}
+			else
+			{
+				this.args.currentState = 'walking';
+			}
+		}
+	}
+
+	stateWalking()
+	{
+		if(this.args.inWater)
+		{
+			this.args.animation = 'flying';
+		}
+		else
+		{
+			this.args.animation = 'walking';
+		}
+
+		if(this.args.stateTime < 15)
+		{
+			this.args.emote = 'alert';
+		}
+		else if(this.args.stateTime === 16)
+		{
+			this.args.emote = 'normal';
+		}
+
+		if(this.args.inWater)
+		{
+			this.args.xSpeed = 1 * this.args.direction;
+		}
+		else
+		{
+			this.args.gSpeed = 0.01 * this.args.direction;
+		}
+
+		if(this.args.stateTime > 40)
+		{
+			if(!this.args.inWater && Math.random() > 0.9)
+			{
+				this.args.currentState = 'tripping';
+			}
+
+			if(!this.selectedThing && Math.random() > 0.95)
+			{
+				this.args.currentState = 'flying';
+			}
+			else if(this.selectedThing && this.selectedThing.args.y < this.args.y)
+			{
+				this.args.currentState = 'flying';
+			}
+			else if(!this.selectedThing && Math.random() > 0.98)
+			{
+				this.args.currentState = 'searching';
+			}
+		}
+	}
+
+	stateTripping()
+	{
+		this.args.animation = 'tripping';
+
+		if(this.args.stateTime > 10)
+		{
+			this.args.gSpeed = 0;
+		}
+		else
+		{
+			this.args.gSpeed = 1 * this.args.direction;
+		}
+
+		if(this.args.stateTime > 20)
+		{
+			if(this.args.stateTime < 30	 && Math.random() > 0.6)
+			{
+				this.args.emote = 'angry';
+			}
+		}
+		else
+		{
+			this.args.emote = 'alert';
+		}
+
+		if(this.args.stateTime > 120)
+		{
+			this.args.currentState = 'sitting';
+		}
+	}
+
+	stateFlying()
+	{
+		this.args.animation = 'flying';
+
+		if(this.args.inWater)
+		{
+			this.args.y--;
+		}
+
+		if(this.args.stateTime === 1)
+		{
+			this.flightTime = (this.maxFlight/2) + Math.round((this.maxFlight/2) * Math.random());
+		}
+
+		if(this.getMapSolidAt(this.args.x + Math.sign(this.args.xSpeed)*8, this.args.y))
+		{
+			this.args.direction *= -1;
+			this.args.xSpeed *= -1;
+		}
+
+		if(this.getMapSolidAt(this.args.x, this.args.y + 1))
+		{
+			this.args.falling = true;
+			this.args.float = -1;
+		}
+
+		if(!this.selectedThing && this.args.stateTime > 120 && this.args.ySpeed < 0)
+		{
+			this.args.ySpeed *= 0.4;
+		}
+		else if(this.selectedThing && this.args.y < this.selectedThing.args.y - 96)
+		{
+			this.args.ySpeed *= 0.4;
+		}
+
+		if(this.selectedThing && this.selectedThing.args.y - 32 < this.args.y)
+		{
+			if(this.selectedThing && Math.abs(this.selectedThing.args.x - this.args.x) > 32)
+			{
+				this.args.direction = Math.sign(this.selectedThing.args.x - this.args.x);
+			}
+			this.args.xSpeed  =  1.25 * this.args.direction;
+
+			if(this.args.ySpeed > -1.5)
+			{
+				this.args.ySpeed -= 0.1;
+			}
+		}
+		else if(this.selectedThing && Math.abs(this.selectedThing.args.x - this.args.x) < 32)
+		{
+			this.args.direction = Math.sign(this.selectedThing.args.x - this.args.x);
+			this.args.currentState = 'walking';
+		}
+
+		if(this.args.stateTime < this.flightTime)
+		{
+			this.args.groundAngle = 0;
+
+			if(!this.args.ySpeed || !this.args.falling)
+			{
+				if(!this.args.xSpeed && !this.args.gSpeed && !this.selectedThing)
+				{
+					this.args.direction = Math.sign(Math.random() - 0.5);
+				}
+
+				this.args.falling = true;
+				this.args.ySpeed  = -1;
+				this.args.xSpeed  =  1.25 * this.args.direction;
+				this.args.float   =  -1;
+			}
+			else if(this.args.ySpeed >= 0)
+			{
+				this.args.currentState = 'flying';
+			}
+		}
+		else if(!this.selectedThing)
+		{
+			this.args.currentState = 'thinking';
+		}
+	}
+
+	stateHatching()
+	{
+		this.stateSitting();
+	}
+
+	stateSitting()
+	{
+		this.args.xSpeed = 0;
+
+		if(this.args.inWater)
+		{
+			this.args.animation = 'standing';
+		}
+		else
+		{
+			this.args.animation = 'sitting';
+		}
+
+		if(this.args.stateTime > 120)
+		{
+			if(this.mood.hunger > 0.5)
+			{
+				this.args.currentState = 'seekingFood';
+			}
+			else if(this.mood.social > 0.75)
+			{
+				this.args.currentState = 'seekingFriend';
+			}
+			else if(Math.random() > 0.35 * this.traits.restless)
+			{
+				this.args.currentState = 'walking';
+			}
+			else
+			{
+				this.args.currentState = 'thinking';
+			}
+		}
+	}
 
 	stateSwimming() {}
 
 	stateFlyingLooking() {}
 
+	stateHolding()
+	{
+		if(this.args.stateTime < 60)
+		{
+			this.args.animation = 'thinking';
+			this.args.emote = 'inquire';
+			return;
+		}
+
+		for(const carrying of this.carrying)
+		{
+			carrying.args.gSpeed = 0;
+			carrying.args.xSpeed = 0;
+			carrying.args.ySpeed = 0;
+
+			if(carrying instanceof Coconut || carrying instanceof Mushroom)
+			{
+				if(this.mood.hunger > 0.5 || this.mood.hunger > 0.25 && Math.random() < 0.5)
+				{
+					this.args.emote = 'love';
+					this.args.currentState = 'eating';
+					carrying.carriedBy = this;
+					carrying.noClip = true;
+				}
+				else
+				{
+					this.args.currentState = 'walking';
+					carrying.noClip = false;
+					carrying.carriedBy = null;
+
+					this.carrying.delete(carrying);
+
+					carrying.args.falling = true;
+					carrying.args.x = this.args.x;
+					carrying.args.y = this.args.y;
+					carrying.args.xSpeed  = this.args.direction * -3  + Math.random();
+					carrying.args.ySpeed  = -3 + Math.random();
+					carrying.args.float   = 0;
+
+					this.ignores.set(carrying, 60);
+				}
+			}
+		}
+	}
+
+	stateEating()
+	{
+		const eating = new Set;
+
+		for(const carrying of this.carrying)
+		{
+			if(carrying instanceof Coconut || carrying instanceof Mushroom)
+			{
+				eating.add(carrying);
+			}
+		}
+
+		if(!this.args.falling)
+		{
+			this.args.ySpeed = 0;
+		}
+
+		if(!this.carriedBy)
+		{
+			this.args.float = 0;
+		}
+		else
+		{
+			this.args.float = -1;
+		}
+
+		this.args.xSpeed = 0;
+		this.args.animation = 'eating';
+		this.args.emote = 'love';
+
+		if(this.selectedThing !== this.selectedFriend)
+		{
+			this.selectedThing = null;
+		}
+
+		this.selectedFood = null;
+		this.selectedTree = null;
+
+		if(this.args.stateTime && this.args.stateTime % 75 === 0)
+		{
+			for(const e of eating)
+			{
+				e.args.size--;
+
+				this.mood.hunger -= e.args.nourishment;
+
+				if(!e.args.size)
+				{
+					if(!this.carriedBy)
+					{
+						this.args.currentState = 'thinking';
+					}
+					else
+					{
+						this.args.currentState = 'held';
+					}
+
+					e.lift(this);
+
+					this.viewport.actors.remove(e);
+				}
+			}
+		}
+	}
+
+	stateHeld()
+	{
+		this.args.falling = false;
+
+		if(this.args.stateTime < 15)
+		{
+			this.args.emote = 'like';
+		}
+		else if(this.args.stateTime < 60)
+		{
+			this.args.emote = 'love';
+			this.args.animation = 'walking';
+		}
+		else if(this.args.stateTime === 61)
+		{
+			this.args.emote = 'normal';
+			this.args.animation = 'searching';
+		}
+	}
+
+	stateFun()
+	{
+		const [closest,minDist] = this.nearestFriend();
+
+		if(!closest)
+		{
+			this.args.currentState = 'searching';
+			return;
+		}
+
+		const dir = Math.sign(this.args.x - closest.args.x);
+		this.args.direction = -dir;
+
+		if(Math.abs(this.args.x - closest.args.x) < 16)
+		{
+			this.args.x -= (this.args.x - (closest.args.x + 16 * dir)) * 0.1;
+		}
+
+		if(minDist > 25)
+		{
+			this.args.currentState = 'searching';
+			return;
+		}
+
+		if(this.mood.social < 0.5)
+		{
+			this.args.direction *= -1;
+			this.args.currentState = 'walking';
+			this.selectedFriend = null;
+			this.selectedThing = null;
+			return;
+		}
+
+		if(this.args.stateTime < 45)
+		{
+			this.args.emote = 'alert';
+		}
+		else
+		{
+			this.args.emote = 'love';
+		}
+
+		this.args.animation = 'walking';
+
+		let factor = 1;
+
+		if(this.selectedThing && this.selectedThing.args.currentState === 'fun')
+		{
+			factor = 0.4;
+		}
+
+		if(this.traits.sociable < 0.333)
+		{
+			this.mood.social -= 0.004 * factor;
+		}
+		else if(this.traits.sociable < 0.666)
+		{
+			this.mood.social -= 0.003 * factor;
+		}
+		else
+		{
+			this.mood.social -= 0.002 * factor;
+		}
+	}
+
+	stateSeekingFriend()
+	{
+		if(this.viewport.args.frameId % 60 === 0)
+		{
+			const [closest,minDist] = this.nearestFriend();
+			this.selectedThing = closest;
+			this.selectedFriend = closest;
+
+			if(!closest)
+			{
+				this.args.currentState = 'thinking';
+				return;
+			}
+
+			this.args.direction = Math.sign(closest.args.x - this.args.x);
+
+			if(closest.args.y < this.args.y)
+			{
+				this.args.currentState = 'flying';
+			}
+			else
+			{
+				this.args.currentState = 'walking';
+			}
+		}
+	}
+
+	stateSeekingFood()
+	{
+		this.selectedFriend = null;
+
+		if(this.viewport.args.frameId % 60 === 0)
+		{
+			const [closest,minDist] = this.nearestFood();
+			this.selectedThing = closest;
+			this.selectedFood = closest;
+
+			if(closest)
+			{
+				this.args.direction = Math.sign(closest.args.x - this.args.x);
+
+				if(closest.args.y < this.args.y)
+				{
+					this.args.currentState = 'flying';
+				}
+				else
+				{
+					this.args.currentState = 'walking';
+				}
+			}
+			else
+			{
+				this.selectedThing = null;
+				this.selectedFood = null;
+
+				this.args.currentState = 'thinking';
+
+				const [closest,minDist] = this.nearestTree();
+				this.selectedThing = closest;
+				this.selectedTree = closest;
+
+				if(!closest)
+				{
+					this.selectedThing = null;
+					this.selectedTree = null;
+					this.args.currentState = 'thinking';
+					return;
+				}
+
+				this.args.direction = Math.sign(closest.args.x - this.args.x);
+
+				if(closest.args.y < this.args.y)
+				{
+					this.args.currentState = 'flying';
+				}
+				else
+				{
+					this.args.currentState = 'walking';
+				}
+			}
+		}
+	}
+
+	stateShakingTree()
+	{
+		if(!this.selectedTree)
+		{
+			this.args.currentState = 'thinking';
+			return;
+		}
+
+		if(!this.selectedTree.args.coconutCount)
+		{
+			this.args.currentState = 'thinking';
+			return;
+		}
+
+		if(this.args.stateTime % 45 === 0 && Math.random() > 0.75)
+		{
+			this.args.selectedThing = null;
+			this.args.selectedTree  = null;
+			this.args.currentState  = 'seekingFood';
+			this.args.animation     = 'standing';
+			return;
+		}
+
+		const dir = Math.sign(this.args.x - this.selectedTree.args.x);
+		this.args.direction = -dir;
+		this.args.x = this.selectedTree.args.x + 8 * dir;
+		this.args.z = this.selectedTree.args.z - 1;
+		this.args.gSpeed = 0;
+
+		this.args.animation = 'shaking';
+	}
+
 	store()
 	{
 		const frozen = {
-			name:       this.args.name
+			state:      this.args.currentState
+			, name:     this.args.name
 			, colors:   this.customColors
 			, align:    this.args.alignment
 			, garden:   null
 			, position: [this.args.x, this.args.y]
+			, traits:   this.traits
 			, stats:    this.stats
 			, mood:     this.mood
 		};
@@ -783,14 +1154,136 @@ export class Chao extends PointActor
 
 		this.args.name = frozen.name ?? '';
 
+		if(frozen.align)
+		{
+			this.args.alignment = frozen.align;
+		}
+
 		if(frozen.position)
 		{
 			this.args.x = frozen.position[0];
 			this.args.y = frozen.position[1];
 		}
 
+		if(frozen.state)
+		{
+			this.args.currentState = frozen.state;
+		}
+
 		frozen.colors && Object.assign(this.customColors, frozen.colors);
+		frozen.traits && Object.assign(this.stats, frozen.traits);
 		frozen.stats  && Object.assign(this.stats, frozen.stats);
-		frozen.mood   && Object.assign(this.mood, frozen.mood);
+		frozen.mood   && Object.assign(this.mood,  frozen.mood);
+	}
+
+	nearestFriend()
+	{
+		const actors = this.viewport.nearbyActors(this.args.x, this.args.y);
+		let closest = null;
+		let minDist = Infinity;
+
+		for(const actor of actors)
+		{
+			if(actor === this)
+			{
+				continue;
+			}
+
+			// if(!(actor instanceof this.constructor) && !actor.controllable)
+			if(!(actor instanceof this.constructor))
+			{
+				continue;
+			}
+
+			if(actor.args.gSpeed || actor.args.currentState === 'eating')
+			{
+				continue;
+			}
+
+			const dist = this.distanceTo(actor);
+
+			if(this.canSee(actor) && dist < minDist)
+			{
+				closest = actor;
+				minDist = dist;
+			}
+		}
+
+		return [closest,minDist];
+	}
+
+	nearestFood()
+	{
+		const actors = this.viewport.nearbyActors(this.args.x, this.args.y);
+		let closest = null;
+		let minDist = Infinity;
+
+		for(const actor of actors)
+		{
+			if(actor === this)
+			{
+				continue;
+			}
+
+			if(!(actor instanceof Coconut))
+			{
+				continue;
+			}
+
+			if(actor.carriedBy)
+			{
+				continue;
+			}
+
+			const dist = this.distanceTo(actor);
+
+			if(this.canSee(actor) && dist < minDist)
+			{
+				closest = actor;
+				minDist = dist;
+			}
+		}
+
+		return [closest,minDist];
+	}
+
+	nearestTree()
+	{
+		const actors = this.viewport.nearbyActors(this.args.x, this.args.y);
+		let closest = null;
+		let minDist = Infinity;
+
+		for(const actor of actors)
+		{
+			if(actor === this)
+			{
+				continue;
+			}
+
+			if(!(actor instanceof Tree))
+			{
+				continue;
+			}
+
+			if(!actor.args.coconutCount)
+			{
+				continue;
+			}
+
+			if(actor.args.shaking)
+			{
+				continue;
+			}
+
+			const dist = this.distanceTo(actor);
+
+			if(this.canSee(actor) && dist < minDist)
+			{
+				closest = actor;
+				minDist = dist;
+			}
+		}
+
+		return [closest,minDist];
 	}
 }

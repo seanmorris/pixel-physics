@@ -594,8 +594,12 @@ export class Block extends PointActor
 			if(!this.args.colliding && this.args.yForce && this.viewport)
 			{
 				this.viewport.onFrameOut(4, () => {
-					const colliding = this.viewport.collisions.has(this);
+					if(!this.viewport)
+					{
+						return;
+					}
 
+					const colliding = this.viewport.collisions.has(this);
 					const collisions = colliding ? [...this.viewport.collisions.get(this).keys()] : [];
 
 					if(!colliding || !collisions.filter(a => a.controllable).length)

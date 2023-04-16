@@ -95,6 +95,11 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 			const toX = this.args.x + Math.round(Math.cos(angle) * (length + -1));
 			const toY = this.args.y + Math.round(Math.sin(angle) * (length + -1));
 
+			if(!this.viewport)
+			{
+				return;
+			}
+
 			const blocking = this.viewport.actorsAtLine(this.args.x, this.args.y, toX, toY);
 
 			blocking.delete(this);

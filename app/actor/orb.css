@@ -12,3 +12,31 @@
 .actor-item.actor-orb[data-facing="left"] .sprite:before {
 	transform: scaleX(-1) rotate(calc(var(--rolled) * 1deg));
 }
+
+.actor-item.actor-orb-small {
+	z-index: 1000;
+}
+
+.actor-item.actor-orb-small .sprite:before {
+	content:  '';
+	position: absolute;
+	left: calc(calc(var(--width) * 1px) - 24px);
+	top: -8px;
+	background-image: url(/Sonic/tech-orb.png);
+	height: 32px;
+	width: 32px;
+	transform: rotate(calc(var(--rolled) * 0.5deg));
+	/* animation: tech-orb-flicker 0.1s steps(1) infinite; */
+	/* animation-play-state: running !important; */
+}
+
+.actor-item.actor-orb-small[data-facing="left"] .sprite:before {
+	transform: scaleX(-1) rotate(calc(var(--rolled) * 0.5deg));
+}
+
+@keyframes tech-orb-flicker {
+	0% { background-position-x: 0px }
+	33.3% { background-position-x: -32px }
+	66.6% { background-position-x: -64px }
+	100% { background-position-x: -96px }
+}

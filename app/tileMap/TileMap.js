@@ -27,6 +27,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.collisionLayers = [];
 		this.objectLayers = [];
 
+		this.mapVars = new Map;
+
 		const url = args.mapUrl;
 
 		this.mapData = null;
@@ -463,22 +465,23 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	getTileNumber(x, y, layerId = 0)
 	{
-		const tileKey = x + ',' + y + ',' + layerId;
-		const cached  = this.tileNumberCache.get(tileKey);
+		// const tileKey = x + ',' + y + ',' + layerId;
+		// const cached  = this.tileNumberCache.get(tileKey);
 
-		if(cached !== undefined)
-		{
-			return cached;
-		}
+		// if(cached !== undefined)
+		// {
+		// 	return cached;
+		// }
 
 		const tileLayers = this.tileLayers;
-		const mapData    = this.mapData;
 
 		if(!tileLayers[layerId])
 		{
-			this.tileNumberCache.set(tileKey, false);
+			// this.tileNumberCache.set(tileKey, false);
 			return false;
 		}
+
+		const mapData = this.mapData;
 
 		if(x >= mapData.width || x < 0)
 		{
@@ -486,11 +489,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					this.tileNumberCache.set(tileKey, false);
+					// this.tileNumberCache.set(tileKey, false);
 					return false;
 				}
 
-				this.tileNumberCache.set(tileKey, 1);
+				// this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -511,12 +514,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				if(layerId !== 0)
 				{
-					this.tileNumberCache.set(tileKey, false);
+					// this.tileNumberCache.set(tileKey, false);
 
 					return false;
 				}
 
-				this.tileNumberCache.set(tileKey, 1);
+				// this.tileNumberCache.set(tileKey, 1);
 
 				return 1;
 			}
@@ -537,16 +540,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			if(this.checkEmpty(tileNumber))
 			{
-				this.tileNumberCache.set(tileKey, false);
+				// this.tileNumberCache.set(tileKey, false);
 				return false;
 			}
 
-			this.tileNumberCache.set(tileKey, tileNumber);
+			// this.tileNumberCache.set(tileKey, tileNumber);
 
 			return tileNumber;
 		}
 
-		this.tileNumberCache.set(tileKey, false);
+		// this.tileNumberCache.set(tileKey, false);
 
 		return false;
 	}
@@ -641,12 +644,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			offsetY = this.tileLayers[layerInput].offsetY ?? 0;
 		}
 
-		const currentTile = [
+		const tileNumber = this.getTileNumber(
 			Math.floor( (xInput - offsetX) / this.blockSize )
 			, Math.floor( (yInput - offsetY) / this.blockSize )
-		];
-
-		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
+			, layerInput
+		);
 
 		const solidLayerCount = this.collisionLayers.length;
 
@@ -746,12 +748,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			offsetY = this.tileLayers[layerInput].offsetY ?? 0;
 		}
 
-		const currentTile = [
+		const tileNumber  = this.getTileNumber(
 			Math.floor( (xInput - offsetX) / this.blockSize )
 			, Math.floor( (yInput - offsetY) / this.blockSize )
-		];
-
-		const tileNumber  = this.getTileNumber(...currentTile, layerInput);
+			, layerInput
+		);
 
 		const tileSet   = this.getTileset(tileNumber);
 		const mapData   = this.mapData;
@@ -817,10 +818,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 	{
 		tileNumber = Number(tileNumber);
 
-		const cached = this.tileSetCache.get(tileNumber);
+		const cache = this.tileSetCache;
 
-		if(cached !== undefined)
+		if(cache.has(tileNumber))
 		{
+			const cached = cache.get(tileNumber);
+
 			if(this.replacements.has(cached.original))
 			{
 				cached.image = this.replacements.get(cached.original);
@@ -846,7 +849,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				{
 					if(tileNumber + 1 < nextTileset.firstgid)
 					{
-						this.tileSetCache.set(tileNumber, tileset);
+						cache.set(tileNumber, tileset);
 
 						if(this.replacements.has(tileset.original))
 						{
@@ -858,7 +861,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				}
 				else
 				{
-					this.tileSetCache.set(tileNumber, tileset);
+					cache.set(tileNumber, tileset);
 
 					if(this.replacements.has(tileset.original))
 					{
@@ -867,7 +870,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 					return tileset;
 				}
-
 			}
 		}
 	}
@@ -942,12 +944,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const ox = Math.sign(dx);
 		const oy = Math.sign(dy);
 
-		const sx = dx ? Math.sqrt(1 + (dy / dx) ** 2) : 0;
-		const sy = dy ? Math.sqrt(1 + (dx / dy) ** 2) : 0;
+		const sx = dx ? Math.hypot(1, (dy / dx)) : 0;
+		const sy = dy ? Math.hypot(1, (dx / dy)) : 0;
 
 		let currentDistance = 0;
-
-		const [tx, ty] = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
 
 		if(this.getSolid(startX, startY, layerId))
 		{
@@ -956,9 +956,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		let initMode;
 
+		const txy = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
+
 		for(const layerId of checkLayers)
 		{
-			if(initMode = this.getTileNumber(tx, ty, layerId))
+			if(initMode = this.getTileNumber(txy[0], txy[1], layerId))
 			{
 				break;
 			}

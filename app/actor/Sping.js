@@ -84,6 +84,11 @@ export class Sping extends Mixin.from(PointActor, CanPop)
 
 			const ball = new Projectile({x,y,z,owner});
 
+			if(!this.viewport)
+			{
+				return;
+			}
+
 			this.viewport.onFrameOut(2, () => {
 				Object.assign(ball.args, {xSpeed,ySpeed});
 			});

@@ -44,9 +44,9 @@ export class MouseIndicator extends Cursor
 		}
 		else
 		{
-			const length = Math.sqrt(
-				(this.args.y - mouse.position[1]) ** 2
-				+ (this.args.x - mouse.position[0]) ** 2
+			const length = Math.hypot(
+				this.args.y - mouse.position[1]
+				, this.args.x - mouse.position[0]
 			);
 
 			const angle = Math.atan2(

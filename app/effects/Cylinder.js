@@ -39,7 +39,7 @@ export class Cylinder extends View
 			const ox = x - (this.args.width / 2);
 			const oy = y - (this.args.height / 2);
 
-			const p = Math.sqrt(ox**2+oy**2);
+			const p = Math.hypot(ox, oy);
 
 			const s = Math.min(this.args.width, this.args.height) / 2;
 

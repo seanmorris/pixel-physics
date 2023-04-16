@@ -41,7 +41,7 @@ export class Twist extends View
 			const ox = x - 31.5;
 			const oy = y - 31.5;
 
-			const p = Math.sqrt(ox**2+oy**2);
+			const p = Math.hypot(ox, oy);
 
 			if(p > 32)
 			{

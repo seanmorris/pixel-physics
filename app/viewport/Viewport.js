@@ -55,6 +55,7 @@ import { Controller } from '../controller/Controller';
 
 import { BackdropPalette } from '../BackdropPalette';
 import { ObjectPalette } from '../ObjectPalette';
+import { ScriptPalette } from '../ScriptPalette';
 
 import { ClickSwitch } from '../ui/ClickSwitch';
 
@@ -156,6 +157,9 @@ export class Viewport extends View
 		};
 
 		this.objectPalette = ObjectPalette;
+		this.scriptPalette = ScriptPalette;
+
+		this.zoneScript = null;
 
 		this.timers = new Map;
 
@@ -436,7 +440,7 @@ export class Viewport extends View
 		this.args.particles = this.particles.list;
 		this.args.effects   = this.effects.list;
 
-		this.args.maxFps = 60;
+		this.args.maxFps = 69;
 
 		this.args.currentActor = '';
 
@@ -822,10 +826,7 @@ export class Viewport extends View
 		this.listen(window, 'gamepadconnected', event => this.padConnected(event));
 		this.listen(window, 'gamepaddisconnected', event => this.padRemoved(event));
 
-		this.colCellDiv = 0.75 * (this.args.width > this.args.height
-			? this.args.width
-			: this.args.height
-		);
+		this.colCellDiv = 0.75 * Math.max(this.args.width, this.args.height);
 
 		this.colCellCache = new Map;
 		this.colCells = new Map;
@@ -1285,15 +1286,25 @@ export class Viewport extends View
 			}, {wait: 250});
 		});
 
-		this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
-		this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
-
 		// this.listen(this.tags.frame, 'click', (event) => {
 		// 	if(event.target === this.tags.frame.node)
 		// 	{
 		// 		this.tags.viewport.focus();
 		// 	}
 		// });
+
+		this.settings.bindTo('blur', v => {
+			if(v)
+			{
+				this.tags.blurDistance.setAttribute('style', `filter:url(#motionBlur)`);
+				this.tags.blurDistanceFg.setAttribute('style', `filter:url(#motionBlur)`);
+			}
+			else
+			{
+				this.tags.blurDistance.setAttribute('style', ``);
+				this.tags.blurDistanceFg.setAttribute('style', ``);
+			}
+		});
 
 		this.listen(window, 'resize', (event) => {
 			this.onTimeout(100, () => this.fitScale(false));
@@ -1430,10 +1441,17 @@ export class Viewport extends View
 		this.clearDialog();
 		this.hideDialog();
 
+		this.args.mouse = 'hide';
+
 		this.args.hasFire    = false;
 		this.args.hasWater   = false;
 		this.args.hasElecric = false;
 		this.args.hasNormal  = false;
+
+		if(this.meta.zoneScript && ScriptPalette[this.meta.zoneScript])
+		{
+			this.zoneScript = new ScriptPalette[this.meta.zoneScript];
+		}
 
 		if(this.meta.bgm)
 		{
@@ -2307,7 +2325,7 @@ export class Viewport extends View
 		const xDiff = this.args.x + -xNext;
 		const yDiff = this.args.y + -yNext;
 
-		const distance = Math.sqrt(xDiff ** 2 + yDiff ** 2);
+		const distance = Math.hypot(xDiff, yDiff);
 		const angle    = Math.atan2(yDiff, xDiff);
 
 		const maxDistance = this.cameraBound;
@@ -2318,11 +2336,14 @@ export class Viewport extends View
 		const snapFrames = this.cameraMode === 'panning' ? 6 : 12;
 		const snapSpeed  = dragDistance / snapFrames;
 
-		let x = xNext + dragDistance * Math.cos(angle)
+		let x = xNext + dragDistance * Math.cos(angle);
 		let y = yNext + dragDistance * Math.sin(angle);
 
-		x = x - snapFactor * Math.cos(angle) * snapSpeed;
-		y = y - snapFactor * Math.sin(angle) * snapSpeed / 2;
+		if(snapFactor * snapSpeed > 0.01)
+		{
+			x = x - snapFactor * Math.cos(angle) * snapSpeed;
+			y = y - snapFactor * Math.sin(angle) * snapSpeed / 2;
+		}
 
 		if(x > 0 && !this.meta.wrapX)
 		{
@@ -2387,7 +2408,7 @@ export class Viewport extends View
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.sqrt(xBlur**2 + yBlur**2) / 3);
+			let blur = (Math.hypot(xBlur, yBlur) / 3);
 			const blurAngle = Math.atan2(yMoved, xMoved);
 
 			if(blur > 0.5)
@@ -2439,8 +2460,11 @@ export class Viewport extends View
 			, '--y': this.args.y
 		});
 
-		this.args.plot.args.x = this.args.x;
-		this.args.plot.args.y = this.args.y;
+		if(this.args.plot)
+		{
+			this.args.plot.args.x = Number(this.args.x).toFixed(2);
+			this.args.plot.args.y = Number(this.args.y).toFixed(2);
+		}
 
 		this.tags.content.style({
 			'--x': this.args.x
@@ -2456,8 +2480,8 @@ export class Viewport extends View
 			? (this.args.y % (this.args.blockSize))
 			: (-this.args.blockSize + (this.args.y % this.args.blockSize)) % this.args.blockSize;
 
-		this.tags.background.style({transform: `translate( ${xMod}px, ${yMod}px )`});
-		this.tags.foreground.style({transform: `translate( ${xMod}px, ${yMod}px )`});
+		this.tags.background.style({transform: `translate( ${xMod.toFixed(2)}px, ${yMod.toFixed(2)}px )`});
+		this.tags.foreground.style({transform: `translate( ${xMod.toFixed(2)}px, ${yMod.toFixed(2)}px )`});
 
 		this.tags.frame.style({
 			'--width':    this.args.width
@@ -3028,6 +3052,11 @@ export class Viewport extends View
 
 	update()
 	{
+		if(this.zoneScript)
+		{
+			this.zoneScript.update(this.args.frameId - this.args.startFrameId, this);
+		}
+
 		if(this.socket && this.args.frameId % 120 === 0)
 		{
 			this.socket.publish('keepalive', '');
@@ -3113,7 +3142,10 @@ export class Viewport extends View
 				this.args.frameId++;
 			}
 
-			this.args.frame.args.value = this.args.frameId;
+			if(this.args.debugOsd)
+			{
+				this.args.frame.args.value = this.args.frameId;
+			}
 		}
 
 		if(!this.args.networked && this.args.started && (this.args.paused !== false && this.args.paused <= 0))
@@ -3147,7 +3179,7 @@ export class Viewport extends View
 			this.args.ringLabel.args.color = 'yellow';
 		}
 
-		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(0);
+		this.args.fpsSprite.args.value = Number(this.args.fps).toFixed(0).padStart(2,'0');
 
 		const time  = (this.args.frameId - this.args.startFrameId) / 60;
 		let minutes = String(Math.trunc(Math.abs(time) / 60)).padStart(2,'0')
@@ -3706,7 +3738,7 @@ export class Viewport extends View
 		{
 			this.settings.frameSkip = 3;
 		}
-		else if(this.args.fps < 45)
+		else if(this.args.fps < 20)
 		{
 			this.settings.frameSkip = 2;
 		}
@@ -3777,13 +3809,13 @@ export class Viewport extends View
 	{
 		x = Math.trunc(x);
 
-		const cacheKey = x+'::'+y+'::'+w+'::'+h;
-		const actorPointCache = this[ActorPointCache];
+		// const cacheKey = x+'::'+y+'::'+w+'::'+h;
+		// const actorPointCache = this[ActorPointCache];
 
-		if(actorPointCache.has(cacheKey))
-		{
-			return actorPointCache.get(cacheKey);
-		}
+		// if(actorPointCache.has(cacheKey))
+		// {
+		// 	return actorPointCache.get(cacheKey);
+		// }
 
 		const nearbyActors = this.nearbyActors(x, y);
 
@@ -3834,9 +3866,9 @@ export class Viewport extends View
 			actors.add( actor );
 		}
 
-		const list = [...actors];
+		const list = Array.from(actors.values());
 
-		actorPointCache.set(cacheKey, list);
+		// actorPointCache.set(cacheKey, list);
 
 		return list;
 	}
@@ -3850,10 +3882,10 @@ export class Viewport extends View
 		const cellX2 = Math.floor(x2 / this.colCellDiv);
 		const cellY2 = Math.floor(y2 / this.colCellDiv);
 
-		for(const x of Array(3 + Math.abs(cellX1 + -cellX2)).keys())
-		for(const y of Array(3 + Math.abs(cellY1 + -cellY2)).keys())
+		for(let x = 0; x < 3 + Math.abs(cellX1 + -cellX2); x++)
+		for(let y = 0; y < 3 + Math.abs(cellY1 + -cellY2); y++)
 		{
-			const name = `${x + Math.min(cellX1, cellX2) + -1}:${y + Math.min(cellY1, cellY2) + -1}`;
+			const name = (x + Math.min(cellX1, cellX2) + -1) + ':' +  (y + Math.min(cellY1, cellY2) + -1);
 
 			if(!this.colCells.has(name))
 			{
@@ -3877,12 +3909,12 @@ export class Viewport extends View
 				continue;
 			}
 
-			const distance = Math.sqrt((x1 - intersection[0]) **2 + (y1 - intersection[1]) **2);
+			const distance = Math.hypot(x1 - intersection[0], y1 - intersection[1]);
 
 			actors.set(actor, {intersection, distance});
 		}
 
-		return new Map([...actors.entries()].sort((a,b) => a[1].distance - b[1].distance));
+		return new Map(Array.from(actors.entries()).sort((a,b) => a[1].distance - b[1].distance));
 	}
 
 	lineIntersectsLine(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y)
@@ -3922,36 +3954,51 @@ export class Viewport extends View
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
 	{
-		const left   = actor.args.x - (actor.isRegion ? 0 : (actor.args.width * 0.5));
-		const right  = actor.args.x + (actor.isRegion ? actor.args.width : (actor.args.width * 0.5));
-		const top    = actor.args.y - actor.args.height;
+		const width  = actor.args.width;
+		const left   = actor.args.x - (actor.isRegion ? 0 : (width * 0.5));
+		const right  = left + actor.args.width;
 		const bottom = actor.args.y;
+		const top    = bottom - actor.args.height;
 
 		if(left < b1x && b1x < right && top < b1y && b1y < bottom)
 		{
 			return [b1x, b1y];
 		}
 
-		const points    = actor.getBoundingLines()
-		.map(line => this.lineIntersectsLine(...line, b1x, b1y, b2x, b2y))
-		.filter(x => x);
+		const points  = [];
+		const bounds  = actor.getBoundingLines();
 
-		if(!points.length)
+		let min = Infinity, closest;
+
+		for(const line of bounds)
 		{
-			if(left < b2x && b2x < right && top < b2y && b2y < bottom)
-			{
-				return [b2x, b2y];
-			}
+			const point = this.lineIntersectsLine(line[0], line[1], line[2], line[3], b1x, b1y, b2x, b2y);
+			const dist  = Math.hypot(b1x - point[0], b1y - point[1]);
 
-			return false;
+			if(dist < min)
+			{
+				min = dist;
+				closest = point;
+			}
 		}
 
-		const distances = points
-		.map(point => Math.sqrt((b1x - point[0]) ** 2 + (b1y - point[1]) ** 2));
-
-		const closest = points[ distances.indexOf(Math.min(...distances)) ];
-
 		return closest;
+
+		// if(!points.length)
+		// {
+		// 	if(left < b2x && b2x < right && top < b2y && b2y < bottom)
+		// 	{
+		// 		return [b2x, b2y];
+		// 	}
+
+		// 	return false;
+		// }
+
+		// const distances = points.map(point => Math.hypot(b1x - point[0], b1y - point[1]));
+
+		// const closest = points[ distances.indexOf(Math.min(...distances)) ];
+
+		// return closest;
 	}
 
 	padConnected(event)
@@ -4196,7 +4243,7 @@ export class Viewport extends View
 		this.updateEnded.clear();
 		this.updated.clear();
 
-		this.objectDb.clear()
+		this.objectDb = new Classifier(Object.values(ObjectPalette));
 
 		this.args.actClear = false;
 		this.args.cutScene = false;
@@ -4855,6 +4902,8 @@ export class Viewport extends View
 	{
 		this.focus();
 
+		this.args.mouse = 'moved';
+
 		this.args.paused = -1;
 
 		this.args.pauseMenu.focusFirst();
@@ -4871,6 +4920,7 @@ export class Viewport extends View
 		this.args.pauseMenu.reset();
 		Bgm.unpause();
 
+		this.args.mouse = 'hide';
 
 		this.onTimeout(15, ()=>{
 			this.controller && this.controller.zero();
@@ -4899,7 +4949,7 @@ export class Viewport extends View
 		this.args.xMouseOffset = xMouse;
 		this.args.yMouseOffset = yMouse;
 
-		this.onTimeout(2000, () => {
+		this.onTimeout(800, () => {
 			this.args.mouse = 'hide';
 		});
 	}

@@ -38,6 +38,8 @@ const JUMP_FORCE     = 15;
 
 const DEFAULT_GRAVITY = MODE_FLOOR;
 
+const BOUNDS = Symbol('BOUNDS');
+
 export class PointActor extends View
 {
 	static lastClick = 0;
@@ -387,7 +389,15 @@ export class PointActor extends View
 
 		this.standingUnder = new Set;
 
+		this[BOUNDS] = false;
+
+		this.args.bindTo(['mode', 'falling'], () => {
+			this.args.modeTime = 0;
+			this[BOUNDS] = false;
+		});
+
 		this.args.bindTo(['x','y'], (v, k, t) => {
+			this[BOUNDS] = false;
 			isNaN(v) && console.trace(k, v)
 			this.stepCache = {};
 			this.idleTime = 0;
@@ -449,10 +459,6 @@ export class PointActor extends View
 		this.debindGroundY = new Set;
 		this.debindGroundA = new Set;
 		this.debindGroundL = new Set;
-
-		this.args.bindTo(['mode', 'falling'], () => {
-			this.args.modeTime = 0;
-		});
 
 		this.args.bindTo('standingOn', (groundObject,key,target,previous) => {
 
@@ -658,6 +664,8 @@ export class PointActor extends View
 					this.debindGroundX.add(debindGroundX);
 					this.debindGroundY.add(debindGroundY);
 					this.debindGroundL.add(debindGroundL);
+
+					this.args.gSpeed -= groundObject.args.gSpeed;
 				}
 			}
 
@@ -1031,6 +1039,9 @@ export class PointActor extends View
 			}
 			else if(!this.args.falling || this.getMapSolidAt(this.args.x, this.args.y + 24))
 			{
+				const dSolid     = this.getMapSolidAt(this.args.x + 0 * this.args.direction, this.args.y + 2);
+				const upSolidB   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
+				const upSolidF   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 2);
 				const nearSolid1 = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 6);
 				const nearSolid2 = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 6);
 				const backSolid1 = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 6);
@@ -1043,17 +1054,20 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
-						if(!this.args.falling && !backSolid1)
+						if(dSolid && !upSolidF && !upSolidB)
 						{
-							this.args.teeter = -1;
-						}
-						else if(!this.args.falling && !nearSolid1)
-						{
-							this.args.teeter = 1;
-
-							if(!nearSolid2)
+							if(!this.args.falling && !backSolid1)
 							{
-								this.args.teeter = 2;
+								this.args.teeter = -1;
+							}
+							else if(!this.args.falling && !nearSolid1)
+							{
+								this.args.teeter = 1;
+
+								if(!nearSolid2)
+								{
+									this.args.teeter = 2;
+								}
 							}
 						}
 						else
@@ -1498,7 +1512,7 @@ export class PointActor extends View
 		return false;
 	}
 
-	castRayQuick(length, angle, offset = [0,0])
+	castRayQuick(length, angle, offset = [0,0], collides = true)
 	{
 		if(!this.viewport || !this.viewport.tileMap)
 		{
@@ -1508,7 +1522,8 @@ export class PointActor extends View
 		const thisPoint = [this.args.x + offset[0], this.args.y + offset[1]];
 
 		const solidPoint = this.viewport.tileMap.castRay(
-			...thisPoint
+			thisPoint[0]
+			, thisPoint[1]
 			, angle
 			, length
 			, this.args.layer
@@ -1518,9 +1533,9 @@ export class PointActor extends View
 
 		if(solidPoint)
 		{
-			magnitude = Math.sqrt(
-				(thisPoint[0] - solidPoint[0]) ** 2
-				 + (thisPoint[1] - solidPoint[1]) ** 2
+			magnitude = Math.hypot(
+				(thisPoint[0] - solidPoint[0])
+				, (thisPoint[1] - solidPoint[1])
 			);
 		}
 
@@ -1540,11 +1555,14 @@ export class PointActor extends View
 
 		const collisions = new Map;
 
-		for(const [actor, collision] of actorsAtLine)
+		if(collides)
 		{
-			if(actor.callCollideHandler(this) !== false)
+			for(const [actor, collision] of actorsAtLine)
 			{
-				collisions.set(actor, collision);
+				if(actor.callCollideHandler(this) !== false)
+				{
+					collisions.set(actor, collision);
+				}
 			}
 		}
 
@@ -2504,16 +2522,7 @@ export class PointActor extends View
 
 	distanceFrom({x,y})
 	{
-		const aSquared = (this.x - x)**2;
-		const bSquared = (this.y - y)**2;
-		const cSquared = aSquared + bSquared;
-
-		if(cSquared)
-		{
-			return Math.sqrt(cSquared);
-		}
-
-		return 0;
+		return Math.hypot(this.x - x, this.y - y);
 	}
 
 	twist(warp)
@@ -2876,7 +2885,23 @@ export class PointActor extends View
 
 	distanceTo(actor)
 	{
-		return Math.sqrt((this.y - actor.y)**2 + (this.x - actor.x)**2);
+		return Math.hypot(this.y - actor.y, this.x - actor.x);
+		// return Math.sqrt((this.y - actor.y)**2 + (this.x - actor.x)**2);
+	}
+
+	canSee(actor)
+	{
+		const cast = this.castRayQuick(
+			this.distanceTo(actor)
+			, actor.angleTo({x: this.args.x, y: this.args.y - this.args.height})
+			, [0,-this.args.height]
+			, false
+		);
+
+		if(cast === false)
+		{
+			return true;
+		}
 	}
 
 	setTile()
@@ -2950,7 +2975,12 @@ export class PointActor extends View
 
 	getBoundingLines()
 	{
-		let left, right, top, bottom;
+		if(this[BOUNDS])
+		{
+			return this[BOUNDS];
+		}
+
+		let bounds, left, right, top, bottom;
 
 		switch(this.args.mode)
 		{
@@ -2960,12 +2990,13 @@ export class PointActor extends View
 				top    = this.args.y - this.args.height;
 				bottom = this.args.y;
 
-				return [
+				bounds = [
 					[right, top, right, bottom]
 					, [left, top, left, bottom]
 					, [right, top, left, top]
 					, [right, bottom, left, bottom]
 				]
+				break;
 
 			case MODE_CEILING:
 				left   = this.args.x - this.args.width / 2;
@@ -2973,12 +3004,13 @@ export class PointActor extends View
 				top    = this.args.y;
 				bottom = this.args.y + this.args.height;
 
-				return [
+				bounds = [
 					[right, top, right, bottom]
 					, [left, top, left, bottom]
 					, [right, top, left, top]
 					, [right, bottom, left, bottom]
 				]
+				break;
 
 			case MODE_LEFT:
 				left   = this.args.x;
@@ -2986,12 +3018,13 @@ export class PointActor extends View
 				top    = this.args.y - this.args.width / 2;
 				bottom = this.args.y + this.args.width / 2;
 
-				return [
+				bounds = [
 					[right, top, right, bottom]
 					, [left, top, left, bottom]
 					, [right, top, left, top]
 					, [right, bottom, left, bottom]
 				]
+				break;
 
 			case MODE_RIGHT:
 				left   = this.args.x - this.args.height;
@@ -2999,13 +3032,17 @@ export class PointActor extends View
 				top    = this.args.y - this.args.width / 2;
 				bottom = this.args.y + this.args.width / 2;
 
-				return [
+				bounds = [
 					[right, top, right, bottom]
 					, [left, top, left, bottom]
 					, [right, top, left, top]
 					, [right, bottom, left, bottom]
 				]
+				break;
 		}
 
+		Object.freeze(bounds);
+
+		return this[BOUNDS] = bounds;
 	}
 }

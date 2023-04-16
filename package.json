@@ -22,7 +22,7 @@
     "babel-brunch": "^7.0.1",
     "babel-minify": "^0.5.2",
     "brunch": "^4.0.0",
-    "brunch-chilidogsparser": "^0.0.1",
+    "brunch-chilidogsparser": "^0.0.2",
     "brunch-preval": "^0.0.4-a",
     "clean-css-brunch": "^3",
     "raw-brunch": "^1.0.2",

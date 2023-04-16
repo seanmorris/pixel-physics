@@ -86,9 +86,9 @@
 	max-height: calc(var(--viewportHeight) + 80px);
 }
 
-.region.region-lava .region-filter-wrapper {
+/* .region.region-lava .region-filter-wrapper {
 
-}
+} */
 
 .region.region-shade .region-filter-wrapper,
 .region.region-water .region-filter-wrapper {

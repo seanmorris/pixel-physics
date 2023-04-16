@@ -78,7 +78,11 @@ export class ForceRegion extends Region
 
 			if(Math.abs(yProjected) > Math.abs(this.args.yForceMax) && Math.sign(this.args.yForceMax) === Math.sign(yProjected))
 			{
-				other.args.ySpeed = this.args.yForceMax;
+
+				if(Math.abs(yProjected) >= other.args.gravity || other.args.falling)
+				{
+					other.args.ySpeed = this.args.yForceMax;
+				}
 			}
 			else
 			{

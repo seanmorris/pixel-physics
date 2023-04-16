@@ -93,7 +93,9 @@ else
 	Sfx.register('EMERALD_COLLECTED', '/Sonic/S3K_9C.wav');
 
 	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 8, volume: 0.75, fudgeFactor: 0.3});
+	Sfx.register('BOX_DESTROYED',  '/Sonic/S3K_B4.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.0});
 	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.4});
+	Sfx.register('WORM_BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 0.8, fudgeFactor: 0.2, startTime: 0.2});
 
 	Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 
@@ -128,6 +130,9 @@ else
 	Sfx.register('BOSS_DUDHIT',  '/Sonic/S2_59.wav');
 
 	Sfx.register('FAIL', '/Sonic/S2_6D.wav');
+
+	Sfx.register('HEAVY_THUD', '/Sonic/S3K_96.wav', {maxConcurrent: 3, volume: 1, fudgeFactor: 0.2, startTime: 0.00});
+	Sfx.register('WOOD_THUD', '/Sonic/S3K_5F.wav', {maxConcurrent: 3, volume: 1, fudgeFactor: 0.2, startTime: 0.04});
 
 	Sfx.register('WATER_ACQUIRE', '/Sonic/S3K_3F.wav', {volume: 0.75, fudgeFactor: 0.1});
 	Sfx.register('WATER_BOUNCE', '/Sonic/S3K_44.wav', {volume: 0.5, fudgeFactor: 0.1});

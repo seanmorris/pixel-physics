@@ -35,7 +35,7 @@ export class Bumper extends PointActor
 			const xDiff = this.x - other.x;
 			const yDiff = this.y - other.y;
 
-			const speed = Math.max(12, Math.sqrt(other.args.xSpeed ** 2, other.args.ySpeed ** 2));
+			const speed = Math.max(12, Math.hypot(other.args.xSpeed, other.args.ySpeed));
 
 			const angle = Math.atan2(yDiff, xDiff);
 

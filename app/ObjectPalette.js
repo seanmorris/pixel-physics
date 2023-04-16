@@ -208,6 +208,7 @@ import { Pulley } from './actor/Pulley';
 import { PulleySmall } from './actor/PulleySmall';
 
 import { Orb } from './actor/Orb';
+import { OrbSmall } from './actor/OrbSmall';
 
 import { Egg } from './actor/Egg';
 import { Chao } from './actor/Chao';
@@ -412,6 +413,7 @@ export const ObjectPalette = {
 	, 'torch': Torch
 	, 'light-source': LightSource
 	, 'orb': Orb
+	, 'orb-small': OrbSmall
 	, 'chao': Chao
 	, 'egg': Egg
 	, 'egg-shell-top': EggShellTop

@@ -1,9 +1,12 @@
+.actor-item.actor-chao {
+	z-index: var(--z);
+}
+
 .actor-item.actor-chao .sprite {
 	width:  24px;
 	height: 24px;
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
-	z-index: 1;
 	top: 1px;
 }
 
@@ -73,6 +76,12 @@
 .actor-item.actor-chao[data-animation=walking] .sprite:after {
 	animation: chao-animate steps(8) infinite 700ms;
 	--animation-steps: -8;
+	--sprite-offset-y: -0px;
+}
+
+.actor-item.actor-chao[data-animation=shaking] .sprite:after {
+	animation: chao-animate steps(4) infinite 400ms;
+	--animation-steps: -4;
 	--sprite-offset-y: -0px;
 }
 

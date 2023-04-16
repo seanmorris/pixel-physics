@@ -78,7 +78,7 @@ export const Constrainable = {
 		const yDist = yTarget - this.args.y;
 
 		const angle = Math.atan2(yDist, xDist);
-		const dist  = Math.sqrt(yDist**2 + xDist**2);
+		const dist  = Math.hypot(yDist, xDist);
 
 		const maxDist = this.args.ropeLength || 64;
 

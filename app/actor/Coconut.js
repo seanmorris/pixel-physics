@@ -13,6 +13,8 @@ export class Coconut extends PointActor
 
 		this.args.size   = 4;
 
+		this.args.nourishment = 0.025;
+
 		this.bindTo('carriedBy', carrier => {
 			if(this.cX) { this.cX(); this.cX = null; }
 			if(this.cY) { this.cY(); this.cY = null; }
@@ -74,6 +76,11 @@ export class Coconut extends PointActor
 
 	sleep()
 	{
+		if(this.carriedBy)
+		{
+			return;
+		}
+
 		if(!this.viewport)
 		{
 			return;

@@ -233,9 +233,9 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 				this.args.x, this.args.y, Math.PI / 2, 2048
 			);
 
-		return Math.sqrt(
-			(this.args.x - endPoint[0]) ** 2
-			+ (this.args.y - endPoint[1]) ** 2
+		return Math.hypot(
+			this.args.x - endPoint[0],
+			this.args.y - endPoint[1],
 		) || 128;
 	}
 

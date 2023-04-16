@@ -26,11 +26,11 @@ export class ChaoCrate extends BreakableBlock
 			// return super.collideA(other, type);
 		}
 
-		if(other.spindashCharge)
-		{
-			this.break();
-			return true;
-		}
+		// if(other.spindashCharge)
+		// {
+		// 	this.break();
+		// 	return true;
+		// }
 
 		if(type === -1 && !other.args.gSpeed && !other.args.falling && other.controllable)
 		{

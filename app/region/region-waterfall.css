@@ -8,7 +8,7 @@
 	content:  ' ';
 	position: absolute;
 	width: 100%;
-	height: calc(100% - 80px);
+	height: calc(100% - 64px);
 	background: url(/Sonic/waterfall.png);
 	background-position: 0 0;
 	background-repeat: repeat;

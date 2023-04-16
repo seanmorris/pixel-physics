@@ -6,7 +6,7 @@
             "target": "infinite-rail.json"
         }
     },
-    "height": 32,
+    "height": 48,
     "infinite": false,
     "nextlayerid": 7,
     "nextobjectid": 369,
@@ -26,10 +26,15 @@
             "name": "wrapX",
             "type": "int",
             "value": 1
+        },
+        {
+            "name": "zoneScript",
+            "type": "string",
+            "value": "infinite-ruin"
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -61,8 +66,8 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
-    "width": 128,
+    "version": "1.6",
+    "width": 64,
     "types": [
         "breakable-block"
     ],

@@ -61,8 +61,5 @@ export class EggShellTop extends PointActor
 	sleep()
 	{
 		this.viewport.actors.remove(this);
-
-		console.log(this);
-
 	}
 }

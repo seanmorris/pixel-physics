@@ -700,7 +700,14 @@ export class Sonic extends PointActor
 
 		if(this.args.animation === 'skidding' && this.fallTime > 16)
 		{
-			this.args.animation = 'skidding-falling';
+			if(Math.abs(this.args.groundAngle) > Math.PI/2)
+			{
+				this.args.animation = 'walking';
+			}
+			else
+			{
+				this.args.animation = 'skidding-falling';
+			}
 		}
 
 		if(this.args.hangingFrom)
@@ -1304,6 +1311,12 @@ export class Sonic extends PointActor
 
 		const dashBoost = dashPower * 32;
 
+		this.castRayQuick(
+			dashBoost * Math.sign(direction)
+			, [Math.PI,0,0][1 + Math.sign(direction)]
+			, [0, this.args.height/2]
+		);
+
 		if(Math.sign(direction) !== Math.sign(this.args.gSpeed))
 		{
 			this.args.gSpeed = dashBoost * Math.sign(direction);
@@ -1835,6 +1848,10 @@ export class Sonic extends PointActor
 		super.die();
 
 		this.onNextFrame(() => this.args.animation = 'dead');
+
+		this.pinch(0,0);
+
+		Sfx.play('PLAYER_DAMAGED');
 	}
 
 	loseRings(count, age)

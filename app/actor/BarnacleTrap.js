@@ -41,6 +41,11 @@ export class BarnacleTrap extends Mixin.from(PointActor, Constrainable)
 	{
 		super.update();
 
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		for(const [other, entry] of this.stuck)
 		{
 			if(this.viewport.args.frameId % 25 === 0)

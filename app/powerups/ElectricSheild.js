@@ -238,7 +238,7 @@ export class ElectricSheild extends Sheild
 			const yDiff = (host.y - host.args.height/2) - ring.y;
 
 			const angle = Math.atan2(yDiff, xDiff);
-			const distance = Math.sqrt(yDiff ** 2 + xDiff **2);
+			const distance = Math.hypot(yDiff, xDiff);
 
 			const maxDistance = 512;
 

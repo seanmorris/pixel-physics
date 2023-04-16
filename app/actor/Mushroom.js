@@ -14,6 +14,8 @@ export class Mushroom extends PointActor
 
 		this.args.size   = 4;
 
+		this.args.nourishment = 0.1;
+
 		this.behaviors.add(new Liftable);
 	}
 

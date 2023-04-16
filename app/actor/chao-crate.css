@@ -13,3 +13,13 @@
 	--centerX: calc(var(--sprite-x) * calc(var(--width, 32) * -1px));
 	--centerY: calc(var(--sprite-y) * calc(var(--height, 32) * -1px));
 }
+
+.actor-item.actor-breakable-block.actor-chao-crate .fragment-top-right {
+	background-position: top right;
+}
+.actor-item.actor-breakable-block.actor-chao-crate .fragment-bottom-left {
+	background-position: bottom left;
+}
+.actor-item.actor-breakable-block.actor-chao-crate .fragment-bottom-right {
+	background-position: bottom right;
+}

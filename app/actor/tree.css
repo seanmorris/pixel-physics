@@ -1,3 +1,12 @@
+.actor-tree {
+	--lean: 0;
+	--sway: -2deg;
+	--time: 0.25s;
+	transform: skew(calc( var(--sway) * var(--lean) ));
+	transition: transform calc(var(--time) * 0.8) ease-in-out;
+	z-index: var(--z);
+}
+
 .actor-tree .sprite {
 	width: 10px;
 	height: calc(-64px + calc(1px * var(--height)));
@@ -6,6 +15,9 @@
 }
 
 .actor-tree .tree-top {
+	transform: skew(calc(-4deg * var(--lean))) rotate(calc(-7deg * var(--lean)));
+	transition: transform calc(var(--time) * 0.5) calc(var(--time) * 0.25) ease-out;
+	transform-origin: bottom;
 	position: absolute;
 	top: calc(-1px * var(--height));
 	left:  -40px;

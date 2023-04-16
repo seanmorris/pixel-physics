@@ -10,9 +10,9 @@ export class CharacterPreview extends View
 	<div class = "score"></div>
 </div>`;
 
-	constructor(args, parent)
+	onAttached(args, parent)
 	{
-		super(args, parent);
+		// super(args, parent);
 
 		const emeralds = this.args.emeralds = [
 			  View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-red-alt-mini.png" />')

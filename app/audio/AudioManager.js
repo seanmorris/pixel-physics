@@ -1,3 +1,4 @@
+import { Pool } from 'curvature/base/Pool';
 import { Elicit } from 'curvature/net/Elicit';
 import { Mixin } from 'curvature/base/Mixin';
 import { EventTargetMixin } from 'curvature/mixin/EventTargetMixin';
@@ -15,6 +16,7 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 	playing = null;
 	id3     = new Map;
 	request = [];
+	pool    = new Pool({max: 2, init: item => { item.open(); return item }})
 
 	setVolume(volume = 1)
 	{
@@ -28,20 +30,24 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 	register(tag, url, {maxConcurrent = 1, volume = 1, fudgeFactor = 0, startTime = 0} = {})
 	{
-		const list = Array(maxConcurrent).fill().map(x => new Audio(url));
+		const getTags = new Elicit(url, {defer:true});
 
-		this.tracks.set(tag, list);
+		getTags.addEventListener('error', event => event.preventDefault());
 
-		for(const track of list)
-		{
-			this.factors.set(track, {volume, fudgeFactor, startTime});
-		}
-
-		const getTags = new Elicit(url);
+		this.pool.add(getTags);
 
 		if(url.substr(-3) === 'mp3')
 		{
 			this.request.push(getTags.buffer().then(buffer => {
+
+				const list = Array(maxConcurrent).fill().map(x => new Audio(url));
+
+				this.tracks.set(tag, list);
+
+				for(const track of list)
+				{
+					this.factors.set(track, {volume, fudgeFactor, startTime});
+				}
 
 				const bytes = new Uint8Array(buffer);
 				const prefix = String.fromCharCode(...bytes.slice(0, 3));
@@ -98,10 +104,31 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 				}
 			}));
 		}
+		else
+		{
+			getTags.objectUrl().then(objectUrl => {
+				const list = Array(maxConcurrent).fill().map(x => new Audio(objectUrl));
+
+				this.tracks.set(tag, list);
+
+				for(const track of list)
+				{
+					this.factors.set(track, {volume, fudgeFactor, startTime});
+				}
+			});
+		}
 	}
 
 	play(tag, loop = false)
 	{
+		let options = {loop};
+
+		if(typeof loop === 'object')
+		{
+			options = loop;
+			loop = loop.loop;
+		}
+
 		if(!this.playing)
 		{
 			this.playing = this.stack[this.stack.length-1];
@@ -159,11 +186,18 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 		if(selected)
 		{
-			const {volume, fudgeFactor, startTime} = this.factors.get(selected);
+			let {volume, fudgeFactor, startTime} = this.factors.get(selected);
+
+			if('volume' in options)
+			{
+				volume = options.volume;
+			}
+
+			const vol = this.volume * (volume + (fudgeFactor * (Math.random() + -0.5)));
 
 			selected.playbackRate = 1.0;
 			selected.currentTime  = startTime;
-			selected.volume       = Math.max(0, Math.min(1, this.volume * (volume + (fudgeFactor * (Math.random() + -0.5)))));
+			selected.volume       = Math.max(0, Math.min(1, vol));
 			selected.loop         = loop;
 
 			this.plays.set(selected, Date.now());
