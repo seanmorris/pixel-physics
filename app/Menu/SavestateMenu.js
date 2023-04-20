@@ -1,13 +1,13 @@
 import { SaveDatabase } from '../save/SaveDatabase';
 
-export const SaveMenu = (parent) => {
+export const SavestateMenu = (parent) => {
 
 	const children = {};
 
 	SaveDatabase.open('saves', 1).then(database => {
 
-		const store = 'savestates';
-		const index = 'id';
+		const store = 'saves';
+		const index = 'created';
 
 		const query = {store, index};
 

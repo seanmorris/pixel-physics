@@ -90,6 +90,9 @@ import { Chalmers } from '../actor/Chalmers';
 import { SaveDatabase } from '../save/SaveDatabase';
 import { Save } from '../save/Save';
 
+import { TraceDatabase } from '../trace/TraceDatabase';
+import { Trace } from '../trace/Trace';
+
 import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
 
@@ -108,6 +111,8 @@ export class Viewport extends View
 		args[ Bindable.NoGetters ] = true;
 
 		super(args,parent);
+
+		this.listen(window, 'error', event => this.handleUncaughtException(event));
 
 		window.viewport = this;
 
@@ -526,6 +531,8 @@ export class Viewport extends View
 				return;
 			}
 
+			console.log(event.detail);
+
 			if(!event.detail)
 			{
 				this.args.trackName.args.value = '';
@@ -535,6 +542,7 @@ export class Viewport extends View
 			else
 			{
 				this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
+				this.args.audioComment = event.detail.COMM;
 			}
 
 			if(this.args.trackName.args.value)
@@ -734,6 +742,8 @@ export class Viewport extends View
 
 		this.actorsByName = {};
 		this.actorsById   = {};
+
+		window.actors = this.actorsById;
 
 		this.playable = new Set;
 
@@ -3578,6 +3588,13 @@ export class Viewport extends View
 
 			for(const actor of new Set([...this.recent, ...this.visible]))
 			{
+				if(actor.removed)
+				{
+					this.visible.delete(actor);
+					this.recent.delete(actor);
+					continue;
+				}
+
 				if(actor[Run] !== this[Run])
 				{
 					this.recent.delete(actor);
@@ -5385,6 +5402,18 @@ export class Viewport extends View
 		this.socket.subscribe('close', () => {
 			console.log('socket closed!');
 			this.quit(2);
+		});
+	}
+
+	handleUncaughtException(event)
+	{
+		console.error(event.error);
+
+		TraceDatabase.open('traces', 1).then(database => {
+			const trace = Trace.from(event.error);
+			delete trace.id;
+			trace.consume(event);
+			database.insert('traces', trace);
 		});
 	}
 

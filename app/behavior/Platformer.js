@@ -14,6 +14,18 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		if(!host.args.falling)
+		{
+			if(host.args.grinding)
+			{
+				host.args.wasGrinding = true;
+			}
+			else
+			{
+				host.args.wasGrinding = false;
+			}
+		}
+
 		host.args.sliding = false;
 		host.lastLayer = null;
 
@@ -129,7 +141,7 @@ export class Platformer
 			}
 		}
 
-		if(!host.args.falling && !host.args.rolling && (!host.args.grinding  && host.groundTime > 1))
+		if(!host.args.falling && !host.args.rolling && !host.args.hangingFrom && (!host.args.grinding  && host.groundTime > 1))
 		{
 			if(host.args.popChain.length)
 			{
@@ -1409,7 +1421,7 @@ export class Platformer
 			}
 		}
 
-		if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
+		if(!host.isRegion && !host.noClip && !host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
 		{
 			host.args.falling = false;
 		}

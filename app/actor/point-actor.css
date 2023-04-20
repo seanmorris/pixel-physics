@@ -17,7 +17,7 @@
 }
 
 .point-actor {
-	contain: style layout size;
+	contain: style;
 }
 
 .point-actor.controllable:not([data-driving=true]) {
@@ -36,6 +36,7 @@
 .point-actor .sprite:after,
 .point-actor .sprite:before {
 	pointer-events: none;
+	contain: style layout size;
 }
 
 [data-paused="0"] .point-actor .sprite:after,

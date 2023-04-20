@@ -1,3 +1,4 @@
+import { TraceMenu } from './TraceMenu';
 import { GamepadConfig } from '../controller/GamepadConfig';
 import { Series } from '../intro/Series';
 
@@ -241,5 +242,7 @@ export const SettingsMenu = (parent) => { return {
 
 			}
 		}
+
+		, Traces: TraceMenu
 	}
 }}

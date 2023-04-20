@@ -1045,7 +1045,7 @@ export class PointActor extends View
 			{
 				const dSolid     = this.getMapSolidAt(this.args.x + 0 * this.args.direction, this.args.y + 2);
 				const upSolidB   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
-				const upSolidF   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 2);
+				const upSolidF   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
 				const nearSolid1 = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 6);
 				const nearSolid2 = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 6);
 				const backSolid1 = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 6);

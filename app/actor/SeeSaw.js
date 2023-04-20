@@ -139,6 +139,12 @@ export class SeeSaw extends PointActor
 				continue;
 			}
 
+			if(hang < 0.75)
+			{
+				other.args.x += armDist / 2;
+				other.args.y -= 8;
+			}
+
 			const power  = Math.abs(this.reflectForce / other.args.weight);
 
 			const torque = Math.min(1, Math.ceil(hang * 3) / 3);
@@ -146,7 +152,7 @@ export class SeeSaw extends PointActor
 			other.args.gSpeed = 0;
 
 			other.args.xSpeed = 0;
-			other.args.ySpeed = Math.min(-5, -power * torque * 1.2);
+			other.args.ySpeed = Math.min(-6.5, -power * torque * 1.2);
 			other.args.y -= 16;
 
 			other.args.falling = true;

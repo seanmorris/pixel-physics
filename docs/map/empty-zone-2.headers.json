@@ -1,14 +1,9 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 360,
     "infinite": false,
     "nextlayerid": 16,
-    "nextobjectid": 2166,
+    "nextobjectid": 2187,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -53,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -253,7 +248,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.6",
     "width": 2800,
     "types": [
         "arrow-sign",

@@ -237,18 +237,18 @@
             "columns": 16,
             "firstgid": 4812,
             "image": "../Sonic/tiles/techno-tower/ground.png",
-            "imageheight": 704,
+            "imageheight": 1024,
             "imagewidth": 512,
             "margin": 0,
             "name": "ground",
             "spacing": 0,
-            "tilecount": 352,
+            "tilecount": 512,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 8,
-            "firstgid": 5164,
+            "firstgid": 5324,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -261,7 +261,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 5228,
+            "firstgid": 5388,
             "image": "../Sonic/wooden-crate.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -274,7 +274,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 5232,
+            "firstgid": 5392,
             "image": "chemical-plant-tiles.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -287,7 +287,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 5488,
+            "firstgid": 5648,
             "image": "../Sonic/tiles/lava-reef/rocks-small.png",
             "imageheight": 128,
             "imagewidth": 256,

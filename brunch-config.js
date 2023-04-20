@@ -7,7 +7,12 @@ module.exports = {
 	}
 	, plugins: {
 		babel: {
-			presets:   [['@babel/preset-env', {exclude: ['transform-for-of', 'transform-spread']}]]
+			presets:   [
+				['@babel/preset-env', {
+					targets: {browsers: ['>0.25%',  'not ie 11', 'not op_mini all', 'not dead']},
+					exclude: ['transform-for-of', 'transform-spread']
+				}]
+			]
 			, plugins: ["@babel/plugin-proposal-class-properties"]
 		}
 		, raw: {

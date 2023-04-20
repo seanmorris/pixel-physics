@@ -391,7 +391,22 @@ export class Menu extends Card
 				}
 			};
 
-			this.args.items = item.children;
+			const children = {};
+
+			for(const i in item.children)
+			{
+				if(typeof item.children[i] === 'function')
+				{
+					console.log(i);
+
+					children[i] = item.children[i](this.parent);
+					continue;
+				}
+
+				children[i] = item.children[i];
+			}
+
+			this.args.items = children;
 
 			this.args.currentKey = item._title.args.value;
 

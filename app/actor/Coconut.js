@@ -13,7 +13,7 @@ export class Coconut extends PointActor
 
 		this.args.size   = 4;
 
-		this.args.nourishment = 0.025;
+		this.args.nourishment = 0.05;
 
 		this.bindTo('carriedBy', carrier => {
 			if(this.cX) { this.cX(); this.cX = null; }

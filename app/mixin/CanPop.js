@@ -62,7 +62,7 @@ export class CanPop
 
 		if(!this.knocked && other && other.controllable && !other.punching)
 		{
-			if(typeof ga === 'function')
+			if(viewport && typeof ga === 'function')
   			{
 				ga('send', 'event', {
 					eventCategory: 'badnik',

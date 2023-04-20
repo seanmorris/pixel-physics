@@ -69,8 +69,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					}
 				}
 
-				console.log(tilemapData);
-
 				this.desparseLayers(tilemapData)
 
 				this.loadLayers(tilemapData);

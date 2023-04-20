@@ -11,50 +11,62 @@ export class EggShellTop extends PointActor
 		this.args.width  = 15;
 		this.args.height = 20;
 
-		this.bindTo('carriedBy', carrier => {
-			if(this.cX) { this.cX(); this.cX = null; }
-			if(this.cY) { this.cY(); this.cY = null; }
-			if(carrier)
-			{
-				this.cX = carrier.args.bindTo('x', v => this.args.x = v + carrier.args.direction * 12);
-				this.cY = carrier.args.bindTo('y', v => this.args.y = v + -12);
+		// this.bindTo('carriedBy', carrier => {
+		// 	if(this.cX) { this.cX(); this.cX = null; }
+		// 	if(this.cY) { this.cY(); this.cY = null; }
+		// 	if(carrier)
+		// 	{
+		// 		this.cX = carrier.args.bindTo('x', v => this.args.x = v + carrier.args.direction * 12);
+		// 		this.cY = carrier.args.bindTo('y', v => this.args.y = v + -12);
 
-				carrier.carrying.add(this);
+		// 		carrier.carrying.add(this);
 
-				this.args.float = -1;
-			}
-			else if(this.carriedBy)
-			{
-				const carrier = this.carriedBy;
+		// 		this.args.float = -1;
+		// 	}
+		// 	else if(this.carriedBy)
+		// 	{
+		// 		const carrier = this.carriedBy;
 
-				this.carriedBy = null;
+		// 		this.carriedBy = null;
 
-				this.args.xSpeed = carrier.args.xSpeed;
-				this.args.ySpeed = carrier.args.ySpeed;
+		// 		this.args.xSpeed = carrier.args.xSpeed;
+		// 		this.args.ySpeed = carrier.args.ySpeed;
 
-				this.args.xSpeed += Math.sign(carrier.args.gSpeed || carrier.args.xSpeed) * 4;
-				this.args.ySpeed -= 4;
+		// 		this.args.xSpeed += Math.sign(carrier.args.gSpeed || carrier.args.xSpeed) * 4;
+		// 		this.args.ySpeed -= 4;
 
-				carrier.carrying.delete(this);
+		// 		carrier.carrying.delete(this);
 
-				this.args.falling = true;
-				this.args.float = 0;
-			}
-		});
-
+		// 		this.args.falling = true;
+		// 		this.args.float = 0;
+		// 	}
+		// });
 	}
 
-	lift(actor)
+	update()
 	{
-		if(this.carriedBy === actor)
-		{
-			this.carriedBy = null;
+		this.args.startFrame = this.args.startFrame || this.viewport.args.frameId;
 
+		if(this.viewport.args.frameId - this.args.startFrame > 90)
+		{
+			this.viewport.actors.remove(this);
 			return;
 		}
 
-		this.carriedBy = actor;
+		super.update();
 	}
+
+	// lift(actor)
+	// {
+	// 	if(this.carriedBy === actor)
+	// 	{
+	// 		this.carriedBy = null;
+
+	// 		return;
+	// 	}
+
+	// 	this.carriedBy = actor;
+	// }
 
 	get solid() { return false; }
 

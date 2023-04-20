@@ -1,13 +1,8 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 192,
     "infinite": false,
-    "nextlayerid": 20,
+    "nextlayerid": 21,
     "nextobjectid": 981,
     "orientation": "orthogonal",
     "properties": [
@@ -53,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -228,7 +223,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.6",
     "width": 1920,
     "types": [
         "backdrop",

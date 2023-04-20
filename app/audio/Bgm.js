@@ -86,11 +86,23 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 				}
 
 				tags[framePrefix] = frameValue;
+			}
 
+			const commentPrefixU = 'XXXComment\u0000';
+			const commentPrefixL = 'xxxComment\u0000';
+
+			if(tags['COMM'] && tags['COMM'].substr(0, commentPrefixU.length) === commentPrefixU)
+			{
+				tags['COMM'] = tags['COMM'].slice( commentPrefixU.length );
+			}
+			else if(tags['COMM'] && tags['COMM'].substr(0, commentPrefixL.length) === commentPrefixL)
+			{
+				tags['COMM'] = tags['COMM'].slice( commentPrefixL.length );
 			}
 
 			for(const track of list)
 			{
+				console.log(tags);
 				this.id3.set(track, tags);
 			}
 		}));

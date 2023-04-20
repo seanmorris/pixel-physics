@@ -708,13 +708,13 @@ export class Chao extends PointActor
 			this.flightTime = (this.maxFlight/2) + Math.round((this.maxFlight/2) * Math.random());
 		}
 
-		if(this.getMapSolidAt(this.args.x + Math.sign(this.args.xSpeed)*8, this.args.y))
+		if(this.args.xSpeed && this.getMapSolidAt(this.args.x + Math.sign(this.args.xSpeed)*8, this.args.y))
 		{
 			this.args.direction *= -1;
 			this.args.xSpeed *= -1;
 		}
 
-		if(this.getMapSolidAt(this.args.x, this.args.y + 1))
+		if(this.getMapSolidAt(this.args.x, this.args.y + 2))
 		{
 			this.args.falling = true;
 			this.args.float = -1;

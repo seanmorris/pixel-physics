@@ -1,6 +1,7 @@
 import { Png } from '../sprite/Png';
 import { PointActor } from './PointActor';
-import { Bindable } from 'curvature/base/Bindable';
+import { Platformer } from '../behavior/Platformer';
+// import { Bindable } from 'curvature/base/Bindable';
 import { EggShellTop } from './EggShellTop';
 import { Chao } from './Chao';
 
@@ -219,6 +220,41 @@ export class Egg extends PointActor
 		chao.mood.hunger = 0.8;
 
 		this.broken = true;
+	}
+
+	updateStart()
+	{
+		if(this.args.static)
+		{
+			this.args.static = !!this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+		}
+		else
+		{
+			this.args.static = !this.args.falling;
+		}
+
+		if(this.args.gSpeed || this.args.xSpeed)
+		{
+			this.args.static = false;
+		}
+
+		super.updateStart();
+	}
+
+	update()
+	{
+		if(this.broken)
+		{
+			this.args.startFrame = this.args.startFrame || this.viewport.args.frameId;
+
+			if(this.viewport.args.frameId - this.args.startFrame > 120)
+			{
+				this.viewport.actors.remove(this);
+				return;
+			}
+		}
+
+		super.update();
 	}
 
 	get rotateLock() { return true; }

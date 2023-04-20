@@ -123,7 +123,7 @@ export const Constrainable = {
 				this.viewport.setColCell(this);
 			}
 
-			if(this.args.x === xTarget && !tiedTo.args.xSpeed)
+			if(this.args.x === xTarget && !tiedTo.args.xSpeed && !tiedTo.args.gSpeed)
 			{
 				this.args.ySpeed = 0;
 			}

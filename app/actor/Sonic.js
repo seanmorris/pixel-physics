@@ -357,6 +357,11 @@ export class Sonic extends PointActor
 				this.args.groundAngle = 0;
 			}
 
+			if(this.args.animation === 'hanging')
+			{
+				this.args.animation = 'wall-dropping';
+			}
+
 			this.args.wallSticking = false;
 		}
 		else
@@ -1906,7 +1911,7 @@ export class Sonic extends PointActor
 					}
 				}
 
-				if(this.args.falling)
+				if(this.args.wasGrinding && this.args.falling)
 				{
 					this.args.animation = 'springdash';
 				}
