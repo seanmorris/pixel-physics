@@ -1043,13 +1043,6 @@ export class PointActor extends View
 			}
 			else if(!this.args.falling || this.getMapSolidAt(this.args.x, this.args.y + 24))
 			{
-				const dSolid     = this.getMapSolidAt(this.args.x + 0 * this.args.direction, this.args.y + 2);
-				const upSolidB   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
-				const upSolidF   = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
-				const nearSolid1 = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 6);
-				const nearSolid2 = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 6);
-				const backSolid1 = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 6);
-
 				const forwardSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 24);
 				const forwardDeepSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 96);
 				const underSolid   = this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 48);
@@ -1058,21 +1051,25 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
-						if(dSolid && !upSolidF && !upSolidB)
-						{
-							if(!this.args.falling && !backSolid1)
-							{
-								this.args.teeter = -1;
-							}
-							else if(!this.args.falling && !nearSolid1)
-							{
-								this.args.teeter = 1;
+						const dSolid     = this.getMapSolidAt(this.args.x + 0 * this.args.direction, this.args.y + 2);
+						const dSolidF    = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 2);
+						const uSolidF    = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
+						const dSolidF2   = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 2);
+						const dSolidB    = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 2);
+						const uSolidB    = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y - 2);
 
-								if(!nearSolid2)
-								{
-									this.args.teeter = 2;
-								}
+						if(dSolid && !dSolidF && !uSolidF)
+						{
+							this.args.teeter = 1;
+
+							if(!dSolidF2)
+							{
+								this.args.teeter = 2;
 							}
+						}
+						else if(dSolid && !dSolidB && !uSolidB)
+						{
+							this.args.teeter = -1;
 						}
 						else
 						{
