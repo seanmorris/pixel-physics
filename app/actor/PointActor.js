@@ -2492,7 +2492,7 @@ export class PointActor extends View
 
 	command_11()
 	{
-		if(!(this.args.currentSheild instanceof StarSheild))
+		if(this.args.currentSheild && !(this.args.currentSheild instanceof StarSheild))
 		{
 			const item = this.args.currentSheild;
 			item.unequip && item.unequip(this);
