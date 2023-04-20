@@ -324,6 +324,7 @@ export class Block extends PointActor
 			if(other.args.npc && !other.args.falling && this.args.falling && !this.args.float)
 			{
 				other.startle();
+				other.noClip = true;
 			}
 
 			return false;

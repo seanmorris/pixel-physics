@@ -1,9 +1,9 @@
 {
     "compressionlevel": -1,
-    "height": 42,
+    "height": 54,
     "infinite": false,
     "nextlayerid": 6,
-    "nextobjectid": 114,
+    "nextobjectid": 115,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -14,7 +14,7 @@
         {
             "name": "theme",
             "type": "string",
-            "value": "construct"
+            "value": ""
         }
     ],
     "renderorder": "right-down",

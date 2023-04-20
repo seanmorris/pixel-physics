@@ -357,7 +357,7 @@ export class Sonic extends PointActor
 				this.args.groundAngle = 0;
 			}
 
-			if(this.args.animation === 'hanging')
+			if(this.args.animation === 'hanging' && this.args.ySpeed > -3)
 			{
 				this.args.animation = 'wall-dropping';
 			}

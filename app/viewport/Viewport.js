@@ -1978,7 +1978,7 @@ export class Viewport extends View
 			this.cameraBound -= 0.05 * this.cameraBound;
 		}
 
-		let cameraSpeed = 30;
+		let cameraSpeed = 25;
 
 		let actor = this.controlActor;
 

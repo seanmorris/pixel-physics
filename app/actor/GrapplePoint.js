@@ -55,7 +55,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		if(this.hooked)
 		{
-			if(this.hooked.xAxis && this.args.ySpeed > 0)
+			if(this.hooked.xAxis)
 			{
 				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
 				{

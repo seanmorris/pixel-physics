@@ -3,7 +3,7 @@
     "height": 192,
     "infinite": false,
     "nextlayerid": 21,
-    "nextobjectid": 981,
+    "nextobjectid": 982,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -226,6 +226,7 @@
     "version": "1.6",
     "width": 1920,
     "types": [
+        "arrow-sign",
         "backdrop",
         "block",
         "breakable-block",
