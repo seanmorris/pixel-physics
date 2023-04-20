@@ -102,7 +102,6 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 			for(const track of list)
 			{
-				console.log(tags);
 				this.id3.set(track, tags);
 			}
 		}));

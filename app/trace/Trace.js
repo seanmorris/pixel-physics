@@ -1,6 +1,9 @@
 import { Uuid } from 'curvature/base/Uuid';
 import { Model } from 'curvature/model/Model';
 
+const buildTag  = document.head.querySelector('meta[name="x-build-time"]');
+const buildTime = buildTag ? buildTag.getAttribute('content') : null;
+
 export class Trace extends Model
 {
 	class     = 'Trace';
@@ -14,4 +17,5 @@ export class Trace extends Model
 	filename  = null;
 	lineno    = null;
 	colno     = null;
+	buildTime = buildTime;
 }

@@ -137,7 +137,12 @@
 }
 
 .screen-card-pause-menu .subtext {
-	margin-top: 1em;
+	margin-top: 0.25em;
+}
+
+.screen-card-pause-menu .subtext {
+	display: block;
+	opacity: 0.25;
 }
 
 .screen-card-pause-menu li:not(.unavailable):focus .subtext,

@@ -236,8 +236,10 @@ export class Menu extends Card
 
 		if(element)
 		{
+			element.scrollIntoView({behavior: 'smooth', block: 'center'});
 			element.classList.add('focused');
 			element.focus();
+
 
 			element.addEventListener('blur', () => this.blur(element), {once:true});
 		}
@@ -377,9 +379,27 @@ export class Menu extends Card
 			this.onNextFrame(()=>this.focus(event.target.closest('li')));
 		}
 
+		if(item.callback)
+		{
+			item.callback(item, this);
+		}
+
 		if(item.children)
 		{
+			let getChildren = item.children;
+
+			if(typeof item.children === 'function')
+			{
+				getChildren = item.children(parent);
+			}
+
+			if(!(getChildren instanceof Promise))
+			{
+				getChildren = Promise.resolve(getChildren);
+			}
+
 			const prev = this.args.items;
+
 			const back = {
 				_title: new CharacterString({
 					value:'back', font: 'small-menu-font'
@@ -391,33 +411,18 @@ export class Menu extends Card
 				}
 			};
 
-			const children = {};
+			this.args.items = {};
 
-			for(const i in item.children)
-			{
-				if(typeof item.children[i] === 'function')
-				{
-					console.log(i);
+			getChildren.catch(error => {
+				this.args.items['back'] = this.args.items['back'] || back;
+			});
 
-					children[i] = item.children[i](this.parent);
-					continue;
-				}
-
-				children[i] = item.children[i];
-			}
-
-			this.args.items = children;
-
-			this.args.currentKey = item._title.args.value;
-
-			this.args.items['back'] = this.args.items['back'] || back;
-
-			this.onNextFrame(()=>this.focusFirst());
-		}
-
-		if(item.callback)
-		{
-			item.callback(item, this);
+			getChildren.then(children => {
+				this.args.items = children;
+				this.args.currentKey = item._title.args.value;
+				this.args.items['back'] = this.args.items['back'] || back;
+				this.onNextFrame(()=>this.focusFirst());
+			});
 		}
 	}
 

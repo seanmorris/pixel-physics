@@ -12,10 +12,10 @@ export class InfiniteRuin
 			return;
 		}
 
-		if(frameId > 120)
-		{
-			viewport.arg.fake = 'fail';
-		}
+		// if(frameId > 120)
+		// {
+		// 	viewport.arg.fake = 'fail';
+		// }
 
 		if(viewport.controlActor.args.dead || viewport.controlActor.args.startled)
 		{

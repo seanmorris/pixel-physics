@@ -5,20 +5,28 @@
 .screen-card.screen-card-pause-menu .menu-container {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	margin: auto;
+	/* align-items: center; */
 	z-index: 3000000;
 }
 
 .screen-card.screen-card-pause-menu ul {
 	padding: 0;
+	overflow-y: scroll;
+	overflow-x: visible;
+	max-height: calc(-40px + calc(1px * var(--height)));
+}
+
+.screen-card.screen-card-pause-menu ul::-webkit-scrollbar {
+	display: none;
 }
 
 .screen-card.screen-card-pause-menu li {
 	background-color: rgba(0,0,0,0.75);
 	box-shadow: 0em 0.05em 0.25em rgba(255,255,255,0.25);
-	backdrop-filter: blur(1.25px);
+	backdrop-filter: blur(0px);
 	border: 1px solid transparent;
-	margin: 0.5em;
+	margin: 0.25em;
 	text-align: center;
 	list-style: none;
 
@@ -28,18 +36,31 @@
 
 	min-width: 200px;
 	min-height: 2em;
+	margin-bottom: 1em;
+
+	transition: background-color 0.2s ease-in-out, filter 0.4s ease-in-out;
+}
+
+.screen-card.screen-card-pause-menu [data-current-menu="Next 15"] li[data-title$=")"] .hud-character-string,
+.screen-card.screen-card-pause-menu [data-current-menu="Traces"] li[data-title$=")"] .hud-character-string {
+	margin-left: calc(10px * var(--scale));
 }
 
 .screen-card.screen-card-pause-menu li:focus,
 .screen-card.screen-card-pause-menu li.focused {
-	font-weight: bold;
+	transition: background-color 0.1s ease-in-out, filter 0.1s ease-in-out;
+	/* font-weight: bold; */
 	background-color: rgba(255,255,255,0.125);
 	backdrop-filter: blur(1.25px);
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	border-color: white;
 	/*text-shadow: 0em 0.15em 0.125em black;*/
-	margin-bottom: 2em;
 	outline: none;
+}
+
+.screen-card.screen-card-pause-menu li:focus .hud-character-string,
+.screen-card.screen-card-pause-menu li.focused .hud-character-string {
+	filter: drop-shadow(1px 1px 0px #000);
 }
 
 .screen-card.screen-card-pause-menu li:focus .subtext {
@@ -47,6 +68,7 @@
 }
 
 .screen-card.screen-card-pause-menu .menu-container > div {
+	text-align: center;
 	filter: drop-shadow(-1px 1px 1px rgba(0,0,0,0.75))
 		drop-shadow(1px 1px 1px rgba(0,0,0,0.75))
 		drop-shadow(0px 0px 1px rgba(0,0,0,0.75));
