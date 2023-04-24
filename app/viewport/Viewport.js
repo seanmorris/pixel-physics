@@ -5713,6 +5713,14 @@ export class Viewport extends View
 
 	handleUncaughtException(event)
 	{
+		console.error(event.error);
+
+		ga('send', 'event', {
+			eventCategory: 'error',
+			eventAction: `${event.error.message} @ ${event.filename}:${event.lineno}:${event.colno}`,
+			eventLabel: event.error.stack
+		});
+
 		TraceDatabase.open('traces', 1).then(database => {
 			const trace = Trace.from(event.error);
 			delete trace.id;
