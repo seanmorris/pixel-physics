@@ -5,7 +5,7 @@ export class TextActor extends PointActor
 {
 	float = -1;
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 
@@ -19,7 +19,7 @@ export class TextActor extends PointActor
 		this.args.bindTo('content', v => {
 			this.text.args.value = v;
 			this.text.args.color = args.color;
-			this.args.width  = v.length * 18;
+			this.args.width  = v ? v.length * 18 : 0;
 			this.args.height = 18;
 		});
 	}

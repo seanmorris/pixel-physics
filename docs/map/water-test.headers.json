@@ -1,14 +1,9 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 256,
     "infinite": false,
     "nextlayerid": 8,
-    "nextobjectid": 524,
+    "nextobjectid": 525,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -43,7 +38,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -88,7 +83,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.6",
     "width": 2048,
     "types": [
         "",
@@ -97,7 +92,8 @@
         "panel",
         "region",
         "ring",
-        "snow-board"
+        "snow-board",
+        "spinning-float"
     ],
     "map": "/map/water-test.json"
 }

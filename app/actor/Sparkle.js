@@ -39,31 +39,23 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 
 		super.collideA(other, type);
 	}
-
-	onRendered(event)
-	{
-		super.onRendered(event);
-
-		this.lightning = new Tag(`<div class = "particle-sparkle-lightning">`);
-
-		this.viewport.particles.add(this.lightning);
-
-		this.lightning.style({
-			'--x': this.args.x
-			, '--y': this.args.y + -64
-		});
-
-		// const timeout = this.viewport.onFrameOut(2, () => {
-		// 	// this.viewport.particles.remove(skimParticle)
-		// 	// this.skimParticles.delete(actor);
-		// });
-	}
-
 	update()
 	{
 		if(!this.viewport)
 		{
 			return;
+		}
+
+		if(!this.lightning)
+		{
+			this.lightning = new Tag(`<div class = "particle-sparkle-lightning">`);
+
+			this.viewport.particles.add(this.lightning);
+
+			this.lightning.style({
+				'--x': this.args.x
+				, '--y': this.args.y + -64
+			});
 		}
 
 		const frameId = this.viewport.args.frameId + -this.args.offset;

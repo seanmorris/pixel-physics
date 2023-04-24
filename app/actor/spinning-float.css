@@ -1,0 +1,43 @@
+.actor-item.actor-spinning-float .sprite,
+.actor-item.actor-spinning-float .sprite::after,
+.actor-item.actor-spinning-float .sprite::before {
+	position: relative;
+	/* transform: rotate(45deg) !im; */
+	height: 64px;
+	width: 64px;
+	top: 0;
+}
+
+.actor-item.actor-spinning-float .sprite::after {
+	position: absolute;
+	left: 0;
+	background-repeat: no-repeat;
+	background-image: url(/Sonic/spinning-float.png);
+	content: '';
+	animation: spinning-float-flicker calc(10ms) steps(2) infinite;
+	background-position-y: -64px;
+}
+
+.actor-item.actor-spinning-float .sprite::before {
+	position: absolute;
+	left: 0;
+	background-repeat: no-repeat;
+	background-image: url(/Sonic/spinning-float.png);
+	content: '';
+	transform: rotate(calc(3 * calc(360deg * calc(var(--conveyed) / calc(64 * 3.14)))));
+	/* transform: rotate(calc(3 * calc(0.314deg * var(--conveyed)))); */
+}
+
+.actor-item.actor-hex-nut {
+/*	filter: none !important;*/
+}
+
+@keyframes spinning-float-flicker {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: calc(var(--convey) * 0.125);
+	}
+}
+

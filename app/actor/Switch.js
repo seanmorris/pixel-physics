@@ -244,7 +244,7 @@ export class Switch extends PointActor
 
 	sleep()
 	{
-		if(!this.viewport)
+		if(!this.viewport || !this.def)
 		{
 			return;
 		}

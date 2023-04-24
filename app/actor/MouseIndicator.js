@@ -25,6 +25,11 @@ export class MouseIndicator extends Cursor
 
 	update()
 	{
+		if(this.viewport && !this.viewport.args.plot)
+		{
+			this.viewport.args.plot = new Plot;
+		}
+
 		const mouse = this.viewport.mouse;
 
 		if(!mouse.buttons[0] && !this.endPoint)

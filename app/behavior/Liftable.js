@@ -45,6 +45,8 @@ export class Liftable extends Behavior
 
 				carrier.carrying.add(host);
 
+				host.args.standingOn = null;
+
 				host.args.float = -1;
 			}
 		});

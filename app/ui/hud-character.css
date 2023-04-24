@@ -16,8 +16,8 @@
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) 0;
 	background-repeat: no-repeat;
 	height: calc(12px * var(--scale));
-	width: calc(9px * var(--scale));
-	margin-left: -1px;
+	width: calc(8px * var(--scale));
+	margin-left: -0.05px;
 	margin-bottom: -2px;
 	font-size: calc(12px * var(--scale));
 	overflow: hidden;
@@ -111,6 +111,13 @@ li.focused.unavailable .small-menu-font .hud-character {
 .hud-character[data-type="number"][data-value="19"],
 .hud-character[data-type="number"][data-value="18"] {
 	margin-right:3px;
+}
+
+.hud-character[data-type="number"][data-value="14"] {
+	position: relative;
+	margin-right:-1px;
+	top: 2px;
+	width: 3px
 }
 
 .hud-character[data-type="letter"][data-value="8"] {

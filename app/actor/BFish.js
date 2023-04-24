@@ -10,11 +10,11 @@ import { CanPop } from '../mixin/CanPop';
 
 export class BFish extends Mixin.from(PointActor, CanPop)
 {
-	constructor(args)
+	constructor(args = {}, parent)
 	{
 		const jumpForce = args.jumpForce || 14;
 
-		super(args);
+		super(args, parent);
 
 		this.behaviors.add(new SkidDust);
 		this.behaviors.add(new Patrol);

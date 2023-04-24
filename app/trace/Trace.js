@@ -18,4 +18,12 @@ export class Trace extends Model
 	lineno    = null;
 	colno     = null;
 	buildTime = buildTime;
+	replay    = null;
+
+	consume(skeleton, override = false)
+	{
+		super.consume(skeleton, override);
+
+		this.uuid = skeleton.uuid || this.uuid || String(new Uuid);
+	}
 }

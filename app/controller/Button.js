@@ -37,10 +37,10 @@ export class Button
 
 	release()
 	{
-		if(!this.active)
-		{
-			return;
-		}
+		// if(!this.active)
+		// {
+		// 	return;
+		// }
 
 		this.delta    = Number(-this.pressure).toFixed(3) - 0;
 		this.pressure = 0;

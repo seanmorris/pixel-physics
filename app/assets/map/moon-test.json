@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":192,
  "infinite":false,
  "layers":[
@@ -119,8 +112,8 @@
                  "type":"player-start",
                  "visible":true,
                  "width":0,
-                 "x":368,
-                 "y":6008
+                 "x":352,
+                 "y":6010.66666666667
                 }, 
                 {
                  "gid":2,
@@ -8082,7 +8075,7 @@
          "value":false
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -8347,6 +8340,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":800
 }

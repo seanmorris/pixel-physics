@@ -119,7 +119,7 @@
 .screen-card-pause-menu .subtext,
 .screen-card-main-menu .subtext {
 	display: none;
-	transform: scale(0.666) translate(0, -3px);
+	transform: scale(0.55) translate(0, -3px);
 
 	transform-origin: top left;
 
@@ -142,7 +142,7 @@
 
 .screen-card-pause-menu .subtext {
 	display: block;
-	opacity: 0.25;
+	opacity: 0.06125;
 }
 
 .screen-card-pause-menu li:not(.unavailable):focus .subtext,

@@ -13,9 +13,11 @@ export class TilesetSwapper extends PointActor
 
 		const img = new Image('../Sonic/tiles/azure-lake/azure-lake-burnt.png');
 
-		const backdropClass = BackdropPalette[ this.args.backdrop ];
-
-		this.args.backdrop = new backdropClass;
+		if(BackdropPalette[ this.args.backdrop ])
+		{
+			const backdropClass = BackdropPalette[ this.args.backdrop ];
+			this.args.backdrop = new backdropClass;
+		}
 	}
 
 	activate(other, button)

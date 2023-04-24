@@ -534,6 +534,39 @@ export class Platformer
 			{
 				host.args.rolling = true;
 			}
+
+			if(host.args.mode === 0 && !host.args.groundAngle)
+			{
+				const dSolid     = host.getMapSolidAt(host.args.x + 0 * host.args.direction, host.args.y + 2);
+				const dSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y + 2);
+				const uSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y - 2);
+				const dSolidF2   = host.getMapSolidAt(host.args.x + 2 * host.args.direction, host.args.y + 2);
+				const dSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y + 2);
+				const uSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y - 2);
+
+				if(dSolid && !dSolidF && !uSolidF)
+				{
+					host.args.teeter = 1;
+
+					if(!dSolidF2)
+					{
+						host.args.teeter = 2;
+					}
+				}
+				else if(dSolid && !dSolidB && !uSolidB)
+				{
+					host.args.teeter = -1;
+				}
+				else
+				{
+					host.args.teeter = 0;
+				}
+			}
+			else
+			{
+				host.args.teeter = 0;
+			}
+
 		}
 
 		host.args.driving = false;
@@ -2644,17 +2677,17 @@ export class Platformer
 
 		host.upScan = false;
 
-		let hits = [];
+		let hits = [], distances = [];
 
 		if(!host.args.hLock && !host.noClip)
 		{
 			const hScanDist = (host.args.xSpeed);
 
-			const foreDistanceHead  = hScanDist ? this.scanForward(host, hScanDist, 0.9) : false;
+			const foreDistanceHead  = hScanDist ? this.scanForward(host, hScanDist, 1.0) : false;
 			const foreDistanceWaist = hScanDist ? this.scanForward(host, hScanDist, 0.5) : false;
-			const foreDistanceFoot  = hScanDist ? this.scanForward(host, hScanDist, 0.1) : false;
+			const foreDistanceFoot  = hScanDist ? this.scanForward(host, hScanDist, 0.0) : false;
 
-			const distances = [foreDistanceHead, foreDistanceWaist, foreDistanceFoot];
+			distances = [foreDistanceHead, foreDistanceWaist, foreDistanceFoot];
 
 			// if(host.controllable && !host.args.falling && !host.args.rolling)
 			// {
@@ -2705,7 +2738,12 @@ export class Platformer
 			return;
 		}
 
-		if(!host.willStick
+		if(distances[2] && distances[1] === false && distances[0] === false)
+		{
+			// host.args.y -= 8;
+			host.args.x += Math.sign(xSpeedOriginal);
+		}
+		else if(!host.willStick
 			&& hits.length > 1
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
 		){

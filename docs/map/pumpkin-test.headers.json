@@ -1,10 +1,5 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 288,
     "infinite": false,
     "nextlayerid": 12,
@@ -48,7 +43,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -91,34 +86,34 @@
             "tilewidth": 32
         },
         {
-            "columns": 1,
+            "columns": 3,
             "firstgid": 3105,
             "image": "../Sonic/metropolis-screw.png",
             "imageheight": 32,
-            "imagewidth": 32,
+            "imagewidth": 96,
             "margin": 0,
             "name": "metropolis-screw",
             "spacing": 0,
-            "tilecount": 1,
+            "tilecount": 3,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 16,
-            "firstgid": 3106,
+            "firstgid": 3108,
             "image": "../Sonic/tiles/techno-tower/ground.png",
-            "imageheight": 704,
+            "imageheight": 1024,
             "imagewidth": 512,
             "margin": 0,
             "name": "ground",
             "spacing": 0,
-            "tilecount": 352,
+            "tilecount": 512,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 8,
-            "firstgid": 3458,
+            "firstgid": 3620,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -131,7 +126,7 @@
         },
         {
             "columns": 13,
-            "firstgid": 3522,
+            "firstgid": 3684,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
             "imageheight": 576,
             "imagewidth": 416,
@@ -144,7 +139,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 3756,
+            "firstgid": 3918,
             "image": "../Sonic/tiles/common.png",
             "imageheight": 32,
             "imagewidth": 128,
@@ -157,7 +152,7 @@
         },
         {
             "columns": 20,
-            "firstgid": 3760,
+            "firstgid": 3922,
             "image": "wide-tube.png",
             "imageheight": 1280,
             "imagewidth": 640,
@@ -170,7 +165,7 @@
         },
         {
             "columns": 20,
-            "firstgid": 4560,
+            "firstgid": 4722,
             "image": "../Sonic/tiles/angel-island/wide-tube.png",
             "imageheight": 1280,
             "imagewidth": 640,
@@ -183,7 +178,7 @@
         },
         {
             "columns": 7,
-            "firstgid": 5360,
+            "firstgid": 5522,
             "image": "../Sonic/tiles/marble/trim-recolor.png",
             "imageheight": 64,
             "imagewidth": 224,
@@ -196,7 +191,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 5374,
+            "firstgid": 5536,
             "image": "../secret/stp.png",
             "imageheight": 256,
             "imagewidth": 128,
@@ -209,7 +204,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 5406,
+            "firstgid": 5568,
             "image": "../Sonic/x-fence.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -223,7 +218,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.6",
     "width": 960,
     "types": [
         "barnacle",

@@ -22,7 +22,7 @@ export class ArrowSign extends PointActor
 		return obj;
 	}
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 

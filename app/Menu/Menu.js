@@ -24,15 +24,17 @@ export class Menu extends Card
 		// this.font = 'font';
 
 		this.args.initialPath = [];
-
 		this.args.cardName = 'menu';
-
 		this.args.items = {};
+		this.args.pageLoop = false;
+		this.args.pageJump = 7;
 
 		this.currentItem = null;
 
 		this.include = 'a, button, input, textarea, select, details, [tabindex]';
 		this.exclude = '[tabindex="-1"]';
+
+		this.elements = new Map;
 
 		this.onRemove(() => parent.focus());
 	}
@@ -53,9 +55,16 @@ export class Menu extends Card
 				}
 			}
 
+			let index = 0;
+
 			for(const i in v)
 			{
 				const item = v[i];
+
+				item.color = item.color || 'var(--default-color)';
+
+				item._index = index++;
+				item._key = i;
 
 				item._title = new CharacterString({
 					value:i, font: this.font
@@ -75,6 +84,14 @@ export class Menu extends Card
 				{
 					item._value.args.value = item.setting ? 'ON' : 'OFF';
 					item._boolValue = item._value;
+				}
+				else if(item.input === 'string')
+				{
+					const bindable = Bindable.make(item);
+
+					item[Bindings] = item[Bindings] ?? new Set;
+
+					item[Bindings].add(bindable.bindTo('setting', v => item.set && item.set(v)));
 				}
 				else if(item.input === 'select')
 				{
@@ -109,16 +126,17 @@ export class Menu extends Card
 				this.currentItem = null;
 			}
 
-			const next = this.findNext(this.currentItem, this.tags.bound.node);
-
-			if(next)
+			if(this.tags.bound)
 			{
-				this.focus(next);
+				const next = this.findNext(this.currentItem, this.tags.bound.node);
+
+				if(next)
+				{
+					this.focus(next);
+				}
 			}
 
 		}, {wait: 0});
-
-		this.focusFirst();
 	}
 
 	onAttached(event)
@@ -136,6 +154,10 @@ export class Menu extends Card
 						this.onTimeout(0, () => autoNav());
 					}
 				}
+			}
+			else
+			{
+				this.onNextFrame(() => this.focusFirst());
 			}
 		}
 
@@ -166,7 +188,7 @@ export class Menu extends Card
 		});
 	}
 
-	findNext(current, bounds, reverse = false)
+	findNext(current, bounds, jump = 1)
 	{
 		const elements = bounds.querySelectorAll(this.include);
 
@@ -175,9 +197,9 @@ export class Menu extends Card
 			return;
 		}
 
-		let found = false;
-		let first = null;
-		let last  = null;
+		const items = [];
+
+		let c = 0, i = 0;
 
 		for(const element of elements)
 		{
@@ -186,40 +208,50 @@ export class Menu extends Card
 				continue;
 			}
 
-			if(!first)
-			{
-				if(!current && !reverse)
-				{
-					return element;
-				}
-
-				first = element;
-			}
-
-			if(!reverse && found)
-			{
-				return element;
-			}
+			items.push(element);
 
 			if(element === current)
 			{
-				if(reverse && last)
-				{
-					return last;
-				}
-
-				found = true;
+				c = i;
 			}
 
-			last = element;
+			i++;
 		}
 
-		if(reverse)
+		if(!current)
 		{
-			return last;
+			return items[0];
 		}
 
-		return this.findNext(undefined, bounds, reverse);
+		if(Math.abs(jump) > 1 && !this.args.pageLoop)
+		{
+			if(jump + c < 0)
+			{
+				return items[0];
+			}
+			else if(jump + c >= items.length)
+			{
+				return items[items.length + -1];
+			}
+		}
+
+		if(jump === -Infinity)
+		{
+			return items[0];
+		}
+		else if(jump === Infinity)
+		{
+			return items[items.length + -1];
+		}
+
+		let s = (c + jump) % items.length;
+
+		while(s < 0)
+		{
+			s += items.length;
+		}
+
+		return items[s];
 	}
 
 	handleFocus(event)
@@ -227,24 +259,26 @@ export class Menu extends Card
 		this.focus(event.target, true);
 	}
 
-	focus(element, force = false)
+	focus(element, quick = false)
 	{
-		if(!force && this.currentItem && this.currentItem !== element)
+		if(document.activeElement === element && this.currentItem === element)
+		{
+			return;
+		}
+
+		if(this.currentItem)
 		{
 			this.blur(this.currentItem);
 		}
 
 		if(element)
 		{
-			element.scrollIntoView({behavior: 'smooth', block: 'center'});
+			this.currentItem = element;
+			element.focus({preventScroll: true});
+			element.scrollIntoView({behavior: quick ? 'instant' : 'smooth', block: 'center'});
 			element.classList.add('focused');
-			element.focus();
-
-
 			element.addEventListener('blur', () => this.blur(element), {once:true});
 		}
-
-		this.currentItem = element;
 	}
 
 	blur(element)
@@ -268,13 +302,18 @@ export class Menu extends Card
 			return;
 		}
 
+		let next, quick = false;
+
 		if(controller.buttons[0] && controller.buttons[0].time === 1)
 		{
 			this.currentItem && this.currentItem.click();
 
 			this.args.last = 'A';
 
-			next = this.currentItem;
+			if(this.currentItem && !this.currentItem.contains(document.activeElement))
+			{
+				next = this.currentItem;
+			}
 
 			this.beep();
 		}
@@ -295,8 +334,6 @@ export class Menu extends Card
 			this.beep();
 		}
 
-		let next;
-
 		const repeatCheck = (button) => controller.buttons[button]
 			&& (controller.buttons[button].time === 1
 			|| (controller.buttons[button].time >= 140
@@ -309,15 +346,47 @@ export class Menu extends Card
 
 		if(repeatCheck(12) || (controller.axes[7] && controller.axes[7].magnitude < 0 && controller.axes[7].delta))
 		{
-			next = this.findNext(this.currentItem, this.tags.bound.node, true);
+			if(this.currentItem &&this.currentItem.previousElementSibling)
+			{
+				quick = true;
+			}
+
+			next = this.findNext(this.currentItem, this.tags.bound.node, -1);
 
 			this.beep();
 		}
 		else if(repeatCheck(13) || (controller.axes[7] && controller.axes[7].magnitude > 0 && controller.axes[7].delta))
 		{
-			next = this.findNext(this.currentItem, this.tags.bound.node);
+			if(this.currentItem && this.currentItem.nextElementSibling)
+			{
+				quick = true;
+			}
 
-			this.focus(next);
+			next = this.findNext(this.currentItem, this.tags.bound.node, 1);
+
+			this.beep();
+		}
+		if(repeatCheck(1022))
+		{
+			next = this.findNext(this.currentItem, this.tags.bound.node, -this.args.pageJump);
+
+			this.beep();
+		}
+		else if(repeatCheck(1023))
+		{
+			next = this.findNext(this.currentItem, this.tags.bound.node, this.args.pageJump);
+
+			this.beep();
+		}
+		if(repeatCheck(1024))
+		{
+			next = this.findNext(this.currentItem, this.tags.bound.node, -Infinity);
+
+			this.beep();
+		}
+		else if(repeatCheck(1025))
+		{
+			next = this.findNext(this.currentItem, this.tags.bound.node, Infinity);
 
 			this.beep();
 		}
@@ -334,7 +403,7 @@ export class Menu extends Card
 			this.beep();
 		}
 
-		next && this.focus(next);
+		next && this.focus(next, quick);
 	}
 
 	beep()
@@ -349,9 +418,11 @@ export class Menu extends Card
 
 	run(item, event)
 	{
+		let element;
+
 		if(event && event.target)
 		{
-			let element = event.target;
+			element = event.target;
 
 			while(element && element.matches)
 			{
@@ -374,6 +445,13 @@ export class Menu extends Card
 			return;
 		}
 
+		if(item.input === 'string')
+		{
+			const input = element.querySelector('input');
+			input.focus();
+			return;
+		}
+
 		if(event && item.input)
 		{
 			this.onNextFrame(()=>this.focus(event.target.closest('li')));
@@ -390,13 +468,15 @@ export class Menu extends Card
 
 			if(typeof item.children === 'function')
 			{
-				getChildren = item.children(parent);
+				getChildren = item.children(this.parent, this);
 			}
 
 			if(!(getChildren instanceof Promise))
 			{
 				getChildren = Promise.resolve(getChildren);
 			}
+
+			const lastSelected = item._key;
 
 			const prev = this.args.items;
 
@@ -407,8 +487,21 @@ export class Menu extends Card
 				, callback: () => {
 					this.args.items = prev;
 					this.args.currentKey = prev._title ? prev._title.args.value : '';
-					this.onNextFrame(()=>this.focusFirst());
+					// this.onNextFrame(()=>this.focusFirst());
+					const lastIndex = Object.keys(prev).indexOf(lastSelected);
+					this.onNextFrame(()=> {
+						this.focusFirst();
+						this.onNextFrame(()=> {
+							if(this.tags.bound)
+							{
+								const next = this.findNext(this.currentItem, this.tags.bound.node, lastIndex > 0 ? lastIndex : 0)
+								this.focus(next);
+							}
+						});
+					});
 				}
+				, _prev: prev['back']
+				, color: 'var(--back-color, var(--default-color))'
 			};
 
 			this.args.items = {};
@@ -441,15 +534,35 @@ export class Menu extends Card
 			{
 				item.setting = item.get();
 			}
+
+			if(item.input === 'boolean')
+			{
+				item._value.args.value = item.setting ? 'ON' : 'OFF';
+			}
+
+			item.set && item.set(item.setting);
 		}
 	}
 
-	back()
+	back(levels = 1)
 	{
-		if(this.args.items['back'])
+		let target = this.args.items['back'];
+
+		for(let i = 1; i < levels; i++)
 		{
-			this.args.items['back'].callback();
+			console.log(target);
+
+			if(target._prev)
+			{
+				target = target._prev;
+			}
+			else
+			{
+				break;
+			}
 		}
+
+		target && target.callback && target.callback();
 	}
 
 	expand(element)
@@ -529,15 +642,19 @@ export class Menu extends Card
 
 	keyup(event, item)
 	{
-		if(event.key === 'ArrowUp' || event.key === 'ArrowDown')
+		console.log(event.key);
+
+		if(['ArrowUp', 'ArrowDown'].includes(event.key))
 		{
 			event.preventDefault();
 			event.stopPropagation();
 			event.stopImmediatePropagation();
 
+			const jump = {ArrowUp: -1, ArrowDown: 1}[ event.key ];
+
 			if(event.currentTarget.tagName === 'INPUT')
 			{
-				const next = this.findNext(this.currentItem, this.tags.bound.node, event.key === 'ArrowUp');
+				const next = this.findNext(this.currentItem, this.tags.bound.node, jump);
 
 				if(next)
 				{

@@ -1,0 +1,22 @@
+.actor-mushroom {
+	z-index: 10;
+}
+
+.actor-angel .sprite,
+.actor-angel .sprite::after {
+	position: relative;
+	width: 45px;
+	height: 80px;
+}
+
+.actor-angel .sprite::after {
+	position: absolute;
+	left:0;
+	bottom: 0;
+	content: ' ';
+	background-image: url(/Sonic/angel.png);
+}
+
+.actor-angel[data-facing=right] .sprite::after {
+	transform:scaleX(-1);
+}

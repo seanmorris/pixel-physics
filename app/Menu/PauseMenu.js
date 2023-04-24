@@ -5,7 +5,7 @@ import { Pinch } from '../effects/Pinch';
 
 import { Menu } from './Menu';
 import { SettingsMenu } from './SettingsMenu';
-import { SaveMenu } from './SaveMenu';
+// import { SaveMenu } from './SaveMenu';
 import { CharacterString } from '../ui/CharacterString';
 
 export class PauseMenu extends Menu
@@ -32,6 +32,7 @@ export class PauseMenu extends Menu
 			, Mute: {
 				input: 'boolean'
 				, subtext: 'Mute all audio'
+				, revert: () => parent.args.audio = true
 				, set: value => parent.args.audio = !value
 				, get: () => !parent.args.audio
 			}
@@ -42,6 +43,7 @@ export class PauseMenu extends Menu
 				, set: value => parent.settings.graphicsLevel = value
 				, get: ()    => parent.settings.graphicsLevel
 			}
+			// , Save: SaveMenu(parent)
 			, Reset:    {
 				subtext: 'Reset the run.'
 				, children: {
@@ -70,23 +72,7 @@ export class PauseMenu extends Menu
 					}
 				}
 			}
-			// , Demos:    {
-			// 	children: {
-			// 		record: {
-			// 			callback: () => this.parent.record()
-			// 			, subtext: 'Restart and record your run.'
-			// 		}
-			// 		, stop: {
-			// 			callback: () => this.parent.stop()
-			// 			, subtext: 'Replay your run.'
-			// 		}
-			// 		, replay: {
-			// 			callback: () => this.parent.playback()
-			// 			, subtext: 'Replay your run.'
-			// 		}
-			// 	}
-			// }
-			// , Save: SaveMenu(parent)
+
 			, Quit: {
 				subtext: 'Quit to the title screen.'
 				, children: {
@@ -103,12 +89,12 @@ export class PauseMenu extends Menu
 		};
 	}
 
-	run(event, item)
+	run(item, event)
 	{
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 
-		super.run(item);
+		super.run(item, event);
 	}
 
 	input(controller)

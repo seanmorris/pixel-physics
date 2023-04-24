@@ -145,7 +145,10 @@ export class MarbleBlock extends PointActor
 	{
 		this.args.spriteSheet = this.args.spriteSheet || '/Sonic/marble-zone-block.png';
 
-		this.setTile();
+		if(this.viewport)
+		{
+			this.setTile();
+		}
 	}
 
 	get isPushable() { return true; }

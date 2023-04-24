@@ -538,18 +538,11 @@ export class MainMenu extends Menu
 		// });
 	}
 
-	back()
+	back(levels = 1)
 	{
-		super.back();
+		super.back(levels);
 
 		this.disconnect();
-	}
-
-	focus(element)
-	{
-		super.focus(element);
-
-		element.scrollIntoView({behavior: 'smooth', block: 'center'});
 	}
 
 	answer()

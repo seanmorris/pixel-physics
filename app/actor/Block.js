@@ -30,6 +30,8 @@ export class Block extends PointActor
 	{
 		super(args, parent);
 
+		this.hitBlocks = false;
+
 		this.args.yForce = 0;
 		this.args.yLean  = 0;
 
@@ -163,7 +165,7 @@ export class Block extends PointActor
 			return;
 		}
 
-		if(other instanceof this.constructor && !other.args.falling)
+		if(other instanceof this.constructor && !other.args.falling && !other.hitBlocks)
 		{
 			return false;
 		}
@@ -395,11 +397,13 @@ export class Block extends PointActor
 			return;
 		}
 
+		const frameId = this.viewport.args.frameId - this.viewport.args.startFrameId;
+
 		if(this.args.active > 0)
 		{
 			if(!this.activatedAt)
 			{
-				this.activatedAt = this.viewport.args.frameId;
+				this.activatedAt = frameId;
 			}
 		}
 
@@ -418,7 +422,7 @@ export class Block extends PointActor
 		{
 			this.args.gSpeed = 0;
 
-			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
+			if((!this.switch && (this.activatedAt && frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
 			{
 				this.args.float = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 
@@ -433,7 +437,7 @@ export class Block extends PointActor
 		{
 			this.args.gSpeed = 0;
 
-			if((!this.switch && (this.activatedAt && this.viewport.args.frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
+			if((!this.switch && (this.activatedAt && frameId - this.activatedAt > 25)) || (this.switch && this.switch.args.active))
 			{
 				this.args.float  = this.args.float >= 0 ? this.args.float : (this.args.delay || 0);
 
@@ -497,9 +501,11 @@ export class Block extends PointActor
 			}
 		}
 
+
+
 		if(this.args.float && (this.args.oscillateX && this.args.oscillateY))
 		{
-			const timeFrame = this.viewport.args.frameId + (this.args.offset ?? 0) * Math.PI;
+			const timeFrame = frameId + (this.args.offset ?? 0) * Math.PI;
 
 			{
 				const current = Math.sin(timeFrame/this.args.timeX);
@@ -515,7 +521,7 @@ export class Block extends PointActor
 		}
 		else if(this.args.float && (this.args.oscillateX || this.args.oscillateY))
 		{
-			const current = Math.cos(Math.sin(this.viewport.args.frameId/90)**5)**(5*3.333);
+			const current = Math.cos(Math.sin(frameId/90)**5)**(5*3.333);
 
 			if(this.args.oscillateX)
 			{

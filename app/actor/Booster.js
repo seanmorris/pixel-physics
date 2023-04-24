@@ -49,7 +49,6 @@ export class Booster extends PointActor
 
 	activate()
 	{
-		console.log('GO!');
 
 		this.args.active = true;
 
@@ -84,8 +83,6 @@ export class Booster extends PointActor
 			this.args.gSpeed = 0;
 
 			this.viewport.setColCell(this);
-
-			console.log(this.args.x, this.args.y);
 
 			const exploded = new CustomEvent('exploded', {detail: {actor:this}});
 

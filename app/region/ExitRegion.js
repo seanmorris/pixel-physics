@@ -44,7 +44,13 @@ export class ExitRegion extends Region
 
 			viewport.actors.remove(this);
 
-			if(this.args.nextStage)
+			viewport.finishLevel();
+
+			if(viewport.replay)
+			{
+				viewport.quit(2);
+			}
+			else if(this.args.nextStage)
 			{
 				viewport.quit(2);
 				viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});

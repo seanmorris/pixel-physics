@@ -21,13 +21,13 @@ export class AngelIsland extends Backdrop
 
 		this.args.strips = [
 			{
-				autoscroll: -0.080
+				autoscroll: -0.230
 				, parallax: 0.005
 				, url:      '/Sonic/backdrop/angel-island/sky-0.png'
 				, height:   196
 			}
 			, {
-				autoscroll: -0.080
+				autoscroll: -0.230
 				, parallax: 0.005
 				, url:      '/Sonic/backdrop/angel-island/reflection.png'
 				, height:   33

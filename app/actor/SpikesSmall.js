@@ -18,7 +18,7 @@ export class SpikesSmall extends Spikes
 		return obj;
 	}
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 

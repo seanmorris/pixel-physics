@@ -7,7 +7,6 @@ export class Spikes extends PointActor
 {
 	static fromDef(objDef)
 	{
-
 		const obj = super.fromDef(objDef);
 
 		obj.args.width  = objDef.width;
@@ -17,7 +16,7 @@ export class Spikes extends PointActor
 		return obj;
 	}
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 

@@ -2,7 +2,7 @@ import { PointActor } from './PointActor';
 
 export class CutScene extends PointActor
 {
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 

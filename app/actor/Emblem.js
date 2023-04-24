@@ -18,11 +18,19 @@ export class Emblem extends PointActor
 
 	onRendered(event)
 	{
+		if(!this.viewport)
+		{
+			return super.onRendered(event);
+		}
+
 		const zoneState = this.viewport.getZoneState();
 
 		if(zoneState && zoneState.emblems && zoneState.emblems.includes(this.args.id))
 		{
-			this.args.type = 'actor-item actor-emblem actor-emblem-collected';
+			if(!this.viewport.replay)
+			{
+				this.args.type = 'actor-item actor-emblem actor-emblem-collected';
+			}
 
 			this.collected = true;
 		}

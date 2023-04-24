@@ -93,6 +93,9 @@ import { Save } from '../save/Save';
 import { TraceDatabase } from '../trace/TraceDatabase';
 import { Trace } from '../trace/Trace';
 
+import { ReplayDatabase } from '../replay/ReplayDatabase';
+import { Replay } from '../replay/Replay';
+
 import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
 
@@ -131,7 +134,7 @@ export class Viewport extends View
 
 		this.args.combo = [];
 
-		this.args.plot = new Plot;
+		// this.args.plot = new Plot;
 
 		this.args.publishTime = 0;
 
@@ -178,6 +181,7 @@ export class Viewport extends View
 		this.willDetach    = new Map;
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
+		this.zeroFrame     = false;
 
 		this.maxObjectId = 0;
 
@@ -282,34 +286,82 @@ export class Viewport extends View
 
 		this.args.noIntro = noIntro ? 'no-intro' : '';
 
+		// const debugKeys = [
+		// 	'ArrowUp'
+		// 	, 'ArrowUp'
+		// 	, 'ArrowDown'
+		// 	, 'ArrowDown'
+		// 	, 'ArrowUp'
+		// 	, 'ArrowUp'
+		// 	, 'ArrowUp'
+		// 	, 'ArrowUp'
+		// ];
+
 		const debugKeys = [
-			'ArrowUp'
-			, 'ArrowUp'
-			, 'ArrowDown'
-			, 'ArrowDown'
-			, 'ArrowUp'
-			, 'ArrowUp'
-			, 'ArrowUp'
-			, 'ArrowUp'
+			'Button12'
+			, 'Button12'
+			, 'Button13'
+			, 'Button13'
+			, 'Button12'
+			, 'Button12'
+			, 'Button12'
+			, 'Button12'
 		];
 
 		const debugSeq = new Sequence({ keys: debugKeys, timing: 750 });
 
-		const konamiKeys = [
-			'ArrowUp'
-			, 'ArrowUp'
-			, 'ArrowDown'
-			, 'ArrowDown'
-			, 'ArrowLeft'
-			, 'ArrowRight'
-			, 'ArrowLeft'
-			, 'ArrowRight'
-			, 'KeyB'
-			, 'KeyA'
-			, 'Enter'
+		// const konamiKeys = [
+		// 	'ArrowUp'
+		// 	, 'ArrowUp'
+		// 	, 'ArrowDown'
+		// 	, 'ArrowDown'
+		// 	, 'ArrowLeft'
+		// 	, 'ArrowRight'
+		// 	, 'ArrowLeft'
+		// 	, 'ArrowRight'
+		// 	, 'KeyB'
+		// 	, 'KeyA'
+		// 	, 'Enter'
+		// ];
+
+		const konamiKeysA = [
+			'Button12'
+			, 'Button12'
+			, 'Button13'
+			, 'Button13'
+
+			, 'Button14'
+			, 'Button15'
+			, 'Button14'
+			, 'Button15'
+
+			, 'Button1201'
+			, 'Button14'
+			, 'Button1200'
 		];
 
-		const konamiSeq = new Sequence({ keys: konamiKeys, timing: 750 });
+		const konamiKeysB = [
+			'Button12'
+			, 'Button12'
+			, 'Button13'
+			, 'Button13'
+
+			, 'Button14'
+			, 'Button15'
+			, 'Button14'
+			, 'Button15'
+
+			, 'Button1201'
+			, 'Button1200'
+			, 'Button1209'
+		];
+
+		const konamiSeqA = new Sequence({ keys: konamiKeysA, timing: 750 });
+		const konamiSeqB = new Sequence({ keys: konamiKeysB, timing: 750 });
+
+		this.konamiSeqA = konamiSeqA;
+		this.konamiSeqB = konamiSeqB;
+		this.debugSeq = debugSeq;
 
 		const gravityKeys = [
 			'KeyS'
@@ -322,7 +374,7 @@ export class Viewport extends View
 
 		const gravitySeq = new Sequence({ keys: gravityKeys, timing: 750 });
 
-		this.sequences = [debugSeq, konamiSeq, gravitySeq];
+		this.sequences = [debugSeq, konamiSeqA, konamiSeqB, gravitySeq];
 
 		this.args.debugEnabled  = false;
 		this.args.debugEditMode = false;
@@ -354,8 +406,16 @@ export class Viewport extends View
 			});
 		});
 
-		konamiSeq.addEventListener('complete', event => {
+		// konamiSeq.addEventListener('advance', event => {
+		// 	console.log(event);
+		// });
 
+		// konamiSeqA.addEventListener('cancel', event => {
+		// 	console.log(event);
+		// 	console.log(this.controlActor.controller);
+		// });
+
+		const konamiComplete = event => {
 			if(this.args.masterCheat)
 			{
 				return;
@@ -368,15 +428,18 @@ export class Viewport extends View
 
 			console.log('Master cheat detected.');
 
+			this.args.paused = false;
+
 			this.onTimeout(1750, ()=>{
 				this.args.topLine.args.value = '';
 				this.args.status.args.hide = 'hide';
 			});
-		});
+		};
+
+		konamiSeqA.addEventListener('complete', konamiComplete);
+		konamiSeqB.addEventListener('complete', konamiComplete);
 
 		gravitySeq.addEventListener('complete', event => {
-
-
 			if(!this.controlActor)
 			{
 				return;
@@ -530,8 +593,6 @@ export class Viewport extends View
 				this.args.hideNowPlaying = 'hide-now-playing';
 				return;
 			}
-
-			console.log(event.detail);
 
 			if(!event.detail)
 			{
@@ -856,11 +917,18 @@ export class Viewport extends View
 		this.args.xBlur = 0;
 		this.args.yBlur = 0;
 
-		this.args.isRecording = false;
-		this.args.isReplaying = false;
+		this.args.isReplaying  = false;
+		this.args.isRecording  = false;
+		this.args._isRecording = false;
 
-		this.replayInputs = [];
 		this.replayFrames = new Map;
+		this.replayOffset = 0;
+		this.replayStart = null;
+		this.replay = null;
+
+		this.maxReplayFrame = 0;
+
+		this.lastFrame = {input:{}, args:{}};
 
 		this.args.standalone = '';
 		this.args.fullscreen = '';
@@ -985,6 +1053,11 @@ export class Viewport extends View
 		this.controller = new Controller({deadZone: 0.2});
 
 		this.controller.zero();
+
+		this.matrix = new Matrix(this.settings.matrixUrl, {
+			interval:  0
+			// , storage: localStorage
+		});
 	}
 
 	loadWorld({worldUrl, networked = false})
@@ -1382,6 +1455,10 @@ export class Viewport extends View
 		keyboard.focusElement = this.tags.viewport.node;
 
 		keyboard.codes.bindTo((v,k,t,d) => {
+			if(this.controller && this.controller.keyIsMapped(k))
+			{
+				return;
+			}
 			if(v === -1)
 			{
 				this.sequences.map(s => s.check(k));
@@ -1448,6 +1525,15 @@ export class Viewport extends View
 
 	startLevel(refresh = true)
 	{
+		this.levelFinished = false;
+
+		if(!this.args.isReplaying)
+		{
+			this.args._isRecording = !this.args.networked;
+		}
+
+		this.args.debugEditMode = false;
+
 		this.clearDialog();
 		this.hideDialog();
 
@@ -1486,9 +1572,13 @@ export class Viewport extends View
 
 		this.populateMap();
 
-		refresh && this.setZoneCard();
+		if(refresh)
+		{
+			this.setZoneCard();
+			this.zeroFrame = false;
+		}
 
-		this.args.startFrameId = this.args.frameId;
+		// this.args.startFrameId = this.args.frameId;
 
 		this.fillBackground();
 
@@ -1554,7 +1644,8 @@ export class Viewport extends View
 		{
 			this.nextControl.controller.zero();
 		}
-		else if(this.controller)
+
+		if(this.controller)
 		{
 			this.controller.zero();
 		}
@@ -1573,12 +1664,29 @@ export class Viewport extends View
 			{
 				const emblem = this.actorsById[emblemId];
 
-				this.nextControl.args.emblems.push(emblem);
+				if(this.nextControl && !this.nextControl.args.emblems.includes(emblem))
+				{
+					this.nextControl.args.emblems.push(emblem);
+				}
 			}
 
-			this.args.startFrameId = this.args.frameId;
+			this.args.startFrameId = this.args.frameId - this.replayOffset;
 
-			if(Router.query.start)
+			if(this.replayStart)
+			{
+				if(this.nextControl)
+				{
+					this.nextControl.controller.replay(this.replayStart[1]||{});
+					this.nextControl.readInput();
+
+					for(let i in this.replayStart[2])
+					{
+						Object.assign(this.nextControl.args, this.replayStart[2][i]);
+						break;
+					}
+				}
+			}
+			else if(Router.query.start)
 			{
 				const start = Router.query.start;
 
@@ -1632,7 +1740,7 @@ export class Viewport extends View
 					this.args.paused = Number(Router.query.pause);
 				}
 			}
-			else if(!this.args.isReplaying && !this.args.isRecording && !this.args.networked)
+			else if(!this.replay && !this.args.isReplaying && !this.args.isRecording && !this.args.networked)
 			{
 				this.args.demoIndicator = null;
 
@@ -1685,6 +1793,37 @@ export class Viewport extends View
 				});
 			}
 		});
+	}
+
+	finishLevel()
+	{
+		if(!this.replay)
+		{
+			this.saveReplay('#008000');
+		}
+
+		this.levelFinished = true;
+	}
+
+	saveReplay(color)
+	{
+		const replay = new Replay;
+
+		replay.consume({color, map: this.currentMap, frames: [...this.replayFrames.values()]});
+
+		return ReplayDatabase.open('replays', 3).then(database => {
+			delete replay.id;
+			console.log(replay);
+			const res = database.insert('replays', replay).then(() => replay);
+
+			this.replayFrames = new Map;
+			this.replayOffset = 0;
+			this.replayStart  = null
+			this.replay = null;
+
+			return res;
+		});
+
 	}
 
 	takeInput(controller)
@@ -1930,17 +2069,17 @@ export class Viewport extends View
 				}
 			}
 
-			if(this.args.isRecording)
+			if(!this.args.isReplaying && (this.args.isRecording || this.args._isRecording))
 			{
-				if(!this.args.demoIndicator)
+				if(this.args.isRecording && !this.args.demoIndicator)
 				{
 					this.args.demoIndicator = new CharacterString({value:'⏺ REC', color: 'red'})
 				}
 
-				const frame = this.args.frameId;
+				const frame = this.args.frameId - this.args.startFrameId;
 				const input = controller.serialize();
 
-				let args = {};
+				let args = {}, _args = {}, _input = {};
 
 				if(this.controlActor)
 				{
@@ -1948,6 +2087,7 @@ export class Viewport extends View
 						[this.controlActor.args.id]: {
 							x: this.controlActor.args.x
 							, y: this.controlActor.args.y
+							, mode: this.controlActor.args.mode
 							, gSpeed: this.controlActor.args.gSpeed
 							, xSpeed: this.controlActor.args.xSpeed
 							, ySpeed: this.controlActor.args.ySpeed
@@ -1955,7 +2095,64 @@ export class Viewport extends View
 					};
 				}
 
-				this.replayInputs[frame] = {frame, input, args};
+				let changed = false;
+
+				if(frame % 60 === 0 || this.replayFrames.size === 0)
+				for(let i in args)
+				{
+					_args[i] = _args[i] || {};
+					this.lastFrame.args[i] = this.lastFrame.args[i] || {};
+
+					let _changed = false;
+
+					for(let j in args[i])
+					{
+						if(args[i][j] !== this.lastFrame.args[i][j])
+						{
+							this.lastFrame.args[i][j] = _args[i][j] = args[i][j];
+							changed = _changed = true;
+						}
+					}
+
+					if(!_changed)
+					{
+						delete _args[i];
+					}
+				}
+
+				for(let i in input)
+				{
+					_input[i] = _input[i] || {};
+					this.lastFrame.input[i] = this.lastFrame.input[i] || {};
+
+					for(let j in input[i])
+					{
+						if(input[i][j] !== this.lastFrame.input[i][j])
+						{
+							this.lastFrame.input[i][j] = _input[i][j] = input[i][j];
+							changed = true;
+						}
+					}
+				}
+
+				if(_input.axes && !Object.keys(_input.axes).length)
+				{
+					delete _input.axes;
+				}
+
+				if(_input.buttons && !Object.keys(_input.buttons).length)
+				{
+					delete _input.buttons;
+				}
+				else
+				{
+					delete _input.buttons[1011];
+				}
+
+				if(changed && this.controlActor && !this.controlActor.args.dead)
+				{
+					this.replayFrames.set(frame, [frame, _input, _args]);
+				}
 			}
 		}
 
@@ -1968,6 +2165,14 @@ export class Viewport extends View
 		{
 			return;
 		}
+
+		if(!this.zeroFrame)
+		{
+			this.args.x = -this.controlActor.args.x;
+			this.args.y = -this.controlActor.args.y;
+		}
+
+		this.zeroFrame = true;
 
 		if(this.cameraBound <= this.maxCameraBound)
 		{
@@ -2195,29 +2400,43 @@ export class Viewport extends View
 				break;
 		}
 
-		let gSpeed = actor.args.gSpeed;
-		let xSpeed = actor.args.xSpeed;
 
 		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
 
 		if(biasModes.includes(this.cameraMode) && !actor.args.pushing  && actor.args.modeTime > 0)
 		{
+			let biaser = actor;
+
+			if(actor.args.standingOn && actor.args.standingOn.invertsBias)
+			{
+				biaser = actor.args.standingOn;
+			}
+
+			let gSpeed = biaser.args.gSpeed;
+			let xSpeed = biaser.args.xSpeed;
+
 			if(actor.args.hangingFrom)
 			{
 				xSpeed = actor.args.hangingFrom.args.xSpeed;
 			}
 
-			if(actor.args.standingLayer)
+			if(biaser.args.standingLayer)
 			{
-				gSpeed += actor.args.standingLayer.offsetXChanged;
+				gSpeed += biaser.args.standingLayer.offsetXChanged;
 			}
 
-			const grounded   = !actor.args.falling;
+			const grounded   = !biaser.args.falling;
 			const absSpeed   = Math.abs(grounded ? gSpeed : xSpeed);
 			const shiftSpeed = 17;
-			const speedBias  = Math.abs(actor.xLast - actor.args.x) > 1 && (Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed));
 
-			switch(actor.args.mode)
+			let speedBias = Math.abs(biaser.xLast - biaser.args.x) > 1 && (Math.min(absSpeed / shiftSpeed, 1) * -Math.sign(gSpeed || xSpeed));
+
+			if(biaser !== actor)
+			{
+				speedBias *= 4;
+			}
+
+			switch(biaser.args.mode)
 			{
 				case 0:
 					this.args.xOffsetTarget += speedBias * 0.4;
@@ -2832,6 +3051,7 @@ export class Viewport extends View
 			}
 		});
 
+		if(!this.replayStart)
 		for(const [id, actor] of Object.entries(this.actors.list))
 		{
 			if(!actor || actor.args.npc)
@@ -2858,6 +3078,7 @@ export class Viewport extends View
 					actor.args.y = checkpoint.y;
 				}
 			}
+
 		}
 	}
 
@@ -3086,6 +3307,21 @@ export class Viewport extends View
 			? this.controlActor.controller
 			: this.controller;
 
+		for(const b in controller.buttons)
+		{
+			if(controller.buttonIsMapped(b))
+			{
+				continue;
+			}
+
+			if(controller.buttons[b].active && controller.buttons[b].time === 1)
+			{
+				this.debugSeq.check(`Button${b}`);
+				this.konamiSeqA.check(`Button${b}`);
+				this.konamiSeqB.check(`Button${b}`);
+			}
+		}
+
 		if(this.args.frameId % 600 === 0)
 		{
 			ga('set', 'metric1', this.args.frameId / 60);
@@ -3230,6 +3466,15 @@ export class Viewport extends View
 		{
 			if(this.args.isReplaying)
 			{
+				const keyboard = Keyboard.get();
+
+				if(keyboard.getKeyCode('NumpadAdd') > 0)
+				{
+					this.focus();
+					this.args.paused = 1;
+					this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
+				}
+
 				if(!this.args.demoIndicator)
 				{
 					this.args.demoIndicator = new CharacterString({value:'▶ PLAY', color: 'green'})
@@ -3237,40 +3482,63 @@ export class Viewport extends View
 
 				this.args.focusMe.args.hide = 'hide';
 
-				if(this.args.frameId < this.replayInputs.length)
+				const frameId = this.args.frameId - this.args.startFrameId;
+
+				if(frameId < this.maxReplayFrame)
 				{
-					const frame = this.replayInputs[this.args.frameId];
+					const actor = this.controlActor;
 
-					if(frame)
+					this.lastInput = this.lastInput || {};
+					this.lastInput.axes = this.lastInput.axes || {};
+					this.lastInput.buttons = this.lastInput.buttons || {};
+
+					if(this.replayFrames.has(frameId))
 					{
-						for(const actorId in frame.args)
+						const [_,input,args] = this.replayFrames.get(frameId);
+						const frame = {frame:_,input,args};
+
+						if(frame.args)
 						{
-							const actor = this.controlActor;
-
-							if(!actor)
-							{
-								continue;
-							}
-
-							if(frame.args)
+							for(const actorId in frame.args)
 							{
 								Object.assign(actor.args, frame.args[actorId]);
 							}
-
-							if(frame.input)
-							{
-								actor.controller.replay(frame.input);
-								actor.readInput();
-							}
 						}
+
+						if(frame.input && frame.input.buttons)
+						{
+							delete frame.input.buttons[9];
+						}
+
+						if(frame.input)
+						{
+							Object.assign(this.lastInput.axes, frame.input.axes || {});
+							Object.assign(this.lastInput.buttons, frame.input.buttons || {});
+
+							actor.controller.replay(this.lastInput);
+							actor.readInput();
+
+							// console.log(frameId, JSON.stringify(this.lastInput));
+						}
+						else
+						{
+							actor.controller.replay(this.lastInput);
+							actor.readInput();
+						}
+					}
+					else
+					{
+						// console.log(frameId, JSON.stringify(this.lastInput));
+						actor.controller.replay(this.lastInput);
+						actor.readInput();
 					}
 
 					this.args.hasRecording = true;
 
-					this.args.topLine.args.value = ' i cant believe its not canvas. ';
+					this.args.topLine.args.value = '    i cant believe its not canvas!    ';
 					this.args.topLine.args.hide = '';
 
-					this.args.status.args.value = ' click here to exit demo. ';
+					this.args.status.args.value = '    click here to exit demo.    ';
 					this.args.status.args.hide = '';
 				}
 				else
@@ -3278,7 +3546,15 @@ export class Viewport extends View
 					this.args.topLine.args.hide = 'hide';
 					this.args.status.args.hide = 'hide';
 
+					this.replayFrames = new Map;
+					this.replayOffset = 0;
+					this.replayStart  = null
+					// this.replay = null;
+
 					this.args.isReplaying = false;
+					this.args._isRecording = false;
+
+					this.onFrameOut(30, () => this.quit(2));
 				}
 			}
 			else
@@ -3295,6 +3571,22 @@ export class Viewport extends View
 					this.controlActor.readInput();
 				}
 			}
+		}
+
+		if(this.controlActor && this.controlActor.args.respawning && !this.args.isReplaying)
+		{
+			this.replay = null;
+		}
+
+		if(!this.args.isReplaying && this.controlActor && this.controlActor.args.dead)
+		{
+			this.onFrameOut(30, () => {
+				if(this.replayFrames.size)
+				{
+					this.saveReplay('#804000');
+					this.replayFrames = new Map;
+				}
+			});
 		}
 
 		this.collisions = new Map;
@@ -3784,6 +4076,11 @@ export class Viewport extends View
 		{
 			this.controlActor && this.controlActor.controller.zero();
 			this.stop();
+
+			this.args.topLine.args.hide = 'hide';
+			this.args.status.args.hide = 'hide';
+
+			this.quit(2);
 		}
 	}
 
@@ -4249,7 +4546,10 @@ export class Viewport extends View
 		this.clearDialog();
 		this.hideDialog();
 
-		this.tileMap.reset();
+		this.tileMap && this.tileMap.reset();
+		// this.replayFrames = new Map;
+		// this.replayOffset = 0;
+		// this.replay = null;
 
 		this.visible.clear();
 		this.callFrames.clear();
@@ -4276,25 +4576,28 @@ export class Viewport extends View
 
 		this.args.screenEffects = new Bag;
 
-		const layers = this.tileMap.tileLayers;
-
-		for(const layerDef of layers)
+		if(this.tileMap)
 		{
-			layerDef.offsetX = 0;
-			layerDef.offsetY = 0;
-			layerDef.offsetXChanged = 0;
-			layerDef.offsetYChanged = 0;
-		}
+			const layers = this.tileMap.tileLayers;
 
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
-		{
-			layer.args.destroyed = false;
+			for(const layerDef of layers)
+			{
+				layerDef.offsetX = 0;
+				layerDef.offsetY = 0;
+				layerDef.offsetXChanged = 0;
+				layerDef.offsetYChanged = 0;
+			}
 
-			layer.args.offsetX = 0;
-			layer.args.offsetY = 0;
+			for(const layer of [...this.args.layers, ...this.args.fgLayers])
+			{
+				layer.args.destroyed = false;
 
-			layer.args.offsetXChanged = 0;
-			layer.args.offsetYChanged = 0;
+				layer.args.offsetX = 0;
+				layer.args.offsetY = 0;
+
+				layer.args.offsetXChanged = 0;
+				layer.args.offsetYChanged = 0;
+			}
 		}
 
 		for(const actor of this.actors.items())
@@ -4334,6 +4637,13 @@ export class Viewport extends View
 
 	quit(quick = false)
 	{
+		if(!this.replay && !this.levelFinished)
+		{
+			this.saveReplay('#FFF');
+		}
+
+		this.currentMap = null;
+
 		if(this.args.networked)
 		{
 			this.server && this.server.close();
@@ -4354,6 +4664,11 @@ export class Viewport extends View
 		this.regions.clear();
 		this.spawn.clear();
 		this.auras.clear();
+
+		this.args.paused = false;
+
+		// this.replayStart = null;
+		// this.replay = null;
 
 		this.args.timeBonus.args.value  = 0;
 		this.args.ringBonus.args.value  = 0;
@@ -4499,7 +4814,7 @@ export class Viewport extends View
 
 		this.args.frameId = 0;
 
-		this.replayInputs = [];
+		this.replayFrames = new Map;
 
 		this.args.isRecording  = true;
 		this.args.isReplaying  = false;
@@ -4513,17 +4828,14 @@ export class Viewport extends View
 	{
 		this.args.demoIndicator = null;
 
-		this.reset();
-
-		this.replayInputs = JSON.parse(localStorage.getItem('replay')) || [];
-
-		this.startLevel();
-
 		this.args.frameId = 0;
 
 		this.args.isReplaying = true;
 		this.args.isRecording = false;
 
+		this.lastInput = {};
+
+		this.startLevel();
 
 		this.args.paused = false;
 	}
@@ -4532,7 +4844,7 @@ export class Viewport extends View
 	{
 		if(this.args.isRecording)
 		{
-			const replay = JSON.stringify([...this.replayInputs]);
+			const replay = JSON.stringify(this.replayFrames.entries());
 
 			localStorage.setItem('replay', replay);
 		}
@@ -4678,7 +4990,6 @@ export class Viewport extends View
 		const input = this.controlActor.controller.serialize();
 		const actorArgs = this.controlActor.args;
 		const args  = {
-
 			x: actorArgs.x
 			, y: actorArgs.y
 
@@ -5297,11 +5608,6 @@ export class Viewport extends View
 			return Promise.resolve(this.matrix);
 		}
 
-		this.matrix = new Matrix(this.settings.matrixUrl, {
-			interval:  0
-			// , storage: localStorage
-		});
-
 		return this.matrix.logIn(redirectUrl).then(() => this.matrix);
 	}
 
@@ -5407,13 +5713,34 @@ export class Viewport extends View
 
 	handleUncaughtException(event)
 	{
-		console.error(event.error);
-
 		TraceDatabase.open('traces', 1).then(database => {
 			const trace = Trace.from(event.error);
 			delete trace.id;
+			console.log(JSON.stringify(trace));
+
 			trace.consume(event);
-			database.insert('traces', trace);
+
+			console.log(JSON.stringify(trace));
+			console.log(trace, event);
+
+			if(!this.currentMap)
+			{
+				return;
+			}
+
+			database.insert('traces', trace).then(() => {
+				if(this.replay)
+				{
+					trace.replay = this.replay.uuid;
+					database.update('traces', trace);
+					return;
+				}
+
+				this.saveReplay('#FF0000').then(replay => {
+					trace.replay = replay.uuid;
+					database.update('traces', trace);
+				});
+			});
 		});
 	}
 

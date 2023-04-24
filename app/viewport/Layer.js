@@ -271,6 +271,7 @@ export class Layer extends View
 
 					block.style({
 						transform:  `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
+						, display: 'none'
 						, width:    blockSize + 'px'
 						, height:   blockSize + 'px'
 						, position: 'absolute'

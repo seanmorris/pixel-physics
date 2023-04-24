@@ -204,6 +204,7 @@
  				<div class = "debug-spawn" cv-ref = "spawnPreview"></div>
  				<div class = "debug-spawn">[[debugObjectName]]</div>
  			</div>
+
 			<div class = "hud hud-top-right hud-table combo-table">
 				<span cv-if = "showCombo">
 					<span>
@@ -217,6 +218,9 @@
 				<span class = "comboFail">[[comboFail]]</span>
 				<span class = "comboResult">[[comboResult]]</span>
 			</div>
+
+			<div class = "hud hud-top-right hud-table quick-form">[[quickForm]]</div>
+
 			<div class = "hud hud-top-right hud-table"  cv-if = "debugOsd">
 				<table>
 					<tr>
@@ -351,7 +355,7 @@
 						<td>[[ringLabel]]</td><td>[[rings]]</td>
 					</tr>
 				</table>
-				<div class = "demo-hud" cv-if = "demoIndicator">[[demoIndicator]]</div>
+				<!-- <div class = "demo-hud" cv-if = "demoIndicator">[[demoIndicator]]</div> -->
 			</div>
 
 			<div class = "hud hud-dark hud-centered" cv-if = "actClear">

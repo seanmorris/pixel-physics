@@ -3,7 +3,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 15,
-    "nextobjectid": 144,
+    "nextobjectid": 147,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -175,6 +175,19 @@
             "tilecount": 512,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 10,
+            "firstgid": 2893,
+            "image": "../Sonic/tiles/marble/props.png",
+            "imageheight": 480,
+            "imagewidth": 320,
+            "margin": 0,
+            "name": "props",
+            "spacing": 0,
+            "tilecount": 150,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -182,9 +195,11 @@
     "version": "1.6",
     "width": 96,
     "types": [
+        "angel",
         "block",
         "breakable-block",
         "chao-crate",
+        "chao-detailer",
         "door",
         "mushroom",
         "region",

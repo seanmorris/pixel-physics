@@ -184,6 +184,8 @@ export class PointActor extends View
 			, NormalSheild
 		]);
 
+		this.splashes = new Set;
+
 		this.noClip = false;
 
 		this.sheild = null;
@@ -694,16 +696,8 @@ export class PointActor extends View
 
 	onRendered()
 	{
-		if(this.init || !this.viewport)
-		{
-			return;
-		}
-
-		const regionClass = this.viewport.objectPalette['base-region']
-
-		this.isRegion = this instanceof regionClass;
-
-		this.box = this.findTag('div');
+		this.sprite = this.findTag('div.sprite');
+		this.box    = this.findTag('div');
 
 		this.autoStyle.set(this.box, {
 			display:              'display'
@@ -767,6 +761,15 @@ export class PointActor extends View
 		// data-mode        = "[[mode]]"
 		// data-id          = "[[id]]"
 
+		if(this.init || !this.viewport)
+		{
+			return;
+		}
+
+		const regionClass = this.viewport.objectPalette['base-region']
+
+		this.isRegion = this instanceof regionClass;
+
 		this.args.bindTo('spriteSheet', v => {
 			if(v !== undefined)
 			{
@@ -779,8 +782,6 @@ export class PointActor extends View
 		});
 
 		this.args.bindTo('angle', v => this.args.angleDeg = this.rad2deg(v));
-
-		this.sprite = this.findTag('div.sprite');
 
 		this.args.charStrings.bindTo(v => {
 			if(!this.labels && this.args.charStrings.length)
@@ -914,6 +915,13 @@ export class PointActor extends View
 			}
 
 			tag.attr(attrs);
+		}
+
+		for(const splash of this.splashes)
+		{
+			splash.x += this.args.xSpeed * (1-(splash.age / 30));
+			splash.style({'--x': splash.x});
+			splash.age++;
 		}
 	}
 
@@ -1051,31 +1059,6 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
-						const dSolid     = this.getMapSolidAt(this.args.x + 0 * this.args.direction, this.args.y + 2);
-						const dSolidF    = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y + 2);
-						const uSolidF    = this.getMapSolidAt(this.args.x + 4 * this.args.direction, this.args.y - 2);
-						const dSolidF2   = this.getMapSolidAt(this.args.x + 2 * this.args.direction, this.args.y + 2);
-						const dSolidB    = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y + 2);
-						const uSolidB    = this.getMapSolidAt(this.args.x - 4 * this.args.direction, this.args.y - 2);
-
-						if(dSolid && !dSolidF && !uSolidF)
-						{
-							this.args.teeter = 1;
-
-							if(!dSolidF2)
-							{
-								this.args.teeter = 2;
-							}
-						}
-						else if(dSolid && !dSolidB && !uSolidB)
-						{
-							this.args.teeter = -1;
-						}
-						else
-						{
-							this.args.teeter = 0;
-						}
-
 						if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
 						{
 							this.args.cameraMode = 'bridge';
@@ -2659,17 +2642,24 @@ export class PointActor extends View
 
 				if(splash.node)
 				{
+					splash.age = 0;
+					splash.x = this.args.x;
 					splash.style({
-						'--x': this.args.x + this.args.xSpeed,
+						'--x': this.args.x,
 						'--y': region.args.y + -region.args.height + -8
 						, 'z-index': 5, opacity: Math.random
 						, '--particleScale': this.args.particleScale
 						, '--time': 320
 					});
 
+					this.splashes.add(splash);
+
 					viewport.particles.add(splash);
 
-					setTimeout(() => splash.node && viewport.particles.remove(splash), 320);
+					viewport.onFrameOut(20, () => {
+						splash.node && viewport.particles.remove(splash)
+						this.splashes.delete(splash);
+					});
 				}
 			}
 		}

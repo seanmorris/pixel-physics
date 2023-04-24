@@ -14,7 +14,7 @@ import { Block } from './Block';
 
 export class Projectile extends PointActor
 {
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		const gravity = args.gravity;
 
@@ -97,8 +97,6 @@ export class Projectile extends PointActor
 		{
 			return false;
 		}
-
-		console.log(other);
 
 		if(other instanceof Marker || (other.args.currentSheild && other.args.currentSheild.immune(other, this, 'projectile')))
 		{

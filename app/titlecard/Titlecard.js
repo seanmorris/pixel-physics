@@ -58,7 +58,7 @@ export class Titlecard extends View
 				));
 
 				this.onTimeout(timeAcc, () => {
-					accept([ new Promise(acceptDone => this.onTimeout(timeAcc + 500, acceptDone)) ]);
+					accept([ new Promise(acceptDone => this.onTimeout(timeAcc + 750, acceptDone)) ]);
 					this[Accept]();
 				});
 

@@ -51,7 +51,7 @@ export class WaterRegion extends Region
 				'--x': splashPoint[0] + actor.x
 				, '--y': splashPoint[1] + actor.y
 				, 'z-index': 0
-				, '--flip': `${actor.args.direction}`
+				, '--flip': `${Math.sign(actor.args.gSpeed)}`
 			});
 			return;
 		}
@@ -194,7 +194,7 @@ export class WaterRegion extends Region
 				'--x': splashPoint[0] + actor.x + -32 * Math.sign(actor.args.gSpeed)
 				, '--y': splashPoint[1] + actor.y
 				, 'z-index': 0
-				, '--flip': `${actor.args.direction}`
+				, '--flip': `${Math.sign(actor.args.gSpeed)}`
 			});
 		}
 	}

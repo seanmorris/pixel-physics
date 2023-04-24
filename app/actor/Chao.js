@@ -75,7 +75,7 @@ export class Chao extends PointActor
 			this.args.stateTime = 0;
 		});
 
-		this.args.alignment = 'hero';
+		this.args.alignment = 'neutral';
 
 		this.stats = {
 			intelligence: 0
@@ -811,6 +811,32 @@ export class Chao extends PointActor
 			{
 				this.args.currentState = 'thinking';
 			}
+		}
+	}
+
+	stateWaiting()
+	{
+		this.args.xSpeed = 0;
+
+		if(Math.trunc(this.args.stateTime / 15) % 2)
+		{
+			if(Math.random() < 0.2)
+			{
+				this.args.emote = 'inquire';
+			}
+			else
+			{
+				this.args.emote = 'normal';
+			}
+		}
+
+		if(this.args.inWater)
+		{
+			this.args.animation = 'standing';
+		}
+		else
+		{
+			this.args.animation = 'sitting';
 		}
 	}
 

@@ -4,7 +4,7 @@ import { Tag } from 'curvature/base/Tag';
 
 export class FrictionRegion extends Region
 {
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 

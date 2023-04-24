@@ -12,6 +12,7 @@
 
 .screen-card.screen-card-pause-menu ul {
 	padding: 0;
+	/* scroll-behavior: smooth; */
 	overflow-y: scroll;
 	overflow-x: visible;
 	max-height: calc(-40px + calc(1px * var(--height)));
@@ -22,7 +23,10 @@
 }
 
 .screen-card.screen-card-pause-menu li {
+	--default-color: rgba(0,0,0,0.75);
+	--back-color: rgba(64,64,64,1);
 	background-color: rgba(0,0,0,0.75);
+	background-color: color-mix( in srgb, var(--color) 20%,rgba(0,0,0,0.75) );
 	box-shadow: 0em 0.05em 0.25em rgba(255,255,255,0.25);
 	backdrop-filter: blur(0px);
 	border: 1px solid transparent;
@@ -36,9 +40,9 @@
 
 	min-width: 200px;
 	min-height: 2em;
-	margin-bottom: 1em;
+	margin-bottom: 0.8em;
 
-	transition: background-color 0.2s ease-in-out, filter 0.4s ease-in-out;
+	transition: background-color 0.8s ease-in-out, filter 0.4s ease-in-out;
 }
 
 .screen-card.screen-card-pause-menu [data-current-menu="Next 15"] li[data-title$=")"] .hud-character-string,
@@ -50,7 +54,9 @@
 .screen-card.screen-card-pause-menu li.focused {
 	transition: background-color 0.1s ease-in-out, filter 0.1s ease-in-out;
 	/* font-weight: bold; */
+	--default-color: rgba(255,255,255,0.125);
 	background-color: rgba(255,255,255,0.125);
+	background-color: color-mix( in srgb, var(--color) 25%,rgba(255,255,255,0.125) );
 	backdrop-filter: blur(1.25px);
 	/* border-radius: 5px; */
 	border-color: white;

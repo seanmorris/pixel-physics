@@ -1095,7 +1095,7 @@ export class Sonic extends PointActor
 
 			// this.viewport.onFrameOut(15, () => this.args.doubleSpin = false);
 
-			this.pinch(-600, 50);
+			this.viewport.onFrameOut(5, () => this.pinch(-600, 50));
 
 			const marker = new Marker({x:this.args.x,y:this.args.y});
 

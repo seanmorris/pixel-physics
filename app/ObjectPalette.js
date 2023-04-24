@@ -60,6 +60,7 @@ import { Flipper } from './actor/Flipper';
 import { SeeSaw } from './actor/SeeSaw';
 
 import { Cinematic } from './actor/Cinematic';
+import { Tumbler } from './actor/Tumbler';
 
 import { Flickie } from './actor/Flickie';
 
@@ -239,9 +240,13 @@ import { Asteroid } from './actor/Asteroid';
 import { RocketPlatform } from './actor/RocketPlatform';
 import { PropellerPlatform } from './actor/PropellerPlatform';
 import { HexNut } from './actor/HexNut';
+import { SpinningFloat } from './actor/SpinningFloat';
 import { Turtloid } from './actor/Turtloid';
 
 import { CrossCannon } from './actor/CrossCannon';
+
+import { ChaoDetailer } from './actor/ChaoDetailer';
+import { Angel } from './actor/Angel';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -419,7 +424,7 @@ export const ObjectPalette = {
 	, 'egg-shell-top': EggShellTop
 	, 'egg-shell-bottom': EggShellBottom
 	, 'cut-scene': CutScene
-	, 'html-frame': HtmlFrame
+	// , 'html-frame': HtmlFrame
 	, 'panel': Panel
 	, 'tester': Tester
 	, 'cursor': Cursor
@@ -433,6 +438,10 @@ export const ObjectPalette = {
 	, 'rocket-platform': RocketPlatform
 	, 'propeller-platform': PropellerPlatform
 	, 'hex-nut': HexNut
+	, 'spinning-float': SpinningFloat
 	, 'turtloid': Turtloid
+	, 'angel': Angel
+	, 'chao-detailer': ChaoDetailer
 	, 'cross-cannon': CrossCannon
+	, 'tumbler': Tumbler
 };

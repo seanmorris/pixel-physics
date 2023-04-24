@@ -22,10 +22,10 @@ const keys = {
 
 	, 'KeyBackspace': 8
 
-	, 'KeyW': 12
-	, 'KeyA': 14
-	, 'KeyS': 13
-	, 'KeyD': 15
+	, 'KeyW':  12
+	, 'KeyA':  14
+	, 'KeyS':  13
+	, 'KeyD':  15
 
 	, 'KeyH': 112
 	, 'KeyJ': 113
@@ -33,6 +33,7 @@ const keys = {
 	, 'KeyL': 115
 
 	, 'KeyP':  1020
+	, 'KeyO':  1209
 	, 'Pause': 1020
 
 	, 'Tab': 11
@@ -55,7 +56,14 @@ const keys = {
 	, 'NumpadMultiply': 1013
 	, 'NumpadDivide':   1014
 
+	, 'PageUp':         1022
+	, 'PageDown':       1023
+	, 'Home':           1024
+	, 'End':            1025
+
 	, 'Escape':         1020
+
+	, 'KeyB':           1201
 };
 
 [...Array(12)].map((x,fn) => keys[ `F${fn}` ] = 2000 + fn);
@@ -79,6 +87,12 @@ const buttonMap = {
 	, '+7': 13
 };
 
+const buttonRemap = {
+	0:   1200
+	, 1: 1201
+	, 9: 1209
+};
+
 export class Controller
 {
 	constructor({keys = {}, deadZone = 0, gamepad = null, keyboard = null})
@@ -93,7 +107,7 @@ export class Controller
 		});
 	}
 
-	update({gamepad})
+	update({gamepad} = {})
 	{
 		for(const i in this.buttons)
 		{
@@ -172,20 +186,28 @@ export class Controller
 				}
 			}
 
-			for(const keycode in keys)
+			for(let keycode in keys)
 			{
 				if(pressed[keycode])
 				{
 					continue;
 				}
 
-				const buttonId = keys[keycode];
+				let buttonIds = keys[keycode];
 
-				if(keyboard.getKeyCode(keycode) > 0)
+				if(!Array.isArray(buttonIds))
 				{
-					this.press(buttonId, 1);
+					buttonIds = keys[keycode] = [buttonIds];
+				}
 
-					pressed[buttonId] = true;
+				for(const buttonId of buttonIds)
+				{
+					if(keyboard.getKeyCode(keycode) > 0)
+					{
+						this.press(buttonId, 1);
+
+						pressed[buttonId] = true;
+					}
 				}
 			}
 		}
@@ -244,25 +266,33 @@ export class Controller
 				}
 			}
 
-			for(const keycode in keys)
+			for(let keycode in keys)
 			{
-				const buttonId = keys[keycode];
+				let buttonIds = keys[keycode];
 
-				if(released[buttonId])
+				if(!Array.isArray(buttonIds))
 				{
-					continue;
+					buttonIds = keys[keycode] = [buttonIds];
 				}
 
-				if(pressed[buttonId])
+				for(const buttonId of buttonIds)
 				{
-					continue;
-				}
+					if(released[buttonId])
+					{
+						continue;
+					}
 
-				if(keyboard.getKeyCode(keycode) < 0)
-				{
-					this.release(buttonId);
+					if(pressed[buttonId])
+					{
+						continue;
+					}
 
-					released[keycode] = true;
+					if(keyboard.getKeyCode(keycode) < 0)
+					{
+						this.release(buttonId);
+
+						released[keycode] = true;
+					}
 				}
 			}
 		}
@@ -365,6 +395,43 @@ export class Controller
 				released[buttonId] = true;
 			}
 		}
+
+		for(const concreteId in buttonRemap)
+		{
+			const abstractId = buttonRemap[concreteId];
+
+			if(released[abstractId])
+			{
+				continue;
+			}
+
+			if(pressed[abstractId])
+			{
+				continue;
+			}
+
+			if(!this.buttons[abstractId])
+			{
+				this.buttons[abstractId] = new Button;
+			}
+
+			if(!this.buttons[concreteId])
+			{
+				this.buttons[concreteId] = new Button;
+			}
+
+			if(this.buttons[concreteId].active)
+			{
+				this.press(abstractId, this.buttons[concreteId].pressure);
+				pressed[abstractId] = true;
+
+			}
+			else if(!pressed[abstractId])
+			{
+				this.release(abstractId, this.buttons[concreteId].pressure);
+				released[abstractId] = true;
+			}
+		}
 	}
 
 	tilt(axisId, magnitude)
@@ -456,5 +523,15 @@ export class Controller
 		{
 			this.buttons[i].zero();
 		}
+	}
+
+	buttonIsMapped(buttonId)
+	{
+		return buttonId in buttonRemap;
+	}
+
+	keyIsMapped(keyCode)
+	{
+		return keyCode in keys;
 	}
 }

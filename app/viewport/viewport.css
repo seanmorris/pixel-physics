@@ -55,7 +55,7 @@ section.filters {
 	image-rendering: auto;
 }
 
-.viewport-overlay,
+/* .viewport-overlay, */
 .viewport-zoom {
 	overflow: hidden;
 }
@@ -279,10 +279,14 @@ section.filters {
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
 
-	filter:	drop-shadow( var(--outlineWidth) var(--outlineWidth)   0px var(--outlineColor))
-		drop-shadow( var(--outlineWidth)    var(--outlineWidthNeg) 0px var(--outlineColor))
-		drop-shadow( var(--outlineWidthNeg) var(--outlineWidth)    0px var(--outlineColor))
-		drop-shadow( var(--outlineWidthNeg) var(--outlineWidthNeg) 0px var(--outlineColor));
+	--half: calc(1 * var(--outlineWidth));
+	--halfNeg: calc(-1 * var(--outlineWidth));
+
+	filter:
+		drop-shadow( var(--half) var(--half)   0px var(--outlineColor))
+		drop-shadow( var(--half)    var(--halfNeg) 0px var(--outlineColor))
+		drop-shadow( var(--halfNeg) var(--half)    0px var(--outlineColor))
+		drop-shadow( var(--halfNeg) var(--halfNeg) 0px var(--outlineColor));
 }
 
 .controllable.actor-generic:hover:not([data-selected=true]),
@@ -762,4 +766,8 @@ input[type=number]::-webkit-outer-spin-button {
 		transform: translateY(128px);
 		opacity: 0;
 	}
+}
+
+.quick-form {
+	white-space: pre;
 }

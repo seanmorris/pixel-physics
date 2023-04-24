@@ -124,6 +124,9 @@ export class Egg extends PointActor
 
 				carrier.carrying.add(this);
 
+				this.args.standingOn = null;
+
+				this.args.falling = true;
 				this.args.float = -1;
 
 				this.args.groundAngle = 0;
@@ -224,26 +227,26 @@ export class Egg extends PointActor
 
 	updateStart()
 	{
-		if(this.args.static)
-		{
-			this.args.static = !!this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
-		}
-		else
-		{
-			this.args.static = !this.args.falling;
-		}
+		// if(this.args.static)
+		// {
+		// 	this.args.static = !!this.bMap('checkBelow', this.x, this.y + 1).get(Platformer);
+		// }
+		// else
+		// {
+		// 	this.args.static = !this.args.falling;
+		// }
 
-		if(this.args.gSpeed || this.args.xSpeed)
-		{
-			this.args.static = false;
-		}
+		// if(this.args.gSpeed || this.args.xSpeed)
+		// {
+		// 	this.args.static = false;
+		// }
 
 		super.updateStart();
 	}
 
 	update()
 	{
-		if(this.broken)
+		if(this.broken && !this.carriedBy)
 		{
 			this.args.startFrame = this.args.startFrame || this.viewport.args.frameId;
 

@@ -28,7 +28,9 @@ export class PlatformFlare extends PointActor
 			other.damage(this, 'fire');
 		}
 
-		if((this.viewport.args.frameId / 60) % 3)
+		const frameId = this.viewport.args.frameId - this.viewport.args.startFrameId;
+
+		if((frameId / 60) % 3)
 		{
 			return;
 		}

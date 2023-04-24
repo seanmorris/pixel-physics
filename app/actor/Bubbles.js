@@ -87,7 +87,9 @@ export class Bubbles extends Mixin.from(PointActor, CanPop)
 			}
 		}
 
-		if(this.viewport && this.args.electric && this.viewport.args.frameId % 100 === 0)
+		const frameId = this.viewport.args.frameId - this.viewport.args.startFrameId;
+
+		if(this.viewport && this.args.electric && frameId % 100 === 0)
 		{
 			this.args.currentSheild = this.args.currentSheild ? null : this.shield;
 		}

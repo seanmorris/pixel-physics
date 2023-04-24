@@ -12,7 +12,7 @@ export class WaterSpout extends PointActor
 		return obj;
 	}
 
-	constructor(args, parent)
+	constructor(args = {}, parent)
 	{
 		super(args, parent);
 
