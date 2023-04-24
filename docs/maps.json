@@ -310,6 +310,7 @@
     "/map/stand-test.headers.json",
     "/map/switch-test.headers.json",
     "/map/tails-movement.headers.json",
+    "/map/test-arena.headers.json",
     "/map/test-objects.headers.json",
     "/map/test-zone.headers.json",
     "/map/tight-loop.headers.json",

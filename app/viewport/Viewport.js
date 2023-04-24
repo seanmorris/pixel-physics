@@ -5409,6 +5409,12 @@ export class Viewport extends View
 	{
 		console.error(event.error);
 
+		ga('send', 'event', {
+			eventCategory: 'error',
+			eventAction: `${event.error.message} @ ${event.file}:${event.lineno}:${event.colno}`,
+			eventLabel: event.error.stack
+		});
+
 		TraceDatabase.open('traces', 1).then(database => {
 			const trace = Trace.from(event.error);
 			delete trace.id;
