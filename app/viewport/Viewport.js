@@ -5411,7 +5411,7 @@ export class Viewport extends View
 
 		ga('send', 'event', {
 			eventCategory: 'error',
-			eventAction: `${event.error.message} @ ${event.file}:${event.lineno}:${event.colno}`,
+			eventAction: `${event.error.message} @ ${event.filename}:${event.lineno}:${event.colno}`,
 			eventLabel: event.error.stack
 		});
 
