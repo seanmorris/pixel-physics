@@ -95,6 +95,10 @@
 	--yTarget: 80vh;
 }
 
+.actor-item.actor-breakable-block.breaking {
+	z-index: 1000;
+}
+
 .actor-item.actor-breakable-block.breaking .fragmentsX {
 	/*filter: brightness(1.15) saturate(0.25) contrast(1.25);*/
 }

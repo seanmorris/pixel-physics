@@ -43,7 +43,9 @@ export class Spikes extends PointActor
 		{
 			this.args.wasRetracted = this.args.retracted;
 
-			this.args.retracted = !!(Math.floor((this.viewport.args.frameId + -this.args.offset) / this.args.beat) % 2);
+			const frameId = this.viewport.args.frameId + -this.viewport.args.startFrameId + -this.args.offset;
+
+			this.args.retracted = !!(Math.floor((frameId) / this.args.beat) % 2);
 
 			if(!this.args.retracted && this.args.wasRetracted)
 			{

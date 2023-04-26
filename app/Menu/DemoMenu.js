@@ -1,15 +1,19 @@
 import { ReplayDatabase } from '../replay/ReplayDatabase';
 import { Replay } from '../replay/Replay';
-import { Viewport } from '../viewport/Viewport';
+import { Router } from 'curvature/base/Router';
 
 const startDemo = (parent, menu, replay, offset = 0) => {
+	parent.reset();
 	parent.replayFrames   = replay.getIndexedFrames();
-	parent.replayStart    = parent.replayFrames.get(replay.firstFrame) || {};
+	parent.replayStart    = parent.replayFrames.get(offset || replay.firstFrame) || {};
 	parent.replay         = replay;
 	parent.maxReplayFrame = replay.lastFrame;
-	parent.replayOffset = -1 + replay.firstFrame + offset;
+	parent.replayOffset   = -1 + replay.firstFrame + offset;
+
+	Router.setQuery('demo', replay.uuid);
 
 	parent.loadMap({mapUrl: replay.map}).then(() => {
+		parent.args.paused    = true;
 		parent.playback();
 	});
 }
@@ -68,12 +72,12 @@ const loadChildren = (parent, menu, offset = 0) => {
 			const duration = `${min}:${sec}`;
 
 			let childName = `${duration}] ${new Date(replay.created).toLocaleString('en-US')}`;
-			let subtext = '';
+			let subtext = replay.map;
 
 			if(replay.name)
 			{
 				childName = duration + '] ' + replay.name;
-				subtext = new Date(replay.created).toLocaleString('en-US');
+				subtext = new Date(replay.created).toLocaleString('en-US') + ' ' + replay.map;
 			}
 
 			children[ childName ] = {
@@ -97,6 +101,24 @@ const loadChildren = (parent, menu, offset = 0) => {
 
 						return subchildren;
 					}},
+					'Options': { children: {
+
+						Banners: {
+							input: 'boolean'
+							, revert: () => parent.args.replayBanners = true
+							, set: value => parent.args.replayBanners = value
+							, get: () => parent.args.replayBanners
+						},
+
+						'Quick Exit': {
+							input: 'boolean'
+							, revert: () => parent.args.replayQuickExit = false
+							, set: value => parent.args.replayQuickExit = value
+							, get: () => parent.args.replayQuickExit
+						},
+
+					}},
+
 					'Export': { callback: () => {
 						const fileContents = new Blob([JSON.stringify(replay)], {type: 'text/json'});
 						const fileUrl  = URL.createObjectURL(fileContents);

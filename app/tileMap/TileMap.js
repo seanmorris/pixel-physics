@@ -1000,8 +1000,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				const mag = Math.abs(rayX);
 
-				const px = (startX + mag * Math.cos(angle));
-				const py = (startY + mag * Math.sin(angle));
+				let px = (startX + mag * Math.cos(angle));
+				let py = (startY + mag * Math.sin(angle));
+
+				if(bf > 1)
+				{
+					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+					if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+					if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
+				}
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				oldModeX = modeX;
@@ -1060,8 +1068,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			{
 				const mag = Math.abs(rayY);
 
-				const px = (startX + mag * Math.cos(angle));
-				const py = (startY + mag * Math.sin(angle));
+				let px = (startX + mag * Math.cos(angle));
+				let py = (startY + mag * Math.sin(angle));
+
+				if(bf > 1)
+				{
+					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+					if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+					if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
+				}
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				oldModeY = modeY;
@@ -1128,11 +1144,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		window.logPoints && console.timeEnd('rayCast');
 		window.logPoints && console.log({iterations});
 
-		if(Math.sqrt(minDistSq) > maxDistance)
-		{
-			return;
-		}
-
 		if(window.logPoints)
 		{
 			window.logPoints(startX, startY, 'start');
@@ -1145,6 +1156,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			// [...solidsY].map(p => window.logPoints(p[0],p[1],p[2]));
 
 			nearest && window.logPoints(nearest[0], nearest[1], 'nearest');
+		}
+
+		if(Math.sqrt(minDistSq) > maxDistance)
+		{
+			return;
 		}
 
 		return nearest;

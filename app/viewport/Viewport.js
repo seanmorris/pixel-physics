@@ -132,6 +132,8 @@ export class Viewport extends View
 
 		this.meta = {};
 
+		this.customColor = {h: 0, s: 1, v: 1};
+
 		this.args.combo = [];
 
 		// this.args.plot = new Plot;
@@ -182,6 +184,9 @@ export class Viewport extends View
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
 		this.zeroFrame     = false;
+
+		this.args.replayQuickExit = false;
+		this.args.replayBanners = true;
 
 		this.maxObjectId = 0;
 
@@ -396,13 +401,20 @@ export class Viewport extends View
 			this.args.debugEnabled = true;
 
 			console.log('Debug variable set.');
+			this.args.topLine.args.value = '';
+			this.args.topLine.args.hide = 'hide hidden';
 
-			this.args.topLine.args.value = ' Debug variable set! ';
-			this.args.topLine.args.hide = '';
+			this.onTimeout(1, ()=>{
+				this.args.topLine.args.value = ' Debug variable set! ';
+				this.args.topLine.args.hide = '';
+			});
+
+			this.onTimeout(1500, ()=>{
+				this.args.topLine.args.hide = 'hide';
+			});
 
 			this.onTimeout(1750, ()=>{
-				this.args.topLine.args.value = '';
-				this.args.status.args.hide = 'hide';
+				this.args.topLine.args.hide = 'hide hidden';
 			});
 		});
 
@@ -423,16 +435,25 @@ export class Viewport extends View
 
 			this.args.masterCheat = true;
 
-			this.args.topLine.args.value = ' Master cheat detected. ';
-			this.args.topLine.args.hide = '';
+			this.args.topLine.args.value = '';
+			this.args.topLine.args.hide = 'hide hidden';
+
+			this.onTimeout(1, ()=>{
+				this.args.topLine.args.value = ' Master cheat detected. ';
+				this.args.topLine.args.hide = '';
+			});
 
 			console.log('Master cheat detected.');
 
 			this.args.paused = false;
 
-			this.onTimeout(1750, ()=>{
+			this.onTimeout(1500, ()=>{
 				this.args.topLine.args.value = '';
 				this.args.status.args.hide = 'hide';
+			});
+
+			this.onTimeout(1750, ()=>{
+				this.args.topLine.args.hide = 'hide hidden';
 			});
 		};
 
@@ -447,12 +468,21 @@ export class Viewport extends View
 
 			this.controlActor.gravityCheat = !this.controlActor.gravityCheat;
 
-			this.args.topLine.args.value = ` Gravity cheat ${this.controlActor.gravityCheat?'on':'off'}. `;
-			this.args.topLine.args.hide = '';
+			this.args.topLine.args.value = '';
+			this.args.topLine.args.hide = 'hide hidden';
 
-			this.onTimeout(1750, ()=>{
+			this.onTimeout(1, ()=>{
+				this.args.topLine.args.value = ` Gravity cheat ${this.controlActor.gravityCheat?'on':'off'}. `;
+				this.args.topLine.args.hide = '';
+			});
+
+			this.onTimeout(1500, ()=>{
 				this.args.topLine.args.value = '';
 				this.args.status.args.hide = 'hide';
+			});
+
+			this.onTimeout(1750, ()=>{
+				this.args.topLine.args.hide = 'hide hidden';
 			});
 
 			if(this.controlActor.gravityCheat)
@@ -575,6 +605,7 @@ export class Viewport extends View
 		this.args.nowPlaying = new CharacterString({value:'Now playing'});
 		this.args.trackName  = new CharacterString({value:''});
 		this.args.hideNowPlaying = 'hide-now-playing'
+		this.args.hiddenNowPlaying = 'hidden-now-playing'
 
 		Sfx.addEventListener('play', event => {
 			if(!this.args.audio)
@@ -591,6 +622,10 @@ export class Viewport extends View
 			{
 				event.preventDefault();
 				this.args.hideNowPlaying = 'hide-now-playing';
+				this.onFrameOut(60, () => {
+					if(this.args.hideNowPlaying)
+					this.args.hiddenNowPlaying = 'hidden-now-playing'
+				});
 				return;
 			}
 
@@ -598,6 +633,7 @@ export class Viewport extends View
 			{
 				this.args.trackName.args.value = '';
 				this.args.hideNowPlaying = 'hide-now-playing';
+				this.args.hiddenNowPlaying = 'hidden-now-playing';
 				return;
 			}
 			else
@@ -1177,6 +1213,7 @@ export class Viewport extends View
 				}
 			}
 
+			this.args.fgLayers.length = 0;
 			this.args.layers.length = 0;
 
 			const layers = this.tileMap.tileLayers;
@@ -1660,6 +1697,7 @@ export class Viewport extends View
 
 			const zoneState = this.getZoneState();
 
+			if(!this.replay)
 			for(const emblemId of zoneState.emblems)
 			{
 				const emblem = this.actorsById[emblemId];
@@ -1676,14 +1714,14 @@ export class Viewport extends View
 			{
 				if(this.nextControl)
 				{
-					this.nextControl.controller.replay(this.replayStart[1]||{});
-					this.nextControl.readInput();
-
 					for(let i in this.replayStart[2])
 					{
 						Object.assign(this.nextControl.args, this.replayStart[2][i]);
 						break;
 					}
+
+					this.nextControl.controller.replay(this.replayStart[1]||{});
+					this.nextControl.readInput();
 				}
 			}
 			else if(Router.query.start)
@@ -1976,6 +2014,11 @@ export class Viewport extends View
 
 		if(this.args.debugEnabled)
 		{
+			if(!this.args.plot)
+			{
+				this.args.plot = new Plot;
+			}
+
 			if(controller.buttons[8] && controller.buttons[8].time === 1)
 			{
 				this.args.debugEditMode = !this.args.debugEditMode;
@@ -2016,6 +2059,11 @@ export class Viewport extends View
 		if(!this.args.networked && controller.buttons[1011] && controller.buttons[1011].time > 0)
 		{
 			this.args.pauseMenu.input(controller);
+		}
+
+		if(this.replay && controller.buttons[1209] && controller.buttons[1209].time > 0)
+		{
+			this.quit(this.args.replayQuickExit ?  2 : 1);
 		}
 
 		if(!this.args.networked && !this.args.paused)
@@ -3399,14 +3447,14 @@ export class Viewport extends View
 			return;
 		}
 
-		if(this.tileMap && this.tileMap.mapData)
-		{
-			this.updateBackdrops();
-		}
-
 		if(!this.args.started)
 		{
 			return;
+		}
+
+		if(this.tileMap && this.tileMap.mapData)
+		{
+			this.updateBackdrops();
 		}
 
 		for(const [detachee, detacher] of this.willDetach)
@@ -3480,7 +3528,12 @@ export class Viewport extends View
 					this.args.demoIndicator = new CharacterString({value:'▶ PLAY', color: 'green'})
 				}
 
-				this.args.focusMe.args.hide = 'hide';
+				this.onFrameOut(60, () => {
+					if(this.args.focusMe.args.hide)
+					{
+						this.args.focusMe.args.hide = 'hide hidden';
+					}
+				})
 
 				const frameId = this.args.frameId - this.args.startFrameId;
 
@@ -3535,16 +3588,26 @@ export class Viewport extends View
 
 					this.args.hasRecording = true;
 
-					this.args.topLine.args.value = '    i cant believe its not canvas!    ';
-					this.args.topLine.args.hide = '';
+					if(this.args.replayBanners && this.args.frameId - this.args.startFrameId < 5)
+					{
+						this.args.topLine.args.hide = 'hide hidden';
+						this.args.status.args.hide  = 'hide hidden';
+						this.args.focusMe.args.hide = 'hide hidden';
 
-					this.args.status.args.value = '    click here to exit demo.    ';
-					this.args.status.args.hide = '';
+						this.onTimeout(1, ()=>{
+							// this.args.topLine.args.value = '    i cant believe its not canvas!    ';
+							// this.args.topLine.args.hide = '';
+
+							// this.args.status.args.value = '    click here to exit demo.    ';
+							// this.args.status.args.hide = '';
+
+						});
+					}
 				}
 				else
 				{
-					this.args.topLine.args.hide = 'hide';
-					this.args.status.args.hide = 'hide';
+					this.args.topLine.args.hide = 'hide hidden';
+					this.args.status.args.hide = 'hide hidden';
 
 					this.replayFrames = new Map;
 					this.replayOffset = 0;
@@ -3554,7 +3617,7 @@ export class Viewport extends View
 					this.args.isReplaying = false;
 					this.args._isRecording = false;
 
-					this.onFrameOut(30, () => this.quit(2));
+					this.onFrameOut(30, () => this.quit(this.args.replayQuickExit ?  2 : 1));
 				}
 			}
 			else
@@ -3985,8 +4048,8 @@ export class Viewport extends View
 
 			this.applyMotionBlur();
 
-			this.args.popTopLine = this.args.popTopLine || new CharacterString({color:'yellow'});
-			this.args.popBottomLine = this.args.popBottomLine || new CharacterString({color:'yellow'});
+			this.args.popTopLine = this.args.popTopLine || this.getUnusedCharString({color:'yellow'});
+			this.args.popBottomLine = this.args.popBottomLine || this.getUnusedCharString({color:'yellow'});
 
 			let multiply = 0;
 			let base = 0;
@@ -3998,25 +4061,45 @@ export class Viewport extends View
 			{
 				len = this.controlActor.args.popChain.length;
 
+				if(!len)
+				{
+					for(const item of this.args.combo)
+					{
+						this.pooledCharStringDetached(item.score);
+						this.pooledCharStringDetached(item.label);
+					}
+					// this.resetCharStringPool();
+				}
+
+				for(let i = 0; i < len; i++)
+				{
+					if(i > 4 && this.args.combo[i])
+					{
+						this.pooledCharStringDetached(this.args.combo[i].score);
+						this.pooledCharStringDetached(this.args.combo[i].label);
+					}
+				}
+
 				for(let i = 0; i < len; i++)
 				{
 					const pop = this.controlActor.args.popChain[i];
-					this.args.combo[i] = this.args.combo[i] || {score:new CharacterString, label:new CharacterString};
 
-					this.args.combo[i].score.args.value = pop.points;
-					this.args.combo[i].label.args.value = String(pop.label).replace(/-/g, ' ');
+					if(i < 4)
+					{
+						this.args.combo[i] = this.args.combo[i] || {score:this.getUnusedCharString(), label:this.getUnusedCharString()};
+
+						this.args.combo[i].score.args.value = pop.points;
+						this.args.combo[i].label.args.value = String(pop.label).replace(/-/g, ' ');
+					}
 
 					multiply += pop.multiplier;
 					base += pop.points;
-
-					this.args.combo[i].score.preserve = true;
-					this.args.combo[i].label.preserve = true;
 				}
 
-				this.args.combo.length = this.controlActor.args.popChain.length;
+				this.args.combo.length = Math.min(4, this.controlActor.args.popChain.length);
 			}
 
-			this.args.popTopLine.args.value =  multiply + ' x ' + base;
+			this.args.popTopLine.args.value = multiply + ' x ' + base;
 			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) + '...' : '';
 		}
 
@@ -4045,7 +4128,6 @@ export class Viewport extends View
 			this.args.publishTime--;
 		}
 
-
 		this.spawnActors();
 
 		if(this.args.fps < 30)
@@ -4070,6 +4152,59 @@ export class Viewport extends View
 		}
 	}
 
+	populateCharStringPool()
+	{
+		if(!this.charStringPool)
+		{
+			this.charStringPool = new Set;
+			this.charStringOpen = new Set;
+
+			for(let i = 0; i < 20; i++)
+			{
+				const charString = Bindable.make(new CharacterString({value:' '.repeat(10)}));
+
+				charString.preserve = true;
+
+				this.charStringPool.add( charString );
+				this.charStringOpen.add( charString );
+			}
+		}
+	}
+
+	getUnusedCharString(args = {})
+	{
+		this.populateCharStringPool();
+
+		for(const charString of this.charStringOpen)
+		{
+			this.charStringOpen.delete(charString);
+
+			Object.assign(charString.args, args);
+
+			if(!args.value)
+			{
+				charString.args.value = '';
+			}
+
+			return charString;
+		}
+	}
+
+	pooledCharStringDetached(charString)
+	{
+		this.charStringOpen.add(charString);
+	}
+
+	resetCharStringPool()
+	{
+		this.populateCharStringPool();
+
+		for(const charString of this.charStringPool)
+		{
+			this.charStringOpen.add(charString);
+		}
+	}
+
 	click(event)
 	{
 		if(this.args.isReplaying)
@@ -4077,10 +4212,10 @@ export class Viewport extends View
 			this.controlActor && this.controlActor.controller.zero();
 			this.stop();
 
-			this.args.topLine.args.hide = 'hide';
-			this.args.status.args.hide = 'hide';
+			this.args.topLine.args.hide = 'hide hidden';
+			this.args.status.args.hide = 'hide hidden';
 
-			this.quit(2);
+			this.quit(this.args.replayQuickExit ?  2 : 1);
 		}
 	}
 
@@ -4547,7 +4682,7 @@ export class Viewport extends View
 		this.hideDialog();
 
 		this.tileMap && this.tileMap.reset();
-		// this.replayFrames = new Map;
+		this.replayFrames = new Map;
 		// this.replayOffset = 0;
 		// this.replay = null;
 
@@ -4666,9 +4801,12 @@ export class Viewport extends View
 		this.auras.clear();
 
 		this.args.paused = false;
+		this.args.started = false;
 
-		// this.replayStart = null;
-		// this.replay = null;
+		this.replayFrames = new Map;
+		this.replayOffset = 0;
+		this.replayStart = null;
+		this.replay = null;
 
 		this.args.timeBonus.args.value  = 0;
 		this.args.ringBonus.args.value  = 0;
@@ -5541,7 +5679,7 @@ export class Viewport extends View
 		catch (error) {
 			ga && ga('send', 'event', {
 				eventCategory: 'cpu',
-				eventAction:   'core check fail',
+				eventAction:   'cpu detect fail',
 				eventLabel:    `Cpu Detect Failure: ${error}`
 			});
 		}
@@ -5558,14 +5696,14 @@ export class Viewport extends View
 
 			ga('send', 'event', {
 				eventCategory: 'gpu',
-				eventAction:   vendor,
-				eventLabel:    gpu
+				eventAction:   'gpu detect',
+				eventLabel:    `${vendor} :: ${gpu}`
 			});
 		}
 		catch (error) {
 			ga && ga('send', 'event', {
 				eventCategory: 'gpu',
-				eventAction:   'fail',
+				eventAction:   'gpu detect fail',
 				eventLabel:    `Gpu Detect Failure: ${error}`
 			});
 		}

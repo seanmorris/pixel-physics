@@ -107,6 +107,10 @@ li.focused.unavailable .small-menu-font .hud-character {
 	background-position: calc(calc(-10px * var(--scale)) * var(--value)) calc(-32px * var(--scale));
 }
 
+.hud-character[data-value="-2"] {
+	display: none;
+}
+
 .hud-character[data-type="number"][data-value="17"],
 .hud-character[data-type="number"][data-value="19"],
 .hud-character[data-type="number"][data-value="18"] {

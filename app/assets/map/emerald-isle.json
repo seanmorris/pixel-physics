@@ -45,7 +45,7 @@
          "name":"Art -1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":800,
          "x":0,
          "y":0
@@ -57,7 +57,7 @@
          "name":"Art 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":800,
          "x":0,
          "y":0
@@ -69,7 +69,7 @@
          "name":"Art 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":800,
          "x":0,
          "y":0
@@ -81,7 +81,7 @@
          "name":"Foreground 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":800,
          "x":0,
          "y":0
@@ -93,7 +93,7 @@
          "name":"Foreground 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":800,
          "x":0,
          "y":0
@@ -6298,6 +6298,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6329,6 +6334,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6364,6 +6374,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6395,6 +6410,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6430,6 +6450,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6461,6 +6486,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6529,6 +6559,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6560,6 +6595,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6694,6 +6734,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6725,6 +6770,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6760,6 +6810,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6791,6 +6846,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6826,6 +6886,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -6857,6 +6922,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -6991,6 +7061,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7022,6 +7097,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7057,6 +7137,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7088,6 +7173,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7123,6 +7213,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7154,6 +7249,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7222,6 +7322,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7253,6 +7358,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7387,6 +7497,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7418,6 +7533,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7453,6 +7573,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7484,6 +7609,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -7519,6 +7649,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -7550,6 +7685,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -9802,6 +9942,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -9838,6 +9983,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -9878,6 +10028,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -9914,6 +10069,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -9954,6 +10114,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -9990,6 +10155,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -10063,6 +10233,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -10099,6 +10274,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -10238,6 +10418,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -10274,6 +10459,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -10314,6 +10504,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -10350,6 +10545,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -10390,6 +10590,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -10426,6 +10631,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -10499,6 +10709,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
                          "name":"platform",
                          "type":"int",
                          "value":0
@@ -10535,6 +10750,11 @@
                          "name":"float",
                          "type":"int",
                          "value":-1
+                        }, 
+                        {
+                         "name":"isGhost",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"platform",
@@ -11519,7 +11739,7 @@
                 }],
          "opacity":0.44,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

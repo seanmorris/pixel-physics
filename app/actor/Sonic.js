@@ -202,9 +202,9 @@ export class Sonic extends PointActor
 		// const rS2 = 1;
 		// const rV2 = 1;
 
-		const h = Number(Router.query.h ?? 0);
-		const s = Number(Router.query.s ?? 1);
-		const v = Number(Router.query.v ?? 1);
+		const h = Number(this.viewport.customColor.h ?? 0);
+		const s = Number(this.viewport.customColor.s ?? 1);
+		const v = Number(this.viewport.customColor.v ?? 1);
 
 		this.rotatedSpriteSheet = this.spriteSheet;
 
@@ -266,6 +266,11 @@ export class Sonic extends PointActor
 
 	updateEnd()
 	{
+		if(!this.args.falling)
+		{
+			this.pinch(0, 0);
+		}
+
 		super.updateEnd();
 	}
 

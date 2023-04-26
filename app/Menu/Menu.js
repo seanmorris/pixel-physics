@@ -578,7 +578,7 @@ export class Menu extends Card
 
 		if(item.input === 'number')
 		{
-			item.setting = Number(item.setting) + 1;
+			item.setting = Number(item.setting) + (item.step || 1);
 
 			if(item.setting > item.max)
 			{
@@ -615,7 +615,7 @@ export class Menu extends Card
 
 		if(item.input === 'number')
 		{
-			item.setting = Number(item.setting) - 1;
+			item.setting = Number(item.setting) - (item.step || 1);
 
 			if(item.setting < item.min)
 			{

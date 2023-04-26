@@ -3,7 +3,7 @@
     "height": 512,
     "infinite": false,
     "nextlayerid": 4,
-    "nextobjectid": 29,
+    "nextobjectid": 30,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -68,18 +68,18 @@
             "columns": 13,
             "firstgid": 177,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
-            "imageheight": 512,
+            "imageheight": 576,
             "imagewidth": 416,
             "margin": 0,
             "name": "industrial",
             "spacing": 0,
-            "tilecount": 208,
+            "tilecount": 234,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 1,
-            "firstgid": 385,
+            "firstgid": 411,
             "image": "../Sonic/marble-zone-block.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -94,10 +94,9 @@
     "tilewidth": 32,
     "type": "map",
     "version": "1.6",
-    "width": 10,
+    "width": 16,
     "types": [
         "layer-controller",
-        "sonic",
         "switch"
     ],
     "map": "/map/drop-test-2.json"

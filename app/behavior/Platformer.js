@@ -3,6 +3,7 @@ import { Bindable } from 'curvature/base/Bindable';
 
 import { PointActor } from '../actor/PointActor';
 
+import { Layer  } from '../viewport/Layer';
 import { CharacterString } from '../ui/CharacterString';
 
 const MODE_FLOOR   = 0;
@@ -79,6 +80,22 @@ export class Platformer
 
 	updateEnd(host)
 	{
+		if(!host.args.static && host.args.falling)
+		{
+			if(host.args.standingLayer && host.fallTime === 0)
+			{
+				host.args.xSpeed += host.args.standingLayer.offsetXChanged || 0;
+				host.args.ySpeed += host.args.standingLayer.offsetYChanged || 0;
+			}
+
+			host.args.standingLayer = null;
+		}
+
+		if(!host.controllable)
+		{
+			return;
+		}
+
 		if(host.args.popChain.length && host.args.grinding)
 		{
 			if(!host.grindReward)
@@ -98,17 +115,6 @@ export class Platformer
 		if(!host.args.falling && (!host.args.grinding && host.groundTime > 1))
 		{
 			host.grindReward = null;
-		}
-
-		if(!host.args.static && host.args.falling)
-		{
-			if(host.args.standingLayer && host.fallTime === 0)
-			{
-				host.args.xSpeed += host.args.standingLayer.offsetXChanged || 0;
-				host.args.ySpeed += host.args.standingLayer.offsetYChanged || 0;
-			}
-
-			host.args.standingLayer = null;
 		}
 
 		if(host.follower)
@@ -888,7 +894,7 @@ export class Platformer
 
 			if(!host.args.dead && !host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
 			{
-				let falling = !standingOn;
+				// let falling = !standingOn;
 
 				for(const region of regionsBelow)
 				{
@@ -899,8 +905,9 @@ export class Platformer
 							|| Math.round(host.args.y + 2) === region.args.y - region.args.height
 						)
 					)){
-						if(Math.max(Math.abs(host.args.gSpeed), Math.abs(host.args.xSpeed)) >= region.skimSpeed)
-						{
+						if(region.skimSpeed < Infinity
+							&& (host.broad || Math.max(Math.abs(host.args.gSpeed), Math.abs(host.args.xSpeed)) >= region.skimSpeed)
+						){
 							const speed = host.args.falling ? Math.abs(host.args.xSpeed) : Math.abs(host.args.gSpeed);
 
 							host.args.gSpeed = speed * Math.sign(host.args.gSpeed || host.args.xSpeed);
@@ -909,7 +916,7 @@ export class Platformer
 							{
 								host.args.skimming = true;
 								host.args.y = region.y - region.args.height + -1;
-								falling = false;
+								host.args.falling = false;
 								region.skim(host);
 							}
 							else if(host.broad)
@@ -926,10 +933,13 @@ export class Platformer
 					}
 				}
 
-				host.args.standingOn = null;
-				// host.args.falling = falling || host.args.falling;
+				if(standingOn instanceof Layer)
+				{
+					host.args.standingOn = standingOn;
+				}
 
-				host.args.falling = host.args.ySpeed >= 0 ? falling : host.args.falling;
+				// host.args.falling = falling || host.args.falling;
+				// host.args.falling = host.args.ySpeed <= 0 ? falling : host.args.falling;
 
 				if(host.args.falling)
 				{
@@ -1454,7 +1464,7 @@ export class Platformer
 			}
 		}
 
-		if(!host.isRegion && !host.noClip && !host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
+		if(!host.args.static && !host.isRegion && !host.noClip && !host.args.xSpeed && !host.args.ySpeed && this.checkBelow(host, host.args.x, host.args.y))
 		{
 			host.args.falling = false;
 		}
@@ -1648,7 +1658,7 @@ export class Platformer
 
 		if(host.args.gSpeed || host.args.rolling || (host.canRoll && host.args.crouching))
 		{
-			const scanDist  = radius + Math.abs(host.args.gSpeed);
+			// const scanDist  = radius + Math.abs(host.args.gSpeed);
 			const direction = Math.sign(host.args.gSpeed || host.args.direction);
 
 			const max  = Math.abs(host.args.gSpeed);
@@ -1658,446 +1668,437 @@ export class Platformer
 
 			let iter = 0
 
-			const headBlock = host.args.modeTime > 10 && this.scanForward(host, host.args.gSpeed ?? 0, 1);
+			const dirs = [0,0,Math.PI];
+			const filterBlockers = x =>
+				x.args !== host.args
+				&& x.callCollideHandler(host)
+				&& x.solid;
 
-			if(headBlock === false || headBlock > 0)
+			for(let s = 0; s < max; s += step)
 			{
-				const dirs = [0,0,Math.PI];
-				const filterBlockers = x =>
-					x.args !== host.args
-					&& x.callCollideHandler(host)
-					&& x.solid;
-
-				for(let s = 0; s < max; s += step)
+				if(host.args.height > 8 && host.args.modeTime > 1)
 				{
-					if(host.args.height > 8 && host.args.modeTime > 1)
+					if(!host.args.gSpeed)
 					{
-						if(!host.args.gSpeed)
+						host.args.pushing = false;
+					}
+
+					const headPoint = host.rotatePoint(
+						radius * -direction
+						, host.args.height
+					);
+
+					let headBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
+
+					if(Array.isArray(headBlock))
+					{
+						headBlock = headBlock.filter(filterBlockers).length;
+					}
+
+					if(headBlock)
+					{
+						if(host.args.mode === MODE_CEILING)
 						{
-							host.args.pushing = false;
+							host.args.x += radius * Math.sign(host.args.gSpeed);
+							host.args.y += host.args.height;
+
+							host.args.mode = MODE_FLOOR;
 						}
 
-						const headPoint = host.rotatePoint(
-							radius * -direction
-							, host.args.height
-						);
+						host.args.pushing = Math.sign(host.args.gSpeed);
+						break;
+					}
 
-						let headBlock = host.getMapSolidAt(host.args.x + headPoint[0], host.args.y + headPoint[1]);
+					let waistBlock = false;
 
-						if(Array.isArray(headBlock))
+					if(!host.noClip && host.controllable && host.args.groundAngle === 0)
+					{
+						const waistPoint = host.rotatePoint(-radius * Math.sign(host.args.gSpeed), host.args.height * 0.5);
+
+						waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
+						if(Array.isArray(waistBlock))
 						{
-							headBlock = headBlock.filter(filterBlockers).length;
+							waistBlock = waistBlock.filter(filterBlockers).length || false;
 						}
 
-						if(headBlock)
+						if(waistBlock !== false && waistBlock <= radius)
 						{
 							if(host.args.mode === MODE_CEILING)
 							{
 								host.args.x += radius * Math.sign(host.args.gSpeed);
-								host.args.y += host.args.height;
+								host.args.y += host.args.rollingeight || host.args.height;
 
 								host.args.mode = MODE_FLOOR;
+								host.args.gSpeed = 0;
+							}
+							else if(host.args.mode === MODE_FLOOR)
+							{
+								host.args.gSpeed = Math.min(1,waistBlock) * Math.sign(host.args.gSpeed);
 							}
 
-							host.args.pushing = Math.sign(host.args.gSpeed);
+							host.args.gSpeed && (host.args.pushing = Math.sign(host.args.gSpeed));
 							break;
 						}
+					}
 
-						let waistBlock = false;
+					// if(!headBlock && !waistBlock)
+					// {
+					// 	host.args.pushing = 0;
+					// }
+				}
 
-						if(!host.noClip && host.controllable && host.args.groundAngle === 0)
-						{
-							const waistPoint = host.rotatePoint(-radius * Math.sign(host.args.gSpeed), host.args.height * 0.5);
+				for(const behavior of host.behaviors)
+				{
+					behavior.movedGround && behavior.movedGround(host);
+				}
 
-							waistBlock = host.getMapSolidAt(host.args.x + waistPoint[0], host.args.y + waistPoint[1])
-							if(Array.isArray(waistBlock))
+				if(host.args.falling || host.locked)
+				{
+					return;
+				}
+
+				nextPosition = this.findNextStep(host, step * direction);
+
+				if(!nextPosition)
+				{
+					break;
+				}
+
+				if(nextPosition[3])
+				{
+					host.args.moving = false;
+					host.args.gSpeed = 0.15 * Math.sign(host.args.gSpeed);
+
+					if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
+					{
+						host.args.mode = MODE_FLOOR;
+						host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
+					}
+
+					break;
+				}
+				else if(nextPosition[2] === true)
+				{
+					const gSpeed = host.args.gSpeed;
+					const gAngle = host.args.groundAngle;
+
+					host.args.standingLayer = null;
+
+					let radius;
+					let hRadius;
+
+					switch(host.args.mode)
+					{
+						case MODE_FLOOR:
+
+							radius = host.args.width / 2;
+
+							// if(headBlock)
+							// {
+							// 	host.args.x += (headBlock - host.args.width) * Math.sign(gSpeed);
+							// }
+							// else
+							if(Math.abs(gSpeed) < radius)
 							{
-								waistBlock = waistBlock.filter(filterBlockers).length || false;
+								host.args.x += radius * Math.sign(gSpeed);
+							}
+							else
+							{
+								host.args.x +=  gSpeed * Math.cos(gAngle);
+								host.args.y += -gSpeed * Math.sin(gAngle);
 							}
 
-							if(waistBlock !== false && waistBlock <= radius)
+							host.args.xSpeed =  gSpeed * Math.cos(gAngle);
+							host.args.ySpeed = -gSpeed * Math.sin(gAngle);
+
+							host.args.float = host.args.float < 0 ? host.args.float : 1;
+
+							let falling = !!host.args.gSpeed;
+
+							if(this.checkBelow(host, host.args.x, host.args.y))
 							{
-								if(host.args.mode === MODE_CEILING)
-								{
-									host.args.x += radius * Math.sign(host.args.gSpeed);
-									host.args.y += host.args.rollingeight || host.args.height;
+								host.args.gSpeed = gSpeed;
+								host.args.xSpeed = 0;
+								host.args.ySpeed = 0;
+								falling = false;
 
-									host.args.mode = MODE_FLOOR;
-									host.args.gSpeed = 0;
-								}
-								else if(host.args.mode === MODE_FLOOR)
+								if(host.canRoll && host.yAxis > 0.55)
 								{
-									host.args.gSpeed = Math.min(1,waistBlock) * Math.sign(host.args.gSpeed);
+									host.args.rolling = true;
 								}
-
-								host.args.gSpeed && (host.args.pushing = Math.sign(host.args.gSpeed));
-								break;
 							}
-						}
 
-						if(!headBlock && !waistBlock)
-						{
-							host.args.pushing = 0;
-						}
-					}
+							host.args.falling = falling;
 
-					for(const behavior of host.behaviors)
-					{
-						behavior.movedGround && behavior.movedGround(host);
-					}
+							host.args.ignore = 2;
 
-					if(host.args.falling || host.locked)
-					{
-						return;
-					}
+							break;
 
-					nextPosition = this.findNextStep(host, step * direction);
+						case MODE_CEILING:
 
-					if(!nextPosition)
-					{
-						break;
-					}
+							host.args.y += host.args.height;
+							host.args.y++;
 
-					if(nextPosition[3])
-					{
-						host.args.moving = false;
-						host.args.gSpeed = 0.15 * Math.sign(host.args.gSpeed);
+							host.args.float = host.args.float < 0 ? host.args.float : 1;
 
-						if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
-						{
-							host.args.mode = MODE_FLOOR;
+							host.args.falling = true;
+
+							// host.args.groundAngle  = Math.PI;
+							// host.args.displayAngle = Math.PI;
+
+							host.args.mode   = MODE_FLOOR;
+							host.args.xSpeed = -gSpeed * Math.cos(gAngle);
+							host.args.ySpeed =  gSpeed * Math.sin(gAngle);
+
+							host.args.x += -gSpeed * Math.cos(gAngle);
+							host.args.y +=  gSpeed * Math.sin(gAngle);
+
 							host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
-						}
+							host.args.direction *= -1;
 
-						break;
-					}
-					else if(nextPosition[2] === true)
-					{
-						const gSpeed = host.args.gSpeed;
-						const gAngle = host.args.groundAngle;
+							if(!host.args.rolling && !host.args.grinding)
+							{
+								host.args.facing = host.args.facing === 'left' ? 'right' : 'left';
+							}
 
-						host.args.standingLayer = null;
+							host.args.ignore = 3;
 
-						let radius;
-						let hRadius;
+							break;
 
-						switch(host.args.mode)
-						{
-							case MODE_FLOOR:
+						case MODE_LEFT:
 
-								radius = host.args.width / 2;
+							radius =  host.args.width  / 2;
+							hRadius = host.args.height / 2;
 
-								if(headBlock)
+							if(!host.args.climbing)
+							{
+								if(Math.abs(host.args.gSpeed) < 2 && !host.args.rolling)
 								{
-									host.args.x += (headBlock - host.args.width) * Math.sign(gSpeed);
-								}
-								else if(Math.abs(gSpeed) < radius)
-								{
-									host.args.x += radius * Math.sign(gSpeed);
+									if(host.args.gSpeed < 0)
+									{
+										// host.args.x -= host.args.direction;
+										// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+										// host.args.y -= host.args.gSpeed + -2;
+										// host.args.groundAngle = 0;
+									}
+									else
+									{
+										host.args.x += radius;
+									}
 								}
 								else
 								{
-									host.args.x +=  gSpeed * Math.cos(gAngle);
-									host.args.y += -gSpeed * Math.sin(gAngle);
+									host.args.ignore = -3;
+									host.args.x += host.controllable ? radius : 1;
+									// host.args.y += hRadius;
 								}
 
-								host.args.xSpeed =  gSpeed * Math.cos(gAngle);
-								host.args.ySpeed = -gSpeed * Math.sin(gAngle);
+								host.args.xSpeed = gSpeed * Math.sin(gAngle);
+								host.args.ySpeed = gSpeed * Math.cos(gAngle);
 
-								host.args.float = host.args.float < 0 ? host.args.float : 1;
-
-								let falling = !!host.args.gSpeed;
-
-								if(this.checkBelow(host, host.args.x, host.args.y))
-								{
-									host.args.gSpeed = gSpeed;
-									host.args.xSpeed = 0;
-									host.args.ySpeed = 0;
-									falling = false;
-
-									if(host.canRoll && host.yAxis > 0.55)
-									{
-										host.args.rolling = true;
-									}
-								}
-
-								host.args.falling = falling;
-
-								host.args.ignore = 2;
-
-								break;
-
-							case MODE_CEILING:
-
-								host.args.y += host.args.height;
-								host.args.y++;
-
-								host.args.float = host.args.float < 0 ? host.args.float : 1;
-
-								host.args.falling = true;
-
-								// host.args.groundAngle  = Math.PI;
-								// host.args.displayAngle = Math.PI;
-
-								host.args.mode   = MODE_FLOOR;
-								host.args.xSpeed = -gSpeed * Math.cos(gAngle);
-								host.args.ySpeed =  gSpeed * Math.sin(gAngle);
-
-								host.args.x += -gSpeed * Math.cos(gAngle);
-								host.args.y +=  gSpeed * Math.sin(gAngle);
-
-								host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
-								host.args.direction *= -1;
+								host.args.x += gSpeed * Math.sin(gAngle);
+								host.args.y += gSpeed * Math.cos(gAngle);
 
 								if(!host.args.rolling && !host.args.grinding)
 								{
-									host.args.facing = host.args.facing === 'left' ? 'right' : 'left';
+									host.args.groundAngle = -Math.PI * 0.5;
+								}
+								else
+								{
+									host.args.x += radius;
 								}
 
-								host.args.ignore = 3;
+								host.args.mode = MODE_FLOOR;
+								host.args.cameraIgnore = 30;
 
-								break;
+								// host.onNextFrame(() => {
+								// });
+							}
 
-							case MODE_LEFT:
+							// host.args.mode = MODE_FLOOR;
+							host.args.falling = true;
 
-								radius =  host.args.width  / 2;
-								hRadius = host.args.height / 2;
+							break;
 
-								if(!host.args.climbing)
+						case MODE_RIGHT:
+
+							radius  = host.args.width  / 2;
+							hRadius = host.args.height / 2;
+
+							if(!host.args.climbing)
+							{
+								if(Math.abs(host.args.gSpeed) < 3 && !host.args.rolling)
 								{
-									if(Math.abs(host.args.gSpeed) < 2 && !host.args.rolling)
+									if(host.args.gSpeed > 0)
 									{
-										if(host.args.gSpeed < 0)
-										{
-											// host.args.x -= host.args.direction;
-											// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
-											// host.args.y -= host.args.gSpeed + -2;
-											// host.args.groundAngle = 0;
-										}
-										else
-										{
-											host.args.x += radius;
-										}
-									}
-									else
-									{
-										host.args.ignore = -3;
-										host.args.x += radius;
-										// host.args.y += hRadius;
-									}
-
-									host.args.xSpeed = gSpeed * Math.sin(gAngle);
-									host.args.ySpeed = gSpeed * Math.cos(gAngle);
-
-									host.args.x += gSpeed * Math.sin(gAngle);
-									host.args.y += gSpeed * Math.cos(gAngle);
-
-									if(!host.args.rolling && !host.args.grinding)
-									{
-										host.args.groundAngle = -Math.PI * 0.5;
-									}
-									else
-									{
-										host.args.x += radius;
-									}
-
-									host.args.mode = MODE_FLOOR;
-									host.args.cameraIgnore = 30;
-
-									// host.onNextFrame(() => {
-									// });
-								}
-
-								// host.args.mode = MODE_FLOOR;
-								host.args.falling = true;
-
-								break;
-
-							case MODE_RIGHT:
-
-								radius  = host.args.width  / 2;
-								hRadius = host.args.height / 2;
-
-								if(!host.args.climbing)
-								{
-									if(Math.abs(host.args.gSpeed) < 3 && !host.args.rolling)
-									{
-										if(host.args.gSpeed > 0)
-										{
-											// host.args.x -= host.args.direction;
-											// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
-											// host.args.y -= host.args.gSpeed + 2;
-											// host.args.groundAngle = 0;
-										}
-										else
-										{
-											host.args.x -= radius;
-										}
-									}
-									else
-									{
-										host.args.ignore = -3;
-										host.args.x -= radius;
-										// host.args.y += hRadius;
-									}
-
-									host.args.xSpeed = -gSpeed * Math.sin(gAngle);
-									host.args.ySpeed = -gSpeed * Math.cos(gAngle);
-
-									host.args.x += -gSpeed * Math.sin(gAngle);
-									host.args.y += -gSpeed * Math.cos(gAngle);
-
-									if(!host.args.rolling && !host.args.grinding)
-									{
-										host.args.groundAngle = Math.PI * 0.5;
+										// host.args.x -= host.args.direction;
+										// host.args.y -= hRadius * Math.sign(host.args.gSpeed);
+										// host.args.y -= host.args.gSpeed + 2;
+										// host.args.groundAngle = 0;
 									}
 									else
 									{
 										host.args.x -= radius;
 									}
-
-									host.args.mode = MODE_FLOOR;
-									host.args.cameraIgnore = 30;
-
-									// host.onNextFrame(() => {
-									// });
-
+								}
+								else
+								{
+									host.args.ignore = -3;
+									host.args.x -= host.controllable ? radius : 1;
+									// host.args.y += hRadius;
 								}
 
-								// host.args.mode = MODE_FLOOR;
-								host.args.falling = true;
+								host.args.xSpeed = -gSpeed * Math.sin(gAngle);
+								host.args.ySpeed = -gSpeed * Math.cos(gAngle);
 
-								break;
-						}
+								host.args.x += -gSpeed * Math.sin(gAngle);
+								host.args.y += -gSpeed * Math.cos(gAngle);
 
-						break;
-					}
-					else if(!nextPosition[0] && !nextPosition[1])
-					{
-						host.args.moving = false;
+								if(!host.args.rolling && !host.args.grinding)
+								{
+									host.args.groundAngle = Math.PI * 0.5;
+								}
+								else
+								{
+									host.args.x -= radius;
+								}
 
-						switch(host.args.mode)
-						{
-							case MODE_FLOOR:
-							case MODE_CEILING:
-								host.args.gSpeed = 0;
-								break;
+								host.args.mode = MODE_FLOOR;
+								host.args.cameraIgnore = 30;
 
-							case MODE_LEFT:
-							case MODE_RIGHT:
+								// host.onNextFrame(() => {
+								// });
 
-								break;
-						}
-					}
-					else if((nextPosition[0] || nextPosition[1]) && !host.rotateLock)
-					{
-						host.args.moving = true;
-
-						if(!host.keepAngle)
-						{
-							host.args.angle = nextPosition[0]
-								? (Math.atan(nextPosition[1] / nextPosition[0]))
-								: (Math.sign(nextPosition[1]) * Math.PI / 2);
-
-							host.lastAngles.unshift(host.args.angle);
-
-							host.lastAngles.splice(host.angleAvg);
-						}
-					}
-
-					if(!host.rotateLock)
-					{
-						switch(host.args.mode)
-						{
-							case MODE_FLOOR:
-								host.args.x += nextPosition[0];
-								host.args.y -= nextPosition[1];
-								break;
-
-							case MODE_CEILING:
-								host.args.x -= nextPosition[0];
-								host.args.y += nextPosition[1];
-								break;
-
-							case MODE_LEFT:
-								host.args.x += nextPosition[1];
-								host.args.y += nextPosition[0];
-								break;
-
-							case MODE_RIGHT:
-								host.args.x -= nextPosition[1];
-								host.args.y -= nextPosition[0];
-								break;
-						}
-
-						if(host.args.angle > Math.PI / 4 && host.args.angle < Math.PI / 2)
-						{
-							const lastAngles = host.lastAngles.map(n => Number(n) - Math.PI / 2);
-							Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
-							host.lastAngles = lastAngles;
-
-							switch(host.args.mode)
-							{
-								case MODE_FLOOR:
-									host.args.mode = MODE_RIGHT;
-									break;
-
-								case MODE_RIGHT:
-									host.args.mode = MODE_CEILING;
-									break;
-
-								case MODE_CEILING:
-									host.args.mode = MODE_LEFT;
-									break;
-
-								case MODE_LEFT:
-									host.args.mode = MODE_FLOOR;
-									break;
 							}
 
-							host.args.groundAngle -= Math.PI / 2;
-						}
-						else if(host.args.angle < -Math.PI / 4 && host.args.angle > -Math.PI / 2)
-						{
-							const orig = host.args.mode;
+							// host.args.mode = MODE_FLOOR;
+							host.args.falling = true;
 
-							const lastAngles = host.lastAngles.map(n => Number(n) + Math.PI / 2);
-							Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
-							host.lastAngles = lastAngles;
-
-							switch(host.args.mode)
-							{
-								case MODE_FLOOR:
-									host.args.mode = MODE_LEFT;
-									break;
-
-								case MODE_RIGHT:
-									host.args.mode = MODE_FLOOR;
-									break;
-
-								case MODE_CEILING:
-									host.args.mode = MODE_RIGHT;
-									break;
-
-								case MODE_LEFT:
-									host.args.mode = MODE_CEILING;
-									break;
-							}
-
-							host.args.groundAngle = Number(host.args.groundAngle) + Math.PI / 2;
-						}
+							break;
 					}
-					else
+
+					break;
+				}
+				else if(!nextPosition[0] && !nextPosition[1])
+				{
+					host.args.moving = false;
+
+					switch(host.args.mode)
 					{
-						host.args.x += nextPosition[0];
-						host.args.y -= nextPosition[1];
+						case MODE_FLOOR:
+						case MODE_CEILING:
+							host.args.gSpeed = 0;
+							break;
+
+						case MODE_LEFT:
+						case MODE_RIGHT:
+
+							break;
 					}
 				}
-			}
-			else
-			{
-				host.args.pushing = Math.sign(host.args.gSpeed);
-				// host.args.gSpeed  = 0;
+				else if((nextPosition[0] || nextPosition[1]) && !host.rotateLock)
+				{
+					host.args.moving = true;
+
+					if(!host.keepAngle)
+					{
+						host.args.angle = nextPosition[0]
+							? (Math.atan(nextPosition[1] / nextPosition[0]))
+							: (Math.sign(nextPosition[1]) * Math.PI / 2);
+
+						host.lastAngles.unshift(host.args.angle);
+
+						host.lastAngles.splice(host.angleAvg);
+					}
+				}
+
+				if(!host.rotateLock)
+				{
+					switch(host.args.mode)
+					{
+						case MODE_FLOOR:
+							host.args.x += nextPosition[0];
+							host.args.y -= nextPosition[1];
+							break;
+
+						case MODE_CEILING:
+							host.args.x -= nextPosition[0];
+							host.args.y += nextPosition[1];
+							break;
+
+						case MODE_LEFT:
+							host.args.x += nextPosition[1];
+							host.args.y += nextPosition[0];
+							break;
+
+						case MODE_RIGHT:
+							host.args.x -= nextPosition[1];
+							host.args.y -= nextPosition[0];
+							break;
+					}
+
+					if(host.args.angle > Math.PI / 4 && host.args.angle < Math.PI / 2)
+					{
+						const lastAngles = host.lastAngles.map(n => Number(n) - Math.PI / 2);
+						Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
+						host.lastAngles = lastAngles;
+
+						switch(host.args.mode)
+						{
+							case MODE_FLOOR:
+								host.args.mode = MODE_RIGHT;
+								break;
+
+							case MODE_RIGHT:
+								host.args.mode = MODE_CEILING;
+								break;
+
+							case MODE_CEILING:
+								host.args.mode = MODE_LEFT;
+								break;
+
+							case MODE_LEFT:
+								host.args.mode = MODE_FLOOR;
+								break;
+						}
+
+						host.args.groundAngle -= Math.PI / 2;
+					}
+					else if(host.args.angle < -Math.PI / 4 && host.args.angle > -Math.PI / 2)
+					{
+						const orig = host.args.mode;
+
+						const lastAngles = host.lastAngles.map(n => Number(n) + Math.PI / 2);
+						Object.defineProperty(lastAngles, Bindable.NoGetters, {value: true});
+						host.lastAngles = lastAngles;
+
+						switch(host.args.mode)
+						{
+							case MODE_FLOOR:
+								host.args.mode = MODE_LEFT;
+								break;
+
+							case MODE_RIGHT:
+								host.args.mode = MODE_FLOOR;
+								break;
+
+							case MODE_CEILING:
+								host.args.mode = MODE_RIGHT;
+								break;
+
+							case MODE_LEFT:
+								host.args.mode = MODE_CEILING;
+								break;
+						}
+
+						host.args.groundAngle = Number(host.args.groundAngle) + Math.PI / 2;
+					}
+				}
+				else
+				{
+					host.args.x += nextPosition[0];
+					host.args.y -= nextPosition[1];
+				}
 			}
 
 			if(host.args.pushing)
@@ -2682,10 +2683,11 @@ export class Platformer
 		if(!host.args.hLock && !host.noClip)
 		{
 			const hScanDist = (host.args.xSpeed);
+			const rotScale  = Math.abs(host.args.groundAngle) > Math.PI * 0.5 ? Math.cos(host.args.groundAngle) : 1;
 
-			const foreDistanceHead  = hScanDist ? this.scanForward(host, hScanDist, 1.0) : false;
-			const foreDistanceWaist = hScanDist ? this.scanForward(host, hScanDist, 0.5) : false;
-			const foreDistanceFoot  = hScanDist ? this.scanForward(host, hScanDist, 0.0) : false;
+			const foreDistanceHead  = hScanDist ? this.scanForward(host, hScanDist, 0.9 * rotScale) : false;
+			const foreDistanceWaist = hScanDist ? this.scanForward(host, hScanDist, 0.5 * rotScale) : false;
+			const foreDistanceFoot  = hScanDist ? this.scanForward(host, hScanDist, 0.1 * rotScale) : false;
 
 			distances = [foreDistanceHead, foreDistanceWaist, foreDistanceFoot];
 
@@ -2738,27 +2740,26 @@ export class Platformer
 			return;
 		}
 
-		if(distances[2] && distances[1] === false && distances[0] === false)
+		if(host.args.ySpeed >= 0 && distances[2] && distances[1] === false && distances[0] === false)
 		{
 			// host.args.y -= 8;
 			host.args.x += Math.sign(xSpeedOriginal);
 		}
-		else if(!host.willStick
-			&& hits.length > 1
+		else if(!host.willStick && hits.length > 1
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
 		){
 			const xDirection = Math.sign(xSpeedOriginal);
 
-			const maxHit = -1 + Math.max(...hits);
 			const minHit = -1 + Math.min(...hits);
 
 			const width   = host.args.width;
-			const shiftBy = width + -minHit;
-			// const shiftBy = width + -maxHit;
-			// const shiftBy = radius + -maxHit;
+			const radius  = 0.5 * width;
+			// const shiftBy = width + -minHit;
+			const shiftBy = radius + -minHit;
 			const shift = shiftBy * -xDirection;
 
-			if(!isNaN(shift) && (!shift || Math.abs(shiftBy) < width || Math.sign(shift) !== Math.sign(host.args.xSpeed)))
+			// if(!isNaN(shift) && (!shift || Math.abs(shiftBy) < width || Math.sign(shift) !== Math.sign(host.args.xSpeed)))
+			if(!isNaN(shift) && (!shift || Math.abs(shiftBy) < radius || Math.sign(shift) !== Math.sign(host.args.xSpeed)))
 			{
 				host.args.x += shift;
 
@@ -2902,16 +2903,23 @@ export class Platformer
 			const isLeft  = angleIsWall && xSpeedOriginal < 0;
 			const isRight = angleIsWall && xSpeedOriginal > 0;
 
-			const solid = this.checkBelow(host, ...airPoint);
+			const solid = this.checkBelow(host, airPoint[0], airPoint[1] + 1);
 
 			if(!host.willStick || host.args.mode === 0)
 			{
 				// host.args.gSpeed = xSpeedOriginal || host.args.gSpeed;
 				host.args.gSpeed = host.args.xSpeed;
 
-				if(solid && typeof solid === 'object' && solid.offsetXChanged)
+				if(solid && typeof solid === 'object')
 				{
-					host.args.gSpeed -= solid.offsetXChanged;
+					if(solid.args && solid.args.treadmill)
+					{
+						host.args.gSpeed = 0;
+					}
+					else if(solid.offsetXChanged)
+					{
+						host.args.gSpeed -= solid.offsetXChanged;
+					}
 				}
 			}
 			else
@@ -2979,6 +2987,7 @@ export class Platformer
 				{
 					host.args.gSpeed = 0;
 					host.args.mode = MODE_LEFT;
+					host.args.groundAngle = 0;
 
 					host.args.direction = 1;
 					host.args.facing = 'right';
@@ -2987,6 +2996,7 @@ export class Platformer
 				{
 					host.args.gSpeed = 0;
 					host.args.mode = MODE_RIGHT;
+					host.args.groundAngle = 0;
 
 					host.args.direction = -1;
 					host.args.facing = 'left';
@@ -3050,6 +3060,11 @@ export class Platformer
 						(forePosition[1]??0) - (backPosition[1]??0)
 						, (forePosition[0]??0) - (backPosition[0]??0)
 					));
+
+					if(host.ySpeedLast < 0)
+					{
+						newAngle *= -1;
+					}
 				}
 
 
@@ -3105,11 +3120,25 @@ export class Platformer
 						}
 					}
 
+					const qPi = Math.PI * 0.25;
+					const landAngle = newAngle;
+
+					if(newAngle < -qPi)
+					{
+						host.args.mode = MODE_LEFT;
+						newAngle += qPi;
+					}
+					else if(newAngle > qPi)
+					{
+						host.args.mode = MODE_RIGHT;
+						newAngle -= qPi;
+					}
+
 					host.args.groundAngle = newAngle;
-					host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
+					host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(newAngle));
 					// host.args.ignore = host.args.ignore || 5;
 
-					const slopeDir = -host.args.groundAngle / (Math.PI * 0.4);
+					const slopeDir = -landAngle / (Math.PI * 0.4);
 
 					let gSpeed = 0;
 
@@ -3123,7 +3152,7 @@ export class Platformer
 
 					if(host.args.mode % 2 == 1)
 					{
-						gSpeed *=-1;
+						// gSpeed *=-1;
 					}
 
 					// if(ySpeedOriginal)
@@ -3143,7 +3172,7 @@ export class Platformer
 						}
 					}
 
-					if(gSpeed)
+					if(gSpeed && (!host.args.standingOn || !host.args.standingOn.args.treadmill))
 					{
 						host.args.gSpeed = gSpeed;
 					}
@@ -3372,8 +3401,13 @@ export class Platformer
 			return i;
 		}
 
-		const actors = viewport.actorsAtPoint(point[0], point[1])
-		.filter(a => a.args !== actor.args && a.callCollideHandler(actor) && a.solid);
+		const actors = viewport
+		.actorsAtPoint(point[0], point[1])
+		.filter(x =>
+			x.args !== actor.args
+			&& x.callCollideHandler(actor)
+			&& x.solid
+		);
 
 		if(actors.length > 0)
 		{
@@ -3390,20 +3424,28 @@ export class Platformer
 
 		const viewport = actor.viewport;
 		const tileMap  = viewport.tileMap;
+		const pointSolid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+
+		if(pointSolid)
+		{
+			return;
+		}
+
+		const actors = viewport
+		.actorsAtPoint(point[0], point[1])
+		.filter(x =>
+			x.args !== actor.args
+			&& x.callCollideHandler(actor)
+			&& x.solid
+		);
 
 		if(actor.args.groundAngle <= 0)
 		{
 			const regions = (actor.controllable || actor.args.pushed || actor.isVehicle) ? actor.viewport.regionsAtPoint(point[0], point[1]) : [];
 
-			const actors = viewport.actorsAtPoint(point[0], point[1]).filter(x =>
-				x.args !== actor.args
-				&& x.callCollideHandler(actor)
-				&& x.solid
-			);
-
 			for(const region of regions)
 			{
-				if(actors.length === 0 && !tileMap.getSolid(point[0], point[1], actor.args.layer))
+				if(actors.length === 0 && !pointSolid)
 				{
 					if(actor.args.mode !== MODE_FLOOR
 						|| point[1] !== 1 + region.args.y + -region.args.height
@@ -3415,32 +3457,9 @@ export class Platformer
 			}
 		}
 
-		const actors = viewport.actorsAtPoint(point[0], point[1]);
-		const solids = [];
-
-		for(const x of actors)
+		if(actors.length === 0)
 		{
-			if(x.args === actor.args)
-			{
-				continue;
-			}
-
-			if(!x.callCollideHandler(actor))
-			{
-				continue;
-			}
-
-			if(!x.solid)
-			{
-				continue;
-			}
-
-			solids.push(x);
-		}
-
-		if(solids.length === 0)
-		{
-			if(!tileMap.getSolid(point[0], point[1], actor.args.layer))
+			if(!pointSolid)
 			{
 				return i;
 			}
@@ -3510,7 +3529,7 @@ export class Platformer
 				, this.findDownSolid
 			);
 
-			window.logPoints = null;
+			// window.logPoints = null;
 
 			if(downFirstSolid === false)
 			{
@@ -3558,7 +3577,7 @@ export class Platformer
 					, this.findUpSpace
 				);
 
-				window.logPoints = null;
+				// window.logPoints = null;
 
 				const upDiff = Math.abs(prevUp - upFirstSpace);
 
@@ -3776,8 +3795,10 @@ export class Platformer
 		const scanDist = Math.abs(speed);
 
 		const startPoint = host.args.falling
-			? [radius * -dir, -host.args.height * height]
-			: host.rotatePoint(radius * -dir, host.args.height * height);
+			? [0, -host.args.height * height]
+			: host.rotatePoint(0, host.args.height * height);
+			// ? [radius * -dir, -host.args.height * height]
+			// : host.rotatePoint(radius * -dir, host.args.height * height);
 
 		const angle = host.args.falling
 			? [Math.PI,0,0][dir+1]
@@ -3785,62 +3806,12 @@ export class Platformer
 
 		return host.castRayQuick(
 			host.args.falling
-				? scanDist + host.args.width + 1
+				// ? scanDist + host.args.width + 1
+				? scanDist + radius + 1
 				: scanDist + 1
 			, angle
 			, startPoint
 		);
-
-		// const hostPoint = [
-		// 	host.args.x + startPoint[0]
-		// 	, host.args.y + startPoint[1]
-		// ];
-
-		// let magnitude = false;
-		// let mag = false;
-
-		// if(solidPoint)
-		// {
-		// 	mag = Math.sqrt(
-		// 		(hostPoint[0] - solidPoint[0]) ** 2
-		// 		 + (hostPoint[1] - solidPoint[1]) ** 2
-		// 	);
-		// }
-
-		// magnitude = (mag < scanDist + host.args.width) ? mag : false;
-
-		// const m = host.castRay(
-		// 	scanDist + host.args.width
-		// 	, angle
-		// 	, startPoint
-		// 	, host.findSolidTile
-		// 	// , scanActors ? host.findSolid : host.findSolidTile
-		// );
-
-		// if(scanActors && magnitude !== false)
-		// {
-		// 	const endPoint = [
-		// 		startPoint[0] + Math.cos(angle) * magnitude
-		// 		, startPoint[1] + Math.sin(angle) * magnitude
-		// 	];
-
-		// 	const actorsAtLine = host.viewport.actorsAtLine(
-		// 		startPoint[0] + host.args.x
-		// 		, -startPoint[1] + host.args.y
-		// 		, endPoint[0] + host.args.x
-		// 		, -endPoint[1] + host.args.y
-		// 	);
-
-		// 	for(const [actor, {intersection, distance}] of actorsAtLine)
-		// 	{
-		// 		if(host.checkSolidActors(actor))
-		// 		{
-		// 			return distance;
-		// 		}
-		// 	}
-		// }
-
-		// return magnitude;
 	}
 
 	scanBottomEdge(direction = 1)
@@ -3943,7 +3914,7 @@ export class Platformer
 
 		if(Array.isArray(below))
 		{
-			below = below.filter(x => x.callCollideHandler(host) !== false).length;
+			below = below.filter(x => x.callCollideHandler(host) !== false);
 		}
 
 		return below;

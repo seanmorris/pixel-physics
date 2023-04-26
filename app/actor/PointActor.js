@@ -454,9 +454,9 @@ export class PointActor extends View
 		{
 			this.controller = new Controller({deadZone: 0.2});
 
-			this.args.charStrings = [
-				new CharacterString({value: this.args.name ?? ''})
-			];
+			// this.args.charStrings = [
+			// 	new CharacterString({value: this.args.name ?? ''})
+			// ];
 
 			this.controller.zero();
 		}
@@ -671,7 +671,10 @@ export class PointActor extends View
 					this.debindGroundY.add(debindGroundY);
 					this.debindGroundL.add(debindGroundL);
 
-					this.args.gSpeed -= groundObject.args.gSpeed;
+					if(!groundObject.args.treadmill)
+					{
+						this.args.gSpeed -= groundObject.args.gSpeed;
+					}
 				}
 			}
 
@@ -1481,7 +1484,7 @@ export class PointActor extends View
 			const x = this.args.x + offset[0] + (i * Math.cos(angle));
 			const y = this.args.y + offset[1] + (i * Math.sin(angle));
 
-			window.logPoints && window.logPoints(x, y, 'mode-' + this.args.mode)
+			// window.logPoints && window.logPoints(x, y, 'mode-' + this.args.mode);
 
 			const bottom  = [x, y];
 
@@ -3035,5 +3038,12 @@ export class PointActor extends View
 		Object.freeze(bounds);
 
 		return this[BOUNDS] = bounds;
+	}
+
+	filterSolids(a)
+	{
+		return a.args !== this.args
+		&& a.callCollideHandler(this)
+		&& a.solid;
 	}
 }

@@ -261,6 +261,39 @@ export const SettingsMenu = (parent) => { return {
 		if(parent.args.debugEnabled)
 		{
 			children['Demos'] = DemoMenu;
+			children['Costume'] = {
+				children: {
+					'Hue': {
+						input: 'number'
+						, min: -180
+						, max: +180
+						, subtext: 'Rotate the color wheel.'
+						, revert: () => parent.customColor.h = 0
+						, set: value => parent.customColor.h = Number(value).toFixed(2)
+						, get: () => parent.customColor.h
+					},
+					'Saturation': {
+						input: 'number'
+						, min:  0
+						, max:  2
+						, step: 0.01
+						, subtext: 'Rotate the color wheel.'
+						, revert: () => parent.customColor.s = 1
+						, set: value => parent.customColor.s = Number(value).toFixed(2)
+						, get: () => parent.customColor.s
+					},
+					'Value': {
+						input: 'number'
+						, min:  0
+						, max:  2
+						, step: 0.01
+						, subtext: 'Rotate the color wheel.'
+						, revert: () => parent.customColor.v = 1
+						, set: value => parent.customColor.v = Number(value).toFixed(2)
+						, get: () => parent.customColor.v
+					}
+				}
+			};
 		}
 
 		return children;

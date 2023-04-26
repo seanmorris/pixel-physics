@@ -207,7 +207,9 @@ export class ElectricSheild extends Sheild
 				this.attract.delete(ring);
 				ring.attract = null;
 
-				this.onTimeout(500, () => {
+				const viewport = host.viewport;
+
+				viewport.onFrameOut(30, () => {
 					if(!ring.def)
 					{
 						return;
@@ -217,9 +219,9 @@ export class ElectricSheild extends Sheild
 					ring.args.ySpeed  = 0;
 					ring.args.x = ring.def.get('x');
 					ring.args.y = ring.def.get('y');
-					host.viewport.setColCell(ring);
-					this.onTimeout(3000, () => {
-						host.viewport.auras.delete(ring);
+					viewport.setColCell(ring);
+					viewport.onFrameOut(5 * 60, () => {
+						viewport.auras.delete(ring);
 						ring.args.float = -1;
 						ring.noClip = false;
 						ring.restore = true;

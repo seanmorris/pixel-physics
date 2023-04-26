@@ -135,6 +135,8 @@ export class PauseMenu extends Menu
 
 	reset()
 	{
-		this.args.items = this.items;
+		this.args.items = {};
+		Object.assign(this.args.items, this.items);
+		// this.args.items = this.items;
 	}
 }

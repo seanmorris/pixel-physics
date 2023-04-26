@@ -86,6 +86,29 @@
 
 .emblem-hud img {
 	padding: 1.5px;
+	transform: rotateY(360deg);
+	transform-origin: 53% 50%;
+	animation:
+		emblem-spin 0.5s 3 linear,
+		emblem-flicker 0.5s 3 ease-out;
+}
+
+@keyframes emblem-spin {
+	0% {
+		transform: rotateY(360deg);
+	}
+	100% {
+		transform: rotateY(0deg);
+	}
+}
+
+@keyframes emblem-flicker {
+	50% {
+		filter: brightness(1);
+	}
+	100% {
+		filter: brightness(10);
+	}
 }
 
 .emerald-hud img {
@@ -151,8 +174,11 @@
 
 .hide-now-playing .hud-bottom-left {
 	transition: transform 750ms 250ms ease-in, filter 0.5s ease-in;
-
 	transform: translateX(-120%) !important;
+}
+
+.hidden-now-playing .hud-bottom-left {
+	display: none;
 }
 
 .hide-now-playing .hud-bottom-left::before {
@@ -299,7 +325,15 @@
 .status-message .hud-character {
 	background-color: rgb(0,0,0,0.5);
 	animation: sine 1.5s ease-in-out infinite;
-	animation-delay: calc(var(--time) * calc( var(--index) - var(--length) ));
+	animation-delay: calc(calc(-1 * var(--time)) * var(--index));
+}
+
+.status-message .hud-character.hidden {
+	animation: none;
+}
+
+.status-message {
+	contain: strict;
 }
 
 .status-message .hud-character-string {

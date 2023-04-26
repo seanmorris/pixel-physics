@@ -386,7 +386,7 @@
 .screen-card-pause-menu input[type=number] {
 	text-align: center;
 	display: inline;
-	width: 2em;
+	min-width: 2em;
 	font-size: 1em;
 }
 

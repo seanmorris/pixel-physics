@@ -9,7 +9,7 @@ export class CharacterString extends View
 				data-type  = "[[char.type]]"
 				data-value = "[[char.pos]]"
 				data-index = "[[c]]"
-				style      = "--value:[[char.pos]];--index:[[c]];--length:[[chars.length]];"
+				style      = "--value:[[char.pos]];--index:[[c]];"
 			>[[char.original]]</span></div>`;
 
 	constructor(args = {}, parent)
@@ -61,9 +61,14 @@ export class CharacterString extends View
 
 			const chars = String(v).split('').map(this.characterToModel.bind(this));
 
-			if(chars.length !== this.args.chars.length)
+			if(chars.length < this.args.chars.length)
 			{
-				this.args.chars.splice(chars.length);
+				for(let i = chars.length; i < this.args.chars.length; i++)
+				{
+					this.characterToModel(-2, i);
+				}
+
+				// this.args.chars.splice(chars.length);
 			}
 
 			Object.assign(this.args.chars, chars);

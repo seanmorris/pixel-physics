@@ -20,7 +20,7 @@
 						: <input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" />
 					</span>
 					<span cv-if = "item.input" cv-is = "number">
-						: <input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" />
+						: <input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" step = "[[item.step]]" />
 					</span>
 					<span cv-if = "item.input" cv-is = "boolean">
 						: <select cv-on = "click:toggle(event,item);mousedown:cancel(event);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">

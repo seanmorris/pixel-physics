@@ -30,9 +30,8 @@ export class Emblem extends PointActor
 			if(!this.viewport.replay)
 			{
 				this.args.type = 'actor-item actor-emblem actor-emblem-collected';
+				this.collected = true;
 			}
-
-			this.collected = true;
 		}
 
 		return super.onRendered(event);

@@ -68,7 +68,7 @@ export class MouseIndicator extends Cursor
 				// this.viewport.args.plot.clearPoints();
 				window.logPoints = (x,y,label) => this.viewport.args.plot.addPoint(x,y,'main-scan '+label);
 				const magnitude = this.castRayQuick(length, angle);
-				window.logPoints = false;
+				// window.logPoints = false;
 
 				this.args.falling = true;
 
