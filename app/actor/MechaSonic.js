@@ -351,22 +351,6 @@ export class MechaSonic extends PointActor
 			dashSpeed = space * Math.sign(finalSpeed);
 		}
 
-		const foreDistance = this.castRay(
-			finalSpeed
-			, finalSpeed > 0 ? 0 : Math.PI
-			, (i, point) => {
-				if(this.getMapSolidAt(...point, this.args.layer))
-				{
-					return i;
-				}
-			}
-		);
-
-		if(foreDistance !== false)
-		{
-			dashSpeed = foreDistance * Math.sign(dashSpeed);
-		}
-
 		this.args.xSpeed = finalSpeed;
 		this.args.ySpeed = 0;
 

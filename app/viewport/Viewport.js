@@ -2061,10 +2061,10 @@ export class Viewport extends View
 			this.args.pauseMenu.input(controller);
 		}
 
-		if(this.replay && controller.buttons[1209] && controller.buttons[1209].time > 0)
-		{
-			this.quit(this.args.replayQuickExit ?  2 : 1);
-		}
+		// if(this.replay && controller.buttons[1209] && controller.buttons[1209].time > 0)
+		// {
+		// 	this.quit(this.args.replayQuickExit ?  2 : 1);
+		// }
 
 		if(!this.args.networked && !this.args.paused)
 		{

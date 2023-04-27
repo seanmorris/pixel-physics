@@ -62,21 +62,23 @@ const loadChildren = (parent, menu, offset = 0) => {
 
 		return database.select(query).each(replay => {
 
-			// if(replay.lastFrame < 60 || !Object.keys(replay.frames).length)
+			const duration = (replay.lastFrame - replay.firstFrame);
+
+			// if(duration < 120)
 			// {
 			// 	database.delete('replays', replay);
 			// }
 
-			const min  = String(Math.trunc(replay.lastFrame / (60*60))).padStart(1, '0');
-			const sec  = String(Math.trunc(replay.lastFrame/60) % 60).padStart(2, '0');
-			const duration = `${min}:${sec}`;
+			const min  = String(Math.trunc(duration / (60*60))).padStart(1, '0');
+			const sec  = String(Math.trunc(duration / 60) % 60).padStart(2, '0');
+			const durationLabel = `${min}:${sec}`;
 
-			let childName = `${duration}] ${new Date(replay.created).toLocaleString('en-US')}`;
+			let childName = `${durationLabel}] ${new Date(replay.created).toLocaleString('en-US')}`;
 			let subtext = replay.map;
 
 			if(replay.name)
 			{
-				childName = duration + '] ' + replay.name;
+				childName = durationLabel + '] ' + replay.name;
 				subtext = new Date(replay.created).toLocaleString('en-US') + ' ' + replay.map;
 			}
 
@@ -155,6 +157,9 @@ const loadChildren = (parent, menu, offset = 0) => {
 						Yes: {callback:() => {
 							delete children[ childName ];
 							database.delete('replays', replay);
+							// database.select({query, limit: 1, offset: -1 + limit + offset}).each(replay => {
+							// 	children[ childName ];
+							// });
 							menu.back(2);
 						}},
 					}},

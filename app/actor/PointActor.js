@@ -2024,28 +2024,6 @@ export class PointActor extends View
 		);
 	}
 
-	scanVerticalEdge(direction = 1)
-	{
-		const tileMap = this.viewport.tileMap;
-
-		return this.castRay(
-			this.args.height + 1
-			, Math.PI / 2
-			, [direction * this.args.width / 2, -this.args.height]
-			, (i,point) => {
-
-				const actors = this.viewport
-					.actorsAtPoint(point[0], point[1])
-					.filter(a => a.args !== this.args);
-
-				if(actors.length || tileMap.getSolid(point[0], point[1], this.args.layer))
-				{
-					return i;
-				}
-			}
-		);
-	}
-
 	get realAngle()
 	{
 		if(!this.args.falling && this.args.standingOn)

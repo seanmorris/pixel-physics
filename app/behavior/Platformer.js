@@ -2742,8 +2742,8 @@ export class Platformer
 
 		if(host.args.ySpeed >= 0 && distances[2] && distances[1] === false && distances[0] === false)
 		{
-			// host.args.y -= 8;
 			host.args.x += Math.sign(xSpeedOriginal);
+			host.args.y --;
 		}
 		else if(!host.willStick && hits.length > 1
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
@@ -3097,10 +3097,12 @@ export class Platformer
 				{
 
 				}
-				else if(forePosition && backPosition && !forePosition[2] && !backPosition[2] && !(forePosition[3] && backPosition[3]))
-				{
-					// host.args.groundAngle = host.args.angle = newAngle;
-
+				else if(Math.abs(newAngle) < (Math.PI/2 + -Math.PI/16)
+					&& forePosition && backPosition
+					&& forePosition[1] !== false && backPosition[1] !== false
+					&& !forePosition[2] && !backPosition[2]
+					&& !(forePosition[3] && backPosition[3])
+				){
 					if(host.canRoll && (host.yAxis > 0.55 || host.args.dropDashCharge) && !host.carrying.size)
 					{
 						host.args.rolling = true;
@@ -3379,18 +3381,14 @@ export class Platformer
 		const viewport = actor.viewport;
 		const tileMap  = viewport.tileMap;
 
-		if(actor.args.groundAngle === 0)
+		if(actor.args.mode === MODE_FLOOR && actor.args.groundAngle === 0 && (actor.controllable || actor.args.pushed || actor.isVehicle))
 		{
-			const regions = (actor.controllable || actor.args.pushed || actor.isVehicle)
-				? actor.viewport.regionsAtPoint(point[0], point[1])
-				: [];
+			const regions = actor.viewport.regionsAtPoint(point[0], point[1]);
 
 			for(const region of regions)
 			{
-				if(actor.args.mode === MODE_FLOOR
-					&& -1 + point[1] === region.args.y + -region.args.height
-					&& Math.abs(actor.args.gSpeed) >= region.skimSpeed
-				){
+				if(-1 + point[1] === region.args.y + -region.args.height && Math.abs(actor.args.gSpeed) >= region.skimSpeed)
+				{
 					return -1 + i;
 				}
 			}
@@ -3528,6 +3526,10 @@ export class Platformer
 				, offsetPoint
 				, this.findDownSolid
 			);
+
+			// downFirstSolid = host.castRayQuick(
+			// 	maxStep, host.downAngle, offsetPoint
+			// );
 
 			// window.logPoints = null;
 
@@ -3844,28 +3846,6 @@ export class Platformer
 			}
 		);
 	}
-
-	// scanVerticalEdge(direction = 1)
-	// {
-	// 	const tileMap = host.viewport.tileMap;
-
-	// 	return host.castRay(
-	// 		host.args.height + 1
-	// 		, Math.PI / 2
-	// 		, [direction * host.args.width / 2, -host.args.height]
-	// 		, (i,point) => {
-
-	// 			const actors = host.viewport
-	// 				.actorsAtPoint(point[0], point[1])
-	// 				.filter(a => a.args !== host.args);
-
-	// 			if(actors.length || tileMap.getSolid(point[0], point[1], host.args.layer))
-	// 			{
-	// 				return i;
-	// 			}
-	// 		}
-	// 	);
-	// }
 
 	checkBelow(host, testX = null, testY = null)
 	{

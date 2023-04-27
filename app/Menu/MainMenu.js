@@ -47,30 +47,11 @@ export class MainMenu extends Menu
 		this.font = 'small-menu-font';
 		// this.font = 'font';
 
-		this.args.title = new CharacterString({
-			value:  'Sonic 3000'
-			, font: this.font
-		});
-
-		this.args.ok = new CharacterString({
-			value:  '⓿ ok'
-			, font: this.font
-		});
-
-		this.args.back = new CharacterString({
-			value:  '❶ back'
-			, font: this.font
-		});
-
-		this.args.revert = new CharacterString({
-			value:  '❸ default (hold)'
-			, font: this.font
-		});
-
-		this.args.select = new CharacterString({
-			value:  '✚ select'
-			, font: this.font
-		});
+		this.args.title  = new CharacterString({font: this.font, value: 'Sonic 3000'});
+		this.args.ok     = new CharacterString({font: this.font, value: '⓿ ok'});
+		this.args.back   = new CharacterString({font: this.font, value: '❶ back'});
+		this.args.revert = new CharacterString({font: this.font, value: '❸ default (hold)'});
+		this.args.select = new CharacterString({font: this.font, value: '✚ select'});
 
 		this.refreshConnection();
 
@@ -436,7 +417,6 @@ export class MainMenu extends Menu
 					}
 				}
 			}
-
 
 			, Settings: SettingsMenu(parent)
 

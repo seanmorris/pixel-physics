@@ -63,11 +63,11 @@ export class Spikes extends PointActor
 					switch(this.args.pointing)
 					{
 						case 0:
-							actor.args.y = this.args.y + -this.args.height + -4;
+							actor.args.y = this.args.y + -this.args.height + -1;
 							break;
 
 						case 1:
-							actor.args.x = this.args.x + -(this.args.width/2) + -(actor.args.width/2) + -4;
+							actor.args.x = this.args.x + -(this.args.width/2) + -(actor.args.width/2) + -1;
 							actor.damage(this);
 							break;
 
@@ -76,7 +76,7 @@ export class Spikes extends PointActor
 							break;
 
 						case 3:
-							actor.args.x = this.args.y +  this.args.width/2 + actor.args.width/2 + 4;
+							actor.args.x = this.args.y +  this.args.width/2 + actor.args.width/2 + 1;
 							actor.damage(this);
 							break;
 					}
