@@ -274,7 +274,7 @@ section.filters {
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor.actor-egg-walker .sprite,
-.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring) {
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring):not(.actor-flag) {
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
@@ -510,7 +510,7 @@ a.github {
 	background-image: url(/ui/github.svg);
 	display: inline-block;
 	width: 1.5em;
-	height: 1.25em
+	height: 1.25em;
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -663,13 +663,26 @@ input[type=number]::-webkit-outer-spin-button {
 
 .combo-table {
 	display: flex;
+	z-index: 1001 !important;
 	flex-direction: row-reverse;
 }
 
-.combo-table .combo-list > div:last-child .hud-character-string {
-	flex: 0;
+.combo-table .combo-list > div,
+.combo-table .combo-list + .comboTopLine .hud-character-string {
+	justify-content: flex-end !important;
+}
+
+.combo-table .combo-list .hud-character-string {
 	animation: combo-pulse 400ms 1 linear;
-	/*transform: scale(1.25) rotate(15deg);*/
+}
+
+.combo-table .combo-list .hud-character-string > div {
+	margin-right: 10px;
+}
+
+.combo-table .combo-list .hud-character-string.pulse {
+	flex: 0;
+	animation: none;
 	z-index: 10000;
 }
 
@@ -715,13 +728,14 @@ input[type=number]::-webkit-outer-spin-button {
 
 @keyframes combo-pulse {
 	0% {
-		transform: scale(0.24) rotate(0);
+		transform: scale(0.24) rotate(-15deg);
 	}
-	18% {
-		transform: scale(0.12) rotate(0);
+	9% {
+		transform: scale(0.12) rotate(-15deg);
 	}
-	33% {
-		transform: scale(1.25) rotate(calc(15deg * var(--pulseDir, 1)));
+	27% {
+		transform: scale(1.5) rotate(calc(12.5deg * var(--pulseDir, 1)));
+
 	}
 	100% {
 		transform: scale(1) rotate(0);

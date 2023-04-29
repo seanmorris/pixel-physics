@@ -67,7 +67,7 @@ export class CanPop
 				ga('send', 'event', {
 					eventCategory: 'badnik',
 					eventAction: 'damaged-player',
-					eventLabel: `${viewport.args.actName}::${this.args.id}::${other.args.id}`
+					eventLabel: `${viewport.args.actName}::${this.args.name}::${this.args.id}::${other.args.id}`
 				});
 			}
 
@@ -170,6 +170,15 @@ export class CanPop
 
 				other.args.popCombo += 1;
 				other.args.popChain.push(reward);
+
+				if(other.args.ySpeed > 25 && !other.args.bouncing)
+				{
+					const reward = {label: 'BIG AIR!!!', points:1000, multiplier: 2};
+
+					other.airReward = reward;
+					other.args.popChain.push(reward);
+					other.args.popCombo += 1;
+				}
 
 				const scoreNode = document.createElement('div');
 				scoreNode.classList.add('particle-score');
@@ -294,7 +303,7 @@ export class CanPop
 			ga('send', 'event', {
 				eventCategory: 'badnik',
 				eventAction: 'defeated',
-				eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+				eventLabel: `${viewport.args.actName}::${this.args.name}::${this.args.id}`
 			});
 		}
 

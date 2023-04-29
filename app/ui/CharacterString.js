@@ -4,7 +4,7 @@ import { Bindable } from 'curvature/base/Bindable';
 export class CharacterString extends View
 {
 	template =
-		`<div cv-ref = "main" class = "hud-character-string [[hide]] [[color]] [[font]]" cv-each = "chars:char:c"><span
+		`<div cv-ref = "main" class = "hud-character-string [[hide]] [[color]] [[font]] [[classes]]" cv-each = "chars:char:c"><span
 				class = "hud-character"
 				data-type  = "[[char.type]]"
 				data-value = "[[char.pos]]"
@@ -25,6 +25,8 @@ export class CharacterString extends View
 		chars[ Bindable.NoGetters ] = true;
 
 		this.args.chars = chars;
+
+		this.args.classes = '';
 
 		this.args.scale = this.args.scale || 1;
 

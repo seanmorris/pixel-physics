@@ -1,0 +1,24 @@
+.actor-flag .sprite {
+	width: 45px;
+	height: 53px;
+}
+
+.actor-flag .sprite::after {
+	content: '  ';
+	position: absolute;
+	top: 3px;
+	width: 45px;
+	height: 53px;
+	background-image: url(/sega-channel/flag.png);
+	animation: flag-wave infinite 0.5s steps(6);
+	background-position-y: 0px;
+}
+
+@keyframes flag-wave {
+	0% {
+		background-position-x: -0px;
+	}
+	100% {
+		background-position-x: -270px;
+	}
+}

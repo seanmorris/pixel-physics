@@ -1257,8 +1257,11 @@ export class Sonic extends PointActor
 			this.bMap('doJump', 0);
 		}
 
-		if(this.args.gSpeed && !this.args.falling && !this.args.rolling && Math.sign(this.args.gSpeed) === this.args.direction)
-		{
+		if(this.args.gSpeed
+			&& !this.args.falling
+			&& !this.args.rolling
+			&& Math.sign(this.args.gSpeed) === this.args.direction
+		){
 			this.args.rolling = true;
 
 			const standOrRecheck = () => {

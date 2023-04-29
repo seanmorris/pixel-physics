@@ -61,6 +61,15 @@ export class Emerald extends PointActor
 				this.viewport.args.emeralds.push(this.args.color);
 			}
 
+			const save = viewport.currentSave;
+
+			if(!save.emeralds.includes(this.args.color))
+			{
+				save.emeralds.push(this.args.color)
+			}
+
+			save.save();
+
 			this.viewport.actors.remove( this );
 			this.remove();
 		}

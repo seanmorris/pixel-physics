@@ -398,15 +398,19 @@ export class PointActor extends View
 			this[BOUNDS] = false;
 		});
 
+		this.moved = false;
+
 		this.args.bindTo(['x','y'], (v, k, t) => {
 			this[BOUNDS] = false;
 			isNaN(v) && console.trace(k, v)
 			this.stepCache = {};
 			this.idleTime = 0;
+			this.moved = true;
 		});
 
 		this.args.bindTo(['width','height'], (v, k, t) => {
 			this[BOUNDS] = false;
+			this.moved = true;
 		});
 
 		this.args.bindTo(['xSpeed','ySpeed'], (v, k, t) => {
@@ -769,9 +773,9 @@ export class PointActor extends View
 			return;
 		}
 
-		const regionClass = this.viewport.objectPalette['base-region']
+		// const regionClass = this.viewport.objectPalette['base-region']
 
-		this.isRegion = this instanceof regionClass;
+		// this.isRegion = this instanceof regionClass;
 
 		this.args.bindTo('spriteSheet', v => {
 			if(v !== undefined)
@@ -1735,7 +1739,7 @@ export class PointActor extends View
 			base += pop.points;
 		}
 
-		const total = base * multiply;
+		const total = Math.ceil(base * multiply);
 
 		this.args.popChain.length = 0;
 
@@ -1807,7 +1811,7 @@ export class PointActor extends View
 					}
 
 					this.totalCombo(true);
-					this.lightDashReward = this.grindReward = null;
+					this.lightDashReward = this.grindReward = this.airReward = null;
 				}
 
 				return;

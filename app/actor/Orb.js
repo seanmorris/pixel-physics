@@ -14,7 +14,7 @@ export class Orb extends Mixin.from(PointActor)
 		this.args.height  = 48;
 		this.args.rolled  = 0;
 
-		this.args.accel = 0.2;
+		this.args.accel = 0.0;
 		this.args.decel = 0;
 
 		this.args.bindTo('x', (v,k,t,d,p) => this.args.rolled += 0.5 * Number(v - p || 0));
@@ -31,19 +31,38 @@ export class Orb extends Mixin.from(PointActor)
 		this.autoStyle.get(this.box)['--rolled'] = 'rolled';
 	}
 
-	update()
+	updateStart()
+	{
+		const other = this.viewport.controlActor;
+
+		this.otherSpacing  = this.distanceFrom(other);
+		this.otherSpeed = other.args.gSpeed || other.args.xSpeed || other.gSpeedLast || other.xSpeedLast;
+	}
+
+	update(){}
+
+	updateEnd()
 	{
 		if(!this.viewport || !this.viewport.controlActor)
 		{
 			return;
 		}
 
+		const other = this.viewport.controlActor;
+
+		if(this.args.falling && other.args.fallTime < 15 && this.args.ySpeed < 0)
+		{
+			this.args.xSpeed = 0.995;
+		}
+
+		const viewport = this.viewport;
+
 		if(this.args.falling)
 		{
 			this.viewport.onFrameOut(10, () => {
 				if(this.args.falling)
 				{
-					this.viewport.auras.delete(this);
+					viewport.auras.delete(this);
 				}
 			});
 		}
@@ -52,47 +71,33 @@ export class Orb extends Mixin.from(PointActor)
 			this.viewport.auras.add(this);
 		}
 
-		const other = this.viewport.controlActor;
+		const speedMag  = Math.max(0, this.otherSpeed);
+		const speedSign = Math.sign(this.args.gSpeed || this.gSpeedLast || other.args.gSpeed || other.args.xSpeed);
 
-		const speedMag = other.args.gSpeed// || Math.abs(other.x - other.xLast);
+		const moving = this.args.gSpeed || this.args.xSpeed;
 
-		const speedSign = Math.sign(this.args.gSpeed || this.gSpeedLast || other.args.gSpeed);
-
-		if(!this.args.maxFollow || this.x < this.args.maxFollow)
+		if((moving || this.args.x < other.args.x - 160) && (!this.args.maxFollow || this.x < this.args.maxFollow))
 		{
-			const xSpace = this.x - other.x;
+			const maxSpace = 64;
+			const spacing  = this.otherSpacing;
 
-			if(xSpace < 0)
+			let gSpeed = speedMag * speedSign;
+
+			if(spacing < maxSpace || (other.args.falling && other.args.ySpeed >= 0))
 			{
-				if(speedSign && this.args.mode === other.args.mode)
-				{
-					if(xSpace >= -96)
-					{
-						this.args.gSpeed = speedMag * speedSign * 0.75;
-					}
-
-					if(xSpace < -96)
-					{
-						this.args.gSpeed = speedMag * speedSign;
-					}
-
-					if(xSpace < -128 && !this.args.mode && !other.args.mode)
-					{
-						this.args.x -= xSpace + 128;
-						this.args.gSpeed = speedMag * speedSign;
-					}
-				}
-				else if(this.args.mode !== other.args.mode)
-				{
-					this.args.gSpeed = Math.max(
-						speedMag * speedSign * 0.85
-						, this.args.gSpeed * 0.95
-					);
-				}
+				gSpeed *= 0.975;
 			}
+
+			if(gSpeed && this.args.groundAngle > 0)
+			{
+				gSpeed += 1.5 * Math.sign(gSpeed);
+			}
+
+			this.args.gSpeed = gSpeed;
 		}
 
 		super.update();
+		super.updateEnd();
 	}
 
 	collideA(other)

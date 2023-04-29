@@ -98,10 +98,12 @@ import { Replay } from '../replay/Replay';
 
 import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
+import { Droop } from '../effects/Droop';
 
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
-const ColCell = Symbol('collision-cells');
+const ColCells = Symbol('collision-cells');
+const ColCell = Symbol('collision-cell');
 const Run = Symbol('run');
 
 export class Viewport extends View
@@ -904,6 +906,11 @@ export class Viewport extends View
 					i[ColCell].delete(i);
 				}
 
+				if(i[ColCells])
+				{
+					i[ColCells].forEach(c => c.delete(i));
+				}
+
 				if(cell)
 				{
 					cell.delete(i);
@@ -1625,7 +1632,6 @@ export class Viewport extends View
 			const tails = new Sonic({name:'Player 2', id: String(new Uuid)}, this);
 
 			const startDef = this.defsByName.get('player-start');
-
 			sonic.args.x = startDef.x;
 			sonic.args.y = startDef.y;
 
@@ -1698,13 +1704,28 @@ export class Viewport extends View
 			const zoneState = this.getZoneState();
 
 			if(!this.replay)
-			for(const emblemId of zoneState.emblems)
 			{
-				const emblem = this.actorsById[emblemId];
-
-				if(this.nextControl && !this.nextControl.args.emblems.includes(emblem))
+				for(const emblemId of zoneState.emblems)
 				{
-					this.nextControl.args.emblems.push(emblem);
+					if(!this.actorsById[emblemId])
+					{
+						continue;
+					}
+
+					const emblem = this.actorsById[emblemId];
+
+					if(this.nextControl && !this.nextControl.args.emblems.includes(emblem))
+					{
+						this.nextControl.args.emblems.push(emblem);
+					}
+				}
+
+				for(const emerald of this.currentSave.emeralds)
+				{
+					if(!this.args.emeralds.includes(emerald))
+					{
+						this.args.emeralds.push(emerald);
+					}
 				}
 			}
 
@@ -3049,6 +3070,8 @@ export class Viewport extends View
 
 			const startDef = this.defsByName.get(startType);
 
+			console.log(startDef);
+
 			character.args.x = startDef ? startDef.x : mapWidth  / 2;
 			character.args.y = startDef ? startDef.y : mapHeight / 2;
 			character.args.z = startDef ? startDef.z ?? 10 : 10;
@@ -3193,9 +3216,7 @@ export class Viewport extends View
 
 					const isRegion = spawn.object instanceof Region;
 
-					const doc = isRegion
-						? actorDoc
-						: actorDoc;
+					const doc = actorDoc;
 
 					spawn.object.render(doc);
 					spawn.object.onRendered();
@@ -3207,6 +3228,8 @@ export class Viewport extends View
 							spawn.object.detach();
 						}
 					}
+
+					this.setColCell(spawn.object);
 
 					actorSpawned = true;
 
@@ -3267,6 +3290,8 @@ export class Viewport extends View
 		{
 			actor.colliding = false;
 		}
+
+		actor.moved = false;
 	}
 
 	actorUpdate(actor)
@@ -3294,7 +3319,7 @@ export class Viewport extends View
 
 		actor.updateEnd();
 
-		if(!actor.removed)
+		if(actor.moved && !actor.removed)
 		{
 			this.setColCell(actor);
 		}
@@ -3307,7 +3332,7 @@ export class Viewport extends View
 		// this.quadCell.insert(actor, {x: actor.args.x + actor.args.width / 2, y: actor.args.y});
 	}
 
-	nearbyActors(x, y)
+	nearbyActors(x, y, regions = false)
 	{
 		const nearbyCells = this.getNearbyColCells(x, y);
 
@@ -3317,10 +3342,10 @@ export class Viewport extends View
 		{
 			for(const actor of actors)
 			{
-				// if(actor.removed)
-				// {
-				// 	continue;
-				// }
+				if(regions && !actor.isRegion)
+				{
+					continue;
+				}
 
 				result.add(actor);
 			}
@@ -3768,7 +3793,7 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				if(!actor.removed && actor[Run] === this[Run])
+				if(actor.moved && !actor.removed && actor[Run] === this[Run])
 				{
 					this.setColCell(actor);
 				}
@@ -4060,47 +4085,65 @@ export class Viewport extends View
 			if(this.controlActor.args.popChain)
 			{
 				len = this.controlActor.args.popChain.length;
+				const cutOff = Math.max(0, len - 4);
 
 				if(!len)
 				{
 					for(const item of this.args.combo)
 					{
-						this.pooledCharStringDetached(item.score);
+						// this.pooledCharStringDetached(item.score);
 						this.pooledCharStringDetached(item.label);
 					}
-					// this.resetCharStringPool();
 				}
 
-				for(let i = 0; i < len; i++)
-				{
-					if(i > 4 && this.args.combo[i])
-					{
-						this.pooledCharStringDetached(this.args.combo[i].score);
-						this.pooledCharStringDetached(this.args.combo[i].label);
-					}
-				}
+				let pulse = false;
 
 				for(let i = 0; i < len; i++)
 				{
 					const pop = this.controlActor.args.popChain[i];
 
-					if(i < 4)
-					{
-						this.args.combo[i] = this.args.combo[i] || {score:this.getUnusedCharString(), label:this.getUnusedCharString()};
-
-						this.args.combo[i].score.args.value = pop.points;
-						this.args.combo[i].label.args.value = String(pop.label).replace(/-/g, ' ');
-					}
-
 					multiply += pop.multiplier;
 					base += pop.points;
+
+					const c = i + -cutOff;
+
+					if(i >= cutOff)
+					{
+						this.args.combo[c] = this.args.combo[c] || {
+							label:  this.getUnusedCharString()
+							, score: null
+							, index: i
+						};
+
+						if(this.args.combo[c].index !== i)
+						{
+							pulse = true;
+						}
+
+						// this.args.combo[c].score.args.value = pop.points;
+						this.args.combo[c].label.args.value = String(pop.label).replace(/-/g, ' ');
+						this.args.combo[c].index = i;
+					}
+					else if(i < cutOff && this.args.combo[c])
+					{
+						this.pooledCharStringDetached(this.args.combo[c].score);
+						this.pooledCharStringDetached(this.args.combo[c].label);
+					}
 				}
 
-				this.args.combo.length = Math.min(4, this.controlActor.args.popChain.length);
+				if(pulse)
+				{
+					const last = this.args.combo[ this.args.combo.length + -1 ];
+					last.label.args.classes = 'pulse';
+					this.onFrameOut(1, () => last.label.args.classes = '');
+					// this.onFrameOut(30, () => last.label.args.classes = '');
+				}
+
+				this.args.combo.length = Math.min(4, Math.max(0, -cutOff + this.controlActor.args.popChain.length));
 			}
 
 			this.args.popTopLine.args.value = multiply + ' x ' + base;
-			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) + '...' : '';
+			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) : '';
 		}
 
 		if(this.args.networked && this.controlActor)
@@ -4223,7 +4266,7 @@ export class Viewport extends View
 	{
 		const regions = new Set;
 
-		for(const region of this.regions)
+		for(const region of this.nearbyActors(x, y, true))
 		{
 			if(region[Run] !== this[Run])
 			{
@@ -4546,13 +4589,13 @@ export class Viewport extends View
 
 		const actorWidth = actor.args.width;
 
-		const actorLeft  = actor.args.x - actorWidth / 2;
-		const actorRight = actor.args.x + actorWidth / 2;
+		const actorLeft  = actor.args.x - (actor.isRegion ? 0 : actorWidth / 2);
+		const actorRight = actor.args.x + (actor.isRegion ? actorWidth : (actorWidth / 2));
 
-		const cellMinX = Math.floor( actorLeft  / colCellDiv );
+		const cellMinX = -1 + Math.floor( actorLeft  / colCellDiv );
 		const cellMaxX = Math.ceil( actorRight / colCellDiv );
 
-		const cellMinY = Math.floor( actorTop / colCellDiv );
+		const cellMinY = -1 + Math.floor( actorTop / colCellDiv );
 		const cellMaxY = Math.ceil( actor.args.y  / colCellDiv );
 
 		const cells = new Set;
@@ -4561,11 +4604,30 @@ export class Viewport extends View
 		{
 			for(let y = cellMinY; y <= cellMaxY; y++)
 			{
-				cells.add( this.getColCell({x:x*colCellDiv,y:y*colCellDiv}) );
+				const cell = this.getColCell({x:x*colCellDiv,y:y*colCellDiv});
+
+				cell.add(actor);
+
+				cells.add( cell );
 			}
 		}
 
 		return cells;
+	}
+
+	actorsInCells(cells)
+	{
+		const actors = new Set;
+
+		for(const cell of cells)
+		{
+			for(const actor of cell)
+			{
+				actors.add(actor);
+			}
+		}
+
+		return actors;
 	}
 
 	setColCell(actor)
@@ -4589,6 +4651,24 @@ export class Viewport extends View
 		cell.add(actor);
 
 		actor[ColCell] = cell;
+
+		if(!actor.isRegion)
+		{
+			return cell;
+		}
+
+		const prevCells = actor[ColCells];
+
+		actor[ColCells] = this.getColCells(actor);
+
+		if(prevCells)
+		for(const prevCell of prevCells)
+		{
+			if(!actor[ColCells].has(prevCell))
+			{
+				prevCell.delete(actor);
+			}
+		}
 
 		return cell;
 	}

@@ -3,7 +3,7 @@
     "height": 64,
     "infinite": false,
     "nextlayerid": 7,
-    "nextobjectid": 83,
+    "nextobjectid": 125,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -61,9 +61,11 @@
     "version": "1.6",
     "width": 1024,
     "types": [
+        "grinding-region",
         "region",
-        "sonic",
         "spinning-float",
+        "techno-squeak",
+        "triple-ring-monitor",
         "tumbler"
     ],
     "map": "/map/test-arena.json"

@@ -71,6 +71,7 @@ export class Splats extends Mixin.from(PointActor, CanPop)
 				this.args.xSpeed = this.args.gSpeed;
 				this.args.falling = true;
 				this.jumpTimer = false;
+				this.args.y -= 32;
 			});
 		}
 	}

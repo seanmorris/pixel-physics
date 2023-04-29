@@ -35,6 +35,8 @@ export class Region extends PointActor
 
 		this.args.float = -1;
 
+		this.isRegion = true;
+
 		this.skimmers = new WeakSet;
 	}
 

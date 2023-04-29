@@ -37,7 +37,7 @@ export class Signpost extends PointActor
 		}
 
 		this.viewport.onFrameOut(120, () => this.box.setAttribute('data-cleared-by', other.args.name));
-		this.viewport.onFrameOut(30,  () => other.args.rolling = false);
+		// this.viewport.onFrameOut(90,  () => other.args.rolling = false);
 		this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH ${this.viewport.args.actName}`));
 
 		this.viewport.onFrameOut(540, () => {
@@ -157,6 +157,8 @@ export class Signpost extends PointActor
 
 					this.viewport.onFrameOut(30, () => this.viewport.particles.remove(dustParticle));
 				}
+
+				other.args.rolling = false
 
 				this.args.x = toX;
 

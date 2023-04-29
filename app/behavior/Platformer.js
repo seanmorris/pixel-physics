@@ -107,14 +107,22 @@ export class Platformer
 			host.grindReward.points += (Math.round(host.args.gSpeed / 10) * host.grindReward.direction) || 1;
 		}
 
+		if(host.airReward && host.args.falling)
+		{
+			// host.grindReward.points += (Math.round(host.args.gSpeed / 10) * host.grindReward.direction) || 1;
+			host.airReward.points += Math.ceil(Math.abs(host.args.ySpeed));
+		}
+
 		if(!host.args.popChain)
 		{
 			host.grindReward = null;
+			host.airReward = null;
 		}
 
 		if(!host.args.falling && (!host.args.grinding && host.groundTime > 1))
 		{
 			host.grindReward = null;
+			host.airReward = null;
 		}
 
 		if(host.follower)
@@ -147,12 +155,14 @@ export class Platformer
 			}
 		}
 
-		if(!host.args.falling && !host.args.rolling && !host.args.hangingFrom && (!host.args.grinding  && host.groundTime > 1))
-		{
-			if(host.args.popChain.length)
-			{
-				host.totalCombo();
-			}
+		if(!host.args.falling
+			&& !host.args.rolling
+			&& !host.args.hangingFrom
+			&& (!host.args.grinding && host.groundTime > 1)
+			&& !host.args.bouncing
+			&& host.args.popChain.length
+		){
+			host.totalCombo();
 		}
 	}
 
@@ -894,8 +904,9 @@ export class Platformer
 
 			if(!host.args.dead && !host.isRegion && host.args.mode === MODE_FLOOR && regionsBelow.size)
 			{
-				// let falling = !standingOn;
+				let falling = !standingOn;
 
+				if(!host.args.falling || host.broad)
 				for(const region of regionsBelow)
 				{
 					if(host.broad || (
@@ -914,9 +925,14 @@ export class Platformer
 
 							if(host.args.y - 32 < region.args.y - region.args.height)
 							{
+								if(host.broad)
+								{
+									host.args.falling = false;
+								}
+
 								host.args.skimming = true;
 								host.args.y = region.y - region.args.height + -1;
-								host.args.falling = false;
+								falling = false;
 								region.skim(host);
 							}
 							else if(host.broad)
@@ -936,6 +952,10 @@ export class Platformer
 				if(standingOn instanceof Layer)
 				{
 					host.args.standingOn = standingOn;
+				}
+				else
+				{
+					host.args.falling = host.args.falling || falling;
 				}
 
 				// host.args.falling = falling || host.args.falling;
@@ -1707,6 +1727,10 @@ export class Platformer
 
 						host.args.pushing = Math.sign(host.args.gSpeed);
 						break;
+					}
+					else
+					{
+						host.args.pushing = false;
 					}
 
 					let waistBlock = false;
@@ -2740,12 +2764,20 @@ export class Platformer
 			return;
 		}
 
-		if(host.args.ySpeed >= 0 && distances[2] && distances[1] === false && distances[0] === false)
-		{
+		if(host.controllable
+			&& host.args.ySpeed >= 0
+			&& distances[2]
+			&& distances[1] === false
+			&& distances[0] === false
+		){
 			host.args.x += Math.sign(xSpeedOriginal);
-			host.args.y --;
+
+			while(host.getMapSolidAt(host.args.x, host.args.y))
+			{
+				host.args.y--;
+			}
 		}
-		else if(!host.willStick && hits.length > 1
+		else if(!host.willStick && (hits.length > 1 || distances[2])
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))
 		){
 			const xDirection = Math.sign(xSpeedOriginal);
@@ -2892,12 +2924,18 @@ export class Platformer
 
 			if(xSpeedOriginal < 0)
 			{
-				angleIsWall = airPoint[0] >= airPointB[0] && Math.abs(collisionAngle - Math.PI/2) < Math.PI/4;
+				const angle = Math.abs(collisionAngle - Math.PI/2) % Math.PI;
+				angleIsWall = Math.abs(airPoint[1] - airPointB[1]) > 1
+					&& airPoint[0] >= (-1+airPointB[0])
+					&& angle < Math.PI/4;
 			}
 
 			if(xSpeedOriginal > 0)
 			{
-				angleIsWall = airPoint[0] <= airPointB[0] && Math.abs(collisionAngle - Math.PI/2) < Math.PI/4;
+				const angle = Math.abs(collisionAngle - Math.PI/2) % Math.PI;
+				angleIsWall = Math.abs(airPoint[1] - airPointB[1]) > 1
+					&& airPoint[0] <= (+1+airPointB[0])
+					&& angle < Math.PI/4;
 			}
 
 			const isLeft  = angleIsWall && xSpeedOriginal < 0;
@@ -3723,11 +3761,17 @@ export class Platformer
 				break;
 		}
 
+		let floorX = 0;
 		let gSpeedReal = host.args.gSpeed;
 
 		if(host.args.standingOn && host.args.standingOn.args.convey)
 		{
 			gSpeedReal += host.args.standingOn.args.convey;
+		}
+
+		if(host.args.standingOn && host.args.standingOn.args.trackX)
+		{
+			floorX = host.args.standingOn.args.xSpeed || host.args.standingOn.args.gSpeed;
 		}
 
 		host.args.standingOn = null;
@@ -3776,6 +3820,8 @@ export class Platformer
 
 		host.args.groundAngle = 0;
 		host.args.gSpeed = 0;
+
+		host.args.xSpeed += floorX;
 	}
 
 	impulse(host, magnitude, direction, willFall = false)

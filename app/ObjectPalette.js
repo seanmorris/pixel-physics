@@ -247,6 +247,7 @@ import { CrossCannon } from './actor/CrossCannon';
 
 import { ChaoDetailer } from './actor/ChaoDetailer';
 import { Angel } from './actor/Angel';
+import { Flag } from './actor/Flag';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -444,4 +445,5 @@ export const ObjectPalette = {
 	, 'chao-detailer': ChaoDetailer
 	, 'cross-cannon': CrossCannon
 	, 'tumbler': Tumbler
+	, 'flag': Flag
 };

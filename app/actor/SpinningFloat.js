@@ -22,6 +22,7 @@ export class SpinningFloat extends Block
 		this.args.spinning = 0;
 		this.args.bouncing = 0;
 		this.args.treadmill = true;
+		this.args.trackX = true;
 		this.args.particleScale = 1.25;
 
 		this.lastConvey = 0;

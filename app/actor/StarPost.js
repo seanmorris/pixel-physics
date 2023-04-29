@@ -101,11 +101,14 @@ export class StarPost extends PointActor
 				throwSpeed += 3;
 			}
 
+			const frameId = this.viewport.args.frameId + -this.viewport.args.startFrameId;
+
 			const monitorClasses = other.args.rings > 50
 				? [RingMonitor, SheildFireMonitor, SheildWaterMonitor, SheildElectricMonitor]
 				: [RingMonitor];
 
-			const monitorClass = monitorClasses[Math.floor( Math.random() * monitorClasses.length )];
+			// const monitorClass = monitorClasses[Math.floor( Math.random() * monitorClasses.length )];
+			const monitorClass = monitorClasses[ frameId % monitorClasses.length ];
 
 			const monitor = new monitorClass({
 				direction: other.args.direction

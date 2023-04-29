@@ -30,6 +30,11 @@ export class MarbleBlock extends PointActor
 			return true;
 		}
 
+		if(this.args.falling && this.args.ySpeed === -1)
+		{
+			return false;
+		}
+
 		const otherMag = Math.ceil(Math.abs(other.args.gSpeed || other.args.xSpeed));
 		const otherDir = Math.sign(other.args.gSpeed || other.args.xSpeed);
 

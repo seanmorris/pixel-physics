@@ -75,13 +75,13 @@ export class Monitor extends PointActor
 
 		super.collideA(other, type);
 
-		if(other.passPop && other.occupant&& !other.args.dead)
+		if(other.passPop && other.occupant && !other.args.dead)
 		{
 			other = other.occupant;
 			this.pop(other);
 			return;
 		}
-		
+
 		// if(type === 1 && !other.args.spinning)
 		// {
 		// 	return true;
@@ -100,7 +100,7 @@ export class Monitor extends PointActor
 		}
 
 		if(type !== 2
-			&& ((other.args.ySpeed > 0 && other.y < this.y) || other.args.rolling)
+			&& ((other.args.ySpeed > 0 && other.y < this.y) || (other.args.rolling && !other.args.grinding))
 			&& (!this.args.falling || this.args.float === -1)
 			&& !this.args.gone
 			&& this.viewport
@@ -112,7 +112,7 @@ export class Monitor extends PointActor
 
 		if((type === 1 || type === 3)
 			// && (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
-			&& (other.args.rolling || other instanceof Projectile)
+			&& ((other.args.rolling && !other.args.grinding) || other instanceof Projectile)
 			&& !this.args.gone
 			&& this.viewport
 		){
@@ -138,6 +138,15 @@ export class Monitor extends PointActor
 
 			other.args.popChain.push(reward);
 			other.args.popCombo += 1;
+
+			if(other.args.ySpeed > 25 && !other.args.bouncing)
+			{
+				const reward = {label: 'BIG AIR!!!', points:1000, multiplier: 1.5};
+
+				other.airReward = reward;
+				other.args.popChain.push(reward);
+				other.args.popCombo += 1;
+			}
 		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});

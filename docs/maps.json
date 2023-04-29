@@ -314,7 +314,6 @@
     "/map/test-objects.headers.json",
     "/map/test-zone.headers.json",
     "/map/tight-loop.headers.json",
-    "/map/tile-object-test.headers.json",
     "/map/tiny-loop.headers.json",
     "/map/underground-test.headers.json",
     "/map/vehicle-test.headers.json",

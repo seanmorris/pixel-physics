@@ -20,12 +20,12 @@ const openDb = SaveDatabase.open('saves', 1);
 
 export class Save extends Model
 {
-	// emeralds   = {};
 	// emblems    = {};
 	// characters = {};
 
-	id = null;
-	created = Date.now();
+	id       = null;
+	created  = Date.now();
+	emeralds = [];
 
 	zones = {
 		// '/map/empty-zone-2.json': {
@@ -43,6 +43,8 @@ export class Save extends Model
 	static from(skeleton)
 	{
 		const save = super.from(skeleton);
+
+		save.emeralds  = Object.assign([], save.emeralds);
 
 		for(const zone of Object.values(save.zones))
 		{

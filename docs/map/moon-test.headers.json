@@ -3,7 +3,7 @@
     "height": 192,
     "infinite": false,
     "nextlayerid": 11,
-    "nextobjectid": 496,
+    "nextobjectid": 498,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -298,6 +298,7 @@
         "breakable-block",
         "corkscrew-region",
         "door",
+        "flag",
         "gravity-pad",
         "kill-region",
         "layer-switch",
