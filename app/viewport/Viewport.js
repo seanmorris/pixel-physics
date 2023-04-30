@@ -562,6 +562,10 @@ export class Viewport extends View
 		this.args.status  = new CharacterString({value:''});
 		this.args.focusMe = new CharacterString({value:''});
 
+		this.args.topLine.args.hide = 'hide hidden';
+		this.args.status.args.hide  = 'hide hidden';
+		this.args.focusMe.args.hide = 'hide hidden';
+
 		this.args.labelChar = new CharacterString({value:'Char: '});
 
 		this.args.labelX = new CharacterString({value:'x pos: '});
@@ -1845,6 +1849,8 @@ export class Viewport extends View
 			this.args.running = true;
 			this.startTime    = Date.now();
 
+			this.onFrameOut(30, () => this.args.fade = 'hide');
+
 			if(typeof ga === 'function')
 			{
 				ga('send', 'event', {
@@ -2929,13 +2935,9 @@ export class Viewport extends View
 			this.spawnFromDef(objDefs[i]);
 		}
 
-		console.log(this.defsByName);
-
 		if(this.defsByName.has('player-start'))
 		{
 			const start = this.defsByName.get('player-start');
-
-			console.log(start);
 
 			this.args.x = -start.x;
 			this.args.y = -start.y;
@@ -4817,6 +4819,8 @@ export class Viewport extends View
 		this.args.cutScene = false;
 		this.args.fade = false;
 
+		this.onFrameOut(30, () => this.args.fade = 'hide');
+
 		this.args.xOffset = 0.5;
 		this.args.yOffset = 0.5;
 
@@ -4898,7 +4902,9 @@ export class Viewport extends View
 
 		this.args.actClear = false;
 		this.args.cutScene = false;
-		this.args.fade     = true;
+		this.args.fade     = false;
+
+		this.onFrameOut(1, () => this.args.fade = true);
 
 		this.args.screenEffects = new Bag;
 

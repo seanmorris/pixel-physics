@@ -111,5 +111,14 @@ export class Emblem extends PointActor
 		{
 			Sfx.play('EMBLEM_COLLECTED');
 		}
+
+		if(typeof ga === 'function')
+		{
+			ga('send', 'event', {
+				eventCategory: 'emblem',
+				eventAction: 'collected',
+				eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+			});
+		}
 	}
 }

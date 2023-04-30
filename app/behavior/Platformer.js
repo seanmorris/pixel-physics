@@ -2765,14 +2765,15 @@ export class Platformer
 		}
 
 		if(host.controllable
-			&& host.args.ySpeed >= 0
+			&& host.args.ySpeed > 0
 			&& distances[2]
 			&& distances[1] === false
 			&& distances[0] === false
 		){
-			host.args.x += Math.sign(xSpeedOriginal);
+			const dir = Math.sign(xSpeedOriginal);
+			host.args.x += dir;
 
-			while(host.getMapSolidAt(host.args.x, host.args.y))
+			while(host.getMapSolidAt(host.args.x + host.args.width * 0.5 * dir, host.args.y + -1))
 			{
 				host.args.y--;
 			}

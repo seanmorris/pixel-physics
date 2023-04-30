@@ -96,7 +96,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				continue;
 			}
 
-			const desparsed = layer.data = {};
+			const desparsed = layer.data = Object.create(null);
 
 			while(layer.sparsed.length)
 			{
@@ -134,7 +134,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			for(const newLayer of data.layers)
 			{
-				const newData = {};
+				const newData = Object.create(null);
 				const sizeOffset = this.mapData.width - newLayer.width;
 
 				const offset = xOffset + yOffset * this.mapData.width;
@@ -212,7 +212,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		for(const layer of tileLayers)
 		{
-			const newData = {};
+			const newData = Object.create(null);
 
 			for(let i of Object.keys(layer.data))
 			{
@@ -241,7 +241,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		for(const layer of tileLayers)
 		{
-			const newData = {};
+			const newData = Object.create(null);
 
 			for(let i in layer.data)
 			{
@@ -343,7 +343,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	loadLayers(tilemapData)
 	{
-		const layerGroup = {};
+		const layerGroup = Object.create(null);
 
 		const layers = tilemapData.layers || [];
 
@@ -591,7 +591,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(!tileset.meta && tileset.properties)
 		{
-			tileset.meta = {};
+			tileset.meta = Object.create(null);
 
 			for(const property of tileset.properties)
 			{
@@ -1207,7 +1207,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				};
 
 				const layer = {
-					"data": Object.assign({}, [...Array(tilecount)].map((_,k) => k)),
+					"data": Object.assign(Object.create(null), [...Array(tilecount)].map((_,k) => k)),
 					"width":Math.floor(image.width / blockSize),
 					"height": Math.floor(image.height / blockSize),
 					"id":1,

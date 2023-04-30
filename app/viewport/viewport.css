@@ -9,8 +9,8 @@ html, body {
 	justify-content: center;
 	align-items: center;
 
-	min-height: 512px;
-	min-width: 908px;
+	min-height: 100%;
+	min-width: 100%;
 }
 
 .contents {
@@ -629,6 +629,10 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: rgba(0,0,0,1);
 }
 
+.viewport .shade[data-fade=hide] {
+	display: none;
+}
+
 .viewport-overlay .debug-spawn {
 	position: absolute;
 	top: 0;
@@ -784,4 +788,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .quick-form {
 	white-space: pre;
+}
+
+viewport.level .intro-cards {
+	display: none;
 }

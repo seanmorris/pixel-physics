@@ -1318,10 +1318,10 @@ export class PointActor extends View
 					{
 						gSpeed += xAxis * friction * this.args.accel * drag;
 
-						if(Math.abs(axisSign - sign) === 2)
-						{
-							this.args.ignore = 10;
-						}
+						// if(Math.abs(axisSign - sign) === 2)
+						// {
+						// 	this.args.ignore = 10;
+						// }
 					}
 					else if(!this.args.ignore && !this.args.antiSkid)
 					{
