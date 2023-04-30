@@ -117,73 +117,73 @@ export class Spikes extends PointActor
 			return;
 		}
 
-		if(!other.controllable)
-		{
-			return true;
-		}
+		// if(!other.controllable)
+		// {
+		// 	return true;
+		// }
 
 		if(this.args.falling && !this.args.float)
 		{
-			other.controllable && other.damage(false);
+			other.damage(false);
 			return true;
 		}
 
-		if(!this.args.retractible || (!this.args.retracted && this.args.wasRetracted))
+		if(!(other instanceof Block) && type === this.args.pointing)
 		{
-			if(!(other instanceof Block) && type === this.args.pointing)
+			if(this.args.pointing === 3)
 			{
-				if(this.args.pointing === 3)
+				const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
+
+				if(speed <= 0)
 				{
-					const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
-
-					if(speed <= 0)
+					if(!other.noClip && !this.args.retracted && this.args.wasRetracted)
 					{
-						if(!other.noClip)
-						{
-							other.args.x = this.args.x + (this.args.width/2)  + (other.args.width/2) + 4;
-						}
-
-						other.controllable && other.damage(this);
+						other.args.x = this.args.x + (this.args.width/2)  + (other.args.width/2) + 4;
 					}
+
+					other.damage(this);
 				}
-				else if(this.args.pointing === 1)
-				{
-					const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
+			}
+			else if(this.args.pointing === 1)
+			{
+				const speed = other.args.xSpeed || (other.args.gSpeed * (other.args.mode === 2 ? -1:1));
 
-					if(speed >= 0)
+				if(speed >= 0)
+				{
+					if(!other.noClip && !this.args.retracted && this.args.wasRetracted)
 					{
-						if(!other.noClip)
-						{
-							other.args.x = this.args.x + -(this.args.width/2)  + -(other.args.width/2) + -4;
-						}
-						other.controllable && other.damage(this);
+						other.args.x = this.args.x + -(this.args.width/2)  + -(other.args.width/2) + -4;
 					}
+
+					other.damage(this);
 				}
-				else if(this.args.pointing === 2)
-				{
-					const speed = other.args.ySpeed || (other.args.gSpeed * (other.args.mode === 1 ? -1:1));
+			}
+			else if(this.args.pointing === 2)
+			{
+				const speed = other.args.ySpeed || (other.args.gSpeed * (other.args.mode === 1 ? -1:1));
 
-					if(speed <= 0)
+				if(speed <= 0)
+				{
+					if(!other.noClip && !this.args.retracted && this.args.wasRetracted)
 					{
-						if(!other.noClip)
-						{
-							other.args.y = this.args.y + other.args.height;
-						}
-						other.controllable && other.damage(this);
+						other.args.y = this.args.y + other.args.height;
 					}
+
+					other.damage(this);
 				}
-				else if(this.args.pointing === 0)
-				{
-					const speed = other.args.ySpeed || (other.args.gSpeed * (other.args.mode === 3 ? -1:1));
+			}
+			else if(this.args.pointing === 0)
+			{
+				const speed = other.args.ySpeed || (other.args.gSpeed * (other.args.mode === 3 ? -1:1));
 
-					if(speed >= 0)
+				if(speed >= 0)
+				{
+					if(!other.noClip && !this.args.retracted && this.args.wasRetracted)
 					{
-						if(!other.noClip)
-						{
-							other.args.y = this.args.y + -this.args.height + 0;
-						}
-						other.controllable && other.damage(this);
+						other.args.y = this.args.y + -this.args.height + 0;
 					}
+
+					other.damage(this);
 				}
 			}
 		}
@@ -191,5 +191,5 @@ export class Spikes extends PointActor
 		return true;
 	}
 
-	get solid() {return true; }
+	get solid() {return !this.args.retracted && !this.args.wasRetracted; }
 }

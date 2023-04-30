@@ -1569,6 +1569,8 @@ export class Viewport extends View
 
 	startLevel(refresh = true)
 	{
+		this.populateMap();
+
 		this.levelFinished = false;
 
 		if(!this.args.isReplaying)
@@ -1613,8 +1615,6 @@ export class Viewport extends View
 		{
 			Bgm.pause();
 		}
-
-		this.populateMap();
 
 		if(refresh)
 		{
@@ -1713,6 +1713,8 @@ export class Viewport extends View
 					}
 
 					const emblem = this.actorsById[emblemId];
+
+					emblem.existing = 'existing';
 
 					if(this.nextControl && !this.nextControl.args.emblems.includes(emblem))
 					{
@@ -2898,8 +2900,6 @@ export class Viewport extends View
 			return;
 		}
 
-		this.defsByName.set(objDef.name, objDef);
-
 		if(!ObjectPalette[objType])
 		{
 			return;
@@ -2923,9 +2923,22 @@ export class Viewport extends View
 	{
 		for(let i in objDefs)
 		{
+			this.defsByName.set(objDefs[i].name, objDefs[i]);
 			this.objDefs.set(objDefs[i].id, objDefs[i]);
 
 			this.spawnFromDef(objDefs[i]);
+		}
+
+		console.log(this.defsByName);
+
+		if(this.defsByName.has('player-start'))
+		{
+			const start = this.defsByName.get('player-start');
+
+			console.log(start);
+
+			this.args.x = -start.x;
+			this.args.y = -start.y;
 		}
 
 		for(const actor of this.actors.items())
@@ -2946,7 +2959,7 @@ export class Viewport extends View
 				}
 			}
 
-			if(this.actorIsOnScreen(actor) || actor.isRegion)
+			if(this.actorIsOnScreen(actor))
 			{
 				actor.args.display = actor.defaultDisplay || null;
 				actor.render(this.tags.actors);
@@ -3069,8 +3082,6 @@ export class Viewport extends View
 			}
 
 			const startDef = this.defsByName.get(startType);
-
-			console.log(startDef);
 
 			character.args.x = startDef ? startDef.x : mapWidth  / 2;
 			character.args.y = startDef ? startDef.y : mapHeight / 2;
@@ -3356,8 +3367,9 @@ export class Viewport extends View
 
 	update()
 	{
-		if(this.zoneScript)
+		if(this.zoneScript && this.args.started && this.args.paused === false)
 		{
+			// console.log(this.args.frameId, this.args.startFrameId);
 			this.zoneScript.update(this.args.frameId - this.args.startFrameId, this);
 		}
 
@@ -3905,9 +3917,10 @@ export class Viewport extends View
 				focusedActor = this.controlActor.focused;
 			}
 
-			const nearbyActors = this.nearbyActors(focusedActor.args.x, focusedActor.args.y) || [];
+			const nearbyActors  = this.nearbyActors(focusedActor.args.x, focusedActor.args.y) || [];
+			const nearbyRegions = this.nearbyActors(focusedActor.args.x, focusedActor.args.y, true) || [];
 
-			for(const actorList of [nearbyActors, this.regions])
+			for(const actorList of [nearbyActors, nearbyRegions])
 			{
 				for(const actor of actorList)
 				{
@@ -4302,7 +4315,7 @@ export class Viewport extends View
 		return regions;
 	}
 
-	actorsAtPoint(x, y, w = 0, h = 0)
+	actorsAtPoint(x, y, w = 0, h = 0, ghosts = false)
 	{
 		x = Math.trunc(x);
 
@@ -4325,6 +4338,11 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
+			if(!ghosts && actor.args.isGhost)
+			{
+				continue;
+			}
+
 			const myRadius = Math.max(Math.floor(w / 2), 0);
 
 			const myLeft   = x - myRadius;
@@ -4399,6 +4417,11 @@ export class Viewport extends View
 
 		for(const actor of testActors)
 		{
+			if(actor.args.isGhost)
+			{
+				continue;
+			}
+
 			const intersection = this.actorIntersectsLine(actor, x1, y1, x2, y2)
 
 			if(!intersection)
@@ -4451,11 +4474,13 @@ export class Viewport extends View
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
 	{
-		const width  = actor.args.width;
-		const left   = actor.args.x - (actor.isRegion ? 0 : (width * 0.5));
-		const right  = left + actor.args.width;
-		const bottom = actor.args.y;
-		const top    = bottom - actor.args.height;
+		const actorArgs = actor.args;
+		const width  = actorArgs.width;
+		const height = actorArgs.height;
+		const bottom = actorArgs.y;
+		const top    = bottom - height;
+		const left   = actorArgs.x - (actor.isRegion ? 0 : (width * 0.5));
+		const right  = left + width;
 
 		if(left < b1x && b1x < right && top < b1y && b1y < bottom)
 		{
@@ -4470,6 +4495,12 @@ export class Viewport extends View
 		for(const line of bounds)
 		{
 			const point = this.lineIntersectsLine(line[0], line[1], line[2], line[3], b1x, b1y, b2x, b2y);
+
+			if(!point)
+			{
+				continue;
+			}
+
 			const dist  = Math.hypot(b1x - point[0], b1y - point[1]);
 
 			if(dist < min)

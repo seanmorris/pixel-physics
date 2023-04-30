@@ -732,6 +732,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -760,6 +765,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -968,6 +978,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -996,6 +1011,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -1047,6 +1067,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -1075,6 +1100,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -1295,6 +1325,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2505,6 +2540,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2533,6 +2573,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2561,6 +2606,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2589,6 +2639,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2823,6 +2878,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2851,6 +2911,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2879,6 +2944,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2907,6 +2977,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -2935,6 +3010,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -3513,8 +3593,8 @@
                         }, 
                         {
                          "name":"static",
-                         "type":"bool",
-                         "value":true
+                         "type":"string",
+                         "value":"1"
                         }],
                  "rotation":0,
                  "type":"block",
@@ -5707,6 +5787,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"block",
@@ -5771,6 +5856,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"block",
@@ -5889,6 +5979,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -5929,6 +6024,11 @@
                          "name":"platform",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"block",
@@ -6234,7 +6334,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6267,7 +6367,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6528,7 +6628,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6637,7 +6737,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6670,7 +6770,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6703,7 +6803,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6964,7 +7064,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -6997,7 +7097,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7030,7 +7130,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7291,7 +7391,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7400,7 +7500,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7433,7 +7533,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7466,7 +7566,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",
@@ -7727,7 +7827,7 @@
                         {
                          "name":"platform",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }, 
                         {
                          "name":"static",

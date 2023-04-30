@@ -3,6 +3,7 @@ import { PointActor } from './PointActor';
 import { Mushroom } from './Mushroom';
 import { Coconut } from './Coconut';
 import { Tree } from './Tree';
+import { Uuid } from 'curvature/base/Uuid';
 
 export class Chao extends PointActor
 {
@@ -19,6 +20,8 @@ export class Chao extends PointActor
 
 		this.args.width  = 14;
 		this.args.height = 18;
+
+		this.args.uuid = args.uuid || String(new Uuid);
 
 		this.xHold = 8;
 		this.yHold = 0;
@@ -121,6 +124,8 @@ export class Chao extends PointActor
 			});
 
 		}, {wait:0});
+
+		this.chaoAge = 0;
 	}
 
 	onAttached(event)
@@ -336,6 +341,33 @@ export class Chao extends PointActor
 		});
 	}
 
+	generate()
+	{
+		Object.assign(this.stats, {
+			intelligence: 0
+			, stamina:    0
+			, luck:       0
+			, run:        0
+			, swim:       0
+			, fly:        0
+			, power:      0
+		});
+
+		Object.assign(this.traits, {
+			appetite:   0
+			, sociable: 0
+			, restless: 0
+		});
+
+		Object.assign(this.mood, {
+			attitude: 0
+			, happy:  1
+			, hunger: 0
+			, health: 1
+			, social: 0
+		});
+	}
+
 	lift(actor)
 	{
 		if(this.carriedBy === actor)
@@ -356,6 +388,23 @@ export class Chao extends PointActor
 
 	update()
 	{
+		if(viewport.meta.fieldType === 'garden' && this.chaoAge % 120 === 0)
+		{
+			const zoneState = viewport.getZoneState();
+			const stored = zoneState.chao.find(c => c.uuid === this.args.uuid);
+
+			if(!stored)
+			{
+				zoneState.chao.push(this.store());
+			}
+			else
+			{
+				Object.assign(stored, this.store());
+			}
+
+			viewport.currentSave.save();
+		}
+
 		for(const carried of this.carrying)
 		{
 			carried.args.x = this.args.x + this.args.direction * this.xHold;
@@ -491,6 +540,7 @@ export class Chao extends PointActor
 		super.update();
 
 		this.args.stateTime++;
+		this.chaoAge++;
 	}
 
 	collideA(other, type)
@@ -1157,15 +1207,17 @@ export class Chao extends PointActor
 	store()
 	{
 		const frozen = {
-			state:      this.args.currentState
+			stateTime:  this.args.stateTime
+			, state:    this.args.currentState
 			, name:     this.args.name
 			, colors:   this.customColors
 			, align:    this.args.alignment
-			, garden:   null
 			, position: [this.args.x, this.args.y]
 			, traits:   this.traits
+			, uuid:     this.args.uuid
 			, stats:    this.stats
 			, mood:     this.mood
+			, age:      this.chaoAge
 		};
 
 		return frozen;
@@ -1194,6 +1246,17 @@ export class Chao extends PointActor
 		if(frozen.state)
 		{
 			this.args.currentState = frozen.state;
+			this.args.stateTime = frozen.stateTime ?? 0;
+		}
+
+		if(frozen.uuid)
+		{
+			this.args.uuid = frozen.uuid;
+		}
+
+		if(frozen.age)
+		{
+			this.chaoAge = frozen.age;
 		}
 
 		frozen.colors && Object.assign(this.customColors, frozen.colors);

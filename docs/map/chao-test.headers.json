@@ -40,6 +40,11 @@
             "name": "titlecard-title-2",
             "type": "string",
             "value": "ZONE"
+        },
+        {
+            "name": "zoneScript",
+            "type": "string",
+            "value": "chao-garden"
         }
     ],
     "renderorder": "right-down",

@@ -112,7 +112,7 @@
                  "type":"player-start",
                  "visible":true,
                  "width":0,
-                 "x":160,
+                 "x":352,
                  "y":6010.66666666667
                 }, 
                 {
@@ -4467,8 +4467,8 @@
                  "type":"splats",
                  "visible":true,
                  "width":32,
-                 "x":17840,
-                 "y":3978.66666666667
+                 "x":17632,
+                 "y":3904
                 }, 
                 {
                  "gid":2,
@@ -8025,29 +8025,6 @@
                  "width":32,
                  "x":7776,
                  "y":4224
-                }, 
-                {
-                 "gid":2,
-                 "height":53,
-                 "id":497,
-                 "name":"flag",
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"1"
-                        }, 
-                        {
-                         "name":"facing",
-                         "type":"string",
-                         "value":"right"
-                        }],
-                 "rotation":0,
-                 "type":"flag",
-                 "visible":true,
-                 "width":45,
-                 "x":298.666666666667,
-                 "y":6010.66666666667
                 }],
          "opacity":0.63,
          "type":"objectgroup",
@@ -8079,7 +8056,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":498,
+ "nextobjectid":499,
  "orientation":"orthogonal",
  "properties":[
         {

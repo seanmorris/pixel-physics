@@ -1308,9 +1308,9 @@ export class PointActor extends View
 			if(!this.args.rolling && !this.yAxis && !this.spindashCharge)
 			{
 				const axisSign = Math.sign(xAxis);
+				let gSpeed     = this.args.gSpeed;
 				const sign     = Math.sign(gSpeed);
 				const friction = this.getLocalFriction();
-				let gSpeed     = this.args.gSpeed;
 
 				if(!this.args.rolling  && !this.args.sliding && !this.args.climbing && !this.args.ignore && !this.args.wallSticking)
 				{
@@ -1542,6 +1542,7 @@ export class PointActor extends View
 			, endPoint[1]
 		);
 
+		actorsAtLine.delete(Bindable.make(this));
 		actorsAtLine.delete(this);
 
 		const collisions = new Map;
@@ -1566,7 +1567,7 @@ export class PointActor extends View
 
 			if(this.checkSolidActors(actor))
 			{
-				return Math.round(collision.distance);
+				return collision.distance;
 			}
 		}
 

@@ -2347,7 +2347,7 @@ export class Platformer
 							host.args.gSpeed = 2 * direction;
 						}
 					}
-					else if(slopeFactor < 0)
+					else if(slopeFactor < -0.30 || (slopeFactor < 0 && host.args.gSpeed))
 					{
 						if(Math.abs(host.args.gSpeed) < 10)
 						{
@@ -2742,7 +2742,7 @@ export class Platformer
 		}
 
 		const willStick = host.willStick || host.args.deepJump;
-		const xMove = host.xLast - host.args.x;
+		// const xMove = host.xLast - host.args.x;
 
 		if(upDistanceL
 			&& upDistanceR
@@ -2858,14 +2858,14 @@ export class Platformer
 			, [+tiny, 0]
 		);
 
-		if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
-		{
-			airMag -= Math.abs(Math.sin(originalAngle));
-		}
-		else if(airMag && Math.abs(host.args.xSpeed) > Math.abs(host.args.ySpeed))
-		{
-			airMag -= Math.abs(Math.cos(originalAngle));
-		}
+		// if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
+		// {
+		// 	airMag -= Math.abs(Math.sin(originalAngle));
+		// }
+		// else if(airMag && Math.abs(host.args.xSpeed) > Math.abs(host.args.ySpeed))
+		// {
+		// 	airMag -= Math.abs(Math.cos(originalAngle));
+		// }
 
 		const airPointQ = airMag !== false && [
 			Math.cos(originalAngle) * airMag + host.args.x
@@ -3182,7 +3182,7 @@ export class Platformer
 
 					let gSpeed = 0;
 
-					gSpeed += xSpeedOriginal || -xMove;
+					gSpeed += xSpeedOriginal;
 					gSpeed += ySpeedOriginal * slopeDir;
 
 					if(blockers && blockers.length)

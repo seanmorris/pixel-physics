@@ -44,11 +44,12 @@ export class Save extends Model
 	{
 		const save = super.from(skeleton);
 
-		save.emeralds  = Object.assign([], save.emeralds);
+		save.emeralds = Object.assign([], save.emeralds);
 
 		for(const zone of Object.values(save.zones))
 		{
 			zone.emblems  = Object.assign([], zone.emblems);
+			zone.chao     = Object.assign([], zone.chao);
 		}
 
 		return save;
@@ -59,6 +60,7 @@ export class Save extends Model
 		const save = this.zones[zone] || {
 			lastCheckpoint: null
 			, emblems:  []
+			, chao: []
 			, rings: 0
 			, score: 0
 			, time:  0
