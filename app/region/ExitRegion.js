@@ -16,7 +16,7 @@ export class ExitRegion extends Region
 		{
 			return;
 		}
-		
+
 		if(this.args.signpost)
 		{
 			const signpost = this.viewport.actorsById[ this.args.signpost ];
@@ -57,10 +57,7 @@ export class ExitRegion extends Region
 			}
 			else if(this.args.nextStage)
 			{
-				viewport.quit(2, false);
-				viewport.onFrameOut(60, () => {
-					viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});
-				});
+				viewport.quit(2, () => viewport.loadMap({mapUrl:'/map/'+this.args.nextStage}));
 			}
 			else
 			{

@@ -4923,7 +4923,7 @@ export class Viewport extends View
 		this.args.paused = true;
 	}
 
-	quit(quick = false, toMenu = true)
+	quit(quick = false, after = true)
 	{
 		if(!this.replay && !this.levelFinished)
 		{
@@ -4937,16 +4937,16 @@ export class Viewport extends View
 			this.server && this.server.close();
 			this.client && this.client.close();
 		}
-	
+
 		this.args.fade = this.args.fade === true ? this.args.fade : false;
 		this.onNextFrame(() => this.args.fade = true);
 
 		this.onFrameOut(45, () => {
 			this.args.actClear = false;
 			this.args.cutScene = false;
-			
+
 			this.args.screenEffects = new Bag;
-	
+
 			this.callFrames.clear();
 			this.callIntervals.clear();
 			this.collisions.clear();
@@ -4955,56 +4955,56 @@ export class Viewport extends View
 			this.regions.clear();
 			this.spawn.clear();
 			this.auras.clear();
-	
-	
+
+
 			this.replayFrames = new Map;
 			this.replayOffset = 0;
 			this.replayStart = null;
 			this.replay = null;
-	
+
 			this.args.timeBonus.args.value  = 0;
 			this.args.ringBonus.args.value  = 0;
 			this.args.speedBonus.args.value = 0;
 			this.args.totalBonus.args.value = 0;
-	
+
 			this.meta = {};
-	
+
 			this.willDetach.clear();
-	
+
 			this.objectDb.clear();
-	
+
 			this.args.isRecording = false;
 			this.args.isReplaying = false;
-	
+
 			this.playableIterator = false;
-	
+
 			this.args.populated = false;
 			this.args.paused    = false;
 			this.args.started   = false;
 			this.controlActor   = null;
 			this.args.frameId   = -1;
-	
+
 			this.args.timer.args.value = '';
 			this.args.rings.args.value  = 0;
 			// this.emeralds.args.value = 0;
 			// this.coins.args.value    = 0;
-	
+
 			this.args.hasRings    = false;
 			this.args.hasCoins    = false;
 			this.args.hasEmeralds = false;
-	
+
 			this.args.char.args.value = '';
 			this.args.charName        = '';
-	
+
 			this.args.level = false;
-	
+
 			const layers = this.args.layers;
 			const layerCount = layers.length;
 			for(const actor of this.actors.items())
 			{
 				this.actors.remove(actor);
 			}
-	
+
 			for(const particle of this.particles.items())
 			{
 				this.particles.remove(particle);
@@ -5033,22 +5033,29 @@ export class Viewport extends View
 			{
 				v.view.remove();
 			}
-	
+
 			this.backdrops.clear();
 
-			if(toMenu)
+			if(after)
+			{
+				this.onFrameOut(15, () => {
+					after();
+				});
+			}
+
+			if(!after)
 			{
 				const cards = [];
-	
+
 				if(quick === 2 || this.args.networked)
 				{
 					const menu = new MainMenu({timeout: -1}, this);
-		
+
 					if(this.args.networked)
 					{
 						menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
 					}
-		
+
 					cards.push(menu);
 				}
 				else if(quick)
