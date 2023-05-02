@@ -121,8 +121,30 @@ export class Viewport extends View
 
 		window.viewport = this;
 
-		this.listen(window, 'focus', event => this.args.windowFocused = 'window-focused');
-		this.listen(window, 'blur',  event => this.args.windowFocused = 'window-blurred');
+		this.listen(window, 'focus', event => {
+			if(this.focusDelay)
+			{
+				this.focusDelay();
+			}
+			this.focusDelay = this.onFrameOut(45, () => this.args.focusMe.args.hide = 'hide hidden');
+			this.args.focusMe.args.hide = 'hide';
+			this.args.windowFocused = 'window-focused'
+		});
+
+		this.listen(window, 'blur',  event => {
+			if(this.focusDelay)
+			{
+				this.focusDelay();
+			}
+			if(this.gamepad)
+			{
+				this.args.focusMe.args.hide = 'hide hidden';
+				return;
+			}
+			this.focusDelay = this.onFrameOut(1, () => this.args.focusMe.args.hide = '');
+			this.args.focusMe.args.hide = 'hide';
+			this.args.windowFocused = 'window-blurred'
+		});
 
 		this.args.windowFocused = document.hasFocus() ? 'window-focused' : 'window-blurred';
 
@@ -1367,6 +1389,10 @@ export class Viewport extends View
 			this.statusTimeout = this.onTimeout(timeout, ()=>{
 				this.args.status.args.hide = 'hide';
 			});
+
+			this.statusTimeout = this.onTimeout(timeout * 2, ()=>{
+				this.args.status.args.hide = 'hide hidden';
+			});
 		}
 	}
 
@@ -1878,6 +1904,11 @@ export class Viewport extends View
 
 		replay.consume({color, map: this.currentMap, frames: [...this.replayFrames.values()]});
 
+		if(replay.lastFrame - replay.firstFrame < 30)
+		{
+			return;
+		}
+
 		return ReplayDatabase.open('replays', 3).then(database => {
 			delete replay.id;
 			console.log(replay);
@@ -2165,6 +2196,8 @@ export class Viewport extends View
 							x: this.controlActor.args.x
 							, y: this.controlActor.args.y
 							, mode: this.controlActor.args.mode
+							, falling: this.controlActor.args.falling
+							, groundAngle: this.controlActor.args.groundAngle
 							, gSpeed: this.controlActor.args.gSpeed
 							, xSpeed: this.controlActor.args.xSpeed
 							, ySpeed: this.controlActor.args.ySpeed
@@ -3419,7 +3452,8 @@ export class Viewport extends View
 					eventCategory: 'fps-check',
 					eventAction: `fps-check::${navigator.platform}::cores_${navigator.hardwareConcurrency}`,
 					eventLabel: `${this.args.actName}`,
-					eventValue: Math.trunc(this.args.fps)
+					eventValue: Math.trunc(this.args.fps),
+					Value: Math.trunc(this.args.fps)
 				});
 			}
 		}
@@ -3594,6 +3628,10 @@ export class Viewport extends View
 							for(const actorId in frame.args)
 							{
 								Object.assign(actor.args, frame.args[actorId]);
+								actor.args.ignore = 0;
+								actor.args.respawning = false;
+								actor.args.dead = false;
+								actor.noClip = false;
 							}
 						}
 
@@ -3663,7 +3701,7 @@ export class Viewport extends View
 			{
 				if(this.gamepad)
 				{
-					this.args.focusMe.args.hide = 'hide';
+					this.args.focusMe.args.hide = 'hide hidden';
 				}
 
 				this.controlActor.controller && this.takeInput(this.controlActor.controller);
@@ -4885,7 +4923,7 @@ export class Viewport extends View
 		this.args.paused = true;
 	}
 
-	quit(quick = false)
+	quit(quick = false, toMenu = true)
 	{
 		if(!this.replay && !this.levelFinished)
 		{
@@ -4899,130 +4937,139 @@ export class Viewport extends View
 			this.server && this.server.close();
 			this.client && this.client.close();
 		}
+	
+		this.args.fade = this.args.fade === true ? this.args.fade : false;
+		this.onNextFrame(() => this.args.fade = true);
 
-		this.args.actClear = false;
-		this.args.cutScene = false;
-		this.args.fade     = false;
-
-		this.onFrameOut(1, () => this.args.fade = true);
-
-		this.args.screenEffects = new Bag;
-
-		this.callFrames.clear();
-		this.callIntervals.clear();
-		this.collisions.clear();
-		this.colCellCache.clear();
-		this.colCells.clear();
-		this.regions.clear();
-		this.spawn.clear();
-		this.auras.clear();
-
-		this.args.paused = false;
-		this.args.started = false;
-
-		this.replayFrames = new Map;
-		this.replayOffset = 0;
-		this.replayStart = null;
-		this.replay = null;
-
-		this.args.timeBonus.args.value  = 0;
-		this.args.ringBonus.args.value  = 0;
-		this.args.speedBonus.args.value = 0;
-		this.args.totalBonus.args.value = 0;
-
-		this.meta = {};
-
-		for(const actor of this.actors.items())
-		{
-			this.actors.remove(actor);
-		}
-
-		for(const particle of this.particles.items())
-		{
-			this.particles.remove(particle);
-
-			particle.remove();
-		}
-
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
-		{
-			layer.args.destroyed = false;
-		}
-
-		this.willDetach.clear();
-
-		this.objectDb.clear();
-
-		this.args.isRecording = false;
-		this.args.isReplaying = false;
-
-		this.playableIterator = false;
-
-		this.args.populated = false;
-		this.args.paused    = false;
-		this.args.started   = false;
-		this.controlActor   = null;
-		this.args.frameId   = -1;
-
-		this.args.timer.args.value = '';
-		this.args.rings.args.value  = 0;
-		// this.emeralds.args.value = 0;
-		// this.coins.args.value    = 0;
-
-		this.args.hasRings    = false;
-		this.args.hasCoins    = false;
-		this.args.hasEmeralds = false;
-
-		this.args.char.args.value = '';
-		this.args.charName        = '';
-
-		this.args.level = false;
-
-		const layers = this.args.layers;
-		const layerCount = layers.length;
-
-		for(const layer of this.args.layers)
-		{
-			layer.remove();
-		}
-
-		for(const layer of this.args.fgLayers)
-		{
-			layer.remove();
-		}
-
-		const cards = [];
-
-		if(quick === 2 || this.args.networked)
-		{
-			const menu = new MainMenu({timeout: -1}, this);
-
-			if(this.args.networked)
+		this.onFrameOut(45, () => {
+			this.args.actClear = false;
+			this.args.cutScene = false;
+			
+			this.args.screenEffects = new Bag;
+	
+			this.callFrames.clear();
+			this.callIntervals.clear();
+			this.collisions.clear();
+			this.colCellCache.clear();
+			this.colCells.clear();
+			this.regions.clear();
+			this.spawn.clear();
+			this.auras.clear();
+	
+	
+			this.replayFrames = new Map;
+			this.replayOffset = 0;
+			this.replayStart = null;
+			this.replay = null;
+	
+			this.args.timeBonus.args.value  = 0;
+			this.args.ringBonus.args.value  = 0;
+			this.args.speedBonus.args.value = 0;
+			this.args.totalBonus.args.value = 0;
+	
+			this.meta = {};
+	
+			this.willDetach.clear();
+	
+			this.objectDb.clear();
+	
+			this.args.isRecording = false;
+			this.args.isReplaying = false;
+	
+			this.playableIterator = false;
+	
+			this.args.populated = false;
+			this.args.paused    = false;
+			this.args.started   = false;
+			this.controlActor   = null;
+			this.args.frameId   = -1;
+	
+			this.args.timer.args.value = '';
+			this.args.rings.args.value  = 0;
+			// this.emeralds.args.value = 0;
+			// this.coins.args.value    = 0;
+	
+			this.args.hasRings    = false;
+			this.args.hasCoins    = false;
+			this.args.hasEmeralds = false;
+	
+			this.args.char.args.value = '';
+			this.args.charName        = '';
+	
+			this.args.level = false;
+	
+			const layers = this.args.layers;
+			const layerCount = layers.length;
+			for(const actor of this.actors.items())
 			{
-				menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
+				this.actors.remove(actor);
+			}
+	
+			for(const particle of this.particles.items())
+			{
+				this.particles.remove(particle);
+
+				particle.remove();
 			}
 
-			cards.push(menu);
-		}
-		else if(quick)
-		{
-			Bgm.fadeOut(2000);
-			cards.push(...this.homeCards());
-		}
-		else
-		{
-			Bgm.fadeOut(3000);
-			cards.push(...this.returnHomeCards());
-		}
+			for(const layer of [...this.args.layers, ...this.args.fgLayers])
+			{
+				layer.args.destroyed = false;
+			}
 
-		this.args.titlecard = new Series({cards}, this);
+			for(const layer of this.args.layers)
+			{
+				layer.remove();
+			}
+
+			for(const layer of this.args.fgLayers)
+			{
+				layer.remove();
+			}
+
+			this.args.bg = this.args.backdrop = null;
+
+			for(const [k,v] of this.backdrops)
+			{
+				v.view.remove();
+			}
+	
+			this.backdrops.clear();
+
+			if(toMenu)
+			{
+				const cards = [];
+	
+				if(quick === 2 || this.args.networked)
+				{
+					const menu = new MainMenu({timeout: -1}, this);
+		
+					if(this.args.networked)
+					{
+						menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
+					}
+		
+					cards.push(menu);
+				}
+				else if(quick)
+				{
+					Bgm.fadeOut(2000);
+					cards.push(...this.homeCards());
+				}
+				else
+				{
+					Bgm.fadeOut(3000);
+					cards.push(...this.returnHomeCards());
+				}
+				this.onFrameOut(15, () => {
+					this.args.titlecard = new Series({cards}, this);
+					this.args.titlecard.play();
+				});
+			}
+		});
 
 		Keyboard.get().reset();
 		this.controller.zero();
-
-		this.args.titlecard.play();
-
-		this.args.bg = this.args.backdrop = null;
 	}
 
 	introCards()

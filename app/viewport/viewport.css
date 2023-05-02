@@ -86,7 +86,7 @@ section.filters {
 }
 
 .viewport-header {
-	position: sticky;
+	/* position: sticky; */
 	top: 0;
 	z-index: 1;
 	padding: 0.5em;
@@ -123,7 +123,7 @@ section.filters {
 }
 
 .viewport-caption {
-	position: sticky;
+	/* position: sticky; */
 	bottom: 0;
 	font-size: smaller;
 	background-color: rgba(255,255,255,0.75);
@@ -206,12 +206,12 @@ section.filters {
 }
 
 .viewport-overlay {
+	display: inline;
 	contain: strict;
 	position: absolute;
 	pointer-events: none;
 	top: 0px;
 	left: 0px;
-
 	width: calc(100% / var(--scale));
 	height: calc(100% / var(--scale));
 	transform-origin: top left;
@@ -466,8 +466,8 @@ span.arrow-west {
 	opacity: 0;
 }
 
-.viewport .status-message.hide .hud-character,
-.viewport-frame:not(.window-blurred) .viewport:focus-within .focus-me .status-message .hud-character {
+.viewport .status-message.hide:not(.hidden) .hud-character {
+/* .viewport-frame:not(.window-blurred) .viewport:focus-within .focus-me .status-message .hud-character { */
 	animation: none;
 }
 
@@ -572,7 +572,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .viewport,
 .viewport.standalone {
-	position: fixed;
+	/* position: fixed; */
 	z-index: 10000;
 	background-color: black;
 	border: none;
@@ -604,6 +604,10 @@ input[type=number]::-webkit-outer-spin-button {
 	height: calc(100%);
 	transform-origin: top left;
 	background-color: transparent !important;
+}
+
+.viewport section.full:empty {
+	display: none;
 }
 
 .viewport div.intro-cards {
@@ -784,6 +788,12 @@ input[type=number]::-webkit-outer-spin-button {
 		transform: translateY(128px);
 		opacity: 0;
 	}
+}
+
+.topLine:has(.status-message .hidden),
+.focus-me:has(.status-message .hidden),
+.status-message:has(.hidden) {
+	display: none;
 }
 
 .quick-form {

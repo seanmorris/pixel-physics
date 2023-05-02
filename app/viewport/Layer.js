@@ -223,7 +223,7 @@ export class Layer extends View
 		const layerId = this.args.layerId;
 
 		let startColumn = -1;
-		let endColumn   = blocksWide;
+		let endColumn   = +1 + blocksWide;
 
 		let ii = 0;
 

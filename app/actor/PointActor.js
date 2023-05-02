@@ -1305,7 +1305,12 @@ export class PointActor extends View
 		}
 		else if(!this.args.falling)
 		{
-			if(!this.args.rolling && !this.yAxis && !this.spindashCharge)
+			const grindInput = !this.args.grinding
+			|| Math.sign(this.args.gSpeed) === Math.sign(this.xAxis)
+			|| (Math.abs(this.args.gSpeed) > 6 && Math.abs(this.args.gSpeed) < this.args.gSpeedMax * 2)
+			|| this.args.gSpeed === 0;
+
+			if(!this.args.rolling && grindInput && !this.yAxis && !this.spindashCharge)
 			{
 				const axisSign = Math.sign(xAxis);
 				let gSpeed     = this.args.gSpeed;

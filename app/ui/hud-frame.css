@@ -328,7 +328,7 @@
 }
 
 .status-message .hud-character.hidden {
-	animation: none;
+	/* animation: none; */
 }
 
 .status-message {
@@ -342,7 +342,6 @@
 
 .status-message .hud-character-string.hide {
 	opacity: 0;
-	display: none;
 }
 
 .status-message .hud-character-string.hidden {

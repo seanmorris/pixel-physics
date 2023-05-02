@@ -12,6 +12,11 @@ export class ExitRegion extends Region
 
 	updateActor(other)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+		
 		if(this.args.signpost)
 		{
 			const signpost = this.viewport.actorsById[ this.args.signpost ];
@@ -36,7 +41,7 @@ export class ExitRegion extends Region
 
 		const viewport = this.viewport;
 
-		viewport.args.fade = true;
+		// viewport.args.fade = true;
 
 		viewport.clearCheckpoints();
 
@@ -52,8 +57,10 @@ export class ExitRegion extends Region
 			}
 			else if(this.args.nextStage)
 			{
-				viewport.quit(2);
-				viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});
+				viewport.quit(2, false);
+				viewport.onFrameOut(60, () => {
+					viewport.loadMap({mapUrl:'/map/'+this.args.nextStage});
+				});
 			}
 			else
 			{
