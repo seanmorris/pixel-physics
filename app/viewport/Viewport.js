@@ -4923,7 +4923,7 @@ export class Viewport extends View
 		this.args.paused = true;
 	}
 
-	quit(quick = false, after = true)
+	quit(quick = false, after = false)
 	{
 		if(!this.replay && !this.levelFinished)
 		{
@@ -5038,12 +5038,9 @@ export class Viewport extends View
 
 			if(after)
 			{
-				this.onFrameOut(15, () => {
-					after();
-				});
+				this.onFrameOut(15, () => after());
 			}
-
-			if(!after)
+			else
 			{
 				const cards = [];
 
