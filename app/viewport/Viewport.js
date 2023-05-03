@@ -100,6 +100,8 @@ import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
 import { Droop } from '../effects/Droop';
 
+import { GamepadConfig } from '../controller/GamepadConfig';
+
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
 const ColCells = Symbol('collision-cells');
@@ -156,9 +158,11 @@ export class Viewport extends View
 
 		this.meta = {};
 
-		this.customColor = {h: 0, s: 1, v: 1};
+		this.customColor = Bindable.make({h: 0, s: 1, v: 1});
 
 		this.args.combo = [];
+
+		this.args.invert = '';
 
 		// this.args.plot = new Plot;
 
@@ -169,6 +173,8 @@ export class Viewport extends View
 		// this.subspaceConnect();
 
 		this.netPlayers = new Map;
+
+		this.args.controlCardShown = false;
 
 		this.bytesReceived = 0;
 
@@ -196,6 +202,9 @@ export class Viewport extends View
 		this.zoneScript = null;
 
 		this.timers = new Map;
+
+		this.args.paused = false;
+		this.args.freeze = false;
 
 		this.quadCell = null;
 
@@ -1216,22 +1225,64 @@ export class Viewport extends View
 		this.args.running = false;
 
 		const load = new LoadingCard({
-			timeout: -1
-			, text: 'loading ... 0%'
+			timeout: -1, text: 'loading ... 0%'
 		}, this);
+
+		let inputType = this.args.inputType;
+
+		if(inputType === 'input-generic')
+		{
+			inputType = 'input-xbox';
+		}
+
+		if(this.controller
+			&& this.controller.buttons
+			&& this.controller.buttons[6]
+			&& this.controller.buttons[7]
+			&& this.controller.buttons[6].time > 0
+			&& this.controller.buttons[7].time > 0
+		){
+			this.args.controlCardShown = false;
+			inputType = 'input-dreamcast';
+		}
+		else if(this.controller
+			&& this.controller.buttons
+			&& this.controller.buttons[10]
+			&& this.controller.buttons[10].time > 0
+		){
+			this.args.controlCardShown = false;
+			inputType = 'input-gamecube';
+		}
+		else if(this.controller
+			&& this.controller.buttons
+			&& this.controller.buttons[8]
+			&& this.controller.buttons[8].time > 0
+		){
+			this.args.controlCardShown = false;
+		}
+
+		const controllerCard = new GamepadConfig({
+			inputType
+			, timeout: -1
+			, caption: 'loading ... 0%'
+		});
 
 		tileMap.addEventListener('level-progress', event => {
 			const {received, length, done} = event.detail;
 			load.args.text = `loading level ... ${(done*100).toFixed(4)}%`;
+			controllerCard.args.caption = `loading level ... ${(done*100).toFixed(4)}%`;
 		});
 
 		tileMap.addEventListener('texture-progress', event => {
 			const {received, length, done} = event.detail;
+
 			load.args.text = `loading textures ... ${(done*100).toFixed(4)}%`;
+			controllerCard.args.caption = `loading textures ... ${(done*100).toFixed(4)}%`;
 
 			if(done === 1)
 			{
 				load.args.text = `initializing...`;
+				controllerCard.args.caption = `initializing...`;
 			}
 		});
 
@@ -1292,22 +1343,37 @@ export class Viewport extends View
 					}
 				}
 			}
-		});
 
-		// tileMap.ready.then(() => load.args.text = `starting level`);
+		});
 
 		// if(mapUrl === '/map/see-saw-test.json')
 		// {
 		// 	tileMap.addMap('/map/appended-map.json');
 		// }
 
-		this.args.titlecard = new Series({cards:[load]}, this);
+		let waiter = new Promise(a => setTimeout(a, 6500));
+		const cardShown = this.args.controlCardShown;
+		const willShowCard = !cardShown && (!this.args.selectedChar || this.args.selectedChar === 'Sonic');
+
+		if(!this.replay && willShowCard)
+		{
+			this.args.titlecard = new Series({cards:[controllerCard]}, this);
+			this.args.controlCardShown = true;
+		}
+		else
+		{
+			this.args.titlecard = new Series({cards:[load]}, this);
+			waiter = Promise.resolve();
+		}
 
 		this.args.titlecard.play();
 
-		tileMap.ready.then(() => this.startLevel())
+		const all = Promise.all([tileMap.ready, waiter]);
 
-		return tileMap.ready;
+		all.then(() => load.args.text = `starting level`);
+		all.then(() => this.startLevel());
+
+		return all;
 	}
 
 	fullscreen()
@@ -2121,10 +2187,10 @@ export class Viewport extends View
 			this.args.pauseMenu.input(controller);
 		}
 
-		// if(this.replay && controller.buttons[1209] && controller.buttons[1209].time > 0)
-		// {
-		// 	this.quit(this.args.replayQuickExit ?  2 : 1);
-		// }
+		if(this.replay && this.replay.auto && controller.buttons[1209] && controller.buttons[1209].time > 0)
+		{
+			this.quit(this.args.replayQuickExit ?  2 : 1);
+		}
 
 		if(!this.args.networked && !this.args.paused)
 		{
@@ -2288,9 +2354,13 @@ export class Viewport extends View
 		{
 			this.cameraBound = this.maxCameraBound;
 		}
-		else
+		else if(this.cameraBound < Infinity)
 		{
 			this.cameraBound -= 0.05 * this.cameraBound;
+		}
+		else
+		{
+			this.maxCameraBound = this.cameraBound = Math.hypot(this.args.x + this.controlActor.args.x, this.args.y + this.controlActor.args.y);
 		}
 
 		let cameraSpeed = 25;
@@ -2442,6 +2512,14 @@ export class Viewport extends View
 				}
 
 				break;
+
+			case 'popping':
+					this.args.xOffsetTarget = 0.5;
+					this.args.yOffsetTarget = 0.25;
+					this.maxCameraBound     = 128;
+					cameraSpeed = 6;
+
+					break;
 
 			case 'hooked':
 				this.args.xOffsetTarget = 0.50;
@@ -2749,6 +2827,11 @@ export class Viewport extends View
 
 			let blur = (Math.hypot(xBlur, yBlur) / 3);
 			const blurAngle = Math.atan2(yMoved, xMoved);
+
+			if(this.args.frozen > 0)
+			{
+				blur = 0;
+			}
 
 			if(blur > 0.5)
 			{
@@ -3423,6 +3506,11 @@ export class Viewport extends View
 			this.args.paused--;
 		}
 
+		if(this.args.frozen > 0)
+		{
+			this.args.frozen--;
+		}
+
 		const controller = this.controlActor
 			? this.controlActor.controller
 			: this.controller;
@@ -3517,6 +3605,13 @@ export class Viewport extends View
 
 		if(!this.args.networked && this.args.started && (this.args.paused !== false && this.args.paused <= 0))
 		{
+			return;
+		}
+
+		if(!this.args.networked && this.args.frozen > 0)
+		{
+			this.args.startFrameId++;
+			this.args.blur = 0;
 			return;
 		}
 

@@ -158,6 +158,8 @@ else
 	Sfx.register('LIGTNING_STRIKE', '/Sonic/S3K_4E.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0})
 	Sfx.register('SECRET_FOUND', '/doom/dssecret.wav');
 
+	Sfx.register('SICK_TRICK', '/Sonic/S2_6C.wav', {volume: 1, fudgeFactor: 0, maxConcurrent: 6});
+
 	Sfx.register('GRINDING', '/Sonic/S3K_DB_sus.wav');
 	Sfx.register('SPIKES_OUT', '/Sonic/S3K_A6.wav');
 	Sfx.register('SPIKES_IN', '/Sonic/S3K_52.wav');

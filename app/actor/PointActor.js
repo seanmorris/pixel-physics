@@ -1093,11 +1093,17 @@ export class PointActor extends View
 			{
 				if(this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 64))
 				{
-					this.args.cameraMode = 'normal';
+					if(!this.args.falling || this.args.cameraMode !== 'popping')
+					{
+						this.args.cameraMode = 'normal';
+					}
 				}
 				else if(this.fallTime > 15)
 				{
-					this.args.cameraMode = 'aerial';
+					if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || this.args.ySpeed > 10))
+					{
+						this.args.cameraMode = 'aerial';
+					}
 				}
 
 				this.viewport.onFrameOut(45, () => {

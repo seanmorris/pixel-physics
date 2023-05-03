@@ -202,13 +202,25 @@ export class Sonic extends PointActor
 		// const rS2 = 1;
 		// const rV2 = 1;
 
-		const h = Number(this.viewport.customColor.h ?? 0);
-		const s = Number(this.viewport.customColor.s ?? 1);
-		const v = Number(this.viewport.customColor.v ?? 1);
-
 		this.rotatedSpriteSheet = this.spriteSheet;
 
-		this.rotateMainColor(h,s,v);
+		const updateSprite = () => {
+			const h = Number(this.viewport.customColor.h ?? 0);
+			const s = Number(this.viewport.customColor.s ?? 1);
+			const v = Number(this.viewport.customColor.v ?? 1);
+
+			this.rotateMainColor(h,s,v);
+
+			this.box.node.style.setProperty('--sprite-sheet', `url(${this.args.rotatedSpriteSheet})`);
+		};
+
+		const debindH = this.viewport.customColor.bindTo('h', updateSprite, {wait:0});
+		const debindS = this.viewport.customColor.bindTo('s', updateSprite, {wait:0});
+		const debindV = this.viewport.customColor.bindTo('v', updateSprite, {wait:0});
+
+		this.onRemove(debindH);
+		this.onRemove(debindS);
+		this.onRemove(debindV);
 
 		if(!this.superSpriteSheetLoader)
 		{
@@ -807,8 +819,10 @@ export class Sonic extends PointActor
 
 				this.sparks.add(sparkEnvelope);
 
+				const viewport = this.viewport;
+
 				this.viewport.onFrameOut(30, () => {
-					this.viewport.particles.remove(sparkEnvelope);
+					viewport.particles.remove(sparkEnvelope);
 					this.sparks.delete(sparkEnvelope);
 				});
 			}
@@ -1841,7 +1855,10 @@ export class Sonic extends PointActor
 		}
 		else if(this.args.wallSticking)
 		{
-			this.args.cameraMode = 'aerial';
+			if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || this.args.ySpeed > 10))
+			{
+				this.args.cameraMode = 'aerial';
+			}
 		}
 		else
 		{
@@ -1935,12 +1952,12 @@ export class Sonic extends PointActor
 
 	rotateMainColor(rH = 0, rS = 1, rV = 1)
 	{
-		if(this.rH === rH)
-		{
-			return;
-		}
+		// if(this.rH === rH)
+		// {
+		// 	return;
+		// }
 
-		this.rH = rH;
+		// this.rH = rH;
 
 		const rotatedColors = {
 			'8080e0': new Color('8080e0').rotate(rH, rS, rV).toString(),

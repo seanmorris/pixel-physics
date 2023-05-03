@@ -29,7 +29,7 @@ export class MainMenu extends Menu
 	{
 		super(args,parent);
 
-		if(!this.args.initialPath && Router.query.menuPath)
+		if(!this.args.initialPath.length && Router.query.menuPath)
 		{
 			this.args.initialPath = JSON.parse(Router.query.menuPath);
 		}
@@ -123,32 +123,32 @@ export class MainMenu extends Menu
 
 					// , Follower
 
-					, 'Sonic Control Tutorial': {
-						subtext: 'Learn the controls for Sonic'
-						, characters: ['Sonic']
-						, callback: () => {
-							this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
-							this.accept();
-						}
-					}
+					// , 'Sonic Control Tutorial': {
+					// 	subtext: 'Learn the controls for Sonic'
+					// 	, characters: ['Sonic']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Tails Control Tutorial': {
-						subtext: 'Learn the controls for Tails'
-						, characters: ['Tails']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
-							this.accept();
-						}
-					}
+					// , 'Tails Control Tutorial': {
+					// 	subtext: 'Learn the controls for Tails'
+					// 	, characters: ['Tails']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
-					, 'Knuckles Control Tutorial': {
-						subtext: 'Learn the controls for Knuckles'
-						, characters: ['Knuckles']
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
-							this.accept();
-						}
-					}
+					// , 'Knuckles Control Tutorial': {
+					// 	subtext: 'Learn the controls for Knuckles'
+					// 	, characters: ['Knuckles']
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					, 'Radical City Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']

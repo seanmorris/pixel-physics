@@ -3,9 +3,13 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
+}
+
+.input-keyboard .wasd  .hud-character[data-value="9913"] {
+	background-image: url(/ui/wasd-keys-beveled.svg) !important;
 }
 
 .input-keyboard .hud-character[data-value="9374"]{
@@ -13,7 +17,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -23,7 +27,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -33,7 +37,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -43,7 +47,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -53,27 +57,27 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
 
 .input-keyboard .hud-character[data-value="10009"]{
-		background-image: url(/ui/e-key-beveled.svg) !important;
+	background-image: url(/ui/e-key-beveled.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
 
 .input-keyboard .hud-character[data-value="10010"]{
-		background-image: url(/ui/1-key-beveled.svg) !important;
+	background-image: url(/ui/1-key-beveled.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -83,27 +87,27 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
 
 .input-keyboard .hud-character[data-value="10012"]{
-	background-image: url(/ui/p-key-beveled.svg) !important;
+	background-image: url(/ui/o-key-beveled.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
 
 .input-keyboard .hud-character[data-value="10013"]{
-	background-image: url(/ui/o-key-beveled.svg) !important;
+	background-image: url(/ui/p-key-beveled.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -123,7 +127,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -134,7 +138,17 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
+	height: 1.25em;
+	transform: translateY(2px);
+}
+
+.input-keyboard .hud-character[data-value="8495"]{
+	background-image: url(/ui/arrow-keys-beveled-left.svg) !important;
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -145,7 +159,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -156,7 +170,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -166,7 +180,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -176,7 +190,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -187,7 +201,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -198,7 +212,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -209,7 +223,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -220,7 +234,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.75em;
+	width: 2em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -233,7 +247,7 @@
 	background-size: 100% 100%;
 	width: 2em;
 	height: 1.75em;
-	transform: translateY(2px);
+	transform: translateY(4px);
 }
 
 .input-keyboard .hud-character[data-value="55261"] +
@@ -275,11 +289,8 @@
 	transform: translateY(2px);
 }
 
-
-.input-keyboard .hud-character[data-value="55261"] +
-.hud-character[data-value="56338"],
-.input-keyboard .hud-character[data-value="55261"] +
-.hud-character[data-value="56322"]{
+.input-keyboard .hud-character[data-value="55261"] + .hud-character[data-value="56338"],
+.input-keyboard .hud-character[data-value="55261"] + .hud-character[data-value="56322"]{
 	background-image: url(/ui/numpad-beveled-down.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
@@ -287,4 +298,9 @@
 	width: 2em;
 	height: 1.75em;
 	transform: translateY(2px);
+}
+
+.input-keyboard .hud-character[data-value="10937"] {
+	width: 2em;
+	height: 1.75em;
 }

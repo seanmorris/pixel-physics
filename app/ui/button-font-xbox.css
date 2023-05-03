@@ -283,7 +283,6 @@
 	transform: translateY(2px);
 }
 
-
 .input-xbox .hud-character[data-value="55261"] +
 .hud-character[data-value="56338"],
 .input-xbox .hud-character[data-value="55261"] +
@@ -297,3 +296,7 @@
 	transform: translateY(2px);
 }
 
+.input-xbox .hud-character[data-value="10937"] {
+	width: 1.5em;
+	height: 1.75em;
+}

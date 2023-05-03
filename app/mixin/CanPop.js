@@ -168,6 +168,11 @@ export class CanPop
 
 				const reward = {label: this.name || this.args.name, points, multiplier:1};
 
+				if(other.args.ySpeed > 5 && other.args.ySpeed < 25)
+				{
+					other.args.cameraMode = 'popping';
+				}
+
 				other.args.popCombo += 1;
 				other.args.popChain.push(reward);
 
@@ -175,9 +180,23 @@ export class CanPop
 				{
 					const reward = {label: 'BIG AIR!!!', points:1000, multiplier: 2};
 
-					other.airReward = reward;
 					other.args.popChain.push(reward);
 					other.args.popCombo += 1;
+
+					if(!other.airReward && Math.abs(other.args.xSpeed) > 10)
+					{
+						other.args.x = this.args.x;
+						other.args.y = this.args.y + -8;
+						this.viewport.onFrameOut(1, () => this.viewport.args.frozen = 25);
+
+						this.viewport.args.invert = 'invert';
+						this.viewport.onFrameOut(25, () => this.viewport.args.invert = '');
+
+						Sfx.play('SICK_TRICK');
+						Sfx.play('SICK_TRICK');
+					}
+
+					other.airReward = reward;
 				}
 
 				const scoreNode = document.createElement('div');

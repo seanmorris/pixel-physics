@@ -26,7 +26,7 @@ export class CharacterString extends View
 
 		this.args.chars = chars;
 
-		this.args.classes = '';
+		this.args.classes = this.args.classes || '';
 
 		this.args.scale = this.args.scale || 1;
 

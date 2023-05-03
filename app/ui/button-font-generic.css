@@ -288,3 +288,8 @@
 	height: 1.25em;
 	transform: translateY(2px);
 }
+
+.input-generic .hud-character[data-value="10937"] {
+	width: 1.5em;
+	height: 1.75em;
+}

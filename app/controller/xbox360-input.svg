@@ -656,26 +656,30 @@
      id="layer4"
      inkscape:label="Layer 2"
      transform="translate(-125.52048,-405.39779)">
+	<g cv-if = "a">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 455.79635,519.99047 69.71001,17.90083"
        id="path4466-5-6"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc" /></g>
+	<g cv-if = "x">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 438.47373,504.22466 87.03273,22.59255"
        id="path4466-6"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc" /></g>
+	<g cv-if = "y">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 457.35152,487.45952 68.15505,16.26615"
        id="path4466-5-6-4"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc" /></g>
+	<g cv-if = "b">
     <path
        style="fill:none;stroke:#000000;stroke-width:0.499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 473.60248,502.87892 51.90361,12.60482"
        id="path4466-6-0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc" /></g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
@@ -686,7 +690,7 @@
          id="tspan3123-1-4-1-6"
          x="526.79633"
          y="517.52081"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">Spindash / Roll</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">[[b]]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
@@ -697,7 +701,7 @@
          id="tspan3123-1-4-1-6-4"
          x="527.09454"
          y="540.36304"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">Jump</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">[[a]]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
@@ -708,7 +712,7 @@
          id="tspan3123-1-4-1-6-2"
          x="526.85919"
          y="529.62354"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">Lightspeed Dash / Lift Object</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">[[x]]</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
@@ -719,13 +723,15 @@
          id="tspan3123-1-4-1-6-5"
          x="526.21417"
          y="506.18649"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">Super Transform</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.00001px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1">[[y]]</tspan></text>
+	<g cv-if = "r1">
     <path
        style="fill:none;stroke:#000000;stroke-width:1.55126;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 656.93727,296.09185 821.8762,337.67559"
        id="path4466-5-6-4-6"
        sodipodi:nodetypes="cc"
        transform="matrix(0.32231801,0,0,0.32231801,260.60086,378.95899)" />
+	</g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:124.101px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.10253"
@@ -737,13 +743,14 @@
          id="tspan3123-1-4-1-6-5-8"
          x="824.07147"
          y="345.30997"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">Air Dash</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">[[r1]]</tspan></text>
+	<g cv-if = "l1">
     <path
        style="fill:none;stroke:#000000;stroke-width:1.55126;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 98.337471,294.83145 -66.601455,336.41519"
        id="path4466-5-6-4-6-7"
        sodipodi:nodetypes="cc"
-       transform="matrix(0.32231801,0,0,0.32231801,260.60086,378.95899)" />
+       transform="matrix(0.32231801,0,0,0.32231801,260.60086,378.95899)" /></g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:124.101px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.10253"
@@ -755,7 +762,8 @@
          id="tspan3123-1-4-1-6-5-8-8"
          x="-147.9368"
          y="344.04959"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">Air Dash</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">[[l1]]</tspan></text>
+	<g cv-if = "dpad">
     <path
        style="fill:none;stroke:#000000;stroke-width:1.55126;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 195.45,507.2765 -65.76263,575.40558"
@@ -773,7 +781,8 @@
          id="tspan3123-1-4-1-6-5-8-8-9"
          x="-122.35963"
          y="582.59192"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">Move</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">[[dpad]]</tspan></text></g>
+	<g cv-if = "start">
     <path
        style="fill:none;stroke:#000000;stroke-width:1.55126;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 455.73274,349.69679 V 192.16781"
@@ -791,13 +800,14 @@
          id="tspan3123"
          x="427.94226"
          y="186.86783"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">Pause</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">[[start]]</tspan></text></g>
+	<g cv-if = "ra">
     <path
        style="fill:none;stroke:#000000;stroke-width:1.55126;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 542.19462,503.98223 821.8762,583.25165"
        id="path2959"
        sodipodi:nodetypes="cc"
-       transform="matrix(0.32231801,0,0,0.32231801,260.60086,378.95899)" />
+       transform="matrix(0.32231801,0,0,0.32231801,260.60086,378.95899)" /></g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:124.101px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.10253"
@@ -809,6 +819,6 @@
          id="tspan3123-1"
          x="832.28497"
          y="591.27563"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">Switch Shields</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.6152px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.10253">[[ra]]</tspan></text>
   </g>
 </svg>

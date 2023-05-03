@@ -110,7 +110,7 @@ export class Platformer
 		if(host.airReward && host.args.falling)
 		{
 			// host.grindReward.points += (Math.round(host.args.gSpeed / 10) * host.grindReward.direction) || 1;
-			host.airReward.points += Math.ceil(Math.abs(host.args.ySpeed));
+			host.airReward.points += Math.ceil(Math.abs(host.args.ySpeed) + Math.abs(host.args.xSpeed));
 		}
 
 		if(!host.args.popChain)
@@ -2783,7 +2783,7 @@ export class Platformer
 			if(!host.getMapSolidAt(host.args.x + host.args.width * 0.5 * dir, host.args.y + 4))
 			{
 				host.args.x += dir * Math.abs(distances[2]);
-			
+
 				while(host.getMapSolidAt(host.args.x + host.args.width * 0.5 * dir, host.args.y))
 				{
 					host.args.y--;

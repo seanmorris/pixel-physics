@@ -136,6 +136,11 @@ export class Monitor extends PointActor
 		{
 			const reward = {label: this.name || this.args.name, points:10, multiplier:1};
 
+			if(other.args.ySpeed > 5 && other.args.ySpeed < 25)
+			{
+				other.args.cameraMode = 'popping';
+			}
+
 			other.args.popChain.push(reward);
 			other.args.popCombo += 1;
 
@@ -143,10 +148,27 @@ export class Monitor extends PointActor
 			{
 				const reward = {label: 'BIG AIR!!!', points:1000, multiplier: 1.5};
 
-				other.airReward = reward;
 				other.args.popChain.push(reward);
 				other.args.popCombo += 1;
+
+				if(!other.airReward && Math.abs(other.args.xSpeed) > 10)
+				{
+					other.args.x = this.args.x - (this.args.gSpeed || this.args.xSpeed);
+					other.args.y = this.args.y + -8;
+					this.viewport.onFrameOut(1, () => this.viewport.args.frozen = 25);
+
+					this.viewport.args.invert = 'invert';
+					this.viewport.onFrameOut(25, () => this.viewport.args.invert = '');
+
+					Sfx.play('SICK_TRICK');
+					Sfx.play('SICK_TRICK');
+				}
+
+				other.airReward = reward;
 			}
+
+			Sfx.play('OBJECT_DESTROYED');
+
 		}
 
 		explosion.style({'--x': this.x, '--y': this.y-16});
@@ -188,8 +210,6 @@ export class Monitor extends PointActor
 				this.effect(other);
 			}
 		}
-
-		Sfx.play('OBJECT_DESTROYED');
 
 		if(typeof ga === 'function')
 		{

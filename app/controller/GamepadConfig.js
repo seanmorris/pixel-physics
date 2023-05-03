@@ -1,7 +1,9 @@
 import { View } from 'curvature/base/View';
-import { Card } from '../intro/Card';
+import { SkippableCard } from '../intro/SkippableCard';
 
-export class GamepadConfig extends View
+import { KbInput } from './KbInput';
+
+export class GamepadConfig extends SkippableCard
 {
 	constructor(args, parent)
 	{
@@ -11,12 +13,48 @@ export class GamepadConfig extends View
 
 		this.args.cardName = 'gamepad-config-card';
 
-		this.gamepads = {
-			xb: View.from(require('./xbox360-input.svg'))
-			, ps: View.from(require('./ps3-input.svg'))
-			, gc: View.from(require('./gc-input.svg'))
-			, dc: View.from(require('./dc-input.svg'))
+		this.args.moves = this.args.moves || {
+			start:  'Pause'
+			, dpad: 'Move'
+			, a:    'Jump'
+			, b:    'Spindash / Roll'
+			, x:    'Light Dash / Grab Object'
+			, y:    'Super Transform'
+			, l1:   'Air Dash'
+			, r1:   'Air Dash'
+			, la:   'Move'
+			, ra:   'Switch Sheilds'
 		};
+
+		// this.gamepads = {
+		// 	xb: View.from(require('./xbox360-input.svg'), this.args.moves)
+		// 	, dc: View.from(require('./dc-input.svg'), this.args.moves)
+		// 	, gc: View.from(require('./gc-input.svg'), this.args.moves)
+		// 	, ps: View.from(require('./ps3-input.svg'), this.args.moves)
+		// };
+
+		// this.gamepads = {kb: new KbInput(this.args.moves) }
+
+		if(this.args.inputType === 'input-xbox')
+		{
+			this.gamepads = {xb: View.from(require('./xbox360-input.svg'), this.args.moves)};
+		}
+		else if(this.args.inputType === 'input-playstation')
+		{
+			this.gamepads = {ps: View.from(require('./ps3-input.svg'), this.args.moves)};
+		}
+		else if(this.args.inputType === 'input-dreamcast')
+		{
+			this.gamepads = {ps: View.from(require('./dc-input.svg'), this.args.moves)};
+		}
+		else if(this.args.inputType === 'input-gamecube')
+		{
+			this.gamepads = {ps: View.from(require('./gc-input.svg'), this.args.moves)};
+		}
+		else
+		{
+			this.gamepads = {kb: new KbInput(this.args.moves) }
+		}
 
 		this.current = 0;
 
@@ -55,6 +93,8 @@ export class GamepadConfig extends View
 
 	input(controller)
 	{
+		super.input(controller);
+
 		if(!this.span)
 		{
 			return;
@@ -104,5 +144,28 @@ export class GamepadConfig extends View
 				});
 			}
 		}
+	}
+
+	play(event)
+	{
+		// this.onTimeout(50, () => this.args.animation = 'opened');
+
+		// const waitFor = this.args.waitFor || Promise.resolve();
+
+		// return new Promise(accept => {
+		// 	waitFor.then(() => {
+		// 		const timeAcc = this.args.timeout;
+
+		// 		if(timeAcc > 0)
+		// 		{
+		// 			this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');
+		// 			this.onTimeout(timeAcc, () => {
+		// 				this.args.animation = 'closed';
+		// 				const done = new Promise(acceptDone => this.onTimeout(timeAcc, acceptDone));
+		// 				accept(this.accept([done]));
+		// 			});
+		// 		}
+		// 	});
+		// });
 	}
 }

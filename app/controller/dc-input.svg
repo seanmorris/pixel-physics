@@ -104,23 +104,41 @@
   </g>
  </g>
  <g transform="translate(-260.34 -473.69)">
-  <path d="m591.98 611.79 68.946 20.079" fill="none" stroke="#000" stroke-width=".5"/>
-  <path d="m576.4 592.1 84.526 24.701" fill="none" stroke="#000" stroke-width=".5"/>
-  <path d="m595.33 575.12 65.6 18.183" fill="none" stroke="#000" stroke-width=".5"/>
-  <path d="m609.93 591.65 50.998 15.219" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="662.21619" y="608.90283" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.21619" y="608.90283" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Spindash / Roll</tspan></text>
-  <text x="662.5141" y="634.3454" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.5141" y="634.3454" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Jump</tspan></text>
-  <text x="662.27887" y="619.60553" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.27887" y="619.60553" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Lightspeed Dash / Lift Object</tspan></text>
-  <text x="661.63348" y="595.76831" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="661.63348" y="595.76831" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Super Transform</tspan></text>
-  <path d="m605.15 544.5 53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="659.01825" y="560.35986" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="659.01825" y="560.35986" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Air Dash</tspan></text>
+  <g cv-if = "a">
+  	<path d="m591.98 611.79 68.946 20.079" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <g cv-if = "x">
+  	<path d="m576.4 592.1 84.526 24.701" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <g cv-if = "y">
+  	<path d="m595.33 575.12 65.6 18.183" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <g cv-if = "b">
+  	<path d="m609.93 591.65 50.998 15.219" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <text x="662.21619" y="608.90283" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.21619" y="608.90283" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[b]]</tspan></text>
+  <text x="662.5141" y="634.3454" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.5141" y="634.3454" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[a]]</tspan></text>
+  <text x="662.27887" y="619.60553" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="662.27887" y="619.60553" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[x]]</tspan></text>
+  <text x="661.63348" y="595.76831" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="661.63348" y="595.76831" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[y]]</tspan></text>
+  <g cv-if = "r1">
+  	<path d="m605.15 544.5 53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <text x="659.01825" y="560.35986" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="659.01825" y="560.35986" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[r1]]</tspan></text>
+  <g cv-if = "ra">
   <path d="m582.92 636.21 78.008 22.519" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="664.28082" y="661.3197" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="664.28082" y="661.3197" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Switch Shields</tspan></text>
-  <path d="m426.92 544.08-53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="347.5455" y="559.51819" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="347.5455" y="559.51819" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Air Dash</tspan></text>
-  <path d="m438.09 626.74-67.043 18.472" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="352.86777" y="647.30273" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="352.86777" y="647.30273" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Move</tspan></text>
-  <path d="m507.06 652.49-115.69 44.146" fill="none" stroke="#000" stroke-width=".5"/>
-  <text x="371.43689" y="698.36121" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="371.43689" y="698.36121" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Pause</tspan></text>
+  </g>
+  <text x="664.28082" y="661.3197" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="664.28082" y="661.3197" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[ra]]</tspan></text>
+  <g cv-if = "l1">
+  	<path d="m426.92 544.08-53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <text x="347.5455" y="559.51819" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="347.5455" y="559.51819" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[l1]]</tspan></text>
+  <g cv-if = "dpad">
+	<path d="m438.09 626.74-67.043 18.472" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <text x="352.86777" y="647.30273" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="352.86777" y="647.30273" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[dpad]]</tspan></text>
+  <g cv-if = "start">
+  	<path d="m507.06 652.49-115.69 44.146" fill="none" stroke="#000" stroke-width=".5"/>
+  </g>
+  <text x="371.43689" y="698.36121" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="371.43689" y="698.36121" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[start]]</tspan></text>
  </g>
 </svg>

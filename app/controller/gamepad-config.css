@@ -1,4 +1,4 @@
-.screen-card .gamepad-config {
+.gamepad-config {
 	background-color: #666 !important;
 	position: absolute;
 	top: 0;
@@ -7,21 +7,21 @@
 	bottom: 0;
 }
 
-.screen-card .gamepad-config span {
+.gamepad-config > span {
 	display: contents;
 }
 
-.screen-card .gamepad-config svg {
+.gamepad-config svg {
 	width: 100%;
 	height: 100%;
 }
 
-.screen-card .gamepad-config .buttons {
+.gamepad-config .buttons {
 	position: absolute;
 	bottom: 3rem;
 }
 
-.screen-card .gamepad-config.input-gc {
+.gamepad-config.input-gc {
 	--dpad-travel:    8px;
 	--stick-travel:   56px;
 	--bumper-travel:  16px;
@@ -29,7 +29,7 @@
 	--button-travel:  4px;
 }
 
-.screen-card .gamepad-config.input-xb {
+.gamepad-config.input-xb {
 	--dpad-travel:    4px;
 	--stick-travel:   12px;
 	--bumper-travel:  4px;
@@ -38,7 +38,7 @@
 	--button-travel:  0.5px;
 }
 
-.screen-card .gamepad-config.input-ps {
+.gamepad-config.input-ps {
 	--dpad-travel:    4px;
 	--stick-travel:   8px;
 	--bumper-travel:  2px;
@@ -46,7 +46,7 @@
 	--button-travel:  0.25px;
 }
 
-.screen-card .gamepad-config.input-dc {
+.gamepad-config.input-dc {
 	--dpad-travel:    1.5px;
 	--stick-travel:   8px;
 	--bumper-travel:  2px;
@@ -148,4 +148,35 @@
 
 [data-button~="button-16"] {
 	transform: translateY( calc(var(--button-travel) * var(--pressed, 0)) );
+}
+
+.gamepad-config > div {
+	color:black;
+	text-align: center;
+	position: absolute;
+	bottom:2.5rem;
+	left:0;
+	right:0;
+}
+
+.gamepad-config.input-kb > span {
+	margin:auto;
+	width: 33%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding-top: 1.25rem;
+}
+
+.gamepad-config.input-kb {
+	background-color: #333 !important;
+}
+
+.gamepad-config.input-kb div {
+	bottom: 1.75rem;
+	color: white;
+}
+
+.gamepad-config.input-kb .hud-character-string {
+	margin-bottom: 0.2rem
 }
