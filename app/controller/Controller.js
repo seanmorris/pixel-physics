@@ -91,6 +91,9 @@ const buttonRemap = {
 	0:   1200
 	, 1: 1201
 	, 9: 1209
+
+	, 4: 1022
+	, 5: 1023
 };
 
 export class Controller

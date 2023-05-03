@@ -1317,44 +1317,41 @@ export class PointActor extends View
 				const sign     = Math.sign(gSpeed);
 				const friction = this.getLocalFriction();
 
-				if(!this.args.rolling  && !this.args.sliding && !this.args.climbing && !this.args.ignore && !this.args.wallSticking)
+				if(!this.args.ignore)
 				{
-					if(axisSign === sign || !sign)
+					if(!this.args.rolling  && !this.args.sliding && !this.args.climbing && !this.args.wallSticking)
 					{
-						gSpeed += xAxis * friction * this.args.accel * drag;
-
-						// if(Math.abs(axisSign - sign) === 2)
-						// {
-						// 	this.args.ignore = 10;
-						// }
+						if(axisSign === sign || !sign)
+						{
+							if(Math.abs(axisSign - sign) < 2)
+							{
+								gSpeed += xAxis * friction * this.args.accel * drag;
+								// this.args.ignore = 10;
+							}
+						}
+						else if(!this.args.ignore && !this.args.antiSkid && Math.abs(gSpeed) > 1)
+						{
+							gSpeed += xAxis * 0.5 * friction * this.args.accel * drag * this.args.skidTraction;
+						}
 					}
-					else if(!this.args.ignore && !this.args.antiSkid)
+
+					if(!Math.sign(this.args.gSpeed) || Math.sign(this.args.gSpeed) === Math.sign(gSpeed))
 					{
-						gSpeed += xAxis * friction * this.args.accel * drag * this.args.skidTraction;
+						if(this.args.pushing && Math.sign(xAxis) !== Math.sign(this.args.pushing))
+						{
+							this.args.gSpeed = 0;
+						}
+						else if(!xAxis || Math.abs(gSpeed) < gSpeedMax || Math.sign(gSpeed) !== Math.sign(xAxis))
+						{
+							this.args.gSpeed = gSpeed;
+						}
 					}
-				}
-
-				// if(Math.abs(gSpeed) > gSpeedMax)
-				// {
-				// 	gSpeed = gSpeedMax * Math.sign(gSpeed);
-				// }
-
-				if(!Math.sign(this.args.gSpeed) || Math.sign(this.args.gSpeed) === Math.sign(gSpeed))
-				{
-					if(this.args.pushing && Math.sign(xAxis) !== Math.sign(this.args.pushing))
+					else
 					{
 						this.args.gSpeed = 0;
-					}
-					else if(!xAxis || Math.abs(gSpeed) < gSpeedMax || Math.sign(gSpeed) !== Math.sign(xAxis))
-					{
-						this.args.gSpeed = gSpeed;
-					}
-				}
-				else
-				{
-					this.args.gSpeed = 0;
 
-					return;
+						return;
+					}
 				}
 			}
 		}

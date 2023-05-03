@@ -923,8 +923,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			yOffDir.set(layer.index, Math.sign(layer.layer.args.offsetY));
 		}
 
-		startX = Math.trunc(startX);
-		startY = Math.trunc(startY);
+		// startX = Math.trunc(startX);
+		// startY = Math.trunc(startY);
 
 		maxDistance = Math.ceil(maxDistance);
 
@@ -1003,6 +1003,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				let px = (startX + mag * Math.cos(angle));
 				let py = (startY + mag * Math.sin(angle));
 
+				if(Math.round(py) === 3520)
+				{
+					console.log('!!!');
+				}
+
 				if(bf > 1)
 				{
 					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
@@ -1071,11 +1076,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				let px = (startX + mag * Math.cos(angle));
 				let py = (startY + mag * Math.sin(angle));
 
+				if(Math.round(py) === 3520)
+				{
+					console.log('!!!');
+				}
+
 				if(bf > 1)
 				{
 					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
-					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
 					if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
 					if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
 				}
 
@@ -1140,6 +1150,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const distSquares = points.map(s => (s[0] - startX) ** 2 + (s[1] - startY) ** 2);
 		const minDistSq   = Math.min(...distSquares);
 		const nearest     = points[ distSquares.indexOf(minDistSq) ];
+
+		if(nearest)
+		{
+			if(ox > 0 && nearest[0] % 1 > 0.99999) nearest[0] = Math.round(nearest[0]);
+			if(ox < 0 && nearest[0] % 1 < 0.00001) nearest[0] = Math.round(nearest[0]);
+			if(oy > 0 && nearest[1] % 1 > 0.99999) nearest[1] = Math.round(nearest[1]);
+			if(oy < 0 && nearest[1] % 1 < 0.00001) nearest[1] = Math.round(nearest[1]);
+		}
 
 		window.logPoints && console.timeEnd('rayCast');
 		window.logPoints && console.log({iterations});

@@ -1906,7 +1906,7 @@ export class Viewport extends View
 
 		if(replay.lastFrame - replay.firstFrame < 30)
 		{
-			return;
+			return Promise.reject();
 		}
 
 		return ReplayDatabase.open('replays', 3).then(database => {
@@ -6053,7 +6053,7 @@ export class Viewport extends View
 				this.saveReplay('#FF0000').then(replay => {
 					trace.replay = replay.uuid;
 					database.update('traces', trace);
-				});
+				}).catch(()=>{});
 			});
 		});
 	}
