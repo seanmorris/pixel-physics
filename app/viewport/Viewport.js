@@ -4271,6 +4271,15 @@ export class Viewport extends View
 						// this.args.combo[c].score.args.value = pop.points;
 						this.args.combo[c].label.args.value = String(pop.label).replace(/-/g, ' ');
 						this.args.combo[c].index = i;
+
+						if(pop.multiplier > 1)
+						{
+							this.args.combo[c].label.args.color = 'orange';
+						}
+						else
+						{
+							this.args.combo[c].label.args.color = 'white';
+						}
 					}
 					else if(i < cutOff && this.args.combo[c])
 					{

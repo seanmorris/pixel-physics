@@ -1114,6 +1114,7 @@ export class PointActor extends View
 					}
 
 					if(this.args.falling
+						&& this.isVehicle
 						&& Math.abs(this.args.xSpeed > 25)
 						&& !this.getMapSolidAt(this.args.x, this.args.y + 480)
 					){
