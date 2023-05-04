@@ -187,10 +187,11 @@ export class CanPop
 					{
 						other.args.x = this.args.x;
 						other.args.y = this.args.y + -8;
-						this.viewport.onFrameOut(1, () => this.viewport.args.frozen = 25);
 
-						this.viewport.args.invert = 'invert';
-						this.viewport.onFrameOut(25, () => this.viewport.args.invert = '');
+						viewport.onFrameOut(1, () => viewport.args.frozen = 25);
+
+						viewport.args.invert = 'invert';
+						viewport.onFrameOut(25, () => viewport.args.invert = '');
 
 						Sfx.play('SICK_TRICK');
 						Sfx.play('SICK_TRICK');
