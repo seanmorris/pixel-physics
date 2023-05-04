@@ -2021,12 +2021,15 @@ export class Viewport extends View
 				{
 					const gamepadId = String(gamepad.id);
 
-					if(gamepadId.match(/xbo?x/i))
+					if(gamepadId.match(/x-?bo?x/i))
 					{
 						this.args.inputType = 'input-xbox';
 					}
-					else if(gamepadId.match(/playstation/i))
-					{
+					else if(gamepadId.match(/ps[345]/i)
+						|| gamepadId.match(/playstation/i)
+						|| gamepadId.match(/duals(hock|ense)/i)
+						|| gamepadId.match(/ds[45]/i)
+					){
 						this.args.inputType = 'input-playstation';
 					}
 					else
