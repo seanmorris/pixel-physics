@@ -12,7 +12,18 @@ export class CharacterPreview extends View
 
 	onAttached(args, parent)
 	{
-		// super(args, parent);
+		// const emeraldsFound = [];
+
+		// if(viewport.currentSave && viewport.currentSave.emeralds)
+		// {
+		// 	Object.assign(emeraldsFound, viewport.currentSave.emeralds.slice(0,2));
+		// }
+
+		// emeraldsFound.map(e => console.log(e));
+
+		// const emeralds = emeraldsFound.map(e => View.from(`<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-${e}-mini.png" />`));
+
+		// this.args.emeralds = emeralds;
 
 		const emeralds = this.args.emeralds = [
 			  View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-red-alt-mini.png" />')
@@ -24,13 +35,17 @@ export class CharacterPreview extends View
 			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-white-mini.png" />')
 		];
 
+		// let spacing = 7;
+		let spacing = emeralds.length;
+
 		this.onFrame(() => {
 			let e = 0
 
+			if(spacing)
 			for(const emerald of emeralds)
 			{
 				const time = Date.now() / 300;
-				const roll = (e++ * (Math.PI*2) / 7) + time;
+				const roll = (e++ * (Math.PI*2) / spacing) + time;
 
 				emerald.args.x = Math.cos(roll);
 				emerald.args.y = Math.sin(roll);

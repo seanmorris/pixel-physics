@@ -1,6 +1,7 @@
 import { Bindable } from 'curvature/base/Bindable';
 import { Sheild } from './Sheild';
 import { Sfx } from '../audio/Sfx';
+import { Tag } from 'curvature/base/Tag';
 
 export class ElectricSheild extends Sheild
 {
@@ -11,6 +12,8 @@ export class ElectricSheild extends Sheild
 	attract = new Set;
 	magnetism = 0.25;
 	magnetTimeout = false;
+
+	particles = new Set;
 
 	acquire(host)
 	{
@@ -91,6 +94,47 @@ export class ElectricSheild extends Sheild
 			{
 				host.args.xSpeed = 1 * host.xAxis;
 			}
+
+			viewport = host.viewport;
+
+			if(!viewport)
+			{
+				return;
+			}
+
+			const sparkParticleL = new Tag(document.createElement('div'));
+			const sparkParticleR = new Tag(document.createElement('div'));
+
+			sparkParticleL.classList.add('particle-electric-jump-spark');
+			sparkParticleR.classList.add('particle-electric-jump-spark');
+
+			sparkParticleL.style({
+				'--x': host.args.x
+				, '--y': host.args.y - 30
+				, 'z-index': 0
+			});
+
+			sparkParticleR.style({
+				'--x': host.args.x
+				, '--y': host.args.y - 30
+				, 'z-index': 0
+			});
+
+			sparkParticleL.age = 0;
+			sparkParticleL.y   = host.args.y - 30;
+			sparkParticleL.x   = host.args.x;
+			sparkParticleL.d   = -1;
+
+			sparkParticleR.age = 0;
+			sparkParticleR.y   = host.args.y - 30;
+			sparkParticleR.x   = host.args.x;
+			sparkParticleR.d   = 1;
+
+			viewport.particles.add(sparkParticleL);
+			viewport.particles.add(sparkParticleR);
+
+			this.particles.add(sparkParticleL);
+			this.particles.add(sparkParticleR);
 		}
 	}
 
@@ -178,6 +222,16 @@ export class ElectricSheild extends Sheild
 
 	update(host)
 	{
+		for(const sparkParticle of this.particles)
+		{
+			sparkParticle.age && sparkParticle.style({
+				'--x':   sparkParticle.x - (40-(40/(sparkParticle.age * 0.35) ** 2)) * sparkParticle.d
+				, '--y': sparkParticle.y + (sparkParticle.age * 0.35)**2
+			});
+
+			sparkParticle.age++;
+		}
+
 		this.magnetize(host, 2.5);
 
 		if(!host.args.falling && !this.magnetTimeout)

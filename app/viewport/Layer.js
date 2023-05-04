@@ -240,8 +240,6 @@ export class Layer extends View
 			{
 				const xy = i  * (1+Math.abs(blocksHigh)) + j;
 
-				// const tileY = j - Math.ceil(this.y / blockSize);
-
 				const tileY = j
 					+ Math.floor(-this.y / blockSize)
 					+ (this.offsetYChange < 0
@@ -258,8 +256,13 @@ export class Layer extends View
 				{
 					block = new Tag(document.createElement('div'));
 
-					const meta = Object.create(null);
-					Object.assign(meta, {x: null, y: null, src: null, visible: false});
+					const meta = Object.create(null, {
+						visible: {value: false, writable: true}
+						, src:   {value: null,  writable: true}
+						, x:     {value: null,  writable: true}
+						, y:     {value: null,  writable: true}
+					});
+
 					Object.preventExtensions(meta);
 
 					blocksXY.set(xy, block);

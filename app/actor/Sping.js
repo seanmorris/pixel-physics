@@ -36,8 +36,6 @@ export class Sping extends Mixin.from(PointActor, CanPop)
 
 		this.willStick = false;
 		this.stayStuck = false;
-
-		this.age = 0;
 	}
 
 	update()
@@ -95,8 +93,6 @@ export class Sping extends Mixin.from(PointActor, CanPop)
 
 			this.viewport.spawn.add({object:ball})
 		}
-
-		this.age++;
 	}
 
 	effect(other)

@@ -38,8 +38,6 @@ export class BFish extends Mixin.from(PointActor, CanPop)
 
 		this.willStick = false;
 		this.stayStuck = false;
-
-		this.age = 0;
 	}
 
 	update()
@@ -61,8 +59,6 @@ export class BFish extends Mixin.from(PointActor, CanPop)
 		}
 
 		super.update();
-
-		this.age++;
 	}
 
 	get solid() { return false; }

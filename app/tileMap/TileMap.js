@@ -271,10 +271,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		this.emptyCache.clear();
 
-		for(const i in mapData.tilesets)
+		for(const tileset of mapData.tilesets)
 		{
-			const tileset = mapData.tilesets[i];
-
 			const image = new Image;
 
 			this.tileImages.set(tileset, image);
@@ -317,7 +315,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 					this.replacements.set(imageUrl, url);
 
-					const heightMask = new Tag('<canvas>');
+					const heightMask = document.createElement('canvas');
 
 					heightMask.width  = image.width;
 					heightMask.height = image.height;
@@ -480,8 +478,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		}
 
 		const mapData = this.mapData;
+		const mapWidth = mapData.width;
+		const mapHeight = mapData.height;
 
-		if(x >= mapData.width || x < 0)
+		if(x >= mapWidth || x < 0)
 		{
 			if(x < 0 || !this.meta.get('wrapX'))
 			{
@@ -497,16 +497,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 			else
 			{
-				if(x < 0 && x % this.mapData.width !== 0)
+				if(x < 0 && x % mapWidth !== 0)
 				{
 					y++;
 				}
 
-				x = x % this.mapData.width;
+				x = x % mapWidth;
 			}
 		}
 
-		if(y >= mapData.height || y < 0)
+		if(y >= mapHeight || y < 0)
 		{
 			if(y < 0 || !this.meta.get('wrapY'))
 			{
@@ -523,11 +523,11 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			}
 			else
 			{
-				y = y % this.mapData.height;
+				y = y % mapHeight;
 			}
 		}
 
-		const tileIndex = (y * mapData.width) + x;
+		const tileIndex = (y * mapWidth) + x;
 
 		if(tileIndex in tileLayers[layerId].data)
 		{
@@ -709,13 +709,15 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const blockSize = mapData.tilewidth;
 
 		const tileCoords = this.getTile(tileNumber);
-		const tilePos = [tileCoords[0] * blockSize, tileCoords[1] * blockSize];
+
+		const tilePosX = tileCoords[0] * blockSize;
+		const tilePosY = tileCoords[1] * blockSize;
 
 		const x = (Number(xInput) % blockSize);
 		const y = (Number(yInput) % blockSize);
 
-		const xPixel = tilePos[0] + x;
-		const yPixel = tilePos[1] + y;
+		const xPixel = tilePosX + x;
+		const yPixel = tilePosY + y;
 
 		const heightMask = this.heightMasks.get(tileSet);
 

@@ -46,12 +46,18 @@ export class LayerSwitch extends PointActor
 		const radius = this.args.width / 2;
 		const otherRadius = 0; //other.args.width / 2;
 
-		if(other.x < this.x + -radius + otherRadius || other.x > this.x + radius + -otherRadius)
+		const thisX = this.args.x;
+		const thisY = this.args.y;
+
+		const otherX = other.args.x;
+		const otherY = other.args.y;
+
+		if(otherX < thisX + -radius + otherRadius || otherX > thisX + radius + -otherRadius)
 		{
 			return;
 		}
 
-		if(other.y < this.y + -this.args.height || other.y > this.y)
+		if(otherY < thisY + -this.args.height || other.y > thisY)
 		{
 			return;
 		}
@@ -80,14 +86,14 @@ export class LayerSwitch extends PointActor
 			toLayer = back ? this.args.toLayer : this.args.fromLayer;
 		}
 
-		if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
+		if(!this.viewport.tileMap.getSolid(otherX, otherY, toLayer))
 		{
 			other.args.layer = toLayer;
 		}
 		else
 		{
 			this.viewport.onFrameOut(1,()=>{
-				if(!this.viewport.tileMap.getSolid(other.x, other.y, toLayer))
+				if(!this.viewport.tileMap.getSolid(otherX, otherY, toLayer))
 				{
 					other.args.layer = toLayer;
 				}

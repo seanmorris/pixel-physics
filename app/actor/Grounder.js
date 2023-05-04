@@ -35,8 +35,6 @@ export class Grounder extends Mixin.from(PointActor, CanPop)
 		this.args.patrolPause   = this.args.patrolPause   ?? 20;
 		this.args.patrolBeat    = this.args.patrolBeat    ?? 120;
 		this.args.patrolSpeed   = this.args.patrolSpeed   ?? 1;
-
-		this.age = 0;
 	}
 
 	onRendered()
@@ -70,8 +68,6 @@ export class Grounder extends Mixin.from(PointActor, CanPop)
 		super.update();
 
 		this.args.direction = Math.sign(this.args.gSpeed);
-
-		this.age++;
 	}
 
 	effect(other)

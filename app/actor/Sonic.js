@@ -278,7 +278,7 @@ export class Sonic extends PointActor
 
 	updateEnd()
 	{
-		if(!this.args.falling)
+		if(!this.args.falling && this.pinchFilterBg)
 		{
 			this.pinch(0, 0);
 		}
@@ -1855,7 +1855,7 @@ export class Sonic extends PointActor
 		}
 		else if(this.args.wallSticking)
 		{
-			if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || this.args.ySpeed > 10))
+			if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(Math.args.xSpeed)))
 			{
 				this.args.cameraMode = 'aerial';
 			}

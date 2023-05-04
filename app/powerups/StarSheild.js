@@ -99,10 +99,22 @@ export class StarSheild extends Sheild
 		if(host.args.falling)
 		{}
 
+		let yOffset = -3;
+
+		if(host.args.rolling)
+		{
+			yOffset = 3;
+		}
+
+		if(dashed)
+		{
+			yOffset = -16;
+		}
+
 		particle.style({
-			'--x': point[0] + host.x + -3 + host.args.xSpeed
-			, '--y': point[1] + host.y + (dashed ? -18 : -3) + host.args.ySpeed
-			, '--frame': this.frame++
+			'--frame':   this.frame++
+			, '--x':     point[0] + host.x + -3 + host.args.xSpeed
+			, '--y':     point[1] + host.y + host.args.ySpeed + yOffset
 			, 'z-index': -1
 			, opacity: Math.random() * 2
 		});

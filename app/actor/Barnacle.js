@@ -45,8 +45,6 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 		}
 
 		this.args.bindTo('state', () => this.args.stateAge = 0);
-
-		this.age = 0;
 	}
 
 	update()

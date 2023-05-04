@@ -34,8 +34,6 @@ export class Splats extends Mixin.from(PointActor, CanPop)
 		this.args.patrolPause = this.args.patrolPause   ?? 40;
 		this.args.patrolBeat  = this.args.patrolBeat    ?? 140;
 		this.args.patrolSpeed = this.args.patrolSpeed   ?? 1;
-
-		this.age = 0;
 	}
 
 	update()
@@ -61,8 +59,6 @@ export class Splats extends Mixin.from(PointActor, CanPop)
 		super.update();
 
 		this.args.direction = Math.sign(this.args.xSpeed || this.args.gSpeed);
-
-		this.age++;
 
 		if(!this.args.falling && !this.jumpTimer)
 		{

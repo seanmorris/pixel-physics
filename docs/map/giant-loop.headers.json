@@ -3,7 +3,7 @@
     "height": 1024,
     "infinite": false,
     "nextlayerid": 7,
-    "nextobjectid": 76,
+    "nextobjectid": 78,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -47,11 +47,6 @@
     "type": "map",
     "version": "1.6",
     "width": 1024,
-    "types": [
-        "mecha-sonic",
-        "sonic",
-        "spinning-float",
-        "tumbler"
-    ],
+    "types": [],
     "map": "/map/giant-loop.json"
 }

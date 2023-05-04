@@ -34,8 +34,6 @@ export class SpringTurtle extends Mixin.from(PointActor, CanPop)
 		this.args.patrolSpeed   = this.args.patrolSpeed   ?? 1;
 
 		this.args.lastSpring = 0;
-
-		this.age = 0;
 	}
 
 	onRendered(event)
@@ -85,8 +83,6 @@ export class SpringTurtle extends Mixin.from(PointActor, CanPop)
 		}
 
 		this.args.direction = Math.sign(this.args.gSpeed);
-
-		this.age++;
 	}
 
 	get solid() { return false; }

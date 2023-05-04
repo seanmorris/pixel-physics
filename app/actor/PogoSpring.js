@@ -68,7 +68,7 @@ export class PogoSpring extends Vehicle
 		if(this.occupant && !this.frameout && !this.args.falling)
 		{
 			this.args.height = 16 + this.occupant.args.height;
-			this.args.bound = -Math.floor(this.ySpeedLast);
+			this.args.bound = -Math.floor(this.ySpeedLast || 0);
 
 			this.frameout = this.viewport.onFrameOut(1, () => {
 				this.args.falling = true;

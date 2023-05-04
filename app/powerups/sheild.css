@@ -211,15 +211,19 @@
 	transform: rotate(calc(calc(-1rad * var(--air-angle)) + 180deg));
 }
 
+.actor-sonic[data-animation=wall-stick-brake] .bubble-sheild,
 .actor-sonic[data-animation=wall-stick] .bubble-sheild {
 	top: 32px;
 	left: -1px;
 }
 
+.actor-sonic[data-animation=wall-stick-brake] .bubble-sheild,
 .actor-sonic[data-animation=wall-stick] .sheild {
 	transform: rotate(90deg);
 }
 
+.actor-sonic[data-animation=wall-stick-brake] .electric-sheild,
+.actor-sonic[data-animation=wall-stick-brake] .fire-sheild,
 .actor-sonic[data-animation=wall-stick] .electric-sheild,
 .actor-sonic[data-animation=wall-stick] .fire-sheild {
 	top: 32px;
@@ -450,6 +454,16 @@
 	top: 16px;
 	width: 64px;
 	height: 64px;
+}
+
+[data-animation=wall-stick-brake] .star-sheild-stars {
+	top: 18px;
+	left: 0px
+}
+
+[data-animation=wall-stick] .star-sheild-stars {
+	top: 0px;
+	left: 22px
 }
 
 .star-sheild .star-sheild-stars {

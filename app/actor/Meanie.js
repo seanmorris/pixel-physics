@@ -37,8 +37,6 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 		this.args.patrolBeat  = this.args.patrolBeat    ?? 140;
 		this.args.patrolSpeed = this.args.patrolSpeed   ?? 1;
 
-		this.age = 0;
-
 		// this.args.hatType = this.args.hatType ?? 'skull';
 		this.args.hatType = this.args.hatType ?? 'pumpkin';
 
@@ -100,8 +98,6 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 		this.args.mode = 0;
 
 		this.args.direction = Math.sign(this.args.xSpeed || this.args.gSpeed);
-
-		this.age++;
 
 		if(!this.args.falling && !this.jumpTimer)
 		{
@@ -173,18 +169,21 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 				this.hat = null;
 			});
 
-			if(other)
+			if(!other.args.rolling)
 			{
-				this.ignores.set(other, 10);
+				if(other)
+				{
+					this.ignores.set(other, 10);
 
-				other.args.gSpeed *= -1;
-				other.args.xSpeed *= -1;
-				other.args.ySpeed = -4;
+					other.args.gSpeed *= -1;
+					other.args.xSpeed *= -1;
+					other.args.ySpeed = -4;
 
-				other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
+					other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
+				}
+
+				return;
 			}
-
-			return;
 		}
 
 		return super.pop(other);

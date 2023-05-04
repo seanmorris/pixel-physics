@@ -28,11 +28,9 @@ export class SnailBot extends Mixin.from(PointActor, CanPop)
 		this.willStick = false;
 		this.stayStuck = false;
 
-		this.args.patrolPause   = this.args.patrolPause   ?? 10;
-		this.args.patrolBeat    = this.args.patrolBeat    ?? 200;
+		this.args.patrolPause   = this.args.patrolPause   ?? 20;
+		this.args.patrolBeat    = this.args.patrolBeat    ?? 100;
 		this.args.patrolSpeed   = this.args.patrolSpeed   ?? 1;
-
-		this.age = 0;
 	}
 
 	update()
@@ -49,8 +47,6 @@ export class SnailBot extends Mixin.from(PointActor, CanPop)
 		}
 
 		this.args.direction = Math.sign(this.args.gSpeed);
-
-		this.age++;
 	}
 
 	get solid() { return false; }

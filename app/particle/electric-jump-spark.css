@@ -1,0 +1,24 @@
+.particle-electric-jump-spark {
+	background-image: url(/Sonic/sheild-electric-spark.png);
+	width: 16px;
+	height: 16px;
+
+	--animation-steps: 2;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+
+	z-index: 100;
+
+	animation: jump-spark-flicker steps(2) infinite forwards;
+	animation-duration: 120ms;
+}
+
+@keyframes jump-spark-flicker{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-32px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		opacity: 0.5
+	}
+}

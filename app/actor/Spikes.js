@@ -33,8 +33,6 @@ export class Spikes extends PointActor
 		this.args.beat        = this.args.beat   || 90;
 
 		this.hazard = true;
-
-		this.age = 0;
 	}
 
 	updateStart()
@@ -90,8 +88,6 @@ export class Spikes extends PointActor
 		}
 
 		super.updateStart();
-
-		this.age++;
 	}
 
 	onRendered(event)

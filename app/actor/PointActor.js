@@ -135,7 +135,7 @@ export class PointActor extends View
 
 		this.springing = false;
 
-		this.stepCache = {};
+		// this.stepCache = {};
 
 		this.fallTime    = 0;
 		this.idleTime    = 0;
@@ -409,7 +409,7 @@ export class PointActor extends View
 		this.args.bindTo(['x','y'], (v, k, t) => {
 			this[BOUNDS] = false;
 			isNaN(v) && console.trace(k, v)
-			this.stepCache = {};
+			// this.stepCache = {};
 			this.idleTime = 0;
 			this.moved = true;
 		});
@@ -704,6 +704,8 @@ export class PointActor extends View
 			groundObject.standBelow(this);
 		});
 
+		this.age = 0;
+
 		return bindable;
 	}
 
@@ -936,6 +938,15 @@ export class PointActor extends View
 			splash.style({'--x': splash.x});
 			splash.age++;
 		}
+
+		if(this.viewport && this.startFrame !== undefined)
+		{
+			this.age = this.viewport.args.frameId - this.startFrame;
+		}
+		else
+		{
+			this.age = 0;
+		}
 	}
 
 	update()
@@ -1099,7 +1110,7 @@ export class PointActor extends View
 			{
 				if(this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 64))
 				{
-					if(!this.args.falling || this.args.cameraMode !== 'popping')
+					if(!this.args.falling || (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(Math.args.xSpeed)))
 					{
 						this.args.cameraMode = 'normal';
 					}
@@ -1525,11 +1536,12 @@ export class PointActor extends View
 			return;
 		}
 
-		const thisPoint = [this.args.x + offset[0], this.args.y + offset[1]];
+		const thisPointX = this.args.x + offset[0];
+		const thisPointY = this.args.y + offset[1];
 
 		const solidPoint = this.viewport.tileMap.castRay(
-			thisPoint[0]
-			, thisPoint[1]
+			thisPointX
+			, thisPointY
 			, angle
 			, length
 			, this.args.layer
@@ -1539,23 +1551,13 @@ export class PointActor extends View
 
 		if(solidPoint)
 		{
-			magnitude = Math.hypot(
-				(thisPoint[0] - solidPoint[0])
-				, (thisPoint[1] - solidPoint[1])
-			);
+			magnitude = Math.hypot(thisPointX - solidPoint[0], thisPointY - solidPoint[1]);
 		}
 
-		const endPoint = [
-			thisPoint[0] + Math.cos(angle) * magnitude
-			, thisPoint[1] + Math.sin(angle) * magnitude
-		];
+		const endPointX = thisPointX + Math.cos(angle) * magnitude;
+		const endPointY = thisPointY + Math.sin(angle) * magnitude;
 
-		const actorsAtLine = this.viewport.actorsAtLine(
-			thisPoint[0]
-			, thisPoint[1]
-			, endPoint[0]
-			, endPoint[1]
-		);
+		const actorsAtLine = this.viewport.actorsAtLine(thisPointX, thisPointY, endPointX, endPointY);
 
 		actorsAtLine.delete(Bindable.make(this));
 		actorsAtLine.delete(this);
@@ -2051,7 +2053,7 @@ export class PointActor extends View
 			return this.args.standingOn.realAngle;
 		}
 
-		const groundAngle = Number(this.args.groundAngle);
+		const groundAngle = this.args.groundAngle;
 
 		if(this.args.falling)
 		{

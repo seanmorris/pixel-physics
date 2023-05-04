@@ -38,8 +38,6 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 		this.args.tailOffset = 0;
 
 		this.stayStuck = true;
-
-		this.age = 0;
 	}
 
 	onRendered(event)
@@ -73,8 +71,6 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 		super.update();
 
 		// this.args.direction = Math.sign(this.args.gSpeed);
-
-		this.age++;
 	}
 
 	effect(other)

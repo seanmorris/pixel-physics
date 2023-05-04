@@ -190,11 +190,6 @@ export class Platformer
 
 		host.args.jumpBlocked = false;
 
-		if(host.viewport)
-		{
-			host.age = host.viewport.args.frameId - host.startFrame
-		}
-
 		if(!host.xAxis
 			|| Math.sign(host.args.gSpeed) !== host.args.pushing
 			|| Math.sign(host.xAxis) !== host.args.pushing
@@ -2288,7 +2283,7 @@ export class Platformer
 					const speed = Math.abs(host.args.gSpeed);
 
 					// const direction = Math.sign(host.args.gSpeed || host.xSpeedLast || 1);
-					const direction = Math.sign(host.args.speed);
+					const direction = Math.sign(host.args.gSpeed);
 
 					host.args.direction = direction;
 

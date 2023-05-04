@@ -40,8 +40,6 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 		this.args.patrolBeat    = this.args.patrolBeat    || 160;
 		this.args.patrolPause   = this.args.patrolPause   || 60;
 		this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
-
-		this.age = 0;
 	}
 
 	update()
@@ -82,8 +80,6 @@ export class Redz extends Mixin.from(PointActor, CanPop)
 
 			this._onRemove.add(() => viewport.actors.remove(spitFire));
 		}
-
-		this.age++;
 	}
 
 	effect(other)

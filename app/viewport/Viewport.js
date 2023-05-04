@@ -218,6 +218,8 @@ export class Viewport extends View
 		this.checkpoints   = new Map;
 		this.zeroFrame     = false;
 
+		// this.actorPointCache = new Map;
+
 		this.args.replayQuickExit = false;
 		this.args.replayBanners = true;
 
@@ -3040,6 +3042,7 @@ export class Viewport extends View
 		const actor = Bindable.make(rawActor);
 
 		actor.name = actor.name || objDef.name;
+		actor.startFrame = this.args.frameId || 0;
 
 		this.actors.add( actor );
 	}
@@ -3341,7 +3344,7 @@ export class Viewport extends View
 
 					spawn.object[Run] = this[Run];
 
-					spawn.object.startFrame = this.args.frameId;
+					spawn.object.startFrame = this.args.frameId || 0;
 					spawn.object.args.id = ++this.maxObjectId;
 
 					this.actors.add(Bindable.make(spawn.object));
@@ -3376,7 +3379,7 @@ export class Viewport extends View
 
 				spawn.object[Run] = this[Run];
 
-				spawn.object.startFrame = this.args.frameId;
+				spawn.object.startFrame = this.args.frameId || 0;
 				spawn.object.args.id = ++this.maxObjectId;
 
 				this.actors.add(Bindable.make(spawn.object));
@@ -4302,7 +4305,7 @@ export class Viewport extends View
 				this.args.combo.length = Math.min(4, Math.max(0, -cutOff + this.controlActor.args.popChain.length));
 			}
 
-			this.args.popTopLine.args.value = multiply + ' x ' + base;
+			this.args.popTopLine.args.value = base + ' x ' + multiply;
 			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) : '';
 		}
 
@@ -4464,7 +4467,7 @@ export class Viewport extends View
 
 	actorsAtPoint(x, y, w = 0, h = 0, ghosts = false)
 	{
-		x = Math.trunc(x);
+		// x = Math.trunc(x);
 
 		// const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		// const actorPointCache = this[ActorPointCache];
@@ -4957,6 +4960,8 @@ export class Viewport extends View
 		this.updateStarted.clear();
 		this.updateEnded.clear();
 		this.updated.clear();
+
+		// this.actorPointCache.clear();
 
 		this.objectDb = new Classifier(Object.values(ObjectPalette));
 

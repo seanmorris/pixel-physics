@@ -526,7 +526,7 @@ export class BreakableBlock extends Block
 			}
 			else if(other.controllable)
 			{
-				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x));
+				this.fragmentsX.style.setProperty('--xSpeed', Math.round(x * 1.5));
 			}
 			else
 			{

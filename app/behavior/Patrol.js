@@ -9,6 +9,8 @@ export class Patrol extends Behavior
 		const beat      = host.args.patrolBeat  ?? 90;
 		const pause     = host.args.patrolPause ?? 25
 
+		host.age = host.age || 0;
+
 		if(host.age % beat < (beat - pause))
 		{
 			if(Math.floor(host.age / beat) % 2)
@@ -22,7 +24,7 @@ export class Patrol extends Behavior
 		}
 		else
 		{
-			host.args.direction = -Math.sign(host.gSpeedLast);
+			host.args.direction = -Math.sign(host.gSpeedLast || 1);
 		}
 	}
 }

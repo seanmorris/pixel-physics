@@ -11,8 +11,6 @@ export class SpitFire extends PointActor
 		this.args.height = 32;
 		this.args.float  = -1;
 		this.noClip = true;
-
-		this.age = 0;
 	}
 
 	update()
@@ -24,8 +22,6 @@ export class SpitFire extends PointActor
 			this.remove();
 			return;
 		}
-
-		this.age++;
 
 		super.update();
 	}

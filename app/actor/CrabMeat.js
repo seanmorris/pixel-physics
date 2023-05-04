@@ -41,8 +41,6 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 		this.args.patrolPause   = this.args.patrolPause   || 25;
 	 	this.args.patrolSpeed   = this.args.patrolSpeed   || 0.25;
 		this.args.shotTelegraph = this.args.shotTelegraph || 65;
-
-		this.age = 0;
 	}
 
 	update()
@@ -98,8 +96,6 @@ export class CrabMeat extends Mixin.from(PointActor, CanPop)
 			this.viewport.spawn.add({object:ballA});
 			this.viewport.spawn.add({object:ballB});
 		}
-
-		this.age++;
 	}
 
 	effect(other)
