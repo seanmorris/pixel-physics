@@ -65,10 +65,8 @@ export class WaterRegion extends Region
 				this.viewport.particles.remove(skimParticle)
 				this.skimParticles.delete(actor);
 			});
+			this.skimParticles.set(actor, {skimParticle, timeout});
 		}
-
-
-		this.skimParticles.set(actor, {skimParticle, timeout});
 	}
 
 	update()

@@ -1353,9 +1353,9 @@ export class Viewport extends View
 
 		let waiter = new Promise(a => setTimeout(a, 6500));
 		const cardShown = this.args.controlCardShown;
-		const willShowCard = !cardShown && (!this.args.selectedChar || this.args.selectedChar === 'Sonic');
+		const willShowCard = !cardShown && !this.args.map && (!this.args.selectedChar || this.args.selectedChar === 'Sonic');
 
-		if(!this.replay && willShowCard)
+		if(!this.replay && willShowCard && !Router.query.map)
 		{
 			this.args.titlecard = new Series({cards:[controllerCard]}, this);
 			this.args.controlCardShown = true;

@@ -120,7 +120,6 @@ export class Chao extends PointActor
 			this.png.ready.then(()=>{
 				const customSheet = this.png.recolor(colorMap).toUrl();
 				this.args.spriteSheet = customSheet;
-				console.log('!!!');
 			});
 
 		}, {wait:0});

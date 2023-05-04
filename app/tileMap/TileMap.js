@@ -1003,11 +1003,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				let px = (startX + mag * Math.cos(angle));
 				let py = (startY + mag * Math.sin(angle));
 
-				if(Math.round(py) === 3520)
-				{
-					console.log('!!!');
-				}
-
 				if(bf > 1)
 				{
 					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
