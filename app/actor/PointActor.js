@@ -192,10 +192,16 @@ export class PointActor extends View
 
 		this.inventory.addEventListener('adding', event => {
 
-			const item = event.detail.object;
+			let item = event.detail.object;
 
 			if(this.inventory.has(item.constructor))
 			{
+				if(!(this.args.currentSheild instanceof StarSheild))
+				{
+					item = [...this.inventory.get(item.constructor)][0];
+					this.args.currentSheild = item;
+					item.equip && item.equip(this);
+				}
 				event.preventDefault();
 				return;
 			}

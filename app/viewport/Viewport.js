@@ -2516,7 +2516,7 @@ export class Viewport extends View
 			case 'popping':
 					this.args.xOffsetTarget = 0.5;
 					this.args.yOffsetTarget = 0.25;
-					this.maxCameraBound     = 128;
+					this.maxCameraBound     = 64;
 					cameraSpeed = 6;
 
 					break;
@@ -5076,6 +5076,11 @@ export class Viewport extends View
 			this.willDetach.clear();
 
 			this.objectDb.clear();
+
+			this.args.hasFire    = false;
+			this.args.hasWater   = false;
+			this.args.hasElecric = false;
+			this.args.hasNormal  = false;
 
 			this.args.isRecording = false;
 			this.args.isReplaying = false;

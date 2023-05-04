@@ -81,36 +81,34 @@
 		</g>
 	</g>
 	<g transform="translate(-260.34 -473.69)">
-		<g cv-if = "a">
-			<path transform="translate(134.82 68.294)" d="m456.39 552.34 69.71 17.901" fill="none" stroke="#000" stroke-width=".
-			5"/>
+		<g class = "a" class = "a" cv-if = "a">
+			<path transform="translate(134.82 68.294)" d="m456.39 552.34 69.71 17.901" fill="none" stroke="#000" stroke-width=".5"/>
 		</g>
-		<g cv-if = "x">
+		<g class = "x" class = "x" cv-if = "x">
 			<path transform="translate(134.82 68.294)" d="m439.07 532.57 87.033 22.593" fill="none" stroke="#000" stroke-width=".5"/>
 		</g>
-		<g cv-if = "y">
+		<g class = "y" class = "y" cv-if = "y">
 			<path transform="translate(134.82 68.294)" d="m457.95 515.41 68.155 16.266" fill="none" stroke="#000" stroke-width=".5"/>
 		</g>
-		<g cv-if = "b">
-			<path transform="translate(134.82 68.294)" d="m474.2 532.63 51.904 12.605" fill="none" stroke="#000" stroke-width=".
-			5"/>
+		<g class = "b" class = "b" cv-if = "b">
+			<path transform="translate(134.82 68.294)" d="m474.2 532.63 51.904 12.605" fill="none" stroke="#000" stroke-width=".5"/>
 		</g>
 		<text transform="translate(134.82 68.294)" x="527.39423" y="547.27045" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-			<tspan x="527.39423" y="547.27045" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[b]]</tspan>
+			<tspan class = "b" x="527.39423" y="547.27045" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[b]]</tspan>
 		</text>
 		<text transform="translate(134.82 68.294)" x="527.69214" y="572.71301" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-			<tspan x="527.69214" y="572.71301" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[a]]</tspan>
+			<tspan class = "a" x="527.69214" y="572.71301" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[a]]</tspan>
 		</text>
 		<text transform="translate(134.82 68.294)" x="527.45691" y="557.97314" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-			<tspan x="527.45691" y="557.97314" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[x]]</tspan>
+			<tspan class = "x" x="527.45691" y="557.97314" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[x]]</tspan>
 		</text>
 		<text transform="translate(134.82 68.294)" x="526.81152" y="534.13593" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-			<tspan x="526.81152" y="534.13593" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[y]]</tspan>
+			<tspan class = "y" x="526.81152" y="534.13593" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[y]]</tspan>
 		</text>
-		<g cv-if ="r1">
+		<g cv-if ="r1" class = "r1">
 			<path transform="translate(134.82 68.294)" d="m470.33 481.76 53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="524.19629" y="497.62772" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-				<tspan x="524.19629" y="497.62772" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[l1]]</tspan>
+				<tspan class = "r1" x="524.19629" y="497.62772" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[r1]]</tspan>
 			</text>
 		</g>
 		<g cv-if ="ra">
@@ -119,10 +117,10 @@
 				<tspan x="529.45886" y="599.68732" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[ra]]</tspan>
 			</text>
 		</g>
-		<g cv-if = "l1">
+		<g class = "l1" class = "l1">
 			<path transform="translate(134.82 68.294)" d="m292.1 481.01-53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="212.72356" y="496.87265" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-				<tspan x="212.72356" y="496.87265" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[l1]]</tspan>
+				<tspan class = "l1" x="212.72356" y="496.87265" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[l1]]</tspan>
 			</text>
 		</g>
 		<g cv-if = "dpad">
@@ -131,10 +129,10 @@
 				<tspan x="220.96754" y="573.75909" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[dpad]]</tspan>
 			</text>
 		</g>
-		<g cv-if = "start">
+		<g cv-if = "start" class = "start">
 			<path transform="translate(134.82 68.294)" d="m401.03 523.14v-50.774" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="392.06915" y="470.65366" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-				<tspan x="392.06915" y="470.65366" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[start]]</tspan>
+				<tspan class = "start" x="392.06915" y="470.65366" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[start]]</tspan>
 			</text>
 		</g>
 	</g>

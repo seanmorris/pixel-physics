@@ -17,6 +17,6 @@ export class KbInput extends View
 		this.args.yView      = new CharacterString({font: this.font, value: `⬚ ❸ ${this.args.y}`});
 		this.args.lrView     = new CharacterString({font: this.font, value: `❹ ❺ ${this.args.r1}`});
 		this.args.raView     = new CharacterString({font: this.font, value: `⬚ ▦ ${this.args.ra}`});
-		this.args.startView     = new CharacterString({font: this.font, value: `⬚ ❾ ${this.args.start}`});
+		this.args.startView  = new CharacterString({font: this.font, value: `⬚ ❾ ${this.args.start}`});
 	}
 }

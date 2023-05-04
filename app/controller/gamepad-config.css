@@ -180,3 +180,19 @@
 .gamepad-config.input-kb .hud-character-string {
 	margin-bottom: 0.2rem
 }
+
+.gamepad-config .start path { opacity: calc(0.5  + var(--pressed-9)) !important; }
+.gamepad-config .a path     { opacity: calc(0.5  + var(--pressed-0)) !important; }
+.gamepad-config .b path     { opacity: calc(0.5  + var(--pressed-1)) !important; }
+.gamepad-config .x path     { opacity: calc(0.5  + var(--pressed-2)) !important; }
+.gamepad-config .y path     { opacity: calc(0.5  + var(--pressed-3)) !important; }
+.gamepad-config .l1 path    { opacity: calc(0.5  + var(--pressed-4)) !important; }
+.gamepad-config .r1 path    { opacity: calc(0.5  + var(--pressed-5)) !important; }
+
+.gamepad-config tspan.start { font-weight: calc(400 + calc(var(--pressed-9) * 400)) !important; }
+.gamepad-config tspan.a     { font-weight: calc(400 + calc(var(--pressed-0) * 400)) !important; }
+.gamepad-config tspan.b     { font-weight: calc(400 + calc(var(--pressed-1) * 400)) !important; }
+.gamepad-config tspan.x     { font-weight: calc(400 + calc(var(--pressed-2) * 400)) !important; }
+.gamepad-config tspan.y     { font-weight: calc(400 + calc(var(--pressed-3) * 400)) !important; }
+.gamepad-config tspan.l1    { font-weight: calc(400 + calc(var(--pressed-4) * 400)) !important; }
+.gamepad-config tspan.r1    { font-weight: calc(400 + calc(var(--pressed-5) * 400)) !important; }
