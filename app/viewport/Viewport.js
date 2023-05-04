@@ -3874,7 +3874,7 @@ export class Viewport extends View
 
 			for(const actor of this.auras)
 			{
-				if(!actor)
+				if(!actor || actor.removed)
 				{
 					this.auras.delete(actor);
 					continue;
@@ -3889,7 +3889,7 @@ export class Viewport extends View
 
 				for(const actor of nearbyActors)
 				{
-					if(actor !== this.controlActor)
+					if(actor !== this.controlActor && !actor.removed)
 					{
 						updatable.add(actor);
 					}
@@ -3898,7 +3898,7 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				if(actor[Run] === this[Run])
+				if(actor[Run] === this[Run] && !actor.removed)
 				{
 					this.actorUpdateStart(actor);
 				}
@@ -3914,7 +3914,7 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				if(actor[Run] === this[Run])
+				if(actor[Run] === this[Run] && !actor.removed)
 				{
 					this.actorUpdate(actor);
 				}
@@ -3930,7 +3930,7 @@ export class Viewport extends View
 
 			for(const actor of updatable)
 			{
-				if(actor[Run] === this[Run])
+				if(actor[Run] === this[Run] && !actor.removed)
 				{
 					this.actorUpdateEnd(actor);
 				}

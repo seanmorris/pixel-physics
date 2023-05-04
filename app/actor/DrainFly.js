@@ -68,11 +68,11 @@ export class DrainFly extends Mixin.from(PointActor, CanPop)
 
 			case 'attacking': {
 
-				const drawX = Math.sign(mainChar.x + -this.x);
-				const drawY = Math.sign(mainChar.y + -this.y + -24);
+				const drawX = Math.sign(mainChar.args.x + -this.args.x) || 0;
+				const drawY = Math.sign(mainChar.args.y + -this.args.y + -24) || 0;
 
-				this.args.xSpeed += drawX * 0.2 - (Math.random()/10);
-				this.args.ySpeed += drawY * 0.5 - (Math.random()/10);
+				this.args.xSpeed += drawX * 0.2 - (Math.random()/10) || 0;
+				this.args.ySpeed += drawY * 0.5 - (Math.random()/10) || 0;
 
 				if(Math.abs(this.args.xSpeed) > 6)
 				{

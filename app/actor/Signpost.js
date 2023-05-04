@@ -153,9 +153,11 @@ export class Signpost extends PointActor
 						, opacity: Math.random() * 2
 					});
 
-					this.viewport.particles.add(dustParticle);
+					const viewport = this.viewport;
 
-					this.viewport.onFrameOut(30, () => this.viewport.particles.remove(dustParticle));
+					viewport.particles.add(dustParticle);
+
+					viewport.onFrameOut(30, () => viewport.particles.remove(dustParticle));
 				}
 
 				other.args.rolling = false

@@ -3011,6 +3011,11 @@ export class Platformer
 			// {
 			// }
 
+			if(host.removed)
+			{
+				return;
+			}
+
 			host.args.x = Math.round(stickX);
 			host.args.y = Math.round(stickY);
 

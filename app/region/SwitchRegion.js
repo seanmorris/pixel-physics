@@ -24,6 +24,11 @@ export class SwitchRegion extends Region
 
 	activate(actor)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
 		if(this.args.latch && this.activated)
 		{
 			return;
