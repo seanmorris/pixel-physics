@@ -790,8 +790,8 @@ input[type=number]::-webkit-outer-spin-button {
 	}
 }
 
-.topLine:has(.status-message .hidden),
-.focus-me:has(.status-message .hidden),
+.topLine:has(.status-message > .hidden),
+.focus-me:has(.status-message > .hidden),
 .status-message:has(.hidden) {
 	display: none;
 }

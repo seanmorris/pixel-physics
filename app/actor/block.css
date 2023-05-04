@@ -290,3 +290,7 @@
 		transform: translateX(0px);
 	}
 }
+
+.sprite.collapse:not(.broken) {
+	contain:strict
+}
