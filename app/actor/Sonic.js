@@ -1855,7 +1855,7 @@ export class Sonic extends PointActor
 		}
 		else if(this.args.wallSticking)
 		{
-			if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(Math.args.xSpeed)))
+			if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(this.args.xSpeed)))
 			{
 				this.args.cameraMode = 'aerial';
 			}
