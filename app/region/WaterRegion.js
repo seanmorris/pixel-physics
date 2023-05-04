@@ -56,14 +56,17 @@ export class WaterRegion extends Region
 			return;
 		}
 
-		const skimParticle = new Tag(`<div class = "particle-skim">`);
+		if(this.viewport)
+		{
+			const skimParticle = new Tag(`<div class = "particle-skim">`);
+			this.viewport.particles.add(skimParticle);
 
-		this.viewport.particles.add(skimParticle);
+			const timeout = this.viewport.onFrameOut(2, () => {
+				this.viewport.particles.remove(skimParticle)
+				this.skimParticles.delete(actor);
+			});
+		}
 
-		const timeout = this.viewport.onFrameOut(2, () => {
-			this.viewport.particles.remove(skimParticle)
-			this.skimParticles.delete(actor);
-		});
 
 		this.skimParticles.set(actor, {skimParticle, timeout});
 	}
