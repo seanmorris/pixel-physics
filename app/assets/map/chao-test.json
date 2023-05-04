@@ -7,7 +7,7 @@
          "height":128,
          "id":1,
          "name":"Collision 0",
-         "opacity":1,
+         "opacity":0.32,
          "type":"tilelayer",
          "visible":true,
          "width":96,

@@ -168,7 +168,7 @@ export class CanPop
 
 				const reward = {label: this.name || this.args.name, points, multiplier:1};
 
-				if(other.args.ySpeed > 5 && other.args.ySpeed < 25)
+				if(other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
 				{
 					other.args.cameraMode = 'popping';
 				}

@@ -1958,7 +1958,7 @@ export class Viewport extends View
 	{
 		if(!this.replay)
 		{
-			this.saveReplay('#008000');
+			this.saveReplay('#008000').catch(()=>{});
 		}
 
 		this.levelFinished = true;
@@ -3821,7 +3821,7 @@ export class Viewport extends View
 			this.onFrameOut(30, () => {
 				if(this.replayFrames.size)
 				{
-					this.saveReplay('#804000');
+					this.saveReplay('#804000').catch(()=>{});
 					this.replayFrames = new Map;
 				}
 			});
@@ -5034,7 +5034,7 @@ export class Viewport extends View
 	{
 		if(!this.replay && !this.levelFinished)
 		{
-			this.saveReplay('#FFF');
+			this.saveReplay('#FFF').catch(()=>{});
 		}
 
 		this.currentMap = null;
