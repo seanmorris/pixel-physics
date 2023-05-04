@@ -1110,7 +1110,7 @@ export class PointActor extends View
 			{
 				if(this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 64))
 				{
-					if(!this.args.falling || (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(Math.args.xSpeed)))
+					if(!this.args.falling || (this.args.cameraMode !== 'popping' || Math.abs(this.args.ySpeed) < Math.abs(this.args.xSpeed)))
 					{
 						this.args.cameraMode = 'normal';
 					}
