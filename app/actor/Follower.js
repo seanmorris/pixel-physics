@@ -8,6 +8,8 @@ export class Follower extends PointActor
 	{
 		super(args, parent);
 
+		this.args.isGhost = true;
+
 		this.args.type = 'actor-item actor-follower';
 
 		this.args.float = -1;
@@ -208,5 +210,5 @@ export class Follower extends PointActor
 	}
 
 	get solid() { return false; }
-	get isGhost() { return true; }
+	// get isGhost() { return true; }
 }

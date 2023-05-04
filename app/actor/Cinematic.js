@@ -9,6 +9,8 @@ export class Cinematic extends PointActor
 	{
 		super(args, parent);
 
+		this.args.isGhost = true;
+
 		this.args.float = -1;
 
 		this.target = null;
@@ -78,6 +80,5 @@ export class Cinematic extends PointActor
 		}
 	}
 
-	get isGhost() { return true; };
 	get controllable() { return true; };
 }

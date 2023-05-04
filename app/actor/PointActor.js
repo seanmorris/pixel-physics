@@ -135,6 +135,8 @@ export class PointActor extends View
 
 		this.springing = false;
 
+		this.isGhost = false;
+
 		// this.stepCache = {};
 
 		this.fallTime    = 0;
@@ -240,6 +242,8 @@ export class PointActor extends View
 				this.args.currentSheild = null;
 			}
 		});
+
+		this.args.bindTo('isGhost', (v,k,t,d,p) => this.isGhost = v);
 
 		this.args.bindTo('currentSheild', (v,k,t,d,p) => {
 
@@ -941,7 +945,7 @@ export class PointActor extends View
 
 		if(this.viewport && this.startFrame !== undefined)
 		{
-			this.age = this.viewport.args.frameId - this.startFrame;
+			this.age++;
 		}
 		else
 		{
@@ -2048,37 +2052,25 @@ export class PointActor extends View
 
 	get realAngle()
 	{
-		if(!this.args.falling && this.args.standingOn)
+		const args = this.args;
+
+		if(args.standingOn)
 		{
-			return this.args.standingOn.realAngle;
+			return args.standingOn.realAngle;
 		}
 
-		const groundAngle = this.args.groundAngle;
-
-		if(this.args.falling)
+		if(args.falling)
 		{
-			return -groundAngle - (Math.PI);
+			return -args.groundAngle - (Math.PI);
 		}
 
-		let trajectory;
-
-		switch(this.args.mode)
+		switch(args.mode)
 		{
-			case 0:
-				trajectory = -groundAngle - (Math.PI);
-				break;
-			case 1:
-				trajectory = -groundAngle - (Math.PI / 2);
-				break;
-			case 2:
-				trajectory = -groundAngle;
-				break;
-			case 3:
-				trajectory = -groundAngle + (Math.PI / 2);
-				break;
+			case 0: return -args.groundAngle - (Math.PI);
+			case 1: return -args.groundAngle - (Math.PI / 2);
+			case 2: return -args.groundAngle;
+			case 3: return -args.groundAngle + (Math.PI / 2);
 		}
-
-		return trajectory;
 	}
 
 	get downAngle()
@@ -2262,7 +2254,7 @@ export class PointActor extends View
 	get canStick() { return false; }
 	get canSpindash() { return false; }
 	get isEffect() { return false; }
-	get isGhost() { return false; }
+	// get isGhost() { return false; }
 	get isPushable() { return false; }
 	get isVehicle() { return false; }
 	get solid() { return false; }

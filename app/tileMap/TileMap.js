@@ -613,6 +613,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		const result = [x,y,src,original,tileset];
 
+		Object.preventExtensions(result);
+
 		this.tileCache.set(tileNumber, result);
 
 		return result;

@@ -2783,12 +2783,11 @@ export class Platformer
 				{
 					host.args.y--;
 				}
+
+				host.args.falling = false;
+				host.args.gSpeed = host.args.xSpeed;
+				return;
 			}
-
-			host.args.falling = false;
-			host.args.gSpeed = host.args.xSpeed;
-
-			return;
 		}
 		else if(!host.willStick && (hits.length > 1 || distances[2])
 			// && (upDistance === false || upDistance < (host.args.height + -host.args.ySpeed))

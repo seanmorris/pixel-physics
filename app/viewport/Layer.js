@@ -2,6 +2,7 @@ import { Bindable } from 'curvature/base/Bindable';
 import { View } from 'curvature/base/View';
 import { Tag } from 'curvature/base/Tag';
 import { Bag  } from 'curvature/base/Bag';
+import { TitleScreenCard } from '../intro/TitleScreenCard';
 
 export class Layer extends View
 {
@@ -87,6 +88,11 @@ export class Layer extends View
 		this.fallSpeed      = 0;
 
 		Object.preventExtensions(this);
+
+		const resetBlocks = () => [...this.blockMeta.values()].forEach(b => b.reset = true);
+
+		this.args.bindTo('width',  resetBlocks, {wait:0});
+		this.args.bindTo('height', resetBlocks, {wait:0});
 	}
 
 	move()
@@ -238,35 +244,52 @@ export class Layer extends View
 
 			for(let j = 0; j < blocksHigh; j += Math.sign(blocksHigh))
 			{
-				const xy = i  * (1+Math.abs(blocksHigh)) + j;
 
 				const tileY = j
-					+ Math.floor(-this.y / blockSize)
-					+ (this.offsetYChange < 0
-						? -Math.ceil(offsetY / blockSize)
-						: -Math.floor(offsetY / blockSize)
+				+ Math.floor(-this.y / blockSize)
+				+ (this.offsetYChange < 0
+					? -Math.ceil(offsetY / blockSize)
+					: -Math.floor(offsetY / blockSize)
 					)
 					+ (offsetY < 0 ? -1 : 0);
 
 				const blockId = tileMap.getTileNumber(tileX, tileY, layerId);
 
-				let block;
+				const xy = `${i},${j}`;
 
-				if(!blocksXY.has(xy))
+				let block, reset;
+
+				if(!blocksXY.has(xy) || (reset = blockMetas.get(xy).reset))
 				{
-					block = new Tag(document.createElement('div'));
+					if(!reset)
+					{
+						block = new Tag(document.createElement('div'));
 
-					const meta = Object.create(null, {
-						visible: {value: false, writable: true}
-						, src:   {value: null,  writable: true}
-						, x:     {value: null,  writable: true}
-						, y:     {value: null,  writable: true}
-					});
+						const meta = Object.create(null, {
+							visible: {value: false, writable: true}
+							, reset: {value: false, writable: true}
+							, src:   {value: null,  writable: true}
+							, x:     {value: null,  writable: true}
+							, y:     {value: null,  writable: true}
+						});
 
-					Object.preventExtensions(meta);
+						Object.preventExtensions(meta);
 
-					blocksXY.set(xy, block);
-					blockMetas.set(block, meta);
+						blocksXY.set(xy, block);
+						blockMetas.set(xy, meta);
+					}
+					else
+					{
+						const meta = blockMetas.get(xy);
+
+						block = blocksXY.get(xy);
+
+						meta.reset   = false;
+						meta.visible = false;
+						meta.src     = null;
+
+						block.style({'background-image': `none`, display: 'none'});
+					}
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
@@ -303,7 +326,7 @@ export class Layer extends View
 
 				const tileset = tileXY[4];
 
-				const blockMeta = blockMetas.get(block);
+				const blockMeta = blockMetas.get(xy);
 
 				const existingOffsetX = blockMeta.x;
 				const existingOffsetY = blockMeta.y;

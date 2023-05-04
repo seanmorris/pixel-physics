@@ -12,6 +12,7 @@ module.exports = {
 					useBuiltIns: false,
 					targets: {browsers: ['>0.25%',  'not ie 11', 'not op_mini all', 'not dead']},
 					exclude: [
+						'@babel/plugin-transform-template-literals',
 						'@babel/plugin-transform-arrow-functions',
 						'@babel/plugin-transform-block-scoping',
 						'@babel/plugin-transform-for-of',

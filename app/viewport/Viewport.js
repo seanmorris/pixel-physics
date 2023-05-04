@@ -836,30 +836,54 @@ export class Viewport extends View
 		this.args.willStick = true;
 		this.args.stayStuck = true;
 
+		this.args.scale  = 1;
+		this.args.tileScale = 1;
+
 		this.args.width  = 32 * 16;
 		this.args.height = 32 * 9;
-		this.args.scale  = 1;
 
-		if(Router.query.tinyScale)
-		{
-			this.args.width  = 32 * 8;
-			this.args.height = 32 * 4.5;
-			this.args.scale  = 4;
-		}
+		this.args.bindTo('tileScale', v => {
+			this.args.width  = 32 * 16 * v;
+			this.args.height = 32 * 9 * v;
 
-		if(Router.query.noScale)
-		{
-			this.args.width  = 32 * 14 * 2;
-			this.args.height = 32 * 8  * 2;
-			this.args.scale  = 1;
-		}
+			if(this.args.layers)
+			for(const layer of this.args.layers)
+			{
+				layer.args.width  = 32 * 16 * v;
+				layer.args.height = 32 * 9 * v;
+			}
 
-		if(Router.query.bigScale)
-		{
-			this.args.width  = 32 * 60;
-			this.args.height = 32 * 34;
-			this.args.scale  = 1;
-		}
+			if(this.args.fgLayers)
+			for(const layer of this.args.fgLayers)
+			{
+				layer.args.width  = 32 * 16 * v;
+				layer.args.height = 32 * 9 * v;
+			}
+
+			this.fitScale();
+
+		}, {wait:1});
+
+		// if(Router.query.tinyScale)
+		// {
+		// 	this.args.width  = 32 * 8;
+		// 	this.args.height = 32 * 4.5;
+		// 	this.args.scale  = 4;
+		// }
+
+		// if(Router.query.noScale)
+		// {
+		// 	this.args.width  = 32 * 14 * 2;
+		// 	this.args.height = 32 * 8  * 2;
+		// 	this.args.scale  = 2;
+		// }
+
+		// if(Router.query.bigScale)
+		// {
+		// 	this.args.width  = 32 * 60;
+		// 	this.args.height = 32 * 34;
+		// 	this.args.scale  = 1;
+		// }
 
 		this.collisions = new Map;
 
@@ -1433,8 +1457,8 @@ export class Viewport extends View
 		}
 
 		this.tags.frame && this.tags.frame.style({
-			'--width': this.args.width
-			, '--height': this.args.height
+			'--width': this.args.width * this.args.tileScale
+			, '--height': this.args.height * this.args.tileScale
 			, '--scale': this.args.scale
 		});
 	}
@@ -4488,7 +4512,7 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
-			if(!ghosts && actor.args.isGhost)
+			if(!ghosts && actor.isGhost)
 			{
 				continue;
 			}
@@ -4567,7 +4591,7 @@ export class Viewport extends View
 
 		for(const actor of testActors)
 		{
-			if(actor.args.isGhost)
+			if(actor.isGhost)
 			{
 				continue;
 			}
@@ -4816,6 +4840,11 @@ export class Viewport extends View
 		if(actor.removed)
 		{
 			return;
+		}
+
+		if(!Bindable.isBindable(actor))
+		{
+			console.log(actor);
 		}
 
 		actor[ Bindable.NoGetters ] = true;

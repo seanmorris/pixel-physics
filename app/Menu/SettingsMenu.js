@@ -9,6 +9,16 @@ import { DemoMenu } from './DemoMenu';
 const videoMenu = parent => ({
 	subtext: 'Video settings.'
 	, children: {
+		// 'Tile Scale': {
+		// 	input: 'number'
+		// 	, subtext: 'Scale.'
+		// 	, revert: () => parent.args.tileScale = 1
+		// 	, set: value => parent.args.tileScale = value
+		// 	, get: () => parent.args.tileScale
+		// 	, min: 0.1
+		// 	, step: 0.1
+		// }
+
 		'Motion Blur Effects': {
 			input: 'boolean'
 			, subtext: 'Enable/Disable Motion Blur Effects'
