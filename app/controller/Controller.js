@@ -61,7 +61,7 @@ const keys = {
 	, 'Home':           1024
 	, 'End':            1025
 
-	, 'Escape':         1020
+	, 'Escape':         [1020, 1050]
 
 	, 'KeyB':           1201
 };

@@ -53,7 +53,9 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 		const telegraph = this.args.shotTelegraph;
 		const beat      = this.args.patrolBeat;
 
-		this.args.tailOffset += this.args.x - this.xLast;
+		const moved = this.args.x - this.xLast;
+
+		this.args.tailOffset += isNaN(moved) ? 0 : moved;
 
 		if(this.box)
 		{

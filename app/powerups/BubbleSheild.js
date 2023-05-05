@@ -60,7 +60,12 @@ export class BubbleSheild extends Sheild
 
 	command_0(host, button)
 	{
-		if(host.canFly || host.dashed)
+		if(host.canFly && host.yAxis < 0.55)
+		{
+			return;
+		}
+
+		if(host.dashed)
 		{
 			return;
 		}
@@ -100,10 +105,10 @@ export class BubbleSheild extends Sheild
 			});
 		}
 
-		if(host.canFly)
-		{
-			return;
-		}
+		// if(host.canFly)
+		// {
+		// 	return;
+		// }
 
 		if(!host.args.falling)
 		{

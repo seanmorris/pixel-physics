@@ -3,19 +3,22 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 .input-xbox .hud-character[data-value="9374"]{
 	background-image: url(/ui/xbox-button-a.svg) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
-	background-size: 100% 100%;
+	/* background-size: 100% 100%; */
+	background-size: contain;
 	width: 1.1em;
-	margin-left: 0.125em;
-	margin-right: 0.125em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -26,8 +29,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	width: 1.1em;
-	margin-left: 0.125em;
-	margin-right: 0.125em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -38,8 +41,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	width: 1.1em;
-	margin-left: 0.125em;
-	margin-right: 0.125em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -50,8 +53,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	width: 1.1em;
-	margin-left: 0.125em;
-	margin-right: 0.125em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -61,7 +64,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -71,7 +74,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -101,7 +104,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -111,9 +114,11 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 .input-xbox .hud-character[data-value="10014"]{
@@ -121,7 +126,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -131,7 +136,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -142,9 +147,11 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 
@@ -153,9 +160,11 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 
@@ -164,9 +173,11 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 .input-xbox .hud-character[data-value="8498"]{
@@ -174,9 +185,11 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }
 
 .input-xbox .hud-character[data-value="10961"]{
@@ -184,8 +197,10 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 	transform: translateY(2px);
 }
 
@@ -195,7 +210,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -206,7 +221,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -217,7 +232,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -228,7 +243,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -239,7 +254,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -252,7 +267,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -265,7 +280,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -278,7 +293,7 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
@@ -291,12 +306,13 @@
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	width: 1.5em;
+	width: 1.1em;
 	height: 1.25em;
 	transform: translateY(2px);
 }
 
 .input-xbox .hud-character[data-value="10937"] {
-	width: 1.5em;
-	height: 1.75em;
+	width: 1.1em;
+	padding-left: 0.125em;
+	padding-right: 0.125em;
 }

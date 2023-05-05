@@ -7,6 +7,7 @@ export class FireSheild extends Sheild
 	template = `<div class = "sheild fire-sheild [[boosted]]"></div>`;
 	protect = true;
 	type = 'fire';
+	power = 15;
 
 	acquire(host)
 	{
@@ -62,6 +63,7 @@ export class FireSheild extends Sheild
 	{
 		if(!host.args.falling)
 		{
+			this.didBoost = false;
 			this.power = 15;
 		}
 	}
@@ -77,7 +79,7 @@ export class FireSheild extends Sheild
 
 		if(host.canFly)
 		{
-			return;
+			// return;
 		}
 
 		if(host.args.falling)
@@ -86,7 +88,8 @@ export class FireSheild extends Sheild
 
 			if(!this.args.boosted)
 			{
-				this.args.boosted = 'boosted';
+				this.args.boosted  = 'boosted';
+				host.args.didBoost = true;
 
 				Sfx.play('FIRE_DASH');
 
@@ -110,7 +113,7 @@ export class FireSheild extends Sheild
 
 		if(host.canFly)
 		{
-			return;
+			// return;
 		}
 
 		if(host.args.falling)
@@ -120,6 +123,7 @@ export class FireSheild extends Sheild
 			if(!this.args.boosted)
 			{
 				this.args.boosted = 'boosted';
+				host.args.didBoost = true;
 
 				Sfx.play('FIRE_DASH');
 

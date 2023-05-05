@@ -133,6 +133,8 @@ export class PointActor extends View
 		this.others = {};
 		this.otherDefs = {};
 
+		this.args.knocked = false;
+
 		this.springing = false;
 
 		this.isGhost = false;
@@ -311,6 +313,8 @@ export class PointActor extends View
 
 		this.args.xOff = 0;
 		this.args.yOff = 0;
+
+		this.args.jumpArced = false;
 
 		this.args.width  = this.args.width  || 1;
 		this.args.height = this.args.height || 1;
@@ -755,6 +759,7 @@ export class PointActor extends View
 			, 'data-selected':  'selected'
 			, 'data-following': 'following'
 			, 'data-carrying':  'carrying'
+			, 'data-reversing': 'reversing'
 			, 'data-falling':   'falling'
 			, 'data-moving':    'moving'
 			, 'data-pushing':   'pushing'
@@ -763,6 +768,7 @@ export class PointActor extends View
 			, 'data-angle':     'angleDeg'
 			, 'data-driving':   'driving'
 			, 'data-active':    'active'
+			, 'data-knocked':   'knocked'
 			, 'data-layer':     'layer'
 			, 'data-dead':      'dead'
 			, 'data-mode':      'mode'
@@ -862,6 +868,17 @@ export class PointActor extends View
 
 	updateEnd()
 	{
+		const speedDir = Math.sign(this.args.gSpeed || this.args.xSpeed || this.args.direction);
+
+		if(speedDir > 0 && this.args.facing === 'left' || speedDir < 0 && this.args.facing === 'right')
+		{
+			this.args.reversing = true;
+		}
+		else
+		{
+			this.args.reversing = false;
+		}
+
 		for(const behavior of this.behaviors)
 		{
 			behavior.updateEnd && behavior.updateEnd(this);
@@ -2368,30 +2385,78 @@ export class PointActor extends View
 			{
 				if(button.delta === 1)
 				{
-					if(this.args.currentSheild && press in this.args.currentSheild)
+					let cancel = false;
+
+					for(const behavior of this.behaviors)
 					{
-						this.args.currentSheild[press](this, button);
+						if(behavior[press])
+						{
+							if(behavior[press](this, button) === false)
+							{
+								cancel = true;
+							}
+						}
 					}
 
-					this[press] && this[press]( button );
+					if(!cancel)
+					{
+						if(this.args.currentSheild && press in this.args.currentSheild)
+						{
+							this.args.currentSheild[press](this, button);
+						}
+
+						this[press] && this[press]( button );
+					}
 				}
 				else if(button.delta === -1)
 				{
-					if(this.args.currentSheild && release in this.args.currentSheild)
+					let cancel = false;
+
+					for(const behavior of this.behaviors)
 					{
-						this.args.currentSheild[release](this, button);
+						if(behavior[release])
+						{
+							if(behavior[release](this, button) === false)
+							{
+								cancel = true;
+							}
+						}
 					}
 
-					this[release] && this[release]( button );
+					if(!cancel)
+					{
+						if(this.args.currentSheild && release in this.args.currentSheild)
+						{
+							this.args.currentSheild[release](this, button);
+						}
+
+						this[release] && this[release]( button );
+					}
 				}
 				else if(button.active)
 				{
-					if(this.args.currentSheild && hold in this.args.currentSheild)
+					let cancel = false;
+
+					for(const behavior of this.behaviors)
 					{
-						this.args.currentSheild[hold](this, button);
+						if(behavior[hold])
+						{
+							if(behavior[hold](this, button) === false)
+							{
+								cancel = true;
+							}
+						}
 					}
 
-					this[hold] && this[hold]( button );
+					if(!cancel)
+					{
+						if(this.args.currentSheild && hold in this.args.currentSheild)
+						{
+							this.args.currentSheild[hold](this, button);
+						}
+
+						this[hold] && this[hold]( button );
+					}
 				}
 			}
 			else if(this.args.standingOn && this.args.standingOn.isVehicle)

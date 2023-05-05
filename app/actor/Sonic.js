@@ -1083,7 +1083,9 @@ export class Sonic extends PointActor
 
 			this.args.xOff = 5 * -this.args.direction;
 			this.args.yOff = 32;
+
 			this.twist(120 * dashCharge * this.args.direction);
+
 			if(!this.dashDust)
 			{
 				this.showDashDust();
@@ -1092,6 +1094,7 @@ export class Sonic extends PointActor
 			{
 				this.dashDust.style({'--dashCharge': this.spindashCharge});
 			}
+
 			return;
 		}
 

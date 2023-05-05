@@ -6,6 +6,7 @@
 	/*contain: strict;*/
 	margin-left: 2px;
 	margin-right: 1px;
+	/* background-origin: content-box; */
 }
 
 .hud-character {

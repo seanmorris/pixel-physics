@@ -66,20 +66,20 @@
 .actor-item.actor-knuckles[data-animation="jabbing"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -544px;
-	animation: knuckles-jab steps(1) 1 72ms forwards;
+	animation: knuckles-jab steps(1) 1 calc(72ms * calc(1 / var(--punchSpeed))) forwards;
 }
 
 .actor-item.actor-knuckles[data-animation="punching"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -352px;
-	animation: knuckles-punch steps(3) 1 96ms forwards;
+	animation: knuckles-punch steps(4) 1 calc(96ms * calc(1 / var(--punchSpeed))) forwards;
 }
 
-.actor-item.actor-knuckles[data-animation="last-punching"] .sprite:after {
+/* .actor-item.actor-knuckles[data-animation="last-punching"] .sprite:after {
 	--sprite-offset-y: 0px;
 	--sprite-offset-y: -544px;
-	animation: knuckles-last-punch steps(2) 1 72ms forwards;
-}
+	animation: knuckles-last-punch steps(2) 1 calc(72ms * calc(1 / var(--punchSpeed))) forwards;
+} */
 
 .actor-item.actor-knuckles[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
@@ -91,6 +91,20 @@
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
 	animation: knuckles-run steps(4) infinite 192ms;
+}
+
+.actor-item.actor-knuckles[data-animation="crouching"] .sprite:after {
+	--sprite-offset-x: -384px;
+	--sprite-offset-y: -128px;
+	animation: knuckles-skid steps(2) 1 160ms;
+	background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
+}
+
+.actor-item.actor-knuckles[data-animation="looking-up"] .sprite:after {
+	--sprite-offset-x: -256px;
+	--sprite-offset-y: -128px;
+	animation: knuckles-skid steps(2) 1 80ms;
+	background-position: calc(-64px + var(--sprite-offset-x)) var(--sprite-offset-y);
 }
 
 .actor-item.actor-knuckles[data-animation="rolling"] .sprite:after,
@@ -107,8 +121,8 @@
 }
 
 .actor-item.actor-knuckles[data-animation="spindash"] .sprite:after {
-	--sprite-offset-x: -0px;
-	--sprite-offset-y: -320px;
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -192px;
 	animation: knuckles-spindash steps(5) infinite 96ms;
 }
 
@@ -132,12 +146,38 @@
 	animation: knuckles-climbing steps(3) infinite 256ms reverse;
 }
 
+.actor-item.actor-knuckles[data-animation="climbing-over"] .sprite:after {
+	top: 26px;
+	left: -14px;
+	--sprite-offset-x: -384px;
+	--sprite-offset-y: -480px;
+	transform: scaleX(-1);
+	animation: knuckles-climbing-over steps(3) 1 200ms;
+	background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
+}
+
 .actor-item.actor-knuckles[data-animation="rolling"] .sprite:after {
 	animation-direction: reverse;
 }
 
 .actor-item.actor-knuckles[data-animation="flying"] .sprite:after {
 	--sprite-offset-x: -0px;
+	--sprite-offset-y: -256px;
+	--animation-steps: 2;
+	--animation-width: 64px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+.actor-item.actor-knuckles[data-animation="flying-turning"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -256px;
+	--animation-steps: 2;
+	--animation-width: 64px;
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+.actor-item.actor-knuckles[data-animation="flying-stalled"] .sprite:after {
+	--sprite-offset-x: -128px;
 	--sprite-offset-y: -256px;
 	--animation-steps: 2;
 	--animation-width: 64px;
@@ -257,25 +297,21 @@
 
 @keyframes knuckles-punch {
 	from{
-		background-position: calc(-352px + var(--sprite-offset-x)) -544px;
-
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
 	to{
-		background-position: calc(-602px + var(--sprite-offset-x)) -544px;
-
-		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 
-@keyframes knuckles-last-punch {
+/* @keyframes knuckles-last-punch {
 	from{
 		background-position: calc(-576px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 	to{
 		background-position: calc(-704px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
-}
+} */
 
 @keyframes knuckles-jump {
 	from{
@@ -296,6 +332,15 @@
 }
 
 @keyframes knuckles-climbing {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-192px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes knuckles-climbing-over {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	}
@@ -368,7 +413,7 @@
 
 	animation:
 		knuckles-punch-aura 85ms steps(3) infinite,
-		knuckles-punch-aura-press 90ms 40ms ease-out 1 forwards,
+		knuckles-punch-aura-press 60ms 20ms ease-out 1 forwards,
 		knuckles-punch-aura-flicker 200ms steps(4) infinite;
 
 	background-position: calc(-64px * 1) 0px;
@@ -382,7 +427,7 @@
 
 	animation:
 		knuckles-punch-aura-uppercut 85ms steps(3) infinite,
-		knuckles-punch-aura-press 90ms 40ms ease-out 1 forwards,
+		knuckles-punch-aura-press 60ms 20ms ease-out 1 forwards,
 		knuckles-punch-aura-flicker 200ms 200ms steps(4) infinite;
 }
 
@@ -443,9 +488,15 @@
 		opacity: 0;
 	}
 	25% {
-		opacity: 1;
+		opacity: 0.75;
+	}
+	50% {
+		opacity: 0.85;
+	}
+	75% {
+		opacity: 0.25;
 	}
 	to {
-		opacity: 0.85;
+		opacity: 0;
 	}
 }

@@ -440,3 +440,18 @@
 .actor-generic .bubble-sheild {
 	transform: translate(-42%, -100%);
 }
+
+.point-actor[data-knocked="1"] .sprite {
+	transform-origin: center;
+	animation: actor-knocked 0.75s linear infinite;
+}
+
+.point-actor[data-knocked="-1"] .sprite {
+	transform-origin: center;
+	animation: actor-knocked 0.75s linear infinite reverse;
+}
+
+@keyframes actor-knocked {
+	0% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(0deg) }
+	100% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(360deg) }
+}

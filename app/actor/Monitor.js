@@ -53,9 +53,20 @@ export class Monitor extends PointActor
 
 	collideA(other, type)
 	{
+		if(other.knocked)
+		{
+			this.pop(other.knocked);
+		}
+
 		if(other.args.static)
 		{
 			return true;
+		}
+
+		if(other.punching)
+		{
+			this.pop(other);
+			return false;
 		}
 
 		if(!other.args.moving && !other.args.falling)
@@ -222,7 +233,7 @@ export class Monitor extends PointActor
 
 		if(other)
 		{
-			const ySpeed = other.args.ySpeed;
+			const ySpeed = Math.min(other.args.ySpeed, other.ySpeedLast);
 
 			if(other.args.doubleSpin)
 			{
@@ -241,7 +252,7 @@ export class Monitor extends PointActor
 			else if(other && other.args.falling)
 			{
 				this.onNextFrame(() => {
-					other.args.ySpeed  = -ySpeed
+					other.args.ySpeed = Math.min(-ySpeed, -7);
 					other.args.falling = true;
 				});
 			}

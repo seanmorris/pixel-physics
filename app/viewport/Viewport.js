@@ -1254,41 +1254,47 @@ export class Viewport extends View
 			timeout: -1, text: 'loading ... 0%'
 		}, this);
 
-		let inputType = this.args.inputType;
+		let inputType = 'kb';
 
-		if(inputType === 'input-generic')
+		if(!this.args.selectedChar && this.args.selectedChar === 'Sonic')
 		{
-			inputType = 'input-xbox';
-		}
+			inputType = this.args.inputType;
 
-		if(this.controller
-			&& this.controller.buttons
-			&& this.controller.buttons[6]
-			&& this.controller.buttons[7]
-			&& this.controller.buttons[6].time > 0
-			&& this.controller.buttons[7].time > 0
-		){
-			this.args.controlCardShown = false;
-			inputType = 'input-dreamcast';
-		}
-		else if(this.controller
-			&& this.controller.buttons
-			&& this.controller.buttons[10]
-			&& this.controller.buttons[10].time > 0
-		){
-			this.args.controlCardShown = false;
-			inputType = 'input-gamecube';
-		}
-		else if(this.controller
-			&& this.controller.buttons
-			&& this.controller.buttons[8]
-			&& this.controller.buttons[8].time > 0
-		){
-			this.args.controlCardShown = false;
+			if(inputType === 'input-generic')
+			{
+				inputType = 'input-xbox';
+			}
+
+			if(this.controller
+				&& this.controller.buttons
+				&& this.controller.buttons[6]
+				&& this.controller.buttons[7]
+				&& this.controller.buttons[6].time > 0
+				&& this.controller.buttons[7].time > 0
+			){
+				this.args.controlCardShown = false;
+				inputType = 'input-dreamcast';
+			}
+			else if(this.controller
+				&& this.controller.buttons
+				&& this.controller.buttons[10]
+				&& this.controller.buttons[10].time > 0
+			){
+				this.args.controlCardShown = false;
+				inputType = 'input-gamecube';
+			}
+			else if(this.controller
+				&& this.controller.buttons
+				&& this.controller.buttons[8]
+				&& this.controller.buttons[8].time > 0
+			){
+				this.args.controlCardShown = false;
+			}
 		}
 
 		const controllerCard = new GamepadConfig({
 			inputType
+			, char: this.args.selectedChar
 			, timeout: -1
 			, caption: 'loading ... 0%'
 		});
@@ -1379,7 +1385,7 @@ export class Viewport extends View
 
 		let waiter = new Promise(a => setTimeout(a, 6500));
 		const cardShown = this.args.controlCardShown;
-		const willShowCard = !cardShown && !this.args.map && (!this.args.selectedChar || this.args.selectedChar === 'Sonic');
+		const willShowCard = !cardShown && !this.args.map && (!this.args.selectedChar || this.args.selectedChar === 'Sonic' ||  this.args.selectedChar === 'Tails' ||  this.args.selectedChar === 'Knuckles');
 
 		if(!this.replay && willShowCard && !Router.query.map)
 		{
@@ -1707,6 +1713,7 @@ export class Viewport extends View
 
 		this.args.mouse = 'hide';
 
+		this.args.currentSheild = null;
 		this.args.hasFire    = false;
 		this.args.hasWater   = false;
 		this.args.hasElecric = false;
@@ -2196,13 +2203,16 @@ export class Viewport extends View
 			this.settings.debugOsd = !this.settings.debugOsd;
 		}
 
-		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
+		if(controller.buttons[1050] && controller.buttons[1050].time === 1)
 		{
 			if(this.args.fullscreen)
 			{
 				this.exitFullscreen();
 			}
+		}
 
+		if(controller.buttons[1020] && controller.buttons[1020].time === 1)
+		{
 			if(this.args.started)
 			{
 				this.args.paused
@@ -2765,8 +2775,8 @@ export class Viewport extends View
 		const actorX = center[0] + -actor.args.x;
 		const actorY = center[1] + -actor.args.y;
 
-		const xNext = actorX + center[0] + this.args.width  * this.args.xOffset;
-		const yNext = actorY + center[1] + this.args.height * this.args.yOffset;
+		const xNext = actorX + center[0] + this.args.width  * Number(this.args.xOffset);
+		const yNext = actorY + center[1] + this.args.height * Number(this.args.yOffset);
 
 		const xDiff = this.args.x + -xNext;
 		const yDiff = this.args.y + -yNext;
@@ -4963,6 +4973,7 @@ export class Viewport extends View
 
 		this.stop();
 
+		this.args.currentSheild = null;
 		this.args.hasFire    = false;
 		this.args.hasWater   = false;
 		this.args.hasElecric = false;
@@ -5114,6 +5125,7 @@ export class Viewport extends View
 
 			this.objectDb.clear();
 
+			this.args.currentSheild = null;
 			this.args.hasFire    = false;
 			this.args.hasWater   = false;
 			this.args.hasElecric = false;

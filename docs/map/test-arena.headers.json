@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 64,
     "infinite": false,
-    "nextlayerid": 7,
-    "nextobjectid": 125,
+    "nextlayerid": 8,
+    "nextobjectid": 129,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -54,6 +54,19 @@
             "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 28,
+            "firstgid": 1761,
+            "image": "../custom/ruins.png",
+            "imageheight": 672,
+            "imagewidth": 896,
+            "margin": 0,
+            "name": "ruins",
+            "spacing": 0,
+            "tilecount": 588,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -61,8 +74,10 @@
     "version": "1.6",
     "width": 1024,
     "types": [
-        "grinding-region",
         "region",
+        "sheild-electric-monitor",
+        "sheild-fire-monitor",
+        "sheild-water-monitor",
         "spinning-float",
         "techno-squeak",
         "triple-ring-monitor",

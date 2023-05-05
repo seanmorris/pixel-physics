@@ -13,18 +13,60 @@ export class GamepadConfig extends SkippableCard
 
 		this.args.cardName = 'gamepad-config-card';
 
-		this.args.moves = this.args.moves || {
-			start:  'Pause'
-			, dpad: 'Move'
-			, a:    'Jump'
-			, b:    'Spindash / Roll'
-			, x:    'Light Dash / Grab Object'
-			, y:    'Super Transform'
-			, l1:   'Air Dash'
-			, r1:   'Air Dash'
-			, la:   'Move'
-			, ra:   'Switch Sheilds'
-		};
+		this.args.moves = {};
+
+		this.args.char = this.args.char || 'Sonic';
+
+		switch(args.char)
+		{
+			case 'Sonic':
+				this.args.moves = {
+					start:  'Pause'
+					, dpad: 'Move'
+					, a:    'Jump'
+					, b:    'Spindash / Roll / Dropdash'
+					, x:    'Light Dash / Grab Object'
+					, y:    'Super Transform'
+					, l1:   'Air Dash'
+					, r1:   'Air Dash'
+					, la:   'Move'
+					, ra:   'Switch Sheilds'
+				};
+				break;
+			case 'Tails':
+				this.args.moves = {
+					start:  'Pause'
+					, dpad: 'Move'
+					, a:    'Jump'
+					, aa:   'Fly'
+					, ad:   'Use Shield / Spindash'
+					, d:    'Dive'
+					// , x:    'Light Dash / Grab Object'
+					// , y:    'Super Transform'
+					// , l1:   'Air Dash'
+					// , r1:   'Air Dash'
+					, la:   'Move'
+					, ra:   'Switch Sheilds'
+				};
+				break;
+			case 'Knuckles':
+				this.args.moves = {
+					start:  'Pause'
+					, dpad: 'Move'
+					, a:    'Jump'
+					, aa:   'Fly'
+					, b:    'Punch'
+					, ad:   'Use Shield / Spindash'
+					, d:    'Dive'
+					// , x:    'Light Dash / Grab Object'
+					// , y:    'Super Transform'
+					// , l1:   'Air Dash'
+					// , r1:   'Air Dash'
+					, la:   'Move'
+					, ra:   'Switch Sheilds'
+				};
+				break;
+		}
 
 		// this.gamepads = {
 		// 	xb: View.from(require('./xbox360-input.svg'), this.args.moves)
@@ -53,7 +95,7 @@ export class GamepadConfig extends SkippableCard
 		}
 		else
 		{
-			this.gamepads = {kb: new KbInput(this.args.moves) }
+			this.gamepads = {kb: new KbInput({char: this.args.char, moves: this.args.moves}) }
 		}
 
 		this.current = 0;

@@ -4,6 +4,11 @@ import { Tag } from 'curvature/base/Tag';
 import { Spring } from './Spring';
 
 import { SkidDust } from '../behavior/SkidDust';
+import { Spindash } from '../behavior/Spindash';
+import { Crouch }   from '../behavior/Crouch';
+import { LookUp }   from '../behavior/LookUp';
+
+// import { TitleScreenCard } from '../intro/TitleScreenCard';
 
 export class Tails extends PointActor
 {
@@ -14,6 +19,9 @@ export class Tails extends PointActor
 		this.args.canonical = 'Tails';
 
 		this.behaviors.add(new SkidDust);
+		this.behaviors.add(new Spindash);
+		this.behaviors.add(new Crouch);
+		this.behaviors.add(new LookUp);
 
 		this.args.type      = 'actor-item actor-tails';
 
@@ -35,6 +43,9 @@ export class Tails extends PointActor
 
 		this.args.gravity   = 0.5;
 
+		this.args.normalGravity = this.args.gravity;
+		this.args.slowGravity = this.args.gravity * 0.125;
+
 		this.args.width  = 16;
 		this.args.height = 34;
 
@@ -43,6 +54,10 @@ export class Tails extends PointActor
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		this.args.maxFlyTime = 350;
+
+		this.flyTime = 0;
 
 		this.sparks = new Set();
 	}
@@ -92,6 +107,22 @@ export class Tails extends PointActor
 			return;
 		}
 
+		if(this.args.bouncing)
+		{
+			this.args.flying = false;
+		}
+
+		if(this.args.flying)
+		{
+			this.args.gravity = this.args.slowGravity;
+
+			this.args.ySpeed = Math.min(3, this.args.ySpeed);
+		}
+		else
+		{
+			this.args.gravity = this.args.normalGravity;
+		}
+
 		if(this.viewport.args.audio && this.flyingSound)
 		{
 			if(!this.flyingSound.paused)
@@ -123,13 +154,13 @@ export class Tails extends PointActor
 
 		if(this.args.tailFlyCoolDown === 0)
 		{
-			this.flyingSound.pause();
-	 		this.args.flying = false;
+			// this.flyingSound.pause();
+	 		// this.args.flying = false;
 		}
 
 		if(!falling)
 		{
-			this.args.tailFlyCoolDown =  0;
+			this.args.tailFlyCoolDown = 0;
 
 			this.flyingSound.pause();
 
@@ -170,16 +201,30 @@ export class Tails extends PointActor
 		}
 		else if(this.args.flying && !this.args.startled)
 		{
-			if(this.yAxis > 0)
+			if(this.yAxis > 0 && !this.args.bouncing)
 			{
+				this.flyingSound.pause();
 				this.args.animation = 'jumping';
+
+				this.args.float  = 0;
+				this.args.flying = false;
 				this.args.ySpeed = this.args.ySpeed > this.args.jumpForce
 					? this.args.ySpeed
 					: this.args.jumpForce;
 			}
 			else
 			{
+				if(this.viewport.args.audio)
+				{
+					this.flyingSound.play();
+				}
+
 				this.args.animation = 'flying';
+
+				if(this.flyTime > this.args.maxFlyTime)
+				{
+					this.args.animation = 'flying-tired';
+				}
 			}
 		}
 		else if(this.args.jumping)
@@ -197,11 +242,12 @@ export class Tails extends PointActor
 			this.args.flying = false;
 		}
 
-
 		super.update();
 
 		if(this.args.hangingFrom)
 		{
+			this.args.flying = false;
+			this.flyTime = 0;
 			this.args.animation = 'hanging';
 		}
 
@@ -258,10 +304,26 @@ export class Tails extends PointActor
 				});
 			}
 		}
+
+		if(this.args.flying)
+		{
+			this.flyTime++;
+		}
+
+		if(!this.args.falling)
+		{
+			this.flyTime = 0;
+			this.args.flying = false;
+		}
 	}
 
 	command_0(button)
 	{
+		if(this.args.falling && Math.abs(this.yAxis) > 0.55)
+		{
+			return;
+		}
+
 		if(this.args.hangingFrom)
 		{
 			super.command_0();
@@ -281,15 +343,21 @@ export class Tails extends PointActor
 			return;
 		}
 
-		if(this.args.tailFlyCoolDown === 0)
+		if(this.args.flying && this.args.tailFlyCoolDown === 0)
 		{
 			this.args.tailFlyCoolDown = 80;
 			return;
 		}
 
-		if(this.args.ySpeed > 0)
+		if(this.args.flying && (this.flyTime > this.args.maxFlyTime || this.args.float))
 		{
-			this.args.ySpeed = 0;
+			return;
+		}
+
+		if(this.args.flying && this.args.ySpeed > 0)
+		{
+			this.args.ySpeed = -2.5;
+			this.args.float  = 8;
 		}
 
 		this.args.tailFlyCoolDown = 80;
@@ -306,27 +374,10 @@ export class Tails extends PointActor
 
 	hold_0(button)
 	{
-		if(this.args.flying)
+		if(this.args.flying && button.time > 10 && button.time < 30 && this.flyTime < 400)
 		{
-			if(this.args.ySpeed > 0)
-			{
-				this.args.ySpeed = 0;
-			}
-
-			if(Math.random() > 0.8)
-			{
-				this.flyingSound.volume = 0.35 + (Math.random() * -0.3);
-			}
-
-			this.args.tailFlyCoolDown = 80;
-
-			this.args.ySpeed -= Math.min(3, (button.time / 9));
-
-			this.args.ySpeed = Math.max(-5, this.args.ySpeed);
-		}
-		else
-		{
-			this.args.flying = true;
+			this.args.ySpeed *= 0.99;
+			this.args.float   = 16;
 		}
 	}
 

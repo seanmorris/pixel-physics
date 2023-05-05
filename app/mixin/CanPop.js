@@ -7,6 +7,11 @@ export class CanPop
 {
 	collideA(other, type)
 	{
+		if(this.knocked && other.pop)
+		{
+			this.pop(this.knocked);
+		}
+
 		const viewport = this.viewport;
 
 		if(this.args.invincible)
@@ -22,27 +27,39 @@ export class CanPop
 			return;
 		}
 
-		if(other.punching)
+		if(other.punching && !this.knocked)
 		{
+			// this.viewport.args.frozen = 1;
+
 			this.args.falling = true;
+
+			if(Math.abs(other.args.gSpeed || other.gSpeedLast) < 5)
+			{
+				this.pop(other);
+				return;
+			}
 
 			if(other.args.falling && other.args.ySpeed < 0)
 			{
 				// this.args.xSpeed = other.args.xSpeed + 10 * Math.sign(other.args.xSpeed);
 				this.args.ySpeed = -10+other.args.ySpeed;
+				this.args.y -= 18;
 			}
 			else
 			{
-				this.args.xSpeed = other.args.gSpeed * Math.sign(other.args.gSpeed) * 2;
-				this.args.ySpeed = -2;
+				this.args.xSpeed = 1.2 * (other.args.gSpeed || other.gSpeedLast);
+				this.args.ySpeed = -5;
+				this.args.y -= 18;
 			}
 
-			this.args.float = 15;
+			this.args.x = other.args.x + 24 * other.args.direction + other.args.gSpeed;
+
+			// this.args.float = 15;
 			this.knocked = other;
-			this.noClip = true;
+			// this.noClip = true;
 			this.static = false;
 
-			this.viewport.onFrameOut(30, () => this.pop(other));
+			this.viewport.onFrameOut(60, () => this.pop(other));
 
 			return false;
 		}
@@ -263,7 +280,7 @@ export class CanPop
 				this.effect(other);
 			}
 
-			const ySpeed = other.args.ySpeed;
+			const ySpeed = Math.min(other.args.ySpeed, other.ySpeedLast);
 
 			if(other.args.falling && !other.punching)
 			{
@@ -275,7 +292,7 @@ export class CanPop
 					}
 					else
 					{
-						other.args.ySpeed += 4;
+						other.args.ySpeed += 8;
 					}
 					other.args.falling = true;
 				});

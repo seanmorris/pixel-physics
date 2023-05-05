@@ -73,7 +73,7 @@ export class ElectricSheild extends Sheild
 
 	command_0(host, button)
 	{
-		if(host.canFly)
+		if(host.canFly && ((Math.abs(host.yAxis) < 0.55) || host.args.flying))
 		{
 			return;
 		}
@@ -244,7 +244,7 @@ export class ElectricSheild extends Sheild
 
 		if(host.canFly)
 		{
-			return;
+			// return;
 		}
 
 		if(!host.args.falling)

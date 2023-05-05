@@ -36,6 +36,16 @@
 	animation: tails-run steps(4) infinite 128ms;
 }
 
+.actor-item.actor-tails[data-animation="crouching"] .sprite:after {
+	--sprite-offset-x: -256px;
+	--sprite-offset-y: -192px;
+}
+
+.actor-item.actor-tails[data-animation="looking-up"] .sprite:after {
+	--sprite-offset-x: -192px;
+	--sprite-offset-y: -192px;
+}
+
 .actor-item.actor-tails[data-animation="rolling"] .sprite:after,
 .actor-item.actor-tails[data-animation="jumping"] .sprite:after {
 	--sprite-offset-x: -0px;
@@ -58,6 +68,16 @@
 	left: 8px;
 }
 
+.actor-item.actor-tails[data-animation="flying-tired"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -320px;
+
+	left: 8px;
+
+	animation: tails-flying-tired steps(2) infinite 192ms;
+
+}
+
 .actor-item.actor-tails[data-animation="hanging"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -448px;
@@ -65,6 +85,7 @@
 }
 
 .actor-item.actor-tails[data-animation="grinding"] .sprite:after {
+	top:3px;
 	--sprite-offset-x: -128px;
 	--sprite-offset-y: -256px;
 }
@@ -121,6 +142,15 @@
 	}
 }
 
+@keyframes tails-flying-tired {
+	from{
+		background-position: calc(var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-128px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
 @keyframes tails-jump {
 	from{
 		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
@@ -166,28 +196,39 @@
 	transform: rotate(calc(0deg + calc(1rad * var(--air-angle))));
 }
 
+.actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails,
+.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails {
+	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
+}
+
+.actor-item.actor-tails[data-animation="jumping"][data-reversing=true][data-falling=true] .tails-tails,
+.actor-item.actor-tails[data-animation="rolling"][data-reversing=true][data-falling=true] .tails-tails {
+	/* transform: rotate(calc(180deg + calc(-1rad * var(--air-angle)))) scaleY(-1);pp */
+}
+
 .actor-item.actor-tails[data-animation="spindash"] .tails-tails {
 	--sprite-offset-y: 64px;
 	--animation-steps: 5;
 	top: 42px;
 	left: -10px;
 	transform-origin: 42px 16px;
-	transform: rotate(calc(-90deg + calc(1rad * var(--air-angle))));
+	/* transform: rotate(calc(-90deg + calc(1rad * var(--air-angle)))); */
 }
 
-.actor-item.actor-tails[data-animation="rolling"] .tails-tails {
+.actor-item.actor-tails[data-falling=false][data-animation="rolling"] .tails-tails {
 	transform: rotate(180deg - calc(calc(-1rad * var(--angle))));
 }
 
-.actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails {
+.actor-item.actor-tails[data-falling=false][data-animation="rolling"][data-facing="left"] .tails-tails {
 	transform: rotate(180deg - calc(calc(1rad * var(--angle))));
 }
 
-.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails {
-	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
+.actor-item.actor-tails[data-falling=false][data-animation="rolling"][data-reversing=true] .tails-tails {
+	transform: rotate(calc(180deg + calc(1rad * var(--air-angle)))) scaleY(-1);
 }
 
-.actor-item.actor-tails[data-animation="flying"] .tails-tails {
+.actor-item.actor-tails[data-animation="flying"] .tails-tails,
+.actor-item.actor-tails[data-animation="flying-tired"] .tails-tails {
 	animation: tails-animate steps(var(--animation-steps)) infinite 50ms;
 	--sprite-offset-y: -64px;
 	--animation-steps: 2;

@@ -15,6 +15,23 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		if(host.knocked)
+		{
+			host.args.knocked = Math.sign(host.args.xSpeed || host.args.gSpeed);
+		}
+
+		if(!host.args.falling && host.knocked)
+		{
+			if(host.args.ySpeedLast < 3 && host.pop)
+			{
+				host.pop(host.knocked);
+			}
+
+			host.args.ySpeed  = -host.ySpeedLast * 0.7;
+			host.args.falling = true;
+			host.args.y--;
+		}
+
 		if(!host.args.falling)
 		{
 			if(host.args.grinding)
@@ -80,6 +97,15 @@ export class Platformer
 
 	updateEnd(host)
 	{
+		if(!host.args.falling)
+		{
+			host.args.jumpArced = false;
+		}
+		else if(host.args.jumping && (host.args.ySpeed > -3 || (host.args.ySpeed >= 0 && host.ySpeedLast < 0)))
+		{
+			host.args.jumpArced = true;
+		}
+
 		if(!host.args.static && host.args.falling)
 		{
 			if(host.args.standingLayer && host.fallTime === 0)
@@ -2491,7 +2517,7 @@ export class Platformer
 
 			if(host.args.falling)
 			{
-				host.args.gSpeed = 0;
+				// host.args.gSpeed = 0;
 			}
 		}
 
