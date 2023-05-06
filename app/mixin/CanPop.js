@@ -70,7 +70,7 @@ export class CanPop
 		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (immune || other.dashed || other.args.jumping || other.args.spinning || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
+			&& (immune || other.dashed || other.args.jumping || other.args.bellySliding || other.args.spinning || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
 		){
 			const otherShield = other.args.currentSheild;
 			this.damage(other, otherShield ? otherShield.type : (other.args.damageType || 'normal'));
@@ -117,7 +117,7 @@ export class CanPop
 		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (immune || other.dashed || other.args.jumping || other.args.spinning || other instanceof Projectile)
+			&& (immune || other.dashed || other.args.jumping  || other.args.bellySliding || other.args.spinning || other instanceof Projectile)
 		){
 			this.pop(other);
 		}
@@ -284,16 +284,34 @@ export class CanPop
 
 			if(other.args.falling && !other.punching)
 			{
-				this.onNextFrame(() => {
+				const spinning = other.args.spinning;
+				const jumping  = other.args.jumping;
+				const flying   = other.args.flying;
+				const xSpeed   = other.args.xSpeed || other.args.gSpeed;
+
+				viewport.onFrameOut(1,() => {
 
 					if(ySpeed >= 0)
 					{
-						other.args.ySpeed = Math.min(-ySpeed, -7);
+						if(other.flyTime < 5)
+						{
+							other.args.ySpeed = Math.min(-ySpeed, -7);
+						}
+						else
+						{
+							other.args.ySpeed = Math.min(-ySpeed, -2);
+						}
 					}
 					else
 					{
 						other.args.ySpeed += 8;
 					}
+
+					other.args.spinning = other.args.spinning || spinning;
+					other.args.jumping  = other.args.jumping  || jumping;
+					other.args.flying   = other.args.flying   || flying;
+					other.args.xSpeed   = xSpeed;
+
 					other.args.falling = true;
 				});
 			}

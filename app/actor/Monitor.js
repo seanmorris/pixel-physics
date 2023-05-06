@@ -111,7 +111,7 @@ export class Monitor extends PointActor
 		}
 
 		if(type !== 2
-			&& ((other.args.ySpeed > 0 && other.y < this.y) || (other.args.rolling && !other.args.grinding))
+			&& ((other.args.ySpeed > 0 && other.y < this.y) || ((other.args.rolling || other.args.bellySliding) && !other.args.grinding))
 			&& (!this.args.falling || this.args.float === -1)
 			&& !this.args.gone
 			&& this.viewport
@@ -123,7 +123,7 @@ export class Monitor extends PointActor
 
 		if((type === 1 || type === 3)
 			// && (Math.abs(other.args.xSpeed) > 15 || other instanceof Projectile)
-			&& ((other.args.rolling && !other.args.grinding) || other instanceof Projectile)
+			&& (((other.args.rolling || other.args.bellySliding) && !other.args.grinding) || other instanceof Projectile)
 			&& !this.args.gone
 			&& this.viewport
 		){
@@ -251,19 +251,38 @@ export class Monitor extends PointActor
 			}
 			else if(other && other.args.falling)
 			{
-				this.onNextFrame(() => {
-					other.args.ySpeed = Math.min(-ySpeed, -7);
+				const spinning = other.args.spinning;
+				const jumping  = other.args.jumping;
+				const flying   = other.args.flying;
+				const xSpeed   = other.args.xSpeed || other.args.gSpeed;
+
+				viewport.onFrameOut(1,() => {
+
+					if(ySpeed >= 0)
+					{
+						if(other.flyTime < 5)
+						{
+							other.args.ySpeed = Math.min(-ySpeed, -7);
+						}
+						else
+						{
+							other.args.ySpeed = Math.min(-ySpeed, -2);
+						}
+					}
+					else
+					{
+						other.args.ySpeed += 8;
+					}
+
+					other.args.spinning = other.args.spinning || spinning;
+					other.args.jumping  = other.args.jumping  || jumping;
+					other.args.flying   = other.args.flying   || flying;
+					other.args.xSpeed   = xSpeed;
+
 					other.args.falling = true;
 				});
 			}
-
-			if(this.args.falling && other.args.falling)
-			{
-				// this.onNextFrame(() => other.args.xSpeed = -other.args.xSpeed);
-			}
 		}
-
-		// this.onTimeout(1500, () => { this.viewport.actors.remove(this); });
 
 		if(other && this.viewport.settings.rumble && other.controller && other.controller.rumble)
 		{

@@ -24,7 +24,6 @@
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
 	z-index: 1;
-
 }
 
 .actor-item.actor-knuckles[data-animation="standing"] .sprite:after {
@@ -166,6 +165,21 @@
 	--animation-steps: 2;
 	--animation-width: 64px;
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+.actor-item.actor-knuckles[data-animation="sliding"] .sprite:after {
+	--animation-steps: 2;
+	--animation-width: 64px;
+	--sprite-offset-x: -640px;
+	--sprite-offset-y: -256px;
+	/* top: 6px; */
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+}
+
+.actor-item.actor-knuckles[data-animation="swimming"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -352px;
+	animation: knuckles-run steps(4) infinite 350ms;
+	animation-play-state: initial !important;
 }
 
 .actor-item.actor-knuckles[data-animation="flying-turning"] .sprite:after {

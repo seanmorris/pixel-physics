@@ -1256,7 +1256,7 @@ export class Viewport extends View
 
 		let inputType = 'kb';
 
-		if(!this.args.selectedChar && this.args.selectedChar === 'Sonic')
+		if(!this.args.selectedChar || this.args.selectedChar === 'Sonic')
 		{
 			inputType = this.args.inputType;
 
@@ -2503,6 +2503,13 @@ export class Viewport extends View
 				cameraSpeed = 24;
 				break;
 
+			case 'climbing':
+				this.args.xOffsetTarget = [0.50, 0.33, 0.50, 0.66][actor.args.mode];
+				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
+				this.maxCameraBound = 48;
+				cameraSpeed = 24;
+				break;
+
 			case 'airplane': {
 				const xSpeed     = actor.args.xSpeed;
 				const absSpeed   = Math.abs(xSpeed);
@@ -2747,6 +2754,11 @@ export class Viewport extends View
 			{
 				ySpeedBias += 0.2;
 			}
+		}
+
+		if(actor.args.climbing)
+		{
+			ySpeedBias  = -0.33 * Math.sign(actor.args.gSpeed) * (Math.max(4, Math.abs(actor.args.gSpeed))/4)  * (actor.args.mode === 1 ? -1:1);
 		}
 
 		this.args.yOffsetTarget += groundBias + actor.args.cameraBias - ySpeedBias;

@@ -233,9 +233,15 @@
 .actor-knuckles[data-animation=climbing] .fire-sheild,
 .actor-knuckles[data-animation=climbing-up] .fire-sheild,
 .actor-knuckles[data-animation=climbing-down] .fire-sheild,
+.actor-knuckles[data-animation=swimming] .fire-sheild,
 .actor-knuckles[data-animation=flying] .fire-sheild {
-	top: 26px;
+	top:  26px;
 	left: 10px;
+}
+
+.actor-knuckles[data-animation=climbing-over] .fire-sheild {
+	top:  36px;
+	left: -20px;
 }
 
 [data-animation=rolling] .fire-sheild,
@@ -295,17 +301,29 @@
 .actor-knuckles[data-animation=climbing] .bubble-sheild,
 .actor-knuckles[data-animation=climbing-up] .bubble-sheild,
 .actor-knuckles[data-animation=climbing-down] .bubble-sheild,
+.actor-knuckles[data-animation=swimming] .bubble-sheild,
 .actor-knuckles[data-animation=flying] .bubble-sheild {
 	left: -2px;
 	top: 26px;
 }
 
+.actor-knuckles[data-animation=climbing-over] .bubble-sheild {
+	left: -18px;
+	top:  32px;
+}
+
 .actor-knuckles[data-animation=climbing] .electric-sheild,
 .actor-knuckles[data-animation=climbing-up] .electric-sheild,
 .actor-knuckles[data-animation=climbing-down] .electric-sheild,
+.actor-knuckles[data-animation=swimming] .electric-sheild,
 .actor-knuckles[data-animation=flying] .electric-sheild {
 	left: 10px;
 	top: 26px;
+}
+
+.actor-knuckles[data-animation=climbing-over] .electric-sheild {
+	left: -7px;
+	top: 30px;
 }
 
 [data-animation=rolling] .bubble-sheild,

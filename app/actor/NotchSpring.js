@@ -44,6 +44,7 @@ export class NotchSpring extends PointActor
 			other.args.jumping = false;
 			other.dashed = false;
 			other.args.x += this.args.direction;
+			other.args.flying = false;
 
 			other.impulse(12, (-Math.PI / 2) + (Math.PI / 4 * this.args.direction), true);
 

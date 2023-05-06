@@ -18,11 +18,11 @@
 	--sprite-offset-y: 0px;
 	/*z-index: 1;*/
 }
-
+/*
 .actor-item.actor-tails[data-animation="standing"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: 0px;
-}
+} */
 
 .actor-item.actor-tails[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
@@ -30,10 +30,40 @@
 	animation: tails-walk steps(8) infinite 512ms;
 }
 
+.actor-item.actor-tails[data-animation="corkscrew"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -640px;
+	animation: tails-corkscrew steps(12) infinite 512ms;
+}
+
+.actor-item.actor-tails[data-animation="corkscrew"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -640px;
+	animation: sonic-corkscrew steps(12) infinite 1s calc(-1s * var(--corkscrew)) forwards;
+	animation-play-state: paused;
+}
+
+.actor-item.actor-tails[data-animation="barrel-roll"] .sprite:after {
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -640px;
+	animation: tails-corkscrew steps(12) infinite 1s calc(-1s + calc(-1s * var(--corkscrew))) forwards;
+	animation-play-state: paused;
+}
+
+.actor-item.actor-tails[data-animation="standing"] .tails-tails {
+	display: none;;
+}
+
 .actor-item.actor-tails[data-animation="running"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -128px;
 	animation: tails-run steps(4) infinite 128ms;
+}
+
+.actor-item.actor-tails[data-animation="running-2"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -128px;
+	animation: tails-run-2 steps(4) infinite 64ms;
 }
 
 .actor-item.actor-tails[data-animation="crouching"] .sprite:after {
@@ -71,11 +101,8 @@
 .actor-item.actor-tails[data-animation="flying-tired"] .sprite:after {
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: -320px;
-
 	left: 8px;
-
 	animation: tails-flying-tired steps(2) infinite 192ms;
-
 }
 
 .actor-item.actor-tails[data-animation="hanging"] .sprite:after {
@@ -95,6 +122,16 @@
 	--sprite-offset-y: -512px;
 }
 
+.actor-item.actor-tails[data-animation="dropping"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -128px;
+}
+
+.actor-item.actor-tails[data-animation="dropping"] .tails-tails {
+	top: 26px;
+	left:-5px
+}
+
 .actor-item.actor-tails[data-animation="startle"] .sprite:after {
 	--sprite-offset-x: -64px;
 	--sprite-offset-y: -512px;
@@ -111,6 +148,25 @@
 	--animation-width: 64px;
 
 	animation: tails-animate steps(var(--animation-steps)) infinite 96ms;
+}
+
+.actor-item.actor-tails[data-animation="springdash"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -576px;
+	--animation-steps: -2;
+	--animation-width: 64px;
+	transform: rotate(calc(90deg + calc(1rad * var(--air-angle)))) scaleX(1) translateX(3px);
+
+	animation: tails-flying-tired steps(2) infinite 192ms;
+	animation-play-state: playing !important;
+}
+
+.actor-item.actor-tails[data-animation="springdash"][data-facing=left] .sprite:after {
+	transform: rotate(calc(-90deg + calc(-1rad * var(--air-angle)))) scaleX(-1) translateY(-3px);
+}
+
+.actor-item.actor-tails[data-animation="springdash"] .tails-tails {
+	display: none;
 }
 
 @keyframes tails-animate {
@@ -139,6 +195,24 @@
 	}
 	to{
 		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes tails-run-2 {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-256px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+
+@keyframes tails-corkscrew {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-768px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }
 
@@ -182,7 +256,8 @@
 }
 
 .actor-item.actor-tails[data-animation="walking"] .tails-tails,
-.actor-item.actor-tails[data-animation="running"] .tails-tails {
+.actor-item.actor-tails[data-animation="running"] .tails-tails,
+.actor-item.actor-tails[data-animation="running-2"] .tails-tails {
 	display: none;
 }
 

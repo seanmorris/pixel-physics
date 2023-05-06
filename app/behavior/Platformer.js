@@ -186,6 +186,7 @@ export class Platformer
 			&& !host.args.hangingFrom
 			&& (!host.args.grinding && host.groundTime > 1)
 			&& !host.args.bouncing
+			&& (!host.punched && !host.readyTime)
 			&& host.args.popChain.length
 		){
 			host.totalCombo();
@@ -1093,7 +1094,7 @@ export class Platformer
 
 				if(host.args.grinding && !host.args.gSpeed && host.args.modeTime > 4)
 				{
-					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast);
+					host.args.gSpeed = Math.sign(host.args.direction || host.axis || host.xSpeedLast || host.gSpeedLast || 0);
 				}
 
 				if(!host.args.canHide && !host.noClip)
@@ -2023,6 +2024,8 @@ export class Platformer
 							break;
 					}
 
+					host.args.gSpeed = 0;
+
 					break;
 				}
 				else if(!nextPosition[0] && !nextPosition[1])
@@ -2650,7 +2653,7 @@ export class Platformer
 			host.args.groundAngle += -Math.sign(host.args.groundAngle) * 0.001 * spinBack;
 		}
 
-		if(Math.abs(host.args.groundAngle) < 0.04)
+		if(Math.abs(host.args.groundAngle) < 0.08)
 		{
 			host.args.groundAngle = 0;
 		}
@@ -2981,7 +2984,7 @@ export class Platformer
 
 			const solid = this.checkBelow(host, airPoint[0], airPoint[1] + 1);
 
-			if(!host.willStick || host.args.mode === 0)
+			if(!host.willStick && (host.args.mode === 0 && !angleIsWall))
 			{
 				// host.args.gSpeed = xSpeedOriginal || host.args.gSpeed;
 				host.args.gSpeed = host.args.xSpeed;
@@ -3180,6 +3183,7 @@ export class Platformer
 				}
 				else if(Math.abs(newAngle) < (Math.PI/2 + -Math.PI/16)
 					&& forePosition && backPosition
+					&& forePosition[0] !== false && backPosition[0] !== false
 					&& forePosition[1] !== false && backPosition[1] !== false
 					&& !forePosition[2] && !backPosition[2]
 					&& !(forePosition[3] && backPosition[3])
@@ -3284,8 +3288,8 @@ export class Platformer
 
 					host.args.float  = host.args.float || 1;
 
-					host.args.x += speed;
-					host.args.y -= (forePosition[1] || backPosition[1]);
+					host.args.x += forePosition[0];
+					host.args.y -= forePosition[1];
 
 					if(host.viewport.settings.rumble)
 					{

@@ -66,6 +66,11 @@ export class Tails extends PointActor
 	{
 		super.onRendered(event);
 
+		if(this.tails)
+		{
+			return;
+		}
+
 		this.box = this.findTag('div');
 		this.sprite = this.findTag('div.sprite');
 
@@ -184,6 +189,10 @@ export class Tails extends PointActor
 				if(Math.sign(this.args.gSpeed) !== direction && Math.abs(this.args.gSpeed - direction) > 5)
 				{
 					this.args.animation = 'skidding';
+				}
+				else if(speed > maxSpeed)
+				{
+					this.args.animation = 'running-2';
 				}
 				else if(speed > maxSpeed / 2)
 				{
@@ -315,6 +324,13 @@ export class Tails extends PointActor
 			this.flyTime = 0;
 			this.args.flying = false;
 		}
+		else
+		{
+			if(this.args.animation === 'springdash' && this.args.ySpeed >= 0)
+			{
+				this.args.animation = 'dropping';
+			}
+		}
 	}
 
 	command_0(button)
@@ -384,6 +400,21 @@ export class Tails extends PointActor
 	sleep()
 	{
 		this.flyingSound && this.flyingSound.pause();
+	}
+
+	collideA(other)
+	{
+		if(other instanceof Spring)
+		{
+			this.onNextFrame(()=>{
+				if(!this.args.falling)
+				{
+					return;
+				}
+				this.springing = true;
+				this.args.animation = 'springdash'
+			});
+		}
 	}
 
 	get solid() { return false; }

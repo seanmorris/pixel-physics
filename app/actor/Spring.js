@@ -245,6 +245,8 @@ export class Spring extends PointActor
 			other.args.mode = 0;
 			other.args.direction = Math.sign(xImpulse) || other.args.direction;
 
+			other.args.flying = false;
+
 			other.impulse(
 				this.args.power
 				, rounded

@@ -49,6 +49,7 @@ export class BoostRing extends PointActor
 		other.args.groundAngle = 0;
 		other.args.cameraMode = 'boost-ring';
 		other.args.angle = this.args.pointing;
+		other.args.flying = false;
 
 		this.shooting.add(other);
 

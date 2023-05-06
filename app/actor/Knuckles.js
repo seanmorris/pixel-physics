@@ -9,6 +9,7 @@ import { Spring } from './Spring';
 import { SkidDust } from '../behavior/SkidDust';
 import { Crouch }   from '../behavior/Crouch';
 import { LookUp }   from '../behavior/LookUp';
+import { TechnoSqueak } from './TechnoSqueak';
 
 export class Knuckles extends PointActor
 {
@@ -43,7 +44,7 @@ export class Knuckles extends PointActor
 		this.args.gravity   = 0.5;
 
 		this.args.normalGravity = 0.5;
-		this.args.slowGravity   = 0.0625;
+		this.args.slowGravity   = 0.125;
 
 		this.args.punchMomentum = 0;
 
@@ -59,8 +60,12 @@ export class Knuckles extends PointActor
 		this.beforePunch = 'standing';
 
 		this.bombsDropped = 0;
+		this.args.bellySliding = false;
+		this.slideTime = 0;
 
 		this.sparks = new Set();
+
+		this.flyTime = 0;
 
 		this.args.bindTo('punchMomentum', v => this.args.punchSpeed = Math.abs(v * 0.5));
 
@@ -94,7 +99,6 @@ export class Knuckles extends PointActor
 		this.autoStyle.get(this.box)['--punchSpeed'] = 'punchSpeed';
 
 		this.punchAura = new Tag('<div class = "punch-aura">');
-
 		this.punchAura.style({display: 'none'})
 
 		this.sprite.appendChild(this.punchAura.node);
@@ -112,13 +116,31 @@ export class Knuckles extends PointActor
 
 	update()
 	{
+		if(this.args.bellySliding)
+		{
+			this.xAxis = 0;
+		}
+
 		if(this.args.flying)
 		{
+			const frontUpSolid = this.getMapSolidAt(this.args.x + this.args.xSpeed, this.args.y + -18);
+			const frontSolid   = this.getMapSolidAt(this.args.x + this.args.xSpeed, this.args.y);
+			const downSolid    = this.getMapSolidAt(this.args.x, this.args.y + 1);
+
+			if(frontSolid && !frontUpSolid && !downSolid)
+			while(this.getMapSolidAt(this.args.x + this.args.xSpeed, this.args.y))
+			{
+				this.args.y--;
+			}
+
 			this.args.gravity = this.args.slowGravity;
+			this.flyTime++;
 		}
 		else
 		{
-			this.args.gravity = this.args.normalGravity;
+			this.args.didBoost = false;
+			this.args.gravity  = this.args.normalGravity;
+			this.flyTime = 0;
 		}
 
 		if(this.args.dead)
@@ -196,10 +218,8 @@ export class Knuckles extends PointActor
 			this.args.rolling = false;
 		}
 
-		if(this.punched
-			&& !this.auraVisible
-			&& (this.punching && Math.abs(this.args.gSpeed) > 10)
-		){
+		if(this.punching && Math.abs(this.args.gSpeed) > 10)
+		{
 			this.auraVisible = true;
 			this.viewport.onFrameOut(6, () => {
 				this.punchAura.style({display: 'none'})
@@ -208,15 +228,19 @@ export class Knuckles extends PointActor
 
 			this.punchAura.style({display: 'initial'});
 		}
-
-		if(!this.punching)
+		else
 		{
-			this.punchAura.style({display: 'none'})
 			this.auraVisible = false;
+			this.punchAura.style({display: 'none'})
 		}
 
 		this.willStick = false;
 		this.stayStuck = false;
+
+		if(this.args.mercy)
+		{
+			this.args.flying = false;
+		}
 
 		if(!falling)
 		{
@@ -228,20 +252,35 @@ export class Knuckles extends PointActor
 			const speed     = Math.abs(gSpeed);
 			const maxSpeed  = this.args.gSpeedMax;
 
-			if(this.args.flying)
-			{
-				this.args.flying = false;
-				this.args.float  = 0;
-			}
-
 			this.args.knucklesFlyCoolDown = 15;
 
 			this.args.flying = false;
 
-			if(!this.args.rolling)
+			if(this.args.bellySliding)
+			{
+				this.args.animation = 'flying';
+			}
+			else if(!this.args.rolling)
 			{
 				if(this.args.climbing)
 				{
+					const climbDir = this.args.mode === 3 ? -1:1;
+
+					if(!this.getMapSolidAt(this.args.x + -climbDir, this.args.y+1))
+					{
+						this.args.direction = -climbDir;
+						this.args.climbing = false;
+						this.args.facing = climbDir > 0 ? 'left' : 'rigjt';
+						this.args.animation = 'dropping';
+						this.args.x += this.args.width * 0.5 * climbDir;
+						this.args.groundAngle = 0;
+						this.args.falling = true;
+						this.args.ySpeed = this.gSpeedLast * (this.args.mode === 3 ? -1:1);
+						this.args.gSpeed = 0;
+						this.args.mode = 0;
+						return;
+					}
+
 					const ledgeDir = this.args.mode === 1 ? -1 : 1;
 					const ledgeDist = 16;
 
@@ -253,7 +292,7 @@ export class Knuckles extends PointActor
 							this.args.gSpeed = 0;
 						}
 					}
-					else if(this.yAxis < 0)
+					else if(this.yAxis < -0.55)
 					{
 						if(!this.getMapSolidAt(this.args.x + 18 * ledgeDir, this.args.y - ledgeDist))
 						{
@@ -265,7 +304,11 @@ export class Knuckles extends PointActor
 								this.args.gSpeed = 0;
 
 								this.climbOverCancel = this.viewport.onFrameOut(12, () =>{
-									if(this.args.falling) return;
+									if(this.args.falling)
+									{
+										this.climbOverCancel = false;
+										return;
+									}
 									this.args.x += this.args.width * 0.5 * ledgeDir;
 									this.args.y -= ledgeDist;
 									this.args.direction = ledgeDir;
@@ -281,26 +324,17 @@ export class Knuckles extends PointActor
 
 							if(Math.abs(this.args.gSpeed) < 4)
 							{
-								this.args.direction = this.args.mode === 1 ? 1 : -1;
-								this.args.gSpeed += -this.args.direction;
+								const dir = [0,1,0,-1][this.args.mode];
+								this.args.direction = dir;
+								this.args.gSpeed += -dir;
 							}
 						}
 					}
-					else if(this.yAxis > 0)
+					else if(this.yAxis > 0.55)
 					{
 						this.args.animation = 'climbing-down';
 
-						if(this.getMapSolidAt(this.args.x - 4 * ledgeDir, this.args.y + 8))
-						{
-							this.args.animation = 'dropping';
-							this.args.climbing = false;
-							this.args.falling = true;
-							this.args.mode = 0;
-
-							this.args.direction = ledgeDir;
-							this.args.facing = ledgeDir > 0 ? 'right' : 'left';
-						}
-						else if(Math.abs(this.args.gSpeed) < 4)
+						if(Math.abs(this.args.gSpeed) < 4)
 						{
 							this.args.direction = this.args.mode === 1 ? 1 : -1;
 							this.args.gSpeed += this.args.direction;
@@ -361,6 +395,8 @@ export class Knuckles extends PointActor
 		}
 		else
 		{
+			this.args.climbing = false;
+
 			if(this.springing)
 			{
 				this.args.groundAngle = 0;
@@ -368,9 +404,28 @@ export class Knuckles extends PointActor
 
 			if(this.args.flying)
 			{
+				let inWater = false, topWater = false;
+
+				const topRegions = this.viewport.regionsAtPoint(this.args.x, this.args.y - 36)
+
+				for(const region of this.regions)
+				{
+					if(region.isWater)
+					{
+						inWater = true;
+					}
+				}
+
 				if(Math.abs(this.args.xSpeed) > 6 || Math.abs(this.xAxis) < 0.55 || Math.sign(this.xAxis) === Math.sign(this.args.xSpeed))
 				{
-					this.args.animation = 'flying';
+					if(inWater)
+					{
+						this.args.animation = 'swimming';
+					}
+					else
+					{
+						this.args.animation = 'flying';
+					}
 				}
 				else if(Math.sign(this.xAxis) !== Math.sign(this.args.xSpeed))
 				{
@@ -384,6 +439,76 @@ export class Knuckles extends PointActor
 					}
 				}
 
+				if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
+				{
+					this.args.flying  = false;
+					this.args.bellySliding = true;
+					this.args.float = 1;
+				}
+
+				if(this.yAxis > 0.55)
+				{
+					this.args.flying = false;
+					this.args.ySpeed = 8;
+					return;
+				}
+
+				if(this.xAxis)
+				{
+					this.args.flyDirection = Math.sign(this.xAxis);
+				}
+
+				this.args.direction = Math.sign(this.args.xSpeed);
+
+				if(this.args.direction < 0)
+				{
+					this.args.facing = 'left';
+				}
+				else
+				{
+					this.args.facing = 'right';
+				}
+
+				const maxFlySpeed = (16 + 8 * Math.abs(this.xAxis)) * (inWater ? 0.5 : 1);
+
+				if(this.args.flyDirection)
+				{
+					if(Math.abs(this.args.xSpeed) < maxFlySpeed)
+					{
+						if(this.args.flyDirection !== Math.sign(this.args.xSpeed))
+						{
+							this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection) * 4;
+						}
+						else
+						{
+							this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection);
+						}
+					}
+				}
+
+				if(!this.args.didBoost && Math.abs(this.args.xSpeed) > maxFlySpeed)
+				{
+					this.args.xSpeed -= 0.1 * (this.args.xSpeed - (maxFlySpeed * Math.sign(this.args.xSpeed)));
+				}
+
+				if(this.args.ySpeed > 2 && Math.abs(this.args.xSpeed) < 4)
+				{
+					this.args.xSpeed += 0.1 * Math.sign(this.args.xSpeed);
+				}
+
+				if(inWater && this.args.ySpeed > 1)
+				{
+					this.args.ySpeed = 1;
+				}
+				if(!inWater && this.args.ySpeed > 0.5)
+				{
+					this.args.ySpeed = 0.5;
+				}
+
+				this.willStick = true;
+				this.stayStuck = true;
+
+				this.args.groundAngle = 0;
 			}
 			else if(this.args.jumping)
 			{
@@ -411,74 +536,17 @@ export class Knuckles extends PointActor
 				{
 					this.punched = false;
 					this.punching = false;
-					this.args.animation = 'jumping';
+					if(!this.args.bellySliding)
+					{
+						this.args.animation = 'jumping';
+					}
 				}
 			}
 		}
 
 		if(this.args.flying)
 		{
-			if(this.yAxis > 0 || this.bMap('checkBelow', this.x, this.y).get(Platformer))
-			{
-				this.args.flying = false;
-				return;
-			}
 
-			if(this.xAxis)
-			{
-				this.args.flyDirection = Math.sign(this.xAxis);
-			}
-
-			this.args.direction = Math.sign(this.args.xSpeed);
-
-			if(this.args.direction < 0)
-			{
-				this.args.facing = 'left';
-			}
-			else
-			{
-				this.args.facing = 'right';
-			}
-
-			if(this.args.flyDirection)
-			{
-				if(Math.abs(this.args.xSpeed) < 16)
-				{
-					if(this.args.flyDirection !== Math.sign(this.args.xSpeed))
-					{
-						this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection) * 4;
-					}
-					else
-					{
-						this.args.xSpeed += 0.15625 * Math.sign(this.args.flyDirection);
-					}
-				}
-			}
-
-			if(Math.abs(this.args.xSpeed) > 18)
-			{
-				this.args.xSpeed = 18 * Math.sign(this.args.xSpeed);
-			}
-
-			if(!this.args.didBoost && Math.abs(this.args.xSpeed) > 8)
-			{
-				if(this.args.ySpeed > 2 && Math.abs(this.args.xSpeed) < 3)
-				{
-					this.args.xSpeed += 0.1 * Math.sign(this.args.xSpeed);
-				}
-
-				this.args.xSpeed = Math.sign(this.args.xSpeed) * 8;
-			}
-
-			if(this.args.ySpeed > 1)
-			{
-				this.args.ySpeed = 1;
-			}
-
-			this.willStick = true;
-			this.stayStuck = true;
-
-			this.args.groundAngle = 0;
 		}
 		else if(this.args.mode % 2 === 0 || this.args.groundAngle)
 		{
@@ -599,6 +667,27 @@ export class Knuckles extends PointActor
 			this.punched = 0;
 		}
 
+		if(!this.args.falling)
+		{
+			if(this.args.bellySliding)
+			{
+				this.args.rolling   = false;
+				this.args.animation = 'sliding';
+				this.alwaysSkidding = true;
+				this.slideTime++;
+			}
+			else
+			{
+				this.alwaysSkidding = false;
+				this.slideTime = 0;
+			}
+
+			if(Math.abs(this.args.gSpeed) < 1)
+			{
+				this.args.bellySliding = false;
+			}
+		}
+
 		super.updateEnd();
 	}
 
@@ -629,39 +718,32 @@ export class Knuckles extends PointActor
 
 	release_0()
 	{
+		if(this.args.flying)
+		{
+			this.args.flying = false;
+			this.args.ySpeed *= 0.25;
+		}
+
 		super.release_0();
 	}
 
 	command_0()
 	{
+		this.args.bellySliding = false;
+
 		if(this.args.falling && Math.abs(this.yAxis) > 0.55)
 		{
 			return;
 		}
 
-		if(this.args.hangingFrom)
-		{
-			super.command_0();
-			return;
-		}
-
 		super.command_0();
 
-		console.log(this.args.jumpArced);
-
-		if(!this.args.jumping || !this.args.jumpArced)
-		{
-			console.log(this.args.ySpeed, this.ySpeedLast);
-
-			return
-		}
-
-		if(this.willPunch || !this.args.falling)
+		if(this.yAxis > 0.55)
 		{
 			return;
 		}
 
-		if(this.yAxis > 0.55)
+		if(this.args.hangingFrom || !this.args.jumping || this.willPunch || !this.args.falling)
 		{
 			return;
 		}
@@ -672,12 +754,22 @@ export class Knuckles extends PointActor
 			this.punching = false;
 		}
 
-		this.args.direction = this.args.facing === 'left' ? -1:1;
+		if(!this.args.jumpArced)
+		{
+			if(this.getMapSolidAt(this.args.x + Math.sign(this.args.direction) * this.args.width * 0.5, this.args.height * 0.5))
+			{
+				this.args.xSpeed = Math.sign(this.args.direction) * this.args.width * 0.5;
+				this.willStick = true;
+				this.climbing = true;
+				return
+			}
+		}
 
-		this.args.flying = true;
-		this.args.xSpeed = Math.max(4, Math.abs(this.args.xSpeed)) * this.args.direction;
-		this.args.ySpeed = Math.abs(this.args.ySpeed) < 3 ? 0 : this.args.ySpeed;
-		this.args.willJump = false;
+		this.args.direction = Math.sign(this.args.xSpeed) || (this.args.facing === 'left' ? -1:1);
+		this.args.willJump  = false;
+		this.args.flying    = true;
+		this.args.xSpeed    = Math.max(4, Math.abs(this.args.xSpeed)) * this.args.direction;
+		this.args.ySpeed    = Math.max(0, this.args.ySpeed);
 	}
 
 	readyStart(inputDirection = 0, button = 1)
@@ -835,6 +927,7 @@ export class Knuckles extends PointActor
 	{
 		if(this.args.falling)
 		{
+			this.readyStart(0, 1);
 			return;
 		}
 
@@ -851,6 +944,7 @@ export class Knuckles extends PointActor
 		if(!this.args.gSpeed || !this.punched)
 		{
 			this.readyButton = 1;
+			this.punching = true;
 			this.readyStop(Math.sign(this.args.punchMomentum), 1);
 			this.cancelReady = this.viewport.onFrameOut(20, () => this.readyStart(this.args.direction, 1));
 			return;
@@ -858,6 +952,7 @@ export class Knuckles extends PointActor
 
 		if(this.args.gSpeed > 10)
 		{
+			this.punchAura.style({display: 'initial'});
 			this.auraVisible = true;
 		}
 
@@ -983,7 +1078,7 @@ export class Knuckles extends PointActor
 	{
 		if(this.args.climbing)
 		{
-			this.args.cameraMode = 'aerial';
+			this.args.cameraMode = 'climbing';
 		}
 		else
 		{

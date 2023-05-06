@@ -1062,6 +1062,11 @@ export class PointActor extends View
 			return;
 		}
 
+		if(this.args.cameraMode === 'popping' && Math.abs(this.args.xSpeed) > Math.abs(this.args.ySpeed))
+		{
+			this.args.cameraMode = 'aerial';
+		}
+
 		if(this.focused)
 		{
 			this.args.cameraMode = 'panning';
