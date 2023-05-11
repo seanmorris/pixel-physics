@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.9.0",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -68,18 +68,18 @@
             "columns": 16,
             "firstgid": 177,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 13,
-            "firstgid": 689,
+            "firstgid": 737,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
             "imageheight": 576,
             "imagewidth": 416,
@@ -93,7 +93,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.9",
+    "version": "1.6",
     "width": 256,
     "types": [
         "block",

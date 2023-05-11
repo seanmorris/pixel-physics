@@ -1,0 +1,421 @@
+{
+    "compressionlevel": -1,
+    "height": 245,
+    "infinite": false,
+    "nextlayerid": 12,
+    "nextobjectid": 171,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "city"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        },
+        {
+            "name": "titlecard-author",
+            "type": "string",
+            "value": "SEAN MORRIS"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "BROOKLYN"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "BREAKOUT ZONE"
+        },
+        {
+            "name": "wrapX",
+            "type": "bool",
+            "value": true
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.7.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 177,
+            "image": "giant-loop.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "giant-loop",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 1201,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 1761,
+            "image": "../Sonic/tiles/metallic-madness/metallic-madness.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "metallic-madness",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 2785,
+            "image": "../secret/stp.png",
+            "imageheight": 256,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "stp",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 2817,
+            "image": "../Sonic/tiles/palmtree-panic/good-future.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "palmtree-panic",
+            "spacing": 0,
+            "tilecount": 1024,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 3841,
+            "image": "../Sonic/tiles/hydrocity-zone/slide-metal.png",
+            "imageheight": 288,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "slide-metal",
+            "spacing": 0,
+            "tilecount": 198,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 4039,
+            "image": "../Sonic/tiles/hydrocity-zone/slide-solid.png",
+            "imageheight": 288,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "slide-solid",
+            "spacing": 0,
+            "tilecount": 198,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 5,
+            "firstgid": 4237,
+            "image": "../tmnt-tournament/chopper.png",
+            "imageheight": 96,
+            "imagewidth": 160,
+            "margin": 0,
+            "name": "chopper",
+            "spacing": 0,
+            "tilecount": 15,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 4252,
+            "image": "../custom/hex-pillar.png",
+            "imageheight": 128,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "hex-pillar",
+            "spacing": 0,
+            "tilecount": 8,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 4260,
+            "image": "../rcr-ex/park-items.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "park-items",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 4276,
+            "image": "../street-fighter/fence.png",
+            "imageheight": 608,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "fence",
+            "spacing": 0,
+            "tilecount": 152,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 4428,
+            "image": "../bttf2/items.png",
+            "imageheight": 128,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "city-items",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 4460,
+            "image": "../custom/soap.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "soap",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 4464,
+            "image": "../custom/chaos-soda.png",
+            "imageheight": 96,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "chaos-soda",
+            "spacing": 0,
+            "tilecount": 12,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 4476,
+            "image": "mz-ground-red.png",
+            "imageheight": 4480,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "mz-ground-red",
+            "spacing": 0,
+            "tilecount": 3080,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 7556,
+            "image": "../Sonic/hope_animated_4_32.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "hope_animated_4_32",
+            "properties": [
+                {
+                    "name": "animated",
+                    "type": "bool",
+                    "value": true
+                },
+                {
+                    "name": "frameSize",
+                    "type": "int",
+                    "value": 1
+                },
+                {
+                    "name": "frames",
+                    "type": "int",
+                    "value": 4
+                },
+                {
+                    "name": "speed",
+                    "type": "int",
+                    "value": 4
+                }
+            ],
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 3,
+            "firstgid": 7572,
+            "image": "../custom/no-hedgehogs.png",
+            "imageheight": 192,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "no-hedgehogs",
+            "spacing": 0,
+            "tilecount": 18,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 3,
+            "firstgid": 7590,
+            "image": "../custom/sage.png",
+            "imageheight": 96,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "sage",
+            "spacing": 0,
+            "tilecount": 9,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 7599,
+            "image": "../custom/habit.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "habit",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 7603,
+            "image": "../custom/zerosean.png",
+            "imageheight": 96,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "zerosean",
+            "spacing": 0,
+            "tilecount": 12,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 3,
+            "firstgid": 7615,
+            "image": "../custom/jazz.png",
+            "imageheight": 64,
+            "imagewidth": 96,
+            "margin": 0,
+            "name": "jazz",
+            "spacing": 0,
+            "tilecount": 6,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 7621,
+            "image": "../custom/wanted.png",
+            "imageheight": 96,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "wanted",
+            "spacing": 0,
+            "tilecount": 6,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 7627,
+            "image": "../custom/emerald-network.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "emerald-network",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 14,
+            "firstgid": 7631,
+            "image": "../tmnt-tournament/buildings.png",
+            "imageheight": 256,
+            "imagewidth": 448,
+            "margin": 0,
+            "name": "buildings",
+            "spacing": 0,
+            "tilecount": 112,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 2,
+            "firstgid": 7743,
+            "image": "../custom/cheezy-poofs.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "cheezy-poofs",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.6",
+    "width": 247,
+    "types": [
+        "block",
+        "giant-tire",
+        "herculad",
+        "sliding-region"
+    ],
+    "map": "/map/truck-test.json"
+}

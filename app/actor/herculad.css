@@ -1,0 +1,21 @@
+.actor-item.actor-herculad .sprite {
+	background-image: url(/secret/herculad.png);
+	height: 32px;
+	height: 32px;
+	animation: herculad-idle 0.45pps steps(4) infinite;
+	animation-play-state: initial !important;
+}
+
+.actor-item.actor-hex-nut {
+/*	filter: none !important;*/
+}
+
+@keyframes herculad-idle {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -128px;
+	}
+}
+

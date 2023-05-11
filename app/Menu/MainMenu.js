@@ -505,18 +505,18 @@ export class MainMenu extends Menu
 		this.refreshConnection();
 	}
 
-	onRendered(event)
-	{
-		super.onRendered(event);
+	// onRendered(event)
+	// {
+	// 	super.onRendered(event);
 
-		// this.args.twist = new Twist({
-		// 	id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		// });
+	// 	this.args.twist = new Twist({
+	// 		id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
+	// 	});
 
-		// this.args.pinch = new Pinch({
-		// 	id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		// });
-	}
+	// 	this.args.pinch = new Pinch({
+	// 		id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
+	// 	});
+	// }
 
 	back(levels = 1)
 	{

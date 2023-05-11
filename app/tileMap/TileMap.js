@@ -105,7 +105,15 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				desparsed[tileId] = tileNo;
 			}
+
+			// layer.data = layer.data ? [...Object.assign(Array(layer.width * layer.height), layer.data)] : undefined;
+			// layer.data = layer.data.map(t => t || 0);
+
+			// console.log(layer.data);
 		}
+
+		// console.log(tilemapData);
+		// console.log(JSON.stringify(tilemapData));
 
 		// console.timeEnd('desparse');
 	}
@@ -805,7 +813,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const iPixel = (xPixel + yPixel * heightMask.width) * 4;
 
-			if(heightMask.data[iPixel + 3] === 255)
+			if(heightMask.data[iPixel + 3] > 0)
 			{
 				this.emptyCache.set(tileNumber, false);
 				return false;

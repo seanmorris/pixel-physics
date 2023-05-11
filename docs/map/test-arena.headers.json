@@ -1,15 +1,26 @@
 {
     "compressionlevel": -1,
+    "editorsettings": {
+        "export": {
+            "format": "json",
+            "target": "truck-test.json"
+        }
+    },
     "height": 64,
     "infinite": false,
-    "nextlayerid": 8,
-    "nextobjectid": 129,
+    "nextlayerid": 13,
+    "nextobjectid": 167,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
             "value": "city"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
         }
     ],
     "renderorder": "right-down",
@@ -56,15 +67,15 @@
             "tilewidth": 32
         },
         {
-            "columns": 28,
+            "columns": 24,
             "firstgid": 1761,
-            "image": "../custom/ruins.png",
-            "imageheight": 672,
-            "imagewidth": 896,
+            "image": "../Sonic/tiles/palmtree-panic/3d-loop.png",
+            "imageheight": 1120,
+            "imagewidth": 768,
             "margin": 0,
-            "name": "ruins",
+            "name": "3d-loop",
             "spacing": 0,
-            "tilecount": 588,
+            "tilecount": 840,
             "tileheight": 32,
             "tilewidth": 32
         }
@@ -74,6 +85,9 @@
     "version": "1.6",
     "width": 1024,
     "types": [
+        "dolphin",
+        "giant-tire",
+        "layer-switch",
         "region",
         "sheild-electric-monitor",
         "sheild-fire-monitor",

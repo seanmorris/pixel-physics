@@ -139,6 +139,8 @@ export class PointActor extends View
 
 		this.isGhost = false;
 
+		this.stepsTaken  = 0;
+
 		// this.stepCache = {};
 
 		this.fallTime    = 0;
@@ -824,16 +826,6 @@ export class PointActor extends View
 			}
 		}, {wait:0});
 
-
-		if(this.controllable)
-		{
-			const superSheild = new SuperSheild;
-
-			superSheild.equip(this);
-
-			this.inventory.add(superSheild);
-		}
-
 		this.init = true;
 
 		this.args.bindTo('animation', (v,k,t,d,p) => {
@@ -855,6 +847,18 @@ export class PointActor extends View
 
 	updateStart()
 	{
+		if(this.isSuper || this.isHyper)
+		{
+			const superSheild = new SuperSheild;
+			superSheild.equip(this);
+			this.inventory.add(superSheild);
+		}
+		else if(this.args.currentSheild && this.args.currentSheild instanceof SuperSheild)
+		{
+			superSheild.unequip(this);
+			this.args.currentSheild = null;
+		}
+
 		if(this.args.dead)
 		{
 			this.args.xSpeed = 0;
@@ -893,7 +897,7 @@ export class PointActor extends View
 
 		if(!this.args.falling)
 		{
-			this.focused = false;
+			// this.focused = false;
 		}
 
 		for(const region of this.regions)
@@ -2288,6 +2292,7 @@ export class PointActor extends View
 	get controllable() { return false; }
 	get skidding() {
 		return Math.abs(this.args.gSpeed)
+			&& this.args.direction
 			&& !this.args.antiSkid
 			&& !this.args.grinding
 			&& Math.sign(this.args.gSpeed) !== this.args.direction
@@ -2392,24 +2397,30 @@ export class PointActor extends View
 				{
 					let cancel = false;
 
-					for(const behavior of this.behaviors)
+					if(this.args.currentSheild && press in this.args.currentSheild)
 					{
-						if(behavior[press])
+						if(this.args.currentSheild[press](this, button) === false)
 						{
-							if(behavior[press](this, button) === false)
+							cancel = true;
+						}
+					}
+
+					if(!cancel)
+					{
+						for(const behavior of this.behaviors)
+						{
+							if(behavior[press])
 							{
-								cancel = true;
+								if(behavior[press](this, button) === false)
+								{
+									cancel = true;
+								}
 							}
 						}
 					}
 
 					if(!cancel)
 					{
-						if(this.args.currentSheild && press in this.args.currentSheild)
-						{
-							this.args.currentSheild[press](this, button);
-						}
-
 						this[press] && this[press]( button );
 					}
 				}
@@ -2519,7 +2530,7 @@ export class PointActor extends View
 
 		if(!this.willJump)
 		{
-			if(this.yAxis < 0 || (this.args.standingOn && this.args.standingOn.quickDrop))
+			if(this.args.standingOn && this.args.standingOn.quickDrop)
 			{
 				this.ignores.set(this.args.standingOn, 15);
 
@@ -2762,6 +2773,8 @@ export class PointActor extends View
 		this.noClip = true;
 
 		this.args.ySpeed = -12;
+
+		this.focused = this.cofocused = null;
 
 		if(this.y > this.viewport.meta.deathLine)
 		{

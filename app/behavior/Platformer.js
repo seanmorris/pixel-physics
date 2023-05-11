@@ -15,6 +15,8 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		this.stepsTaken = 0;
+
 		if(host.knocked)
 		{
 			host.args.knocked = Math.sign(host.args.xSpeed || host.args.gSpeed);
@@ -993,7 +995,7 @@ export class Platformer
 					host.args.gSpeed = host.args.gSpeed || host.args.xSpeed;
 				}
 			}
-			else if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
+			else if(!host.noClip && !host.args.climbing && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
 			{
 				host.args.falling = !host.args.float && !this.checkBelow(host) || host.args.falling;
 			}
@@ -1816,11 +1818,11 @@ export class Platformer
 					host.args.moving = false;
 					host.args.gSpeed = 0.15 * Math.sign(host.args.gSpeed);
 
-					if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
-					{
-						host.args.mode = MODE_FLOOR;
-						host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
-					}
+					// if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
+					// {
+					// 	host.args.mode = MODE_FLOOR;
+					// 	host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
+					// }
 
 					break;
 				}
@@ -1845,14 +1847,18 @@ export class Platformer
 							// 	host.args.x += (headBlock - host.args.width) * Math.sign(gSpeed);
 							// }
 							// else
-							if(Math.abs(gSpeed) < radius)
+
+							const stepsLeft   = Math.max(1, Math.abs(gSpeed) - Math.abs(this.stepsTaken));
+							const impulseLeft = stepsLeft * Math.sign(gSpeed);
+
+							if(0&&stepsLeft < radius)
 							{
-								host.args.x += radius * Math.sign(gSpeed);
+								host.args.x += (radius - stepsLeft) * Math.sign(gSpeed);
 							}
 							else
 							{
-								host.args.x +=  gSpeed * Math.cos(gAngle);
-								host.args.y += -gSpeed * Math.sin(gAngle);
+								host.args.x +=  impulseLeft * Math.cos(gAngle);
+								host.args.y += -impulseLeft * Math.sin(gAngle);
 							}
 
 							host.args.xSpeed =  gSpeed * Math.cos(gAngle);
@@ -2024,7 +2030,7 @@ export class Platformer
 							break;
 					}
 
-					host.args.gSpeed = 0;
+					// host.args.gSpeed = 0;
 
 					break;
 				}
@@ -2225,23 +2231,32 @@ export class Platformer
 					}
 					else if(!host.args.grinding && !host.args.rolling && (!host.xAxis || (pushBack && Math.abs(host.args.gSpeed) > 6)))
 					{
-						host.args.gSpeed -= decel * 1/drag * Math.sign(host.args.gSpeed);
+						const step = decel * 1/drag * Math.sign(host.args.gSpeed);
+
+						if(Math.abs(host.args.gSpeed) > Math.abs(step))
+						{
+							host.args.gSpeed -= step;
+						}
+						else
+						{
+							host.args.gSpeed = 0;
+						}
 					}
 
-					if(Math.abs(host.args.gSpeed) < 0.1)
+					if(Math.abs(host.args.gSpeed) < 0.1 || (pushBack && Math.abs(host.args.gSpeed) < 1))
 					{
 						host.args.gSpeed = 0;
 					}
 				}
 			}
 
-			if(!pushFoward && Math.abs(host.args.gSpeed) < 1)
-			{
-				if(!host.args.wallSticking)
-				{
-					host.args.gSpeed = 0;
-				}
-			}
+			// if(!pushFoward && Math.abs(host.args.gSpeed) < 1)
+			// {
+			// 	if(!host.args.climbing && !host.args.wallSticking)
+			// 	{
+			// 		// host.args.gSpeed = 0;
+			// 	}
+			// }
 
 			let slopeFactor = 0;
 
@@ -3684,6 +3699,8 @@ export class Platformer
 			{
 				prevDown = downFirstSolid;
 			}
+
+			this.stepsTaken++;
 
 			// if(upFirstSpace !== false)
 			// {

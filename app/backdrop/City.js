@@ -42,7 +42,7 @@ export class City extends Backdrop
 			, {
 				autoscroll: 0.0
 				, parallax: 0.2
-				, url:      '/bttf2/city/buildings-fg.png'
+				, url:      '/bttf2/city/buildings-fg-recolor.png'
 				, height:   32
 			}
 		];

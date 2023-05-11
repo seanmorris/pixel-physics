@@ -2410,7 +2410,7 @@ export class Viewport extends View
 
 		if(actor.args.standingOn)
 		{
-			groundBias = actor.args.standingOn.args.cameraBias
+			groundBias = actor.args.standingOn.args.cameraBias;
 
 			if(actor.args.standingOn.isVehicle)
 			{
@@ -2784,8 +2784,23 @@ export class Viewport extends View
 
 		const center = actor.rotatePoint(0, -actor.args.height / 2);
 
-		const actorX = center[0] + -actor.args.x;
-		const actorY = center[1] + -actor.args.y;
+		if(actor.cofocused)
+		{
+			if(!actor.cofocusPoint)
+			{
+				actor.cofocusPoint = {};
+			}
+
+			actor.cofocusPoint.x = (actor.args.x + actor.cofocused.args.x) * 0.5;
+			actor.cofocusPoint.y = (actor.args.y + actor.cofocused.args.y) * 0.5;
+		}
+		else
+		{
+			actor.cofocusPoint = null;
+		}
+
+		const actorX = center[0] + (actor.cofocused ? -actor.cofocusPoint.x : -actor.args.x);
+		const actorY = center[1] + (actor.cofocused ? -actor.cofocusPoint.y : -actor.args.y);
 
 		const xNext = actorX + center[0] + this.args.width  * Number(this.args.xOffset);
 		const yNext = actorY + center[1] + this.args.height * Number(this.args.yOffset);
@@ -2868,15 +2883,16 @@ export class Viewport extends View
 
 			const blurDenominator = 6;
 
-			let xBlur = ((Number(xMoved) / blurDenominator) ** 2);
-			let yBlur = ((Number(yMoved) / blurDenominator) ** 2);
+			let xBlur = (Number(xMoved) / blurDenominator) ** 2;
+			let yBlur = (Number(yMoved) / blurDenominator) ** 2;
 
 			const maxBlur = 32;
 
 			xBlur = xBlur < maxBlur ? xBlur : maxBlur;
 			yBlur = yBlur < maxBlur ? yBlur : maxBlur;
 
-			let blur = (Math.hypot(xBlur, yBlur) / 3);
+			let blur = Math.max(0, -1 + 0.25 * Math.hypot(xBlur, yBlur));
+
 			const blurAngle = Math.atan2(yMoved, xMoved);
 
 			if(this.args.frozen > 0)
@@ -2890,7 +2906,7 @@ export class Viewport extends View
 				this.tags.blurAngleFg.setAttribute('style', `transform:rotate(calc(1rad * ${blurAngle}))`);
 				this.tags.blurAngleCancel.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
 				this.tags.blurAngleCancelFg.setAttribute('style', `transform:rotate(calc(-1rad * ${blurAngle}))`);
-				this.tags.blur.setAttribute('stdDeviation', `${(blur * 0.75) - 1}, 0`);
+				this.tags.blur.setAttribute('stdDeviation', `${blur}, 0`);
 			}
 			else
 			{

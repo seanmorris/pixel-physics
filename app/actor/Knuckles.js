@@ -731,17 +731,7 @@ export class Knuckles extends PointActor
 	{
 		this.args.bellySliding = false;
 
-		if(this.args.falling && Math.abs(this.yAxis) > 0.55)
-		{
-			return;
-		}
-
 		super.command_0();
-
-		if(this.yAxis > 0.55)
-		{
-			return;
-		}
 
 		if(this.args.hangingFrom || !this.args.jumping || this.willPunch || !this.args.falling)
 		{

@@ -249,6 +249,13 @@ import { ChaoDetailer } from './actor/ChaoDetailer';
 import { Angel } from './actor/Angel';
 import { Flag } from './actor/Flag';
 
+import { GiantTire } from './actor/GiantTire';
+import { TruckBody } from './actor/TruckBody';
+import { TruckCab } from './actor/TruckCab';
+
+import { Dolphin } from './actor/Dolphin';
+import { Herculad } from './actor/Herculad';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -446,4 +453,9 @@ export const ObjectPalette = {
 	, 'cross-cannon': CrossCannon
 	, 'tumbler': Tumbler
 	, 'flag': Flag
+	, 'giant-tire': GiantTire
+	, 'truck-body': TruckBody
+	, 'truck-cab': TruckCab
+	, 'dolphin': Dolphin
+	, 'herculad': Herculad
 };

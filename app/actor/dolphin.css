@@ -1,0 +1,33 @@
+/* .actor-item.actor-giant-tire {
+	z-index: 2;
+} */
+
+.actor-item.actor-dolphin .sprite {
+	width:  64px;
+	height: 64px;
+}
+
+.actor-item.actor-dolphin .sprite::after {
+	position: absolute;
+	left: 0;
+	top: 0;
+	content: '';
+	width:  64px;
+	height: 64px;
+	background-image: url(/Sonic/dolphin.png);
+	transform: rotate(0deg);
+}
+
+.actor-item.actor-dolphin-downward .sprite::after {
+	width:  64px;
+	height: 64px;
+	/* background-image: url(/Sonic/dolphin.png); */
+	background-position-y: -64px;
+	transform: rotate(360deg);
+	transform-origin: 32px 48px;
+	transition: transform 300ms ease-in-out;
+}
+
+@keyframes dolphin-twirl {
+
+}
