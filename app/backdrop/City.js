@@ -11,19 +11,25 @@ export class City extends Backdrop
 		this.args.strips = [
 			{
 				autoscroll: 0.0
-				, parallax: 0.02
+				, parallax: 0.096
 				, url:      '/bttf2/city/sky.png'
 				, height:   85
 			}
 			, {
 				autoscroll: 0.0
-				, parallax: 0.018
+				, parallax: 0.064
 				, url:      '/bttf2/city/sky.png'
 				, height:   85
 			}
 			, {
 				autoscroll: 0.0
-				, parallax: 0.016
+				, parallax: 0.048
+				, url:      '/bttf2/city/sky.png'
+				, height:   85
+			}
+			, {
+				autoscroll: 0.0
+				, parallax: 0.032
 				, url:      '/bttf2/city/sky.png'
 				, height:   85
 			}
@@ -43,7 +49,7 @@ export class City extends Backdrop
 				autoscroll: 0.0
 				, parallax: 0.2
 				, url:      '/bttf2/city/buildings-fg-recolor.png'
-				, height:   32
+				, height:   64
 			}
 		];
 	}

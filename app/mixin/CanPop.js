@@ -139,9 +139,8 @@ export class CanPop
 
 		viewport.particles.add(explosion);
 
-		setTimeout(() => viewport.particles.remove(explosion), 512);
-
-		setTimeout(() => this.screen && this.screen.remove(), 1024);
+		viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+		viewport.onFrameOut(90, () => this.screen && this.screen.remove());
 
 		this.box && this.box.setAttribute('data-animation', 'broken');
 
@@ -185,7 +184,14 @@ export class CanPop
 
 				const reward = {label: this.name || this.args.name, points, multiplier:1};
 
-				if(other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
+				if(this.args.gold)
+				{
+					reward.label   = 'Gold ' + reward.label;
+					reward.color   = 'orange';
+					reward.special = true;
+				}
+
+				if(!other.isVehicle && other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
 				{
 					other.args.cameraMode = 'popping';
 				}

@@ -13935,6 +13935,7 @@ const videoMenu = parent => ({
       revert: value => parent.settings.outline = 1,
       set: value => parent.settings.outline = value,
       get: () => parent.settings.outline,
+      step: 0.5,
       max: 15,
       min: 0
     }
@@ -14515,6 +14516,7 @@ var _Projectile = require("./actor/Projectile");
 var _TextActor = require("./actor/TextActor");
 var _EggMobile = require("./actor/EggMobile");
 var _SnowBoard = require("./actor/SnowBoard");
+var _SkateBoard = require("./actor/SkateBoard");
 var _DrillCar = require("./actor/DrillCar");
 var _Tornado = require("./actor/Tornado");
 var _RailCar = require("./actor/RailCar");
@@ -14609,6 +14611,8 @@ var _TruckBody = require("./actor/TruckBody");
 var _TruckCab = require("./actor/TruckCab");
 var _Dolphin = require("./actor/Dolphin");
 var _Herculad = require("./actor/Herculad");
+var _Chopper = require("./actor/Chopper");
+var _TrickRamp = require("./actor/TrickRamp");
 // Newtron
 // Bomb
 
@@ -14647,6 +14651,7 @@ const ObjectPalette = {
   'tornado': _Tornado.Tornado,
   'egg-walker': _EggWalker.EggWalker,
   'snow-board': _SnowBoard.SnowBoard,
+  'skate-board': _SkateBoard.SkateBoard,
   'egg-mobile': _EggMobile.EggMobile,
   'egg-shuttle': _EggShuttle.EggShuttle,
   'pogo-spring': _PogoSpring.PogoSpring,
@@ -14817,7 +14822,9 @@ const ObjectPalette = {
   'truck-body': _TruckBody.TruckBody,
   'truck-cab': _TruckCab.TruckCab,
   'dolphin': _Dolphin.Dolphin,
-  'herculad': _Herculad.Herculad
+  'herculad': _Herculad.Herculad,
+  'chopper': _Chopper.Chopper,
+  'trick-ramp': _TrickRamp.TrickRamp
 };
 exports.ObjectPalette = ObjectPalette;
 });
@@ -21066,6 +21073,185 @@ let ChaoDetailer = /*#__PURE__*/function (_Block) {
 exports.ChaoDetailer = ChaoDetailer;
 });
 
+;require.register("actor/Chopper.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Chopper = void 0;
+var _PointActor = require("./PointActor");
+var _Tag = require("curvature/base/Tag");
+var _Mixin = require("curvature/base/Mixin");
+var _Sfx = require("../audio/Sfx");
+var _SkateBoard = require("./SkateBoard");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let Chopper = /*#__PURE__*/function (_Mixin$from) {
+  _inherits(Chopper, _Mixin$from);
+  var _super = _createSuper(Chopper);
+  function Chopper() {
+    var _this;
+    _classCallCheck(this, Chopper);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.type = 'actor-item actor-chopper';
+    _this.args.width = 160;
+    _this.args.height = 96;
+    _this.args.gravity = 0.325;
+    _this.args.float = -1;
+    _this.args.direction = 1;
+    _this.exploded = false;
+    _this.explosions = new Set();
+    _this.contains = new Set();
+    _this.args.xSpeed = 8;
+    _this.args.ySpeed = 6;
+    _this.args.color = Math.trunc(8 * Math.random());
+    _this.playingSound = false;
+    return _this;
+  }
+  _createClass(Chopper, [{
+    key: "onRendered",
+    value: function onRendered(event) {
+      _get(_getPrototypeOf(Chopper.prototype), "onRendered", this).call(this, event);
+      this.autoStyle.get(this.box)['--color'] = 'color';
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      if (this.viewport.controlActor) {
+        this.contains.add(this.viewport.controlActor);
+      }
+      if (this.viewport.controlActor) {
+        const actor = this.viewport.controlActor;
+
+        // this.args.xSpeed += 0.1 * actor.xAxis;
+        // this.args.ySpeed += 0.1 * actor.yAxis;
+      }
+
+      if (this.args.ySpeed > -4) {
+        this.args.ySpeed -= 0.025;
+      }
+      for (const explosion of this.explosions) {
+        explosion.style({
+          '--x': this.args.x + explosion.x * this.args.direction,
+          '--y': this.args.y
+        });
+      }
+      if (!this.exploded) {
+        if (!this.playingSound && this.viewport.args.audio, this.viewport.args.frameId - this.playingSound > 10) {
+          this.playingSound = this.viewport.args.frameId;
+          _Sfx.Sfx.play('COPTER_SPIN', {});
+        }
+        for (const actor of this.contains) {
+          actor.args.float = -1;
+          actor.args.x = this.args.x; // + 24 * this.args.direction;
+          actor.args.y = this.args.y;
+          actor.args.hidden = true;
+          actor.args.xSpeed = this.args.xSpeed;
+          actor.args.ySpeed = this.args.ySpeed;
+        }
+      } else {
+        _Sfx.Sfx.stop('COPTER_SPIN', false);
+        this.args.float = 0;
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        return;
+      }
+      _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+      if (this.viewport && this.age && this.age % 300 === 0) {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        explosion.style({
+          '--x': this.args.x + 18 * this.args.direction,
+          '--y': this.args.y - 16
+        });
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        const viewport = this.viewport;
+        this.viewport.onFrameOut(200, () => {
+          viewport.actors.remove(this);
+        });
+        this.viewport.onFrameOut(10, () => {
+          this.noClip = true;
+          // viewport.actors.remove(this)
+          for (const actor of this.contains) {
+            this.args.xSpeed = 4;
+            this.args.ySpeed = 1;
+            actor.args.ySpeed = -10;
+            actor.args.xSpeed = 0;
+            actor.args.hidden = false;
+            actor.args.float = 0;
+          }
+        });
+        this.args.animation = 'exploded';
+        explosion.x = +18;
+        this.explosions.add(explosion);
+        this.exploded = true;
+        this.viewport.particles.add(explosion);
+        this.viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+        const board = new _SkateBoard.SkateBoard({
+          x: this.args.x,
+          y: this.args.y,
+          ySpeed: -10,
+          xSpeed: 4 * Math.sign(this.args.xSpeed),
+          groundAngle: Math.PI / 4
+        });
+        this.viewport.controlActor.args.standingOn = board;
+        this.viewport.spawn.add({
+          object: board
+        });
+      }
+      if (this.viewport && this.age && this.age % 290 === 0) {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        this.explosions.add(explosion);
+        explosion.style({
+          '--x': this.args.x + 36 * this.args.direction,
+          '--y': this.args.y - 32
+        });
+        explosion.x = 36;
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        this.viewport.particles.add(explosion);
+        this.viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+      }
+      if (this.viewport && this.age && this.age % 295 === 0) {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        this.explosions.add(explosion);
+        explosion.style({
+          '--x': this.args.x + 0 * this.args.direction,
+          '--y': this.args.y - 24
+        });
+        explosion.x = 0;
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        this.viewport.particles.add(explosion);
+        this.viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+      }
+      this.args.falling = true;
+    }
+  }]);
+  return Chopper;
+}(_Mixin.Mixin.from(_PointActor.PointActor));
+exports.Chopper = Chopper;
+});
+
 ;require.register("actor/Cinematic.js", function(exports, require, module) {
 "use strict";
 
@@ -21756,8 +21942,18 @@ let CrossCannon = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
-      if (this.holding.has(other) || !other.controllable) {
+      if (!other.controllable) {
+        return;
+      }
+      other.args.falling = true;
+      if (this.holding.has(other)) {
         return false;
+      }
+      if (other.isVehicle) {
+        other = other.occupant;
+      }
+      if (other.args.standingOn) {
+        other.args.standingOn = null;
       }
       _Sfx.Sfx.play('SS_BWIP');
       if (type === -1 || type % 2 === 0) {
@@ -25071,7 +25267,10 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
         _get(_getPrototypeOf(GiantTire.prototype), "updateStart", this).call(this);
         return;
       }
-      const other = this.viewport.controlActor;
+      let other = this.viewport.controlActor;
+      if (other.args.standingOn && other.args.standingOn.isVehicle) {
+        other = other.args.standingOn;
+      }
       if (!this.args.falling) {
         if (other.args.gSpeed && this.args.x > -128 + other.args.x) {
           this.args.gSpeed *= 0.99;
@@ -25858,11 +26057,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.Herculad = void 0;
 var _PointActor = require("./PointActor");
 var _Mixin = require("curvature/base/Mixin");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -25885,9 +26086,25 @@ let Herculad = /*#__PURE__*/function (_Mixin$from) {
     _this.args.width = 32;
     _this.args.height = 32;
     _this.args.gravity = 0.4;
+    _this.args.collected = false;
     return _this;
   }
-  return _createClass(Herculad);
+  _createClass(Herculad, [{
+    key: "onRendered",
+    value: function onRendered(event) {
+      _get(_getPrototypeOf(Herculad.prototype), "onRendered", this).call(this, event);
+      this.autoAttr.get(this.box)['data-collected'] = 'collected';
+    }
+  }, {
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (other.controllable) {
+        this.args.collected = 'collected';
+      }
+      _get(_getPrototypeOf(Herculad.prototype), "collideA", this).call(this, other, type);
+    }
+  }]);
+  return Herculad;
 }(_Mixin.Mixin.from(_PointActor.PointActor));
 exports.Herculad = Herculad;
 });
@@ -28957,7 +29174,7 @@ let Monitor = /*#__PURE__*/function (_PointActor) {
           points: 10,
           multiplier: 1
         };
-        if (other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed)) {
+        if (!other.isVehicle && other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed)) {
           other.args.cameraMode = 'popping';
         }
         other.args.popChain.push(reward);
@@ -29035,6 +29252,8 @@ let Monitor = /*#__PURE__*/function (_PointActor) {
           const jumping = other.args.jumping;
           const flying = other.args.flying;
           const xSpeed = other.args.xSpeed || other.args.gSpeed;
+          other.args.xSpeed = 0;
+          other.args.ySpeed = 0;
           viewport.onFrameOut(1, () => {
             if (ySpeed >= 0) {
               if (other.flyTime < 5) {
@@ -30497,6 +30716,7 @@ let PointActor = /*#__PURE__*/function (_View) {
     _this.args.angle = _this.args.angle || 0;
     _this.args.groundAngle = _this.args.groundAngle || 0;
     _this.args.displayAngle = 0;
+    _this.args.seatAngle = 0;
     _this.args.airAngle = 0;
     const lastAngles = [];
     Object.defineProperty(lastAngles, _Bindable.Bindable.NoGetters, {
@@ -30793,6 +31013,7 @@ let PointActor = /*#__PURE__*/function (_View) {
         '--fly-angle': 'flyAngle',
         '--display-angle': 'groundAngle8',
         '--ground-angle': 'groundAngle8',
+        '--seat-angle': 'seatAngle',
         '--ground-angle8': 'groundAngle8',
         '--air-angle': 'airAngle',
         '--corkscrew': 'corkscrew',
@@ -30888,12 +31109,13 @@ let PointActor = /*#__PURE__*/function (_View) {
   }, {
     key: "updateStart",
     value: function updateStart() {
-      if (this.isSuper || this.isHyper) {
+      if ((this.isSuper || this.isHyper) && !this.args.currentSheild instanceof _SuperSheild.SuperSheild) {
         const superSheild = new _SuperSheild.SuperSheild();
         superSheild.equip(this);
         this.inventory.add(superSheild);
       } else if (this.args.currentSheild && this.args.currentSheild instanceof _SuperSheild.SuperSheild) {
-        superSheild.unequip(this);
+        const superSheild = this.args.currentSheild;
+        superSheild && superSheild.unequip(this);
         this.args.currentSheild = null;
       }
       if (this.args.dead) {
@@ -35551,6 +35773,8 @@ let Signpost = /*#__PURE__*/function (_PointActor) {
     _this.args.active = false;
     _this.args.follow = false;
     _this.args.activeTime = 0;
+    _this.cleared = false;
+    _this.clearedBy = null;
     return _this;
   }
   _createClass(Signpost, [{
@@ -35559,30 +35783,47 @@ let Signpost = /*#__PURE__*/function (_PointActor) {
       if (!other.controllable || this.args.active) {
         return;
       }
-      if (other.args.popChain.length) {
-        if (!this.finishReward) {
-          this.finishReward = {
-            label: 'Big Finish',
-            points: 1000,
-            multiplier: 1
-          };
-          other.args.popChain.push(this.finishReward);
-        }
+      this.viewport.onFrameOut(10, () => {
+        this.args.active = true;
+        this.clearedBy = other;
+      });
+      if (this.following) {
+        return;
       }
-      this.viewport.onFrameOut(120, () => this.box.setAttribute('data-cleared-by', other.args.name));
-      // this.viewport.onFrameOut(90,  () => other.args.rolling = false);
-      this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH ${this.viewport.args.actName}`));
-      this.viewport.onFrameOut(540, () => {
-        // this.args.charStrings.length = 0;
-
-        other.args.ignore = 0;
+      if (!this.finishReward && other.args.popChain.length) {
+        this.finishReward = {
+          label: 'Big Finish',
+          points: 1000,
+          multiplier: 1,
+          color: 'yellow'
+        };
+        other.args.popChain.push(this.finishReward);
+      }
+      const yardsPerFrame = (other.args.gSpeed || other.args.xSpeed) / 32;
+      const feetPerSecond = yardsPerFrame * 60 * 3;
+      other.args.clearSpeed = Math.abs(feetPerSecond);
+      this.args.charStrings.push(new _CharacterString.CharacterString({
+        value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`
+      }));
+      this.following = other;
+      this.args.falling = true;
+      this.args.follow = true;
+      this.args.xSpeed = (other.args.gSpeed || other.args.xSpeed) * 1.1;
+      this.args.ySpeed = -7;
+      this.args.y--;
+    }
+  }, {
+    key: "clear",
+    value: function clear(other) {
+      this.cleared = true;
+      other.totalCombo();
+      this.box.setAttribute('data-cleared-by', other.args.name);
+      this.viewport.clearAct(`${other.args.name} GOT THROUGH\n${this.viewport.args.actName}`);
+      this.viewport.onFrameOut(30, () => {
         this.args.follow = false;
         if (!this.args.boss) {
           return;
         }
-      });
-      this.viewport.onFrameOut(30, () => {
-        other.args.ignore = -1;
       });
       this.viewport.onFrameOut(600, () => {
         if (!this.args.boss) {
@@ -35598,26 +35839,6 @@ let Signpost = /*#__PURE__*/function (_PointActor) {
         boss.args.phase = 'intro';
         other.args.clearSpeed = 0;
       });
-      const time = (this.viewport.args.frameId - this.viewport.args.startFrameId) / 60;
-      let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2, '0');
-      let seconds = String(Math.trunc(Math.abs(time) % 60)).padStart(2, '0');
-      const neg = time < 0 ? '-' : '';
-      if (neg) {
-        minutes = Number(minutes);
-      }
-      const yardsPerFrame = (other.args.gSpeed || other.args.xSpeed) / 32;
-      const feetPerSecond = yardsPerFrame * 60 * 3;
-      other.args.clearSpeed = Math.abs(feetPerSecond);
-      this.args.charStrings.push(new _CharacterString.CharacterString({
-        value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`
-      }));
-      this.following = other;
-      this.args.falling = true;
-      this.args.active = true;
-      this.args.follow = true;
-      this.args.xSpeed = (other.args.gSpeed || other.args.xSpeed) * 1.1;
-      this.args.ySpeed = -7;
-      this.args.y--;
     }
   }, {
     key: "update",
@@ -35662,6 +35883,9 @@ let Signpost = /*#__PURE__*/function (_PointActor) {
         }
       }
       _get(_getPrototypeOf(Signpost.prototype), "update", this).call(this);
+      if (this.args.active && !this.cleared) {
+        this.clear(this.clearedBy);
+      }
     }
   }, {
     key: "rotateLock",
@@ -35672,6 +35896,397 @@ let Signpost = /*#__PURE__*/function (_PointActor) {
   return Signpost;
 }(_PointActor2.PointActor);
 exports.Signpost = Signpost;
+});
+
+;require.register("actor/SkateBoard.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SkateBoard = void 0;
+var _SnowBoard2 = require("./SnowBoard");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let SkateBoard = /*#__PURE__*/function (_SnowBoard) {
+  _inherits(SkateBoard, _SnowBoard);
+  var _super = _createSuper(SkateBoard);
+  function SkateBoard() {
+    var _this;
+    _classCallCheck(this, SkateBoard);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.height = 10;
+    _this.args.width = 12;
+    _this.args.seatHeight = 12;
+    _this.sparks = new Set();
+    _this.args.accelOrig = 0.5;
+    _this.args.decelOrig = 0.6;
+    _this.args.decel = 0.6;
+    _this.args.accel = 0.8;
+    _this.args.gravity = 0.65;
+    _this.args.skidTraction = 0.85;
+    _this.args.jumpForce = 12.5;
+    _this.args.type = 'actor-item actor-snow-board actor-skate-board';
+    _this.args.trick = null;
+    _this.args.seatAngle = 0;
+    _this.args.gSpeedMax = 18;
+    _this.trickTimer = 0;
+    _this.flipReward = false;
+    _this.args.rotated = 0;
+    _this.canGrind = true;
+    _this.fakie = false;
+    _this.silentSkid = true;
+
+    // this.args.gravity = 0.1;
+
+    _this.bindTo('occupant', v => {
+      if (!v) return;
+      _this.args.gSpeed = v.xSpeedLast || 0;
+    });
+    _this.args.bindTo('trick', v => {
+      if (!_this.args.falling && v !== 'manual') {
+        return;
+      }
+      if (!v || _this.args.grinding) {
+        return;
+      }
+      const reward = {
+        label: '',
+        points: 100,
+        multiplier: 1
+      };
+      switch (v) {
+        case 'insult':
+          reward.label = (_this.fakie ? 'fakie ' : '') + 'leanback';
+          _this.occupant.args.popChain.push(reward);
+          _this.occupant.args.popCombo += 1;
+          break;
+        case 'handstand':
+          reward.label = (_this.fakie ? 'fakie ' : '') + 'handstand';
+          _this.occupant.args.popChain.push(reward);
+          _this.occupant.args.popCombo += 1;
+          break;
+        case 'manual':
+          if (_this.occupant.args.popCombo) {
+            reward.label = (_this.fakie ? 'fakie ' : '') + 'manual';
+            _this.occupant.args.popChain.push(reward);
+            _this.occupant.args.popCombo += 1;
+          }
+          break;
+      }
+    });
+    return _this;
+  }
+  _createClass(SkateBoard, [{
+    key: "update",
+    value: function update() {
+      if (!this.args.falling) {
+        this.args.rolling = this.args.mode === 1 && this.args.gSpeed > 0 || this.args.mode === 3 && this.args.gSpeed < 0 || Math.sign(this.args.gSpeed) === Math.sign(this.args.direction) && !this.xAxis;
+
+        // this.args.hLock = false;
+      } else {
+        if (this.args.jumping && this.fallTime === 1) {
+          this.args.groundAngle += Math.PI / 8;
+        }
+
+        // this.args.hLock   = this.modeLast === 0;
+        this.args.rolling = false;
+      }
+      if (!this.args.falling) {
+        this.flipReward = false;
+      }
+      if (!this.occupant) {
+        this.args.width = 64;
+        this.args.height = 12;
+      } else {
+        this.args.width = 24;
+        this.args.height = 40;
+      }
+      if (this.trickTimer > 0) {
+        this.trickTimer--;
+      } else {
+        this.args.trick = null;
+        this.trickTimer = 0;
+      }
+
+      // if(this.args.falling && Math.abs(this.yAxis) > 0.55)
+      // {
+      // 	const dir = (this.args.facing === 'left'?-1:1);
+
+      // 	if(this.yAxis)
+      // 	{
+      // 		this.args.groundAngle += 0.1 * this.yAxis * dir;
+      // 	}
+
+      // 	if(this.yAxis > 0 && Math.abs(this.args.groundAngle) > Math.PI * 2)
+      // 	{
+      // 		const reward = {label:(this.fakie ? 'fakie ' : '') + 'backflip', points:100, multiplier:1};
+      // 		this.occupant.args.popChain.push(reward);
+      // 		this.occupant.args.popCombo += 1;
+      // 		this.flipReward = true;
+
+      // 		console.log(reward);
+
+      // 		this.args.groundAngle = 0;
+      // 	}
+      // 	else if(this.yAxis < 0 && Math.abs(this.args.groundAngle) > Math.PI * 2)
+      // 	{
+      // 		const reward = {label:(this.fakie ? 'fakie ' : '') + 'frontflip', points:100, multiplier:1};
+      // 		this.occupant.args.popChain.push(reward);
+      // 		this.occupant.args.popCombo += 1;
+      // 		this.flipReward = true;
+
+      // 		console.log(reward);
+
+      // 		this.args.groundAngle = 0;
+      // 	}
+      // }
+
+      _get(_getPrototypeOf(SkateBoard.prototype), "update", this).call(this);
+      if (this.args.falling) {
+        this.args.rotated = this.args.groundAngle;
+      } else {
+        this.fakie = this.args.reversing;
+        if (this.groundTime === 2 && this.occupant) {
+          const occupant = this.occupant;
+          let dropAngle = this.realAngle;
+          let rotated = this.args.rotated;
+          while (rotated < 0) {
+            rotated += Math.PI * 2;
+          }
+          while (rotated > Math.PI * 2) {
+            rotated -= Math.PI * 2;
+          }
+          while (dropAngle < 0) {
+            dropAngle += Math.PI * 2;
+          }
+          while (dropAngle > Math.PI * 2) {
+            dropAngle -= Math.PI * 2;
+          }
+
+          // console.log(this.args.rotated, rotated, dropAngle);
+
+          const diff = Math.abs(rotated - dropAngle);
+          const upsidedown = Math.abs(rotated - Math.PI);
+          if (rotated && diff > Math.PI || upsidedown < Math.PI * 0.25) {
+            this.ignores.set(occupant, 30);
+            occupant.args.standingOn = null;
+            occupant.args.groundAngle = 0;
+            occupant.args.y -= Math.max(0, occupant.args.height * Math.cos(this.args.groundAngle));
+            occupant.startle();
+            occupant.totalCombo(false);
+          }
+
+          // console.log({rotated, dropAngle, diff, upsidedown, a: (diff > Math.PI), b: upsidedown < Math.PI * 0.35});
+
+          this.args.rotated = 0;
+        }
+      }
+      if (this.occupant && !this.trickTimer && !this.args.grinding && this.groundTime > 1 && this.args.trick !== 'manual') {
+        this.occupant.totalCombo();
+        this.args.trick = null;
+      }
+      this.ridingAnimation = this.args.gSpeed || this.args.xSpeed || this.args.ySpeed ? 'grinding' : 'standing';
+      if (this.idleTime > 30) {
+        this.ridingAnimation = 'idle';
+      }
+      this.crouching = false;
+      if (this.yAxis > 0.55 && !this.args.falling) {
+        this.ridingAnimation = 'grinding-crouching';
+        this.crouching = true;
+      }
+      this.args.accel = this.args.accelOrig;
+      this.args.decel = this.args.decelOrig;
+      if (this.crouching) {
+        // this.args.accel = accelOrig;
+        this.args.decel = 0.1;
+      }
+      this.args.animation = 'idle-2';
+      if (this.args.trick === 'handstand') {
+        this.ridingAnimation = 'handstand';
+        if (this.trickTimer > 20 || this.trickTimer < 10) {
+          this.ridingAnimation = 'flip';
+        }
+      }
+      if (!this.args.grinding && this.grindReward) {
+        this.grindReward = null;
+      }
+      if (this.args.grinding) {
+        this.ridingAnimation = 'board-grinding';
+        this.args.animation = 'grinding';
+        if (this.occupant && this.occupant.args.popCombo) {
+          if (!this.grindReward) {
+            const reward = {
+              label: (this.fakie ? 'fakie ' : '') + 'rail grind',
+              points: 100,
+              multiplier: 1
+            };
+            this.grindReward = reward;
+            this.occupant.args.popChain.push(reward);
+            this.occupant.args.popCombo += 1;
+          } else {
+            this.grindReward.points += 10;
+          }
+        }
+      } else if (this.args.trick === 'manual' && !this.args.falling) {
+        this.ridingAnimation = 'manual';
+        this.args.animation = 'manual';
+      } else if (this.args.trick === 'insult') {
+        this.ridingAnimation = 'insult';
+      }
+      if (this.args.grinding && !this.args.falling) {
+        // `<div class = "particle-sparks">`
+
+        const sparkTag = document.createElement('div');
+        sparkTag.classList.add('particle-sparks');
+        const sparkParticle = new _Tag.Tag(sparkTag);
+
+        // `<div class = "envelope-sparks">`
+        const envelopeTag = document.createElement('div');
+        envelopeTag.classList.add('envelope-sparks');
+        const sparkEnvelope = new _Tag.Tag(envelopeTag);
+        sparkEnvelope.appendChild(sparkParticle.node);
+        const sparkPoint = this.rotatePoint(10 * 1.75 * this.args.direction, 8);
+        const flip = Math.sign(this.args.gSpeed);
+        sparkEnvelope.style({
+          '--x': sparkPoint[0] + this.args.x,
+          '--y': sparkPoint[1] + this.args.y + Math.random() * -3,
+          'z-index': 0,
+          'animation-delay': -Math.random() * 0.25 + 's',
+          '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip,
+          '--flip': flip,
+          '--angle': this.realAngle,
+          opacity: Math.random() * 2
+        });
+        sparkEnvelope.particle = sparkParticle;
+        this.viewport.particles.add(sparkEnvelope);
+        this.sparks.add(sparkEnvelope);
+        const viewport = this.viewport;
+        this.viewport.onFrameOut(30, () => {
+          viewport.particles.remove(sparkEnvelope);
+          this.sparks.delete(sparkEnvelope);
+        });
+      }
+    }
+  }, {
+    key: "command_1",
+    value: function command_1() {
+      if (this.args.grinding) {
+        return;
+      }
+      if (this.trickTimer > 10) {
+        return;
+      }
+      this.args.trick = 'insult';
+      this.trickTimer = 30;
+    }
+  }, {
+    key: "hold_1",
+    value: function hold_1() {
+      if (this.trickTimer > 10 || this.args.trick !== 'insult') {
+        return;
+      }
+      this.trickTimer = Math.max(15, this.trickTimer);
+      this.idleTime = 10;
+    }
+  }, {
+    key: "release_1",
+    value: function release_1() {
+      if (this.args.trick !== 'insult') {
+        return;
+      }
+      this.args.trick = 'insult';
+      this.trickTimer = 10;
+    }
+  }, {
+    key: "command_2",
+    value: function command_2() {
+      if (this.trickTimer > 10) {
+        return;
+      }
+      this.args.trick = 'handstand';
+      this.trickTimer = 30;
+    }
+  }, {
+    key: "hold_2",
+    value: function hold_2() {
+      if (this.trickTimer > 10 || this.args.trick !== 'handstand') {
+        return;
+      }
+      this.args.trick = 'handstand';
+      this.trickTimer = Math.max(15, this.trickTimer);
+      this.idleTime = 10;
+    }
+  }, {
+    key: "release_2",
+    value: function release_2() {
+      if (this.args.trick !== 'handstand') {
+        return;
+      }
+      this.trickTimer = 10;
+    }
+  }, {
+    key: "command_3",
+    value: function command_3() {
+      if (this.args.grinding) {
+        return;
+      }
+      if (this.args.trick && this.args.falling && this.args.trick !== 'manual') {
+        return;
+      }
+      if (this.trickTimer > 10) {
+        return;
+      }
+      this.args.trick = 'manual';
+      this.trickTimer = 30;
+    }
+  }, {
+    key: "hold_3",
+    value: function hold_3() {
+      if (this.args.falling && this.args.trick === 'manual') {
+        this.trickTimer = Math.max(15, this.trickTimer);
+        return;
+      }
+      if (this.args.falling || this.args.trick !== 'manual') {
+        return;
+      }
+      if (this.trickTimer > 10 && this.args.trick !== 'manual') {
+        return;
+      }
+      this.args.trick = 'manual';
+      this.trickTimer = Math.max(15, this.trickTimer);
+      this.idleTime = 10;
+    }
+  }, {
+    key: "release_3",
+    value: function release_3() {
+      if (this.args.trick !== 'manual') {
+        return;
+      }
+      this.args.trick = 'manual';
+      this.trickTimer = 10;
+    }
+  }]);
+  return SkateBoard;
+}(_SnowBoard2.SnowBoard);
+exports.SkateBoard = SkateBoard;
 });
 
 ;require.register("actor/Skull.js", function(exports, require, module) {
@@ -36360,6 +36975,9 @@ let Sonic = /*#__PURE__*/function (_PointActor) {
       if (this.args.falling && this.isHyper && this.dashed && this.yAxis < -0.5) {
         this.args.ySpeed -= 0.6;
       }
+      if (!this.args.falling && this.groundTime > 3 || this.args.falling && this.fallTime > 90) {
+        this.args.trickRamp = false;
+      }
       if (this.args.dead) {
         this.args.animation = 'dead';
         _get(_getPrototypeOf(Sonic.prototype), "update", this).call(this);
@@ -36664,8 +37282,8 @@ let Sonic = /*#__PURE__*/function (_PointActor) {
           const sparkPoint = this.rotatePoint(-this.args.gSpeed * 1.75 * this.args.direction, 8);
           const flip = Math.sign(this.args.gSpeed);
           sparkEnvelope.style({
-            '--x': sparkPoint[0] + this.x,
-            '--y': sparkPoint[1] + this.y + Math.random * -3,
+            '--x': sparkPoint[0] + this.args.x,
+            '--y': sparkPoint[1] + this.args.y + Math.random() * -3,
             'z-index': 0,
             'animation-delay': -Math.random() * 0.25 + 's',
             '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip,
@@ -36783,6 +37401,9 @@ let Sonic = /*#__PURE__*/function (_PointActor) {
       }
       if (this.args.sliding) {
         this.args.animation = 'sliding';
+      }
+      if (this.args.trickRamp) {
+        this.args.animation = 'adventure-pose';
       }
     }
   }, {
@@ -37022,7 +37643,7 @@ let Sonic = /*#__PURE__*/function (_PointActor) {
       if (this.spindashCharge < 5 && (this.args.modeTime < 45 || this.args.skidding)) {
         this.spindashCharge = 15;
       }
-      const direction = this.args.direction || Math.sign(this.xSpeedLast);
+      const direction = this.args.facing === 'left' ? -1 : 1;
       let dashPower = this.spindashCharge / 40;
       if (dashPower > 1) {
         dashPower = 1;
@@ -39096,7 +39717,7 @@ let Springboard = /*#__PURE__*/function (_PointActor) {
   _createClass(Springboard, [{
     key: "collideA",
     value: function collideA(other, type) {
-      if (!other.controllable || this.args.ignore) {
+      if (this.args.ignore) {
         return;
       }
       let power = Math.min(1, Math.max(0, 1 + (-this.x + -26 + other.x) / 56));
@@ -40670,6 +41291,7 @@ let TechnoSqueak = /*#__PURE__*/function (_Mixin$from) {
     value: function onRendered(event) {
       _get(_getPrototypeOf(TechnoSqueak.prototype), "onRendered", this).call(this, event);
       this.autoStyle.get(this.box)['--tailOffset'] = 'tailOffset';
+      this.autoAttr.get(this.box)['data-color'] = 'color';
     }
   }, {
     key: "update",
@@ -41428,6 +42050,93 @@ let Tree = /*#__PURE__*/function (_PointActor) {
 exports.Tree = Tree;
 });
 
+;require.register("actor/TrickRamp.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TrickRamp = void 0;
+var _PointActor2 = require("./PointActor");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let TrickRamp = /*#__PURE__*/function (_PointActor) {
+  _inherits(TrickRamp, _PointActor);
+  var _super = _createSuper(TrickRamp);
+  function TrickRamp() {
+    var _this;
+    _classCallCheck(this, TrickRamp);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.type = 'actor-item actor-trick-ramp';
+    _this.args.width = _this.args.width || 64;
+    _this.args.height = _this.args.height || 64;
+    _this.args.float = -1;
+    _this.args.static = 1;
+    _this.args.power = _this.args.power || 24;
+    // this.args.hidden  = true;
+    return _this;
+  }
+  _createClass(TrickRamp, [{
+    key: "collideA",
+    value: function collideA(other) {
+      if (Math.abs(other.args.gSpeed) < 8 || other.args.x < this.args.x) {
+        return;
+      }
+      if (other.willJump || other.args.rolling) {
+        if (!other.args.falling) {
+          const reward = {
+            label: 'OFF THE RAMP',
+            points: 100,
+            multiplier: 1,
+            color: 'orange',
+            special: true
+          };
+          other.args.popChain.push(reward);
+          other.args.popCombo += 1;
+        }
+        const dir = Math.sign(other.args.gSpeed || other.gSpeedLast);
+        ;
+        other.args.trickRamp = true;
+        other.args.ignore = 5;
+        other.args.xSpeed = this.args.power * dir;
+        other.args.ySpeed = -this.args.power * 0.65;
+        other.args.float = 18;
+        other.args.y -= 5;
+        other.args.rolling = true;
+        other.args.falling = true;
+        other.willJump = false;
+      }
+    }
+  }], [{
+    key: "fromDef",
+    value: function fromDef(objDef) {
+      const obj = _get(_getPrototypeOf(TrickRamp), "fromDef", this).call(this, objDef);
+      obj.args.width = objDef.width;
+      obj.args.height = objDef.height;
+      return obj;
+    }
+  }]);
+  return TrickRamp;
+}(_PointActor2.PointActor);
+exports.TrickRamp = TrickRamp;
+});
+
 ;require.register("actor/TruckBody.js", function(exports, require, module) {
 "use strict";
 
@@ -41599,14 +42308,14 @@ let Tumbler = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
-      if (!other.controllable || this.args.falling) {
+      if (!other.controllable && !other.isVehicle || this.args.falling) {
         return;
       }
       const speed = other.args.gSpeed || other.args.xSpeed;
       if (Math.abs(speed) > 8) {
         this.args.animation = 'tumbling';
         this.args.xSpeed = speed + 5 * Math.random();
-        this.args.ySpeed = -Math.abs(speed * 0.5) + -2 * Math.random();
+        this.args.ySpeed = -Math.abs(speed * 0.25) + -2 * Math.random();
         this.args.falling = true;
         this.tumbling = true;
         this.isGhost = true;
@@ -43281,6 +43990,8 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
         return item;
       }
     }));
+    _defineProperty(_assertThisInitialized(_this), "tracksPlaying", new Set());
+    _defineProperty(_assertThisInitialized(_this), "tracksPaused", new Set());
     return _this;
   }
   _createClass(AudioManager, [{
@@ -43439,8 +44150,9 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
         this.playing = selected;
         this.stack.push(this.playing);
         const onCompleted = event => {
-          this.stack.pop();
           this.playing = this.stack[this.stack.length - 1];
+          this.tracksPlaying.delete(selected);
+          this.stack.pop();
           this.play();
         };
         if (!loop) {
@@ -43463,12 +44175,15 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
         Promise.all(this.request).then(() => {
           // const detail = this.id3.get(selected);
         });
+        this.tracksPlaying.add(selected);
+        return true;
       }
     }
   }, {
     key: "stop",
     value: function stop() {
       let tag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      let requeue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       if (tag === null && this.playing) {
         this.playing.pause();
         this.playing = null;
@@ -43494,9 +44209,11 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
           }
         }
       }
-      this.playing = this.stack[this.stack.length - 1];
-      if (this.playing) {
-        this.play(this.tags.get(this.playing));
+      if (requeue) {
+        this.playing = this.stack[this.stack.length - 1];
+        if (this.playing) {
+          this.play(this.tags.get(this.playing));
+        }
       }
     }
   }, {
@@ -43514,7 +44231,12 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
       if (!this.dispatchEvent(pause)) {
         return;
       }
-      this.playing.pause();
+      for (const track of this.tracksPlaying) {
+        this.tracksPaused.add(track);
+        track.pause();
+      }
+
+      // this.playing.pause();
     }
   }, {
     key: "unpause",
@@ -43531,7 +44253,16 @@ let AudioManager = /*#__PURE__*/function (_Mixin$with) {
       if (!this.dispatchEvent(unpause)) {
         return;
       }
-      this.playing && this.playing.play();
+      for (const track of this.tracksPaused) {
+        this.tracksPaused.delete(track);
+        if (track.played && track.played < 1) {
+          track.play();
+        } else {
+          this.tracksPaused.delete(track);
+        }
+      }
+
+      // this.playing && this.playing.play();
     }
   }, {
     key: "fadeOut",
@@ -43624,6 +44355,8 @@ let BgmHandler = /*#__PURE__*/function (_Mixin$with) {
         return item;
       }
     }));
+    _defineProperty(_assertThisInitialized(_this), "downloads", new Map());
+    _defineProperty(_assertThisInitialized(_this), "cancels", new Map());
     return _this;
   }
   _createClass(BgmHandler, [{
@@ -43643,11 +44376,13 @@ let BgmHandler = /*#__PURE__*/function (_Mixin$with) {
         defer: true
       });
       getTags.addEventListener('error', event => event.preventDefault());
+      const getBlob = getTags.blob();
       this.pool.add(getTags);
-      this.request.push(getTags.blob().then(blob => Promise.all([blob.arrayBuffer(), URL.createObjectURL(blob)])).then(_ref => {
+      const registerTrack = getBlob.then(blob => Promise.all([blob.arrayBuffer(), URL.createObjectURL(blob)])).then(_ref => {
         let _ref2 = _slicedToArray(_ref, 2),
           buffer = _ref2[0],
           objectUrl = _ref2[1];
+        this.downloads.delete(tag);
         const list = Array(maxConcurrent).fill().map(x => new Audio(objectUrl));
         this.tracks.set(tag, list);
         const bytes = new Uint8Array(buffer);
@@ -43690,7 +44425,9 @@ let BgmHandler = /*#__PURE__*/function (_Mixin$with) {
         for (const track of list) {
           this.id3.set(track, tags);
         }
-      }));
+      });
+      this.request.push(registerTrack);
+      this.downloads.set(tag, registerTrack);
     }
   }, {
     key: "play",
@@ -43702,6 +44439,17 @@ let BgmHandler = /*#__PURE__*/function (_Mixin$with) {
         interlude = _ref3$interlude === void 0 ? false : _ref3$interlude,
         _ref3$dontClear = _ref3.dontClear,
         dontClear = _ref3$dontClear === void 0 ? false : _ref3$dontClear;
+      if (this.downloads.has(tag)) {
+        this.downloads.get(tag).then(() => {
+          this.downloads.delete(tag);
+          this.play(tag, {
+            loop: loop,
+            interlude: interlude,
+            dontClear: dontClear
+          });
+        });
+        return;
+      }
       if (this.tags.get(this.playing) !== tag && !interlude && !dontClear) {
         for (const track of this.stack) {
           track.pause();
@@ -44292,17 +45040,22 @@ let City = /*#__PURE__*/function (_Backdrop) {
     _this.args.name = 'city';
     _this.args.strips = [{
       autoscroll: 0.0,
-      parallax: 0.02,
+      parallax: 0.096,
       url: '/bttf2/city/sky.png',
       height: 85
     }, {
       autoscroll: 0.0,
-      parallax: 0.018,
+      parallax: 0.064,
       url: '/bttf2/city/sky.png',
       height: 85
     }, {
       autoscroll: 0.0,
-      parallax: 0.016,
+      parallax: 0.048,
+      url: '/bttf2/city/sky.png',
+      height: 85
+    }, {
+      autoscroll: 0.0,
+      parallax: 0.032,
       url: '/bttf2/city/sky.png',
       height: 85
     }, {
@@ -44319,7 +45072,7 @@ let City = /*#__PURE__*/function (_Backdrop) {
       autoscroll: 0.0,
       parallax: 0.2,
       url: '/bttf2/city/buildings-fg-recolor.png',
-      height: 32
+      height: 64
     }];
     return _this;
   }
@@ -46658,6 +47411,7 @@ let Platformer = /*#__PURE__*/function () {
         host.args.y--;
       }
       if (!host.args.falling) {
+        host.modeLast = host.args.mode;
         if (host.args.grinding) {
           host.args.wasGrinding = true;
         } else {
@@ -46678,7 +47432,7 @@ let Platformer = /*#__PURE__*/function () {
             grindRegion = true;
           }
         }
-        if (!host.controllable) {
+        if (!host.controllable && !host.canGrind) {
           host.args.grinding = false;
         } else if (layer && layer.meta.grinding) {
           host.args.grinding = true;
@@ -47825,7 +48579,7 @@ let Platformer = /*#__PURE__*/function () {
                   host.args.ySpeed = gSpeed * Math.cos(gAngle);
                   host.args.x += gSpeed * Math.sin(gAngle);
                   host.args.y += gSpeed * Math.cos(gAngle);
-                  if (!host.args.rolling && !host.args.grinding) {
+                  if (host.isVehicle || !host.args.rolling && !host.args.grinding) {
                     host.args.groundAngle = -Math.PI * 0.5;
                   } else {
                     host.args.x += radius;
@@ -47863,7 +48617,7 @@ let Platformer = /*#__PURE__*/function () {
                   host.args.ySpeed = -gSpeed * Math.cos(gAngle);
                   host.args.x += -gSpeed * Math.sin(gAngle);
                   host.args.y += -gSpeed * Math.cos(gAngle);
-                  if (!host.args.rolling && !host.args.grinding) {
+                  if (host.isVehicle || !host.args.rolling && !host.args.grinding) {
                     host.args.groundAngle = Math.PI * 0.5;
                   } else {
                     host.args.x -= radius;
@@ -48422,7 +49176,7 @@ let Platformer = /*#__PURE__*/function () {
         host.args.ySpeed = Math.max(0, host.args.ySpeed);
         return;
       }
-      if (host.controllable && host.args.ySpeed >= 0 && distances[2] && distances[2] <= host.args.width * 0.5 && distances[1] === false && distances[0] === false) {
+      if (host.args.ySpeed >= 0 && distances[2] && distances[2] <= host.args.width * 0.5 && distances[1] === false && distances[0] === false) {
         const dir = Math.sign(xSpeedOriginal);
         if (!host.getMapSolidAt(host.args.x + host.args.width * 0.5 * dir, host.args.y + 4)) {
           host.args.x += dir * Math.abs(distances[2]);
@@ -48588,6 +49342,9 @@ let Platformer = /*#__PURE__*/function () {
         if (angleIsWall && !host.willStick) {
           host.args.x -= host.args.width * 0.5 * Math.sign(xSpeedOriginal);
           host.args.falling = true;
+          if (hits.length > 2) {
+            host.args.xSpeed = 0;
+          }
         }
         blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
         if (Array.isArray(blockers)) {
@@ -49055,6 +49812,7 @@ let Platformer = /*#__PURE__*/function () {
   }, {
     key: "doJump",
     value: function doJump(host, force) {
+      var _host$args$gSpeed;
       if (host.args.ignore || host.args.falling || !host.args.landed || host.args.float) {
         return;
       }
@@ -49102,7 +49860,7 @@ let Platformer = /*#__PURE__*/function () {
           break;
       }
       let floorX = 0;
-      let gSpeedReal = host.args.gSpeed;
+      let gSpeedReal = (_host$args$gSpeed = host.args.gSpeed) !== null && _host$args$gSpeed !== void 0 ? _host$args$gSpeed : 0;
       if (host.args.standingOn && host.args.standingOn.args.convey) {
         gSpeedReal += host.args.standingOn.args.convey;
       }
@@ -49297,6 +50055,9 @@ let SkidDust = /*#__PURE__*/function (_Behavior) {
         if (!host.skidding) {
           return;
         }
+      }
+      if (host.silentSkid) {
+        return;
       }
       const viewport = host.viewport;
       const dustFreq = host.dustFreq || 3;
@@ -51548,8 +52309,12 @@ if (location.pathname === '/accept-sso') {
   _Bgm.Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3');
   _Bgm.Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');
   _Bgm.Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
+  _Bgm.Bgm.register('CITY_ESCAPE', '/audio/senoue-jun/city-escape.mp3');
   _Bgm.Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3');
   _Bgm.Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3');
+  _Bgm.Bgm.register('ACT_CLEAR', '/audio/gta-sa/mission-passed.mp3', {
+    volume: 1
+  });
   _Bgm.Bgm.register('NO_WAY', '/audio/sonic/no-way.mp3');
 
   /*** SFX ***/
@@ -51775,6 +52540,26 @@ if (location.pathname === '/accept-sso') {
     maxConcurrent: 3,
     volume: 0.5,
     fudgeFactor: 0.25
+  });
+  _Sfx.Sfx.register('COPTER_SPIN', '/Sonic/drill-car-copter.wav', {
+    maxConcurrent: 1,
+    volume: 0.5,
+    fudgeFactor: 0
+  });
+  _Sfx.Sfx.register('TOTAL_SCORE', '/Sonic/S3K_B0.wav', {
+    maxConcurrent: 1,
+    volume: 1,
+    fudgeFactor: 0
+  });
+  _Sfx.Sfx.register('TALLY_SCORE', '/Sonic/B00_00_05.WAV', {
+    maxConcurrent: 1,
+    volume: 0.5,
+    fudgeFactor: 0
+  });
+  _Sfx.Sfx.register('TALLY_SCORE', '/Sonic/027.Synth_MLT_menu_score menu text appear.wav', {
+    maxConcurrent: 1,
+    volume: 0.5,
+    fudgeFactor: 0
   });
 }
 });
@@ -53377,8 +54162,8 @@ let CanPop = /*#__PURE__*/function () {
         '--y': this.args.y - 16
       });
       viewport.particles.add(explosion);
-      setTimeout(() => viewport.particles.remove(explosion), 512);
-      setTimeout(() => this.screen && this.screen.remove(), 1024);
+      viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+      viewport.onFrameOut(90, () => this.screen && this.screen.remove());
       this.box && this.box.setAttribute('data-animation', 'broken');
       if (other && other.dashed) {
         if (Math.abs(other.args.xSpeed) > Math.abs(other.args.ySpeed)) {
@@ -53408,7 +54193,12 @@ let CanPop = /*#__PURE__*/function () {
             points: points,
             multiplier: 1
           };
-          if (other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed)) {
+          if (this.args.gold) {
+            reward.label = 'Gold ' + reward.label;
+            reward.color = 'orange';
+            reward.special = true;
+          }
+          if (!other.isVehicle && other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed)) {
             other.args.cameraMode = 'popping';
           }
           other.args.popCombo += 1;
@@ -57417,6 +58207,9 @@ let LoadingRegion = /*#__PURE__*/function (_Region) {
   _createClass(LoadingRegion, [{
     key: "updateActor",
     value: function updateActor(other) {
+      if (this.others.signpost && !this.others.signpost.args.active) {
+        return;
+      }
       if (!other.controllable) {
         return;
       }
@@ -57440,8 +58233,16 @@ let LoadingRegion = /*#__PURE__*/function (_Region) {
       const height = tileMap.mapData.height;
       const xAppend = this.args.x / 32 + this.args.xOffset;
       const yAppend = 0;
-      tileMap.resize(width + 9, height);
-      viewport.appendMap(this.args.map, xAppend, yAppend);
+
+      // tileMap.resize(width + 9, height);
+
+      if (this.others.signpost) {
+        viewport.appendMap(this.args.map, xAppend, yAppend);
+        // this.others.signpost.waitFor =
+      }
+
+      // viewport.args.zonecard.replay({});
+
       this.loaded = true;
     }
   }, {
@@ -59346,7 +60147,181 @@ Png.Pixel = Pixel;
 Png.Chunk = Chunk;
 });
 
-require.register("tileMap/Elicit.js", function(exports, require, module) {
+require.register("tally/TallyBoard.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TallyBoard = void 0;
+var _Bindable = require("curvature/base/Bindable");
+var _View = require("curvature/base/View");
+var _Sfx = require("../audio/Sfx");
+var _Bgm = require("../audio/Bgm");
+var _TallyCounter = require("./TallyCounter");
+var _CharacterString = require("../ui/CharacterString");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+let TallyBoard = /*#__PURE__*/function () {
+  function TallyBoard() {
+    _classCallCheck(this, TallyBoard);
+    _defineProperty(this, "totalLabel", new _CharacterString.CharacterString({
+      value: 'Total:',
+      color: 'yellow'
+    }));
+    _defineProperty(this, "totalValue", new _CharacterString.CharacterString({
+      value: '0'
+    }));
+    _defineProperty(this, "counters", _Bindable.Bindable.make([]));
+    _defineProperty(this, "totaling", false);
+    _defineProperty(this, "totaled", false);
+    _defineProperty(this, "total", 0);
+    _defineProperty(this, "step", 200);
+    _defineProperty(this, "age", 0);
+    _defineProperty(this, "almostDone", false);
+    _defineProperty(this, "done", false);
+    _defineProperty(this, "doneAge", 0);
+  }
+  _createClass(TallyBoard, [{
+    key: "update",
+    value: function update(viewport) {
+      let totaled = true;
+      let beat = 15;
+      let delay = 30;
+      for (const counter of this.counters) {
+        if (delay + -1 + beat + counter.index * beat === this.age) {
+          _Sfx.Sfx.play('TALLY_SCORE');
+        }
+        if (delay + 0.5 * beat + counter.index * beat > this.age) {
+          totaled = false;
+          continue;
+        }
+        if (!counter.started) {
+          counter.started = true;
+          counter.display.args.value = counter.points;
+          counter.display.args.color = 'white';
+          counter.bump = 'bump';
+        }
+        if (delay + 2 * beat + beat * this.counters.length + beat * counter.index > this.age) {
+          totaled = false;
+          continue;
+        }
+        counter.started = true;
+        if (counter.display.args.value > 0) {
+          const inc = Math.min(this.step, counter.display.args.value);
+          ;
+          this.total += inc;
+          viewport.controlActor.args.score += inc;
+          counter.display.args.value = Math.max(0, counter.display.args.value - this.step);
+          this.totaling = true;
+          totaled = false;
+        }
+      }
+      this.totaled = totaled;
+      if (this.totaled && this.totaling) {
+        _Sfx.Sfx.play('TOTAL_SCORE');
+        this.doneAge = this.age;
+      }
+      if (this.doneAge && this.age > this.doneAge + 120) {
+        this.done = true;
+      }
+      if (this.doneAge && this.age == this.doneAge + 60) {
+        this.almostDone = true;
+      }
+      this.totalValue.args.value = this.total;
+      if (totaled) {
+        this.totaling = false;
+      }
+      if (this.totaling && !this.totaled) {
+        _Sfx.Sfx.play('SWITCH_HIT');
+      }
+      this.age++;
+    }
+  }, {
+    key: "view",
+    value: function view() {
+      return _View.View.from(require('./tally-board.html'), this);
+    }
+  }, {
+    key: "addCounter",
+    value: function addCounter(_ref) {
+      let _ref$type = _ref.type,
+        type = _ref$type === void 0 ? 'label' : _ref$type,
+        _ref$label = _ref.label,
+        label = _ref$label === void 0 ? 'counter' : _ref$label,
+        _ref$value = _ref.value,
+        value = _ref$value === void 0 ? 0 : _ref$value,
+        _ref$required = _ref.required,
+        required = _ref$required === void 0 ? true : _ref$required;
+      if (!value && !required) {
+        return;
+      }
+      const counter = new _TallyCounter.TallyCounter();
+      counter.display = new _CharacterString.CharacterString({
+        value: '-',
+        color: 'grey'
+      });
+      counter.points = value;
+      counter.label = new _CharacterString.CharacterString({
+        value: label,
+        color: 'yellow'
+      });
+      counter.index = this.counters.length;
+      this.counters.push(counter);
+      console.log(counter);
+    }
+  }]);
+  return TallyBoard;
+}();
+exports.TallyBoard = TallyBoard;
+});
+
+;require.register("tally/TallyCounter.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TallyCounter = void 0;
+var _Bindable = require("curvature/base/Bindable");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+let TallyCounter = /*#__PURE__*/_createClass(function TallyCounter() {
+  _classCallCheck(this, TallyCounter);
+  _defineProperty(this, "multiplier", 1);
+  _defineProperty(this, "points", 0);
+  _defineProperty(this, "value", 0);
+  _defineProperty(this, "type", TallyCounter.TYPE_LABEL);
+  _defineProperty(this, "label", '');
+  _defineProperty(this, "icon", '');
+  _defineProperty(this, "items", []);
+  _defineProperty(this, "started", 0);
+  _defineProperty(this, "display", 0);
+  _defineProperty(this, "visible", 0);
+  _defineProperty(this, "index", 0);
+  return _Bindable.Bindable.make(this);
+});
+exports.TallyCounter = TallyCounter;
+TallyCounter.TYPE_LABEL = 0;
+TallyCounter.TYPE_ICONS = 1;
+TallyCounter.TYPE_ITEMS = 2;
+});
+
+require.register("tally/tally-board.html", function(exports, require, module) {
+module.exports = "<div class = \"tally-board\">\n\t<div class = \"tally-board-content\" cv-each = \"counters:counter\">\n\t\t<div class = \"tally-board-row\">\n\t\t\t<div>[[counter.label]]</div>\n\t\t\t<div class = \"tally-item [[counter.bump]]\">[[counter.display]]</div>\n\t\t</div>\n\t</div>\n\t<div class = \"tally-board-row tally-board-total\">\n\t\t<div>[[totalLabel]]</div>\n\t\t<div>[[totalValue]]</div>\n\t</div>\n</div>\n"
+});
+
+;require.register("tileMap/Elicit.js", function(exports, require, module) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -59509,6 +60484,8 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     _this.tileCache = new Map();
     _this.heightMasks = new Map();
     _this.heightMaskCache = new Map();
+    _this.prefixed = new Map();
+    _this.mapDirectory = '/map';
     _this.tileLayers = [];
     _this.destructibleLayers = [];
     _this.collisionLayers = [];
@@ -59519,6 +60496,7 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     _this.mapUrl = url;
     _this.maps = new Map();
     _this.replacements = new Map();
+    _this.loaded = new Map();
     _this.emptyCache = new Map();
     if (String(url).substr(-4) === 'json') {
       const elicit = new _Elicit.Elicit(url);
@@ -59587,6 +60565,11 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     value: function append(url, xOffset, yOffset) {
       const elicit = new _Elicit.Elicit(url);
       return elicit.stream().then(response => response.json()).then(data => {
+        const width = this.mapData.width;
+        const newWidth = Math.max(width, width + data.width + (width + -xOffset));
+        const height = this.mapData.height;
+        const newHeight = Math.max(height, height + data.height + (height + -yOffset));
+        this.resize(newWidth, height);
         this.desparseLayers(data);
         let lastGid = 0;
         for (const tileset of this.mapData.tilesets) {
@@ -59624,9 +60607,12 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
         for (const newTileset of data.tilesets) {
           this.mapData.tilesets.push(newTileset);
         }
+        this.tileNumberCache.clear();
         return this.loadTilesets(data).then(() => {
-          this.tileNumberCache.clear();
-          return this.getObjectDefs(data);
+          return {
+            defs: this.getObjectDefs(data),
+            data: data
+          };
         });
       });
       elicit.addEventListener('progress', event => {
@@ -59695,7 +60681,10 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
       for (const tileset of mapData.tilesets) {
         const image = new Image();
         this.tileImages.set(tileset, image);
-        const imageUrl = '/map/' + tileset.image;
+        if (!this.prefixed.has(tileset)) {
+          this.prefixed.set(tileset, String(this.mapDirectory + '/' + tileset.image).replace(/\/\/+/g, '/'));
+        }
+        const imageUrl = this.prefixed.get(tileset);
         tileset.original = tileset.image = imageUrl;
         const fetchImage = new _Elicit.Elicit(imageUrl);
         fetchImage.addEventListener('progress', event => {
@@ -59721,6 +60710,7 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
           tileset.cachedImage = url;
           image.addEventListener('load', event => {
             this.replacements.set(imageUrl, url);
+            this.loaded.set(imageUrl, url);
             const heightMask = document.createElement('canvas');
             heightMask.width = image.width;
             heightMask.height = image.height;
@@ -59915,6 +60905,8 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
       if (cached !== undefined) {
         if (this.replacements.has(cached[3])) {
           cached[2] = this.replacements.get(cached[3]);
+        } else if (this.loaded.has(cached[3])) {
+          cached[2] = this.loaded.get(cached[3]);
         }
         return cached;
       }
@@ -60117,6 +61109,7 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
       for (const tileset of this.mapData.tilesets) {
         tileset.image = tileset.original;
       }
+      this.loadTilesets(this.mapData);
     }
   }, {
     key: "castRay",
@@ -60193,12 +61186,10 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
           const mag = Math.abs(rayX);
           let px = startX + mag * Math.cos(angle);
           let py = startY + mag * Math.sin(angle);
-          if (bf > 1) {
-            if (ox > 0 && px % 1 > 0.99999) px = Math.round(px);
-            if (oy > 0 && py % 1 > 0.99999) py = Math.round(py);
-            if (ox < 0 && px % 1 < 0.00001) px = Math.round(px);
-            if (oy < 0 && py % 1 < 0.00001) py = Math.round(py);
-          }
+          if (ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+          if (oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+          if (ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+          if (oy < 0 && py % 1 < 0.00001) py = Math.round(py);
           const _this$coordsToTile = this.coordsToTile(px, py, layerId),
             _this$coordsToTile2 = _slicedToArray(_this$coordsToTile, 2),
             tx = _this$coordsToTile2[0],
@@ -60238,12 +61229,10 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
           const mag = Math.abs(rayY);
           let px = startX + mag * Math.cos(angle);
           let py = startY + mag * Math.sin(angle);
-          if (bf > 1) {
-            if (ox > 0 && px % 1 > 0.99999) px = Math.round(px);
-            if (ox < 0 && px % 1 < 0.00001) px = Math.round(px);
-            if (oy > 0 && py % 1 > 0.99999) py = Math.round(py);
-            if (oy < 0 && py % 1 < 0.00001) py = Math.round(py);
-          }
+          if (ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+          if (ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+          if (oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+          if (oy < 0 && py % 1 < 0.00001) py = Math.round(py);
           const _this$coordsToTile3 = this.coordsToTile(px, py, layerId),
             _this$coordsToTile4 = _slicedToArray(_this$coordsToTile3, 2),
             tx = _this$coordsToTile4[0],
@@ -60493,6 +61482,37 @@ let Titlecard = /*#__PURE__*/function (_View) {
     return _this;
   }
   _createClass(Titlecard, [{
+    key: "replay",
+    value: function replay(updates) {
+      Object.assign(this.args, updates);
+      this.args.replay = 'replay';
+      const playing = new Promise(accept => {
+        const waitFor = this.args.waitFor || Promise.resolve();
+        let timeAcc = 75;
+        this.onTimeout(timeAcc, () => this.onNextFrame(() => this.args.animation = ''));
+        timeAcc += 75;
+        this.onTimeout(timeAcc, () => this.onNextFrame(() => this.args.animation = 'opening'));
+        timeAcc += 500;
+        waitFor.finally(() => {
+          this.onTimeout(timeAcc, () => this.onNextFrame(() => this.args.animation = 'opening2'));
+          timeAcc += 750;
+          this.onTimeout(timeAcc, () => this.onNextFrame(() => this.args.animation = 'closing'));
+          this.onTimeout(timeAcc, () => {
+            accept([new Promise(acceptDone => this.onTimeout(timeAcc + 750, acceptDone))]);
+            this[Accept]();
+          });
+          timeAcc += 1000;
+          this.onTimeout(timeAcc, () => this.onNextFrame(() => this.args.animation = 'closed'));
+          timeAcc += 2500;
+          this.onTimeout(timeAcc, () => this.onNextFrame(() => {
+            this.args.animation = 'done';
+            this.playing = false;
+          }));
+        });
+      });
+      this.playing = playing;
+    }
+  }, {
     key: "play",
     value: function play(event) {
       if (this.playing) {
@@ -60533,7 +61553,7 @@ exports.Titlecard = Titlecard;
 });
 
 ;require.register("titlecard/titlecard.html", function(exports, require, module) {
-module.exports = "<div class = \"titlecard [[animation]]\">\n\n\t<div class = \"titlecard-field\"></div>\n\n\t<div class = \"titlecard-bottom-border\">\n\t\t<div class = \"titlecard-border-text\">[[creditLine]]</div>\n\t</div>\n\n\t<div class = \"titlecard-left-border\">\n\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t<div class = \"titlecard-border-color\"></div>\n\t</div>\n\n\t<div class = \"titlecard-title\">\n\n\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t<div class = \"titlecard-title-line-1\">[[firstLine]]</div>\n\n\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t[[secondLine]]<div class = \"titlecard-title-number\">[[actNumber]]</div>\n\t\t\t</div>\n\n\t\t</div>\n\n\t</div>\n\n</div>\n"
+module.exports = "<div class = \"titlecard [[replay]] [[animation]]\">\n\n\t<div class = \"titlecard-field\"></div>\n\n\t<div class = \"titlecard-bottom-border\">\n\t\t<div class = \"titlecard-border-text\">[[creditLine]]</div>\n\t</div>\n\n\t<div class = \"titlecard-left-border\">\n\t\t<div class = \"titlecard-border-shadow\"></div>\n\t\t<div class = \"titlecard-border-color\"></div>\n\t</div>\n\n\t<div class = \"titlecard-title\">\n\n\t\t<div class = \"titlecard-title-box\">\n\n\t\t\t<div class = \"titlecard-title-line-1\">[[firstLine]]</div>\n\n\t\t\t<div class = \"titlecard-title-line-2\">\n\t\t\t\t[[secondLine]]<div class = \"titlecard-title-number\">[[actNumber]]</div>\n\t\t\t</div>\n\n\t\t</div>\n\n\t</div>\n\n</div>\n"
 });
 
 ;require.register("trace/Trace.js", function(exports, require, module) {
@@ -61353,6 +62373,7 @@ let Layer = /*#__PURE__*/function (_View) {
               });
 
               blockMeta.visible = true;
+              Layer.updateCount++;
             } else if (blockMeta.visible) {
               block.style({
                 display: 'none'
@@ -61385,9 +62406,10 @@ let Layer = /*#__PURE__*/function (_View) {
   return Layer;
 }(_View2.View);
 exports.Layer = Layer;
+Layer.updateCount = 0;
 });
 
-;require.register("viewport/Plot.js", function(exports, require, module) {
+require.register("viewport/Plot.js", function(exports, require, module) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61546,6 +62568,7 @@ var _Platformer2 = require("../behavior/Platformer");
 var _Matrix = require("matrix-api/Matrix");
 var _Droop = require("../effects/Droop");
 var _GamepadConfig = require("../controller/GamepadConfig");
+var _TallyBoard = require("../tally/TallyBoard");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -61658,6 +62681,7 @@ let Viewport = /*#__PURE__*/function (_View) {
     _this.backdrops = new Map();
     _this.checkpoints = new Map();
     _this.zeroFrame = false;
+    _this.spawnedDefs = new Map();
 
     // this.actorPointCache = new Map;
 
@@ -61668,6 +62692,7 @@ let Viewport = /*#__PURE__*/function (_View) {
     _this.server = null;
     _this.client = null;
     _this.args.networked = false;
+    _this.args.tallyBoard = null;
     _this.args.mouse = 'moved';
     _this.settings = _Bindable.Bindable.make({
       audio: true,
@@ -62382,8 +63407,13 @@ let Viewport = /*#__PURE__*/function (_View) {
       _this.args.muteSwitch.args.active = _this.getAudioSetting();
       _this.args.muteSwitch.args.bindTo('active', v => _this.args.audio = v);
       _this.args.bindTo('audio', v => {
+        var _this$meta$bgm_delay;
         localStorage.setItem('sonic-3000-audio-enabled', v);
-        _this.onNextFrame(() => v ? _Bgm.Bgm.unpause() : _Bgm.Bgm.pause());
+        const frameId = _this.args.frameId - _this.args.startFrameId;
+        _this.onNextFrame(() => v ? _Sfx.Sfx.unpause() : _Sfx.Sfx.pause());
+        if (frameId > ((_this$meta$bgm_delay = _this.meta.bgm_delay) !== null && _this$meta$bgm_delay !== void 0 ? _this$meta$bgm_delay : 0)) {
+          _this.onNextFrame(() => v ? _Bgm.Bgm.unpause() : _Bgm.Bgm.pause());
+        }
         _this.args.muteSwitch.args.active = v;
       });
     });
@@ -62826,9 +63856,12 @@ let Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "setZoneCard",
     value: function setZoneCard() {
-      this.args.zonecard = new _Titlecard.Titlecard({
-        waitFor: this.tileMap.ready
-      }, this);
+      let replay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      if (!replay) {
+        this.args.zonecard = new _Titlecard.Titlecard({
+          waitFor: this.tileMap.ready
+        }, this);
+      }
       const line1 = this.meta.titlecard_title_1;
       const line2 = this.meta.titlecard_title_2;
       const author = this.meta.titlecard_author;
@@ -62838,10 +63871,13 @@ let Viewport = /*#__PURE__*/function (_View) {
       this.args.zonecard.args.creditLine = author;
       this.args.zonecard.args.actNumber = number;
       this.args.actName = `${line1} ${line2} ${number}`;
-      this.args.titlecard = new _Series.Series({
-        cards: [this.args.zonecard]
-      }, this);
-      return this.args.titlecard.play();
+      if (!replay) {
+        this.args.titlecard = new _Series.Series({
+          cards: [this.args.zonecard]
+        }, this);
+        return this.args.titlecard.play();
+      }
+      return Promise.resolve();
     }
   }, {
     key: "fillBackground",
@@ -62872,20 +63908,16 @@ let Viewport = /*#__PURE__*/function (_View) {
       this.args.currentSheild = null;
       this.args.hasFire = false;
       this.args.hasWater = false;
-      this.args.hasElecric = false;
+      this.args.hasElectric = false;
       this.args.hasNormal = false;
       if (this.meta.zoneScript && _ScriptPalette.ScriptPalette[this.meta.zoneScript]) {
         this.zoneScript = new _ScriptPalette.ScriptPalette[this.meta.zoneScript]();
       }
-      if (this.meta.bgm) {
-        _Bgm.Bgm.stop('MENU_THEME');
-        if (_Bgm.Bgm.playing && this.meta.bgm !== this.bgm) {
-          _Bgm.Bgm.stop();
-        }
-        _Bgm.Bgm.play(this.meta.bgm, {
-          loop: true
-        });
-      } else {
+      _Bgm.Bgm.stop('MENU_THEME');
+      if (_Bgm.Bgm.playing && this.meta.bgm !== this.bgm) {
+        _Bgm.Bgm.stop();
+      }
+      if (!this.meta.bgm) {
         _Bgm.Bgm.fadeOut(250);
       }
       if (!this.args.audio) {
@@ -63826,14 +64858,17 @@ let Viewport = /*#__PURE__*/function (_View) {
       actor.name = actor.name || objDef.name;
       actor.startFrame = this.args.frameId || 0;
       this.actors.add(actor);
+      return actor;
     }
   }, {
     key: "spawnInitialObjects",
     value: function spawnInitialObjects(objDefs) {
+      const spawned = new Set();
       for (let i in objDefs) {
         this.defsByName.set(objDefs[i].name, objDefs[i]);
         this.objDefs.set(objDefs[i].id, objDefs[i]);
-        this.spawnFromDef(objDefs[i]);
+        const actor = this.spawnFromDef(objDefs[i]);
+        spawned.add(actor);
       }
       if (this.defsByName.has('player-start')) {
         const start = this.defsByName.get('player-start');
@@ -63841,6 +64876,9 @@ let Viewport = /*#__PURE__*/function (_View) {
         this.args.y = -start.y;
       }
       for (const actor of this.actors.items()) {
+        if (!spawned.has(actor)) {
+          continue;
+        }
         for (const o in actor.others) {
           actor.others[o] = this.actorsById[actor.others[o]];
         }
@@ -63875,7 +64913,22 @@ let Viewport = /*#__PURE__*/function (_View) {
     key: "appendMap",
     value: function appendMap(url, x, y) {
       this.args.loadingMap = true;
-      return this.tileMap.append(url, x, y).then(defs => {
+      return this.tileMap.append(url, x, y).then(_ref5 => {
+        let defs = _ref5.defs,
+          data = _ref5.data;
+        this.currentMap = url;
+        const zoneState = this.getZoneState();
+        this.controlActor.args.emblems.splice(0);
+        for (const emblemId of zoneState.emblems) {
+          if (!this.actorsById[emblemId]) {
+            continue;
+          }
+          const emblem = this.actorsById[emblemId];
+          emblem.existing = 'existing';
+          if (this.controlActor && !this.controlActor.args.emblems.includes(emblem)) {
+            this.controlActor.args.emblems.push(emblem);
+          }
+        }
         const maxObjectId = this.maxObjectId;
         for (const def of defs) {
           def.id += maxObjectId;
@@ -63889,6 +64942,10 @@ let Viewport = /*#__PURE__*/function (_View) {
               prop.value += maxObjectId;
             }
           }
+        }
+        for (const prop of Object.values(data.properties)) {
+          const name = prop.name.replace(/-/g, '_');
+          this.meta[name] = prop.value;
         }
         return this.spawnInitialObjects(defs);
       }).finally(() => this.args.loadingMap = false);
@@ -63912,10 +64969,10 @@ let Viewport = /*#__PURE__*/function (_View) {
       const objDefs = this.tileMap.getObjectDefs();
       this.defsByName = new Map();
       this.objDefs = new Map();
-      for (const _ref5 of this.backdrops) {
-        var _ref6 = _slicedToArray(_ref5, 2);
-        const id = _ref6[0];
-        const backdrop = _ref6[1];
+      for (const _ref6 of this.backdrops) {
+        var _ref7 = _slicedToArray(_ref6, 2);
+        const id = _ref7[0];
+        const backdrop = _ref7[1];
         if (backdrop.view) {
           backdrop.view.remove();
           backdrop.view = undefined;
@@ -63979,10 +65036,10 @@ let Viewport = /*#__PURE__*/function (_View) {
           character.follower.args.y = character.args.y;
         }
       });
-      if (!this.replayStart) for (const _ref7 of Object.entries(this.actors.list)) {
-        var _ref8 = _slicedToArray(_ref7, 2);
-        const id = _ref8[0];
-        const actor = _ref8[1];
+      if (!this.replayStart) for (const _ref8 of Object.entries(this.actors.list)) {
+        var _ref9 = _slicedToArray(_ref8, 2);
+        const id = _ref9[0];
+        const actor = _ref9[1];
         if (!actor || actor.args.npc) {
           continue;
         }
@@ -64139,9 +65196,14 @@ let Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "update",
     value: function update() {
+      const frameId = this.args.frameId - this.args.startFrameId;
       if (this.zoneScript && this.args.started && this.args.paused === false) {
-        // console.log(this.args.frameId, this.args.startFrameId);
-        this.zoneScript.update(this.args.frameId - this.args.startFrameId, this);
+        this.zoneScript.update(frameId, this);
+      }
+      if (this.args.started && this.meta.bgm && frameId === (this.meta.bgm_delay || 1)) {
+        _Bgm.Bgm.play(this.meta.bgm, {
+          loop: true
+        });
       }
       if (this.socket && this.args.frameId % 120 === 0) {
         this.socket.publish('keepalive', '');
@@ -64154,6 +65216,23 @@ let Viewport = /*#__PURE__*/function (_View) {
       }
       if (this.args.frozen > 0) {
         this.args.frozen--;
+      }
+      if (this.tallyBoard && !this.args.paused) {
+        this.tallyBoard.update(this);
+        this.args.score.args.value = String(this.controlActor.args.score).padStart(4, ' ');
+        if (this.tallyBoard.doneAge && !this.args.zonecard.playing) {
+          this.setZoneCard(true);
+        }
+        if (this.tallyBoard.done) {
+          this.args.tallyBoard = null;
+          this.tallyBoard = false;
+          this.args.startFrameId = this.args.frameId;
+          this.args.actClear = false;
+          this.args.zonecard.replay();
+          _Bgm.Bgm.stop('ACT_CLEAR');
+        } else {
+          this.args.frozen = 1;
+        }
       }
       const controller = this.controlActor ? this.controlActor.controller : this.controller;
       for (const b in controller.buttons) {
@@ -64195,10 +65274,10 @@ let Viewport = /*#__PURE__*/function (_View) {
         this.callFrameOuts();
         this.callRenderedFrameOut();
         this.callFrameIntervals();
-        for (const _ref9 of this.timers) {
-          var _ref10 = _slicedToArray(_ref9, 2);
-          const key = _ref10[0];
-          const timer = _ref10[1];
+        for (const _ref10 of this.timers) {
+          var _ref11 = _slicedToArray(_ref10, 2);
+          const key = _ref11[0];
+          const timer = _ref11[1];
           timer.update();
         }
         this.args.lastFrameId = this.args.frameId;
@@ -64229,10 +65308,10 @@ let Viewport = /*#__PURE__*/function (_View) {
       if (this.tileMap && this.tileMap.mapData) {
         this.updateBackdrops();
       }
-      for (const _ref11 of this.willDetach) {
-        var _ref12 = _slicedToArray(_ref11, 2);
-        const detachee = _ref12[0];
-        const detacher = _ref12[1];
+      for (const _ref12 of this.willDetach) {
+        var _ref13 = _slicedToArray(_ref12, 2);
+        const detachee = _ref13[0];
+        const detacher = _ref13[1];
         this.willDetach.delete(detachee);
         detacher();
       }
@@ -64380,6 +65459,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         this.controlActor.setCameraMode();
       }
       this.updateEnded.clear();
+      _Layer.Layer.updateCount = 0;
       for (const layer of [...this.args.layers, ...this.args.fgLayers]) {
         const xDir = Math.sign(layer.x - this.args.x);
         const yDir = Math.sign(layer.y - this.args.y);
@@ -64387,6 +65467,9 @@ let Viewport = /*#__PURE__*/function (_View) {
         layer.y = this.args.y;
         layer.update(this.tileMap, xDir, yDir);
       }
+
+      // console.log(Layer.updateCount);
+
       for (const layer of [...this.args.layers, ...this.args.fgLayers]) {
         layer.move();
       }
@@ -64454,14 +65537,14 @@ let Viewport = /*#__PURE__*/function (_View) {
           }
         }
         if (this.collisions) {
-          for (const _ref13 of this.collisions) {
-            var _ref14 = _slicedToArray(_ref13, 2);
-            const collider = _ref14[0];
-            const collidees = _ref14[1];
-            for (const _ref15 of collidees) {
-              var _ref16 = _slicedToArray(_ref15, 2);
-              const collidee = _ref16[0];
-              const type = _ref16[1];
+          for (const _ref14 of this.collisions) {
+            var _ref15 = _slicedToArray(_ref14, 2);
+            const collider = _ref15[0];
+            const collidees = _ref15[1];
+            for (const _ref16 of collidees) {
+              var _ref17 = _slicedToArray(_ref16, 2);
+              const collidee = _ref17[0];
+              const type = _ref17[1];
               if (!collidee) {
                 continue;
               }
@@ -64556,7 +65639,9 @@ let Viewport = /*#__PURE__*/function (_View) {
               }
               this.willDetach.delete(actor);
               this.visible.add(actor);
-              actor.vizi = true;
+              if (!actor.args.hidden) {
+                actor.vizi = true;
+              }
             }
             inAuras.add(actor);
             this.recent.add(actor);
@@ -64572,8 +65657,8 @@ let Viewport = /*#__PURE__*/function (_View) {
             this.recent.delete(actor);
             continue;
           }
-          const actorIsOnScreen = this.actorIsOnScreen(actor);
-          if (actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen) {
+          const actorIsOnScreen = !actor.args.hidden && this.actorIsOnScreen(actor);
+          if (actor.vizi && !actorIsOnScreen) {
             this.willDetach.set(actor, () => {
               actor.sleep();
               actor.args.display = 'none';
@@ -64634,9 +65719,12 @@ let Viewport = /*#__PURE__*/function (_View) {
         });
         let multiply = 0;
         let base = 0;
-        this.args.showCombo = this.controlActor.args.popChain.length > 1;
+        let showCombo = this.controlActor.args.popChain.length > 1;
         let len = 0;
-        if (this.controlActor.args.popChain) {
+        if (this.controlActor.args.popChain.length) {
+          if (this.controlActor.args.popChain[0].special) {
+            showCombo = true;
+          }
           len = this.controlActor.args.popChain.length;
           const cutOff = Math.max(0, len - 4);
           if (!len) {
@@ -64664,7 +65752,9 @@ let Viewport = /*#__PURE__*/function (_View) {
               // this.args.combo[c].score.args.value = pop.points;
               this.args.combo[c].label.args.value = String(pop.label).replace(/-/g, ' ');
               this.args.combo[c].index = i;
-              if (pop.multiplier > 1) {
+              if (pop.color) {
+                this.args.combo[c].label.args.color = pop.color;
+              } else if (pop.multiplier > 1) {
                 this.args.combo[c].label.args.color = 'orange';
               } else {
                 this.args.combo[c].label.args.color = 'white';
@@ -64685,6 +65775,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         }
         this.args.popTopLine.args.value = base + ' x ' + multiply;
         this.args.popBottomLine.args.value = len > 4 ? '+' + (len - 4) : '';
+        this.args.showCombo = showCombo;
       }
       if (this.args.networked && this.controlActor) {
         const netState = {
@@ -65170,11 +66261,10 @@ let Viewport = /*#__PURE__*/function (_View) {
       this.args.currentSheild = null;
       this.args.hasFire = false;
       this.args.hasWater = false;
-      this.args.hasElecric = false;
+      this.args.hasElectric = false;
       this.args.hasNormal = false;
       this.clearDialog();
       this.hideDialog();
-      this.tileMap && this.tileMap.reset();
       this.replayFrames = new Map();
       // this.replayOffset = 0;
       // this.replay = null;
@@ -65224,16 +66314,16 @@ let Viewport = /*#__PURE__*/function (_View) {
       this.controlActor && this.actors.remove(this.controlActor);
       this.nextControl = null;
       this.actorsById = {};
-      for (const _ref17 of Object.entries(this.effects.list)) {
-        var _ref18 = _slicedToArray(_ref17, 2);
-        const id = _ref18[0];
-        const effect = _ref18[1];
+      for (const _ref18 of Object.entries(this.effects.list)) {
+        var _ref19 = _slicedToArray(_ref18, 2);
+        const id = _ref19[0];
+        const effect = _ref19[1];
         effect && this.effects.remove(effect);
       }
-      for (const _ref19 of Object.entries(this.particles.list)) {
-        var _ref20 = _slicedToArray(_ref19, 2);
-        const id = _ref20[0];
-        const particle = _ref20[1];
+      for (const _ref20 of Object.entries(this.particles.list)) {
+        var _ref21 = _slicedToArray(_ref20, 2);
+        const id = _ref21[0];
+        const particle = _ref21[1];
         particle && this.particles.remove(particle);
       }
       this.spawn.clear();
@@ -65288,7 +66378,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         this.args.currentSheild = null;
         this.args.hasFire = false;
         this.args.hasWater = false;
-        this.args.hasElecric = false;
+        this.args.hasElectric = false;
         this.args.hasNormal = false;
         this.args.isRecording = false;
         this.args.isReplaying = false;
@@ -65328,10 +66418,10 @@ let Viewport = /*#__PURE__*/function (_View) {
           layer.remove();
         }
         this.args.bg = this.args.backdrop = null;
-        for (const _ref21 of this.backdrops) {
-          var _ref22 = _slicedToArray(_ref21, 2);
-          const k = _ref22[0];
-          const v = _ref22[1];
+        for (const _ref22 of this.backdrops) {
+          var _ref23 = _slicedToArray(_ref22, 2);
+          const k = _ref23[0];
+          const v = _ref23[1];
           v.view.remove();
         }
         this.backdrops.clear();
@@ -65725,10 +66815,10 @@ let Viewport = /*#__PURE__*/function (_View) {
       if (this.args.frameId % this.settings.frameSkip !== 0) {
         return;
       }
-      for (const _ref23 of this.callRenderedFrames) {
-        var _ref24 = _slicedToArray(_ref23, 2);
-        const callback = _ref24[0];
-        const framesLeft = _ref24[1];
+      for (const _ref24 of this.callRenderedFrames) {
+        var _ref25 = _slicedToArray(_ref24, 2);
+        const callback = _ref25[0];
+        const framesLeft = _ref25[1];
         if (framesLeft <= 0) {
           callback();
           continue;
@@ -65740,10 +66830,10 @@ let Viewport = /*#__PURE__*/function (_View) {
     key: "callFrameIntervals",
     value: function callFrameIntervals() {
       for (let i = this.args.lastFrameId; i <= this.args.frameId; i++) {
-        for (const _ref25 of this.callIntervals) {
-          var _ref26 = _slicedToArray(_ref25, 2);
-          const interval = _ref26[0];
-          const callbacks = _ref26[1];
+        for (const _ref26 of this.callIntervals) {
+          var _ref27 = _slicedToArray(_ref26, 2);
+          const interval = _ref27[0];
+          const callbacks = _ref27[1];
           if (i % interval === 0) {
             for (const callback of callbacks) {
               callback();
@@ -65825,24 +66915,24 @@ let Viewport = /*#__PURE__*/function (_View) {
   }, {
     key: "storeCheckpoint",
     value: function storeCheckpoint(name, checkpointId) {
-      if (!this.checkpoints[this.tileMap.mapUrl]) {
-        this.checkpoints[this.tileMap.mapUrl] = {};
+      if (!this.checkpoints[this.currentMap]) {
+        this.checkpoints[this.currentMap] = {};
       }
-      const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+      const checkpointsByActor = this.checkpoints[this.currentMap];
       checkpointsByActor[name] = {
         checkpointId: checkpointId,
         frames: this.args.frameId - this.args.startFrameId
       };
-      localStorage.setItem(`checkpoints:::${this.tileMap.mapUrl}`, JSON.stringify(this.checkpoints[this.tileMap.mapUrl]));
+      localStorage.setItem(`checkpoints:::${this.currentMap}`, JSON.stringify(this.checkpoints[this.currentMap]));
     }
   }, {
     key: "getCheckpoint",
     value: function getCheckpoint(name) {
-      if (!this.checkpoints[this.tileMap.mapUrl]) {
-        const checkpointSource = localStorage.getItem(`checkpoints:::${this.tileMap.mapUrl}`) || '{}';
-        this.checkpoints[this.tileMap.mapUrl] = JSON.parse(checkpointSource) || {};
+      if (!this.checkpoints[this.currentMap]) {
+        const checkpointSource = localStorage.getItem(`checkpoints:::${this.currentMap}`) || '{}';
+        this.checkpoints[this.currentMap] = JSON.parse(checkpointSource) || {};
       }
-      const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+      const checkpointsByActor = this.checkpoints[this.currentMap];
       const currentCheckpoint = checkpointsByActor[name];
       return currentCheckpoint;
     }
@@ -65861,12 +66951,12 @@ let Viewport = /*#__PURE__*/function (_View) {
       if (name === null) {
         name = this.controlActor.args.canonical;
       }
-      if (!this.checkpoints[this.tileMap.mapUrl]) {
-        this.checkpoints[this.tileMap.mapUrl] = {};
+      if (!this.checkpoints[this.currentMap]) {
+        this.checkpoints[this.currentMap] = {};
       }
-      const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+      const checkpointsByActor = this.checkpoints[this.currentMap];
       delete checkpointsByActor[name];
-      localStorage.setItem(`checkpoints:::${this.tileMap.mapUrl}`, JSON.stringify(this.checkpoints[this.tileMap.mapUrl]));
+      localStorage.setItem(`checkpoints:::${this.currentMap}`, JSON.stringify(this.checkpoints[this.currentMap]));
     }
   }, {
     key: "showCenterMessage",
@@ -65922,7 +67012,7 @@ let Viewport = /*#__PURE__*/function (_View) {
       const air = this.controlActor.args.airTimeTotal / (this.controlActor.args.airTimeTotal + this.controlActor.args.groundTimeTotal);
       const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);
       const ringBonus = rings * 100;
-      const airBonus = Math.round(10000 * air) / 100 + '%';
+      const airBonus = Math.round(10000 * (air || 0));
       let timeBonus = 0;
       const seconds = Math.trunc(Math.abs(time));
       if (seconds < 30) {
@@ -65942,23 +67032,52 @@ let Viewport = /*#__PURE__*/function (_View) {
       } else {
         timeBonus = 500;
       }
-      const totalBonus = timeBonus + ringBonus + speedBonus;
-      const score = this.controlActor.args.score += totalBonus;
+      const totalBonus = timeBonus + ringBonus + speedBonus + airBonus;
+      const score = totalBonus;
       this.args.actClear = true;
       this.args.skidBonusValue = this.controlActor.args.dragBonus || 0;
-      this.args.timeBonus.args.value = 0;
-      this.args.ringBonus.args.value = 0;
-      this.args.airBonus.args.value = 0;
-      this.args.speedBonus.args.value = 0;
-      this.args.skidBonus.args.value = 0;
-      this.args.totalBonus.args.value = 0;
-      this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value = timeBonus);
-      this.onFrameOut(45 * 2, () => this.args.ringBonus.args.value = ringBonus);
-      this.onFrameOut(45 * 3, () => this.args.speedBonus.args.value = speedBonus);
-      this.onFrameOut(45 * 4, () => this.args.skidBonus.args.value = this.controlActor.args.dragBonus || 0);
-      this.onFrameOut(45 * 5, () => this.args.airBonus.args.value = airBonus);
-      this.onFrameOut(45 * 6, () => this.args.totalBonus.args.value = totalBonus);
-      this.onFrameOut(45 * 7, () => this.args.actClear = false);
+
+      // this.args.timeBonus.args.value  = 0;
+      // this.args.ringBonus.args.value  = 0;
+      // this.args.airBonus.args.value   = 0;
+      // this.args.speedBonus.args.value = 0;
+      // this.args.skidBonus.args.value  = 0;
+      // this.args.totalBonus.args.value = 0;
+
+      const skidBonus = this.controlActor.args.dragBonus || 0;
+
+      // this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value  = timeBonus);
+      // this.onFrameOut(45 * 2, () => this.args.ringBonus.args.value  = ringBonus);
+      // this.onFrameOut(45 * 3, () => this.args.speedBonus.args.value = speedBonus);
+      // this.onFrameOut(45 * 4, () => this.args.skidBonus.args.value  = skidBonus);
+      // this.onFrameOut(45 * 5, () => this.args.airBonus.args.value   = airBonus);
+      // this.onFrameOut(45 * 6, () => this.args.totalBonus.args.value = totalBonus);
+      // this.onFrameOut(45 * 7, () => this.args.actClear = false);
+
+      const tallyBoard = new _TallyBoard.TallyBoard();
+      tallyBoard.addCounter({
+        label: 'Time Bonus:',
+        value: timeBonus
+      });
+      tallyBoard.addCounter({
+        label: 'Ring Bonus:',
+        value: ringBonus
+      });
+      tallyBoard.addCounter({
+        label: 'Speed Bonus:',
+        value: speedBonus
+      });
+      tallyBoard.addCounter({
+        label: 'Air Bonus:',
+        value: airBonus
+      });
+      // tallyBoard.addCounter({label:'Skid Bonus:',  value: skidBonus||30000});
+
+      _Bgm.Bgm.play('ACT_CLEAR', {
+        interlude: true
+      });
+      this.tallyBoard = tallyBoard;
+      this.args.tallyBoard = tallyBoard.view();
       if (!zoneState.time || zoneState.time > frames) {
         zoneState.time = frames;
       }
@@ -65972,6 +67091,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         zoneState.score = score;
       }
       this.currentSave.save();
+      return tallyBoard;
     }
   }, {
     key: "cpuDetect",
@@ -66168,7 +67288,7 @@ module.exports = "<div data-name = \"[[name]]\" class = \"viewport-background\" 
 });
 
 ;require.register("viewport/viewport.html", function(exports, require, module) {
-module.exports = "<section class = \"filters\" cv-each = \"effects:effect\">[[effect]]</section>\n\n<div class = \"viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]\" data-theme = \"[[theme]]\" data-bg = \"[[bg]]\" cv-ref = \"frame\" data-paused = \"[[paused]]\" data-smoothing = [[smoothing]] cv-on = \"mousedown:interact:c;keydown:interact:c;\">\n\t<div class = \"viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]] [[hideNowPlaying]] [[hiddenNowPlaying]] [[invert]]\" cv-ref = \"viewport\" tabindex=\"0\" cv-on = \"click;mousemove;mousedown;mouseup;\">\n\n\t\t<svg height=\"32\" width=\"32\">\n\t\t<defs>\n\t\t\t<filter id=\"motionBlur\" x=\"0%\"\n y=\"0%\" width=\"100%\" height=\"100%\">\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin = \"SourceGraphic\"\n\t\t\t\t\tedgeMode = \"duplicate\"\n\t\t\t\t\tstdDeviation = \"0,0\"\n\t\t\t\t\tcv-ref = \"blur\"\n\t\t\t\t/>\n\t\t\t</filter>\n\t\t</defs>\n\t\t</svg>\n\n\t\t<svg height=\"100\" width=\"100\">\n\t\t<defs>\n\t\t\t<filter id=\"waterBlur\">\n\t\t\t\t<feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"0.25,0\" />\n\t\t\t</filter>\n\n\t\t\t<filter id=\"dilate\">\n\t\t\t\t<feMorphology operator=\"dilate\" radius=\"0.25\" result = \"expanded\"/>\n\t\t\t\t<feMerge>\n\t\t\t\t\t<feMergeNode in=\"expanded\" />\n\t\t\t\t\t<feMergeNode in=\"SourceGraphic\" />\n\t\t\t\t</feMerge>\n\t\t\t</filter>\n\n\t\t\t<filter id = \"waves\"\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tx      =\"0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feFlood\n\t\t\t\t\tflood-color=\"#408000\"\n\t\t\t\t\tresult = \"DisplacementGreen\"\n\t\t\t\t></feFlood>\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/wave.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t></feImage>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t></feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t></feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"0;-64\"\n\t\t\t\t\t\tdur=\"1500ms\"\n\t\t\t\t\t\trepeatCount=\"indefinite\" />\n\n\t\t\t\t</feOffset>\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"4\"\n\t\t\t\t></feDisplacementMap>\n\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin=\"Displaced\"\n\t\t\t\t\tstdDeviation=\"0.35\"\n\t\t\t\t></feGaussianBlur>\n\t\t\t</filter>\n\n\t\t\t<filter id = \"ntsc\"\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tx      = \"0%\"\n\t\t\t\ty      = \"0%\"\n\t\t\t\twidth  = \"100%\"\n\t\t\t\theight = \"200%\"\n\t\t\t>\n\t\t\t\t<feFlood\n\t\t\t\t\tflood-color=\"#808000\"\n\t\t\t\t\tresult = \"DisplacementGreen\"\n\t\t\t\t></feFlood>\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/ntsc-static.png\"\n\t\t\t\t\tresult =\"DisplacementSource\"\n\t\t\t\t\twidth  = \"128\"\n\t\t\t\t\theight = \"128\"\n\t\t\t\t></feImage>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t></feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t></feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t\tdy  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"-128;0\"\n\t\t\t\t\t\tbegin=\"2000ms\"\n\t\t\t\t\t\tdur=\"2000ms\"\n\t\t\t\t\t\trepeatCount=\"8\"\n\t\t\t\t\t></animate>\n\n\t\t\t\t</feOffset>\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"scale\"\n\t\t\t\t\t\tvalues = \"512;192;0\"\n\t\t\t\t\t\tbegin=\"2000ms\"\n\t\t\t\t\t\tdur=\"2000ms\"\n\t\t\t\t\t\trepeatCount=\"1\"\n\t\t\t\t\t></animate>\n\n\t\t\t\t</feDisplacementMap>\n\t\t\t</filter>\n\n\t\t</defs>\n\t\t</svg>\n\n\t\t<div class = \"viewport-zoom\">\n\n\t\t\t[[backdrop]]\n\n\t\t\t<div class = \"backdrops\" cv-ref =\"backdrops\"></div>\n\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngle\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistance\">\n\t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancel\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"background\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"layers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"filters filters-background\" cv-ref = \"bgFilters\"></div>\n\n\t\t\t<div cv-ref = \"content\" class = \"viewport-content\">\n\t\t\t\t<div cv-ref = \"actors\" class = \"viewport-actors\"></div>\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\"></div>\n \t\t\t</div>\n\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngleFg\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistanceFg\">\n \t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancelFg\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"foreground\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"fgLayers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n \t\t</div>\n\n \t\t[[plot]]\n\n \t\t<div class = \"viewport-overlay\">\n \t\t\t<div class = \"debug-spawn\" cv-if = \"debugEditMode\">\n \t\t\t\t<div class = \"debug-spawn\" cv-ref = \"spawnPreview\"></div>\n \t\t\t\t<div class = \"debug-spawn\">[[debugObjectName]]</div>\n \t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table combo-table\">\n\t\t\t\t<span cv-if = \"showCombo\">\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<span class = \"combo-list\" cv-each = \"combo:pop:p\">\n\t\t\t\t\t\t\t<div>[[pop.label]]</div>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class = \"comboTopLine\" cv-if = \"combo\">[[popBottomLine]]</span>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class = \"comboTopLine\" cv-if = \"combo\">[[popTopLine]]</span>\n\t\t\t\t</span>\n\t\t\t\t<span class = \"comboFail\">[[comboFail]]</span>\n\t\t\t\t<span class = \"comboResult\">[[comboResult]]</span>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table quick-form\">[[quickForm]]</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table\"  cv-if = \"debugOsd\">\n\t\t\t\t<table>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td colspan = \"2\">[[char]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelCamera]]</td>\n\t\t\t\t\t\t<td>[[cameraMode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelLayer]]</td>\n\t\t\t\t\t\t<td>[[layer]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelActors]]</td>\n\t\t\t\t\t\t<td>[[actorCount]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelRegions]]</td>\n\t\t\t\t\t\t<td>[[regionCount]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFrame]]</td>\n\t\t\t\t\t\t<td>[[frame]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelIgnore]]</td>\n\t\t\t\t\t\t<td>[[ignore]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right\" cv-if = \"showHud\">\n\n\t\t\t\t<div class = \"char-hud\">\n\t\t\t\t\t[[char]]\n\t\t\t\t\t<div class = \"char-icon [[charName|hyphenate]]\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class = \"emblem-hud\" cv-each = \"emblems:emblem:e\">\n\t\t\t\t\t<img loading=\"lazy\" src = \"/custom/hud-emblem.png\" class = \"[[emblem.existing]]\" />\n\t\t\t\t</div>\n\t\t\t\t<div class = \"emerald-hud\" cv-each = \"emeralds:emerald:e\">\n\t\t\t\t\t<img loading=\"lazy\" src = \"/Sonic/emerald-[[emerald]]-mini.png\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-bottom-right\">\n\n\t\t\t\t<div cv-if = \"showHud\" class =\"sheild-hud [[currentSheild]] [[hasElectric]] [[hasFire]] [[hasWater]] [[hasNormal]]\">\n\t\t\t\t\t<div class = \"sheild-icon sheild-electric\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-normal\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-fire\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-water\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class = \"contents\" cv-if = \"showFps\">\n\t\t\t\t\t<table>\n\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t\t</tr>\n\t\t\t\t\t</table>\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-bottom-left\" cv-if = \"showHud\" data-extra = \"[[audioComment]]\">\n\t\t\t\t[[nowPlaying]]\n\t\t\t\t[[trackName]]\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-left hud-table\"  cv-if = \"showHud\">\n\t\t\t\t<table>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[scoreLabel]]</td><td>[[score]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[timerLabel]]</td><td>[[timer]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[ringLabel]]</td><td>[[rings]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t</table>\n\t\t\t\t<!-- <div class = \"demo-hud\" cv-if = \"demoIndicator\">[[demoIndicator]]</div> -->\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered\" cv-if = \"actClear\">\n\t\t\t\t<table>\n\t\t\t\t\t<tr><td colspan=\"2\">\n\t\t\t\t\t\t<div class = \"centered\">[[actClearLabel]]</div>\n\t\t\t\t\t</td></tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[timeBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[timeBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[ringBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[ringBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<!-- <tr>\n\t\t\t\t\t\t<td>[[perfectBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[perfectBonus]]</td>\n\t\t\t\t\t</tr> -->\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[speedBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[speedBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr cv-if = \"skidBonusValue\">\n\t\t\t\t\t\t<td>[[skidBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[skidBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[airBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[airBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[totalBonusLabel]]</td>\n\t\t\t\t\t\t<td>[[totalBonus]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t</table>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered\" cv-if = \"centerMessage\">\n\t\t\t\t[[centerMessage]]\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered-raised\" cv-if = \"dialog\">\n\t\t\t\t<div class = \"dialog-frame [[dialogClasses]]\">\n\t\t\t\t\t<div class = \"dialog-icon\">\n\t\t\t\t\t</div>\n\t\t\t\t\t<div cv-each = \"dialogLines:line\" class = \"dialog-text\">\n\t\t\t\t\t\t<span style = \"--text-offset:[[line.offset]]\">[[line]]</span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"screen-effects\" cv-each = \"screenEffects:effect\">\n\t\t\t\t[[effect]]\n\t\t\t</div>\n\n\t\t\t<section class = \"pause-menu full\" cv-if = \"paused\">[[pauseMenu]]</section>\n\n\t\t\t[[titlecard]]\n\n\t\t\t<div class = \"topLine\">\n\t\t\t\t<div class = \"status-message\">[[topLine]]</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\t\t\t<section class = \"contents\" cv-if = \"networked\">[[chatBox]]</section>\n\t\t\t<!-- <div class = \"filters filters-foreground\" cv-ref = \"fgFilters\"></div> -->\n\t\t\t<div class = \"console [[showConsole]]\" cv-ref = \"subspace\" tab-index = \"0\">[[subspace]]</div>\n\t\t\t<div class = \"shade\" data-fade = \"[[fade]]\"></div>\n\n\t\t</div>\n\n\t\t<div class = \"quick-controls\" cv-if = \"shortcuts\">\n\t\t\t[[muteSwitch]]\n\t\t\t<div class = \"button\" cv-on = \"click:fullscreen()\">\n\t\t\t\t<image src = \"/ui/fullscreen.svg\" />\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n</div>\n"
+module.exports = "<section class = \"filters\" cv-each = \"effects:effect\">[[effect]]</section>\n\n<div class = \"viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]\" data-theme = \"[[theme]]\" data-bg = \"[[bg]]\" cv-ref = \"frame\" data-paused = \"[[paused]]\" data-smoothing = [[smoothing]] cv-on = \"mousedown:interact:c;keydown:interact:c;\">\n\t<div class = \"viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]] [[hideNowPlaying]] [[hiddenNowPlaying]] [[invert]]\" cv-ref = \"viewport\" tabindex=\"0\" cv-on = \"click;mousemove;mousedown;mouseup;\">\n\n\t\t<svg height=\"32\" width=\"32\">\n\t\t<defs>\n\t\t\t<filter id=\"motionBlur\" x=\"0%\"\n y=\"0%\" width=\"100%\" height=\"100%\">\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin = \"SourceGraphic\"\n\t\t\t\t\tedgeMode = \"duplicate\"\n\t\t\t\t\tstdDeviation = \"0,0\"\n\t\t\t\t\tcv-ref = \"blur\"\n\t\t\t\t/>\n\t\t\t</filter>\n\t\t</defs>\n\t\t</svg>\n\n\t\t<svg height=\"100\" width=\"100\">\n\t\t<defs>\n\t\t\t<filter id=\"waterBlur\">\n\t\t\t\t<feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"0.25,0\" />\n\t\t\t</filter>\n\n\t\t\t<filter id=\"dilate\">\n\t\t\t\t<feMorphology operator=\"dilate\" radius=\"0.25\" result = \"expanded\"/>\n\t\t\t\t<feMerge>\n\t\t\t\t\t<feMergeNode in=\"expanded\" />\n\t\t\t\t\t<feMergeNode in=\"SourceGraphic\" />\n\t\t\t\t</feMerge>\n\t\t\t</filter>\n\n\t\t\t<filter id = \"waves\"\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tx      =\"0%\"\n\t\t\t\ty      =\"0%\"\n\t\t\t\theight =\"100%\"\n\t\t\t\twidth  =\"100%\"\n\t\t\t>\n\t\t\t\t<feFlood\n\t\t\t\t\tflood-color=\"#408000\"\n\t\t\t\t\tresult = \"DisplacementGreen\"\n\t\t\t\t></feFlood>\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/wave.png\"\n\t\t\t\t\tresult=\"DisplacementSource\"\n\t\t\t\t\theight=\"64\"\n\t\t\t\t\twidth=\"64\"\n\t\t\t\t></feImage>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t></feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t></feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"0;-64\"\n\t\t\t\t\t\tdur=\"1500ms\"\n\t\t\t\t\t\trepeatCount=\"indefinite\" />\n\n\t\t\t\t</feOffset>\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale=\"4\"\n\t\t\t\t></feDisplacementMap>\n\n\t\t\t\t<feGaussianBlur\n\t\t\t\t\tin=\"Displaced\"\n\t\t\t\t\tstdDeviation=\"0.35\"\n\t\t\t\t></feGaussianBlur>\n\t\t\t</filter>\n\n\t\t\t<filter id = \"ntsc\"\n\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\tx      = \"0%\"\n\t\t\t\ty      = \"0%\"\n\t\t\t\twidth  = \"100%\"\n\t\t\t\theight = \"200%\"\n\t\t\t>\n\t\t\t\t<feFlood\n\t\t\t\t\tflood-color=\"#808000\"\n\t\t\t\t\tresult = \"DisplacementGreen\"\n\t\t\t\t></feFlood>\n\n\t\t\t\t<feImage\n\t\t\t\t\txlink:href=\"/effects/ntsc-static.png\"\n\t\t\t\t\tresult =\"DisplacementSource\"\n\t\t\t\t\twidth  = \"128\"\n\t\t\t\t\theight = \"128\"\n\t\t\t\t></feImage>\n\n\t\t\t\t<feTile\n\t\t\t\t\tin=\"DisplacementSource\"\n\t\t\t\t\tresult=\"DisplacementTile\"\n\t\t\t\t></feTile>\n\n\t\t\t\t<feComposite\n\t\t\t\t\tin  = \"DisplacementTile\"\n\t\t\t\t\tin2 = \"DisplacementGreen\"\n\t\t\t\t\tresult =\"DisplacementField\"\n\t\t\t\t\toperator =\"over\"\n\t\t\t\t></feComposite>\n\n\t\t\t\t<feOffset\n\t\t\t\t\tin  = \"DisplacementField\"\n\t\t\t\t\tout = \"DisplacementOffset\"\n\t\t\t\t\tdx  = \"0\"\n\t\t\t\t\tdy  = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"dy\"\n\t\t\t\t\t\tvalues = \"-128;0\"\n\t\t\t\t\t\tbegin=\"2000ms\"\n\t\t\t\t\t\tdur=\"2000ms\"\n\t\t\t\t\t\trepeatCount=\"8\"\n\t\t\t\t\t></animate>\n\n\t\t\t\t</feOffset>\n\n\t\t\t\t<feDisplacementMap\n\t\t\t\t\tin=\"SourceGraphic\"\n\t\t\t\t\tin2=\"DisplacementOffset\"\n\t\t\t\t\tresult=\"Displaced\"\n\t\t\t\t\txChannelSelector=\"R\"\n\t\t\t\t\tyChannelSelector=\"G\"\n\t\t\t\t\tscale = \"0\"\n\t\t\t\t>\n\t\t\t\t\t<animate\n\t\t\t\t\t\tattributeName=\"scale\"\n\t\t\t\t\t\tvalues = \"512;192;0\"\n\t\t\t\t\t\tbegin=\"2000ms\"\n\t\t\t\t\t\tdur=\"2000ms\"\n\t\t\t\t\t\trepeatCount=\"1\"\n\t\t\t\t\t></animate>\n\n\t\t\t\t</feDisplacementMap>\n\t\t\t</filter>\n\n\t\t</defs>\n\t\t</svg>\n\n\t\t<div class = \"viewport-zoom\">\n\n\t\t\t[[backdrop]]\n\n\t\t\t<div class = \"backdrops\" cv-ref =\"backdrops\"></div>\n\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngle\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistance\">\n\t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancel\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"background\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"layers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"filters filters-background\" cv-ref = \"bgFilters\"></div>\n\n\t\t\t<div cv-ref = \"content\" class = \"viewport-content\">\n\t\t\t\t<div cv-ref = \"actors\" class = \"viewport-actors\"></div>\n\t\t\t\t<div cv-ref = \"particles\" class = \"viewport-particles\"></div>\n \t\t\t</div>\n\n\t\t\t<div class = \"blurAngle\" cv-ref = \"blurAngleFg\">\n\t\t\t<div class = \"blurDistance\" cv-ref = \"blurDistanceFg\">\n \t\t\t<div class = \"blurAngleCancel\" cv-ref = \"blurAngleCancelFg\">\n\t\t\t\t<div\n\t\t\t\t\tcv-ref  = \"foreground\"\n\t\t\t\t\tclass   = \"viewport-bg-layers\"\n\t\t\t\t\tcv-each = \"fgLayers:layer\"\n\t\t\t\t>[[layer]]</div>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</div>\n \t\t</div>\n\n \t\t[[plot]]\n\n \t\t<div class = \"viewport-overlay\">\n \t\t\t<div class = \"debug-spawn\" cv-if = \"debugEditMode\">\n \t\t\t\t<div class = \"debug-spawn\" cv-ref = \"spawnPreview\"></div>\n \t\t\t\t<div class = \"debug-spawn\">[[debugObjectName]]</div>\n \t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table combo-table\">\n\t\t\t\t<span cv-if = \"showCombo\">\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<span class = \"combo-list\" cv-each = \"combo:pop:p\">\n\t\t\t\t\t\t\t<div>[[pop.label]]</div>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class = \"comboTopLine\" cv-if = \"combo\">[[popBottomLine]]</span>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class = \"comboTopLine\" cv-if = \"combo\">[[popTopLine]]</span>\n\t\t\t\t</span>\n\t\t\t\t<span class = \"comboFail\">[[comboFail]]</span>\n\t\t\t\t<span class = \"comboResult\">[[comboResult]]</span>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table quick-form\">[[quickForm]]</div>\n\n\t\t\t<div class = \"hud hud-top-right hud-table\"  cv-if = \"debugOsd\">\n\t\t\t\t<table>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td colspan = \"2\">[[char]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGround]]</td>\n\t\t\t\t\t\t<td>[[ground]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelCamera]]</td>\n\t\t\t\t\t\t<td>[[cameraMode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelMode]]</td>\n\t\t\t\t\t\t<td>[[mode]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelX]]</td>\n\t\t\t\t\t\t<td>[[xPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelY]]</td>\n\t\t\t\t\t\t<td>[[yPos]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelLayer]]</td>\n\t\t\t\t\t\t<td>[[layer]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelGSpeed]]</td>\n\t\t\t\t\t\t<td>[[gSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelXSpeed]]</td>\n\t\t\t\t\t\t<td>[[xSpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelYSpeed]]</td>\n\t\t\t\t\t\t<td>[[ySpeed]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAirAngle]]</td>\n\t\t\t\t\t\t<td>[[airAngle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelAngle]]</td>\n\t\t\t\t\t\t<td>[[angle]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelActors]]</td>\n\t\t\t\t\t\t<td>[[actorCount]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelRegions]]</td>\n\t\t\t\t\t\t<td>[[regionCount]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelFrame]]</td>\n\t\t\t\t\t\t<td>[[frame]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[labelIgnore]]</td>\n\t\t\t\t\t\t<td>[[ignore]]</td>\n\t\t\t\t\t</tr>\n\n\t\t\t\t</table>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-right\" cv-if = \"showHud\">\n\n\t\t\t\t<div class = \"char-hud\">\n\t\t\t\t\t[[char]]\n\t\t\t\t\t<div class = \"char-icon [[charName|hyphenate]]\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class = \"emblem-hud\" cv-each = \"emblems:emblem:e\">\n\t\t\t\t\t<img loading=\"lazy\" src = \"/custom/hud-emblem.png\" class = \"[[emblem.existing]]\" />\n\t\t\t\t</div>\n\t\t\t\t<div class = \"emerald-hud\" cv-each = \"emeralds:emerald:e\">\n\t\t\t\t\t<img loading=\"lazy\" src = \"/Sonic/emerald-[[emerald]]-mini.png\" />\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-bottom-right\">\n\n\t\t\t\t<div cv-if = \"showHud\" class =\"sheild-hud [[currentSheild]] [[hasElectric]] [[hasFire]] [[hasWater]] [[hasNormal]]\">\n\t\t\t\t\t<div class = \"sheild-icon sheild-electric\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-normal\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-fire\"></div>\n\t\t\t\t\t<div class = \"sheild-icon sheild-water\"></div>\n\t\t\t\t</div>\n\n\t\t\t\t<span class = \"contents\" cv-if = \"showFps\">\n\t\t\t\t\t<table>\n\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t<td>[[labelFps]]</td>\n\t\t\t\t\t\t\t<td>[[fpsSprite]]</td>\n\t\t\t\t\t\t</tr>\n\t\t\t\t\t</table>\n\t\t\t\t</span>\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-bottom-left\" cv-if = \"showHud\" data-extra = \"[[audioComment]]\">\n\t\t\t\t[[nowPlaying]]\n\t\t\t\t[[trackName]]\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-top-left hud-table\"  cv-if = \"showHud\">\n\t\t\t\t<table>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[scoreLabel]]</td><td>[[score]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[timerLabel]]</td><td>[[timer]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td>[[ringLabel]]</td><td>[[rings]]</td>\n\t\t\t\t\t</tr>\n\t\t\t\t</table>\n\t\t\t\t<!-- <div class = \"demo-hud\" cv-if = \"demoIndicator\">[[demoIndicator]]</div> -->\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered\" cv-if = \"actClear\">\n\t\t\t\t<div class = \"centered act-cleared\">[[actClearLabel]]</div>\n\t\t\t\t[[tallyBoard]]\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered\" cv-if = \"centerMessage\">\n\t\t\t\t[[centerMessage]]\n\t\t\t</div>\n\n\t\t\t<div class = \"hud hud-dark hud-centered-raised\" cv-if = \"dialog\">\n\t\t\t\t<div class = \"dialog-frame [[dialogClasses]]\">\n\t\t\t\t\t<div class = \"dialog-icon\">\n\t\t\t\t\t</div>\n\t\t\t\t\t<div cv-each = \"dialogLines:line\" class = \"dialog-text\">\n\t\t\t\t\t\t<span style = \"--text-offset:[[line.offset]]\">[[line]]</span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"screen-effects\" cv-each = \"screenEffects:effect\">\n\t\t\t\t[[effect]]\n\t\t\t</div>\n\n\t\t\t<section class = \"pause-menu full\" cv-if = \"paused\">[[pauseMenu]]</section>\n\n\t\t\t[[titlecard]]\n\n\t\t\t<div class = \"topLine\">\n\t\t\t\t<div class = \"status-message\">[[topLine]]</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"focus-me\">\n\t\t\t\t<div class = \"status-message\">[[focusMe]]</div>\n\t\t\t</div>\n\n\t\t\t<div class = \"status-message\">[[status]]</div>\n\t\t\t<section class = \"contents\" cv-if = \"networked\">[[chatBox]]</section>\n\t\t\t<!-- <div class = \"filters filters-foreground\" cv-ref = \"fgFilters\"></div> -->\n\t\t\t<div class = \"console [[showConsole]]\" cv-ref = \"subspace\" tab-index = \"0\">[[subspace]]</div>\n\t\t\t<div class = \"shade\" data-fade = \"[[fade]]\"></div>\n\n\t\t</div>\n\n\t\t<div class = \"quick-controls\" cv-if = \"shortcuts\">\n\t\t\t[[muteSwitch]]\n\t\t\t<div class = \"button\" cv-on = \"click:fullscreen()\">\n\t\t\t\t<image src = \"/ui/fullscreen.svg\" />\n\t\t\t</div>\n\t\t</div>\n\n\t</div>\n</div>\n"
 });
 
 ;require.register("zoneScripts/ChaoGarden.js", function(exports, require, module) {

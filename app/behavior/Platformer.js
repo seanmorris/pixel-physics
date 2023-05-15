@@ -36,6 +36,8 @@ export class Platformer
 
 		if(!host.args.falling)
 		{
+			host.modeLast = host.args.mode;
+
 			if(host.args.grinding)
 			{
 				host.args.wasGrinding = true;
@@ -70,7 +72,7 @@ export class Platformer
 				}
 			}
 
-			if(!host.controllable)
+			if(!host.controllable && !host.canGrind)
 			{
 				host.args.grinding = false;
 			}
@@ -1952,7 +1954,7 @@ export class Platformer
 								host.args.x += gSpeed * Math.sin(gAngle);
 								host.args.y += gSpeed * Math.cos(gAngle);
 
-								if(!host.args.rolling && !host.args.grinding)
+								if(host.isVehicle || (!host.args.rolling && !host.args.grinding))
 								{
 									host.args.groundAngle = -Math.PI * 0.5;
 								}
@@ -2007,7 +2009,7 @@ export class Platformer
 								host.args.x += -gSpeed * Math.sin(gAngle);
 								host.args.y += -gSpeed * Math.cos(gAngle);
 
-								if(!host.args.rolling && !host.args.grinding)
+								if(host.isVehicle || (!host.args.rolling && !host.args.grinding))
 								{
 									host.args.groundAngle = Math.PI * 0.5;
 								}
@@ -2810,8 +2812,7 @@ export class Platformer
 			return;
 		}
 
-		if(host.controllable
-			&& host.args.ySpeed >= 0
+		if(host.args.ySpeed >= 0
 			&& distances[2]
 			&& distances[2] <=  host.args.width * 0.5
 			&& distances[1] === false
@@ -3066,6 +3067,10 @@ export class Platformer
 			{
 				host.args.x -= host.args.width * 0.5 *  Math.sign(xSpeedOriginal);
 				host.args.falling = true;
+				if(hits.length > 2)
+				{
+					host.args.xSpeed = 0;
+				}
 			}
 
 			blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
@@ -3826,7 +3831,7 @@ export class Platformer
 		}
 
 		let floorX = 0;
-		let gSpeedReal = host.args.gSpeed;
+		let gSpeedReal = host.args.gSpeed ?? 0;
 
 		if(host.args.standingOn && host.args.standingOn.args.convey)
 		{

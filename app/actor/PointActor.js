@@ -335,6 +335,7 @@ export class PointActor extends View
 
 		this.args.groundAngle  = this.args.groundAngle || 0;
 		this.args.displayAngle = 0;
+		this.args.seatAngle    = 0;
 		this.args.airAngle     = 0;
 
 		const lastAngles = [];
@@ -737,6 +738,7 @@ export class PointActor extends View
 			, '--fly-angle':      'flyAngle'
 			, '--display-angle':  'groundAngle8'
 			, '--ground-angle':   'groundAngle8'
+			, '--seat-angle':     'seatAngle'
 			, '--ground-angle8':  'groundAngle8'
 			, '--air-angle':      'airAngle'
 			, '--corkscrew':      'corkscrew'
@@ -847,7 +849,7 @@ export class PointActor extends View
 
 	updateStart()
 	{
-		if(this.isSuper || this.isHyper)
+		if((this.isSuper || this.isHyper) && !this.args.currentSheild instanceof SuperSheild)
 		{
 			const superSheild = new SuperSheild;
 			superSheild.equip(this);
@@ -855,7 +857,8 @@ export class PointActor extends View
 		}
 		else if(this.args.currentSheild && this.args.currentSheild instanceof SuperSheild)
 		{
-			superSheild.unequip(this);
+			const superSheild = this.args.currentSheild;
+			superSheild && superSheild.unequip(this);
 			this.args.currentSheild = null;
 		}
 

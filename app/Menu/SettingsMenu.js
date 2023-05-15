@@ -57,6 +57,7 @@ const videoMenu = parent => ({
 			, revert: value => parent.settings.outline = 1
 			, set: value => parent.settings.outline = value
 			, get: () => parent.settings.outline
+			, step: 0.5
 			, max: 15
 			, min: 0
 		}

@@ -48,7 +48,7 @@ export class Tumbler extends PointActor
 
 	collideA(other, type)
 	{
-		if(!other.controllable || this.args.falling)
+		if((!other.controllable && !other.isVehicle) || this.args.falling)
 		{
 			return;
 		}
@@ -59,7 +59,7 @@ export class Tumbler extends PointActor
 		{
 			this.args.animation = 'tumbling';
 			this.args.xSpeed = speed + 5 * Math.random();
-			this.args.ySpeed = -Math.abs(speed * 0.5) + -2 * Math.random();
+			this.args.ySpeed = -Math.abs(speed * 0.25) + -2 * Math.random();
 			this.args.falling = true;
 
 			this.tumbling = true

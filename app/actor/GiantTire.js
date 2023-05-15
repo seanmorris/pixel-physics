@@ -114,7 +114,12 @@ export class GiantTire extends Mixin.from(PointActor)
 			return;
 		}
 
-		const other = this.viewport.controlActor;
+		let other = this.viewport.controlActor;
+
+		if(other.args.standingOn && other.args.standingOn.isVehicle)
+		{
+			other = other.args.standingOn;
+		}
 
 		if(!this.args.falling)
 		{

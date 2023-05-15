@@ -13,5 +13,24 @@ export class Herculad extends Mixin.from(PointActor)
 		this.args.width   = 32;
 		this.args.height  = 32;
 		this.args.gravity = 0.4;
+
+		this.args.collected = false;
+	}
+
+	onRendered(event)
+	{
+		super.onRendered(event);
+
+		this.autoAttr.get(this.box)['data-collected'] = 'collected';
+	}
+
+	collideA(other,type)
+	{
+		if(other.controllable)
+		{
+			this.args.collected = 'collected';
+		}
+
+		super.collideA(other,type);
 	}
 }

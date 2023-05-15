@@ -1,13 +1,30 @@
 .actor-item.actor-herculad .sprite {
+	position: relative;
+	height: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-herculad .sprite::after {
+	position: absolute;
+	left: 0;
+	top: 0;
+	content: '';
 	background-image: url(/secret/herculad.png);
+	width: 32px;
 	height: 32px;
-	height: 32px;
-	animation: herculad-idle 0.45pps steps(4) infinite;
+	animation: herculad-idle 0.45s steps(4) infinite;
 	animation-play-state: initial !important;
 }
 
-.actor-item.actor-hex-nut {
-/*	filter: none !important;*/
+.actor-item.actor-herculad[data-facing=right] .sprite::after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-herculad[data-collected="collected"] {
+	transition: transform 0.125s ease-in-out, opacity 0.25s ease-in-out ;
+	transform-origin: 0 0;
+	transform: translateY(-8px) scaleX(0.25);
+	opacity: 0.0;
 }
 
 @keyframes herculad-idle {

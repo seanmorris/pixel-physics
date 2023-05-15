@@ -1,9 +1,9 @@
 {
     "compressionlevel": -1,
-    "height": 245,
+    "height": 48,
     "infinite": false,
-    "nextlayerid": 12,
-    "nextobjectid": 171,
+    "nextlayerid": 13,
+    "nextobjectid": 178,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -384,18 +384,18 @@
             "columns": 14,
             "firstgid": 7631,
             "image": "../tmnt-tournament/buildings.png",
-            "imageheight": 256,
+            "imageheight": 512,
             "imagewidth": 448,
             "margin": 0,
             "name": "buildings",
             "spacing": 0,
-            "tilecount": 112,
+            "tilecount": 224,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 2,
-            "firstgid": 7743,
+            "firstgid": 7855,
             "image": "../custom/cheezy-poofs.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -403,6 +403,45 @@
             "name": "cheezy-poofs",
             "spacing": 0,
             "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 7859,
+            "image": "../Sonic/sa2-128.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "sa2-128",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 7875,
+            "image": "../custom/orange-rail.png",
+            "imageheight": 800,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "orange-rail",
+            "spacing": 0,
+            "tilecount": 300,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 24,
+            "firstgid": 8175,
+            "image": "../Sonic/tiles/palmtree-panic/3d-loop.png",
+            "imageheight": 1120,
+            "imagewidth": 768,
+            "margin": 0,
+            "name": "3d-loop",
+            "spacing": 0,
+            "tilecount": 840,
             "tileheight": 32,
             "tilewidth": 32
         }
@@ -415,7 +454,7 @@
         "block",
         "giant-tire",
         "herculad",
-        "sliding-region"
+        "skate-board"
     ],
     "map": "/map/truck-test.json"
 }

@@ -2586,6 +2586,37 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	}
 }
 
+.actor-item.actor-chopper .sprite {
+	position: relative;
+
+}
+
+.actor-item.actor-chopper .sprite::after {
+	position: absolute;
+	content: '';
+	width: 100%;
+	height: 100%;
+	left: 0;
+	background-image: url(/tmnt-tournament/chopper-recolor.png);
+	/* background-image: url(/tmnt-tournament/chopper.png); */
+	z-index: 3;
+	animation: chopper-flying 90ms steps(2) infinite;
+
+	background-position-y: calc(-96px * var(--color));
+	transition: transform 1s ease-in-out;
+	transform-origin: 65% 50%;
+}
+
+.actor-item.actor-chopper[data-animation=exploded] .sprite:after {
+	transform: rotate(-180deg);
+	animation-play-state: paused;
+}
+
+@keyframes chopper-flying {
+	  0% { background-position-x: -0px; }
+	100% { background-position-x: -320px; }
+}
+
 .actor-coconut {
 	z-index: 10;
 }
@@ -4313,15 +4344,32 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-herculad .sprite {
+	position: relative;
+	height: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-herculad .sprite::after {
+	position: absolute;
+	left: 0;
+	top: 0;
+	content: '';
 	background-image: url(/secret/herculad.png);
+	width: 32px;
 	height: 32px;
-	height: 32px;
-	animation: herculad-idle 0.45pps steps(4) infinite;
+	animation: herculad-idle 0.45s steps(4) infinite;
 	animation-play-state: initial !important;
 }
 
-.actor-item.actor-hex-nut {
-/*	filter: none !important;*/
+.actor-item.actor-herculad[data-facing=right] .sprite::after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-herculad[data-collected="collected"] {
+	transition: transform 0.125s ease-in-out, opacity 0.25s ease-in-out ;
+	transform-origin: 0 0;
+	transform: translateY(-8px) scaleX(0.25);
+	opacity: 0.0;
 }
 
 @keyframes herculad-idle {
@@ -7372,6 +7420,7 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-snow-board .sprite {
+	transition: top 10ms ease-in !important;
 	top: 8px;
 	will-change: top;
 	transition: top 0.65s ease-in;
@@ -7380,19 +7429,48 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	width: 64px;
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="1"] .sprite {
+.actor-item.actor-skate-board .sprite {
+	height: 12px;
+	position: relative;
+	top: 0px;
+	width: 53px;
+	background-image: url(/custom/skateboard.png);
+	transform-origin: center bottom;
+}
+
+.actor-item.actor-skate-board .sprite {
+	/* display: none; */
+	/* transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * calc(var(--display-angle) + calc(1 * var(--seat-angle))))) scale(-1,1) !important; */
+}
+
+.actor-item.actor-skate-board[data-animation=manual] .sprite {
+	height: 20px;
+	background-position-y: -12px;
+}
+
+.actor-item.actor-skate-board[data-animation=grinding] .sprite {
+	top: 18px;
+	height: 40px;
+	background-position-y: -32px;
+}
+
+.actor-item.actor-skate-board[data-facing=left] .sprite {
+	left: 0px;
+}
+
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="1"] .sprite {
 	transform:
 		translate(calc(-50% - 8px), calc(-100% - 8px))
 		rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="2"] .sprite {
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="2"] .sprite {
 	transform:
 		translate(-50%, calc(-100% - 16px))
 		rotate(calc( calc( -1rad * var(--display-angle) + 180deg)));
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="3"] .sprite {
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="3"] .sprite {
 	transform:
 		translate(calc(-50% + 10px), calc(-100% - 0px))
 		rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));
@@ -7916,6 +7994,19 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	animation: sonic-run steps(4) infinite 128ms forwards;
 }
 
+.actor-item.actor-sonic[data-animation="board-grinding"] .sprite:after {
+	top: 14px;
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -1216px;
+}
+
+.actor-item.actor-sonic[data-animation="grinding-stopped"] .sprite:after {
+	top: 2px;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
+	/* animation: sonic-run steps(4) infinite 128ms forwards; */
+}
+
 .actor-item.actor-sonic[data-animation="grinding-crouching"] .sprite:after {
 	top: 2px;
 	--sprite-offset-x: -256px;
@@ -7980,8 +8071,18 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	--animation-steps: 2;
 	background-position-y: var(--sprite-offset-y);
 	animation: sonic-animate steps(2) infinite 90ms;
-
 }
+
+.actor-item.actor-sonic[data-animation="adventure-pose"] .sprite:after {
+	--sprite-offset-x: -512px;
+	--sprite-offset-y: -1216px;
+	--animation-width: -64px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	background-position-x: calc(var(--sprite-offset-x) + 0px);
+	animation: sonic-animate steps(2) 1 300ms;
+}
+
 .actor-item.actor-sonic[data-animation="holding"] .sprite:after {
 	/*--sprite-offset-x: -64px;*/
 	/*--sprite-offset-x: -256px;*/
@@ -8053,6 +8154,30 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 
 .actor-item.actor-sonic[data-carrying=true][data-facing=right] .rear-arm {
 	transform: scale(-1,1);
+}
+
+.actor-item.actor-sonic[data-animation="handstand"] .sprite:after {
+	--sprite-offset-x: -384px;
+	--sprite-offset-y: -1216px;
+}
+
+.actor-item.actor-sonic[data-animation="manual"] .sprite:after {
+	--sprite-offset-x: -192px;
+	--sprite-offset-y: -1216px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	--animation-width: -64px;
+	animation: sonic-animate steps(2) infinite 650ms;
+}
+
+.actor-item.actor-sonic[data-animation="insult"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -1216px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	background-position-x:-256px;
+	--animation-width: -64px;
+	animation: sonic-animate steps(2) infinite 300ms reverse forwards;
 }
 
 @keyframes sonic-animate {
@@ -9313,17 +9438,23 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	width: 24px;
 }
 
-
 .actor-item.actor-techno-squeak .sprite:after {
 	content: '';
 	position: absolute;
 	top: 0px;
 	left: 0;
 	background-image: url(/Sonic/techno-squeak.png);
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	/* --sprite-offset-x: -32px; */
+	/* --sprite-offset-y: 0px; */
+	/* background-position-x: var(--sprite-offset-x, 1px);
+	background-position-y: var(--sprite-offset-y, 0px); */
 	height: 14px;
 	width: 24px;
 	z-index: 1;
+}
+
+.actor-item.actor-techno-squeak[data-color="yellow"] .sprite:after {
+	background-position-y: -32px;
 }
 
 .actor-item.actor-techno-squeak[data-animation="standing"] .sprite:after {
@@ -11855,6 +11986,33 @@ iframe {
 	}
 }
 
+.particle-huge-explosion {
+	background-image: url(/metal-slug/huge-explosion.png);
+	width: 96px;
+	height: 168px;
+
+	--animation-steps: 4;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+
+	z-index: 100;
+
+	animation: huge-explosion steps(29) 1 forwards;
+	animation-duration: 512ms;
+
+	transform: translate(-50%, calc(-100% + 20px)) !important;
+}
+
+@-webkit-keyframes huge-explosion{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-2784px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		opacity: 0.5
+	}
+}
+
 .viewport-particles {
 	--xCam: var(--x);
 	--yCam: var(--y);
@@ -13799,6 +13957,25 @@ iframe {
 	filter: saturate(250%) brightness(200%);
 }
 
+.tally-board {
+	display: flex;
+	flex-direction: column;
+}
+
+.tally-board-content {
+	display: contents;
+}
+
+.tally-board-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.tally-board-total {
+	margin-top: 1rem;
+}
+
 .titlecard,
 .titlecard-field,
 .titlecard-border-color,
@@ -13977,6 +14154,7 @@ iframe {
 	pointer-events: none;
 }
 
+.titlecard.replay .titlecard-field,
 .titlecard.closed .titlecard-field,
 .titlecard.closing .titlecard-field {
 	opacity: 0;
@@ -15497,6 +15675,13 @@ li.focused.unavailable .small-menu-font .hud-character {
 	display: none;
 }
 
+.hud-character[data-type="number"][data-value="\00000A"] {
+	opacity: 0;
+	display: block;
+	height: 0;
+	width: 0;
+}
+
 .hud-character[data-type="number"][data-value="17"],
 .hud-character[data-type="number"][data-value="19"],
 .hud-character[data-type="number"][data-value="18"] {
@@ -16909,6 +17094,7 @@ input[type=number]::-webkit-outer-spin-button {
 	justify-content: flex-end !important;
 }
 
+.tally-board .tally-item.bump,
 .combo-table .combo-list .hud-character-string {
 	animation: combo-pulse 400ms 1 linear;
 }
@@ -17035,6 +17221,14 @@ viewport.level .intro-cards {
 
 .viewport.invert {
 	filter: invert(1);
+}
+
+.hud-centered .hud-character-string {
+	text-align: center;
+}
+
+.hud-centered .act-cleared .hud-character-string .hud-character {
+	margin-bottom: 0.00rem;
 }
 
 

@@ -13,6 +13,11 @@ export class LoadingRegion extends Region
 
 	updateActor(other)
 	{
+		if(this.others.signpost && (!this.others.signpost.args.active))
+		{
+			return;
+		}
+
 		if(!other.controllable)
 		{
 			return;
@@ -47,9 +52,16 @@ export class LoadingRegion extends Region
 		const xAppend = this.args.x / 32 + this.args.xOffset;
 		const yAppend = 0;
 
-		tileMap.resize(width + 9, height);
+		// tileMap.resize(width + 9, height);
 
-		viewport.appendMap(this.args.map, xAppend, yAppend);
+		if(this.others.signpost)
+		{
+			viewport.appendMap(this.args.map, xAppend, yAppend);
+			// this.others.signpost.waitFor =
+		}
+
+
+		// viewport.args.zonecard.replay({});
 
 		this.loaded = true;
 	}

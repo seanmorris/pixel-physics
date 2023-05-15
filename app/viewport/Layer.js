@@ -244,7 +244,6 @@ export class Layer extends View
 
 			for(let j = 0; j < blocksHigh; j += Math.sign(blocksHigh))
 			{
-
 				const tileY = j
 				+ Math.floor(-this.y / blockSize)
 				+ (this.offsetYChange < 0
@@ -368,6 +367,8 @@ export class Layer extends View
 						});
 
 						blockMeta.visible = true;
+
+						Layer.updateCount++;
 					}
 					else if(blockMeta.visible)
 					{
@@ -404,3 +405,6 @@ export class Layer extends View
 
 	}
 }
+
+
+Layer.updateCount = 0;

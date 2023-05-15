@@ -102,6 +102,8 @@ import { Droop } from '../effects/Droop';
 
 import { GamepadConfig } from '../controller/GamepadConfig';
 
+import { TallyBoard } from '../tally/TallyBoard';
+
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
 const ColCells = Symbol('collision-cells');
@@ -217,6 +219,7 @@ export class Viewport extends View
 		this.backdrops     = new Map;
 		this.checkpoints   = new Map;
 		this.zeroFrame     = false;
+		this.spawnedDefs   = new Map;
 
 		// this.actorPointCache = new Map;
 
@@ -231,6 +234,8 @@ export class Viewport extends View
 		this.client = null;
 
 		this.args.networked = false;
+
+		this.args.tallyBoard = null;
 
 		this.args.mouse = 'moved';
 
@@ -1054,7 +1059,14 @@ export class Viewport extends View
 
 				localStorage.setItem('sonic-3000-audio-enabled', v);
 
-				this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+				const frameId = this.args.frameId - this.args.startFrameId;
+
+				this.onNextFrame(() => v ? Sfx.unpause() : Sfx.pause());
+
+				if(frameId > (this.meta.bgm_delay ?? 0))
+				{
+					this.onNextFrame(() => v ? Bgm.unpause() : Bgm.pause());
+				}
 
 				this.args.muteSwitch.args.active = v;
 			});
@@ -1652,9 +1664,12 @@ export class Viewport extends View
 		this.onTimeout(100, () => this.args.initializing = '');
 	}
 
-	setZoneCard()
+	setZoneCard(replay = false)
 	{
-		this.args.zonecard = new Titlecard({waitFor: this.tileMap.ready}, this);
+		if(!replay)
+		{
+			this.args.zonecard = new Titlecard({waitFor: this.tileMap.ready}, this);
+		}
 
 		const line1  = this.meta.titlecard_title_1;
 		const line2  = this.meta.titlecard_title_2;
@@ -1668,11 +1683,16 @@ export class Viewport extends View
 
 		this.args.actName = `${line1} ${line2} ${number}`;
 
-		this.args.titlecard = new Series({
-			cards:[this.args.zonecard]}, this
-		);
+		if(!replay)
+		{
+			this.args.titlecard = new Series({
+				cards:[this.args.zonecard]}, this
+			);
 
-		return this.args.titlecard.play();
+			return this.args.titlecard.play();
+		}
+
+		return Promise.resolve();
 	}
 
 	fillBackground()
@@ -1716,7 +1736,7 @@ export class Viewport extends View
 		this.args.currentSheild = null;
 		this.args.hasFire    = false;
 		this.args.hasWater   = false;
-		this.args.hasElecric = false;
+		this.args.hasElectric = false;
 		this.args.hasNormal  = false;
 
 		if(this.meta.zoneScript && ScriptPalette[this.meta.zoneScript])
@@ -1724,18 +1744,14 @@ export class Viewport extends View
 			this.zoneScript = new ScriptPalette[this.meta.zoneScript];
 		}
 
-		if(this.meta.bgm)
+		Bgm.stop('MENU_THEME');
+
+		if(Bgm.playing && this.meta.bgm !== this.bgm)
 		{
-			Bgm.stop('MENU_THEME');
-
-			if(Bgm.playing && this.meta.bgm !== this.bgm)
-			{
-				Bgm.stop();
-			}
-
-			Bgm.play(this.meta.bgm, {loop:true});
+			Bgm.stop();
 		}
-		else
+
+		if(!this.meta.bgm)
 		{
 			Bgm.fadeOut(250);
 		}
@@ -3107,16 +3123,22 @@ export class Viewport extends View
 		actor.startFrame = this.args.frameId || 0;
 
 		this.actors.add( actor );
+
+		return actor;
 	}
 
 	spawnInitialObjects(objDefs)
 	{
+		const spawned = new Set;
+
 		for(let i in objDefs)
 		{
 			this.defsByName.set(objDefs[i].name, objDefs[i]);
 			this.objDefs.set(objDefs[i].id, objDefs[i]);
 
-			this.spawnFromDef(objDefs[i]);
+			const actor = this.spawnFromDef(objDefs[i]);
+
+			spawned.add(actor);
 		}
 
 		if(this.defsByName.has('player-start'))
@@ -3129,6 +3151,11 @@ export class Viewport extends View
 
 		for(const actor of this.actors.items())
 		{
+			if(!spawned.has(actor))
+			{
+				continue;
+			}
+
 			for(const o in actor.others)
 			{
 				actor.others[o] = this.actorsById[actor.others[o]];
@@ -3179,7 +3206,30 @@ export class Viewport extends View
 	{
 		this.args.loadingMap = true;
 
-		return this.tileMap.append(url, x, y).then(defs => {
+		return this.tileMap.append(url, x, y).then(({defs, data}) => {
+
+			this.currentMap = url;
+
+			const zoneState = this.getZoneState();
+
+			this.controlActor.args.emblems.splice(0);
+
+			for(const emblemId of zoneState.emblems)
+			{
+				if(!this.actorsById[emblemId])
+				{
+					continue;
+				}
+
+				const emblem = this.actorsById[emblemId];
+
+				emblem.existing = 'existing';
+
+				if(this.controlActor && !this.controlActor.args.emblems.includes(emblem))
+				{
+					this.controlActor.args.emblems.push(emblem);
+				}
+			}
 
 			const maxObjectId = this.maxObjectId;
 
@@ -3201,6 +3251,13 @@ export class Viewport extends View
 						prop.value += maxObjectId;
 					}
 				}
+			}
+
+			for(const prop of Object.values(data.properties))
+			{
+				const name = prop.name.replace(/-/g, '_');
+
+				this.meta[name] = prop.value;
 			}
 
 			return this.spawnInitialObjects(defs);
@@ -3553,10 +3610,16 @@ export class Viewport extends View
 
 	update()
 	{
+		const frameId = this.args.frameId - this.args.startFrameId;
+
 		if(this.zoneScript && this.args.started && this.args.paused === false)
 		{
-			// console.log(this.args.frameId, this.args.startFrameId);
-			this.zoneScript.update(this.args.frameId - this.args.startFrameId, this);
+			this.zoneScript.update(frameId, this);
+		}
+
+		if(this.args.started && this.meta.bgm && frameId === (this.meta.bgm_delay||1))
+		{
+			Bgm.play(this.meta.bgm, {loop:true});
 		}
 
 		if(this.socket && this.args.frameId % 120 === 0)
@@ -3577,6 +3640,33 @@ export class Viewport extends View
 		if(this.args.frozen > 0)
 		{
 			this.args.frozen--;
+		}
+
+		if(this.tallyBoard && !this.args.paused)
+		{
+			this.tallyBoard.update(this);
+
+			this.args.score.args.value = String(this.controlActor.args.score).padStart(4, ' ');
+
+			if(this.tallyBoard.doneAge && !this.args.zonecard.playing)
+			{
+				this.setZoneCard(true);
+			}
+
+			if(this.tallyBoard.done)
+			{
+				this.args.tallyBoard = null;
+				this.tallyBoard = false;
+				this.args.startFrameId = this.args.frameId;
+				this.args.actClear = false;
+				this.args.zonecard.replay();
+
+				Bgm.stop('ACT_CLEAR');
+			}
+			else
+			{
+				this.args.frozen = 1;
+			}
 		}
 
 		const controller = this.controlActor
@@ -3904,6 +3994,8 @@ export class Viewport extends View
 
 		this.updateEnded.clear();
 
+		Layer.updateCount = 0;
+
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
 			const xDir = Math.sign(layer.x - this.args.x);
@@ -3914,6 +4006,8 @@ export class Viewport extends View
 
 			layer.update(this.tileMap, xDir, yDir);
 		}
+
+		// console.log(Layer.updateCount);
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
@@ -4173,7 +4267,11 @@ export class Viewport extends View
 						this.willDetach.delete(actor);
 
 						this.visible.add(actor);
-						actor.vizi = true;
+
+						if(!actor.args.hidden)
+						{
+							actor.vizi = true;
+						}
 					}
 
 					inAuras.add(actor);
@@ -4197,9 +4295,9 @@ export class Viewport extends View
 					continue;
 				}
 
-				const actorIsOnScreen = this.actorIsOnScreen(actor);
+				const actorIsOnScreen = !actor.args.hidden && this.actorIsOnScreen(actor);
 
-				if(actor.vizi && !this.willDetach.has(actor) && !actorIsOnScreen)
+				if(actor.vizi && !actorIsOnScreen)
 				{
 					this.willDetach.set(actor, () => {
 
@@ -4295,11 +4393,17 @@ export class Viewport extends View
 			let multiply = 0;
 			let base = 0;
 
-			this.args.showCombo = this.controlActor.args.popChain.length > 1;
+			let showCombo = this.controlActor.args.popChain.length > 1;
+
 			let len = 0;
 
-			if(this.controlActor.args.popChain)
+			if(this.controlActor.args.popChain.length)
 			{
+				if(this.controlActor.args.popChain[0].special)
+				{
+					showCombo = true;
+				}
+
 				len = this.controlActor.args.popChain.length;
 				const cutOff = Math.max(0, len - 4);
 
@@ -4340,7 +4444,11 @@ export class Viewport extends View
 						this.args.combo[c].label.args.value = String(pop.label).replace(/-/g, ' ');
 						this.args.combo[c].index = i;
 
-						if(pop.multiplier > 1)
+						if(pop.color)
+						{
+							this.args.combo[c].label.args.color = pop.color
+						}
+						else if(pop.multiplier > 1)
 						{
 							this.args.combo[c].label.args.color = 'orange';
 						}
@@ -4369,6 +4477,8 @@ export class Viewport extends View
 
 			this.args.popTopLine.args.value = base + ' x ' + multiply;
 			this.args.popBottomLine.args.value =  len > 4 ? '+' + (len - 4) : '';
+
+			this.args.showCombo = showCombo;
 		}
 
 		if(this.args.networked && this.controlActor)
@@ -5004,13 +5114,12 @@ export class Viewport extends View
 		this.args.currentSheild = null;
 		this.args.hasFire    = false;
 		this.args.hasWater   = false;
-		this.args.hasElecric = false;
+		this.args.hasElectric = false;
 		this.args.hasNormal  = false;
 
 		this.clearDialog();
 		this.hideDialog();
 
-		this.tileMap && this.tileMap.reset();
 		this.replayFrames = new Map;
 		// this.replayOffset = 0;
 		// this.replay = null;
@@ -5156,7 +5265,7 @@ export class Viewport extends View
 			this.args.currentSheild = null;
 			this.args.hasFire    = false;
 			this.args.hasWater   = false;
-			this.args.hasElecric = false;
+			this.args.hasElectric = false;
 			this.args.hasNormal  = false;
 
 			this.args.isRecording = false;
@@ -5815,30 +5924,30 @@ export class Viewport extends View
 
 	storeCheckpoint(name, checkpointId)
 	{
-		if(!this.checkpoints[this.tileMap.mapUrl])
+		if(!this.checkpoints[this.currentMap])
 		{
-			this.checkpoints[this.tileMap.mapUrl] = {};
+			this.checkpoints[this.currentMap] = {};
 		}
 
-		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+		const checkpointsByActor = this.checkpoints[this.currentMap];
 
 		checkpointsByActor[name] = {checkpointId, frames: this.args.frameId - this.args.startFrameId};
 
 		localStorage.setItem(
-			`checkpoints:::${this.tileMap.mapUrl}`
-			, JSON.stringify(this.checkpoints[this.tileMap.mapUrl])
+			`checkpoints:::${this.currentMap}`
+			, JSON.stringify(this.checkpoints[this.currentMap])
 		);
 	}
 
 	getCheckpoint(name)
 	{
-		if(!this.checkpoints[this.tileMap.mapUrl])
+		if(!this.checkpoints[this.currentMap])
 		{
-			const checkpointSource = localStorage.getItem(`checkpoints:::${this.tileMap.mapUrl}`) || '{}';
-			this.checkpoints[this.tileMap.mapUrl] = JSON.parse(checkpointSource) || {};
+			const checkpointSource = localStorage.getItem(`checkpoints:::${this.currentMap}`) || '{}';
+			this.checkpoints[this.currentMap] = JSON.parse(checkpointSource) || {};
 		}
 
-		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+		const checkpointsByActor = this.checkpoints[this.currentMap];
 		const currentCheckpoint  = checkpointsByActor[name];
 
 		return currentCheckpoint;
@@ -5864,18 +5973,18 @@ export class Viewport extends View
 			name = this.controlActor.args.canonical;
 		}
 
-		if(!this.checkpoints[this.tileMap.mapUrl])
+		if(!this.checkpoints[this.currentMap])
 		{
-			this.checkpoints[this.tileMap.mapUrl] = {};
+			this.checkpoints[this.currentMap] = {};
 		}
 
-		const checkpointsByActor = this.checkpoints[this.tileMap.mapUrl];
+		const checkpointsByActor = this.checkpoints[this.currentMap];
 
 		delete checkpointsByActor[name];
 
 		localStorage.setItem(
-			`checkpoints:::${this.tileMap.mapUrl}`
-			, JSON.stringify(this.checkpoints[this.tileMap.mapUrl])
+			`checkpoints:::${this.currentMap}`
+			, JSON.stringify(this.checkpoints[this.currentMap])
 		);
 	}
 
@@ -5937,7 +6046,7 @@ export class Viewport extends View
 
 		const speedBonus = Math.trunc(this.controlActor.args.clearSpeed * 10);
 		const ringBonus  = rings * 100;
-		const airBonus   = (Math.round(10000 * air) / 100) + '%';
+		const airBonus   = (Math.round(10000 * (air||0)));
 		let   timeBonus  = 0;
 
 		const seconds = Math.trunc(Math.abs(time));
@@ -5975,27 +6084,42 @@ export class Viewport extends View
 			timeBonus = 500;
 		}
 
-		const totalBonus = timeBonus + ringBonus + speedBonus;
+		const totalBonus = timeBonus + ringBonus + speedBonus + airBonus;
 
-		const score = this.controlActor.args.score += totalBonus;
+		const score = totalBonus;
 
 		this.args.actClear = true;
 		this.args.skidBonusValue = this.controlActor.args.dragBonus || 0;
 
-		this.args.timeBonus.args.value  = 0;
-		this.args.ringBonus.args.value  = 0;
-		this.args.airBonus.args.value   = 0;
-		this.args.speedBonus.args.value = 0;
-		this.args.skidBonus.args.value  = 0;
-		this.args.totalBonus.args.value = 0;
+		// this.args.timeBonus.args.value  = 0;
+		// this.args.ringBonus.args.value  = 0;
+		// this.args.airBonus.args.value   = 0;
+		// this.args.speedBonus.args.value = 0;
+		// this.args.skidBonus.args.value  = 0;
+		// this.args.totalBonus.args.value = 0;
 
-		this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value  = timeBonus);
-		this.onFrameOut(45 * 2, () => this.args.ringBonus.args.value  = ringBonus);
-		this.onFrameOut(45 * 3, () => this.args.speedBonus.args.value = speedBonus);
-		this.onFrameOut(45 * 4, () => this.args.skidBonus.args.value  = this.controlActor.args.dragBonus || 0);
-		this.onFrameOut(45 * 5, () => this.args.airBonus.args.value   = airBonus);
-		this.onFrameOut(45 * 6, () => this.args.totalBonus.args.value = totalBonus);
-		this.onFrameOut(45 * 7, () => this.args.actClear = false);
+		const skidBonus = this.controlActor.args.dragBonus || 0;
+
+		// this.onFrameOut(45 * 1, () => this.args.timeBonus.args.value  = timeBonus);
+		// this.onFrameOut(45 * 2, () => this.args.ringBonus.args.value  = ringBonus);
+		// this.onFrameOut(45 * 3, () => this.args.speedBonus.args.value = speedBonus);
+		// this.onFrameOut(45 * 4, () => this.args.skidBonus.args.value  = skidBonus);
+		// this.onFrameOut(45 * 5, () => this.args.airBonus.args.value   = airBonus);
+		// this.onFrameOut(45 * 6, () => this.args.totalBonus.args.value = totalBonus);
+		// this.onFrameOut(45 * 7, () => this.args.actClear = false);
+
+		const tallyBoard = new TallyBoard;
+
+		tallyBoard.addCounter({label:'Time Bonus:',  value: timeBonus});
+		tallyBoard.addCounter({label:'Ring Bonus:',  value: ringBonus});
+		tallyBoard.addCounter({label:'Speed Bonus:', value: speedBonus});
+		tallyBoard.addCounter({label:'Air Bonus:',   value: airBonus});
+		// tallyBoard.addCounter({label:'Skid Bonus:',  value: skidBonus||30000});
+
+		Bgm.play('ACT_CLEAR', {interlude:true});
+
+		this.tallyBoard = tallyBoard;
+		this.args.tallyBoard = tallyBoard.view();
 
 		if(!zoneState.time || zoneState.time > frames)
 		{
@@ -6018,6 +6142,8 @@ export class Viewport extends View
 		}
 
 		this.currentSave.save();
+
+		return tallyBoard;
 	}
 
 	cpuDetect()

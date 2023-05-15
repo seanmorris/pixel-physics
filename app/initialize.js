@@ -75,8 +75,12 @@ else
 	Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');
 	Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
 
+	Bgm.register('CITY_ESCAPE', '/audio/senoue-jun/city-escape.mp3');
+
 	Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3');
 	Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3');
+
+	Bgm.register('ACT_CLEAR', '/audio/gta-sa/mission-passed.mp3', {volume: 1});
 
 	Bgm.register('NO_WAY', '/audio/sonic/no-way.mp3');
 
@@ -167,5 +171,10 @@ else
 	Sfx.register('PROP_PLAT', '/Sonic/S3K_PropPlat.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.25});
 
 	Sfx.register('POGO_BOUNCE', '/Sonic/0A8H.wav', {maxConcurrent: 3, volume: 0.5, fudgeFactor: 0.25});
-}
 
+	Sfx.register('COPTER_SPIN', '/Sonic/drill-car-copter.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+
+	Sfx.register('TOTAL_SCORE', '/Sonic/S3K_B0.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
+	Sfx.register('TALLY_SCORE', '/Sonic/B00_00_05.WAV', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+	Sfx.register('TALLY_SCORE', '/Sonic/027.Synth_MLT_menu_score menu text appear.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+}

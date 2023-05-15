@@ -48,6 +48,11 @@ export class SkidDust extends Behavior
 			}
 		}
 
+		if(host.silentSkid)
+		{
+			return;
+		}
+
 		const viewport  = host.viewport;
 		const dustFreq  = host.dustFreq || 3;
 

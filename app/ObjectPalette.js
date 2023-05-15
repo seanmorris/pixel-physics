@@ -132,6 +132,7 @@ import { TextActor }  from './actor/TextActor';
 
 import { EggMobile } from './actor/EggMobile';
 import { SnowBoard }  from './actor/SnowBoard';
+import { SkateBoard }  from './actor/SkateBoard';
 import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
@@ -256,6 +257,10 @@ import { TruckCab } from './actor/TruckCab';
 import { Dolphin } from './actor/Dolphin';
 import { Herculad } from './actor/Herculad';
 
+import { Chopper } from './actor/Chopper';
+
+import { TrickRamp } from './actor/TrickRamp';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -289,6 +294,7 @@ export const ObjectPalette = {
 	, 'tornado':      Tornado
 	, 'egg-walker':   EggWalker
 	, 'snow-board':   SnowBoard
+	, 'skate-board':  SkateBoard
 	, 'egg-mobile':   EggMobile
 	, 'egg-shuttle':  EggShuttle
 	, 'pogo-spring':  PogoSpring
@@ -458,4 +464,6 @@ export const ObjectPalette = {
 	, 'truck-cab': TruckCab
 	, 'dolphin': Dolphin
 	, 'herculad': Herculad
+	, 'chopper': Chopper
+	, 'trick-ramp': TrickRamp
 };

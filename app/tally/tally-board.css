@@ -1,0 +1,18 @@
+.tally-board {
+	display: flex;
+	flex-direction: column;
+}
+
+.tally-board-content {
+	display: contents;
+}
+
+.tally-board-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.tally-board-total {
+	margin-top: 1rem;
+}

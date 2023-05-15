@@ -14,6 +14,8 @@
     "/map/boss-test.headers.json",
     "/map/box.headers.json",
     "/map/bridge-test.headers.json",
+    "/map/brooklyn-zone-2.headers.json",
+    "/map/brooklyn-zone.headers.json",
     "/map/cannon-test.headers.json",
     "/map/ceiling-test.headers.json",
     "/map/cell.headers.json",

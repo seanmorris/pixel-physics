@@ -56,9 +56,26 @@ export class CrossCannon extends PointActor
 
 	collideA(other, type)
 	{
-		if(this.holding.has(other) || !other.controllable)
+		if(!other.controllable)
+		{
+			return;
+		}
+
+		other.args.falling = true;
+
+		if(this.holding.has(other))
 		{
 			return false;
+		}
+
+		if(other.isVehicle)
+		{
+			other = other.occupant;
+		}
+
+		if(other.args.standingOn)
+		{
+			other.args.standingOn = null;
 		}
 
 		Sfx.play('SS_BWIP');
