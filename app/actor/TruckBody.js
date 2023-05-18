@@ -17,10 +17,38 @@ export class TruckBody extends Mixin.from(PointActor)
 		this.noClip = 1;
 
 		this.args.driver = this.args.driver || null;
+		this.args.ramming = true;
 	}
+
+	// collideA(other,type)
+	// {
+	// 	if(!other.controllable)
+	// 	{
+	// 		return;
+	// 	}
+
+	// 	other.damage(this);
+	// }
 
 	collideA(other,type)
 	{
+		if(this.args.destroyed)
+		{
+			return;
+		}
+
+		if(other.break)
+		{
+			other.break(this);
+			return;
+		}
+
+		if(other.pop)
+		{
+			other.pop(this);
+			return;
+		}
+
 		if(!other.controllable)
 		{
 			return;

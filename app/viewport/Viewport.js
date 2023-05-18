@@ -227,6 +227,7 @@ export class Viewport extends View
 		this.args.replayBanners = true;
 
 		this.maxObjectId = 0;
+		this.maxGid = 0;
 
 		this.args.loadingMap = false;
 
@@ -641,6 +642,8 @@ export class Viewport extends View
 		this.args.ignore = new CharacterString({value:0});
 		this.args.actorCount = new CharacterString({value:0});
 		this.args.regionCount = new CharacterString({value:0});
+
+		this.args.xPerspective = 0;
 
 		this.args.cameraMode = new CharacterString({value:0});
 
@@ -1360,7 +1363,11 @@ export class Viewport extends View
 					, name:     layers[i].name
 					, width:    this.args.width
 					, height:   this.args.height
+					, parallax: layers[i].parallaxx
+					, perspective: this.args.xPerspective
 				});
+
+				console.log(layers[i]);
 
 				if(layers[i].name.substring(0, 10) === 'Foreground')
 				{
@@ -2519,6 +2526,13 @@ export class Viewport extends View
 				cameraSpeed = 24;
 				break;
 
+			case 'perspective':
+				this.args.xOffsetTarget = [0.50, 0.30, 0.50, 0.70][actor.args.mode];
+				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
+				this.maxCameraBound = 96;
+				cameraSpeed = 24;
+				break;
+
 			case 'climbing':
 				this.args.xOffsetTarget = [0.50, 0.33, 0.50, 0.66][actor.args.mode];
 				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
@@ -2651,7 +2665,7 @@ export class Viewport extends View
 		}
 
 
-		const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
+		const biasModes = ['normal', 'perspective', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
 
 		if(biasModes.includes(this.cameraMode) && !actor.args.pushing  && actor.args.modeTime > 0)
 		{
@@ -2974,6 +2988,7 @@ export class Viewport extends View
 		this.tags.content.style({
 			'--x': this.args.x
 			, '--y': this.args.y
+			, '--xPerspective': this.args.xPerspective
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
 
@@ -3048,7 +3063,7 @@ export class Viewport extends View
 			backdrop.view && Object.assign(backdrop.view.args, ({
 				x: this.args.x
 				, xOffset: -this.args.x + -backdrop.x
-				, xPan: this.args.x
+				, xPan: this.args.x + this.args.xPerspective * 1.5
 				, xMax: xMax
 				, y: this.args.y + backdrop.y
 				, yMax: this.args.y + backdrop.y + -backdrop.view.stacked
@@ -3071,7 +3086,7 @@ export class Viewport extends View
 
 			this.args.backdrop && Object.assign(this.args.backdrop.args, ({
 				x: 0
-				, xPan: this.args.x
+				, xPan: this.args.x + this.args.xPerspective * 1.5
 				, y: this.args.y + this.args.yOffset
 				, xMax: xMax ?? 0
 				, yMax: yMax ?? 0
@@ -3238,6 +3253,11 @@ export class Viewport extends View
 				def.id += maxObjectId;
 				def.x  += x * this.tileMap.mapData.tilewidth;
 				def.y  += y * this.tileMap.mapData.tileheight;
+
+				if(def.gid)
+				{
+					// def.gid += max
+				}
 
 				if(!def.properties)
 				{
@@ -4435,6 +4455,8 @@ export class Viewport extends View
 							, index: i
 						};
 
+						this.args.combo[c].label = this.args.combo[c].label || this.getUnusedCharString();
+
 						if(this.args.combo[c].index !== i)
 						{
 							pulse = true;
@@ -4537,7 +4559,7 @@ export class Viewport extends View
 			this.charStringPool = new Set;
 			this.charStringOpen = new Set;
 
-			for(let i = 0; i < 20; i++)
+			for(let i = 0; i < 30; i++)
 			{
 				const charString = Bindable.make(new CharacterString({value:' '.repeat(10)}));
 

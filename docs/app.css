@@ -1072,6 +1072,20 @@ section.pause-menu li {
 	transform: var(--translate) rotate(calc(1rad * var(--air-angle)));
 }
 
+.actor-air-bomb .sprite {
+	width: 24px;
+	height: 32px;
+	background-image: url(/Sonic/air-bomb.png);
+}
+
+.actor-air-bomb.hide {
+	opacity: 0;
+}
+
+.actor-air-bomb {
+	z-index: -1;
+}
+
 .actor-mushroom {
 	z-index: 10;
 }
@@ -2038,6 +2052,96 @@ section.pause-menu li {
 	contain:strict
 }
 
+.actor-block-3d {
+	/* perspective: 275px; */
+	transform-style: preserve-3d;
+	transform: rotateY(0deg);
+	/* transform: rotateY(90deg); */
+	/* transform: rotateY(-90deg); */
+	/* transform: rotateX(90deg); */
+	transform: rotateY(45deg);
+ 	transform: rotateY(calc(1.125deg * calc(var(--xPerspective) / -15)));
+}
+
+.actor-block-3d {
+	z-index: 1000 !important;
+}
+
+.actor-block-3d .sprite {
+	display: none;
+}
+
+.actor-block-3d .panel-3d {
+	background-image: var(--sprite-sheet, url(/Sonic/marble-zone-block.png));
+	background-position-x: calc(var(--sprite-x) * -32px);
+	background-position-y: calc(var(--sprite-y) * -32px);
+	width:  calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	position: absolute;
+	top: calc(-1px * var(--height));
+	left: calc(-0.5px * var(--width));
+	--width3d: var(--width);
+	background-size: calc(100% * calc(var(--width) / 64));
+}
+
+.actor-block-3d .front-3d {
+	/*transform: rotateY( 0deg ) translateZ( 40px );*/
+
+	transform:
+		rotateY( 0deg )
+		translateZ( calc(var(--width3d) * 0.5px) );
+
+	z-index: 1;
+}
+
+.actor-block-3d .back-3d {
+	transform:
+		rotateY( 180deg )
+		translateZ( calc(var(--width3d) * -0.5px) );
+
+	z-index: -1;
+}
+
+.actor-block-3d .left-3d {
+	filter: brightness(0.75) contrast(1.125);
+	transform:
+	rotateY( -90deg )
+	translateZ( calc(var(--width3d) * 0.5px) )
+	translateX( 0 );
+}
+
+.actor-block-3d .right-3d {
+	filter: brightness(1.125) contrast(1.125);
+	transform:
+		rotateY( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( 0 );
+}
+
+.actor-block-3d .top-3d {
+	transform:
+		rotateX( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( 0 );
+
+	z-index: 1;
+
+	/* display: none; */
+}
+
+.actor-block-3d .bottom-3d {
+	transform:
+		rotateX( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( 0 )
+		;
+
+	z-index: -1;
+
+}
+
+
+
 .actor-boost-ring .sprite {
 	display: contents;
 	/*--pointing: calc(3.14rad + 1.57rad);*/
@@ -2270,6 +2374,42 @@ section.pause-menu li {
 .actor-caution-sign .sprite {
 	background-image: url(/custom/caution-sign.png);
 }
+
+.actor-chain-shot .sprite {
+	position: relative;
+	width: 16px;
+	height: calc(1px * var(--height, 128));
+	opacity: 0.95;
+}
+
+.actor-chain-shot .sprite::after {
+	position: absolute;
+	content: '';
+	width: 16px;
+	left:0;
+	height: calc(1px * var(--height, 128));
+	background-image: url(/custom/chain-shot.png);
+	background-repeat: repeat-y;
+	animation: chain-shot-shoot 10ms infinite linear;
+	transform: scaleY(-1);
+}
+
+.actor-chain-shot[data-animation='idle'] {
+	display: none !important;
+}
+
+@keyframes chain-shot-shoot {
+	0%   { background-position-y: 0px; }
+	100% { background-position-y: -64px; }
+}
+
+/* .actor-air-bomb.hide {
+	opacity: 0;
+}
+
+.actor-air-bomb {
+	z-index: -1;
+} */
 
 .actor-item.actor-chalmers .sprite {
 	height: 64px;
@@ -2587,6 +2727,9 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-chopper .sprite {
+	width: 160px;
+	height: 96px;
+	top: 16px;
 	position: relative;
 
 }
@@ -2603,13 +2746,17 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	animation: chopper-flying 90ms steps(2) infinite;
 
 	background-position-y: calc(-96px * var(--color));
-	transition: transform 1s ease-in-out;
+	transition: transform 2.25s ease-in-out;
 	transform-origin: 65% 50%;
 }
 
 .actor-item.actor-chopper[data-animation=exploded] .sprite:after {
-	transform: rotate(-180deg);
+	transform: rotate(-300deg);
 	animation-play-state: paused;
+}
+
+.actor-item.actor-chopper-damaged .sprite {
+	animation: boss-damage steps(1) infinite 45ms forwards;
 }
 
 @keyframes chopper-flying {
@@ -3225,6 +3372,37 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 @keyframes slots-roll {
 	0%{ background-position-y: 0px;  }
 	100%{ background-position-y: -256px;  }
+}
+
+.actor-item.actor-egg-capsule .sprite {
+	background-image: url(/Sonic/egg-capsule.png);
+	width: 64px;
+	height: 96px;
+	position: relative;
+}
+
+.actor-item.actor-egg-capsule[data-active=true] .sprite {
+	background-position-x: -128px;
+}
+
+/* .actor-item.actor-chopper .sprite::after {
+	position: absolute;
+	content: '';
+	width: 100%;
+	height: 100%;
+	left: 0;
+	background-image: url(/tmnt-tournament/chopper-recolor.png);
+	z-index: 3;
+	animation: chopper-flying 90ms steps(2) infinite;
+
+	background-position-y: calc(-96px * var(--color));
+	transition: transform 2.25s ease-in-out;
+	transform-origin: 65% 50%;
+} */
+
+@keyframes chopper-flying {
+	  0% { background-position-x: -0px; }
+	100% { background-position-x: -320px; }
 }
 
 .actor-egg-shuttle {
@@ -4154,6 +4332,12 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 @keyframes giant-tire-rolling {
 	  0% { background-position-x: -0px; }
 	100% { background-position-x: -128px; }
+}
+
+.actor-truck-cab-destroyed,
+.actor-truck-body-destroyed,
+.actor-giant-tire-destroyed {
+	animation: boss-damage steps(1) infinite 45ms forwards;
 }
 
 .actor-item.actor-gohla-ball .sprite {
@@ -12077,9 +12261,8 @@ iframe {
 	height: calc(var(--width3d) * 1px);
 }
 
-.front-3d {
+.particle-3d .front-3d {
 	/*transform: rotateY( 0deg ) translateZ( 40px );*/
-
 	transform:
 		rotateY( 0deg )
 		translateZ( 0px );
@@ -12087,8 +12270,7 @@ iframe {
 	z-index: 1;
 }
 
-.back-3d {
-
+.particle-3d .back-3d {
 	transform:
 		rotateY( 180deg )
 		translateZ( 0px );
@@ -12096,22 +12278,21 @@ iframe {
 	z-index: -1;
 }
 
-.left-3d {
+.particle-3d .left-3d {
 	transform:
 		rotateY( -90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateX( calc(var(--width3d) * -0.5px) );
 }
 
-.right-3d {
+.particle-3d .right-3d {
 	transform:
 		rotateY( 90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateX( calc(var(--width3d) * 0.5px) );
 }
 
-.top-3d {
-
+.particle-3d .top-3d {
 	transform:
 		rotateX( 90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
@@ -12120,15 +12301,13 @@ iframe {
 	z-index: -1;
 }
 
-.bottom-3d {
-
+.particle-3d .bottom-3d {
 	transform:
 		rotateX( -90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateY( calc(var(--width3d) * 0.5px) );
 
 	z-index: -1;
-
 }
 
 
@@ -16688,7 +16867,7 @@ section.filters {
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor.actor-egg-walker .sprite,
-.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring):not(.actor-flag) {
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring):not(.actor-flag):not(.actor-chain-shot) {
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
@@ -16714,7 +16893,7 @@ section.filters {
 
 .viewport-background {
 	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
-	transform: translate3d(calc(-1px * var(--offsetX, 0)),calc(-1px * var(--offsetY, 0)),0);
+	transform: translate3d(calc(-1px * calc(var(--offsetX, 0) - calc(var(--parallax) * var(--xPerspective, 0)))), calc(-1px * var(--offsetY, 0)),0);
 	display: flex;
 	justify-content: center;
 	align-items: center;

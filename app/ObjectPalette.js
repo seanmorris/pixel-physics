@@ -28,6 +28,7 @@ import { KillRegion } from './region/KillRegion';
 import { VerticalRegion } from './region/VerticalRegion';
 import { VehicleRegion } from './region/VehicleRegion';
 import { DropVehicleRegion } from './region/DropVehicleRegion';
+import { PerspectiveRegion } from './region/PerspectiveRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -35,6 +36,7 @@ import { MarbleBlock }    from './actor/MarbleBlock';
 import { BreakableBlock } from './actor/BreakableBlock';
 import { Stopper }        from './actor/Stopper';
 import { Zipline }        from './actor/Zipline';
+import { Block3d }        from './actor/Block3d';
 import { Block }          from './actor/Block';
 
 import { Tree }          from './actor/Tree';
@@ -260,6 +262,9 @@ import { Herculad } from './actor/Herculad';
 import { Chopper } from './actor/Chopper';
 
 import { TrickRamp } from './actor/TrickRamp';
+import { AirBomb } from './actor/AirBomb';
+
+import { EggCapsule } from './actor/EggCapsule';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -273,6 +278,7 @@ export const ObjectPalette = {
 	, 'star-post':    StarPost
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
+	, 'block3d':      Block3d
 	, 'block':           Block
 	, 'tree':            Tree
 	, 'coconut':         Coconut
@@ -318,6 +324,7 @@ export const ObjectPalette = {
 	, 'window':       Window
 	, 'emerald':      Emerald
 	, 'fake-emerald': FakeEmerald
+
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
@@ -342,6 +349,8 @@ export const ObjectPalette = {
 	, 'vertical-region': VerticalRegion
 	, 'vehicle-region': VehicleRegion
 	, 'drop-vehicle-region': DropVehicleRegion
+	, 'perspective-region': PerspectiveRegion
+
 	, 'boost-ring':   BoostRing
 	, 'ring':         Ring
 	, 'antiring':     AntiRing
@@ -466,4 +475,6 @@ export const ObjectPalette = {
 	, 'herculad': Herculad
 	, 'chopper': Chopper
 	, 'trick-ramp': TrickRamp
+	, 'air-bomb': AirBomb
+	, 'egg-capsule': EggCapsule
 };

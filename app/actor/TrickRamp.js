@@ -28,7 +28,17 @@ export class TrickRamp extends PointActor
 
 	collideA(other)
 	{
-		if(Math.abs(other.args.gSpeed) < 8 || other.args.x < this.args.x)
+		if(other.args.x < this.args.x)
+		{
+			return;
+		}
+
+		if(Math.abs(other.args.gSpeed) < 8 && other.willJump)
+		{
+			return;
+		}
+
+		if(Math.abs(other.args.gSpeed) < 14 && other.args.rolling && !other.willJump)
 		{
 			return;
 		}
@@ -53,6 +63,7 @@ export class TrickRamp extends PointActor
 			other.args.rolling = true;
 			other.args.falling = true;
 			other.willJump = false;
+			other.dashed = true;
 		}
 	}
 }

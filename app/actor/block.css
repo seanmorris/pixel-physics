@@ -294,3 +294,93 @@
 .sprite.collapse:not(.broken) {
 	contain:strict
 }
+
+.actor-block-3d {
+	/* perspective: 275px; */
+	transform-style: preserve-3d;
+	transform: rotateY(0deg);
+	/* transform: rotateY(90deg); */
+	/* transform: rotateY(-90deg); */
+	/* transform: rotateX(90deg); */
+	transform: rotateY(45deg);
+ 	transform: rotateY(calc(1.125deg * calc(var(--xPerspective) / -15)));
+}
+
+.actor-block-3d {
+	z-index: 1000 !important;
+}
+
+.actor-block-3d .sprite {
+	display: none;
+}
+
+.actor-block-3d .panel-3d {
+	background-image: var(--sprite-sheet, url(/Sonic/marble-zone-block.png));
+	background-position-x: calc(var(--sprite-x) * -32px);
+	background-position-y: calc(var(--sprite-y) * -32px);
+	width:  calc(1px * var(--width));
+	height: calc(1px * var(--height));
+	position: absolute;
+	top: calc(-1px * var(--height));
+	left: calc(-0.5px * var(--width));
+	--width3d: var(--width);
+	background-size: calc(100% * calc(var(--width) / 64));
+}
+
+.actor-block-3d .front-3d {
+	/*transform: rotateY( 0deg ) translateZ( 40px );*/
+
+	transform:
+		rotateY( 0deg )
+		translateZ( calc(var(--width3d) * 0.5px) );
+
+	z-index: 1;
+}
+
+.actor-block-3d .back-3d {
+	transform:
+		rotateY( 180deg )
+		translateZ( calc(var(--width3d) * -0.5px) );
+
+	z-index: -1;
+}
+
+.actor-block-3d .left-3d {
+	filter: brightness(0.75) contrast(1.125);
+	transform:
+	rotateY( -90deg )
+	translateZ( calc(var(--width3d) * 0.5px) )
+	translateX( 0 );
+}
+
+.actor-block-3d .right-3d {
+	filter: brightness(1.125) contrast(1.125);
+	transform:
+		rotateY( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateX( 0 );
+}
+
+.actor-block-3d .top-3d {
+	transform:
+		rotateX( 90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( 0 );
+
+	z-index: 1;
+
+	/* display: none; */
+}
+
+.actor-block-3d .bottom-3d {
+	transform:
+		rotateX( -90deg )
+		translateZ( calc(var(--width3d) * 0.5px) )
+		translateY( 0 )
+		;
+
+	z-index: -1;
+
+}
+
+

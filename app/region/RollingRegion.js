@@ -12,6 +12,7 @@ export class RollingRegion extends Region
 
 		this.args.type = 'region rolling';
 
+		this.args.destroyTruck = this.args.destroyTruck ?? false;
 		this.args.maxSpeed = this.args.maxSpeed ?? -1;
 		this.args.minSpeed = this.args.minSpeed ?? -1;
 		this.args.canJump  = this.args.canJump  ?? false;

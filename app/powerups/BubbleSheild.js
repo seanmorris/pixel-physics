@@ -8,6 +8,15 @@ export class BubbleSheild extends Sheild
 	protect = true;
 	type = 'water';
 
+	unequip(host)
+	{
+		super.unequip(host);
+
+		host.args.bouncing = false;
+		this.args.bouncing = false;
+		this.args.force = 0;
+	}
+
 	acquire(host)
 	{
 		const viewport = host.viewport;
@@ -137,9 +146,7 @@ export class BubbleSheild extends Sheild
 						weakMagnitude: 1.0
 					});
 				}
-
 			}
-
 		}
 	}
 }

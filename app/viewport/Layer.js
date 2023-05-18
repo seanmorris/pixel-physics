@@ -21,13 +21,19 @@ export class Layer extends View
 
 		this.args.blockSize = args.blockSize || 32;
 
+		console.log(args);
+
 		this.x = 0;
 		this.y = 0;
+
+		this.viewport = args.viewport;
 
 		this.hidden = false;
 
 		this.args.offsetX = 0;
 		this.args.offsetY = 0;
+
+		this.args.parallax = this.args.parallax || 0;
 
 		this.args.layerId = 0 || this.args.layerId;
 
@@ -399,6 +405,8 @@ export class Layer extends View
 					display:       'initial'
 					, '--offsetX': -offsetX % blockSize
 					, '--offsetY': -offsetY % blockSize
+					, '--xPerspective': this.viewport.args.xPerspective
+					, '--parallax': this.args.parallax
 				});
 			}
 		}

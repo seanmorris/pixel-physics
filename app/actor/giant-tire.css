@@ -46,3 +46,9 @@
 	  0% { background-position-x: -0px; }
 	100% { background-position-x: -128px; }
 }
+
+.actor-truck-cab-destroyed,
+.actor-truck-body-destroyed,
+.actor-giant-tire-destroyed {
+	animation: boss-damage steps(1) infinite 45ms forwards;
+}

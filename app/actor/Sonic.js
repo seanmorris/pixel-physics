@@ -1862,6 +1862,18 @@ export class Sonic extends PointActor
 
 	setCameraMode()
 	{
+		if(!this.args.falling && this.regions)
+		{
+			for(const region of this.regions)
+			{
+				if(region.args.perspective)
+				{
+					this.args.cameraMode = 'perspective';
+					return;
+				}
+			}
+		}
+
 		if(this.args.boltDash)
 		{
 			this.args.cameraMode = 'draggable'

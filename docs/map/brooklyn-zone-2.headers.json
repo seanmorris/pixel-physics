@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 416,
     "infinite": false,
-    "nextlayerid": 11,
-    "nextobjectid": 317,
+    "nextlayerid": 16,
+    "nextobjectid": 526,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -414,14 +414,72 @@
             "tilecount": 576,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 8753,
+            "image": "../rcr-ex/park-items.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "park-items",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 24,
+            "firstgid": 8769,
+            "image": "../Sonic/tiles/palmtree-panic/3d-loop.png",
+            "imageheight": 1120,
+            "imagewidth": 768,
+            "margin": 0,
+            "name": "3d-loop",
+            "spacing": 0,
+            "tilecount": 840,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 9609,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": "1.6",
-    "width": 1024,
+    "width": 3200,
     "types": [
-        "techno-squeak"
+        "block",
+        "block3d",
+        "boss-region",
+        "bubbles",
+        "chopper",
+        "cross-cannon",
+        "emblem",
+        "exit-region",
+        "giant-tire",
+        "grapple-point",
+        "layer-switch",
+        "perspective-region",
+        "ring",
+        "rolling-region",
+        "spikes",
+        "spinner",
+        "spring",
+        "techno-squeak",
+        "trick-ramp",
+        "wooden-crate"
     ],
     "map": "/map/brooklyn-zone-2.json"
 }

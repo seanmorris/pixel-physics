@@ -177,54 +177,53 @@ export class SkateBoard extends SnowBoard
 		{
 			this.fakie = this.args.reversing;
 
-			if(this.groundTime === 2 && this.occupant)
-			{
-				const occupant = this.occupant;
+			// if(this.groundTime === 2 && this.occupant)
+			// {
+			// 	const occupant = this.occupant;
 
-				let dropAngle = this.realAngle;
-				let rotated = this.args.rotated;
+			// 	let dropAngle = this.realAngle;
+			// 	let rotated = this.args.rotated;
 
-				while(rotated < 0)
-				{
-					rotated += Math.PI * 2;
-				}
+			// 	while(rotated < 0)
+			// 	{
+			// 		rotated += Math.PI * 2;
+			// 	}
 
-				while(rotated > Math.PI * 2)
-				{
-					rotated -= Math.PI * 2;
-				}
+			// 	while(rotated > Math.PI * 2)
+			// 	{
+			// 		rotated -= Math.PI * 2;
+			// 	}
 
-				while(dropAngle < 0)
-				{
-					dropAngle += Math.PI * 2;
-				}
+			// 	while(dropAngle < 0)
+			// 	{
+			// 		dropAngle += Math.PI * 2;
+			// 	}
 
-				while(dropAngle > Math.PI * 2)
-				{
-					dropAngle -= Math.PI * 2;
-				}
+			// 	while(dropAngle > Math.PI * 2)
+			// 	{
+			// 		dropAngle -= Math.PI * 2;
+			// 	}
 
-				// console.log(this.args.rotated, rotated, dropAngle);
+			// 	// console.log(this.args.rotated, rotated, dropAngle);
 
-				const diff = Math.abs(rotated - dropAngle);
-				const upsidedown = Math.abs(rotated - Math.PI);
+			// 	// const diff = Math.abs(rotated - dropAngle);
+			// 	// const upsidedown = Math.abs(rotated - Math.PI);
 
-				if((rotated && (diff > Math.PI)) || upsidedown < Math.PI * 0.25)
-				{
-					this.ignores.set(occupant, 30);
-					occupant.args.standingOn  = null;
-					occupant.args.groundAngle = 0;
-					occupant.args.y -= Math.max(0, occupant.args.height * Math.cos(this.args.groundAngle));
-					occupant.startle();
+			// 	// if((rotated && (diff > Math.PI)) || upsidedown < Math.PI * 0.25)
+			// 	// {
+			// 	// 	this.ignores.set(occupant, 30);
+			// 	// 	occupant.args.standingOn  = null;
+			// 	// 	occupant.args.groundAngle = 0;
+			// 	// 	occupant.args.y -= Math.max(0, occupant.args.height * Math.cos(this.args.groundAngle));
+			// 	// 	occupant.startle();
 
-					occupant.totalCombo(false);
+			// 	// 	occupant.totalCombo(false);
+			// 	// }
 
-				}
+			// 	// console.log({rotated, dropAngle, diff, upsidedown, a: (diff > Math.PI), b: upsidedown < Math.PI * 0.35});
 
-				// console.log({rotated, dropAngle, diff, upsidedown, a: (diff > Math.PI), b: upsidedown < Math.PI * 0.35});
-
-				this.args.rotated = 0;
-			}
+			// 	// this.args.rotated = 0;
+			// }
 		}
 
 		if(this.occupant && !this.trickTimer && !this.args.grinding && (this.groundTime > 1 && this.args.trick !== 'manual'))

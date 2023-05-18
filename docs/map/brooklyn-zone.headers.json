@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 416,
     "infinite": false,
-    "nextlayerid": 12,
-    "nextobjectid": 479,
+    "nextlayerid": 15,
+    "nextobjectid": 518,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -221,13 +221,13 @@
             "margin": 0,
             "name": "3d-loop",
             "spacing": 0,
-            "tilecount": 840,
+            "tilecount": 1104,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 14,
-            "firstgid": 4541,
+            "firstgid": 4805,
             "image": "../Sonic/external-corner.png",
             "imageheight": 128,
             "imagewidth": 448,
@@ -240,7 +240,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 4597,
+            "firstgid": 4861,
             "image": "../custom/zerosean.png",
             "imageheight": 96,
             "imagewidth": 128,
@@ -253,7 +253,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 4609,
+            "firstgid": 4873,
             "image": "../Sonic/sa2-128.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -266,7 +266,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 4625,
+            "firstgid": 4889,
             "image": "../custom/soap.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -279,7 +279,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 4629,
+            "firstgid": 4893,
             "image": "../custom/emerald-network.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -292,7 +292,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 4633,
+            "firstgid": 4897,
             "image": "../custom/chaos-soda.png",
             "imageheight": 96,
             "imagewidth": 128,
@@ -305,7 +305,7 @@
         },
         {
             "columns": 3,
-            "firstgid": 4645,
+            "firstgid": 4909,
             "image": "../custom/sage.png",
             "imageheight": 96,
             "imagewidth": 96,
@@ -318,7 +318,7 @@
         },
         {
             "columns": 3,
-            "firstgid": 4654,
+            "firstgid": 4918,
             "image": "../custom/jazz.png",
             "imageheight": 64,
             "imagewidth": 96,
@@ -331,7 +331,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 4660,
+            "firstgid": 4924,
             "image": "../custom/wanted.png",
             "imageheight": 96,
             "imagewidth": 64,
@@ -344,7 +344,7 @@
         },
         {
             "columns": 22,
-            "firstgid": 4666,
+            "firstgid": 4930,
             "image": "mz-ground-red.png",
             "imageheight": 4480,
             "imagewidth": 704,
@@ -357,7 +357,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 7746,
+            "firstgid": 8010,
             "image": "../custom/habit.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -370,7 +370,7 @@
         },
         {
             "columns": 5,
-            "firstgid": 7750,
+            "firstgid": 8014,
             "image": "../custom/hex-pillar.png",
             "imageheight": 224,
             "imagewidth": 160,
@@ -383,7 +383,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 7785,
+            "firstgid": 8049,
             "image": "../custom/bench.png",
             "imageheight": 64,
             "imagewidth": 128,
@@ -396,7 +396,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 7793,
+            "firstgid": 8057,
             "image": "../Sonic/tiles/stardust-speedway/good-future-recolor.png",
             "imageheight": 768,
             "imagewidth": 512,
@@ -409,7 +409,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 8177,
+            "firstgid": 8441,
             "image": "../Sonic/tiles/sky-sanctuary/ground-tiles.png",
             "imageheight": 1152,
             "imagewidth": 512,
@@ -421,15 +421,15 @@
             "tilewidth": 32
         },
         {
-            "columns": 13,
-            "firstgid": 8753,
-            "image": "../Sonic/tiles/wing-fortress/industrial.png",
-            "imageheight": 576,
-            "imagewidth": 416,
+            "columns": 1,
+            "firstgid": 9017,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
             "margin": 0,
-            "name": "industrial",
+            "name": "marble-zone-block",
             "spacing": 0,
-            "tilecount": 234,
+            "tilecount": 1,
             "tileheight": 32,
             "tilewidth": 32
         }

@@ -3,7 +3,7 @@ import { Mixin } from 'curvature/base/Mixin';
 import { TruckBody } from './TruckBody';
 import { TruckCab } from './TruckCab';
 import { Platformer } from '../behavior/Platformer';
-// import { Sfx } from '../audio/Sfx';
+import { Sfx } from '../audio/Sfx';
 
 export class GiantTire extends Mixin.from(PointActor)
 {
@@ -35,9 +35,9 @@ export class GiantTire extends Mixin.from(PointActor)
 		this.args.body = this.args.body || null;
 	}
 
-	onAttached(event)
+	spawnParts()
 	{
-		if(this.args.driver)
+		if(this.args.driver || this.args.idler)
 		{
 			return;
 		}
@@ -97,6 +97,88 @@ export class GiantTire extends Mixin.from(PointActor)
 
 	updateStart()
 	{
+		if(!this.args.driver && !this.args.idler)
+		{
+			this.spawnParts();
+		}
+
+		if(this.args.destroyed && !this.args.falling)
+		{
+			this.args.type += ' actor-giant-tire-destroyed';
+			this.args.idler.args.type += ' actor-giant-tire-destroyed';
+			this.args.partner.args.type += ' actor-giant-tire-destroyed';
+			this.args.idlerPartner.args.type += ' actor-giant-tire-destroyed';
+
+			this.args.cab.args.type += ' actor-truck-cab-destroyed';
+			this.args.body.args.type += ' actor-truck-body-destroyed';
+
+			Sfx.play('ROCK_BREAK_1');
+			Sfx.play('OBJECT_DESTROYED');
+
+			if(!this.args.driver)
+			{
+				let other = this.viewport.controlActor;
+
+				this.viewport.onFrameOut(15, () => other.cofocused = null);
+
+				this.args.body.noClip = true;
+				this.args.cab.noClip  = true;
+
+				this.args.body.args.destroyed = true;
+				this.args.cab.args.destroyed  = true;
+
+				this.args.body.args.xSpeed = this.gSpeedLast * 1.2;
+				this.args.cab.args.xSpeed  = this.gSpeedLast * 1.6;
+
+				this.args.body.args.ySpeed = -6;
+				this.args.cab.args.ySpeed  = -14;
+
+				this.args.body.args.falling = true;
+				this.args.cab.args.falling  = true;
+
+				this.args.body.args.float = 0;
+				this.args.cab.args.float  = 0;
+			}
+
+			this.args.ySpeed = -11;
+			this.args.xSpeed = this.gSpeedLast * 1.4;
+			this.args.falling = true;
+		}
+
+		if(this.args.destroyed)
+		{
+			if(this.args.idler)
+			{
+				this.args.idler.args.destroyed = true;
+				this.args.partner.args.destroyed = true;
+				this.args.idlerPartner.args.destroyed = true;
+
+				this.args.idler.args.falling = true;
+				this.args.partner.args.falling = true;
+				this.args.idlerPartner.args.falling = true;
+
+				this.args.idler.args.xSpeed = this.gSpeedLast * 1.3;
+				this.args.partner.args.xSpeed = this.gSpeedLast * 1.4;
+				this.args.idlerPartner.args.xSpeed = this.gSpeedLast * 1.3;
+
+				this.args.idler.args.ySpeed = -11;
+				this.args.partner.args.ySpeed = -11;
+				this.args.idlerPartner.args.ySpeed = -11;
+
+				this.args.idler.args.float= 0;
+				this.args.partner.args.float= 0;
+				this.args.idlerPartner.args.float= 0;
+
+				this.args.idler.noClip = true;
+				this.args.partner.noClip = true;
+				this.args.idlerPartner.noClip = true;
+			}
+
+			this.args.float = 0;
+			this.noClip = true;
+			return;
+		}
+
 		while(this.getMapSolidAt(this.args.x, this.args.y))
 		{
 			this.args.y--;
@@ -108,13 +190,14 @@ export class GiantTire extends Mixin.from(PointActor)
 			return;
 		}
 
-		if(this.age < 30)
+		let other = this.viewport.controlActor;
+
+		if(this.age < 36 && this.args.x > -160 + other.args.x)
 		{
 			super.updateStart();
 			return;
 		}
 
-		let other = this.viewport.controlActor;
 
 		if(other.args.standingOn && other.args.standingOn.isVehicle)
 		{
@@ -123,18 +206,18 @@ export class GiantTire extends Mixin.from(PointActor)
 
 		if(!this.args.falling)
 		{
-			if(other.args.gSpeed && this.args.x > -128 + other.args.x)
+			if(other.args.gSpeed && this.args.x > -160 + other.args.x)
 			{
 				this.args.gSpeed *= 0.99;
 			}
 			else
 			{
-				this.args.gSpeed = Math.max(this.args.gSpeed, 1.05 * other.args.gSpeed || other.args.xSpeed);
+				this.args.gSpeed = Math.max(this.args.gSpeed, other.args.gSpeed || other.args.xSpeed);
 			}
 		}
 		else
 		{
-			if(this.args.x > -128 + other.args.x)
+			if(this.args.x > -160 + other.args.x)
 			{
 				this.args.xSpeed *= 0.99;
 			}
@@ -146,7 +229,7 @@ export class GiantTire extends Mixin.from(PointActor)
 
 		if(other.args.x < this.args.x || (other.args.falling && other.args.xSpeed < 0))
 		{
-			this.args.gSpeed = Math.min(-8, other.args.xSpeed);
+			this.args.gSpeed = Math.min(-8, 0.75 * other.args.xSpeed);
 		}
 		else if(other.args.gSpeed && other.args.gSpeed < 5)
 		{
@@ -173,10 +256,18 @@ export class GiantTire extends Mixin.from(PointActor)
 
 	updateEnd()
 	{
-		if(!this.args.idler)
+		if(!this.args.idler || this.args.destroyed)
 		{
 			super.updateEnd();
 			return;
+		}
+
+		for(const region of this.viewport.regionsAtPoint(this.args.x + 80, this.args.y))
+		{
+			if(region.args.destroyTruck)
+			{
+				this.args.destroyed = true;
+			}
 		}
 
 		const idler   = this.args.idler;
@@ -288,6 +379,23 @@ export class GiantTire extends Mixin.from(PointActor)
 
 	collideA(other,type)
 	{
+		if(this.args.destroyed)
+		{
+			return;
+		}
+
+		if(other.break)
+		{
+			other.break(this);
+			return;
+		}
+
+		if(other.pop)
+		{
+			other.pop(this);
+			return;
+		}
+
 		if(!other.controllable)
 		{
 			return;

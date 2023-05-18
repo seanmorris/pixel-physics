@@ -14436,12 +14436,14 @@ var _KillRegion = require("./region/KillRegion");
 var _VerticalRegion = require("./region/VerticalRegion");
 var _VehicleRegion = require("./region/VehicleRegion");
 var _DropVehicleRegion = require("./region/DropVehicleRegion");
+var _PerspectiveRegion = require("./region/PerspectiveRegion");
 var _CompanionBlock = require("./actor/CompanionBlock");
 var _QuestionBlock = require("./actor/QuestionBlock");
 var _MarbleBlock = require("./actor/MarbleBlock");
 var _BreakableBlock = require("./actor/BreakableBlock");
 var _Stopper = require("./actor/Stopper");
 var _Zipline = require("./actor/Zipline");
+var _Block3d = require("./actor/Block3d");
 var _Block = require("./actor/Block");
 var _Tree = require("./actor/Tree");
 var _Coconut = require("./actor/Coconut");
@@ -14613,6 +14615,8 @@ var _Dolphin = require("./actor/Dolphin");
 var _Herculad = require("./actor/Herculad");
 var _Chopper = require("./actor/Chopper");
 var _TrickRamp = require("./actor/TrickRamp");
+var _AirBomb = require("./actor/AirBomb");
+var _EggCapsule = require("./actor/EggCapsule");
 // Newtron
 // Bomb
 
@@ -14630,6 +14634,7 @@ const ObjectPalette = {
   'star-post': _StarPost.StarPost,
   'arrow-sign': _ArrowSign.ArrowSign,
   'projectile': _Projectile.Projectile,
+  'block3d': _Block3d.Block3d,
   'block': _Block.Block,
   'tree': _Tree.Tree,
   'coconut': _Coconut.Coconut,
@@ -14699,6 +14704,7 @@ const ObjectPalette = {
   'vertical-region': _VerticalRegion.VerticalRegion,
   'vehicle-region': _VehicleRegion.VehicleRegion,
   'drop-vehicle-region': _DropVehicleRegion.DropVehicleRegion,
+  'perspective-region': _PerspectiveRegion.PerspectiveRegion,
   'boost-ring': _BoostRing.BoostRing,
   'ring': _Ring.Ring,
   'antiring': _AntiRing.AntiRing
@@ -14824,7 +14830,9 @@ const ObjectPalette = {
   'dolphin': _Dolphin.Dolphin,
   'herculad': _Herculad.Herculad,
   'chopper': _Chopper.Chopper,
-  'trick-ramp': _TrickRamp.TrickRamp
+  'trick-ramp': _TrickRamp.TrickRamp,
+  'air-bomb': _AirBomb.AirBomb,
+  'egg-capsule': _EggCapsule.EggCapsule
 };
 exports.ObjectPalette = ObjectPalette;
 });
@@ -15177,6 +15185,80 @@ let LightDash = /*#__PURE__*/_createClass(function LightDash() {
   _classCallCheck(this, LightDash);
 });
 exports.LightDash = LightDash;
+});
+
+;require.register("actor/AirBomb.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AirBomb = void 0;
+var _PointActor2 = require("./PointActor");
+var _Sfx = require("../audio/Sfx");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let AirBomb = /*#__PURE__*/function (_PointActor) {
+  _inherits(AirBomb, _PointActor);
+  var _super = _createSuper(AirBomb);
+  function AirBomb() {
+    var _this;
+    _classCallCheck(this, AirBomb);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.width = 22;
+    _this.args.height = 32;
+    _this.args.type = 'actor-item actor-air-bomb';
+    _this.args.decel = 0;
+    _this.explosions = new Set();
+    return _this;
+  }
+  _createClass(AirBomb, [{
+    key: "update",
+    value: function update() {
+      if (!this.args.falling && !this.explosions.size) {
+        this.args.type = 'actor-item actor-air-bomb hide';
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        this.explosions.add(explosion);
+        const viewport = this.viewport;
+        this.viewport.particles.add(explosion);
+        this.viewport.onFrameOut(30, () => {
+          viewport.particles.remove(explosion);
+          viewport.actors.remove(this);
+          this.explosions.delete(explosion);
+        });
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+      }
+      _get(_getPrototypeOf(AirBomb.prototype), "update", this).call(this);
+      for (const explosion of this.explosions) {
+        explosion.style({
+          '--x': this.args.x,
+          '--y': this.args.y + -16
+        });
+      }
+    }
+  }]);
+  return AirBomb;
+}(_PointActor2.PointActor);
+exports.AirBomb = AirBomb;
 });
 
 ;require.register("actor/Angel.js", function(exports, require, module) {
@@ -18395,13 +18477,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Block3d = void 0;
-var _MarbleBlock2 = require("./MarbleBlock");
-var _LavaRegion = require("../region/LavaRegion");
+var _Block2 = require("./Block");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -18409,19 +18493,38 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-let Block3d = /*#__PURE__*/function (_MarbleBlock) {
-  _inherits(Block3d, _MarbleBlock);
+// import { LavaRegion } from '../region/LavaRegion';
+let Block3d = /*#__PURE__*/function (_Block) {
+  _inherits(Block3d, _Block);
   var _super = _createSuper(Block3d);
   function Block3d() {
     var _this;
     let args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     _classCallCheck(this, Block3d);
     _this = _super.call(this, args);
-    _this.args.type = 'actor-item actor-block-3d';
+    _this.args.type = 'actor-item actor-block actor-block-3d';
     return _this;
   }
-  return _createClass(Block3d);
-}(_MarbleBlock2.MarbleBlock);
+  _createClass(Block3d, [{
+    key: "onRendered",
+    value: function onRendered(event) {
+      _get(_getPrototypeOf(Block3d.prototype), "onRendered", this).call(this, event);
+      const front = new _Tag.Tag('<div class = "panel-3d front-3d">');
+      const back = new _Tag.Tag('<div class = "panel-3d back-3d">');
+      const left = new _Tag.Tag('<div class = "panel-3d right-3d">');
+      const right = new _Tag.Tag('<div class = "panel-3d left-3d">');
+      const top = new _Tag.Tag('<div class = "panel-3d top-3d">');
+      const bottom = new _Tag.Tag('<div class = "panel-3d bottom-3d">');
+      this.box.append(back.node);
+      this.box.append(left.node);
+      this.box.append(right.node);
+      this.box.append(front.node);
+      this.box.append(top.node);
+      this.box.append(bottom.node);
+    }
+  }]);
+  return Block3d;
+}(_Block2.Block);
 exports.Block3d = Block3d;
 });
 
@@ -19738,6 +19841,61 @@ let CautionSign = /*#__PURE__*/function (_PointActor) {
   return CautionSign;
 }(_PointActor2.PointActor);
 exports.CautionSign = CautionSign;
+});
+
+;require.register("actor/ChainShot.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChainShot = void 0;
+var _PointActor2 = require("./PointActor");
+var _Sfx = require("../audio/Sfx");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let ChainShot = /*#__PURE__*/function (_PointActor) {
+  _inherits(ChainShot, _PointActor);
+  var _super = _createSuper(ChainShot);
+  function ChainShot() {
+    var _this;
+    _classCallCheck(this, ChainShot);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.width = 16;
+    _this.args.height = 128;
+    _this.args.type = 'actor-item actor-chain-shot';
+    _this.args.float = -1;
+    _this.args.shooting = false;
+    _this.args.animation = 'idle';
+    return _this;
+  }
+  _createClass(ChainShot, [{
+    key: "collideA",
+    value: function collideA(other) {
+      if (!this.args.shooting || !other.controllable) {
+        return;
+      }
+      other.damage(this);
+    }
+  }]);
+  return ChainShot;
+}(_PointActor2.PointActor);
+exports.ChainShot = ChainShot;
 });
 
 ;require.register("actor/Chalmers.js", function(exports, require, module) {
@@ -21085,7 +21243,11 @@ var _PointActor = require("./PointActor");
 var _Tag = require("curvature/base/Tag");
 var _Mixin = require("curvature/base/Mixin");
 var _Sfx = require("../audio/Sfx");
+var _AirBomb = require("./AirBomb");
+var _ChainShot = require("./ChainShot");
+var _EggCapsule = require("./EggCapsule");
 var _SkateBoard = require("./SkateBoard");
+var _TitleScreenCard = require("../intro/TitleScreenCard");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -21111,9 +21273,9 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
     }
     _this = _super.call(this, ...args);
     _this.args.type = 'actor-item actor-chopper';
-    _this.args.width = 160;
-    _this.args.height = 96;
-    _this.args.gravity = 0.325;
+    _this.args.width = 80;
+    _this.args.height = 48;
+    _this.args.gravity = 0.25;
     _this.args.float = -1;
     _this.args.direction = 1;
     _this.exploded = false;
@@ -21121,11 +21283,57 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
     _this.contains = new Set();
     _this.args.xSpeed = 8;
     _this.args.ySpeed = 6;
-    _this.args.color = Math.trunc(8 * Math.random());
+    _this.args.attacker = _this.args.attacker || false;
+    _this.args.color = 3; //Math.trunc(8 * Math.random());
+
     _this.playingSound = false;
+    _this.activated = false;
+    _this.targetPoint = [0, 0];
+    _this.damageTimer = 0;
+    if (_this.args.attacker) {
+      _this.args.hitPoints = 8;
+    }
+    _this.bombs = new Set();
     return _this;
   }
   _createClass(Chopper, [{
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (this.damageTimer || !this.args.attacker) {
+        return;
+      }
+      if (other.args.jumping || other.args.rolling) {
+        const avgSpeed = (other.args.xSpeed + this.args.xSpeed) * 0.5;
+        _Sfx.Sfx.play('BOSS_DAMAGED');
+        this.damageTimer = 30;
+        this.args.hitPoints--;
+        other.args.xSpeed = avgSpeed;
+        other.args.ySpeed *= -1;
+        if (other.args.ySpeed > 0) {
+          other.args.ySpeed = -3;
+        }
+        if (this.args.hitPoints <= 0) {
+          this.destroy();
+          this.noClip = true;
+          viewport.onFrameOut(60, () => {
+            viewport.actors.remove(this);
+            viewport.onFrameOut(60, () => {
+              const capsule = new _EggCapsule.EggCapsule({
+                x: other.args.x,
+                y: other.args.y - 384,
+                xSpeed: other.args.gSpeed || other.args.xSpeed
+              });
+              viewport.spawn.add({
+                object: capsule
+              });
+            });
+          });
+        } else {
+          this.args.xSpeed = -avgSpeed;
+        }
+      }
+    }
+  }, {
     key: "onRendered",
     value: function onRendered(event) {
       _get(_getPrototypeOf(Chopper.prototype), "onRendered", this).call(this, event);
@@ -21134,6 +21342,38 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
   }, {
     key: "update",
     value: function update() {
+      if (this.damageTimer) {
+        this.args.type = 'actor-item actor-chopper actor-chopper-damaged';
+      } else {
+        this.args.type = 'actor-item actor-chopper';
+      }
+      if (this.args.attacker) {
+        if (this.damageTimer > 0) {
+          this.damageTimer--;
+        }
+
+        // this.attackUpdate();
+      } else {
+        this.introUpdate();
+      }
+    }
+  }, {
+    key: "updateEnd",
+    value: function updateEnd() {
+      if (this.args.attacker) {
+        this.attackUpdate();
+      } else {
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        // this.introUpdate();
+      }
+
+      for (const bomb of this.bombs) {
+        bomb.args.x = this.args.x + bomb.xOffset;
+      }
+    }
+  }, {
+    key: "introUpdate",
+    value: function introUpdate() {
       if (this.viewport.controlActor) {
         this.contains.add(this.viewport.controlActor);
       }
@@ -21192,7 +21432,7 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
           for (const actor of this.contains) {
             this.args.xSpeed = 4;
             this.args.ySpeed = 1;
-            actor.args.ySpeed = -10;
+            actor.args.ySpeed = -12;
             actor.args.xSpeed = 0;
             actor.args.hidden = false;
             actor.args.float = 0;
@@ -21203,13 +21443,17 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
         this.explosions.add(explosion);
         this.exploded = true;
         this.viewport.particles.add(explosion);
-        this.viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+        this.viewport.onFrameOut(30, () => {
+          viewport.particles.remove(explosion);
+          this.explosions.delete(explosion);
+        });
         const board = new _SkateBoard.SkateBoard({
           x: this.args.x,
           y: this.args.y,
           ySpeed: -10,
           xSpeed: 4 * Math.sign(this.args.xSpeed),
-          groundAngle: Math.PI / 4
+          groundAngle: Math.PI / 4,
+          ignore: -2
         });
         this.viewport.controlActor.args.standingOn = board;
         this.viewport.spawn.add({
@@ -21245,6 +21489,261 @@ let Chopper = /*#__PURE__*/function (_Mixin$from) {
         this.viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
       }
       this.args.falling = true;
+    }
+  }, {
+    key: "attackUpdate",
+    value: function attackUpdate() {
+      if (this.args.hitPoints <= 0) {
+        this.args.falling = true;
+        this.args.float = 0;
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        return;
+      }
+      this.args.groundAngle = 0;
+      const other = this.viewport.controlActor;
+      if (!this.playingSound && this.viewport.args.audio, this.viewport.args.frameId - this.playingSound > 10) {
+        this.playingSound = this.viewport.args.frameId;
+        _Sfx.Sfx.play('COPTER_SPIN', {});
+      }
+      if (other.args.mode !== 0) {
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        return;
+      }
+      if (!this.activated) {
+        if (other.args.x > this.args.x + 64) {
+          const other = this.viewport.controlActor;
+          this.args.xSpeed = other.args.gSpeed || other.args.xSpeed;
+
+          // other.cofocused = this;
+
+          this.viewport.auras.add(this);
+          this.activated = this.viewport.args.frameId;
+        }
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        return;
+      }
+      if (!this.chainShot) {
+        this.chainShot = new _ChainShot.ChainShot();
+        this.viewport.spawn.add({
+          object: this.chainShot
+        });
+        this.chainShot.args.x = this.args.x;
+        this.chainShot.args.y = this.args.y;
+      }
+      if (other.dashed) {
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        this.chainShot.args.animation = 'idle';
+        return;
+      }
+      if (Math.floor((this.viewport.args.frameId - this.activated) / 360) % 2 === 0) {
+        this.bombModeUpdate();
+      } else {
+        this.gunModeUpdate();
+      }
+    }
+  }, {
+    key: "gunModeUpdate",
+    value: function gunModeUpdate() {
+      const other = this.viewport.controlActor;
+      if (other.args.dead) {
+        this.args.xSpeed = 0;
+        this.args.ySpeed = 0;
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        this.fireChaingun();
+        this.chainShot.args.animation = 'shooting';
+        return;
+      }
+      if (!this.viewport || !this.viewport.controlActor || this.damageTimer) {
+        if (this.damageTimer) {
+          this.args.xSpeed = 0;
+          this.args.ySpeed = 0;
+          this.chainShot.args.animation = 'idle';
+        }
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        this.lockPosition();
+        // this.fireChaingun();
+        this.chainShot.args.animation = 'idle';
+        return;
+      }
+      if (Math.abs(other.args.gSpeed) > 4 || other.args.falling) {
+        this.targetPoint[0] = other.args.x + (-96 + -Math.min(64, Math.abs(other.args.gSpeed * 4))) * Math.sign(other.args.gSpeed);
+        this.targetPoint[1] = other.args.y + (-40 + -Math.min(0, Math.abs(other.args.gSpeed)));
+      }
+      let factor = 1;
+      if (other.args.jumping && Math.abs(other.args.xSpeed) < 15 && Math.sign(other.args.xSpeed) === Math.sign(this.args.x - other.args.x)) {
+        console.log(Math.sign(other.args.xSpeed), Math.sign(this.args.x - other.args.x));
+        factor = 0.25;
+      }
+      if (other.args.x < this.args.x) {
+        this.args.facing = 'left';
+      } else {
+        this.args.facing = 'right';
+      }
+      this.args.xSpeed = factor * Math.min(25, Math.abs(0.35 * (this.args.x - this.targetPoint[0]))) * -Math.sign(this.args.x - this.targetPoint[0]);
+      this.args.ySpeed = factor * Math.min(25, Math.abs(0.20 * (this.args.y - this.targetPoint[1]))) * -Math.sign(this.args.y - this.targetPoint[1]);
+      this.args.falling = true;
+      this.args.direction = this.args.facing === 'left' ? -1 : 1;
+      _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+      _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+      this.lockPosition();
+      if (Math.abs(other.args.y - this.args.y) < 48 && !other.args.falling) {
+        this.fireChaingun();
+        this.chainShot.args.animation = 'shooting';
+      } else {
+        this.chainShot.args.animation = 'idle';
+      }
+    }
+  }, {
+    key: "bombModeUpdate",
+    value: function bombModeUpdate() {
+      const other = this.viewport.controlActor;
+      if (this.chainShot) {
+        this.chainShot.args.animation = 'idle';
+      }
+      if (!this.viewport || !this.viewport.controlActor || this.damageTimer) {
+        if (this.damageTimer) {
+          this.args.xSpeed = 0;
+          this.args.ySpeed = 0;
+        }
+        _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+        _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+        this.lockPosition();
+        return;
+      }
+      if (Math.abs(other.args.gSpeed) > 4 || other.args.falling) {
+        this.targetPoint[0] = other.args.x + (-0 + -Math.min(64, Math.abs(other.args.gSpeed * 4))) * Math.sign(other.args.gSpeed);
+        this.targetPoint[1] = other.args.y + -128;
+      }
+      let factor = 1;
+      if (other.args.x < this.args.x) {
+        this.args.facing = 'left';
+      } else {
+        this.args.facing = 'right';
+      }
+      this.args.xSpeed = factor * Math.min(25, Math.abs(0.35 * (this.args.x - this.targetPoint[0]))) * -Math.sign(this.args.x - this.targetPoint[0]);
+      this.args.ySpeed = factor * Math.min(25, Math.abs(0.10 * (this.args.y - this.targetPoint[1]))) * -Math.sign(this.args.y - this.targetPoint[1]);
+      this.args.falling = true;
+      if (this.viewport.args.frameId % 30 === 0) {
+        const bomb = new _AirBomb.AirBomb({
+          x: this.args.x + 16 * Math.sign(this.args.direction),
+          y: this.args.y,
+          xSpeed: this.args.xSpeed,
+          ySpeed: this.args.ySpeed
+        });
+        bomb.xOffset = 16 * Math.sign(this.args.direction);
+        this.bombs.add(bomb);
+        this.viewport.spawn.add({
+          object: bomb
+        });
+      }
+      this.args.direction = this.args.facing === 'left' ? -1 : 1;
+      _get(_getPrototypeOf(Chopper.prototype), "update", this).call(this);
+      _get(_getPrototypeOf(Chopper.prototype), "updateEnd", this).call(this);
+      this.lockPosition();
+    }
+  }, {
+    key: "fireChaingun",
+    value: function fireChaingun() {
+      const shotX = 56 * Math.sign(this.args.direction);
+      const shotY = 0;
+      this.chainShot.args.x = this.args.x + shotX;
+      this.chainShot.args.y = this.args.y + shotY;
+      this.chainShot.args.xSpeed = this.args.xSpeed;
+      this.chainShot.args.ySpeed = this.args.ySpeed;
+      this.viewport.setColCell(this.chainShot);
+      if (this.args.direction > 0) {
+        this.chainShot.args.groundAngle = Math.PI * -0.65;
+      } else {
+        this.chainShot.args.groundAngle = Math.PI * 0.65;
+      }
+      this.chainShot.args.shooting = true;
+      const length = this.chainShot.castRayQuick(786, -Math.PI * 0.5 - this.chainShot.args.groundAngle);
+      this.chainShot.args.shooting = false;
+      this.chainShot.args.height = length || 786;
+    }
+  }, {
+    key: "lockPosition",
+    value: function lockPosition() {
+      {
+        const diff = this.args.x - this.targetPoint[0];
+        const dist = Math.abs(diff);
+        const sign = Math.sign(diff);
+        if (dist > 386) {
+          this.args.x = this.targetPoint[0] + 386 * sign;
+        }
+      }
+      {
+        const diff = this.args.y - this.targetPoint[1];
+        const dist = Math.abs(diff);
+        const sign = Math.sign(diff);
+        if (dist > 386) {
+          this.args.y = this.targetPoint[1] + 386 * sign;
+        }
+      }
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      const viewport = this.viewport;
+      _Sfx.Sfx.stop('COPTER_SPIN', false);
+      viewport.onFrameOut(20, () => {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        explosion.style({
+          '--x': this.args.x + 18 * this.args.direction,
+          '--y': this.args.y - 16
+        });
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+
+        // this.noClip = true;
+
+        this.args.animation = 'exploded';
+        explosion.x = +18;
+        this.explosions.add(explosion);
+        this.exploded = true;
+        viewport.particles.add(explosion);
+        viewport.onFrameOut(30, () => {
+          viewport.particles.remove(explosion);
+          this.explosions.delete(explosion);
+        });
+        const other = viewport.controlActor;
+        other.cofocused = null;
+      });
+      viewport.onFrameOut(0, () => {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        this.explosions.add(explosion);
+        explosion.style({
+          '--x': this.args.x + 36 * this.args.direction,
+          '--y': this.args.y - 32
+        });
+        explosion.x = 36;
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        viewport.particles.add(explosion);
+        viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+      });
+      viewport.onFrameOut(10, () => {
+        const explosionTag = document.createElement('div');
+        explosionTag.classList.add('particle-huge-explosion');
+        const explosion = new _Tag.Tag(explosionTag);
+        this.explosions.add(explosion);
+        explosion.style({
+          '--x': this.args.x + 0 * this.args.direction,
+          '--y': this.args.y - 24
+        });
+        explosion.x = 0;
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        viewport.particles.add(explosion);
+        viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+      });
     }
   }]);
   return Chopper;
@@ -23179,6 +23678,97 @@ let Egg = /*#__PURE__*/function (_PointActor) {
   return Egg;
 }(_PointActor2.PointActor);
 exports.Egg = Egg;
+});
+
+;require.register("actor/EggCapsule.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EggCapsule = void 0;
+var _PointActor2 = require("./PointActor");
+var _Sfx = require("../audio/Sfx");
+var _Bgm = require("../audio/Bgm");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let EggCapsule = /*#__PURE__*/function (_PointActor) {
+  _inherits(EggCapsule, _PointActor);
+  var _super = _createSuper(EggCapsule);
+  function EggCapsule() {
+    var _this;
+    _classCallCheck(this, EggCapsule);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this = _super.call(this, ...args);
+    _this.args.width = 64;
+    _this.args.height = 69;
+    _this.args.type = 'actor-item actor-egg-capsule';
+    _this.args.gravity = 0.4;
+    _this.args.bindTo('falling', v => {
+      if (!v) _this.viewport.args.shakeY = 7;
+    });
+    _this.triggered = false;
+    return _this;
+  }
+  _createClass(EggCapsule, [{
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (!other.controllable) {
+        return true;
+      }
+      if (this.groundTime > 15 && type === 0 && !this.triggered) {
+        _Sfx.Sfx.play('WTF_BOOM');
+        _Bgm.Bgm.fadeOut(1500);
+        other.args.ignore = 110;
+        other.args.x -= 0.1 * (this.args.x - other.args.x);
+        other.args.gSpeed = 0;
+        this.viewport.onFrameOut(107, () => {
+          const explosionTag = document.createElement('div');
+          explosionTag.classList.add('particle-huge-explosion');
+          const explosion = new _Tag.Tag(explosionTag);
+          explosion.style({
+            '--x': this.args.x,
+            '--y': this.args.y
+          });
+          this.viewport.particles.add(explosion);
+          this.viewport.onFrameOut(15, () => {
+            this.viewport.particles.remove(explosion);
+          });
+        });
+        this.viewport.onFrameOut(115, () => other.startle(this));
+        this.viewport.onFrameOut(117, () => other.args.ySpeed = -45);
+        this.triggered = true;
+        this.viewport.onFrameOut(240, () => this.triggered = false);
+        return true;
+      }
+      if (!other.controllable || !this.args.falling) {
+        return true;
+      }
+      other.startle(this);
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return this.groundTime > 15;
+    }
+  }]);
+  return EggCapsule;
+}(_PointActor2.PointActor);
+exports.EggCapsule = EggCapsule;
 });
 
 ;require.register("actor/EggMobile.js", function(exports, require, module) {
@@ -25150,6 +25740,7 @@ var _Mixin = require("curvature/base/Mixin");
 var _TruckBody = require("./TruckBody");
 var _TruckCab = require("./TruckCab");
 var _Platformer = require("../behavior/Platformer");
+var _Sfx = require("../audio/Sfx");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -25164,7 +25755,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-// import { Sfx } from '../audio/Sfx';
 let GiantTire = /*#__PURE__*/function (_Mixin$from) {
   _inherits(GiantTire, _Mixin$from);
   var _super = _createSuper(GiantTire);
@@ -25193,9 +25783,9 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
     return _this;
   }
   _createClass(GiantTire, [{
-    key: "onAttached",
-    value: function onAttached(event) {
-      if (this.args.driver) {
+    key: "spawnParts",
+    value: function spawnParts() {
+      if (this.args.driver || this.args.idler) {
         return;
       }
       const idler = this.args.idler = new GiantTire({
@@ -25256,6 +25846,63 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
   }, {
     key: "updateStart",
     value: function updateStart() {
+      if (!this.args.driver && !this.args.idler) {
+        this.spawnParts();
+      }
+      if (this.args.destroyed && !this.args.falling) {
+        this.args.type += ' actor-giant-tire-destroyed';
+        this.args.idler.args.type += ' actor-giant-tire-destroyed';
+        this.args.partner.args.type += ' actor-giant-tire-destroyed';
+        this.args.idlerPartner.args.type += ' actor-giant-tire-destroyed';
+        this.args.cab.args.type += ' actor-truck-cab-destroyed';
+        this.args.body.args.type += ' actor-truck-body-destroyed';
+        _Sfx.Sfx.play('ROCK_BREAK_1');
+        _Sfx.Sfx.play('OBJECT_DESTROYED');
+        if (!this.args.driver) {
+          let other = this.viewport.controlActor;
+          this.viewport.onFrameOut(15, () => other.cofocused = null);
+          this.args.body.noClip = true;
+          this.args.cab.noClip = true;
+          this.args.body.args.destroyed = true;
+          this.args.cab.args.destroyed = true;
+          this.args.body.args.xSpeed = this.gSpeedLast * 1.2;
+          this.args.cab.args.xSpeed = this.gSpeedLast * 1.6;
+          this.args.body.args.ySpeed = -6;
+          this.args.cab.args.ySpeed = -14;
+          this.args.body.args.falling = true;
+          this.args.cab.args.falling = true;
+          this.args.body.args.float = 0;
+          this.args.cab.args.float = 0;
+        }
+        this.args.ySpeed = -11;
+        this.args.xSpeed = this.gSpeedLast * 1.4;
+        this.args.falling = true;
+      }
+      if (this.args.destroyed) {
+        if (this.args.idler) {
+          this.args.idler.args.destroyed = true;
+          this.args.partner.args.destroyed = true;
+          this.args.idlerPartner.args.destroyed = true;
+          this.args.idler.args.falling = true;
+          this.args.partner.args.falling = true;
+          this.args.idlerPartner.args.falling = true;
+          this.args.idler.args.xSpeed = this.gSpeedLast * 1.3;
+          this.args.partner.args.xSpeed = this.gSpeedLast * 1.4;
+          this.args.idlerPartner.args.xSpeed = this.gSpeedLast * 1.3;
+          this.args.idler.args.ySpeed = -11;
+          this.args.partner.args.ySpeed = -11;
+          this.args.idlerPartner.args.ySpeed = -11;
+          this.args.idler.args.float = 0;
+          this.args.partner.args.float = 0;
+          this.args.idlerPartner.args.float = 0;
+          this.args.idler.noClip = true;
+          this.args.partner.noClip = true;
+          this.args.idlerPartner.noClip = true;
+        }
+        this.args.float = 0;
+        this.noClip = true;
+        return;
+      }
       while (this.getMapSolidAt(this.args.x, this.args.y)) {
         this.args.y--;
       }
@@ -25263,29 +25910,29 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
         _get(_getPrototypeOf(GiantTire.prototype), "updateStart", this).call(this);
         return;
       }
-      if (this.age < 30) {
+      let other = this.viewport.controlActor;
+      if (this.age < 36 && this.args.x > -160 + other.args.x) {
         _get(_getPrototypeOf(GiantTire.prototype), "updateStart", this).call(this);
         return;
       }
-      let other = this.viewport.controlActor;
       if (other.args.standingOn && other.args.standingOn.isVehicle) {
         other = other.args.standingOn;
       }
       if (!this.args.falling) {
-        if (other.args.gSpeed && this.args.x > -128 + other.args.x) {
+        if (other.args.gSpeed && this.args.x > -160 + other.args.x) {
           this.args.gSpeed *= 0.99;
         } else {
-          this.args.gSpeed = Math.max(this.args.gSpeed, 1.05 * other.args.gSpeed || other.args.xSpeed);
+          this.args.gSpeed = Math.max(this.args.gSpeed, other.args.gSpeed || other.args.xSpeed);
         }
       } else {
-        if (this.args.x > -128 + other.args.x) {
+        if (this.args.x > -160 + other.args.x) {
           this.args.xSpeed *= 0.99;
         } else {
           this.args.xSpeed = Math.max(this.args.xSpeed, other.args.xSpeed || other.args.xSpeed);
         }
       }
       if (other.args.x < this.args.x || other.args.falling && other.args.xSpeed < 0) {
-        this.args.gSpeed = Math.min(-8, other.args.xSpeed);
+        this.args.gSpeed = Math.min(-8, 0.75 * other.args.xSpeed);
       } else if (other.args.gSpeed && other.args.gSpeed < 5) {
         this.args.gSpeed++;
       }
@@ -25302,9 +25949,14 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
   }, {
     key: "updateEnd",
     value: function updateEnd() {
-      if (!this.args.idler) {
+      if (!this.args.idler || this.args.destroyed) {
         _get(_getPrototypeOf(GiantTire.prototype), "updateEnd", this).call(this);
         return;
+      }
+      for (const region of this.viewport.regionsAtPoint(this.args.x + 80, this.args.y)) {
+        if (region.args.destroyTruck) {
+          this.args.destroyed = true;
+        }
       }
       const idler = this.args.idler;
       const partner = this.args.partner;
@@ -25384,6 +26036,17 @@ let GiantTire = /*#__PURE__*/function (_Mixin$from) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
+      if (this.args.destroyed) {
+        return;
+      }
+      if (other.break) {
+        other.break(this);
+        return;
+      }
+      if (other.pop) {
+        other.pop(this);
+        return;
+      }
       if (!other.controllable) {
         return;
       }
@@ -36064,41 +36727,56 @@ let SkateBoard = /*#__PURE__*/function (_SnowBoard) {
         this.args.rotated = this.args.groundAngle;
       } else {
         this.fakie = this.args.reversing;
-        if (this.groundTime === 2 && this.occupant) {
-          const occupant = this.occupant;
-          let dropAngle = this.realAngle;
-          let rotated = this.args.rotated;
-          while (rotated < 0) {
-            rotated += Math.PI * 2;
-          }
-          while (rotated > Math.PI * 2) {
-            rotated -= Math.PI * 2;
-          }
-          while (dropAngle < 0) {
-            dropAngle += Math.PI * 2;
-          }
-          while (dropAngle > Math.PI * 2) {
-            dropAngle -= Math.PI * 2;
-          }
 
-          // console.log(this.args.rotated, rotated, dropAngle);
+        // if(this.groundTime === 2 && this.occupant)
+        // {
+        // 	const occupant = this.occupant;
 
-          const diff = Math.abs(rotated - dropAngle);
-          const upsidedown = Math.abs(rotated - Math.PI);
-          if (rotated && diff > Math.PI || upsidedown < Math.PI * 0.25) {
-            this.ignores.set(occupant, 30);
-            occupant.args.standingOn = null;
-            occupant.args.groundAngle = 0;
-            occupant.args.y -= Math.max(0, occupant.args.height * Math.cos(this.args.groundAngle));
-            occupant.startle();
-            occupant.totalCombo(false);
-          }
+        // 	let dropAngle = this.realAngle;
+        // 	let rotated = this.args.rotated;
 
-          // console.log({rotated, dropAngle, diff, upsidedown, a: (diff > Math.PI), b: upsidedown < Math.PI * 0.35});
+        // 	while(rotated < 0)
+        // 	{
+        // 		rotated += Math.PI * 2;
+        // 	}
 
-          this.args.rotated = 0;
-        }
+        // 	while(rotated > Math.PI * 2)
+        // 	{
+        // 		rotated -= Math.PI * 2;
+        // 	}
+
+        // 	while(dropAngle < 0)
+        // 	{
+        // 		dropAngle += Math.PI * 2;
+        // 	}
+
+        // 	while(dropAngle > Math.PI * 2)
+        // 	{
+        // 		dropAngle -= Math.PI * 2;
+        // 	}
+
+        // 	// console.log(this.args.rotated, rotated, dropAngle);
+
+        // 	// const diff = Math.abs(rotated - dropAngle);
+        // 	// const upsidedown = Math.abs(rotated - Math.PI);
+
+        // 	// if((rotated && (diff > Math.PI)) || upsidedown < Math.PI * 0.25)
+        // 	// {
+        // 	// 	this.ignores.set(occupant, 30);
+        // 	// 	occupant.args.standingOn  = null;
+        // 	// 	occupant.args.groundAngle = 0;
+        // 	// 	occupant.args.y -= Math.max(0, occupant.args.height * Math.cos(this.args.groundAngle));
+        // 	// 	occupant.startle();
+
+        // 	// 	occupant.totalCombo(false);
+        // 	// }
+
+        // 	// console.log({rotated, dropAngle, diff, upsidedown, a: (diff > Math.PI), b: upsidedown < Math.PI * 0.35});
+
+        // 	// this.args.rotated = 0;
+        // }
       }
+
       if (this.occupant && !this.trickTimer && !this.args.grinding && this.groundTime > 1 && this.args.trick !== 'manual') {
         this.occupant.totalCombo();
         this.args.trick = null;
@@ -37999,6 +38677,14 @@ let Sonic = /*#__PURE__*/function (_PointActor) {
   }, {
     key: "setCameraMode",
     value: function setCameraMode() {
+      if (!this.args.falling && this.regions) {
+        for (const region of this.regions) {
+          if (region.args.perspective) {
+            this.args.cameraMode = 'perspective';
+            return;
+          }
+        }
+      }
       if (this.args.boltDash) {
         this.args.cameraMode = 'draggable';
       } else if (this.args.wallSticking) {
@@ -42095,7 +42781,13 @@ let TrickRamp = /*#__PURE__*/function (_PointActor) {
   _createClass(TrickRamp, [{
     key: "collideA",
     value: function collideA(other) {
-      if (Math.abs(other.args.gSpeed) < 8 || other.args.x < this.args.x) {
+      if (other.args.x < this.args.x) {
+        return;
+      }
+      if (Math.abs(other.args.gSpeed) < 8 && other.willJump) {
+        return;
+      }
+      if (Math.abs(other.args.gSpeed) < 14 && other.args.rolling && !other.willJump) {
         return;
       }
       if (other.willJump || other.args.rolling) {
@@ -42121,6 +42813,7 @@ let TrickRamp = /*#__PURE__*/function (_PointActor) {
         other.args.rolling = true;
         other.args.falling = true;
         other.willJump = false;
+        other.dashed = true;
       }
     }
   }], [{
@@ -42177,11 +42870,33 @@ let TruckBody = /*#__PURE__*/function (_Mixin$from) {
     _this.args.float = -1;
     _this.noClip = 1;
     _this.args.driver = _this.args.driver || null;
+    _this.args.ramming = true;
     return _this;
   }
+
+  // collideA(other,type)
+  // {
+  // 	if(!other.controllable)
+  // 	{
+  // 		return;
+  // 	}
+
+  // 	other.damage(this);
+  // }
   _createClass(TruckBody, [{
     key: "collideA",
     value: function collideA(other, type) {
+      if (this.args.destroyed) {
+        return;
+      }
+      if (other.break) {
+        other.break(this);
+        return;
+      }
+      if (other.pop) {
+        other.pop(this);
+        return;
+      }
       if (!other.controllable) {
         return;
       }
@@ -42203,11 +42918,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.TruckCab = void 0;
 var _PointActor = require("./PointActor");
 var _Mixin = require("curvature/base/Mixin");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -42233,9 +42948,30 @@ let TruckCab = /*#__PURE__*/function (_Mixin$from) {
     _this.args.float = -1;
     _this.noClip = 1;
     _this.args.driver = _this.args.driver || null;
+    _this.args.ramming = true;
     return _this;
   }
-  return _createClass(TruckCab);
+  _createClass(TruckCab, [{
+    key: "collideA",
+    value: function collideA(other, type) {
+      if (this.args.destroyed) {
+        return;
+      }
+      if (other.break) {
+        other.break(this);
+        return;
+      }
+      if (other.pop) {
+        other.pop(this);
+        return;
+      }
+      if (!other.controllable) {
+        return;
+      }
+      other.damage(this);
+    }
+  }]);
+  return TruckCab;
 }(_Mixin.Mixin.from(_PointActor.PointActor));
 exports.TruckCab = TruckCab;
 });
@@ -43244,6 +43980,9 @@ let WoodenCrate = /*#__PURE__*/function (_BreakableBlock) {
   }, {
     key: "collideA",
     value: function collideA(other, type) {
+      if (other.args.ramming) {
+        return false;
+      }
       if (other instanceof _Block.Block) {
         return true;
       }
@@ -48025,6 +48764,9 @@ let Platformer = /*#__PURE__*/function () {
             }
           }
         } else if (!host.args.static && (!host.noClip || host.args.standingLayer || !host.isRegion && !host.isEffect && !host.args.falling)) {
+          if (host.args.mode === 0 && host.groundTime <= 1) {
+            host.args.gSpeed = host.args.xSpeed || host.args.gSpeed;
+          }
           host.args.xSpeed = 0;
           host.args.ySpeed = 0;
           host.xLast = host.args.x;
@@ -48211,36 +48953,6 @@ let Platformer = /*#__PURE__*/function () {
         host.args.x = host.args.x;
         host.args.y = host.args.y;
       }
-
-      // if(!host.noClip && !host.args.falling && !host.isRegion)
-      // {
-      // 	if(host.args.mode === MODE_FLOOR && !host.args.gSpeed && !host.args.xSpeed)
-      // 	{
-      // 		let execs = 0;
-
-      // 		const heading = Math.atan2(startY - host.y, startX - host.x);
-
-      // 		host.args.xSpeed = 0;
-      // 		host.args.ySpeed = 0;
-
-      // 		while(host.getMapSolidAt(host.x, host.y - 1, false))
-      // 		{
-      // 			host.args.x += Math.cos(heading);
-      // 			host.args.y += Math.sin(heading);
-
-      // 			if(execs++ > 1000)
-      // 			{
-      // 				break;
-      // 			}
-      // 		}
-      // 	}
-      // }
-
-      // if(host.args.falling)
-      // {
-      // 	host.args.gSpeed = 0;
-      // }
-
       host.controllable && host.processInput();
       if (host.args.falling || host.args.gSpeed) {
         host.args.stopped = 0;
@@ -52319,6 +53031,7 @@ if (location.pathname === '/accept-sso') {
 
   /*** SFX ***/
 
+  _Sfx.Sfx.register('WTF_BOOM', '/audio/meme/wtf-boom.mp3');
   _Sfx.Sfx.register('PLAYER_DAMAGED', '/Sonic/S3K_35.wav');
   _Sfx.Sfx.register('RINGS_SCATTERED', '/Sonic/ring-loss.wav', {
     maxConcurrent: 3,
@@ -52362,7 +53075,7 @@ if (location.pathname === '/accept-sso') {
     maxConcurrent: 4,
     volume: 1,
     fudgeFactor: 0,
-    startTime: 0.4
+    startTime: 0.2
   });
   _Sfx.Sfx.register('WORM_BLOCK_DESTROYED', '/Sonic/0A3H.wav', {
     maxConcurrent: 4,
@@ -52373,7 +53086,7 @@ if (location.pathname === '/accept-sso') {
   _Sfx.Sfx.register('ROCKS_DESTROYED', '/Sonic/rock-smash.wav');
   _Sfx.Sfx.register('ROCK_BREAK_1', '/Sonic/S1_B9.wav', {
     maxConcurrent: 1,
-    volume: 0.25,
+    volume: 0.75,
     fudgeFactor: 0.3
   });
   _Sfx.Sfx.register('ROCK_BREAK_2', '/Sonic/S1_CB.wav', {
@@ -56086,6 +56799,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -56112,6 +56827,14 @@ let BubbleSheild = /*#__PURE__*/function (_Sheild) {
     return _this;
   }
   _createClass(BubbleSheild, [{
+    key: "unequip",
+    value: function unequip(host) {
+      _get(_getPrototypeOf(BubbleSheild.prototype), "unequip", this).call(this, host);
+      host.args.bouncing = false;
+      this.args.bouncing = false;
+      this.args.force = 0;
+    }
+  }, {
     key: "acquire",
     value: function acquire(host) {
       const viewport = host.viewport;
@@ -57070,6 +57793,10 @@ let BossRegion = /*#__PURE__*/function (_Region) {
       }
       if (!this.args._boss) {
         const boss = this.viewport.actorsById[this.args.boss];
+        if (!boss) {
+          other.args.bossMode = false;
+          return;
+        }
         if (!boss.args.hitPoints) {
           other.args.bossMode = false;
         } else {
@@ -58194,6 +58921,7 @@ let LoadingRegion = /*#__PURE__*/function (_Region) {
   _inherits(LoadingRegion, _Region);
   var _super = _createSuper(LoadingRegion);
   function LoadingRegion() {
+    var _this$args$xOffset;
     var _this;
     _classCallCheck(this, LoadingRegion);
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -58202,6 +58930,7 @@ let LoadingRegion = /*#__PURE__*/function (_Region) {
     _this = _super.call(this, ...args);
     _this.args.hidden = true;
     _this.loading = _this.loaded = false;
+    _this.args.xOffset = (_this$args$xOffset = _this.args.xOffset) !== null && _this$args$xOffset !== void 0 ? _this$args$xOffset : 0;
     return _this;
   }
   _createClass(LoadingRegion, [{
@@ -58259,6 +58988,88 @@ let LoadingRegion = /*#__PURE__*/function (_Region) {
   return LoadingRegion;
 }(_Region2.Region);
 exports.LoadingRegion = LoadingRegion;
+});
+
+;require.register("region/PerspectiveRegion.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PerspectiveRegion = void 0;
+var _Region2 = require("./Region");
+var _Tag = require("curvature/base/Tag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let PerspectiveRegion = /*#__PURE__*/function (_Region) {
+  _inherits(PerspectiveRegion, _Region);
+  var _super = _createSuper(PerspectiveRegion);
+  function PerspectiveRegion(args, parent) {
+    var _this$args$destroyTru, _this$args$maxSpeed, _this$args$minSpeed, _this$args$canJump;
+    var _this;
+    _classCallCheck(this, PerspectiveRegion);
+    _this = _super.call(this, args, parent);
+    _this.args.sticky = true;
+    _this.args.type = 'region rolling';
+    _this.args.destroyTruck = (_this$args$destroyTru = _this.args.destroyTruck) !== null && _this$args$destroyTru !== void 0 ? _this$args$destroyTru : false;
+    _this.args.maxSpeed = (_this$args$maxSpeed = _this.args.maxSpeed) !== null && _this$args$maxSpeed !== void 0 ? _this$args$maxSpeed : -1;
+    _this.args.minSpeed = (_this$args$minSpeed = _this.args.minSpeed) !== null && _this$args$minSpeed !== void 0 ? _this$args$minSpeed : -1;
+    _this.args.canJump = (_this$args$canJump = _this.args.canJump) !== null && _this$args$canJump !== void 0 ? _this$args$canJump : false;
+    _this.args.hidden = true;
+    _this.args.perspective = true;
+    _this.args.shift = _this.args.shift || 600;
+    return _this;
+  }
+  _createClass(PerspectiveRegion, [{
+    key: "update",
+    value: function update() {
+      if (!this.originalHeight) {
+        this.originalHeight = this.args.height;
+      }
+      _get(_getPrototypeOf(PerspectiveRegion.prototype), "update", this).call(this);
+    }
+  }, {
+    key: "updateActor",
+    value: function updateActor(other) {
+      if (other !== this.viewport.controlActor) {
+        return;
+      }
+      let i = (Math.abs(other.realAngle) + -Math.PI) / (Math.PI * 0.5);
+      i = -1 + Math.abs(i);
+      if (i < 0) {
+        i++;
+        i = 1 - i;
+      }
+      i = 1 - i;
+      this.viewport.args.xPerspective = this.args.shift * i;
+    }
+  }, {
+    key: "solid",
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: "isEffect",
+    get: function get() {
+      return true;
+    }
+  }]);
+  return PerspectiveRegion;
+}(_Region2.Region);
+exports.PerspectiveRegion = PerspectiveRegion;
 });
 
 ;require.register("region/RainRegion.js", function(exports, require, module) {
@@ -58482,12 +59293,13 @@ let RollingRegion = /*#__PURE__*/function (_Region) {
   _inherits(RollingRegion, _Region);
   var _super = _createSuper(RollingRegion);
   function RollingRegion(args, parent) {
-    var _this$args$maxSpeed, _this$args$minSpeed, _this$args$canJump;
+    var _this$args$destroyTru, _this$args$maxSpeed, _this$args$minSpeed, _this$args$canJump;
     var _this;
     _classCallCheck(this, RollingRegion);
     _this = _super.call(this, args, parent);
     _this.args.sticky = true;
     _this.args.type = 'region rolling';
+    _this.args.destroyTruck = (_this$args$destroyTru = _this.args.destroyTruck) !== null && _this$args$destroyTru !== void 0 ? _this$args$destroyTru : false;
     _this.args.maxSpeed = (_this$args$maxSpeed = _this.args.maxSpeed) !== null && _this$args$maxSpeed !== void 0 ? _this$args$maxSpeed : -1;
     _this.args.minSpeed = (_this$args$minSpeed = _this.args.minSpeed) !== null && _this$args$minSpeed !== void 0 ? _this$args$minSpeed : -1;
     _this.args.canJump = (_this$args$canJump = _this.args.canJump) !== null && _this$args$canJump !== void 0 ? _this$args$canJump : false;
@@ -60566,9 +61378,9 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
       const elicit = new _Elicit.Elicit(url);
       return elicit.stream().then(response => response.json()).then(data => {
         const width = this.mapData.width;
-        const newWidth = Math.max(width, width + data.width + (width + -xOffset));
+        const newWidth = Math.max(width, width + data.width + -Math.round(xOffset / 32));
         const height = this.mapData.height;
-        const newHeight = Math.max(height, height + data.height + (height + -yOffset));
+        const newHeight = Math.max(height, height + data.height + -Math.round(yOffset / 32));
         this.resize(newWidth, height);
         this.desparseLayers(data);
         let lastGid = 0;
@@ -60610,7 +61422,7 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
         this.tileNumberCache.clear();
         return this.loadTilesets(data).then(() => {
           return {
-            defs: this.getObjectDefs(data),
+            defs: this.getObjectDefs(data, lastGid),
             data: data
           };
         });
@@ -60893,10 +61705,16 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     key: "getObjectDefs",
     value: function getObjectDefs() {
       let mapData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.mapData;
+      let startGid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       if (!mapData) {
         return;
       }
-      return mapData.layers.filter(layer => layer.type === 'objectgroup').map(layer => layer.objects).flat();
+      return mapData.layers.filter(layer => layer.type === 'objectgroup').map(layer => layer.objects).flat().map(o => {
+        if (typeof o.gid !== 'undefined') {
+          o.gid += startGid;
+        }
+        return o;
+      });
     }
   }, {
     key: "getTile",
@@ -62109,11 +62927,14 @@ let Layer = /*#__PURE__*/function (_View) {
     _this.args.width = args.width || 320;
     _this.args.height = args.height || 200;
     _this.args.blockSize = args.blockSize || 32;
+    console.log(args);
     _this.x = 0;
     _this.y = 0;
+    _this.viewport = args.viewport;
     _this.hidden = false;
     _this.args.offsetX = 0;
     _this.args.offsetY = 0;
+    _this.args.parallax = _this.args.parallax || 0;
     _this.args.layerId = 0 || _this.args.layerId;
     Object.defineProperty(_assertThisInitialized(_this), 'blocksXY', {
       value: new Map()
@@ -62397,7 +63218,9 @@ let Layer = /*#__PURE__*/function (_View) {
           background.style({
             display: 'initial',
             '--offsetX': -offsetX % blockSize,
-            '--offsetY': -offsetY % blockSize
+            '--offsetY': -offsetY % blockSize,
+            '--xPerspective': this.viewport.args.xPerspective,
+            '--parallax': this.args.parallax
           });
         }
       }
@@ -62688,6 +63511,7 @@ let Viewport = /*#__PURE__*/function (_View) {
     _this.args.replayQuickExit = false;
     _this.args.replayBanners = true;
     _this.maxObjectId = 0;
+    _this.maxGid = 0;
     _this.args.loadingMap = false;
     _this.server = null;
     _this.client = null;
@@ -63046,6 +63870,7 @@ let Viewport = /*#__PURE__*/function (_View) {
     _this.args.regionCount = new _CharacterString.CharacterString({
       value: 0
     });
+    _this.args.xPerspective = 0;
     _this.args.cameraMode = new _CharacterString.CharacterString({
       value: 0
     });
@@ -63631,8 +64456,11 @@ let Viewport = /*#__PURE__*/function (_View) {
             viewport: this,
             name: layers[i].name,
             width: this.args.width,
-            height: this.args.height
+            height: this.args.height,
+            parallax: layers[i].parallaxx,
+            perspective: this.args.xPerspective
           });
+          console.log(layers[i]);
           if (layers[i].name.substring(0, 10) === 'Foreground') {
             this.args.fgLayers.push(layer);
           } else {
@@ -64437,6 +65265,12 @@ let Viewport = /*#__PURE__*/function (_View) {
           this.maxCameraBound = 96;
           cameraSpeed = 24;
           break;
+        case 'perspective':
+          this.args.xOffsetTarget = [0.50, 0.30, 0.50, 0.70][actor.args.mode];
+          this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
+          this.maxCameraBound = 96;
+          cameraSpeed = 24;
+          break;
         case 'climbing':
           this.args.xOffsetTarget = [0.50, 0.33, 0.50, 0.66][actor.args.mode];
           this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
@@ -64536,7 +65370,7 @@ let Viewport = /*#__PURE__*/function (_View) {
           cameraSpeed = 25;
           break;
       }
-      const biasModes = ['normal', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
+      const biasModes = ['normal', 'perspective', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
       if (biasModes.includes(this.cameraMode) && !actor.args.pushing && actor.args.modeTime > 0) {
         let biaser = actor;
         if (actor.args.standingOn && actor.args.standingOn.invertsBias) {
@@ -64746,6 +65580,7 @@ let Viewport = /*#__PURE__*/function (_View) {
       this.tags.content.style({
         '--x': this.args.x,
         '--y': this.args.y,
+        '--xPerspective': this.args.xPerspective,
         '--outlineWidth': this.settings.outline + 'px'
       });
       const xMod = this.args.x <= 0 ? this.args.x % this.args.blockSize : (-this.args.blockSize + this.args.x % this.args.blockSize) % this.args.blockSize;
@@ -64800,7 +65635,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         backdrop.view && Object.assign(backdrop.view.args, {
           x: this.args.x,
           xOffset: -this.args.x + -backdrop.x,
-          xPan: this.args.x,
+          xPan: this.args.x + this.args.xPerspective * 1.5,
           xMax: xMax,
           y: this.args.y + backdrop.y,
           yMax: this.args.y + backdrop.y + -backdrop.view.stacked,
@@ -64819,7 +65654,7 @@ let Viewport = /*#__PURE__*/function (_View) {
         const yMax = this.tileMap ? -(mHeight * tHeight) : Math.pow(2, 9);
         this.args.backdrop && Object.assign(this.args.backdrop.args, {
           x: 0,
-          xPan: this.args.x,
+          xPan: this.args.x + this.args.xPerspective * 1.5,
           y: this.args.y + this.args.yOffset,
           xMax: xMax !== null && xMax !== void 0 ? xMax : 0,
           yMax: yMax !== null && yMax !== void 0 ? yMax : 0,
@@ -64934,6 +65769,9 @@ let Viewport = /*#__PURE__*/function (_View) {
           def.id += maxObjectId;
           def.x += x * this.tileMap.mapData.tilewidth;
           def.y += y * this.tileMap.mapData.tileheight;
+          if (def.gid) {
+            // def.gid += max
+          }
           if (!def.properties) {
             continue;
           }
@@ -65745,6 +66583,7 @@ let Viewport = /*#__PURE__*/function (_View) {
                 score: null,
                 index: i
               };
+              this.args.combo[c].label = this.args.combo[c].label || this.getUnusedCharString();
               if (this.args.combo[c].index !== i) {
                 pulse = true;
               }
@@ -65813,7 +66652,7 @@ let Viewport = /*#__PURE__*/function (_View) {
       if (!this.charStringPool) {
         this.charStringPool = new Set();
         this.charStringOpen = new Set();
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
           const charString = _Bindable.Bindable.make(new _CharacterString.CharacterString({
             value: ' '.repeat(10)
           }));

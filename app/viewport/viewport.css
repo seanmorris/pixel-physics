@@ -274,7 +274,7 @@ section.filters {
 .viewport-particles > *,
 .viewport .point-actor.actor-drill-car .sprite,
 .viewport .point-actor.actor-egg-walker .sprite,
-.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring):not(.actor-flag) {
+.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet):not(.actor-water-spout):not(.actor-super-ring):not(.actor-drill-car):not(.actor-block):not(.actor-egg-walker):not(.actor-umbrella):not(.actor-boost-ring):not(.actor-flag):not(.actor-chain-shot) {
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
@@ -300,7 +300,7 @@ section.filters {
 
 .viewport-background {
 	/*transform: translate(calc(1px * var(--xMod)), calc(1px * var(--yMod)));*/
-	transform: translate3d(calc(-1px * var(--offsetX, 0)),calc(-1px * var(--offsetY, 0)),0);
+	transform: translate3d(calc(-1px * calc(var(--offsetX, 0) - calc(var(--parallax) * var(--xPerspective, 0)))), calc(-1px * var(--offsetY, 0)),0);
 	display: flex;
 	justify-content: center;
 	align-items: center;

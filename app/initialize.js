@@ -86,6 +86,8 @@ else
 
 	/*** SFX ***/
 
+	Sfx.register('WTF_BOOM', '/audio/meme/wtf-boom.mp3');
+
 	Sfx.register('PLAYER_DAMAGED', '/Sonic/S3K_35.wav');
 	Sfx.register('RINGS_SCATTERED', '/Sonic/ring-loss.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0});
 	Sfx.register('BUMPER_BOUNCE', '/Sonic/S3K_AA.wav');
@@ -98,12 +100,12 @@ else
 
 	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 8, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('BOX_DESTROYED',  '/Sonic/S3K_B4.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.0});
-	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.4});
+	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.2});
 	Sfx.register('WORM_BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 0.8, fudgeFactor: 0.2, startTime: 0.2});
 
 	Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 
-	Sfx.register('ROCK_BREAK_1',  '/Sonic/S1_B9.wav', {maxConcurrent: 1, volume: 0.25, fudgeFactor: 0.3});
+	Sfx.register('ROCK_BREAK_1',  '/Sonic/S1_B9.wav', {maxConcurrent: 1, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('ROCK_BREAK_2',  '/Sonic/S1_CB.wav', {maxConcurrent: 1, volume: 0.50, fudgeFactor: 0.1});
 
 	Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});

@@ -21,6 +21,12 @@ export class BossRegion extends Region
 		{
 			const boss = this.viewport.actorsById[ this.args.boss ];
 
+			if(!boss)
+			{
+				other.args.bossMode = false;
+				return
+			}
+
 			if(!boss.args.hitPoints)
 			{
 				other.args.bossMode = false;

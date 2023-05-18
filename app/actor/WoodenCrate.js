@@ -53,6 +53,11 @@ export class WoodenCrate extends BreakableBlock
 
 	collideA(other, type)
 	{
+		if(other.args.ramming)
+		{
+			return false;
+		}
+
 		if(other instanceof Block)
 		{
 			return true;

@@ -9,6 +9,8 @@ export class LoadingRegion extends Region
 		this.args.hidden = true;
 
 		this.loading = this.loaded = false;
+
+		this.args.xOffset = this.args.xOffset ?? 0;
 	}
 
 	updateActor(other)

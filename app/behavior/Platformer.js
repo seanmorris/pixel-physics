@@ -1089,8 +1089,13 @@ export class Platformer
 					}
 				}
 			}
-			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion &&!host.isEffect && !host.args.falling)))
+			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion && !host.isEffect && !host.args.falling)))
 			{
+				if(host.args.mode === 0 && host.groundTime <= 1)
+				{
+					host.args.gSpeed = host.args.xSpeed || host.args.gSpeed;
+				}
+
 				host.args.xSpeed = 0;
 				host.args.ySpeed = 0;
 				host.xLast = host.args.x;
@@ -1401,35 +1406,6 @@ export class Platformer
 			host.args.x = (host.args.x);
 			host.args.y = (host.args.y);
 		}
-
-		// if(!host.noClip && !host.args.falling && !host.isRegion)
-		// {
-		// 	if(host.args.mode === MODE_FLOOR && !host.args.gSpeed && !host.args.xSpeed)
-		// 	{
-		// 		let execs = 0;
-
-		// 		const heading = Math.atan2(startY - host.y, startX - host.x);
-
-		// 		host.args.xSpeed = 0;
-		// 		host.args.ySpeed = 0;
-
-		// 		while(host.getMapSolidAt(host.x, host.y - 1, false))
-		// 		{
-		// 			host.args.x += Math.cos(heading);
-		// 			host.args.y += Math.sin(heading);
-
-		// 			if(execs++ > 1000)
-		// 			{
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// if(host.args.falling)
-		// {
-		// 	host.args.gSpeed = 0;
-		// }
 
 		host.controllable && host.processInput();
 

@@ -130,10 +130,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		.then(data => {
 
 			const width    = this.mapData.width;
-			const newWidth = Math.max(width, width + data.width + (width + -xOffset));
+			const newWidth = Math.max(width, width + data.width + -Math.round(xOffset/32));
 
 			const height    = this.mapData.height;
-			const newHeight = Math.max(height, height + data.height + (height + -yOffset));
+			const newHeight = Math.max(height, height + data.height + -Math.round(yOffset/32));
 
 			this.resize(newWidth, height);
 
@@ -203,8 +203,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			return this.loadTilesets(data).then(() => {
 
-
-				return {defs: this.getObjectDefs(data), data};
+				return {defs: this.getObjectDefs(data, lastGid), data};
 
 			});
 		});
@@ -578,7 +577,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return false;
 	}
 
-	getObjectDefs(mapData = this.mapData)
+	getObjectDefs(mapData = this.mapData, startGid = 0)
 	{
 		if(!mapData)
 		{
@@ -588,7 +587,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return mapData.layers
 			.filter(layer => layer.type === 'objectgroup')
 			.map(layer => layer.objects)
-			.flat();
+			.flat()
+			.map(o => {if(typeof o.gid !== 'undefined') {o.gid += startGid;} return o;});
 	}
 
 	getTile(tileNumber)
