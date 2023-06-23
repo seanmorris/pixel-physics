@@ -17,6 +17,10 @@ export class Signpost extends PointActor
 		this.args.follow = false;
 
 		this.args.activeTime = 0;
+
+		this.cleared = false;
+
+		this.clearedBy = null;
 	}
 
 	collideA(other)
@@ -26,36 +30,55 @@ export class Signpost extends PointActor
 			return;
 		}
 
-		if(other.args.popChain.length)
-		{
-			if(!this.finishReward)
-			{
-				this.finishReward = {label: 'Big Finish', points:1000, multiplier:1};
+		this.viewport.onFrameOut(10, () => {
+			this.args.active = true;
+			this.clearedBy = other;
+		});
 
-				other.args.popChain.push(this.finishReward);
-			}
+		if(this.following)
+		{
+			return;
 		}
 
-		this.viewport.onFrameOut(120, () => this.box.setAttribute('data-cleared-by', other.args.name));
-		// this.viewport.onFrameOut(90,  () => other.args.rolling = false);
-		this.viewport.onFrameOut(180, () => this.viewport.clearAct(`${other.args.name} GOT THROUGH ${this.viewport.args.actName}`));
+		this.viewport.clearCheckpoints();
 
-		this.viewport.onFrameOut(540, () => {
+		if(!this.finishReward && other.args.popChain.length)
+		{
+			this.finishReward = {label: 'Big Finish', points:1000, multiplier:1, color: 'yellow'};
 
-			// this.args.charStrings.length = 0;
+			other.args.popChain.push(this.finishReward);
+		}
 
-			other.args.ignore = 0;
+		const yardsPerFrame = (other.args.gSpeed || other.args.xSpeed) / 32;
+		const feetPerSecond = yardsPerFrame * 60 * 3;
 
+		other.args.clearSpeed = Math.abs(feetPerSecond);
+
+		this.args.charStrings.push(new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`}));
+
+		this.following = other;
+
+		this.args.falling = true;
+		this.args.follow  = true;
+		this.args.xSpeed  = (other.args.gSpeed || other.args.xSpeed) * 1.1;
+		this.args.ySpeed  = -7;
+		this.args.y--;
+	}
+
+	clear(other)
+	{
+		this.cleared = true;
+
+		other.totalCombo();
+
+		this.box.setAttribute('data-cleared-by', other.args.name);
+		this.viewport.clearAct(`${other.args.name} GOT THROUGH\n${this.viewport.args.actName}`);
+		this.viewport.onFrameOut(30, () => {
 			this.args.follow = false;
-
 			if(!this.args.boss)
 			{
 				return;
 			}
-		});
-
-		this.viewport.onFrameOut(30, () => {
-			other.args.ignore = -1;
 		});
 
 		this.viewport.onFrameOut(600, () => {
@@ -81,33 +104,6 @@ export class Signpost extends PointActor
 
 			other.args.clearSpeed = 0;
 		});
-
-		const time  = (this.viewport.args.frameId - this.viewport.args.startFrameId) / 60;
-		let minutes = String(Math.floor(Math.abs(time) / 60)).padStart(2,'0')
-		let seconds = String(Math.trunc(Math.abs(time) % 60)).padStart(2,'0');
-
-		const neg = time < 0 ? '-' : '';
-
-		if(neg)
-		{
-			minutes = Number(minutes);
-		}
-
-		const yardsPerFrame = (other.args.gSpeed || other.args.xSpeed) / 32;
-		const feetPerSecond = yardsPerFrame * 60 * 3;
-
-		other.args.clearSpeed = Math.abs(feetPerSecond);
-
-		this.args.charStrings.push(new CharacterString({value: `Speed: ${feetPerSecond.toFixed(2)} ft/sec`}));
-
-		this.following = other;
-
-		this.args.falling = true;
-		this.args.active  = true;
-		this.args.follow  = true;
-		this.args.xSpeed  = (other.args.gSpeed || other.args.xSpeed) * 1.1;
-		this.args.ySpeed  = -7;
-		this.args.y--;
 	}
 
 	update()
@@ -173,6 +169,11 @@ export class Signpost extends PointActor
 		}
 
 		super.update();
+
+		if(this.args.active && !this.cleared)
+		{
+			this.clear(this.clearedBy);
+		}
 	}
 
 	get rotateLock() { return true; }

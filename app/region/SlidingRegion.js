@@ -29,6 +29,11 @@ export class SlidingRegion extends Region
 			return;
 		}
 
+		if(!other.controllable)
+		{
+			return;
+		}
+
 		other.willStick = false;
 
 		if(Math.abs(this.args.toSpeed - other.args.gSpeed) > 1)

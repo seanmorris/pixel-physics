@@ -4,6 +4,7 @@ import { Platformer } from '../behavior/Platformer';
 import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 import { CutScene } from './CutScene';
+import { EggCapsule } from './EggCapsule';
 
 import { Sfx } from '../audio/Sfx';
 
@@ -37,7 +38,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		this.args.bindTo('phase', v => this.args.phaseFrameId = 0);
 
-		this.clearScene = new CutScene({src: '/cutscenes/clear-seaview.json'});
+		// this.clearScene = new CutScene({src: '/cutscenes/clear-seaview.json'});
 	}
 
 	onRendered(event)
@@ -67,7 +68,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		this.attractor = null;
 
-		this.clearScene.viewport = this.viewport;
+		// this.clearScene.viewport = this.viewport;
 	}
 
 	update()
@@ -86,7 +87,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 		const mainChar = this.viewport.controlActor;
 
-		if(!mainChar)
+		if(!mainChar || mainChar.args.respawning)
 		{
 			return;
 		}
@@ -382,9 +383,23 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 					this.args.phase = 'exploded';
 
-					this.clearScene.activate(mainChar, this, true);
+					// this.clearScene.activate(mainChar, this, true);
 
 					Sfx.play('OBJECT_DESTROYED');
+
+					if(viewport && viewport.controlActor)
+					{
+						const other = viewport.controlActor;
+
+						viewport.onFrameOut(60, () => {
+							const capsule = new EggCapsule({
+								x: other.args.x,
+								y: other.args.y - 384,
+								xSpeed: other.args.gSpeed || other.args.xSpeed
+							});
+							viewport.spawn.add({object:capsule});
+						});
+					}
 				}
 
 				if(this.args.phaseFrameId > 90)
@@ -435,6 +450,11 @@ export class Beelzebub extends Mixin.from(PointActor)
 		if(!mainChar)
 		{
 			return;
+		}
+
+		if(this.args.hitPoints <= 0)
+		{
+			mainChar.cofocused = null;
 		}
 
 		const xDiff = Math.abs(this.args.x - mainChar.x);
@@ -660,6 +680,10 @@ export class Beelzebub extends Mixin.from(PointActor)
 		if(!this.args.hitPoints)
 		{
 			other.args.ignore = -2;
+		}
+		else
+		{
+			// this.viewport.controlActor.cofocused = this;
 		}
 
 		return true;

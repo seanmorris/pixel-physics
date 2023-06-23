@@ -127,7 +127,10 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 
 			this.hat.args.z = this.args.z + 1;
 
-			this.viewport.setColCell(this.hat);
+			if(this.viewport)
+			{
+				this.viewport.setColCell(this.hat);
+			}
 		}
 	}
 

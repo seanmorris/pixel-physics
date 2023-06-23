@@ -17,7 +17,7 @@ export class Springboard extends PointActor
 
 	collideA(other, type)
 	{
-		if(!other.controllable || this.args.ignore)
+		if(this.args.ignore)
 		{
 			return;
 		}

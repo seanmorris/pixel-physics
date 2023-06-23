@@ -516,6 +516,19 @@
 	animation: sonic-run steps(4) infinite 128ms forwards;
 }
 
+.actor-item.actor-sonic[data-animation="board-grinding"] .sprite:after {
+	top: 14px;
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -1216px;
+}
+
+.actor-item.actor-sonic[data-animation="grinding-stopped"] .sprite:after {
+	top: 2px;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
+	/* animation: sonic-run steps(4) infinite 128ms forwards; */
+}
+
 .actor-item.actor-sonic[data-animation="grinding-crouching"] .sprite:after {
 	top: 2px;
 	--sprite-offset-x: -256px;
@@ -580,8 +593,18 @@
 	--animation-steps: 2;
 	background-position-y: var(--sprite-offset-y);
 	animation: sonic-animate steps(2) infinite 90ms;
-
 }
+
+.actor-item.actor-sonic[data-animation="adventure-pose"] .sprite:after {
+	--sprite-offset-x: -512px;
+	--sprite-offset-y: -1216px;
+	--animation-width: -64px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	background-position-x: calc(var(--sprite-offset-x) + 0px);
+	animation: sonic-animate steps(2) 1 300ms;
+}
+
 .actor-item.actor-sonic[data-animation="holding"] .sprite:after {
 	/*--sprite-offset-x: -64px;*/
 	/*--sprite-offset-x: -256px;*/
@@ -653,6 +676,30 @@
 
 .actor-item.actor-sonic[data-carrying=true][data-facing=right] .rear-arm {
 	transform: scale(-1,1);
+}
+
+.actor-item.actor-sonic[data-animation="handstand"] .sprite:after {
+	--sprite-offset-x: -384px;
+	--sprite-offset-y: -1216px;
+}
+
+.actor-item.actor-sonic[data-animation="manual"] .sprite:after {
+	--sprite-offset-x: -192px;
+	--sprite-offset-y: -1216px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	--animation-width: -64px;
+	animation: sonic-animate steps(2) infinite 650ms;
+}
+
+.actor-item.actor-sonic[data-animation="insult"] .sprite:after {
+	--sprite-offset-x: -320px;
+	--sprite-offset-y: -1216px;
+	--animation-steps: -2;
+	background-position-y: var(--sprite-offset-y);
+	background-position-x:-256px;
+	--animation-width: -64px;
+	animation: sonic-animate steps(2) infinite 300ms reverse forwards;
 }
 
 @keyframes sonic-animate {

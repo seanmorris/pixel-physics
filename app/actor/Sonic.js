@@ -293,6 +293,11 @@ export class Sonic extends PointActor
 			this.args.ySpeed -= 0.6;
 		}
 
+		if((!this.args.falling && this.groundTime > 3) || (this.args.falling && this.fallTime > 90))
+		{
+			this.args.trickRamp = false
+		}
+
 		if(this.args.dead)
 		{
 			this.args.animation = 'dead';
@@ -383,6 +388,7 @@ export class Sonic extends PointActor
 		}
 		else
 		{
+			this.args.wallDropping = false;
 			this.swing = false;
 
 			if(this.springing)
@@ -803,8 +809,8 @@ export class Sonic extends PointActor
 				const flip = Math.sign(this.args.gSpeed);
 
 				sparkEnvelope.style({
-					'--x': sparkPoint[0] + this.x
-					, '--y': sparkPoint[1] + this.y + Math.random * -3
+					'--x': sparkPoint[0] + this.args.x
+					, '--y': sparkPoint[1] + this.args.y + Math.random() * -3
 					, 'z-index': 0
 					, 'animation-delay': (-Math.random()*0.25) + 's'
 					, '--xMomentum': Math.max(Math.abs(this.args.gSpeed), 4) * flip
@@ -994,6 +1000,11 @@ export class Sonic extends PointActor
 		{
 			this.args.animation = 'sliding';
 		}
+
+		if(this.args.trickRamp)
+		{
+			this.args.animation = 'adventure-pose';
+		}
 	}
 
 	readInput()
@@ -1094,6 +1105,8 @@ export class Sonic extends PointActor
 			{
 				this.dashDust.style({'--dashCharge': this.spindashCharge});
 			}
+
+			this.willJump = false;
 
 			return;
 		}
@@ -1329,7 +1342,7 @@ export class Sonic extends PointActor
 			this.spindashCharge = 15;
 		}
 
-		const direction = this.args.direction || Math.sign(this.xSpeedLast);
+		const direction = this.args.facing === 'left' ? -1:1;
 		let   dashPower = this.spindashCharge / 40;
 
 		if(dashPower > 1)
@@ -1852,6 +1865,18 @@ export class Sonic extends PointActor
 
 	setCameraMode()
 	{
+		if(!this.args.falling && this.regions)
+		{
+			for(const region of this.regions)
+			{
+				if(region.args.perspective)
+				{
+					this.args.cameraMode = 'perspective';
+					return;
+				}
+			}
+		}
+
 		if(this.args.boltDash)
 		{
 			this.args.cameraMode = 'draggable'
@@ -1883,6 +1908,7 @@ export class Sonic extends PointActor
 		this.onNextFrame(() => this.args.animation = 'dead');
 
 		this.pinch(0,0);
+		this.twist(0);
 
 		Sfx.play('PLAYER_DAMAGED');
 	}

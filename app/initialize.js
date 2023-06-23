@@ -75,12 +75,18 @@ else
 	Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');
 	Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
 
+	Bgm.register('CITY_ESCAPE', '/audio/senoue-jun/city-escape.mp3');
+
 	Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3');
 	Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3');
+
+	Bgm.register('ACT_CLEAR', '/audio/gta-sa/mission-passed.mp3', {volume: 1});
 
 	Bgm.register('NO_WAY', '/audio/sonic/no-way.mp3');
 
 	/*** SFX ***/
+
+	Sfx.register('WTF_BOOM', '/audio/meme/wtf-boom.mp3');
 
 	Sfx.register('PLAYER_DAMAGED', '/Sonic/S3K_35.wav');
 	Sfx.register('RINGS_SCATTERED', '/Sonic/ring-loss.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0});
@@ -94,12 +100,12 @@ else
 
 	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 8, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('BOX_DESTROYED',  '/Sonic/S3K_B4.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.0});
-	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.4});
+	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.2});
 	Sfx.register('WORM_BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 0.8, fudgeFactor: 0.2, startTime: 0.2});
 
 	Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 
-	Sfx.register('ROCK_BREAK_1',  '/Sonic/S1_B9.wav', {maxConcurrent: 1, volume: 0.25, fudgeFactor: 0.3});
+	Sfx.register('ROCK_BREAK_1',  '/Sonic/S1_B9.wav', {maxConcurrent: 1, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('ROCK_BREAK_2',  '/Sonic/S1_CB.wav', {maxConcurrent: 1, volume: 0.50, fudgeFactor: 0.1});
 
 	Sfx.register('SPEEDPAD_HIT', '/Sonic/S2_2B.wav', {maxConcurrent: 3, volume: 0.75, fudgeFactor: 0.1});
@@ -144,13 +150,14 @@ else
 	Sfx.register('FIRE_DASH', '/Sonic/S3K_43.wav', {volume: 0.5, fudgeFactor: 0.1});
 
 	Sfx.register('CHOPPER_DRONE', '/Sonic/drill-car-copter.wav');
-	Sfx.register('CHOPPER_DRONE', '/Sonic/drill-car-copter.wav');
+	Sfx.register('CHOPPER_GUN', '/Sonic/010.Synth_MLT_se_ac_bf_ricochet.wav', {maxConcurrent: 4, volume: 0.5, fudgeFactor: 0.25});
 
 	Sfx.register('MECHASONIC_TAKEOFF', '/Sonic/mecha-sonic-takeoff.wav');
 	Sfx.register('MECHASONIC_SCRAPE', '/Sonic/mecha-sonic-scrape.wav');
 	Sfx.register('MECHASONIC_SLAP', '/Sonic/mecha-sonic-thruster-close.wav');
 
 	Sfx.register('TAILS_FLY', '/Sonic/tails-flying.wav');
+	Sfx.register('DOOT_DOOT', '/audio/meme/doot-doot.mp3');
 
 	Sfx.register('HOOK_GRABBED', '/Sonic/S3K_4A.wav');
 	// Sfx.register('ROCKET_THRUST', '/Sonic/S3K_47.wav');
@@ -167,5 +174,12 @@ else
 	Sfx.register('PROP_PLAT', '/Sonic/S3K_PropPlat.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.25});
 
 	Sfx.register('POGO_BOUNCE', '/Sonic/0A8H.wav', {maxConcurrent: 3, volume: 0.5, fudgeFactor: 0.25});
-}
 
+	Sfx.register('COPTER_SPIN', '/Sonic/drill-car-copter.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+
+	Sfx.register('TOTAL_SCORE', '/Sonic/S3K_B0.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
+	Sfx.register('TALLY_SCORE', '/Sonic/B00_00_05.WAV', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+	Sfx.register('TALLY_SCORE', '/Sonic/027.Synth_MLT_menu_score menu text appear.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
+
+	Sfx.register('RADIO_CHATTER_1', '/thps2/CD_00171.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
+}

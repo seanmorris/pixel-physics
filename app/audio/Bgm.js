@@ -15,6 +15,9 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 	request = [];
 	pool    = new Pool({max: 3, init: item => { item.open(); return item }})
 
+	downloads = new Map;
+	cancels = new Map;
+
 	setVolume(volume = 1)
 	{
 		this.volume = volume;
@@ -31,9 +34,13 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 		getTags.addEventListener('error', event => event.preventDefault());
 
+		const getBlob = getTags.blob();
+
 		this.pool.add(getTags);
 
-		this.request.push(getTags.blob().then(blob => Promise.all([blob.arrayBuffer(), URL.createObjectURL(blob)])).then( ([buffer, objectUrl]) => {
+		const registerTrack = getBlob.then(blob => Promise.all([blob.arrayBuffer(), URL.createObjectURL(blob)])).then( ([buffer, objectUrl]) => {
+
+			this.downloads.delete(tag);
 
 			const list = Array(maxConcurrent).fill().map(x => new Audio(objectUrl));
 
@@ -104,11 +111,24 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			{
 				this.id3.set(track, tags);
 			}
-		}));
+		})
+
+		this.request.push(registerTrack);
+
+		this.downloads.set(tag, registerTrack);
 	}
 
 	play(tag, {loop = false, interlude = false, dontClear = false} = {})
 	{
+		if(this.downloads.has(tag))
+		{
+			this.downloads.get(tag).then(() => {
+				this.downloads.delete(tag);
+				this.play(tag, {loop, interlude, dontClear});
+			});
+			return;
+		}
+
 		if(this.tags.get(this.playing) !== tag && !interlude && !dontClear)
 		{
 			for(const track of this.stack)
@@ -190,7 +210,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 			const onCompleted = event => {
 				this.stack.pop();
-				this.playing = this.stack[this.stack.length-1]
+				this.playing = this.stack[this.stack.length-1];
 				// this.play();
 			};
 

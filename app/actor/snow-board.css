@@ -3,6 +3,7 @@
 }
 
 .actor-item.actor-snow-board .sprite {
+	transition: top 10ms ease-in !important;
 	top: 8px;
 	will-change: top;
 	transition: top 0.65s ease-in;
@@ -11,19 +12,48 @@
 	width: 64px;
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="1"] .sprite {
+.actor-item.actor-skate-board .sprite {
+	height: 12px;
+	position: relative;
+	top: 0px;
+	width: 53px;
+	background-image: url(/custom/skateboard.png);
+	transform-origin: center bottom;
+}
+
+.actor-item.actor-skate-board .sprite {
+	/* display: none; */
+	/* transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * calc(var(--display-angle) + calc(1 * var(--seat-angle))))) scale(-1,1) !important; */
+}
+
+.actor-item.actor-skate-board[data-animation=manual] .sprite {
+	height: 20px;
+	background-position-y: -12px;
+}
+
+.actor-item.actor-skate-board[data-animation=grinding] .sprite {
+	top: 18px;
+	height: 40px;
+	background-position-y: -32px;
+}
+
+.actor-item.actor-skate-board[data-facing=left] .sprite {
+	left: 0px;
+}
+
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="1"] .sprite {
 	transform:
 		translate(calc(-50% - 8px), calc(-100% - 8px))
 		rotate(calc( calc(-1rad * var(--display-angle) + 90deg)));
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="2"] .sprite {
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="2"] .sprite {
 	transform:
 		translate(-50%, calc(-100% - 16px))
 		rotate(calc( calc( -1rad * var(--display-angle) + 180deg)));
 }
 
-.actor-item.actor-snow-board:not([data-rolling="true"])[data-mode="3"] .sprite {
+.actor-item.actor-snow-board:not(.actor-skate-board):not([data-rolling="true"])[data-mode="3"] .sprite {
 	transform:
 		translate(calc(-50% + 10px), calc(-100% - 0px))
 		rotate(calc( calc(-1rad * var(--display-angle) + 270deg)));

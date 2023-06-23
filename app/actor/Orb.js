@@ -33,6 +33,7 @@ export class Orb extends Mixin.from(PointActor)
 
 	updateStart()
 	{
+		super.updateStart();
 		const other = this.viewport.controlActor;
 
 		this.otherSpacing  = this.distanceFrom(other);

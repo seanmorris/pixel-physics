@@ -45,6 +45,7 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 		super.onRendered(event);
 
 		this.autoStyle.get(this.box)['--tailOffset'] = 'tailOffset';
+		this.autoAttr.get(this.box)['data-color'] = 'color';
 	}
 
 	update()

@@ -5,6 +5,9 @@ import { Mixin } from 'curvature/base/Mixin';
 import { CanPop } from '../mixin/CanPop';
 import { CutScene } from './CutScene';
 import { Sfx } from '../audio/Sfx';
+import { EggCapsule } from './EggCapsule';
+
+import { SpikeBomb } from './SpikeBomb';
 
 export class MiniBoss extends Mixin.from(PointActor)
 {
@@ -83,7 +86,24 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		switch(this.args.phase)
 		{
+			case 'stalking':
+
+				const diff = this.viewport.controlActor.args.x - this.args.x;
+
+				this.args.xSpeed = Math.sign(diff) * Math.min(4.5, Math.abs(diff));
+
+			case 'idle':
+				if(this.args.phaseFrameId % 60 === 0)
+				{
+					const bomb = new SpikeBomb({x:this.args.x,y:this.args.y + 16,owner:this, xSpeed: this.args.xSpeed});
+
+					this.viewport.spawn.add({object:bomb});
+				}
+
+				break;
+
 			case 'damaged':
+			case 'knocked':
 
 				if(this.args.hitPoints > 0)
 				{
@@ -99,19 +119,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 						this.args.phase = 'dead';
 					}
 				}
-
 				break;
-
-		// 	case 'knocked':
-
-		// 		this.args.xSpeed = 0;
-
-		// 		if(this.args.phaseFrameId > 30)
-		// 		{
-		// 			this.args.phase = 'stalking';
-		// 		}
-
-		// 		break;
 
 			case 'dead':
 				this.args.float = 0;
@@ -130,9 +138,20 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 					this.args.phase = 'exploded';
 
-					// this.clearScene.activate(mainChar, this, true);
 
 					Sfx.play('OBJECT_DESTROYED');
+
+					const viewport = this.viewport;
+					const other = viewport.controlActor;
+
+					viewport.onFrameOut(60, () => {
+						const capsule = new EggCapsule({
+							x: other.args.x,
+							y: other.args.y - 384,
+							xSpeed: other.args.gSpeed || other.args.xSpeed
+						});
+						viewport.spawn.add({object:capsule});
+					});
 				}
 
 				if(this.args.phaseFrameId > 90)
@@ -191,46 +210,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 		const xSign = Math.sign(this.x - mainChar.x);
 		const ySign = Math.sign(this.y - mainChar.y);
 
-		// switch(this.args.phase)
-		// {
-		// 	case 'attacking':
-		// 	case 'swooping':
-		// 	case 'stalking':
-		// 	case 'knocked':
-		// 	case 'damaged':
-		// 	case 'ready': {
-
-		// 		if(xDiff > 384)
-		// 		{
-		// 			this.args.x = mainChar.x + 384 * xSign;
-		// 		}
-
-		// 		if(yDiff > 192)
-		// 		{
-		// 			this.args.y = mainChar.y + 192 * ySign;
-		// 		}
-
-		// 		if(this.args.hitPoints <= 0)
-		// 		{
-		// 			this.viewport.auras.delete(this);
-		// 			this.args.phase = 'dead';
-		// 			this.noClip = false;
-		// 			this.args.float = 0;
-
-		// 			if(typeof ga === 'function')
-		// 			{
-		// 				ga('send', 'event', {
-		// 					eventCategory: 'boss',
-		// 					eventAction: 'defeated',
-		// 					eventLabel: `${this.viewport.args.actName}::${this.args.id}`
-		// 				});
-		// 			}
-		// 		}
-
-		// 		break;
-		// 	}
-		// }
-
 		if(this.args.xSpeed < 0)
 		{
 			this.args.facing = 'left';
@@ -261,47 +240,16 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 	collideA(other, type)
 	{
-		// if(this.args.phase === 'exploded')
-		// {
-		// 	return false;
-		// }
-
-		// if(!other.controllable && !other.hazard)
-		// {
-		// 	return true;
-		// }
-
-		// if(type === -1)
-		// {
-		// 	return;
-		// }
+		if(!other.controllable)
+		{
+			return;
+		}
 
 		const xSign = Math.sign(this.x - other.x);
 		const ySign = Math.sign(this.y - other.y);
 
 		const impactSpeed = Math.max(Math.abs(other.args.xSpeed), 5);
 		const impactSign  = Math.sign(other.args.xSpeed);
-
-		// if(this.args.hitPoints > 0 && other.controllable)
-		// {
-		// 	if(!(other.args.jumping || other.args.rolling || other.dashed))
-		// 	{
-		// 		other.damage();
-
-		// 		this.args.phase = 'ready';
-
-		// 		if(typeof ga === 'function')
-  // 				{
-		// 			ga('send', 'event', {
-		// 				eventCategory: 'boss',
-		// 				eventAction: 'damaged-player',
-		// 				eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`
-		// 			});
-		// 		}
-
-		// 		return true;
-		// 	}
-		// }
 
 		if(this.args.phase === 'dead')
 		{
@@ -346,17 +294,6 @@ export class MiniBoss extends Mixin.from(PointActor)
 			this.args.ySpeed = Math.min(0, this.args.ySpeed);
 
 			this.damage(other);
-
-			// if(this.args.hitPoints > 0)
-			// {
-			// 	other.args.xSpeed = -xSign * impactSpeed;
-			// 	this.args.xSpeed  = xSign * impactSpeed;
-			// }
-			// else
-			// {
-			// 	other.args.xSpeed = -xSign;
-			// 	this.args.xSpeed  = xSign;
-			// }
 		}
 
 		if(type === 2) // Collide from bottom
@@ -412,7 +349,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 			this.damage(other);
 		}
 
-		other.args.ignore = 1;
+		other.args.ignore = 6;
 
 		if(!this.args.hitPoints)
 		{
@@ -426,17 +363,25 @@ export class MiniBoss extends Mixin.from(PointActor)
 	{
 		if(this.args.hitPoints <= 0)
 		{
+			this.viewport.controlActor.screenLock = null;
 			return;
 		}
 
 		const lastHit = this.args.damagers.get(other);
 
-		if(this.args.frameId - lastHit < 5)
+		if(this.args.frameId - lastHit < 45)
 		{
 			return;
 		}
 
 		this.args.hitPoints--;
+
+		this.args.xSpeed = 0;
+
+		if(this.args.hitPoints <= 0)
+		{
+			this.viewport.controlActor.screenLock = null;
+		}
 
 		this.args.damagers.set(other, this.args.frameId);
 
@@ -455,6 +400,16 @@ export class MiniBoss extends Mixin.from(PointActor)
 		}
 
 		return true;
+	}
+
+	wakeUp()
+	{
+		this.viewport.controlActor.screenLock = {xMin: this.args.x - 768, xMax: this.args.x + 768};
+
+		if(this.args.phase === 'idle')
+		{
+			this.args.phase = 'stalking';
+		}
 	}
 
 	get solid() { return this.args.hitPoints > 0; }

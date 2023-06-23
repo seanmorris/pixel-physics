@@ -3,7 +3,7 @@
     "height": 424,
     "infinite": false,
     "nextlayerid": 17,
-    "nextobjectid": 3586,
+    "nextobjectid": 3591,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -236,7 +236,7 @@
     "tilewidth": 32,
     "type": "map",
     "version": "1.6",
-    "width": 4096,
+    "width": 3664,
     "types": [
         "",
         "arrow-sign",
@@ -256,6 +256,7 @@
         "grapple-point",
         "grinding-region",
         "layer-switch",
+        "loading-region",
         "mini-mace",
         "never-better",
         "orb",

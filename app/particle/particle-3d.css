@@ -62,9 +62,8 @@
 	height: calc(var(--width3d) * 1px);
 }
 
-.front-3d {
+.particle-3d .front-3d {
 	/*transform: rotateY( 0deg ) translateZ( 40px );*/
-
 	transform:
 		rotateY( 0deg )
 		translateZ( 0px );
@@ -72,8 +71,7 @@
 	z-index: 1;
 }
 
-.back-3d {
-
+.particle-3d .back-3d {
 	transform:
 		rotateY( 180deg )
 		translateZ( 0px );
@@ -81,22 +79,21 @@
 	z-index: -1;
 }
 
-.left-3d {
+.particle-3d .left-3d {
 	transform:
 		rotateY( -90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateX( calc(var(--width3d) * -0.5px) );
 }
 
-.right-3d {
+.particle-3d .right-3d {
 	transform:
 		rotateY( 90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateX( calc(var(--width3d) * 0.5px) );
 }
 
-.top-3d {
-
+.particle-3d .top-3d {
 	transform:
 		rotateX( 90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
@@ -105,14 +102,12 @@
 	z-index: -1;
 }
 
-.bottom-3d {
-
+.particle-3d .bottom-3d {
 	transform:
 		rotateX( -90deg )
 		translateZ( calc(var(--width3d) * 0.5px) )
 		translateY( calc(var(--width3d) * 0.5px) );
 
 	z-index: -1;
-
 }
 

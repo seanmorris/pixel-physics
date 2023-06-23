@@ -29,10 +29,10 @@ const loadChildren = (parent, menu, offset = 0) => {
 		let index = 'id';
 		let range = [];
 
-		if(parent.currentMap)
+		if(parent.baseMap)
 		{
 			index = 'map-id';
-			range = [[parent.currentMap,0],[parent.currentMap,Infinity]];
+			range = [[parent.baseMap,0],[parent.baseMap,Infinity]];
 		}
 
 		const query = {store, index, direction, limit, offset, type, range};

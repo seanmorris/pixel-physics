@@ -24,6 +24,11 @@
 	--sprite-offset-y: 0px;
 } */
 
+.actor-item.actor-tails[data-animation="idle"] .sprite:after {
+	--sprite-offset-x: -64px;
+	--sprite-offset-y: -0px;
+	animation: tails-flying-tired steps(2) infinite 512ms;
+}
 .actor-item.actor-tails[data-animation="walking"] .sprite:after {
 	--sprite-offset-x: 0px;
 	--sprite-offset-y: -64px;
@@ -48,10 +53,6 @@
 	--sprite-offset-y: -640px;
 	animation: tails-corkscrew steps(12) infinite 1s calc(-1s + calc(-1s * var(--corkscrew))) forwards;
 	animation-play-state: paused;
-}
-
-.actor-item.actor-tails[data-animation="standing"] .tails-tails {
-	display: none;;
 }
 
 .actor-item.actor-tails[data-animation="running"] .sprite:after {
@@ -115,6 +116,20 @@
 	top:3px;
 	--sprite-offset-x: -128px;
 	--sprite-offset-y: -256px;
+	animation: tails-flying-tired steps(2) infinite 80ms;
+	animation-play-state: initial !important;
+}
+
+.actor-item.actor-tails[data-animation="grinding-crouching"] .sprite:after {
+	top:3px;
+	--sprite-offset-x: -256px;
+	--sprite-offset-y: -256px;
+	animation: tails-flying-tired steps(2) infinite 80ms;
+	animation-play-state: initial !important;
+}
+
+.actor-item.actor-tails[data-animation="grinding"] .tails-tails {
+	left: -3px;
 }
 
 .actor-item.actor-tails[data-animation="dead"] .sprite:after {
@@ -129,7 +144,7 @@
 
 .actor-item.actor-tails[data-animation="dropping"] .tails-tails {
 	top: 26px;
-	left:-5px
+	left:-3px
 }
 
 .actor-item.actor-tails[data-animation="startle"] .sprite:after {

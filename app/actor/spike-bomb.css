@@ -1,0 +1,34 @@
+.actor-spike-bomb .sprite {
+	width: 24px;
+	height: 24px;
+	background-image: url(/Sonic/spikeball-red.png);
+}
+
+.actor-spike-bomb.hide {
+	opacity: 0;
+}
+
+.actor-spike-bomb {
+	z-index: -1;
+}
+
+.actor-red-bomb .sprite {
+	width: 8px;
+	height: 8px;
+	background-image: url(/Sonic/flicker-bomb-red.png);
+	animation: flicker-bomb-flicker 0.08s steps(2) infinite;
+	/* background-color: red; */
+}
+
+@keyframes flicker-bomb-flicker {
+	from { background-position-y: 0px; }
+	to   { background-position-y: -16px; }
+}
+
+.actor-red-bomb.hide {
+	opacity: 0;
+}
+
+.actor-red-bomb {
+	z-index: -1;
+}

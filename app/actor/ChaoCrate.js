@@ -17,6 +17,8 @@ export class ChaoCrate extends BreakableBlock
 	}
 
 	setTile(){}
+	sleep(){}
+	wakeUp(){}
 
 	collideA(other, type)
 	{
@@ -64,17 +66,33 @@ export class ChaoCrate extends BreakableBlock
 
 	break()
 	{
-		if(!this.broken)
+		if(this.broken)
 		{
-			for(let i = 0; i < 5; i++)
-			{
-				const egg = new Egg({x: this.x, y: this.y - 3});
+			return;
+		}
 
-				this.viewport.spawn.add({object:egg});
-				egg.args.falling = true;
-				egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
-				egg.args.ySpeed  = -7;
-			}
+		if(this.viewport.meta.fieldType !== 'garden')
+		{
+			// this.viewport.args.inventory.push('/DBurraki/chao-icon.png');
+			this.viewport.args.inventory.push({
+				points: 10000
+				, tallyIcon: '/DBurraki/chao-icon.png'
+				, icon: '/DBurraki/chao-icon.png'
+				, id:   this.oid
+			});
+
+			super.break();
+			return;
+		}
+
+		for(let i = 0; i < 5; i++)
+		{
+			const egg = new Egg({x: this.x, y: this.y - 3});
+
+			this.viewport.spawn.add({object:egg});
+			egg.args.falling = true;
+			egg.args.xSpeed  = (-0.5 + Math.random()) * 6;
+			egg.args.ySpeed  = -7;
 		}
 
 		super.break();

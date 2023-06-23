@@ -28,6 +28,7 @@ import { KillRegion } from './region/KillRegion';
 import { VerticalRegion } from './region/VerticalRegion';
 import { VehicleRegion } from './region/VehicleRegion';
 import { DropVehicleRegion } from './region/DropVehicleRegion';
+import { PerspectiveRegion } from './region/PerspectiveRegion';
 
 import { CompanionBlock } from './actor/CompanionBlock';
 import { QuestionBlock }  from './actor/QuestionBlock';
@@ -35,6 +36,7 @@ import { MarbleBlock }    from './actor/MarbleBlock';
 import { BreakableBlock } from './actor/BreakableBlock';
 import { Stopper }        from './actor/Stopper';
 import { Zipline }        from './actor/Zipline';
+import { Block3d }        from './actor/Block3d';
 import { Block }          from './actor/Block';
 
 import { Tree }          from './actor/Tree';
@@ -132,6 +134,7 @@ import { TextActor }  from './actor/TextActor';
 
 import { EggMobile } from './actor/EggMobile';
 import { SnowBoard }  from './actor/SnowBoard';
+import { SkateBoard }  from './actor/SkateBoard';
 import { DrillCar }  from './actor/DrillCar';
 import { Tornado }   from './actor/Tornado';
 import { RailCar }  from './actor/RailCar';
@@ -249,6 +252,22 @@ import { ChaoDetailer } from './actor/ChaoDetailer';
 import { Angel } from './actor/Angel';
 import { Flag } from './actor/Flag';
 
+import { GiantTire } from './actor/GiantTire';
+import { TruckBody } from './actor/TruckBody';
+import { TruckCab } from './actor/TruckCab';
+
+import { Dolphin } from './actor/Dolphin';
+import { Herculad } from './actor/Herculad';
+
+import { Chopper } from './actor/Chopper';
+
+import { TrickRamp } from './actor/TrickRamp';
+import { AirBomb } from './actor/AirBomb';
+
+import { EggCapsule } from './actor/EggCapsule';
+
+import { SpikeRing } from './actor/SpikeRing';
+
 export const ObjectPalette = {
 	player:           NuclearSuperball
 	, cinematic:      Cinematic
@@ -261,6 +280,7 @@ export const ObjectPalette = {
 	, 'star-post':    StarPost
 	, 'arrow-sign':   ArrowSign
 	, 'projectile':   Projectile
+	, 'block3d':      Block3d
 	, 'block':           Block
 	, 'tree':            Tree
 	, 'coconut':         Coconut
@@ -282,6 +302,7 @@ export const ObjectPalette = {
 	, 'tornado':      Tornado
 	, 'egg-walker':   EggWalker
 	, 'snow-board':   SnowBoard
+	, 'skate-board':  SkateBoard
 	, 'egg-mobile':   EggMobile
 	, 'egg-shuttle':  EggShuttle
 	, 'pogo-spring':  PogoSpring
@@ -305,6 +326,7 @@ export const ObjectPalette = {
 	, 'window':       Window
 	, 'emerald':      Emerald
 	, 'fake-emerald': FakeEmerald
+
 	, 'base-region':  Region
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
@@ -329,6 +351,8 @@ export const ObjectPalette = {
 	, 'vertical-region': VerticalRegion
 	, 'vehicle-region': VehicleRegion
 	, 'drop-vehicle-region': DropVehicleRegion
+	, 'perspective-region': PerspectiveRegion
+
 	, 'boost-ring':   BoostRing
 	, 'ring':         Ring
 	, 'antiring':     AntiRing
@@ -446,4 +470,14 @@ export const ObjectPalette = {
 	, 'cross-cannon': CrossCannon
 	, 'tumbler': Tumbler
 	, 'flag': Flag
+	, 'giant-tire': GiantTire
+	, 'truck-body': TruckBody
+	, 'truck-cab': TruckCab
+	, 'dolphin': Dolphin
+	, 'herculad': Herculad
+	, 'chopper': Chopper
+	, 'trick-ramp': TrickRamp
+	, 'air-bomb': AirBomb
+	, 'egg-capsule': EggCapsule
+	, 'spike-ring': SpikeRing
 };

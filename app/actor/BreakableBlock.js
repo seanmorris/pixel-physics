@@ -224,8 +224,10 @@ export class BreakableBlock extends Block
 
 			if(!this.broken)
 			{
-				if(!other.args.falling || (other.args.ySpeed > 0 && other.y < this.y - this.args.height))
-				{
+				if((!other.args.falling && !other.args.climbing)
+					|| (other.args.climbing && other.y < this.y - this.args.height)
+					|| (other.args.ySpeed > 0 && other.y < this.y - this.args.height)
+				){
 					return true;
 				}
 			}
@@ -644,7 +646,7 @@ export class BreakableBlock extends Block
 			}
 		}
 
-		if(this.viewport.settings.rumble && !this.broken && other && other.controller && other.controller.rumble)
+		if(this.viewport && this.viewport.settings.rumble && !this.broken && other && other.controller && other.controller.rumble)
 		{
 			other.controller && other.controller.rumble && other.controller.rumble({
 				duration: 140,

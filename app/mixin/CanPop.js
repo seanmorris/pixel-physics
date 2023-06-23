@@ -127,10 +127,15 @@ export class CanPop
 	{
 		const viewport = this.viewport;
 
+		console.log(this, this.args.gone);
+
 		if(!viewport || this.args.gone || this.args.invincible || (other && other.args.owner === this))
 		{
 			return;
 		}
+
+		this.args.gone = true;
+
 		const explosionTag = document.createElement('div');
 		explosionTag.classList.add('particle-explosion');
 		const explosion = new Tag(explosionTag);
@@ -139,9 +144,8 @@ export class CanPop
 
 		viewport.particles.add(explosion);
 
-		setTimeout(() => viewport.particles.remove(explosion), 512);
-
-		setTimeout(() => this.screen && this.screen.remove(), 1024);
+		viewport.onFrameOut(30, () => viewport.particles.remove(explosion));
+		viewport.onFrameOut(90, () => this.screen && this.screen.remove());
 
 		this.box && this.box.setAttribute('data-animation', 'broken');
 
@@ -185,7 +189,14 @@ export class CanPop
 
 				const reward = {label: this.name || this.args.name, points, multiplier:1};
 
-				if(other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
+				if(this.args.gold)
+				{
+					reward.label   = 'Gold ' + reward.label;
+					reward.color   = 'orange';
+					reward.special = true;
+				}
+
+				if(!other.isVehicle && other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
 				{
 					other.args.cameraMode = 'popping';
 				}
@@ -363,8 +374,5 @@ export class CanPop
 		}
 
 		this.viewport.actors.remove(this);
-
-		this.args.gone = true;
-
 	}
 }

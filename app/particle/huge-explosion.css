@@ -1,0 +1,26 @@
+.particle-huge-explosion {
+	background-image: url(/metal-slug/huge-explosion.png);
+	width: 96px;
+	height: 168px;
+
+	--animation-steps: 4;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+
+	z-index: 100;
+
+	animation: huge-explosion steps(29) 1 forwards;
+	animation-duration: 512ms;
+
+	transform: translate(-50%, calc(-100% + 20px)) !important;
+}
+
+@-webkit-keyframes huge-explosion{
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-2784px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		opacity: 0.5
+	}
+}

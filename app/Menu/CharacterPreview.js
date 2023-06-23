@@ -5,38 +5,39 @@ export class CharacterPreview extends View
 	preserve = true;
 	template =	`<div class = "character-preview" data-character = "[[setting]]">
 	<div class = "character"></div>
-	<div class = "emeralds" cv-each = "emeralds:emerald">[[emerald]]</div>
+	<div class = "emeralds" cv-each = "emeralds:emerald">
+		<img style = "--x:[[emerald.x]];--y:[[emerald.y]];" src = "/Sonic/emerald-[[emerald.type|suffix]][[emerald.color]]-mini.png" />
+	</div>
 	<div class = "rings"></div>
 	<div class = "score"></div>
 </div>`;
 
-	onAttached(args, parent)
+	onAttached()
 	{
-		// const emeraldsFound = [];
+		console.log( this.parent.currentSave );
 
-		// if(viewport.currentSave && viewport.currentSave.emeralds)
-		// {
-		// 	Object.assign(emeraldsFound, viewport.currentSave.emeralds.slice(0,2));
-		// }
-
-		// emeraldsFound.map(e => console.log(e));
-
-		// const emeralds = emeraldsFound.map(e => View.from(`<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-${e}-mini.png" />`));
-
-		// this.args.emeralds = emeralds;
+		const type = 'super';
 
 		const emeralds = this.args.emeralds = [
-			  View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-red-alt-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-purple-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-pink-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-yellow-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-cyan-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-green-mini.png" />')
-			, View.from('<img style = "--x:[[x]];--y:[[y]];" src = "/Sonic/emerald-super-white-mini.png" />')
+		    //   {x: 0, y: 0, type, color: 'red-alt'}
+			// , {x: 0, y: 0, type, color: 'yellow' }
+			// , {x: 0, y: 0, type, color: 'green'  }
+			// , {x: 0, y: 0, type, color: 'cyan'   }
+			// , {x: 0, y: 0, type, color: 'white'  } //
+			// , {x: 0, y: 0, type, color: 'purple' } //
+			// , {x: 0, y: 0, type, color: 'pink'   } //
 		];
 
-		// let spacing = 7;
-		let spacing = emeralds.length;
+		if(this.parent && this.parent.currentSave)
+		for(const storedEmerald of this.parent.currentSave.emeralds)
+		{
+			// this.args.emeralds.push({x: 0, y: 0, type, color: storedEmerald});
+			this.args.emeralds.push({x: 0, y: 0, color: storedEmerald});
+		}
+
+		console.log([...emeralds]);
+
+		const spacing = emeralds.length;
 
 		this.onFrame(() => {
 			let e = 0
@@ -44,12 +45,14 @@ export class CharacterPreview extends View
 			if(spacing)
 			for(const emerald of emeralds)
 			{
-				const time = Date.now() / 300;
+				const time = Date.now() / 400;
 				const roll = (e++ * (Math.PI*2) / spacing) + time;
 
-				emerald.args.x = Math.cos(roll);
-				emerald.args.y = Math.sin(roll);
+				emerald.x = Math.cos(roll);
+				emerald.y = Math.sin(roll);
 			}
 		});
 	}
+
+	suffix(type) { return type ? `${type}-` : ``; }
 }

@@ -1,6 +1,6 @@
 .actor-item .chain {
 	z-index: -100000;
-	height: calc(calc(1px * calc(var(--distance, 64)+0)) - calc(var(--height) * 1px));
+	height: calc(calc(1px * var(--distance, 64)) - calc(var(--height) * 1px));
 	width: 6px;
 	position: absolute;
 	bottom: calc(0px + calc(var(--height) * 1px));

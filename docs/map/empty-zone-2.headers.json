@@ -1,9 +1,9 @@
 {
     "compressionlevel": -1,
-    "height": 360,
+    "height": 424,
     "infinite": false,
     "nextlayerid": 16,
-    "nextobjectid": 2190,
+    "nextobjectid": 2192,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -19,7 +19,7 @@
         {
             "name": "deathLine",
             "type": "int",
-            "value": 11400
+            "value": 13470
         },
         {
             "name": "theme",
@@ -270,7 +270,7 @@
         "grinding-region",
         "layer-switch",
         "marble-block",
-        "mega-mace",
+        "mini-mace",
         "red-eye-jet",
         "ring",
         "ring-monitor",
@@ -281,7 +281,6 @@
         "sheild-normal-monitor",
         "sheild-star-monitor",
         "sheild-water-monitor",
-        "signpost",
         "spikes",
         "spinner",
         "spring",
