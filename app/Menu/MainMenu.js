@@ -150,25 +150,6 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Manic Harbor Zone Act 1': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone.json'}, this.parent)
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
-							this.accept();
-						}
-					}
-
-					, 'Manic Harbor Zone Act 2': {
-						tags: 'new'
-						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone-2.json'}, this.parent)
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone-2.json'});
-							this.accept();
-						}
-					}
-
 					, 'Brooklyn Breakout Zone Act 1': {
 						tags: 'new'
 						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -185,6 +166,25 @@ export class MainMenu extends Menu
 						, suffix: new ZoneSuffix({map: '/map/brooklyn-zone-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/brooklyn-zone-2.json'});
+							this.accept();
+						}
+					}
+
+					, 'Manic Harbor Zone Act 1': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Manic Harbor Zone Act 2': {
+						tags: 'new'
+						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone-2.json'});
 							this.accept();
 						}
 					}

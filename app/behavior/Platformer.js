@@ -3276,6 +3276,11 @@ export class Platformer
 					if(gSpeed && (!host.args.standingOn || !host.args.standingOn.args.treadmill))
 					{
 						host.args.gSpeed = gSpeed;
+
+						if(host.args.mode === 2)
+						{
+							host.args.gSpeed *= -1;
+						}
 					}
 
 					// host.args.x += gSpeed < 0 ? backPosition[0] : forePosition[0];

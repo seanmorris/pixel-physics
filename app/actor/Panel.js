@@ -74,32 +74,35 @@ export class Panel extends PointActor
 
 			other.args.falling = false;
 
-			if(this.args.next && this.holding.has(other) && other.willJump)
+			if((this.args.next || this.args.mode) && this.holding.has(other) && other.willJump)
 			{
 				const nextPanel = this.viewport.actorsById[ this.args.next ];
 
 				other.args.falling = true;
 
-				if(nextPanel)
+				if(nextPanel || this.args.mode)
 				{
 					other.stayStuck = true;
 					other.willStick = true;
 					// other.willJump = false;
 
-					const point = nextPanel.rotatePoint(0, 0);
+					if(nextPanel)
+					{
+						const point = nextPanel.rotatePoint(0, 0);
 
-					const angle = other.angleTo({
-						x:point[0]+nextPanel.x
-						, y:point[1]+nextPanel.y
-					});
+						const angle = other.angleTo({
+							x:point[0]+nextPanel.x
+							, y:point[1]+nextPanel.y
+						});
+
+						other.args.x -= Math.cos(angle) * 16;
+						other.args.y -= Math.sin(angle) * 16;
+
+						other.args.xSpeed = -Math.cos(angle) * 34;
+						other.args.ySpeed = -Math.sin(angle) * 34;
+					}
 
 					other.args.gSpeed = 0;
-
-					other.args.x -= Math.cos(angle) * 16;
-					other.args.y -= Math.sin(angle) * 16;
-
-					other.args.xSpeed = -Math.cos(angle) * 34;
-					other.args.ySpeed = -Math.sin(angle) * 34;
 
 					other.args.falling = true;
 					other.args.jumping = true;
@@ -142,7 +145,7 @@ export class Panel extends PointActor
 
 		const nextPanel = this.others.next;
 
-		if(nextPanel)
+		if(nextPanel || this.args.mode)
 		{
 			this.holding.add(other);
 		}
