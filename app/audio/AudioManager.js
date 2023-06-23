@@ -16,7 +16,10 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 	playing = null;
 	id3     = new Map;
 	request = [];
-	pool    = new Pool({max: 2, init: item => { item.open(); return item }})
+	pool    = new Pool({max: 2, init: item => { item.open(); return item }});
+
+	tracksPlaying = new Set;
+	tracksPaused  = new Set;
 
 	setVolume(volume = 1)
 	{
@@ -207,8 +210,9 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 			this.stack.push(this.playing);
 
 			const onCompleted = event => {
-				this.stack.pop();
 				this.playing = this.stack[this.stack.length-1]
+				this.tracksPlaying.delete(selected);
+				this.stack.pop();
 				this.play();
 			};
 
@@ -231,10 +235,14 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 			Promise.all(this.request).then(() => {
 				// const detail = this.id3.get(selected);
 			});
+
+			this.tracksPlaying.add(selected);
+
+			return true;
 		}
 	}
 
-	stop(tag = null)
+	stop(tag = null, requeue = true)
 	{
 		if(tag === null && this.playing)
 		{
@@ -272,11 +280,14 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 			}
 		}
 
-		this.playing = this.stack[ this.stack.length - 1 ];
-
-		if(this.playing)
+		if(requeue)
 		{
-			this.play(this.tags.get(this.playing));
+			this.playing = this.stack[ this.stack.length - 1 ];
+
+			if(this.playing)
+			{
+				this.play(this.tags.get(this.playing));
+			}
 		}
 	}
 
@@ -297,7 +308,13 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 			return;
 		}
 
-		this.playing.pause();
+		for(const track of this.tracksPlaying)
+		{
+			this.tracksPaused.add(track);
+			track.pause();
+		}
+
+		// this.playing.pause();
 	}
 
 	unpause()
@@ -317,7 +334,20 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 			return;
 		}
 
-		this.playing && this.playing.play();
+		for(const track of this.tracksPaused)
+		{
+			this.tracksPaused.delete(track);
+			if(track.played && track.played < 1)
+			{
+				track.play();
+			}
+			else
+			{
+				this.tracksPaused.delete(track);
+			}
+		}
+
+		// this.playing && this.playing.play();
 	}
 
 	fadeOut(time)

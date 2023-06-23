@@ -41,7 +41,7 @@ export class Spinner extends PointActor
 			// return;
 		}
 
-		if(other.args.falling || other[Boosted])
+		if(other.args.falling || (Math.sign(other.args.gSpeed) === Math.sign(this.args.direction) && Math.abs(other.args.gSpeed) > this.args.toSpeed))
 		{
 			return;
 		}
@@ -56,9 +56,8 @@ export class Spinner extends PointActor
 		other.args.direction = this.args.direction;
 		other.args.facing = this.args.direction > 0 ? 'right' : 'left';
 
-		other.args.gSpeed = Math.abs(other.args.gSpeed) > toSpeed
-			? Math.abs(other.args.gSpeed) * this.args.direction
-			: toSpeed * this.args.direction;
+		other.args.gSpeed = Math.max(Math.abs(other.args.gSpeed), toSpeed) * Math.sign(this.args.direction || 1);
+		other.xAxis = 0;
 
 		Sfx.play('SPEEDPAD_HIT');
 	}

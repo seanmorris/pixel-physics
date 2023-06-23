@@ -25,7 +25,7 @@ export class Emblem extends PointActor
 
 		const zoneState = this.viewport.getZoneState();
 
-		if(zoneState && zoneState.emblems && zoneState.emblems.includes(this.args.id))
+		if(zoneState && zoneState.emblems && zoneState.emblems.includes(this.oid))
 		{
 			if(!this.viewport.replay)
 			{
@@ -53,7 +53,7 @@ export class Emblem extends PointActor
 		if(!this.collected)
 		{
 			other.args.emblems.push(this);
-			zoneState.emblems.push(this.args.id);
+			zoneState.emblems.push(this.oid);
 			this.args.type = 'actor-item actor-emblem actor-emblem-gone';
 		}
 		else
@@ -101,8 +101,12 @@ export class Emblem extends PointActor
 
 		this.gone = true;
 
-		viewport.onFrameOut(20, () => {
-			viewport.actors.remove(this);
+		viewport.onFrameOut(20, () => viewport.actors.remove(this));
+
+		this.viewport.args.inventory.push({
+			tallyIcon: '/custom/hud-emblem.png'
+			, points: 1000
+			, id:   this.oid
 		});
 
 		viewport.currentSave.save();
@@ -117,7 +121,7 @@ export class Emblem extends PointActor
 			ga('send', 'event', {
 				eventCategory: 'emblem',
 				eventAction: 'collected',
-				eventLabel: `${this.viewport.args.actName}::${this.args.id}`
+				eventLabel: `${this.viewport.args.actName}::${this.oid}`
 			});
 		}
 	}

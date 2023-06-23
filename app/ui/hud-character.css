@@ -112,6 +112,13 @@ li.focused.unavailable .small-menu-font .hud-character {
 	display: none;
 }
 
+.hud-character[data-type="number"][data-value="\00000A"] {
+	opacity: 0;
+	display: block;
+	height: 0;
+	width: 0;
+}
+
 .hud-character[data-type="number"][data-value="17"],
 .hud-character[data-type="number"][data-value="19"],
 .hud-character[data-type="number"][data-value="18"] {

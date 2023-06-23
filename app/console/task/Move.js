@@ -20,8 +20,8 @@ export class Move extends Task
 
 		const actor = Move.viewport.controlActor;
 
-		actor.args.x = Number(x);
-		actor.args.y = Number(y);
+		actor.args.x = parseFloat(x);
+		actor.args.y = parseFloat(y);
 
 		if(actor.viewport)
 		{

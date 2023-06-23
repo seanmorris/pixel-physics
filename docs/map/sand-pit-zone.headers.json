@@ -2,9 +2,21 @@
     "compressionlevel": -1,
     "height": 64,
     "infinite": false,
-    "nextlayerid": 5,
-    "nextobjectid": 13,
+    "nextlayerid": 11,
+    "nextobjectid": 16,
     "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "desert"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
+        }
+    ],
     "renderorder": "right-down",
     "tiledversion": "1.7.1",
     "tileheight": 32,
@@ -60,6 +72,19 @@
             "tilecount": 234,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 45,
+            "firstgid": 612,
+            "image": "../Sonic/tiles/desert-palace/desert-palace.png",
+            "imageheight": 960,
+            "imagewidth": 1440,
+            "margin": 0,
+            "name": "desert-palace",
+            "spacing": 0,
+            "tilecount": 1350,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -67,6 +92,7 @@
     "version": "1.6",
     "width": 1024,
     "types": [
+        "layer-switch",
         "rail-car",
         "region",
         "snow-board"

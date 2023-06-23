@@ -56,9 +56,34 @@ export class CrossCannon extends PointActor
 
 	collideA(other, type)
 	{
-		if(this.holding.has(other) || !other.controllable)
+		if(!other.controllable)
+		{
+			return;
+		}
+
+		if(other.isVehicle)
+		{
+			other = other.occupant;
+		}
+
+		if(this.holding.has(other))
 		{
 			return false;
+		}
+
+		const x = other.args.x;
+		const y = other.args.y;
+
+		if(!other.args.falling)
+		{
+			other.args.falling = true;
+			other.args.float = 1;
+			other.args.y -= 1;
+		}
+
+		if(other.args.standingOn)
+		{
+			other.args.standingOn = null;
 		}
 
 		Sfx.play('SS_BWIP');
@@ -67,10 +92,9 @@ export class CrossCannon extends PointActor
 		{
 			const xDiff = Math.abs(other.args.x - this.args.x);
 
-			other.args.xSpeed = 0;
-
 			this.holding.set(other, this.viewport.args.frameId);
 
+			other.args.xSpeed = 0;
 			other.args.ySpeed = 0;
 			other.args.float  = -1;
 			other.args.ignore = -1;

@@ -29,6 +29,11 @@ export class ExitRegion extends Region
 			}
 		}
 
+		if(this.others.boss && this.others.boss.args.hitPoints > 0)
+		{
+			return;
+		}
+
 		if(other.occupant)
 		{
 			other = other.occupant;
@@ -45,7 +50,17 @@ export class ExitRegion extends Region
 
 		viewport.clearCheckpoints();
 
+		if(viewport.levelFinished)
+		{
+			return;
+		}
+
 		viewport.onFrameOut(30, () => {
+
+			if(viewport.levelFinished)
+			{
+				return;
+			}
 
 			viewport.actors.remove(this);
 
@@ -57,11 +72,15 @@ export class ExitRegion extends Region
 			}
 			else if(this.args.nextStage)
 			{
-				viewport.quit(2, () => viewport.loadMap({mapUrl:'/map/'+this.args.nextStage}));
+				const tally = viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);
+
+				tally.addEventListener('done', event => viewport.quit(2, () => viewport.loadMap({mapUrl:'/map/'+this.args.nextStage})));
 			}
 			else
 			{
-				viewport.quit();
+				const tally = viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);;
+
+				tally.addEventListener('done', event => viewport.quit());
 				// viewport.playCards();
 			}
 

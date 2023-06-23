@@ -220,7 +220,7 @@ export class Block extends PointActor
 			}
 		}
 
-		if(!other.args.falling
+		if(((!other.args.falling && !other.args.climbing) || (other.args.climbing && other.y < this.y - this.args.height))
 			&& this.args.droop
 			&& other.args.ySpeed >= 0
 			&& other.args.standingOn !== this
@@ -228,7 +228,7 @@ export class Block extends PointActor
 			return true;
 		}
 
-		if(this.args.droop && other.controllable && (type === 0 || type === 2) && other.args.ySpeed >= 0)
+		if(!other.args.climbing && this.args.droop && other.controllable && (type === 0 || type === 2) && other.args.ySpeed >= 0)
 		{
 			const blockTop = this.originalY + -this.args.height;
 			const half     = Math.floor(this.args.width / 2);

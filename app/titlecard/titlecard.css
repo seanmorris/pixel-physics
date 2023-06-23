@@ -176,6 +176,7 @@
 	pointer-events: none;
 }
 
+.titlecard.replay .titlecard-field,
 .titlecard.closed .titlecard-field,
 .titlecard.closing .titlecard-field {
 	opacity: 0;

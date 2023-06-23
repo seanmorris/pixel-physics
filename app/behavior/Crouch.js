@@ -16,9 +16,25 @@ export class Crouch extends Behavior
 
 	update(host)
 	{
+		if(host.args.grinding)
+		{
+			if(host.yAxis > 0.55)
+			{
+				host.args.animation = 'grinding-crouching';
+				host.args.crouching = true;
+			}
+			else
+			{
+				host.args.crouching = false;
+			}
+			return;
+		}
+
 		if(host.yAxis > 0.55 && !host.args.gSpeed && !host.args.falling && !host.spindashCharge)
 		{
+
 			host.args.animation = 'crouching';
+
 			host.args.crouching = true;
 		}
 		else

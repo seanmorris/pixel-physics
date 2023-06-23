@@ -1,0 +1,13 @@
+.actor-air-bomb .sprite {
+	width: 24px;
+	height: 32px;
+	background-image: url(/Sonic/air-bomb.png);
+}
+
+.actor-air-bomb.hide {
+	opacity: 0;
+}
+
+.actor-air-bomb {
+	z-index: -1;
+}

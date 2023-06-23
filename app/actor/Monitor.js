@@ -147,7 +147,7 @@ export class Monitor extends PointActor
 		{
 			const reward = {label: this.name || this.args.name, points:10, multiplier:1};
 
-			if(other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
+			if(!other.isVehicle && other.args.ySpeed > 5 && other.args.ySpeed < 25 && Math.abs(other.args.ySpeed) > Math.abs(other.args.xSpeed))
 			{
 				other.args.cameraMode = 'popping';
 			}
@@ -255,6 +255,9 @@ export class Monitor extends PointActor
 				const jumping  = other.args.jumping;
 				const flying   = other.args.flying;
 				const xSpeed   = other.args.xSpeed || other.args.gSpeed;
+
+				other.args.xSpeed = 0;
+				other.args.ySpeed = 0;
 
 				viewport.onFrameOut(1,() => {
 

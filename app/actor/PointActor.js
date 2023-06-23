@@ -139,6 +139,8 @@ export class PointActor extends View
 
 		this.isGhost = false;
 
+		this.stepsTaken  = 0;
+
 		// this.stepCache = {};
 
 		this.fallTime    = 0;
@@ -322,9 +324,6 @@ export class PointActor extends View
 		this.args.direction = Number(this.args.direction) || 1;
 		this.args.heading   = 0;
 
-		this.args.xSpeed = this.args.xSpeed || 0;
-		this.args.ySpeed = this.args.ySpeed || 0;
-
 		this.args.gSpeed = this.args.gSpeed || 0;
 		this.args.hSpeed = 0;
 		this.args.xSpeed = this.args.xSpeed || 0;
@@ -333,6 +332,7 @@ export class PointActor extends View
 
 		this.args.groundAngle  = this.args.groundAngle || 0;
 		this.args.displayAngle = 0;
+		this.args.seatAngle    = 0;
 		this.args.airAngle     = 0;
 
 		const lastAngles = [];
@@ -414,7 +414,7 @@ export class PointActor extends View
 
 		this.moved = false;
 
-		this.args.bindTo(['x','y'], (v, k, t) => {
+		this.args.bindTo(['x','y', 'direction'], (v, k, t) => {
 			this[BOUNDS] = false;
 			isNaN(v) && console.trace(k, v)
 			// this.stepCache = {};
@@ -735,6 +735,7 @@ export class PointActor extends View
 			, '--fly-angle':      'flyAngle'
 			, '--display-angle':  'groundAngle8'
 			, '--ground-angle':   'groundAngle8'
+			, '--seat-angle':     'seatAngle'
 			, '--ground-angle8':  'groundAngle8'
 			, '--air-angle':      'airAngle'
 			, '--corkscrew':      'corkscrew'
@@ -824,16 +825,6 @@ export class PointActor extends View
 			}
 		}, {wait:0});
 
-
-		if(this.controllable)
-		{
-			const superSheild = new SuperSheild;
-
-			superSheild.equip(this);
-
-			this.inventory.add(superSheild);
-		}
-
 		this.init = true;
 
 		this.args.bindTo('animation', (v,k,t,d,p) => {
@@ -855,6 +846,19 @@ export class PointActor extends View
 
 	updateStart()
 	{
+		if((this.isSuper || this.isHyper) && !this.args.currentSheild instanceof SuperSheild)
+		{
+			const superSheild = new SuperSheild;
+			superSheild.equip(this);
+			this.inventory.add(superSheild);
+		}
+		else if(this.args.currentSheild && this.args.currentSheild instanceof SuperSheild)
+		{
+			const superSheild = this.args.currentSheild;
+			superSheild && superSheild.unequip(this);
+			this.args.currentSheild = null;
+		}
+
 		if(this.args.dead)
 		{
 			this.args.xSpeed = 0;
@@ -893,7 +897,7 @@ export class PointActor extends View
 
 		if(!this.args.falling)
 		{
-			this.focused = false;
+			// this.focused = false;
 		}
 
 		for(const region of this.regions)
@@ -909,6 +913,11 @@ export class PointActor extends View
 		if(lastFocus !== this && lastFocus !== this.focused)
 		{
 			this.viewport && this.viewport.auras.delete(lastFocus);
+		}
+
+		if(this.focused && this.focused.broken)
+		{
+			this.focused = null;
 		}
 
 		this.args.groundAngle8 = this.args.groundAngle;
@@ -967,6 +976,19 @@ export class PointActor extends View
 		else
 		{
 			this.age = 0;
+		}
+
+		if(this.screenLock)
+		{
+			if(this.args.x < this.screenLock.xMin)
+			{
+				this.args.x = this.screenLock.xMin;
+			}
+
+			if(this.args.x > this.screenLock.xMax)
+			{
+				this.args.x = this.screenLock.xMax;
+			}
 		}
 	}
 
@@ -2254,6 +2276,14 @@ export class PointActor extends View
 			return;
 		}
 
+		if(this.screenLock)
+		{
+			if(x < this.screenLock.xMin || x > this.screenLock.xMax)
+			{
+				return true;
+			}
+		}
+
 		if(actors)
 		{
 			const actors = this.viewport
@@ -2288,6 +2318,7 @@ export class PointActor extends View
 	get controllable() { return false; }
 	get skidding() {
 		return Math.abs(this.args.gSpeed)
+			&& this.args.direction
 			&& !this.args.antiSkid
 			&& !this.args.grinding
 			&& Math.sign(this.args.gSpeed) !== this.args.direction
@@ -2386,30 +2417,36 @@ export class PointActor extends View
 			const press   = `command_${i}`;
 			const hold    = `hold_${i}`;
 
-			if((i == 0 && button.delta === 1) || !this.args.standingOn || !this.args.standingOn.isVehicle)
+			if((i == 0 && button.delta === 1 && (this.yAxis || (this.args.standingOn && this.args.standingOn.quickDrop))) || !this.args.standingOn || !this.args.standingOn.isVehicle)
 			{
 				if(button.delta === 1)
 				{
 					let cancel = false;
 
-					for(const behavior of this.behaviors)
+					if(this.args.currentSheild && press in this.args.currentSheild)
 					{
-						if(behavior[press])
+						if(this.args.currentSheild[press](this, button) === false)
 						{
-							if(behavior[press](this, button) === false)
+							cancel = true;
+						}
+					}
+
+					if(!cancel)
+					{
+						for(const behavior of this.behaviors)
+						{
+							if(behavior[press])
 							{
-								cancel = true;
+								if(behavior[press](this, button) === false)
+								{
+									cancel = true;
+								}
 							}
 						}
 					}
 
 					if(!cancel)
 					{
-						if(this.args.currentSheild && press in this.args.currentSheild)
-						{
-							this.args.currentSheild[press](this, button);
-						}
-
 						this[press] && this[press]( button );
 					}
 				}
@@ -2474,98 +2511,40 @@ export class PointActor extends View
 				if(button.delta === 1)
 				{
 					vehicle[press] && vehicle[press]( button );
+
+					for(const behavior of vehicle.behaviors)
+					{
+						if(behavior[press])
+						{
+							behavior[press](vehicle, button);
+						}
+					}
 				}
 				else if(button.delta === -1)
 				{
 					vehicle[release] && vehicle[release]( button );
+
+					for(const behavior of vehicle.behaviors)
+					{
+						if(behavior[release])
+						{
+							behavior[release](vehicle, button);
+						}
+					}
 				}
 				else if(button.active)
 				{
 					vehicle[hold] && vehicle[hold]( button );
+
+					for(const behavior of vehicle.behaviors)
+					{
+						if(behavior[hold])
+						{
+							behavior[hold](vehicle, button);
+						}
+					}
 				}
 			}
-		}
-	}
-
-	command_0() // jump
-	{
-		if(this.args.hangingFrom && this.args.hangingFrom.unhook)
-		{
-			const drag = this.getLocalDrag();
-
-			this.args.ySpeed = -this.args.jumpForce * drag * 0.75;
-
-			this.args.hangingFrom.unhook();
-
-			this.swing = false;
-
-			return;
-		}
-
-		if(this.args.falling || this.willJump || this.args.dontJump)
-		{
-			if(this.args.standingOn && !this.args.standingOn.isVehicle)
-			{
-				if(this.args.ignore && this.args.ignore !== -4)
-				{
-					return;
-				}
-
-				this.viewport.auras.delete(this.args.standingOn);
-				this.willJump = true;
-				return;
-			}
-		}
-
-		if(!this.willJump)
-		{
-			if(this.yAxis < 0 || (this.args.standingOn && this.args.standingOn.quickDrop))
-			{
-				this.ignores.set(this.args.standingOn, 15);
-
-				this.args.ignore = 0;
-			}
-
-			this.willJump = true;
-		}
-	}
-
-	command_1()
-	{
-		if(this.canRoll && this.args.gSpeed)
-		{
-			this.args.rolling = true;
-		}
-	}
-
-	command_11()
-	{
-		if(this.args.currentSheild && !(this.args.currentSheild instanceof StarSheild))
-		{
-			const item = this.args.currentSheild;
-			item.unequip && item.unequip(this);
-
-			this.args.currentSheild = null;
-		}
-	}
-
-	release_0()
-	{
-		if(this.args.float)
-		{
-			return;
-		}
-
-		if(this.args.jumping && !this.lightDashed &&!this.dashed && this.args.ySpeed < -8)
-		{
-			this.args.ySpeed *= 0.5;
-			return;
-		}
-
-		if(this.args.jumping && !this.lightDashed &&!this.dashed && this.args.ySpeed < -4)
-		{
-			this.args.ySpeed = -4;
-			// this.args.ySpeed *= 0.5;
 		}
 	}
 
@@ -2737,6 +2716,8 @@ export class PointActor extends View
 			return;
 		}
 
+		this.viewport.args.inventory.splice(0);
+
 		this.args.currentSheild = null;
 
 		this.totalCombo(true);
@@ -2762,6 +2743,8 @@ export class PointActor extends View
 		this.noClip = true;
 
 		this.args.ySpeed = -12;
+
+		this.focused = this.cofocused = null;
 
 		if(this.y > this.viewport.meta.deathLine)
 		{
@@ -2790,6 +2773,8 @@ export class PointActor extends View
 		{
 			return;
 		}
+
+		this.screenLock = null;
 
 		this.args.xSpeed = 0;
 		this.args.ySpeed = 0;
@@ -3108,4 +3093,23 @@ export class PointActor extends View
 		&& a.callCollideHandler(this)
 		&& a.solid;
 	}
+
+	onSpawned(viewport)
+	{
+		for(const behavior of this.behaviors)
+		{
+			behavior.onSpawned && behavior.onSpawned(this, viewport);
+		}
+	}
+
+	onDespawned(viewport)
+	{
+		for(const behavior of this.behaviors)
+		{
+			behavior.onDespawned && behavior.onDespawned(this, viewport);
+		}
+	}
+
+	command_0(){}
+	command_1(){}
 }

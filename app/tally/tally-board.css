@@ -1,0 +1,34 @@
+.tally-board {
+	display: flex;
+	flex-direction: column;
+}
+
+.tally-board-content {
+	display: contents;
+}
+
+.tally-board-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.tally-board-total {
+	margin-top: 1rem;
+}
+
+.tally-board-inventory .tally-board-row {
+	justify-content: flex-end;
+}
+
+.tally-board-inventory .tally-board-row > div {
+	margin-left: 5px;
+}
+
+.tally-item.bump {
+	animation: combo-pulse 400ms 1 linear;
+}
+
+.tally-board-inventory .tally-item.bump {
+	animation: combo-pulse 125ms 1 linear;
+}

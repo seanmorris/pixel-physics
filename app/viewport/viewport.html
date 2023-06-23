@@ -311,8 +311,15 @@
 					[[char]]
 					<div class = "char-icon [[charName|hyphenate]]"></div>
 				</div>
-				<div class = "emblem-hud" cv-each = "emblems:emblem:e">
-					<img loading="lazy" src = "/custom/hud-emblem.png" class = "[[emblem.existing]]" />
+				<div>
+					<div class = "emblem-hud" cv-each = "emblems:emblem:e">
+						<img loading="lazy" src = "/custom/hud-emblem.png" class = "[[emblem.existing]]" />
+					</div>
+					<div class = "collectible-hud" cv-each = "inventory:item">
+						<span cv-if = "item.icon">
+							<img loading="lazy" src = "[[item.icon]]" class = "inventory-icon" />
+						</span>
+					</div>
 				</div>
 				<div class = "emerald-hud" cv-each = "emeralds:emerald:e">
 					<img loading="lazy" src = "/Sonic/emerald-[[emerald]]-mini.png" />
@@ -359,39 +366,8 @@
 			</div>
 
 			<div class = "hud hud-dark hud-centered" cv-if = "actClear">
-				<table>
-					<tr><td colspan="2">
-						<div class = "centered">[[actClearLabel]]</div>
-					</td></tr>
-					<tr>
-						<td>[[timeBonusLabel]]</td>
-						<td>[[timeBonus]]</td>
-					</tr>
-					<tr>
-						<td>[[ringBonusLabel]]</td>
-						<td>[[ringBonus]]</td>
-					</tr>
-					<!-- <tr>
-						<td>[[perfectBonusLabel]]</td>
-						<td>[[perfectBonus]]</td>
-					</tr> -->
-					<tr>
-						<td>[[speedBonusLabel]]</td>
-						<td>[[speedBonus]]</td>
-					</tr>
-					<tr cv-if = "skidBonusValue">
-						<td>[[skidBonusLabel]]</td>
-						<td>[[skidBonus]]</td>
-					</tr>
-					<tr>
-						<td>[[airBonusLabel]]</td>
-						<td>[[airBonus]]</td>
-					</tr>
-					<tr>
-						<td>[[totalBonusLabel]]</td>
-						<td>[[totalBonus]]</td>
-					</tr>
-				</table>
+				<div class = "centered act-cleared">[[actClearLabel]]</div>
+				[[tallyBoard]]
 			</div>
 
 			<div class = "hud hud-dark hud-centered" cv-if = "centerMessage">

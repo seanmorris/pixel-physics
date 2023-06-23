@@ -1,0 +1,35 @@
+.actor-chain-shot .sprite {
+	position: relative;
+	width: 16px;
+	height: calc(1px * var(--height, 128));
+	opacity: 0.95;
+}
+
+.actor-chain-shot .sprite::after {
+	position: absolute;
+	content: '';
+	width: 16px;
+	left:0;
+	height: calc(1px * var(--height, 128));
+	background-image: url(/custom/chain-shot.png);
+	background-repeat: repeat-y;
+	animation: chain-shot-shoot 10ms infinite linear;
+	transform: scaleY(-1);
+}
+
+.actor-chain-shot[data-animation='idle'] {
+	display: none !important;
+}
+
+@keyframes chain-shot-shoot {
+	0%   { background-position-y: 0px; }
+	100% { background-position-y: -64px; }
+}
+
+/* .actor-air-bomb.hide {
+	opacity: 0;
+}
+
+.actor-air-bomb {
+	z-index: -1;
+} */

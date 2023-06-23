@@ -7,6 +7,7 @@ import { SkidDust } from '../behavior/SkidDust';
 import { Spindash } from '../behavior/Spindash';
 import { Crouch }   from '../behavior/Crouch';
 import { LookUp }   from '../behavior/LookUp';
+import { TitleScreenCard } from '../intro/TitleScreenCard';
 
 // import { TitleScreenCard } from '../intro/TitleScreenCard';
 
@@ -94,6 +95,12 @@ export class Tails extends PointActor
 
 	updateStart()
 	{
+		if(this.args.grinding && this.args.falling && this.args.ySpeed > 0)
+		{
+			this.args.animation = 'springdash';
+			this.args.grinding = false;
+		}
+
 		super.updateStart();
 
 		if(this.args.dead)
@@ -202,6 +209,10 @@ export class Tails extends PointActor
 				{
 					this.args.animation = 'walking';
 				}
+				else if(this.idleTime > 60)
+				{
+					this.args.animation = 'idle';
+				}
 				else
 				{
 					this.args.animation = 'standing';
@@ -210,7 +221,7 @@ export class Tails extends PointActor
 		}
 		else if(this.args.flying && !this.args.startled)
 		{
-			if(this.yAxis > 0 && !this.args.bouncing)
+			if(this.yAxis > 0 && this.args.flying)
 			{
 				this.flyingSound.pause();
 				this.args.animation = 'jumping';
@@ -335,11 +346,6 @@ export class Tails extends PointActor
 
 	command_0(button)
 	{
-		if(this.args.falling && Math.abs(this.yAxis) > 0.55)
-		{
-			return;
-		}
-
 		if(this.args.hangingFrom)
 		{
 			super.command_0();
@@ -370,9 +376,9 @@ export class Tails extends PointActor
 			return;
 		}
 
-		if(this.args.flying && this.args.ySpeed > 0)
+		if(this.args.flying && !this.args.float)
 		{
-			this.args.ySpeed = -2.5;
+			this.args.ySpeed = -1.5;
 			this.args.float  = 8;
 		}
 
@@ -415,6 +421,13 @@ export class Tails extends PointActor
 				this.args.animation = 'springdash'
 			});
 		}
+	}
+
+	damage()
+	{
+		this.args.flying = false;
+		this.flyingSound && this.flyingSound.pause();
+		super.damage();
 	}
 
 	get solid() { return false; }

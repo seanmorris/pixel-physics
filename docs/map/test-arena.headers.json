@@ -1,15 +1,26 @@
 {
     "compressionlevel": -1,
-    "height": 64,
+    "editorsettings": {
+        "export": {
+            "format": "json",
+            "target": "truck-test.json"
+        }
+    },
+    "height": 144,
     "infinite": false,
-    "nextlayerid": 8,
-    "nextobjectid": 129,
+    "nextlayerid": 14,
+    "nextobjectid": 172,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
             "value": "city"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
         }
     ],
     "renderorder": "right-down",
@@ -56,15 +67,93 @@
             "tilewidth": 32
         },
         {
-            "columns": 28,
+            "columns": 24,
             "firstgid": 1761,
-            "image": "../custom/ruins.png",
-            "imageheight": 672,
-            "imagewidth": 896,
+            "image": "../Sonic/tiles/palmtree-panic/3d-loop.png",
+            "imageheight": 1120,
+            "imagewidth": 768,
             "margin": 0,
-            "name": "ruins",
+            "name": "3d-loop",
             "spacing": 0,
-            "tilecount": 588,
+            "tilecount": 840,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 12,
+            "firstgid": 2601,
+            "image": "../custom/orange-rail.png",
+            "imageheight": 800,
+            "imagewidth": 384,
+            "margin": 0,
+            "name": "orange-rail",
+            "spacing": 0,
+            "tilecount": 300,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 2901,
+            "image": "../Sonic/tiles/hydrocity-zone/slide-solid.png",
+            "imageheight": 288,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "slide-solid",
+            "spacing": 0,
+            "tilecount": 198,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 22,
+            "firstgid": 3099,
+            "image": "../Sonic/tiles/hydrocity-zone/slide-metal.png",
+            "imageheight": 288,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "slide-metal",
+            "spacing": 0,
+            "tilecount": 198,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 14,
+            "firstgid": 3297,
+            "image": "../Sonic/external-corner.png",
+            "imageheight": 128,
+            "imagewidth": 448,
+            "margin": 0,
+            "name": "external-corner",
+            "spacing": 0,
+            "tilecount": 56,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 14,
+            "firstgid": 3353,
+            "image": "external-curve.png",
+            "imageheight": 352,
+            "imagewidth": 448,
+            "margin": 0,
+            "name": "external-curve",
+            "spacing": 0,
+            "tilecount": 154,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 32,
+            "firstgid": 3507,
+            "image": "../Sonic/tiles/palmtree-panic/good-future.png",
+            "imageheight": 1024,
+            "imagewidth": 1024,
+            "margin": 0,
+            "name": "palmtree-panic",
+            "spacing": 0,
+            "tilecount": 1024,
             "tileheight": 32,
             "tilewidth": 32
         }
@@ -74,10 +163,14 @@
     "version": "1.6",
     "width": 1024,
     "types": [
+        "dolphin",
+        "layer-switch",
         "region",
         "sheild-electric-monitor",
         "sheild-fire-monitor",
         "sheild-water-monitor",
+        "skate-board",
+        "sliding-region",
         "spinning-float",
         "techno-squeak",
         "triple-ring-monitor",

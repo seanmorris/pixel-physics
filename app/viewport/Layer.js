@@ -24,10 +24,14 @@ export class Layer extends View
 		this.x = 0;
 		this.y = 0;
 
+		this.viewport = args.viewport;
+
 		this.hidden = false;
 
 		this.args.offsetX = 0;
 		this.args.offsetY = 0;
+
+		this.args.parallax = this.args.parallax || 0;
 
 		this.args.layerId = 0 || this.args.layerId;
 
@@ -38,19 +42,13 @@ export class Layer extends View
 
 		this.args.blocks = this.blocks.list;
 
-		this.meta = {};
+		this.meta = Object.create(null);
 
 		const viewport = this.args.viewport;
 		const layers   = viewport.tileMap.tileLayers;
 		const layerDef = layers[this.args.layerId];
 
-		if(layerDef.properties)
-		{
-			for(const property of layerDef.properties)
-			{
-				this.meta[property.name] = property.value;
-			}
-		}
+		this.setMeta(layerDef);
 
 		if(this.meta.offsetX)
 		{
@@ -93,6 +91,22 @@ export class Layer extends View
 
 		this.args.bindTo('width',  resetBlocks, {wait:0});
 		this.args.bindTo('height', resetBlocks, {wait:0});
+	}
+
+	setMeta(layerDef, maxObjectId = 0)
+	{
+		if(layerDef.properties)
+		{
+			for(const property of layerDef.properties)
+			{
+				this.meta[property.name] = property.value;
+
+				if(property.type === 'object')
+				{
+					this.meta[property.name] += maxObjectId;
+				}
+			}
+		}
 	}
 
 	move()
@@ -244,7 +258,6 @@ export class Layer extends View
 
 			for(let j = 0; j < blocksHigh; j += Math.sign(blocksHigh))
 			{
-
 				const tileY = j
 				+ Math.floor(-this.y / blockSize)
 				+ (this.offsetYChange < 0
@@ -293,7 +306,7 @@ export class Layer extends View
 
 					const transX = blockSize * i;
 					const transY = blockSize * j;
-					const scale  = '1.021';
+					const scale  = '1.016';
 
 					block.style({
 						transform:  `translate(${transX}px, ${transY}px) scale(${scale}, ${scale})`
@@ -368,6 +381,8 @@ export class Layer extends View
 						});
 
 						blockMeta.visible = true;
+
+						Layer.updateCount++;
 					}
 					else if(blockMeta.visible)
 					{
@@ -398,9 +413,14 @@ export class Layer extends View
 					display:       'initial'
 					, '--offsetX': -offsetX % blockSize
 					, '--offsetY': -offsetY % blockSize
+					, '--xPerspective': this.viewport.args.xPerspective
+					, '--parallax': this.args.parallax
 				});
 			}
 		}
 
 	}
 }
+
+
+Layer.updateCount = 0;

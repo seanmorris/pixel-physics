@@ -15,6 +15,8 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		this.stepsTaken = 0;
+
 		if(host.knocked)
 		{
 			host.args.knocked = Math.sign(host.args.xSpeed || host.args.gSpeed);
@@ -34,6 +36,8 @@ export class Platformer
 
 		if(!host.args.falling)
 		{
+			host.modeLast = host.args.mode;
+
 			if(host.args.grinding)
 			{
 				host.args.wasGrinding = true;
@@ -68,7 +72,7 @@ export class Platformer
 				}
 			}
 
-			if(!host.controllable)
+			if(!host.controllable && !host.canGrind)
 			{
 				host.args.grinding = false;
 			}
@@ -334,7 +338,8 @@ export class Platformer
 
 			if(stored && stored.checkpointId)
 			{
-				const checkpoint = host.viewport.actorsById[ stored.checkpointId ];
+				const viewport   = host.viewport;
+				const checkpoint = viewport.defsByMap.get(viewport.currentMap)[ stored.checkpointId ];
 
 				toX = checkpoint.x;
 				toY = checkpoint.y;
@@ -985,7 +990,7 @@ export class Platformer
 
 				if(host.args.falling)
 				{
-					host.args.xSpeed = host.args.xSpeed || host.args.gSpeed;
+					// host.args.xSpeed = host.args.xSpeed || host.args.gSpeed;
 					host.args.standingLayer = null;
 				}
 				else
@@ -993,7 +998,7 @@ export class Platformer
 					host.args.gSpeed = host.args.gSpeed || host.args.xSpeed;
 				}
 			}
-			else if(!host.noClip && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
+			else if(!host.noClip && !host.args.climbing && !host.args.xSpeed && !host.args.ySpeed && !host.args.float)
 			{
 				host.args.falling = !host.args.float && !this.checkBelow(host) || host.args.falling;
 			}
@@ -1085,8 +1090,18 @@ export class Platformer
 					}
 				}
 			}
-			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion &&!host.isEffect && !host.args.falling)))
+			else if(!host.args.static && (!host.noClip || host.args.standingLayer || (!host.isRegion && !host.isEffect && !host.args.falling)))
 			{
+				if(Math.abs(host.args.xSpeed) > Math.abs(host.args.gSpeed))
+				{
+					host.args.gSpeed = host.args.xSpeed;
+
+					if(host.args.standingLayer)
+					{
+						host.args.gSpeed -= host.args.standingLayer.layer.offsetXChanged;
+					}
+				}
+
 				host.args.xSpeed = 0;
 				host.args.ySpeed = 0;
 				host.xLast = host.args.x;
@@ -1179,7 +1194,7 @@ export class Platformer
 
 				if(block && Array.isArray(block))
 				{
-					return block.filter(a => !a.isVehicle);
+					return block.filter(a => !a.args.platform && !a.isVehicle);
 				}
 
 				return block;
@@ -1398,35 +1413,6 @@ export class Platformer
 			host.args.y = (host.args.y);
 		}
 
-		// if(!host.noClip && !host.args.falling && !host.isRegion)
-		// {
-		// 	if(host.args.mode === MODE_FLOOR && !host.args.gSpeed && !host.args.xSpeed)
-		// 	{
-		// 		let execs = 0;
-
-		// 		const heading = Math.atan2(startY - host.y, startX - host.x);
-
-		// 		host.args.xSpeed = 0;
-		// 		host.args.ySpeed = 0;
-
-		// 		while(host.getMapSolidAt(host.x, host.y - 1, false))
-		// 		{
-		// 			host.args.x += Math.cos(heading);
-		// 			host.args.y += Math.sin(heading);
-
-		// 			if(execs++ > 1000)
-		// 			{
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// if(host.args.falling)
-		// {
-		// 	host.args.gSpeed = 0;
-		// }
-
 		host.controllable && host.processInput();
 
 		if(host.args.falling || host.args.gSpeed)
@@ -1489,11 +1475,14 @@ export class Platformer
 
 				if(typeof standingOn === 'object')
 				{
-					host.args.standingLayer = standingOn;
+					if(!Array.isArray(standingOn))
+					{
+						host.args.standingLayer = standingOn;
+					}
 
 					if(host.args.modeTime < 1 && standingOn.xLayerSpeed)
 					{
-						host.args.gSpeed = 0;
+						// host.args.gSpeed = 0;
 					}
 				}
 				else
@@ -1816,18 +1805,18 @@ export class Platformer
 					host.args.moving = false;
 					host.args.gSpeed = 0.15 * Math.sign(host.args.gSpeed);
 
-					if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
-					{
-						host.args.mode = MODE_FLOOR;
-						host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
-					}
+					// if(host.args.mode === MODE_LEFT || host.args.mode === MODE_RIGHT)
+					// {
+					// 	host.args.mode = MODE_FLOOR;
+					// 	host.lastAngles.splice(0, host.lastAngles.length, ...Array(host.angleAvg).fill(0));
+					// }
 
 					break;
 				}
 				else if(nextPosition[2] === true)
 				{
-					const gSpeed = host.args.gSpeed;
-					const gAngle = host.args.groundAngle;
+					const gSpeed = host.args.gSpeed || 0;
+					const gAngle = host.args.groundAngle || 0;
 
 					host.args.standingLayer = null;
 
@@ -1845,14 +1834,18 @@ export class Platformer
 							// 	host.args.x += (headBlock - host.args.width) * Math.sign(gSpeed);
 							// }
 							// else
-							if(Math.abs(gSpeed) < radius)
+
+							const stepsLeft   = Math.max(1, Math.abs(gSpeed) - Math.abs(this.stepsTaken))||1;
+							const impulseLeft = stepsLeft * Math.sign(gSpeed||0);
+
+							if(0&&stepsLeft < radius)
 							{
-								host.args.x += radius * Math.sign(gSpeed);
+								host.args.x += (radius - stepsLeft) * Math.sign(gSpeed);
 							}
 							else
 							{
-								host.args.x +=  gSpeed * Math.cos(gAngle);
-								host.args.y += -gSpeed * Math.sin(gAngle);
+								host.args.x +=  impulseLeft * Math.cos(gAngle);
+								host.args.y += -impulseLeft * Math.sin(gAngle);
 							}
 
 							host.args.xSpeed =  gSpeed * Math.cos(gAngle);
@@ -1946,7 +1939,7 @@ export class Platformer
 								host.args.x += gSpeed * Math.sin(gAngle);
 								host.args.y += gSpeed * Math.cos(gAngle);
 
-								if(!host.args.rolling && !host.args.grinding)
+								if(host.isVehicle || (!host.args.rolling && !host.args.grinding))
 								{
 									host.args.groundAngle = -Math.PI * 0.5;
 								}
@@ -2001,7 +1994,7 @@ export class Platformer
 								host.args.x += -gSpeed * Math.sin(gAngle);
 								host.args.y += -gSpeed * Math.cos(gAngle);
 
-								if(!host.args.rolling && !host.args.grinding)
+								if(host.isVehicle || (!host.args.rolling && !host.args.grinding))
 								{
 									host.args.groundAngle = Math.PI * 0.5;
 								}
@@ -2024,7 +2017,7 @@ export class Platformer
 							break;
 					}
 
-					host.args.gSpeed = 0;
+					// host.args.gSpeed = 0;
 
 					break;
 				}
@@ -2225,23 +2218,32 @@ export class Platformer
 					}
 					else if(!host.args.grinding && !host.args.rolling && (!host.xAxis || (pushBack && Math.abs(host.args.gSpeed) > 6)))
 					{
-						host.args.gSpeed -= decel * 1/drag * Math.sign(host.args.gSpeed);
+						const step = decel * 1/drag * Math.sign(host.args.gSpeed);
+
+						if(Math.abs(host.args.gSpeed) > Math.abs(step))
+						{
+							host.args.gSpeed -= step;
+						}
+						else
+						{
+							host.args.gSpeed = 0;
+						}
 					}
 
-					if(Math.abs(host.args.gSpeed) < 0.1)
+					if(Math.abs(host.args.gSpeed) < 0.1 || (pushBack && Math.abs(host.args.gSpeed) < 1))
 					{
 						host.args.gSpeed = 0;
 					}
 				}
 			}
 
-			if(!pushFoward && Math.abs(host.args.gSpeed) < 1)
-			{
-				if(!host.args.wallSticking)
-				{
-					host.args.gSpeed = 0;
-				}
-			}
+			// if(!pushFoward && Math.abs(host.args.gSpeed) < 1)
+			// {
+			// 	if(!host.args.climbing && !host.args.wallSticking)
+			// 	{
+			// 		// host.args.gSpeed = 0;
+			// 	}
+			// }
 
 			let slopeFactor = 0;
 
@@ -2795,8 +2797,7 @@ export class Platformer
 			return;
 		}
 
-		if(host.controllable
-			&& host.args.ySpeed >= 0
+		if(host.args.ySpeed >= 0
 			&& distances[2]
 			&& distances[2] <=  host.args.width * 0.5
 			&& distances[1] === false
@@ -2813,8 +2814,8 @@ export class Platformer
 					host.args.y--;
 				}
 
-				host.args.falling = false;
-				host.args.gSpeed = host.args.xSpeed;
+				// host.args.falling = false;
+				// host.args.gSpeed = host.args.xSpeed;
 				return;
 			}
 		}
@@ -3051,6 +3052,10 @@ export class Platformer
 			{
 				host.args.x -= host.args.width * 0.5 *  Math.sign(xSpeedOriginal);
 				host.args.falling = true;
+				if(hits.length > 2)
+				{
+					host.args.xSpeed = 0;
+				}
 			}
 
 			blockers = host.getMapSolidAt(host.args.x + direction, host.args.y);
@@ -3127,11 +3132,17 @@ export class Platformer
 
 			if(xSpeed > 0 && forePosition && forePosition[3])
 			{
-				host.args.x -= host.args.width;
+				if(!host.willStick)
+				{
+					host.args.x -= host.args.width;
+				}
 			}
 			else if(xSpeed < 0 && backPosition && backPosition[3])
 			{
-				host.args.x += host.args.width;
+				if(!host.willStick)
+				{
+					host.args.x += host.args.width;
+				}
 			}
 			else if((!forePosition || forePosition[0] !== false && forePosition[1] !== false)
 				|| (!backPosition || backPosition[0] !== false && backPosition[1] !== false)
@@ -3249,7 +3260,10 @@ export class Platformer
 
 					if(typeof solid === 'object')
 					{
-						host.args.standingLayer = solid;
+						if(!Array.isArray(solid))
+						{
+							host.args.standingLayer = solid;
+						}
 
 						if(solid.offsetXChanged)
 						{
@@ -3685,6 +3699,8 @@ export class Platformer
 				prevDown = downFirstSolid;
 			}
 
+			this.stepsTaken++;
+
 			// if(upFirstSpace !== false)
 			// {
 			// 	host.stepCache[col * sign] = [col * sign, upFirstSpace, false];
@@ -3809,7 +3825,7 @@ export class Platformer
 		}
 
 		let floorX = 0;
-		let gSpeedReal = host.args.gSpeed;
+		let gSpeedReal = host.args.gSpeed ?? 0;
 
 		if(host.args.standingOn && host.args.standingOn.args.convey)
 		{
@@ -3991,5 +4007,111 @@ export class Platformer
 		}
 
 		return below;
+	}
+
+	onSpawned(host, viewport)
+	{
+		if(!host.args.onLayer)
+		{
+			return;
+		}
+
+		const layerName = host.args.onLayer;
+		const layers = viewport.tileMap.tileLayers;
+
+		for(const layer of layers)
+		{
+			if(layer.name !== layerName)
+			{
+				continue;
+			}
+
+			host.args.standingLayer = layer;
+			break;
+		}
+
+		console.log(this);
+	}
+
+	command_0(host, button) // jump
+	{
+		if(host.args.hangingFrom && host.args.hangingFrom.unhook)
+		{
+			const drag = host.getLocalDrag();
+
+			host.args.ySpeed = -host.args.jumpForce * drag * 0.75;
+
+			host.args.hangingFrom.unhook();
+
+			host.swing = false;
+
+			return;
+		}
+
+		if(host.args.falling || host.willJump || host.args.dontJump)
+		{
+			if(host.args.standingOn && !host.args.standingOn.isVehicle)
+			{
+				if(host.args.ignore && host.args.ignore !== -4)
+				{
+					return;
+				}
+
+				host.viewport.auras.delete(host.args.standingOn);
+				host.willJump = true;
+				return;
+			}
+		}
+
+		if(!host.willJump)
+		{
+			if(host.args.standingOn && host.args.standingOn.quickDrop)
+			{
+				host.ignores.set(host.args.standingOn, 15);
+
+				host.args.ignore = 0;
+			}
+
+			host.willJump = true;
+		}
+	}
+
+	release_0(host, button)
+	{
+		if(host.args.float)
+		{
+			return;
+		}
+
+		if(host.args.jumping && !host.lightDashed &&!host.dashed && host.args.ySpeed < -8)
+		{
+			host.args.ySpeed *= 0.5;
+			return;
+		}
+
+		if(host.args.jumping && !host.lightDashed &&!host.dashed && host.args.ySpeed < -4)
+		{
+			host.args.ySpeed = -4;
+			// host.args.ySpeed *= 0.5;
+		}
+	}
+
+	command_1(host, button)
+	{
+		if(host.canRoll && host.args.gSpeed)
+		{
+			host.args.rolling = true;
+		}
+	}
+
+	command_11(host, button)
+	{
+		if(host.args.currentSheild && !(host.args.currentSheild instanceof StarSheild))
+		{
+			const item = host.args.currentSheild;
+			item.unequip && item.unequip(host);
+
+			host.args.currentSheild = null;
+		}
 	}
 }

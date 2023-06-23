@@ -6,5 +6,654 @@
     "folders": [
         "."
     ],
-    "objectTypesFile": "app/assets/map/objecttypes.json"
+    "propertyTypes": [
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 2,
+            "members": [
+            ],
+            "name": "arrow-sign",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 3,
+            "members": [
+            ],
+            "name": "balloon",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 4,
+            "members": [
+            ],
+            "name": "block",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+            ],
+            "name": "breakable-block",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 6,
+            "members": [
+            ],
+            "name": "bumper",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+            ],
+            "name": "cinematic",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffffff00",
+            "drawFill": true,
+            "id": 8,
+            "members": [
+            ],
+            "name": "coin",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 9,
+            "members": [
+            ],
+            "name": "companion-block",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 10,
+            "members": [
+            ],
+            "name": "drill-car",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff4f4f51",
+            "drawFill": true,
+            "id": 11,
+            "members": [
+            ],
+            "name": "egg-mobile",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff300001",
+            "drawFill": true,
+            "id": 12,
+            "members": [
+            ],
+            "name": "eggman",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa1a1a5",
+            "drawFill": true,
+            "id": 13,
+            "members": [
+            ],
+            "name": "eggrobo",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff00ffff",
+            "drawFill": true,
+            "id": 14,
+            "members": [
+                {
+                    "name": "color",
+                    "type": "string",
+                    "value": "red"
+                }
+            ],
+            "name": "emerald",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+            ],
+            "name": "flickie",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 15,
+            "members": [
+            ],
+            "name": "force-region",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff70191a",
+            "drawFill": true,
+            "id": 16,
+            "members": [
+            ],
+            "name": "knuckles",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffff9d00",
+            "drawFill": true,
+            "id": 17,
+            "members": [
+            ],
+            "name": "lava-region",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffd0ff01",
+            "drawFill": true,
+            "id": 18,
+            "members": [
+                {
+                    "name": "back",
+                    "type": "string",
+                    "value": "0"
+                }
+            ],
+            "name": "layer-switch",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff39c881",
+            "drawFill": true,
+            "id": 19,
+            "members": [
+            ],
+            "name": "marble-block",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff4573a4",
+            "drawFill": true,
+            "id": 20,
+            "members": [
+            ],
+            "name": "mecha-sonic",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff00ff00",
+            "drawFill": true,
+            "id": 21,
+            "members": [
+            ],
+            "name": "player",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 22,
+            "members": [
+            ],
+            "name": "powerup-glow",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa40003",
+            "drawFill": true,
+            "id": 23,
+            "members": [
+            ],
+            "name": "projectile",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 24,
+            "members": [
+                {
+                    "name": "item",
+                    "type": "string",
+                    "value": "0"
+                }
+            ],
+            "name": "q-block",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 25,
+            "members": [
+            ],
+            "name": "rail-car",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 26,
+            "members": [
+                {
+                    "name": "switch",
+                    "type": "object",
+                    "value": 0
+                },
+                {
+                    "name": "type",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "region",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffffff00",
+            "drawFill": true,
+            "id": 27,
+            "members": [
+            ],
+            "name": "ring",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 28,
+            "members": [
+            ],
+            "name": "ring-monitor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 29,
+            "members": [
+            ],
+            "name": "rocks-tall",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 30,
+            "members": [
+            ],
+            "name": "rolling-region",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa49f00",
+            "drawFill": true,
+            "id": 31,
+            "members": [
+            ],
+            "name": "seymour",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 32,
+            "members": [
+            ],
+            "name": "shade-region",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 33,
+            "members": [
+            ],
+            "name": "sheild-electric-monitor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 34,
+            "members": [
+            ],
+            "name": "sheild-fire-monitor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 35,
+            "members": [
+            ],
+            "name": "sheild-water-monitor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff0008a4",
+            "drawFill": true,
+            "id": 36,
+            "members": [
+            ],
+            "name": "sonic",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa40003",
+            "drawFill": true,
+            "id": 37,
+            "members": [
+                {
+                    "name": "angle",
+                    "type": "string",
+                    "value": "0"
+                },
+                {
+                    "name": "color",
+                    "type": "string",
+                    "value": "0"
+                },
+                {
+                    "name": "power",
+                    "type": "string",
+                    "value": "10"
+                }
+            ],
+            "name": "spring",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 38,
+            "members": [
+            ],
+            "name": "star-post",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 39,
+            "members": [
+            ],
+            "name": "stopper",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 40,
+            "members": [
+            ],
+            "name": "super-ring",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 41,
+            "members": [
+                {
+                    "name": "destroyLayer",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "switch",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa47300",
+            "drawFill": true,
+            "id": 42,
+            "members": [
+            ],
+            "name": "tails",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 43,
+            "members": [
+                {
+                    "name": "content",
+                    "type": "string",
+                    "value": "content"
+                }
+            ],
+            "name": "text-actor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff9f0000",
+            "drawFill": true,
+            "id": 44,
+            "members": [
+            ],
+            "name": "tornado",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff3e98dd",
+            "drawFill": true,
+            "id": 45,
+            "members": [
+            ],
+            "name": "water-fall",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff3e98dd",
+            "drawFill": true,
+            "id": 46,
+            "members": [
+            ],
+            "name": "water-jet",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        }
+    ]
 }

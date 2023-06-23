@@ -25,8 +25,10 @@ export class OrbSmall extends Mixin.from(PointActor)
 
 		this.args.maxFollow = this.args.maxFollow || null;
 
-		this.args.friction = this.args.friction || 0.75
-		this.args.bounce   = this.args.bounce || 0.5;
+		this.args.friction  = this.args.friction || 0.75
+		this.args.bounce    = this.args.bounce || 0.5;
+		this.args.rollSpeed = 0;
+		this.args.rolled    = 0;
 	}
 
 	onRendered(event)

@@ -104,9 +104,9 @@ export class RedEyeJet extends PointActor
 				Sfx.play('OBJECT_DESTROYED');
 			});
 
-			viewport.onFrameOut(100, () => {
-				viewport.clearAct(`${other.args.name} BEAT THE ${name}`);
-			});
+			// viewport.onFrameOut(100, () => {
+			// 	viewport.clearAct(`${other.args.name} BEAT THE ${name}`);
+			// });
 
 			viewport.onFrameOut(100, () => {
 				this.viewport.args.cutScene = true;
@@ -333,8 +333,16 @@ export class RedEyeJet extends PointActor
 
 	update()
 	{
+		this.args.phaseFrameId++;
+		this.args.frameId++;
+
 		if(this.args.phase === 'idle')
 		{
+			if(this.args.phaseFrameId > 120)
+			{
+				this.args.phase = 'intro';
+			}
+
 			return;
 		}
 
@@ -342,9 +350,6 @@ export class RedEyeJet extends PointActor
 		{
 			return;
 		}
-
-		this.args.phaseFrameId++;
-		this.args.frameId++;
 
 		if(this.args.phase === 'intro')
 		{

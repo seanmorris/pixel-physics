@@ -32,7 +32,7 @@ export class Fountain extends PointActor
 
 		if(other.args.ySpeed > -20 && Math.abs(this.x - other.x) < 8)
 		{
-			other.args.ySpeed -= 0.6;
+			other.args.ySpeed -= 0.4;
 		}
 	}
 

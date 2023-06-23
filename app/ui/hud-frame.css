@@ -85,14 +85,14 @@
 }
 
 .emblem-hud img {
-	transform: rotateY(0deg) scale(1);
+	/* transform: rotateY(0deg) scale(1); */
 	padding: 1.5px;
 	transform-origin: 53% 50%;
 	perspective: 10000px;
 }
 
 .emblem-hud img:last-child:not(.existing) {
-	animation: emblem-spin 2s ease-out 1, emblem-flicker 0.125s ease-in-out 14;
+	animation: emblem-spin 2s ease-out 1, emblem-flicker 0.125s ease-in-out 14 backwards;
 }
 
 @keyframes emblem-spin {
@@ -302,6 +302,7 @@
 	text-align: right;
 }
 
+img.inventory-icon,
 .emblem-hud img {
 	filter:
 		drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.35))
@@ -310,6 +311,30 @@
 		drop-shadow(1px -1px 0px rgba(0, 0, 0, 0.35))
 	;
 }
+
+img.inventory-icon {
+	margin-left: 1px;
+}
+
+img.chao-icon {
+	/* margin-left: 2px; */
+	margin-right: 3px;
+	/* display: none; */
+}
+
+.hud-top-right > div {
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: row;
+	z-index: 1;
+}
+
+.emblem-hud:not(:empty) {
+	display: flex;
+	align-items: center;
+	min-height: 10px;
+}
+
 
 .emerald-hud img,
 .hud .hud-character-string {

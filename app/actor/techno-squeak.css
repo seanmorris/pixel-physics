@@ -10,17 +10,23 @@
 	width: 24px;
 }
 
-
 .actor-item.actor-techno-squeak .sprite:after {
 	content: '';
 	position: absolute;
 	top: 0px;
 	left: 0;
 	background-image: url(/Sonic/techno-squeak.png);
-	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	/* --sprite-offset-x: -32px; */
+	/* --sprite-offset-y: 0px; */
+	/* background-position-x: var(--sprite-offset-x, 1px);
+	background-position-y: var(--sprite-offset-y, 0px); */
 	height: 14px;
 	width: 24px;
 	z-index: 1;
+}
+
+.actor-item.actor-techno-squeak[data-color="yellow"] .sprite:after {
+	background-position-y: -32px;
 }
 
 .actor-item.actor-techno-squeak[data-animation="standing"] .sprite:after {

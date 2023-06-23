@@ -1,0 +1,54 @@
+.actor-item.actor-giant-tire {
+	z-index: 3;
+}
+
+.actor-item.actor-giant-tire-back {
+	z-index: 0;
+}
+
+.actor-item.actor-truck-body {
+	z-index: 1;
+}
+
+.actor-item.actor-giant-tire .sprite {
+	width:  64px;
+	height: 64px;
+	background-image: url(/custom/giant-tire.png);
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) !important;
+}
+
+.actor-item.actor-giant-tire[data-animation=rolling] .sprite {
+	background-position-x: -64px;
+	animation: giant-tire-rolling 40ms steps(2) infinite;
+}
+
+.actor-item.actor-giant-tire-back .sprite {
+	background-position-y: -64px;
+}
+
+.actor-item.actor-truck-body .sprite {
+	width:  145px;
+	height: 59px;
+	background-image: url(/custom/truck-body.png);
+}
+
+.actor-item.actor-truck-cab {
+	z-index: 2;
+}
+
+.actor-item.actor-truck-cab .sprite {
+	width:  49px;
+	height: 51px;
+	background-image: url(/custom/truck-cab.png);
+}
+
+@keyframes giant-tire-rolling {
+	  0% { background-position-x: -0px; }
+	100% { background-position-x: -128px; }
+}
+
+.actor-truck-cab-destroyed,
+.actor-truck-body-destroyed,
+.actor-giant-tire-destroyed {
+	animation: boss-damage steps(1) infinite 45ms forwards;
+}

@@ -179,7 +179,7 @@
 
 	z-index: -1;
 
-	filter: url(#menu-twist) url(#menu-pinch);
+	/* filter: url(#menu-twist) url(#menu-pinch); */
 
 	background-color: #0024d8;
 
@@ -405,7 +405,7 @@
 	display: none;
 }
 
-.screen-card-main-menu .menu-container .field {;
+.screen-card-main-menu .menu-container .field {
 	flex-grow: 1;
 }
 
@@ -638,15 +638,15 @@ input::-webkit-inner-spin-button {
 	top: 0;
 	box-sizing: border-box;
 	z-index: 0;
-	margin-left: 92px;
+	margin-left: 42px;
 }
 
-.character-preview[data-character=Sonic] .emeralds,
+/* .character-preview[data-character=Sonic] .emeralds,
 .character-preview[data-character=Tails] .emeralds,
 .character-preview[data-character=Knuckles] .emeralds,
 .character-preview[data-character=Sean] .emeralds {
-
 }
+*/
 
 .character-preview .character {
 	height: 64px;
@@ -654,16 +654,21 @@ input::-webkit-inner-spin-button {
 
 	margin: auto;
 
+
 	--color-filter: invert(1) contrast(0) brightness(100);
 
 	filter:
-		var(--color-filter)
-		drop-shadow( 1px 1px 0px black)
-		drop-shadow( -1px 1px 0px black)
-		drop-shadow( 1px -1px 0px black)
-		drop-shadow( -1px -1px 0px black);
+	var(--color-filter)
+	drop-shadow( 1px 1px 0px black)
+	drop-shadow( -1px 1px 0px black)
+	drop-shadow( 1px -1px 0px black)
+	drop-shadow( -1px -1px 0px black);
 }
 
+li:not(.focused) .character-preview .character {
+	transition: background-image 1s linear;
+	/* --color-filter: invert(0) contrast(1) brightness(1); */
+}
 .character-preview ~ span {
 	position: relative;
 	top: 3px;

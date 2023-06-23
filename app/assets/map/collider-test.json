@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":256,
  "infinite":false,
  "layers":[
@@ -503,6 +496,18 @@
                  "width":288,
                  "x":2400,
                  "y":1408
+                }, 
+                {
+                 "height":0,
+                 "id":19,
+                 "name":"player-start",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player-start",
+                 "visible":true,
+                 "width":0,
+                 "x":1077.33333333333,
+                 "y":5690.66666666667
                 }],
          "opacity":0.5,
          "type":"objectgroup",
@@ -511,7 +516,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":19,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -540,7 +545,7 @@
          "value":"STRESS TEST ZONE"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.4.3",
+ "tiledversion":"1.7.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -581,6 +586,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.4,
+ "version":"1.6",
  "width":256
 }

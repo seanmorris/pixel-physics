@@ -68,6 +68,12 @@ export class Emerald extends PointActor
 				save.emeralds.push(this.args.color)
 			}
 
+			this.viewport.args.inventory.push({
+				points: 10000
+				, tallyIcon: `/Sonic/emerald-${this.args.color}-mini.png`
+				, id:   this.oid
+			});
+
 			save.save();
 
 			ga('send', 'event', {

@@ -11,6 +11,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 	{
 		super();
 
+		this.preloaders = new Map;
+
 		this.meta = new Map;
 
 		this.heightMask      = null;
@@ -20,6 +22,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.tileCache       = new Map;
 		this.heightMasks     = new Map;
 		this.heightMaskCache = new Map;
+		this.prefixed        = new Map;
+		this.mapDirectory    = '/map';
 
 		this.tileLayers  = [];
 
@@ -37,6 +41,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.maps = new Map;
 
 		this.replacements = new Map;
+		this.loaded = new Map;
 		this.emptyCache = new Map;
 
 		if(String(url).substr(-4) === 'json')
@@ -105,18 +110,56 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				desparsed[tileId] = tileNo;
 			}
+
+			// layer.data = layer.data ? [...Object.assign(Array(layer.width * layer.height), layer.data)] : undefined;
+			// layer.data = layer.data.map(t => t || 0);
+
+			// console.log(layer.data);
 		}
+
+		// console.log(tilemapData);
+		// console.log(JSON.stringify(tilemapData));
 
 		// console.timeEnd('desparse');
 	}
 
-	append(url, xOffset, yOffset)
+	preloadMap(url)
 	{
+		if(this.preloaders.has(url))
+		{
+			return this.preloaders.get(url);
+		}
+
 		const elicit = new Elicit(url);
 
-		return elicit.stream()
-		.then(response => response.json())
-		.then(data => {
+		// elicit.addEventListener('progress', event => {
+			// const {received, length, done} = event.detail;
+			// const type = 'map';
+			// this.dispatchEvent(new CustomEvent(
+			// 	'level-progress', {detail: {length, received, done, url}}
+			// ));
+		// });
+
+		const res = elicit.stream().then(response => response.json());
+
+		this.preloaders.set(url, res);
+
+		return res;
+	}
+
+	append(url, xOffset, yOffset, maxObjectId = 0)
+	{
+		return this.preloadMap(url).then(data => {
+			const width    = this.mapData.width;
+			const overlap  = -width + xOffset;
+			const newWidth = width + data.width + overlap;
+
+			console.log({width, dw:data.width, newWidth, overlap, xOffset});
+
+			const height    = this.mapData.height;
+			const newHeight = Math.max(height, height + data.height + -Math.round(yOffset/32));
+
+			this.resize(newWidth, height);
 
 			this.desparseLayers(data);
 
@@ -172,6 +215,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					{
 						existingLayer.data[i] = newLayer.data[i];
 					}
+
+					existingLayer.layer.setMeta(newLayer, maxObjectId);
 				}
 			}
 
@@ -180,21 +225,13 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				this.mapData.tilesets.push(newTileset);
 			}
 
+			this.tileNumberCache.clear();
+
 			return this.loadTilesets(data).then(() => {
 
-				this.tileNumberCache.clear()
-
-				return this.getObjectDefs(data);
+				return {defs: this.getObjectDefs(data, lastGid), data};
 
 			});
-		});
-
-		elicit.addEventListener('progress', event => {
-			const {received, length, done} = event.detail;
-			// const type = 'map';
-			// this.dispatchEvent(new CustomEvent(
-			// 	'level-progress', {detail: {length, received, done, url}}
-			// ));
 		});
 	}
 
@@ -277,7 +314,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			this.tileImages.set(tileset, image);
 
-			const imageUrl = '/map/' + tileset.image;
+			if(!this.prefixed.has(tileset))
+			{
+				this.prefixed.set(tileset, String(this.mapDirectory + '/' + tileset.image).replace(/\/\/+/g, '/'));
+			}
+
+			const imageUrl = this.prefixed.get(tileset);
 
 			tileset.original = tileset.image = imageUrl;
 
@@ -313,7 +355,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 				image.addEventListener('load', event => {
 
-					this.replacements.set(imageUrl, url);
+					if(!this.replacements.has(imageUrl))
+					{
+						this.replacements.set(imageUrl, url);
+					}
+
+					this.loaded.set(imageUrl, url);
 
 					const heightMask = document.createElement('canvas');
 
@@ -552,7 +599,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return false;
 	}
 
-	getObjectDefs(mapData = this.mapData)
+	getObjectDefs(mapData = this.mapData, startGid = 0)
 	{
 		if(!mapData)
 		{
@@ -562,7 +609,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		return mapData.layers
 			.filter(layer => layer.type === 'objectgroup')
 			.map(layer => layer.objects)
-			.flat();
+			.flat()
+			.map(o => {if(typeof o.gid !== 'undefined') {o.gid += startGid;} return o;});
 	}
 
 	getTile(tileNumber)
@@ -574,6 +622,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			if(this.replacements.has(cached[3]))
 			{
 				cached[2] = this.replacements.get(cached[3]);
+			}
+			else if(this.loaded.has(cached[3]))
+			{
+				cached[2] = this.loaded.get(cached[3]);
 			}
 
 			return cached;
@@ -805,7 +857,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const iPixel = (xPixel + yPixel * heightMask.width) * 4;
 
-			if(heightMask.data[iPixel + 3] === 255)
+			if(heightMask.data[iPixel + 3] > 0)
 			{
 				this.emptyCache.set(tileNumber, false);
 				return false;
@@ -876,10 +928,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		}
 	}
 
-	reset()
+	unreplace()
 	{
 		this.replacements.clear();
+		this.tileCache.clear();
+	}
+
+	reset()
+	{
 		this.tileSetCache.clear();
+		this.replacements.clear();
 		this.tileCache.clear();
 
 		for(let i = 0; i < this.tileLayers.length; i++)
@@ -893,6 +951,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		{
 			tileset.image = tileset.original;
 		}
+
+		this.loadTilesets(this.mapData);
 	}
 
 	castRay(startX, startY, angle, maxDistance = 320, layerId = 0)
@@ -1007,13 +1067,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				let px = (startX + mag * Math.cos(angle));
 				let py = (startY + mag * Math.sin(angle));
 
-				if(bf > 1)
-				{
-					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
-					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
-					if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
-					if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
-				}
+				if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+				if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+				if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+				if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				oldModeX = modeX;
@@ -1075,13 +1132,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				let px = (startX + mag * Math.cos(angle));
 				let py = (startY + mag * Math.sin(angle));
 
-				if(bf > 1)
-				{
-					if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
-					if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
-					if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
-					if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
-				}
+				if(ox > 0 && px % 1 > 0.99999) px = Math.round(px);
+				if(ox < 0 && px % 1 < 0.00001) px = Math.round(px);
+				if(oy > 0 && py % 1 > 0.99999) py = Math.round(py);
+				if(oy < 0 && py % 1 < 0.00001) py = Math.round(py);
 
 				const [tx, ty] = this.coordsToTile(px, py, layerId);
 				oldModeY = modeY;

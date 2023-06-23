@@ -1,0 +1,19 @@
+<div class = "tally-board">
+	<div class = "tally-board-content" cv-each = "counters:counter">
+		<div class = "tally-board-row">
+			<div>[[counter.label]]</div>
+			<div class = "tally-item [[counter.bump]]">[[counter.display]]</div>
+		</div>
+	</div>
+	<div class = "tally-board-content tally-board-inventory" cv-if = "hasInventory">
+		<div class = "tally-board-row">
+			<div cv-each = "inventory:item"><img loading="lazy" src = "[[item.tallyIcon]]" class = "inventory-icon" /></div>
+			<div class = "tally-item [[inventoryBump]]">[[inventoryCounter]]</div>
+		</div>
+	</div>
+	</div>
+	<div class = "tally-board-row tally-board-total">
+		<div>[[totalLabel]]</div>
+		<div>[[totalValue]]</div>
+	</div>
+</div>

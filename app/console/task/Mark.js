@@ -18,7 +18,7 @@ export class Mark extends Task
 
 		this.print(`Character is at ${actor.x}, ${actor.y}.`);
 
-		Router.setQuery('map', Mark.viewport.currentMap.replace(/^\/map\//, ''));
+		Router.setQuery('map', Mark.viewport.baseMap.replace(/^\/map\//, ''));
 		Router.setQuery('start', `${Math.round(actor.x)},${Math.round(actor.y)}`);
 	}
 }

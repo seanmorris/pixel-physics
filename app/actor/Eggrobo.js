@@ -47,7 +47,7 @@ export class Eggrobo extends PointActor
 	{
 		const falling = this.args.falling;
 
-		if(this.viewport.args.audio && !this.shootingSample)
+		if(this.viewport.args.audio && !this.thrusterSound)
 		{
 			this.thrusterSound = new Audio('/Sonic/mecha-sonic-thruster.wav');
 

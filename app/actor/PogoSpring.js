@@ -40,7 +40,7 @@ export class PogoSpring extends Vehicle
 		this.args.bound = 0;
 
 		this.bindTo('occupant', (v,k,t,d,p) => {
-			if(p&&!v) 
+			if(p&&!v)
 			{
 				this.args.dead = true;
 				this.args.gSpeed = 0;
@@ -65,17 +65,21 @@ export class PogoSpring extends Vehicle
 			this.args.dead = false;
 		}
 
+		if(this.occupant && !this.args.falling && this.args.ySpeed > 0)
+		{
+			this.args.bound = -Math.floor(this.args.ySpeed || 0);
+		}
+
 		if(this.occupant && !this.frameout && !this.args.falling)
 		{
 			this.args.height = 16 + this.occupant.args.height;
-			this.args.bound = -Math.floor(this.ySpeedLast || 0);
 
 			this.frameout = this.viewport.onFrameOut(1, () => {
 				this.args.falling = true;
 				this.frameout = false;
-	
+
 				this.args.ySpeed = this.args.bound;
-	
+
 				if(this.args.ySpeed > -3)
 				{
 					this.args.ySpeed -= 3;
@@ -85,7 +89,7 @@ export class PogoSpring extends Vehicle
 				{
 					this.args.ySpeed -= 3;
 				}
-				
+
 				if(this.args.ySpeed < -24)
 				{
 					this.args.ySpeed = -24;
@@ -94,7 +98,7 @@ export class PogoSpring extends Vehicle
 
 			this.args.xSpeed *= 0.3;
 
-			const xDir = this.xAxis || this.xSpeedLast;
+			const xDir = this.xAxis || this.xSpeedLast || 0;
 
 			this.args.direction = Math.sign(xDir);
 			this.args.facing = Math.sign(xDir) < 0 ? 'left' : 'right';
@@ -114,7 +118,7 @@ export class PogoSpring extends Vehicle
 		}
 
 		this.noClip = this.args.dead;
-		
+
 		super.update();
 	}
 
@@ -149,7 +153,7 @@ export class PogoSpring extends Vehicle
 		this.args.bound  = 0;
 
 		super.sleep();
-		
+
 		this.args.facing = 'right';
 	}
 

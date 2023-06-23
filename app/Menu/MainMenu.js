@@ -106,7 +106,7 @@ export class MainMenu extends Menu
 			, get: () => this.parent.args.followerChar ?? 'Tails'
 		};
 
-		Character.prefix = new CharacterPreview(Character);
+		Character.prefix = new CharacterPreview(Character, this.parent);
 		// Follower.prefix = new CharacterPreview(Follower);
 
 		this.onRemove(() => Character.prefix.remove());
@@ -150,6 +150,45 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
+					, 'Manic Harbor Zone Act 1': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Manic Harbor Zone Act 2': {
+						tags: 'new'
+						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone-2.json'});
+							this.accept();
+						}
+					}
+
+					, 'Brooklyn Breakout Zone Act 1': {
+						tags: 'new'
+						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/brooklyn-zone.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/brooklyn-zone.json'});
+							this.accept();
+						}
+					}
+
+					, 'Brooklyn Breakout Zone Act 2': {
+						tags: 'new'
+						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/brooklyn-zone-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/brooklyn-zone-2.json'});
+							this.accept();
+						}
+					}
+
 					, 'Radical City Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/empty-zone.json'}, this.parent)
@@ -182,15 +221,6 @@ export class MainMenu extends Menu
 						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
-							this.accept();
-						}
-					}
-
-					, 'Manic Harbor Test Zone': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone.json'});
 							this.accept();
 						}
 					}
@@ -362,7 +392,7 @@ export class MainMenu extends Menu
 			}
 
 			, 'Multiplayer': {
-				tags: 'new'
+				tags: ''
 				, children: {
 					'Matrix Lobby': {
 						tags: 'new'
@@ -505,18 +535,18 @@ export class MainMenu extends Menu
 		this.refreshConnection();
 	}
 
-	onRendered(event)
-	{
-		super.onRendered(event);
+	// onRendered(event)
+	// {
+	// 	super.onRendered(event);
 
-		// this.args.twist = new Twist({
-		// 	id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		// });
+	// 	this.args.twist = new Twist({
+	// 		id:'menu-twist', scale:  64, width: Math.floor(64 * 1.618), height: 64
+	// 	});
 
-		// this.args.pinch = new Pinch({
-		// 	id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
-		// });
-	}
+	// 	this.args.pinch = new Pinch({
+	// 		id:'menu-pinch', scale:  64, width: Math.floor(64 * 1.618), height: 64
+	// 	});
+	// }
 
 	back(levels = 1)
 	{
