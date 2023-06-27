@@ -143,21 +143,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 4,
+            "columns": 6,
             "firstgid": 1382,
             "image": "../Sonic/tiles/common.png",
-            "imageheight": 32,
-            "imagewidth": 128,
+            "imageheight": 64,
+            "imagewidth": 192,
             "margin": 0,
             "name": "common",
             "spacing": 0,
-            "tilecount": 4,
+            "tilecount": 12,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 6,
-            "firstgid": 1386,
+            "firstgid": 1394,
             "image": "../ecco-jr/kelp-and-coral.png",
             "imageheight": 288,
             "imagewidth": 192,
@@ -170,7 +170,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 1440,
+            "firstgid": 1448,
             "image": "rolling.png",
             "imageheight": 1120,
             "imagewidth": 512,
@@ -183,7 +183,7 @@
         },
         {
             "columns": 62,
-            "firstgid": 2000,
+            "firstgid": 2008,
             "image": "../custom/red-starlight.png",
             "imageheight": 1344,
             "imagewidth": 1984,
@@ -196,7 +196,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 4604,
+            "firstgid": 4612,
             "image": "../Sonic/tiles/death-egg-3/tank.png",
             "imageheight": 256,
             "imagewidth": 128,
@@ -209,7 +209,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 4636,
+            "firstgid": 4644,
             "image": "../secret/stp.png",
             "imageheight": 256,
             "imagewidth": 128,
@@ -222,7 +222,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 4668,
+            "firstgid": 4676,
             "image": "../Sonic/tiles/lava-reef/rocks.png",
             "imageheight": 576,
             "imagewidth": 256,
@@ -235,7 +235,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 4812,
+            "firstgid": 4820,
             "image": "../Sonic/tiles/techno-tower/ground.png",
             "imageheight": 1024,
             "imagewidth": 512,
@@ -248,7 +248,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 5324,
+            "firstgid": 5332,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -261,7 +261,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 5388,
+            "firstgid": 5396,
             "image": "../Sonic/wooden-crate.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -274,7 +274,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 5392,
+            "firstgid": 5400,
             "image": "chemical-plant-tiles.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -287,7 +287,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 5648,
+            "firstgid": 5656,
             "image": "../Sonic/tiles/lava-reef/rocks-small.png",
             "imageheight": 128,
             "imagewidth": 256,
@@ -300,7 +300,7 @@
         },
         {
             "columns": 32,
-            "firstgid": 5680,
+            "firstgid": 5688,
             "image": "../Sonic/tiles/sandopolis/sand-loop.png",
             "imageheight": 1024,
             "imagewidth": 1024,
@@ -313,7 +313,7 @@
         },
         {
             "columns": 32,
-            "firstgid": 6704,
+            "firstgid": 6712,
             "image": "giant-loop.png",
             "imageheight": 1024,
             "imagewidth": 1024,
@@ -326,7 +326,7 @@
         },
         {
             "columns": 12,
-            "firstgid": 7728,
+            "firstgid": 7736,
             "image": "../Sonic/tiles/angel-island/ground-recolor.png",
             "imageheight": 864,
             "imagewidth": 384,
@@ -339,7 +339,7 @@
         },
         {
             "columns": 12,
-            "firstgid": 8052,
+            "firstgid": 8060,
             "image": "../Sonic/tiles/angel-island/ground.png",
             "imageheight": 1024,
             "imagewidth": 384,
@@ -352,7 +352,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 8436,
+            "firstgid": 8444,
             "image": "../Sonic/tiles/sandopolis/bricks.png",
             "imageheight": 1024,
             "imagewidth": 512,
@@ -365,7 +365,7 @@
         },
         {
             "columns": 41,
-            "firstgid": 8948,
+            "firstgid": 8956,
             "image": "../Sonic/tiles/angel-island/flora.png",
             "imageheight": 638,
             "imagewidth": 1312,
@@ -378,7 +378,7 @@
         },
         {
             "columns": 45,
-            "firstgid": 9727,
+            "firstgid": 9735,
             "image": "../Sonic/tiles/desert-palace/desert-palace.png",
             "imageheight": 960,
             "imagewidth": 1440,
