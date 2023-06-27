@@ -432,6 +432,19 @@
             "tilecount": 1,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 8754,
+            "image": "../Sonic/tiles/stardust-speedway/good-future-solids.png",
+            "imageheight": 768,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "stardust-solids",
+            "spacing": 0,
+            "tilecount": 384,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
