@@ -162,6 +162,25 @@ export class MainMenu extends Menu
 						}
 					}
 
+					, 'Agorapolis Zone Act 1 Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, suffix: new ZoneSuffix({map: '/map/emerald-isle.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
+							this.accept();
+						}
+					}
+
+					, 'Agorapolis Zone Act 2 Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
+						, suffix: new ZoneSuffix({map: '/map/emerald-isle-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/emerald-isle-2.json'});
+							this.accept();
+						}
+					}
+
 					, 'Radical City Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/empty-zone.json'}, this.parent)
@@ -194,27 +213,6 @@ export class MainMenu extends Menu
 						, suffix: new ZoneSuffix({map: '/map/west-side-zone-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl:'/map/west-side-zone-2.json'});
-							this.accept();
-						}
-					}
-
-					, 'Agorapolis Zone Act 1 Preview': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Preview of Agoropolis Zone Act 1'
-						, suffix: new ZoneSuffix({map: '/map/emerald-isle.json'}, this.parent)
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
-							this.accept();
-						}
-					}
-
-					, 'Agorapolis Zone Act 2 Preview': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, tags: 'new'
-						, subtext: 'Preview of Agoropolis Zone Act 2'
-						, suffix: new ZoneSuffix({map: '/map/emerald-isle-2.json'}, this.parent)
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/emerald-isle-2.json'});
 							this.accept();
 						}
 					}

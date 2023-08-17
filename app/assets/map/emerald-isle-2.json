@@ -246,6 +246,12 @@
                  "height":384,
                  "id":351,
                  "name":"exit-region",
+                 "properties":[
+                        {
+                         "name":"nextStage",
+                         "type":"string",
+                         "value":"empty-zone.json"
+                        }],
                  "rotation":0,
                  "type":"exit-region",
                  "visible":true,
