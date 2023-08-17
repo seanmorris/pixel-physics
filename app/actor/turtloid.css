@@ -5,15 +5,19 @@
 	top: -8px;
 	background-image: url(/Sonic/turtloid.png);
 	width: 56px;
-	height: 32px;
-/*	animation-name: hex-nut-spin;
-	animation-duration: 300ms;
-	animation-timing-function: steps(4);
-	animation-iteration-count: infinite;
-	animation-play-state: paused;
-	animation-delay: calc(-1000s + calc(2.75ms * var(--conveyed, 0)));
-	height: 24px;
-	top: 0;*/
+	height: 37px;
+}
+
+.actor-item.actor-turtloid[data-animation="swimming"] .sprite::after  {
+	animation: turtloid-swim infinite steps(3) 800ms;
+}
+
+.actor-item.actor-turtloid[data-animation="sinking"] .sprite::after  {
+	background-position-y: 0px;
+}
+
+.actor-item.actor-turtloid[data-animation="idle"] .sprite::after  {
+	background-position-y: -37px;
 }
 
 .actor-item.actor-turtloid .sprite::before {
@@ -45,4 +49,10 @@
 @keyframes turtloid-flame {
 	0% { background-position-y: 0px; }
 	100% { background-position-y: -16px; }
+}
+
+
+@keyframes turtloid-swim {
+	0% { background-position-y: 0px; }
+	100% { background-position-y: -111px; }
 }

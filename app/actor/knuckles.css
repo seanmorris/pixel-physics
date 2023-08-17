@@ -455,6 +455,34 @@
 	bottom: 0px;
 }
 
+.actor-item.actor-knuckles[data-animation="side-flip"] .sprite:after {
+	--sprite-offset-y: -1185px;
+	--sprite-offset-x: -0px;
+	animation: knuckles-corkscrew steps(12) infinite 0.75s forwards;
+}
+
+.actor-item.actor-knuckles[data-animation="corkscrew"] .sprite:after {
+	--sprite-offset-y: -1185px;
+	--sprite-offset-x: -0px;
+	animation: knuckles-corkscrew steps(12) infinite 1s calc(-1s * var(--corkscrew)) forwards;
+	animation-play-state: paused;
+}
+
+.actor-item.actor-knuckles[data-animation="barrel-roll"] .sprite:after {
+	--sprite-offset-y: -1185px;
+	--sprite-offset-x: -0px;
+	animation: knuckles-corkscrew steps(12) infinite 1s calc(-1s + calc(-1s * var(--corkscrew))) forwards;
+	animation-play-state: paused;
+	/*transform: rotate(90deg);*/
+	/*transition: transform 1s;*/
+}
+
+.actor-item.actor-knuckles[data-animation="flip"] .sprite:after {
+	--sprite-offset-y: -1185px;
+	--sprite-offset-x: -0px;
+	animation: knuckles-corkscrew steps(12) infinite 500ms forwards;
+}
+
 @keyframes knuckles-punch-aura {
 	from{
 		background-position: calc(-64px * 0) 0px;
@@ -512,5 +540,14 @@
 	}
 	to {
 		opacity: 0;
+	}
+}
+
+@keyframes knuckles-corkscrew {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-768px + var(--sprite-offset-x)) var(--sprite-offset-y);
 	}
 }

@@ -715,6 +715,8 @@ export class Viewport extends View
 						return;
 					}
 
+					this.args.hiddenNowPlaying = '';
+
 					this.onFrameOut(60, () => this.args.hideNowPlaying = '');
 
 					if(!this.timers.has(Bgm))
@@ -1273,7 +1275,7 @@ export class Viewport extends View
 		return currentSave ? currentSave.getZoneState(zone || currentZone) : {};
 	}
 
-	loadMap({mapUrl, networked = false})
+	loadMap({mapUrl, networked = false, useCheckpoint = true})
 	{
 		this.maps.clear();
 
@@ -1424,7 +1426,6 @@ export class Viewport extends View
 					}
 				}
 			}
-
 		});
 
 		// if(mapUrl === '/map/see-saw-test.json')
@@ -1433,7 +1434,7 @@ export class Viewport extends View
 		// }
 
 		let waiter = new Promise(a => setTimeout(a, 6500));
-		const cardShown = this.args.controlCardShown;
+		const cardShown = this.args.controlCardShown && !this.args.networked;
 		const willShowCard = !cardShown && !this.args.map && (!this.args.selectedChar || this.args.selectedChar === 'Sonic' ||  this.args.selectedChar === 'Tails' ||  this.args.selectedChar === 'Knuckles');
 
 		if(!this.replay && willShowCard && !Router.query.map)
@@ -1452,7 +1453,7 @@ export class Viewport extends View
 		const all = Promise.all([tileMap.ready, waiter]);
 
 		all.then(() => load.args.text = `starting level`);
-		all.then(() => this.startLevel());
+		all.then(() => this.startLevel({useCheckpoint}));
 
 		return all;
 	}
@@ -1806,10 +1807,25 @@ export class Viewport extends View
 
 		this.fillBackground();
 
-		if(this.args.networked)
+		if(this.args.networked && !this.remotePlayer)
 		{
 			const sonic = new Sonic({name:'Player 1', id: String(new Uuid)}, this);
 			const tails = new Sonic({name:'Player 2', id: String(new Uuid)}, this);
+
+			if(this.args.playerId === 1)
+			{
+				this.nextControl  = sonic;
+				this.remotePlayer = tails;
+
+				tails.args.netplayer = true;
+			}
+			else if(this.args.playerId === 2)
+			{
+				this.remotePlayer = sonic;
+				this.nextControl  = tails;
+
+				sonic.args.netplayer = true;
+			}
 
 			const startDef = this.defsByName.get('player-start');
 			sonic.args.x = startDef.x;
@@ -1826,21 +1842,6 @@ export class Viewport extends View
 
 			this.actors.add(sonic);
 			this.actors.add(tails);
-
-			if(this.args.playerId === 1)
-			{
-				this.nextControl  = sonic;
-				this.remotePlayer = tails;
-
-				tails.args.netplayer = true;
-			}
-			else if(this.args.playerId === 2)
-			{
-				this.remotePlayer = sonic;
-				this.nextControl  = tails;
-
-				sonic.args.netplayer = true;
-			}
 		}
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
@@ -2020,6 +2021,8 @@ export class Viewport extends View
 
 							this.args.xOffset = 0.5;
 							this.args.yOffset = 0.5;
+
+							Bgm.play(this.meta.bgm, {loop:true});
 						}
 					}
 				}
@@ -2558,7 +2561,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = [0.50, 0.45, 0.50, 0.55][actor.args.mode];
 				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
 				this.maxCameraBound = 96;
-				cameraSpeed = 24;
+				cameraSpeed = 18;
 				break;
 
 			case 'perspective':
@@ -2654,8 +2657,8 @@ export class Viewport extends View
 				break;
 
 			case 'cliff':
-				this.args.xOffsetTarget = 0.50 + -0.02 * actor.args.direction;
-				this.args.yOffsetTarget = 0.45;
+				this.args.xOffsetTarget = 0.50 + -0.1 * actor.args.direction;
+				this.args.yOffsetTarget = 0.30;
 
 				cameraSpeed = 30;
 
@@ -2663,7 +2666,7 @@ export class Viewport extends View
 
 			case 'bridge':
 				this.args.xOffsetTarget = 0.50;
-				this.args.yOffsetTarget = 0.40;
+				this.args.yOffsetTarget = 0.35;
 
 				cameraSpeed = 24;
 
@@ -3269,6 +3272,7 @@ export class Viewport extends View
 		for(const actor of this.actors.items())
 		{
 			actor.initialize && actor.initialize();
+			actor.vizi = false;
 		}
 	}
 
@@ -5369,6 +5373,11 @@ export class Viewport extends View
 		{
 			this.server && this.server.close();
 			this.client && this.client.close();
+
+			this.actors.remove(this.remotePlayer);
+			this.actors.remove(this.controlActor);
+
+			this.controlActor = this.remotePlayer = null;
 		}
 
 		this.args.fade = this.args.fade === true ? this.args.fade : false;
@@ -5443,6 +5452,7 @@ export class Viewport extends View
 
 			const layers = this.args.layers;
 			const layerCount = layers.length;
+
 			for(const actor of this.actors.items())
 			{
 				this.actors.remove(actor);
@@ -5493,7 +5503,7 @@ export class Viewport extends View
 
 					if(this.args.networked)
 					{
-						menu.args.initialPath = ['Multiplayer', 'Matrix Lobby'];
+						menu.args.initialPath = ['Multiplayer'];
 					}
 
 					cards.push(menu);
@@ -5615,6 +5625,11 @@ export class Viewport extends View
 
 	getServer(refresh = false)
 	{
+		if(!refresh && this.server && this.server.peerServer && this.server.peerServer.connectionState === 'new')
+		{
+			return this.server;
+		}
+
 		const rtcConfig = {
 			iceServers: [
 				{urls: this.settings.iceServer1},
@@ -5622,7 +5637,9 @@ export class Viewport extends View
 			]
 		};
 
-		const server = (!refresh && server) || new RtcServer(rtcConfig);
+		const server = (refresh || !this.server)
+			? (new RtcServer(rtcConfig))
+			: (this.server || new RtcServer(rtcConfig));
 
 		const onOpen = event => {
 			// console.log('Connection opened!');
@@ -5662,7 +5679,13 @@ export class Viewport extends View
 			}
 		};
 
-		this.listen(server, 'open', onOpen, {once:true});
+		const onClose = event => {
+			this.actors.remove(this.remotePlayer);
+			this.quit(2)
+		};
+
+		this.listen(server, 'open',    onOpen,  {once:true});
+		this.listen(server, 'close',   onClose, {once:true});
 		this.listen(server, 'message', onMessage);
 
 		this.server = server;
@@ -5672,6 +5695,11 @@ export class Viewport extends View
 
 	getClient(refresh = false)
 	{
+		if(!refresh && this.client && this.client.peerClient && this.client.peerClient.connectionState === 'new')
+		{
+			return this.client;
+		}
+
 		const rtcConfig = {
 			iceServers: [
 				{urls: this.settings.iceServer1},
@@ -5679,7 +5707,10 @@ export class Viewport extends View
 			]
 		};
 
-		const client = (!refresh && this.client) || new RtcClient(rtcConfig);
+		// const client = (!refresh && this.client) || new RtcClient(rtcConfig);
+		const client = (refresh || !this.client)
+			? (new RtcClient(rtcConfig))
+			: (this.client || new RtcClient(rtcConfig));
 
 		const onOpen = event => {
 			// console.log('Connection opened!')
@@ -5720,8 +5751,10 @@ export class Viewport extends View
 			}
 		};
 
+		const onClose = event => this.quit(2);
 
-		this.listen(client, 'open', onOpen, {once:true});
+		this.listen(client, 'open',    onOpen,  {once:true});
+		this.listen(client, 'close',   onClose, {once:true});
 		this.listen(client, 'message', onMessage);
 
 		this.client = client;

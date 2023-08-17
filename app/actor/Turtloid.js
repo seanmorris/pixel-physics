@@ -14,6 +14,7 @@ export class Turtloid extends Block
 		this.args.float    = -1;
 		this.args.type     = 'actor-item actor-turtloid';
 		this.args.static   = 0;
+		this.args.pathSpeed = 4;
 	}
 
 	updateStart()
@@ -21,15 +22,33 @@ export class Turtloid extends Block
 		if(this.standingUnder.size)
 		{
 			this.otherDefs.path = this.otherDefs.ridePath;
+
 		}
 		else
 		{
 			this.otherDefs.path = null;
+
 		}
 
 		super.updateStart();
 
 		this.args.direction = Math.sign(this.args.x - this.xLast) || this.args.direction;
+
+		const xSpeed = this.xLast - this.args.x;
+		const ySpeed = this.yLast - this.args.y;
+
+		if(xSpeed)
+		{
+			this.args.animation = 'swimming';
+		}
+		else if(ySpeed)
+		{
+			this.args.animation = 'sinking';
+		}
+		else
+		{
+			this.args.animation = 'idle';
+		}
 	}
 
 	// sleep()

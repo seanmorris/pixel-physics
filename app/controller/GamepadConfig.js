@@ -55,7 +55,7 @@ export class GamepadConfig extends SkippableCard
 					, dpad: 'Move'
 					, a:    'Jump'
 					, aa:   'Fly'
-					, b:    'Punch'
+					, b:    'Punch / Drop off wall'
 					, ad:   'Use Shield / Spindash'
 					, d:    'Dive'
 					// , x:    'Light Dash / Grab Object'

@@ -45,7 +45,17 @@ export class RtcServer extends Mixin.with(EventTargetMixin)
 
 	send(input)
 	{
-		this.peerServerChannel && this.peerServerChannel.send(input);
+		if(!this.peerServerChannel)
+		{
+			return;
+		}
+
+		if(this.peerServerChannel.readyState !== 'open')
+		{
+			return;
+		}
+
+		this.peerServerChannel.send(input);
 	}
 
 	close()

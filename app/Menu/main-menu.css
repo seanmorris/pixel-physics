@@ -666,7 +666,7 @@ input::-webkit-inner-spin-button {
 }
 
 li:not(.focused) .character-preview .character {
-	transition: background-image 1s linear;
+	/* transition: background-image 1s linear; */
 	/* --color-filter: invert(0) contrast(1) brightness(1); */
 }
 .character-preview ~ span {

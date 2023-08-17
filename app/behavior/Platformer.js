@@ -15,6 +15,8 @@ export class Platformer
 {
 	updateStart(host)
 	{
+		host.args.wasHanging = host.args.falling && host.args.hangingFrom;
+
 		this.stepsTaken = 0;
 
 		if(host.knocked)
@@ -1009,9 +1011,9 @@ export class Platformer
 				host.args.gSpeed  = 0;
 			}
 
-			if(!host.willStick && host.args.falling && !host.args.static && !host.noClip)
+			if(!host.willStick && (host.args.falling || host.args.standingOn) && !host.args.static && !host.noClip)
 			{
-				let popOut = 16;
+				let popOut = 64;
 
 				const radius = host.args.width * 0.5;
 
@@ -1460,7 +1462,7 @@ export class Platformer
 						}
 
 						host.args.groundAngle = groundActor.groundAngle || 0;
-						host.args.standingOn  = groundActor;
+						host.args.standingOn = groundActor;
 
 						// if(groundActor.args.standingLayer)
 						// {

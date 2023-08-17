@@ -112,6 +112,17 @@ export class Tails extends PointActor
 
 	update()
 	{
+		if((!this.args.falling && this.groundTime > 3) || (this.args.falling && this.fallTime > 90))
+		{
+			this.args.twistRamp = false
+		}
+
+		if(this.yAxis === 0)
+		{
+			this.args.lookTime = 0;
+			this.args.cameraBias = 0;
+		}
+
 		const falling = this.args.falling;
 
 		if(!this.viewport)
@@ -119,9 +130,13 @@ export class Tails extends PointActor
 			return;
 		}
 
-		if(this.args.bouncing)
+		if(this.args.bouncing || this.args.wasHanging)
 		{
 			this.args.flying = false;
+			if(this.flyingSound)
+			{
+				this.flyingSound.pause();
+			}
 		}
 
 		if(this.args.flying)
@@ -342,6 +357,16 @@ export class Tails extends PointActor
 				this.args.animation = 'dropping';
 			}
 		}
+
+		if(this.args.twistRamp)
+		{
+			this.args.animation = 'side-flip';
+		}
+
+		if(!this.args.falling)
+		{
+			this.dashed = false;
+		}
 	}
 
 	command_0(button)
@@ -357,6 +382,11 @@ export class Tails extends PointActor
 		if(!this.args.jumping)
 		{
 			return
+		}
+
+		if(this.args.wasHanging)
+		{
+			return;
 		}
 
 		if(!this.args.falling)

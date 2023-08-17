@@ -11,7 +11,7 @@ export class Spindash extends Behavior
 			return;
 		}
 
-		if(host.yAxis < 0.55 && !host.args.gSpeed)
+		if(host.yAxis < 0.55 && !host.args.gSpeed || host.groundTime < 5)
 		{
 			return;
 		}

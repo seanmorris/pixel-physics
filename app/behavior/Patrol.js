@@ -21,10 +21,12 @@ export class Patrol extends Behavior
 			{
 				host.args.gSpeed = speed;
 			}
+
+			host.args.direction = -Math.sign(host.args.gSpeed) || host.args.direction;
 		}
 		else
 		{
-			host.args.direction = -Math.sign(host.gSpeedLast || 1);
+			host.args.direction = -Math.sign(host.gSpeedLast) || host.args.direction;
 		}
 	}
 }

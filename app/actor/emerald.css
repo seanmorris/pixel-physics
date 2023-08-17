@@ -2,11 +2,9 @@
 	background-image: url(/Sonic/emerald-dull.png);
 }
 
-
 .actor-item.actor-emerald.emerald-orangered .sprite {
 	background-image: url(/Sonic/emerald-orangered.png);
 }
-
 
 .actor-item.actor-emerald.emerald-yellow .sprite {
 	background-image: url(/Sonic/emerald-yellow.png);
@@ -23,7 +21,6 @@
 .actor-item.actor-emerald.emerald-red-alt .sprite {
 	background-image: url(/Sonic/emerald-red-alt.png);
 }
-
 
 .actor-item.actor-emerald.emerald-white .sprite {
 	background-image: url(/Sonic/emerald-white.png);

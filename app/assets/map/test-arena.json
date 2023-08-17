@@ -610,6 +610,90 @@
                  "width":1120,
                  "x":27808,
                  "y":2416
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":172,
+                 "name":"ring",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"float",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":848,
+                 "y":2837.33333333333
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":173,
+                 "name":"ring",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"float",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":885.33,
+                 "y":2837.33333333333
+                }, 
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":174,
+                 "name":"ring",
+                 "properties":[
+                        {
+                         "name":"angle",
+                         "type":"string",
+                         "value":"-1.57"
+                        }, 
+                        {
+                         "name":"float",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"string",
+                         "value":"96"
+                        }],
+                 "rotation":0,
+                 "type":"ring",
+                 "visible":true,
+                 "width":32,
+                 "x":922.67,
+                 "y":2837.33333333333
                 }],
          "opacity":0.5,
          "type":"objectgroup",
@@ -618,7 +702,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":172,
+ "nextobjectid":175,
  "orientation":"orthogonal",
  "properties":[
         {

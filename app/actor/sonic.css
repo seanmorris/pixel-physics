@@ -38,7 +38,7 @@
 	transform-origin: 50%, bottom - 16px;*/
 }
 .actor-item.actor-sonic[data-netplayer=true] .sprite:after {
-	filter: blur(0px) hue-rotate(-60deg) saturate(350%);
+	/* filter: blur(0px) hue-rotate(-60deg) saturate(350%); */
 }
 
 .actor-item.actor-sonic .sprite:before {
@@ -150,6 +150,12 @@
 	--sprite-offset-x: -0px;
 	animation: sonic-corkscrew steps(12) infinite 1s calc(-1s * var(--corkscrew)) forwards;
 	animation-play-state: paused;
+}
+
+.actor-item.actor-sonic[data-animation="side-flip"] .sprite:after {
+	--sprite-offset-y: -960px;
+	--sprite-offset-x: -0px;
+	animation: sonic-corkscrew steps(12) infinite 0.75s forwards;
 }
 
 .actor-item.actor-sonic[data-animation="barrel-roll"] .sprite:after {

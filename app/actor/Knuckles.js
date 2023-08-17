@@ -116,9 +116,19 @@ export class Knuckles extends PointActor
 
 	update()
 	{
+		if((!this.args.falling && this.groundTime > 3) || (this.args.falling && this.fallTime > 90))
+		{
+			this.args.twistRamp = false
+		}
+
 		if(this.args.bellySliding)
 		{
 			this.xAxis = 0;
+		}
+
+		if(this.args.wasHanging)
+		{
+			this.args.flying = false;
 		}
 
 		if(this.args.flying)
@@ -240,6 +250,12 @@ export class Knuckles extends PointActor
 		if(this.args.mercy)
 		{
 			this.args.flying = false;
+		}
+
+		if(this.yAxis === 0)
+		{
+			this.args.lookTime = 0;
+			this.args.cameraBias = 0;
 		}
 
 		if(!falling)
@@ -654,6 +670,11 @@ export class Knuckles extends PointActor
 		{
 			this.args.animation = 'dead';
 		}
+
+		if(this.args.twistRamp)
+		{
+			this.args.animation = 'side-flip';
+		}
 	}
 
 	updateEnd()
@@ -689,6 +710,11 @@ export class Knuckles extends PointActor
 		}
 
 		super.updateEnd();
+
+		if(!this.args.falling)
+		{
+			this.dashed = false;
+		}
 	}
 
 	startle()
@@ -734,6 +760,11 @@ export class Knuckles extends PointActor
 		super.command_0();
 
 		if(this.args.hangingFrom || !this.args.jumping || this.willPunch || !this.args.falling)
+		{
+			return;
+		}
+
+		if(this.args.wasHanging)
 		{
 			return;
 		}
@@ -915,6 +946,13 @@ export class Knuckles extends PointActor
 
 	command_1()
 	{
+		if(this.args.climbing)
+		{
+			this.args.x += this.args.width / 2 * (this.args.mode === 1 ? 1 : -1);
+			this.bMap('doJump', 0);
+			return;
+		}
+
 		if(this.args.falling)
 		{
 			this.readyStart(0, 1);

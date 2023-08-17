@@ -3,7 +3,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 677,
+    "nextobjectid": 713,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -12,9 +12,14 @@
             "value": "mushroom-hill"
         },
         {
+            "name": "bgm",
+            "type": "string",
+            "value": "AGORAPOLIS"
+        },
+        {
             "name": "deathLine",
             "type": "int",
-            "value": 4012
+            "value": 4016
         },
         {
             "name": "theme",
@@ -63,18 +68,18 @@
             "columns": 16,
             "firstgid": 177,
             "image": "../Sonic/tiles/aquatic-ruin/emerald-isle.png",
-            "imageheight": 1024,
+            "imageheight": 1248,
             "imagewidth": 512,
             "margin": 0,
             "name": "emerald-isle",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 624,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 16,
-            "firstgid": 689,
+            "firstgid": 801,
             "image": "rolling.png",
             "imageheight": 1120,
             "imagewidth": 512,
@@ -86,21 +91,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 8,
-            "firstgid": 1249,
+            "columns": 9,
+            "firstgid": 1361,
             "image": "../Sonic/tiles/aquatic-ruin/ruin-loop.png",
-            "imageheight": 224,
-            "imagewidth": 256,
+            "imageheight": 448,
+            "imagewidth": 288,
             "margin": 0,
             "name": "ruin-loop",
             "spacing": 0,
-            "tilecount": 56,
+            "tilecount": 126,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 1,
-            "firstgid": 1305,
+            "firstgid": 1487,
             "image": "../Sonic/emerald-isle-platform.png",
             "imageheight": 52,
             "imagewidth": 96,
@@ -113,7 +118,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 1306,
+            "firstgid": 1488,
             "image": "../Sonic/rock-flat-top.png",
             "imageheight": 35,
             "imagewidth": 46,
@@ -126,7 +131,7 @@
         },
         {
             "columns": 13,
-            "firstgid": 1307,
+            "firstgid": 1489,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
             "imageheight": 576,
             "imagewidth": 416,
@@ -139,7 +144,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 1541,
+            "firstgid": 1723,
             "image": "../secret/stp.png",
             "imageheight": 256,
             "imagewidth": 128,
@@ -154,17 +159,17 @@
     "tilewidth": 32,
     "type": "map",
     "version": "1.6",
-    "width": 800,
+    "width": 640,
     "types": [
         "block",
         "breakable-block",
         "emblem",
         "emerald",
-        "exit-region",
         "force-region",
         "grapple-point",
         "kill-region",
         "layer-switch",
+        "loading-region",
         "region",
         "ring",
         "ring-monitor",
@@ -172,6 +177,7 @@
         "sheild-star-monitor",
         "sheild-water-monitor",
         "signpost",
+        "skorp",
         "spikes",
         "spring",
         "star-post",

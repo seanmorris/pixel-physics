@@ -10,7 +10,7 @@ export class Crouch extends Behavior
 	{
 		if(host.yAxis > 0.55 && !host.args.falling && !host.args.gSpeed)
 		{
-			return false;
+			// return false;
 		}
 	}
 
@@ -32,6 +32,12 @@ export class Crouch extends Behavior
 
 		if(host.yAxis > 0.55 && !host.args.gSpeed && !host.args.falling && !host.spindashCharge)
 		{
+			host.args.lookTime--;
+
+			if(host.args.lookTime < -45)
+			{
+				host.args.cameraBias = -0.5;
+			}
 
 			host.args.animation = 'crouching';
 

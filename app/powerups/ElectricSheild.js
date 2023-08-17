@@ -138,6 +138,9 @@ export class ElectricSheild extends Sheild
 			viewport.particles.add(sparkParticleL);
 			viewport.particles.add(sparkParticleR);
 
+			viewport.onFrameOut(200, () => viewport.particles.remove(sparkParticleL));
+			viewport.onFrameOut(200, () => viewport.particles.remove(sparkParticleR));
+
 			this.particles.add(sparkParticleL);
 			this.particles.add(sparkParticleR);
 		}

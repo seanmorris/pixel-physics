@@ -60,7 +60,7 @@ export class Lobby extends View
 
 			matrix.joinRoom(this.args.roomId);
 
-			this.listen(matrix, 'matrix-event', event => console.log(event.detail.type, event));
+			// this.listen(matrix, 'matrix-event', event => console.log(event.detail.type, event));
 			this.listen(matrix, 'sonic-3000.lobby.message',  event => this.handleLobbyMessage(event));
 			this.listen(matrix, 'sonic-3000.lobby.step-out', event => this.handleLobbyStepOut(event));
 			this.listen(matrix, 'sonic-3000.lobby.step-in',  event => this.handleLobbyStepIn(event));
@@ -202,8 +202,6 @@ export class Lobby extends View
 		const sender = message.sender;
 		const [username,host] = sender.slice(1).split(':');
 
-		console.log(sender);
-
 		if(!this.users.has(sender))
 		{
 			const user = {
@@ -342,7 +340,7 @@ export class Lobby extends View
 
 		const getIceCandidates = this.client.getIceCandidates();
 
-		getIceCandidates.then(candidates => console.log(candidates));
+		// getIceCandidates.then(candidates => console.log(candidates));
 
 		this.messageService.accept(invite).then(cryptoMessage => {
 			Promise.all([getIceCandidates, this.client.offer()])
@@ -423,7 +421,7 @@ export class Lobby extends View
 
 			Promise.all([this.server.getIceCandidates(), answer])
 			.then(([candidates, offer]) => {
-				console.log(candidates);
+				// console.log(candidates);
 				cryptoMessage.createReply(JSON.stringify({candidates, token:offer}))
 				.then(reply => this.matrix.putEvent(this.args.roomId, 'sonic-3000.lobby.crypto-game-accept', reply));
 			})
@@ -516,24 +514,34 @@ export class Lobby extends View
 
 	refreshRtc()
 	{
-		this.server = this.parent.getServer(true);
-		this.client = this.parent.getClient(true);
+		const newServer = !this.server;// || this.server.peerServer.connectionState === 'closed';
+		const newClient = !this.client;// || this.client.peerClient.connectionState === 'closed';
+
+		this.server = this.server || this.parent.getServer();
+		this.client = this.client || this.parent.getClient();
 
 		const server = this.server;
 		const client = this.client;
 
 		const onOpen  = event => {
+			console.log('Connection Opened!')
 			this.parent.loadMap({mapUrl: '/map/emerald-isle.json', networked: true});
 			this.remove();
 		};
 
 		const onClose = event => this.disconnect();
 
-		server.addEventListener('open', onOpen, {once:true});
-		client.addEventListener('open', onOpen, {once:true});
+		if(newServer)
+		{
+			server.addEventListener('open', onOpen, {once:true});
+			server.addEventListener('close', onClose, {once:true});
+		}
 
-		server.addEventListener('close', onClose, {once:true});
-		client.addEventListener('close', onClose, {once:true});
+		if(newClient)
+		{
+			client.addEventListener('open', onOpen, {once:true});
+			client.addEventListener('close', onClose, {once:true});
+		}
 
 		// server.addEventListener('icecandidate', event => console.log(event.originalEvent.candidate));
 		// client.addEventListener('icecandidate', event => console.log(event.originalEvent.candidate));

@@ -66,6 +66,11 @@ export class Block extends PointActor
 		this.originalModes = new Map;
 		this.watching = new Set;
 
+		if(this.args.master)
+		{
+			this.childBlocks = new Set;
+		}
+
 		// this.args.bindTo('spriteSheet', v => console.trace(v));
 	}
 
@@ -123,8 +128,62 @@ export class Block extends PointActor
 		this.setTile();
 	}
 
+	initialize()
+	{
+		if(!this.otherDefs.path && !this.otherDefs.ridePath)
+		{
+			return;
+		}
+
+		this.pathReset();
+	}
+
+	pathReset()
+	{
+		if(this.args.master)
+		{
+			const path = this.otherDefs.path || this.otherDefs.ridePath;
+
+			if(path)
+			{
+				this.pathNext = path;
+				this.args.x = path.x;
+				this.args.y = path.y;
+
+				this.viewport.setColCell(this);
+
+				for(const child of this.childBlocks)
+				{
+					const path = child.otherDefs.path || child.otherDefs.ridePath;
+
+					child.pathNext = path;
+					child.args.x = path.x;
+					child.args.y = path.y;
+
+					this.viewport.setColCell(child);
+				}
+			}
+		}
+		else if(this.others.childOf)
+		{
+			this.others.childOf.pathReset();
+		}
+	}
+
 	wakeUp()
 	{
+		this.sleeping = false;
+
+		if(this.otherDefs.path)
+		{
+			if(this.others.childOf)
+			{
+				this.others.childOf.childBlocks.add(this);
+			}
+		}
+
+		this.pathReset();
+
 		this.setTile();
 
 		this.noClip = false;
@@ -278,18 +337,18 @@ export class Block extends PointActor
 			// }
 		}
 
-		if((type === 0 || type === -1) && !this.args.platform && other.controllable && other.args.ySpeed)
-		{
-			// other.args.y = other.yLast;
-			if(other.args.y < this.args.y)
-			{
-				other.args.y = this.y + -this.args.height;
-				other.args.falling = false;
-				other.args.ySpeed = this.args.ySpeed;
-			}
+		// if(!other.args.bouncing && (type === 0 || type === -1) && !this.args.platform && other.controllable && other.args.ySpeed)
+		// {
+		// 	// other.args.y = other.yLast;
+		// 	if(other.args.y < this.args.y)
+		// 	{
+		// 		other.args.y = this.y + -this.args.height;
+		// 		other.args.falling = false;
+		// 		other.args.ySpeed = this.args.ySpeed;
+		// 	}
 
-			return;
-		}
+		// 	return;
+		// }
 
 		if(this.args.platform && !other.args.dead && !(other instanceof Ring))
 		{
@@ -392,6 +451,23 @@ export class Block extends PointActor
 
 	update()
 	{
+		if(this.others.childOf)
+		{
+			return;
+		}
+		else if(this.args.master)
+		{
+			for(const child of this.childBlocks)
+			{
+				child._update();
+			}
+		}
+
+		return this._update();
+	}
+
+	_update()
+	{
 		if(!this.viewport)
 		{
 			return;
@@ -476,6 +552,8 @@ export class Block extends PointActor
 				const xDiff = this.args.x - next.x;
 				const yDiff = this.args.y - next.y;
 
+				const angle = Math.atan2(yDiff, xDiff);
+
 				if(Math.abs(xDiff) < speed && Math.abs(yDiff) < speed)
 				{
 					this.pathNext = next;
@@ -487,7 +565,7 @@ export class Block extends PointActor
 				}
 				else
 				{
-					this.args.x -= speed * Math.sign(xDiff);
+					this.args.x -= speed * Math.cos(angle);
 				}
 
 				if(Math.abs(yDiff) < speed)
@@ -496,7 +574,7 @@ export class Block extends PointActor
 				}
 				else
 				{
-					this.args.y -= speed * Math.sign(yDiff);
+					this.args.y -= speed * Math.sin(angle);
 				}
 			}
 		}
@@ -886,6 +964,13 @@ export class Block extends PointActor
 
 	sleep()
 	{
+		this.sleeping = true;
+
+		// if(this.others.childOf)
+		// {
+		// 	this.others.childOf.sleep();
+		// }
+
 		if(this.args.drop && this.args.once && !this.args.float)
 		{
 			this.viewport.actors.remove(this);

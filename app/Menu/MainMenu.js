@@ -40,6 +40,8 @@ export class MainMenu extends Menu
 
 		this.args.haveToken = false;
 
+		this.args.listening = false;
+
 		this.args.joinGame  = false;
 		this.args.hostGame  = false;
 		this.args.copy      = 'copy';
@@ -52,8 +54,6 @@ export class MainMenu extends Menu
 		this.args.back   = new CharacterString({font: this.font, value: '❶ back'});
 		this.args.revert = new CharacterString({font: this.font, value: '❸ default (hold)'});
 		this.args.select = new CharacterString({font: this.font, value: '✚ select'});
-
-		this.refreshConnection();
 
 		const Character = {
 			input: 'select'
@@ -122,33 +122,6 @@ export class MainMenu extends Menu
 					Character
 
 					// , Follower
-
-					// , 'Sonic Control Tutorial': {
-					// 	subtext: 'Learn the controls for Sonic'
-					// 	, characters: ['Sonic']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl:'/map/sonic-movement.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Tails Control Tutorial': {
-					// 	subtext: 'Learn the controls for Tails'
-					// 	, characters: ['Tails']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/tails-movement.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Knuckles Control Tutorial': {
-					// 	subtext: 'Learn the controls for Knuckles'
-					// 	, characters: ['Knuckles']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/knuckles-movement.json'});
-					// 		this.accept();
-					// 	}
-					// }
 
 					, 'Brooklyn Breakout Zone Act 1': {
 						tags: 'new'
@@ -225,11 +198,23 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Agorapolis Test Zone': {
+					, 'Agorapolis Zone Act 1 Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing art, layout and physics for Manic Harbor Zone'
+						, subtext: 'Preview of Agoropolis Zone Act 1'
+						, suffix: new ZoneSuffix({map: '/map/emerald-isle.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
+							this.accept();
+						}
+					}
+
+					, 'Agorapolis Zone Act 2 Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
+						, subtext: 'Preview of Agoropolis Zone Act 2'
+						, suffix: new ZoneSuffix({map: '/map/emerald-isle-2.json'}, this.parent)
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/emerald-isle-2.json'});
 							this.accept();
 						}
 					}
@@ -261,14 +246,14 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Peak Vape Test Zone': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing art for Peak Vape Zone'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/quartz-test.json'});
-							this.accept();
-						}
-					}
+					// , 'Peak Vape Test Zone': {
+					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+					// 	, subtext: 'Testing art for Peak Vape Zone'
+					// 	, callback: () => {
+					// 		this.parent.loadMap({mapUrl: '/map/quartz-test.json'});
+					// 		this.accept();
+					// 	}
+					// }
 
 					, 'Moon Test Zone': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
@@ -279,112 +264,11 @@ export class MainMenu extends Menu
 						}
 					}
 
-					// , 'Terrain Test': {
+					// , 'Flickie Test': {
 					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing different terrain types'
+					// 	, subtext: 'Flickie stress test'
 					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/bendy-bridges.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Pixel Hill Zone': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Movement Sandbox - all characters'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/pixel-hill-zone.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Space Pinball Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing pinball physics'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/pinball-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-					// , 'Belt and Wheel Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing elastic and rotational physics'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/belt-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-					// , 'See-Saw Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing see-saw physics'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/see-saw-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Vehicle Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing vehicles'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/vehicle-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Spotlight Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, subtext: 'Testing spotlight effects'
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/visor-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					, 'Flickie Test': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Flickie stress test'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
-							this.accept();
-						}
-					}
-
-					// , 'Light Dash Test': {
-					// 	characters: ['Sonic']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/light-dash-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Block Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/block-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Half Pipe Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/half-pipe-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Water Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/water-test.json'});
-					// 		this.accept();
-					// 	}
-					// }
-
-					// , 'Arch Test': {
-					// 	characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-					// 	, callback: () => {
-					// 		this.parent.loadMap({mapUrl: '/map/arc-test.json'});
+					// 		this.parent.loadMap({mapUrl: '/map/flickie-test.json'});
 					// 		this.accept();
 					// 	}
 					// }
@@ -397,6 +281,7 @@ export class MainMenu extends Menu
 					'Matrix Lobby': {
 						tags: 'new'
 						, callback: () => {
+							this.refreshConnection();
 							if(!this.loggingIn)
 							{
 								this.loggingIn = this.parent.matrixConnect(true);
@@ -423,6 +308,7 @@ export class MainMenu extends Menu
 						children: {
 							'Host a game': {
 								callback: () => {
+									this.refreshConnection();
 									this.args.hostOutput = '';
 									this.args.hostGame   = true;
 									this.args.copy       = 'copy';
@@ -431,6 +317,7 @@ export class MainMenu extends Menu
 
 							, 'Join a game': {
 								callback: () => {
+									this.refreshConnection();
 									this.args.joinOutput = '';
 									this.args.joinGame   = true;
 									this.args.copy       = 'copy';
@@ -457,16 +344,11 @@ export class MainMenu extends Menu
 				, get: ()    => parent.settings.graphicsLevel
 			}
 
-			// , 'Connect To Server': { available: 'unavailable' }
-			// , Load: SavestateMenu(parent)
-
 			, About: {
 				callback: () => {
 					window.open('/about.html');
 				}
 			}
-
-			// , 'Back': { callback: () => parent.quit(true) }
 		};
 	}
 
@@ -520,8 +402,11 @@ export class MainMenu extends Menu
 
 	disconnect()
 	{
-		this.server.close();
-		this.client.close();
+		this.server && this.server.close();
+		this.client && this.client.close();
+
+		this.server = null;
+		this.client = null;
 
 		this.parent.args.networked = false;
 		this.parent.args.chatBox = null;
@@ -531,8 +416,6 @@ export class MainMenu extends Menu
 		this.args.joinGame  = false;
 
 		this.clear();
-
-		this.refreshConnection();
 	}
 
 	// onRendered(event)
@@ -663,20 +546,33 @@ export class MainMenu extends Menu
 		const client = this.client;
 
 		const onOpen  = event => {
+			console.log('Peer connection opened!')
 			this.parent
 			.loadMap({mapUrl: '/map/emerald-isle.json', networked: true})
-			.then(() => console.log('Peer connection opened!'));
+			.then(() => console.log('Level started!'));
 		};
+
 		const onClose = event => {
+
 			this.disconnect(event);
-			this.parent.quit(2);
+
+			if(this.server && this.server.peerServer && this.server.peerServer.connectionState === 'closed')
+			{
+				console.log({server:this.server});
+				this.server = null;
+			}
+
+			if(this.client && this.client.peerClient && this.client.peerClient.connectionState === 'closed')
+			{
+				console.log({client:this.client});
+				this.client = null;
+			}
 		};
 
-		this.listen(server, 'open', onOpen);
-		this.listen(server, 'close', onClose);
-
-		this.listen(client, 'open', onOpen);
-		this.listen(client, 'close', onClose);
+		this.listen(server, 'open',  onOpen,  {once:true});
+		this.listen(client, 'open',  onOpen,  {once:true});
+		this.listen(server, 'close', onClose, {once:true});
+		this.listen(client, 'close', onClose, {once:true});
 	}
 
 	play()

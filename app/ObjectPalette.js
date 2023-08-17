@@ -90,6 +90,7 @@ import { Sparkle      } from './actor/Sparkle';
 import { Splats       } from './actor/Splats';
 import { Relief       } from './actor/Relief';
 import { Barnacle     } from './actor/Barnacle';
+import { Skorp        } from './actor/Skorp';
 
 // Newtron
 // Bomb
@@ -262,6 +263,7 @@ import { Herculad } from './actor/Herculad';
 import { Chopper } from './actor/Chopper';
 
 import { TrickRamp } from './actor/TrickRamp';
+import { TwistRamp } from './actor/TwistRamp';
 import { AirBomb } from './actor/AirBomb';
 
 import { EggCapsule } from './actor/EggCapsule';
@@ -405,6 +407,7 @@ export const ObjectPalette = {
 	, 'splats': Splats
 	, 'relief': Relief
 	, 'barnacle': Barnacle
+	, 'skorp': Skorp
 	, 'spitfire': SpitFire
 	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint
@@ -477,6 +480,7 @@ export const ObjectPalette = {
 	, 'herculad': Herculad
 	, 'chopper': Chopper
 	, 'trick-ramp': TrickRamp
+	, 'twist-ramp': TwistRamp
 	, 'air-bomb': AirBomb
 	, 'egg-capsule': EggCapsule
 	, 'spike-ring': SpikeRing

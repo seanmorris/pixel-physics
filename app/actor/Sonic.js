@@ -77,8 +77,6 @@ export class Sonic extends PointActor
 		this.args.width  = 16;
 		this.args.height = 40;
 
-		this.args.lookTime = 0;
-
 		this.args.normalHeight  = 40;
 		this.args.rollingHeight = 28;
 
@@ -103,6 +101,14 @@ export class Sonic extends PointActor
 		this.hyperSheet = 0;
 
 		// this.args.bindTo('doubleSpin', (v,k) => console.trace(k,v));
+
+		this.costumes = {
+			sant:  {h: -30, s: 1.5,  v: 1.25},
+			deep:  {h: -10, s: 1.5,  v: 1.25},
+			white: {h: 0,   s: 0,    v: 1.25},
+			red:   {h: 115, s: 1.75, v: 1.00},
+			brown: {h: 125, s: 1.15, v: 0.50},
+		};
 
 		this.args.bindTo('falling', v => {
 
@@ -205,11 +211,32 @@ export class Sonic extends PointActor
 		this.rotatedSpriteSheet = this.spriteSheet;
 
 		const updateSprite = () => {
-			const h = Number(this.viewport.customColor.h ?? 0);
-			const s = Number(this.viewport.customColor.s ?? 1);
-			const v = Number(this.viewport.customColor.v ?? 1);
+
+			let h = Number(this.viewport.customColor.h ?? 0);
+			let s = Number(this.viewport.customColor.s ?? 1);
+			let v = Number(this.viewport.customColor.v ?? 1);
+
+			if(this.viewport.args.networked)
+			{
+				const costume = 'deep';
+
+				h = this.costumes[costume].h;
+				s = this.costumes[costume].s;
+				v = this.costumes[costume].v;
+			}
+
+			if(this.args.netplayer)
+			{
+				const costume = 'sant';
+
+				h = this.costumes[costume].h;
+				s = this.costumes[costume].s;
+				v = this.costumes[costume].v;
+			}
 
 			this.rotateMainColor(h,s,v);
+
+			// this.args.spriteSheet = this.args.rotatedSpriteSheet;
 
 			this.box.node.style.setProperty('--sprite-sheet', `url(${this.args.rotatedSpriteSheet})`);
 		};
@@ -296,6 +323,7 @@ export class Sonic extends PointActor
 		if((!this.args.falling && this.groundTime > 3) || (this.args.falling && this.fallTime > 90))
 		{
 			this.args.trickRamp = false
+			this.args.twistRamp = false
 		}
 
 		if(this.args.dead)
@@ -1005,6 +1033,11 @@ export class Sonic extends PointActor
 		{
 			this.args.animation = 'adventure-pose';
 		}
+
+		if(this.args.twistRamp)
+		{
+			this.args.animation = 'side-flip';
+		}
 	}
 
 	readInput()
@@ -1114,6 +1147,7 @@ export class Sonic extends PointActor
 		this.dropDashCharge = 0;
 
 		if(this.args.jumping
+			&& !this.args.wasHanging
 			&& !this.dashed
 			&& (!this.args.doubleSpin || this.args.doubleSpin === 2)
 			&& (!this.args.currentSheild || this.args.currentSheild.type === 'normal' || this.args.currentSheild.type === 'super')
@@ -1689,6 +1723,8 @@ export class Sonic extends PointActor
 		{
 			this.args.spriteSheet = this.rotatedSpriteSheet;
 
+			console.log(this.rotatedSpriteSheet);
+
 			this.args.gSpeedMax = this.gSpeedMaxNormal;
 			this.args.jumpForce = this.jumpForceNormal;
 			this.args.accel     = this.accelNormal;
@@ -1997,7 +2033,7 @@ export class Sonic extends PointActor
 
 		this.png.ready.then(()=>{
 			const newPng = this.png.recolor(rotatedColors);
-			this.args.rotatedSpriteSheet = this.args.spriteSheet = newPng.toUrl();
+			this.args.rotatedSpriteSheet = this.rotatedSpriteSheet = this.args.spriteSheet = this.spriteSheet = newPng.toUrl();
 		});
 	}
 }

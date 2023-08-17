@@ -9,7 +9,7 @@
     "height": 144,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 172,
+    "nextobjectid": 175,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -166,6 +166,7 @@
         "dolphin",
         "layer-switch",
         "region",
+        "ring",
         "sheild-electric-monitor",
         "sheild-fire-monitor",
         "sheild-water-monitor",

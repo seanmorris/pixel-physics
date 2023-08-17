@@ -77,6 +77,8 @@ else
 
 	Bgm.register('CITY_ESCAPE', '/audio/senoue-jun/city-escape.mp3');
 
+	Bgm.register('AGORAPOLIS', '/audio/AetheR/1063556_Forest.mp3');
+
 	Bgm.register('ACT-BOSS', '/audio/F-777/Double-Cross.mp3');
 	Bgm.register('ZONE-BOSS', '/audio/dex-arson/rampage.mp3');
 

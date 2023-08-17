@@ -175,6 +175,8 @@ export class PointActor extends View
 		this.powerups  = new Set;
 		this.behaviors = new Set;
 
+		this.args.lookTime = 0;
+
 		this.behaviors.add(new Platformer);
 
 		this.lastPointA = [];
@@ -589,7 +591,6 @@ export class PointActor extends View
 				});
 
 				const debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-
 					if(this.args.jumping)
 					{
 						return;
@@ -2417,7 +2418,7 @@ export class PointActor extends View
 			const press   = `command_${i}`;
 			const hold    = `hold_${i}`;
 
-			if((i == 0 && button.delta === 1 && (this.yAxis || (this.args.standingOn && this.args.standingOn.quickDrop))) || !this.args.standingOn || !this.args.standingOn.isVehicle)
+			if((i == 0 && button.delta === 1 && ((this.yAxis && this.args.falling) || (this.args.standingOn && this.args.standingOn.quickDrop))) || !this.args.standingOn || !this.args.standingOn.isVehicle)
 			{
 				if(button.delta === 1)
 				{
@@ -2433,13 +2434,14 @@ export class PointActor extends View
 
 					if(!cancel)
 					{
-						for(const behavior of this.behaviors)
+						for(const behavior of [...this.behaviors].reverse())
 						{
 							if(behavior[press])
 							{
 								if(behavior[press](this, button) === false)
 								{
 									cancel = true;
+									break;
 								}
 							}
 						}

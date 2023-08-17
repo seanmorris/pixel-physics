@@ -35,24 +35,32 @@
 	animation: tails-walk steps(8) infinite 512ms;
 }
 
-.actor-item.actor-tails[data-animation="corkscrew"] .sprite:after {
-	--sprite-offset-x: 0px;
+.actor-item.actor-tails[data-animation="side-flip"] .sprite:after {
 	--sprite-offset-y: -640px;
-	animation: tails-corkscrew steps(12) infinite 512ms;
+	--sprite-offset-x: -0px;
+	animation: tails-corkscrew steps(12) infinite 0.75s forwards;
 }
 
 .actor-item.actor-tails[data-animation="corkscrew"] .sprite:after {
-	--sprite-offset-x: 0px;
 	--sprite-offset-y: -640px;
-	animation: sonic-corkscrew steps(12) infinite 1s calc(-1s * var(--corkscrew)) forwards;
+	--sprite-offset-x: -0px;
+	animation: tails-corkscrew steps(12) infinite 1s calc(-1s * var(--corkscrew)) forwards;
 	animation-play-state: paused;
 }
 
 .actor-item.actor-tails[data-animation="barrel-roll"] .sprite:after {
-	--sprite-offset-x: 0px;
 	--sprite-offset-y: -640px;
+	--sprite-offset-x: -0px;
 	animation: tails-corkscrew steps(12) infinite 1s calc(-1s + calc(-1s * var(--corkscrew))) forwards;
 	animation-play-state: paused;
+	/*transform: rotate(90deg);*/
+	/*transition: transform 1s;*/
+}
+
+.actor-item.actor-tails[data-animation="flip"] .sprite:after {
+	--sprite-offset-y: -640px;
+	--sprite-offset-x: -0px;
+	animation: tails-corkscrew steps(12) infinite 500ms forwards;
 }
 
 .actor-item.actor-tails[data-animation="running"] .sprite:after {

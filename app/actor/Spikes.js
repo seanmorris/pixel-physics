@@ -118,7 +118,7 @@ export class Spikes extends PointActor
 		// 	return true;
 		// }
 
-		if(this.args.falling && !this.args.float)
+		if(!this.args.static && this.args.falling && !this.args.float)
 		{
 			other.damage(false);
 			return true;

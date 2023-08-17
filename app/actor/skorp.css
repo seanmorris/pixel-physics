@@ -1,0 +1,139 @@
+.actor-item.actor-skorp .sprite {
+	height: 26px;
+	width: 39px;
+}
+
+.actor-item.actor-skorp .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	/*background-image: url(/secret/super-seymour.png);*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/skorp-body.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 26px;
+	width: 39px;
+	z-index: 1;
+}
+
+.actor-item.actor-skorp .tail {
+	/* --tailAngle: 0deg;
+	--tailAngle: -21deg;
+	--tailAngle: 21deg; */
+	position: absolute;
+	width: 8px;
+	bottom: 28px;
+	/* display: flex;
+	flex-direction: column-reverse; */
+}
+
+.actor-item.actor-skorp .tail {
+	/* --tailAngle: 0deg;*/
+	/* --tailAngle: calc(-21deg * var(--direction)); */
+	/* --tailAngle: calc(21deg * var(--direction)); */
+	/* --tailAngle: -28deg; */
+	/* --tailAngle: 19deg; */
+}
+
+.actor-item.actor-skorp .tail {
+	/* --tailAngle: calc(-21deg * var(--aim-direction)); */
+}
+
+.actor-item.actor-skorp[data-direction="-1"] .tail {
+	left: 4px;
+}
+
+.actor-item.actor-skorp[data-direction="1"] .tail {
+	left: -12px;
+}
+
+.actor-item.actor-skorp .tail .segment {
+	/* background-image: url(/Sonic/skorp-tail.png); */
+	flex-shrink: 0;
+	width: 8px;
+	height: 8px;
+	background-repeat: no-repeat;
+	position: relative;
+	transform: rotate(calc(-1deg * var(--tail-angle, 0)));
+	transition: transform 0.20s ease-in;
+}
+
+.actor-item.actor-skorp .tail .segment::before {
+	background-image: url(/Sonic/skorp-tail.png);
+	position: absolute;
+	content: '';
+	width: 8px;
+	height: 8px;
+	transform: rotate(calc( calc(var(--tail-angle, 0) * 1deg) * calc(1 + var(--index, 0))));
+	transition: transform 0.20s ease-in;
+}
+
+.actor-item.actor-skorp .tail .fist {
+	background-image: url(/Sonic/skorp-fist.png);
+	flex-shrink: 0;
+	width: 10px;
+	height: 12px;
+	background-repeat: no-repeat;
+	position: relative;
+	transform: scaleX(-1);
+}
+
+
+.actor-item.actor-skorp .tail .gun {
+	background-image: url(/Sonic/skorp-gun.png);
+	flex-shrink: 0;
+	width: 24px;
+	height: 32px;
+	background-repeat: no-repeat;
+	position: relative;
+	transform: scaleX(var(--direction));
+	transition: transform 0.05s;
+}
+
+.actor-item.actor-skorp[data-direction="1"] .tail .gun {
+	left: -14px;
+}
+
+.actor-item.actor-skorp .tail .segment .segment {
+	transform-origin: 50% 150%;
+	bottom: 9px;
+}
+
+.actor-item.actor-skorp .tail .segment .fist {
+	transform-origin: 50% 150%;
+	bottom: 12px;
+}
+
+.actor-item.actor-skorp .tail .segment .gun {
+	transform-origin: 50% 150%;
+	bottom: 30px;
+}
+
+.actor-item.actor-skorp[data-animation="standing"] .sprite:after {
+	/* --sprite-offset-x: -32px; */
+}
+
+.actor-item.actor-skorp[data-animation="walking"] .sprite:after {
+	/* --sprite-offset-x: -128px; */
+	/* animation: skorp-walk steps(3) infinite 160ms; */
+}
+
+.actor-item.actor-skorp[data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+.actor-item.actor-skorp[data-animation="shooting"] .sprite:after {
+	/* --sprite-offset-x: 0px; */
+	/* --sprite-offset-x: -320px; */
+}
+
+@keyframes skorp-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
