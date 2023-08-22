@@ -1,0 +1,66 @@
+.actor-catakiller {
+	pointer-events: none;
+	z-index: calc(100 + var(--z));
+}
+
+.actor-catakiller-segment {
+	pointer-events: none;
+	z-index: calc(100 + var(--z));
+}
+
+.actor-catakiller .sprite {
+	width:  16px;
+	height: 24px;
+}
+
+.actor-catakiller-segment .sprite {
+	width:  16px;
+	height: 24px;
+}
+
+.actor-catakiller .sprite:after {
+	bottom: -3px;
+	left: 2px;
+	background-image: url(/Sonic/catakiller-head.png);
+	width:  16px;
+	height: 24px;
+	content: ' ';
+	position: absolute;
+	transform: scaleX(-1);
+	/* animation: catakiller-flap 300ms infinite steps(4) alternate; */
+	/* left: -3px;
+	top: -6px; */
+}
+
+.actor-catakiller[data-animation="mouth-open"] .sprite:after {
+	background-position-x: -16px;
+	bottom: -0px;
+	left: 1px;
+}
+
+.actor-catakiller-segment .sprite:after {
+	bottom: -2px;
+	left: 0;
+	background-image: url(/Sonic/catakiller-body.png);
+	width:  16px;
+	height: 16px;
+	content: ' ';
+	position: absolute;
+	transform: scaleX(-1);
+	transform: scaleX(-1)  translateY(
+		calc(0.333 * calc(-6px - calc(8px + calc(-1px * var(--space, 12)))) )
+	);
+	/* animation: catakiller-flap 300ms infinite steps(4) alternate; */
+	/* left: -3px;
+	top: -6px; */
+}
+
+/* @keyframes catakiller-flap {
+	from {
+		background-position: 0px 0px;
+	}
+	to {
+		background-position: -128px 0px;
+	}
+}
+ */

@@ -11,7 +11,9 @@
 	top: 0;
 	left: 0;
 	background-image: url(/Sonic/tails.png);
+	background-image: var(--sprite-sheet, url('/Sonic/tails.png'));
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	transition: background-image 0.25s ease-in;
 	height: 64px;
 	width: 64px;
 	--sprite-offset-x: 0px;
@@ -192,6 +194,46 @@
 	display: none;
 }
 
+.actor-item.actor-tails[data-pushing="-1"] .sprite:after,
+.actor-item.actor-tails[data-pushing="1"] .sprite:after {
+	left: 7px;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -704px;
+	background-position-y: var(--sprite-offset-y);
+	animation: sonic-run steps(4) infinite max(500ms, calc(calc(1 - var(--animation-bias)) * 2500ms));
+}
+
+.actor-item.actor-tails[data-animation="walking"][data-pushing="-1"] .tails-tails,
+.actor-item.actor-tails[data-animation="walking"][data-pushing="1"] .tails-tails {
+	display: initial;
+}
+
+.actor-item.actor-tails[data-animation="teeter"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -768px;
+	--animation-steps: -2;
+	--animation-width: 64px;
+
+	animation: tails-animate steps(var(--animation-steps)) infinite 96ms;
+}
+
+.actor-item.actor-tails[data-animation="transform"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -832px;
+	--animation-steps: -3;
+	background-position-y: var(--sprite-offset-y);
+	--animation-width: -64px;
+	animation: tails-animate steps(3) 250ms 1 forwards;
+}
+
+.actor-item.actor-tails[data-super="true"] .sprite {
+	animation: super-sonic-flicker infinite 0.4s;
+}
+
+.actor-item.actor-tails[data-hyper="true"] .sprite {
+	animation: super-sonic-flicker infinite alternate 0.25s;
+}
+
 @keyframes tails-animate {
 	from{
 		background-position-x: var(--sprite-offset-x);
@@ -271,7 +313,10 @@
 	height: 31px;
 
 	background-image: url(/Sonic/tails-tails.png);
+	background-image: var(--sprite-sheet-tails, url('/Sonic/tails-tails.png'));
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+
+	transition: background-image 0.25s ease-in;
 
 	z-index: -1;
 

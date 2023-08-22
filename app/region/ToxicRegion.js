@@ -2,6 +2,7 @@ import { Region } from "./Region";
 
 import { Ring } from "../actor/Ring";
 import { MarbleBlock } from "../actor/MarbleBlock";
+import { Block } from "../actor/Block";
 
 import { Tag } from 'curvature/base/Tag';
 import { Bindable } from 'curvature/base/Bindable';
@@ -100,7 +101,7 @@ export class ToxicRegion extends Region
 			return;
 		}
 
-		if(other instanceof MarbleBlock)
+		if(other instanceof Block)
 		{
 			return false;
 		}
@@ -114,10 +115,10 @@ export class ToxicRegion extends Region
 
 		super.collideA(other, type);
 
-		if(!other.controllable)
-		{
-			return false;
-		}
+		// if(!other.controllable && !other.pushed)
+		// {
+		// 	return false;
+		// }
 
 		if(other.args.mercy || other.immune(this, 'toxic'))
 		{

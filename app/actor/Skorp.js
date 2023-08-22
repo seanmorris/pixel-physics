@@ -8,6 +8,7 @@ import { Patrol } from '../behavior/Patrol';
 import { CanPop } from '../mixin/CanPop';
 
 import { Projectile } from '../actor/Projectile';
+import { Sfx } from '../audio/Sfx';
 
 export class Skorp extends Mixin.from(PointActor, CanPop)
 {
@@ -44,6 +45,8 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 
 		this.aggroCount = 0;
 		this.coolDown = 0;
+
+		this.args.shooting = 0;
 	}
 
 	onRendered()
@@ -51,6 +54,8 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 		super.onRendered();
 
 		this.autoAttr.get(this.box)['data-color'] = 'color';
+		this.autoAttr.get(this.box)['data-shooting'] = 'shooting';
+		this.autoAttr.get(this.box)['data-aiming'] = 'aimDirection';
 
 		this.autoStyle.get(this.box)['--segments'] = 'segmentCount';
 		this.autoStyle.get(this.box)['--segmentAngle'] = 'segmentAngle';
@@ -138,11 +143,11 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 		{
 			if(this.args.aimDirection !== this.args.direction)
 			{
-				this.args.tailAngle = -20 * this.args.aimDirection;
+				this.args.tailAngle = -19 * this.args.aimDirection;
 			}
 			else
 			{
-				this.args.tailAngle = -20 * this.args.aimDirection;
+				this.args.tailAngle = -21 * this.args.aimDirection;
 			}
 
 			this.coolDown = 30;
@@ -154,6 +159,11 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 			if(this.coolDown <= 0)
 			{
 				this.args.tailAngle = -8 * this.args.direction;
+
+				if(!this.args.gSpeed)
+				{
+					this.args.tailAngle = 0;
+				}
 			}
 			else
 			{
@@ -163,7 +173,7 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 			this.aggroCount = 0;
 		}
 
-		if(this.aggroCount > 10)
+		if(this.aggroCount > 20)
 		{
 			if(this.args.aimDirection !== this.args.direction)
 			{
@@ -178,7 +188,11 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 
 				this.viewport.spawn.add({object:ball});
 
-				this.aggroCount = 0;
+				this.aggroCount = 10;
+
+				this.args.shooting = 6;
+
+				Sfx.play('SHOT_FIRED');
 			}
 			else
 			{
@@ -193,8 +207,16 @@ export class Skorp extends Mixin.from(PointActor, CanPop)
 
 				this.viewport.spawn.add({object:ball});
 
-				this.aggroCount = 0;
+				this.aggroCount = 10;
+
+				this.args.shooting = 6;
+
+				Sfx.play('SHOT_FIRED');
 			}
+		}
+		else if(this.args.shooting > 0)
+		{
+			this.args.shooting--;
 		}
 
 		super.update();

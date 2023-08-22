@@ -1,0 +1,26 @@
+.actor-item.actor-toxic-barrel .sprite::after {
+	content: '';
+	position: absolute;
+	bottom: 0px;
+	left: -21px;
+	background-image: url(/doom/barrel.png);
+	width: 64px;
+	height: 64px;
+	z-index: 1;
+	background-repeat: no-repeat;
+}
+
+.actor-item.actor-toxic-barrel[data-animation=exploding] .sprite::after {
+	animation: toxic-barrel-explode 0.3s steps(5) 1;
+	background-position: -320px 64px;
+}
+
+
+@keyframes toxic-barrel-explode {
+	0%{
+		background-position: 0px -64px;
+	}
+	100%{
+		background-position: -320px -64px;
+	}
+}

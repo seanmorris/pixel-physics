@@ -26,6 +26,7 @@ export class Save extends Model
 	id       = null;
 	created  = Date.now();
 	emeralds = [];
+	characters = {};
 
 	zones = {
 		// '/map/empty-zone-2.json': {
@@ -53,6 +54,15 @@ export class Save extends Model
 		}
 
 		return save;
+	}
+
+	getCharacterState(name)
+	{
+		const save = this.characters[name] || {
+			cleared: {},
+		};
+
+		return this.characters[name] = save;
 	}
 
 	getZoneState(zone)

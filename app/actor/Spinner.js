@@ -1,4 +1,5 @@
 import { PointActor } from './PointActor';
+import { Block } from './Block';
 import { Sfx } from '../audio/Sfx';
 
 const Boosted = Symbol('Boosted');
@@ -26,7 +27,7 @@ export class Spinner extends PointActor
 
 	collideA(other)
 	{
-		if(other.isRegion || other.args.static)
+		if(other.isRegion || other.args.static || (other instanceof Block))
 		{
 			return;
 		}

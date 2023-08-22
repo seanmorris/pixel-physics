@@ -51,7 +51,8 @@ export class Flipper extends PointActor
 
 		if(other.buttons[0] && other.buttons[0].time === 1)
 		{
-			const rounded = this.roundAngle(-other.args.groundAngle + -Math.PI/2, 16, true);
+			// const rounded = this.roundAngle(-other.args.groundAngle + -Math.PI/2, 16, true);
+			const rounded = -other.args.groundAngle + -Math.PI/2;
 
 			this.args.animation = 'flipping';
 
@@ -63,6 +64,15 @@ export class Flipper extends PointActor
 			const flipMagnitude = flipFactor * this.args.direction;
 
 			other.impulse(this.args.power * flipMagnitude, rounded, true);
+
+			const xImpulse = Number(Number(Math.cos(rounded) * 1).toFixed(3));
+			const yImpulse = Number(Number(Math.sin(rounded) * 1).toFixed(3));
+
+			other.args.y += -4;
+
+			other.args.xSpeed  = xImpulse;
+			other.args.ySpeed  = yImpulse;
+			other.args.falling = true;
 
 			this.viewport.onFrameOut(3, () => this.args.animation = 'unflipping');
 

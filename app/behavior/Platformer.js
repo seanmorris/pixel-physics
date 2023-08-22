@@ -631,7 +631,7 @@ export class Platformer
 
 			host.args.cameraMode = vehicle.args.cameraMode;
 
-			if(host.willJump && (host.yAxis < 0 || (host.args.standingOn && host.args.standingOn.quickDrop)))
+			if(!host.args.standingOn.args.lockedIn && host.willJump && (host.yAxis < 0 || (host.args.standingOn && host.args.standingOn.quickDrop)))
 			{
 				const leaving = host.args.standingOn;
 
@@ -1018,14 +1018,14 @@ export class Platformer
 				const radius = host.args.width * 0.5;
 
 				while(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
-					&& !host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+					&& !host.getMapSolidAt(host.args.x + radius + 1, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
 					host.args.x += 1;
 					popOut--;
 				}
 
-				while(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x + radius + -1, host.args.y - host.args.height * 0.5)
 					&& !host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
@@ -1076,13 +1076,23 @@ export class Platformer
 
 				if(!host.args.canHide && !host.noClip)
 				{
-					let popOut = 16;
+					let popOut = 32;
+
+					let stuckInside;
 
 					while(!host.args.static
 						&& host.args.mode === 0
 						&& !host.getMapSolidAt(host.args.x, host.args.y - host.args.height, host.args.layer, 0)
-						&& host.getMapSolidAt(host.args.x, host.args.y - 1, host.args.layer, 0)
+						&& (stuckInside = host.getMapSolidAt(host.args.x, host.args.y - 1, host.args.layer, 0))
 					){
+						if(stuckInside.find && !stuckInside.find(other => {
+							const collisions = host.viewport.collisions.get(host);
+							return collisions && collisions.has(other);
+						}))
+						{
+							break;
+						}
+
 						if(--popOut <= 0)
 						{
 							return;
@@ -1116,12 +1126,21 @@ export class Platformer
 
 				if(!host.args.canHide && !host.noClip)
 				{
-					let popOut = 16;
+					let popOut = 32;
+					let stuckInside;
 
 					while(!host.args.static
 						&& host.args.mode === 0
-						&& host.getMapSolidAt(host.args.x, host.args.y - 1)
+						&& (stuckInside = host.getMapSolidAt(host.args.x, host.args.y - 1))
 					){
+						if(stuckInside.find && !stuckInside.find(other => {
+							const collisions = host.viewport.collisions.get(host);
+							return collisions && collisions.has(other);
+						}))
+						{
+							break;
+						}
+
 						if(--popOut <= 0)
 						{
 							return;
@@ -2890,17 +2909,20 @@ export class Platformer
 
 		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
 
-		airMag = airMag !== false ? airMag : host.castRayQuick(
-			scanDist
-			, originalAngle
-			, [-tiny, 0]
-		);
+		if(Math.abs(host.args.xSpeed) <= Math.abs(host.args.ySpeed))
+		{
+			airMag = airMag !== false ? airMag : host.castRayQuick(
+				scanDist
+				, originalAngle
+				, [-tiny, 0]
+			);
 
-		airMag = airMag !== false ? airMag : host.castRayQuick(
-			scanDist
-			, originalAngle
-			, [+tiny, 0]
-		);
+			airMag = airMag !== false ? airMag : host.castRayQuick(
+				scanDist
+				, originalAngle
+				, [+tiny, 0]
+			);
+		}
 
 		// if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
 		// {
@@ -3210,7 +3232,7 @@ export class Platformer
 					{
 						host.args.falling = false;
 
-						if(host.viewport.settings.rumble)
+						if(host.viewport.settings.rumble && !host.controller.willRumble)
 						{
 							host.controller.rumble && host.controller.rumble({
 								duration: 80,
@@ -3312,7 +3334,7 @@ export class Platformer
 					host.args.x += forePosition[0];
 					host.args.y -= forePosition[1];
 
-					if(host.viewport.settings.rumble)
+					if(host.viewport.settings.rumble && !host.controller.willRumble)
 					{
 						host.controller.rumble && host.controller.rumble({
 							duration: 80,
@@ -3768,6 +3790,11 @@ export class Platformer
 
 	doJump(host, force)
 	{
+		if(host.args.climbing && host.getMapSolidAt(host.args.x, host.args.y - host.args.height))
+		{
+			host.args.y += host.args.height;
+		}
+
 		if(
 			host.args.ignore
 			|| host.args.falling
@@ -4048,7 +4075,7 @@ export class Platformer
 
 			host.args.ySpeed = -host.args.jumpForce * drag * 0.75;
 
-			host.args.hangingFrom.unhook();
+			host.args.hangingFrom.unhook(host);
 
 			host.swing = false;
 

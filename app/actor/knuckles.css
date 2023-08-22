@@ -18,7 +18,9 @@
 	top: 0;
 	left: 0;
 	background-image: url(/Sonic/knuckles.png);
+	background-image: var(--sprite-sheet, '/Sonic/knuckles.png');
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	transition: background-image 0.1s ease-in-out;
 	height: 64px;
 	width: 64px;
 	--sprite-offset-x: 0px;
@@ -481,6 +483,69 @@
 	--sprite-offset-y: -1185px;
 	--sprite-offset-x: -0px;
 	animation: knuckles-corkscrew steps(12) infinite 500ms forwards;
+}
+
+.actor-item.actor-knuckles:not([data-animation^="climbing"])[data-pushing="-1"] .sprite:after,
+.actor-item.actor-knuckles:not([data-animation^="climbing"])[data-pushing="1"] .sprite:after {
+	left: -16px;
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1248px;
+	background-position-y: var(--sprite-offset-y);
+	animation: sonic-run steps(4) infinite max(500ms, calc(calc(1 - var(--animation-bias)) * 2500ms));
+}
+
+.actor-item.actor-knuckles[data-animation="teeter"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1312px;
+	--animation-steps: 8;
+	--animation-width: 64px;
+	top: 3px;
+
+	animation: knuckles-animate steps(var(--animation-steps)) infinite 960ms;
+}
+
+.actor-item.actor-knuckles[data-animation="teeter-2"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1376px;
+	--animation-steps: 3;
+	--animation-width: 64px;
+	/* top: 1px; */
+
+	animation: knuckles-animate steps(var(--animation-steps)) infinite 420ms;
+}
+
+.actor-item.actor-knuckles[data-animation="teeter-3"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1376px;
+	--animation-steps: 3;
+	--animation-width: 64px;
+	/* top: -3px; */
+
+	animation: knuckles-animate steps(var(--animation-steps)) infinite alternate-reverse 420ms;
+}
+
+.actor-item.actor-knuckles[data-hyper="true"] .sprite {
+	animation: hyper-sonic-flicker steps(5) infinite 0.25s alternate;
+}
+
+.actor-item.actor-knuckles[data-animation="transform"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1440px;
+	--animation-steps: -3;
+	background-position-y: var(--sprite-offset-y);
+	--animation-width: -64px;
+	animation: knuckles-animate steps(3) 250ms 1 forwards;
+}
+
+@keyframes knuckles-animate {
+	from{
+		background-position-x: var(--sprite-offset-x);
+		background-position-y: var(--sprite-offset-y);
+	}
+	to{
+		background-position-x: calc(calc(calc(-1 * var(--animation-steps)) * var(--animation-width)) + var(--sprite-offset-x));
+		background-position-y: var(--sprite-offset-y);
+	}
 }
 
 @keyframes knuckles-punch-aura {

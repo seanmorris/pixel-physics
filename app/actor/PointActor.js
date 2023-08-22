@@ -1218,6 +1218,13 @@ export class PointActor extends View
 			return;
 		}
 
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
 		let type;
 
 		if(other.args.y <= this.args.y - this.args.height)
@@ -1253,19 +1260,14 @@ export class PointActor extends View
 			// this.solid && !this.isVehicle && this.popOut(other);
 		}
 
-		if(!this.viewport)
+		if(!viewport.collisions.has(this))
 		{
-			return;
+			viewport.collisions.set(this, new Map);
 		}
 
-		if(!this.viewport.collisions.has(this))
+		if(!viewport.collisions.has(other))
 		{
-			this.viewport.collisions.set(this, new Map);
-		}
-
-		if(!this.viewport.collisions.has(other))
-		{
-			this.viewport.collisions.set(other, new Map);
+			viewport.collisions.set(other, new Map);
 		}
 
 		// if(this.viewport.collisions.get(this).has(other))
@@ -1275,15 +1277,10 @@ export class PointActor extends View
 
 		const invertType = type > -1 ? ((type + 2) % 4) : type;
 
-		const collisionListA = this.viewport.collisions.get(this, type);
-		const collisionListB = this.viewport.collisions.get(other, invertType);
-
 		// other.pause(true);
 
-		collisionListA.set(other, type);
-		collisionListB.set(this, invertType);
 
-		this.viewport.collisions.set(other, collisionListB);
+		// this.viewport.collisions.set(other, collisionListB);
 
 		this.collideB(other, type);
 		other.collideB(this, invertType);
@@ -1294,6 +1291,15 @@ export class PointActor extends View
 		const result = ab || ba;
 
 		this.args.colliding = this.colliding = (this.colliding || result || false);
+
+		if(result !== false)
+		{
+			const collisionListA = viewport.collisions.get(this, type);
+			const collisionListB = viewport.collisions.get(other, invertType);
+
+			collisionListA.set(other, type);
+			collisionListB.set(this, invertType);
+		}
 
 		return result;
 	}
@@ -3028,8 +3034,8 @@ export class PointActor extends View
 		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
-				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2) + -1);
-				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2));
+				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2));
+				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2 ));
 				top    = this.args.y - this.args.height;
 				bottom = this.args.y;
 

@@ -9,7 +9,7 @@
     "height": 144,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 175,
+    "nextobjectid": 179,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -163,6 +163,7 @@
     "version": "1.6",
     "width": 1024,
     "types": [
+        "catakiller",
         "dolphin",
         "layer-switch",
         "region",

@@ -46,11 +46,13 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 			return;
 		}
 
+		const viewport = this.viewport;
+
 		if(!this.lightning)
 		{
 			this.lightning = new Tag(`<div class = "particle-sparkle-lightning">`);
 
-			this.viewport.particles.add(this.lightning);
+			viewport.particles.add(this.lightning);
 
 			this.lightning.style({
 				'--x': this.args.x
@@ -58,7 +60,7 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 			});
 		}
 
-		const frameId = this.viewport.args.frameId + -this.args.offset;
+		const frameId = viewport.args.frameId + -this.args.offset;
 
 		if(frameId % 180 > 150)
 		{
@@ -87,12 +89,7 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 			const toX = this.args.x + Math.round(Math.cos(angle) * (length + -1));
 			const toY = this.args.y + Math.round(Math.sin(angle) * (length + -1));
 
-			if(!this.viewport)
-			{
-				return;
-			}
-
-			const blocking = this.viewport.actorsAtLine(this.args.x, this.args.y, toX, toY);
+			const blocking = viewport.actorsAtLine(this.args.x, this.args.y, toX, toY);
 
 			blocking.delete(this);
 
@@ -135,7 +132,7 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 
 			if(this.vizi)
 			{
-				const speed = 0.75;
+				const speed = 0.25;
 
 				const sparkL = new Projectile({
 					owner: this
@@ -159,8 +156,8 @@ export class Sparkle extends Mixin.from(PointActor, CanPop)
 					, y:this.args.y
 				});
 
-				this.viewport.spawn.add({object:sparkL});
-				this.viewport.spawn.add({object:sparkR});
+				viewport.spawn.add({object:sparkL});
+				viewport.spawn.add({object:sparkR});
 			}
 		}
 

@@ -120,7 +120,7 @@ export class Spring extends PointActor
 
 		if(other.args.hangingFrom)
 		{
-			other.args.hangingFrom.unhook();
+			other.args.hangingFrom.unhook(other);
 		}
 
 		if(other[WillSpring] || other[WontSpring])

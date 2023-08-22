@@ -97,7 +97,8 @@ export class Switch extends PointActor
 
 	collideA(other, type)
 	{
-		if(!other.args.falling && other.args.y == this.args.y)
+		// if(!other.args.falling || other.args.y >= this.args.y)
+		if(other.args.y >= this.args.y)
 		{
 			return false;
 		}

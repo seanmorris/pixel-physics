@@ -93,8 +93,12 @@ export class BarnacleTrap extends Mixin.from(PointActor, Constrainable)
 				other.args.stuck    = true;
 				other.args.jumping  = false;
 				other.args.spinning = false;
-				other.args.animation  = 'walking';
 				other.args.cameraBias = 0.2;
+
+				if(other.controllable)
+				{
+					other.args.animation  = 'walking';
+				}
 			}
 
 			if(other.xAxis)
@@ -139,10 +143,10 @@ export class BarnacleTrap extends Mixin.from(PointActor, Constrainable)
 		if(!this.stuck.has(other))
 		{
 			this.stuck.set(other, {xAxisLast: 0, wiggles: 8, yDiff: other.args.y - this.args.y});
+			this.args.falling = true;
+
 			this.args.xSpeed = other.args.xSpeed || other.args.gSpeed;
-
 			this.args.x = other.args.x;
-
 		}
 	}
 

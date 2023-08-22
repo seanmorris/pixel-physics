@@ -9,10 +9,16 @@ import { Spring } from './Spring';
 import { SkidDust } from '../behavior/SkidDust';
 import { Crouch }   from '../behavior/Crouch';
 import { LookUp }   from '../behavior/LookUp';
-import { TechnoSqueak } from './TechnoSqueak';
+import { EmeraldHalo } from '../behavior/EmeraldHalo';
+import { SuperForm } from '../behavior/SuperForm';
+
+import { Color } from '../lib/Color';
+import { Png } from '../sprite/Png';
 
 export class Knuckles extends PointActor
 {
+	png = new Png('/Sonic/knuckles.png');
+
 	constructor(args, parent)
 	{
 		super(args, parent);
@@ -25,21 +31,35 @@ export class Knuckles extends PointActor
 		this.behaviors.add(new Spindash);
 		this.behaviors.add(new Crouch);
 		this.behaviors.add(new LookUp);
+		this.behaviors.add(new SuperForm);
+		this.behaviors.add(new EmeraldHalo);
 
-		this.args.type      = 'actor-item actor-knuckles';
+		this.args.isHyper = this.args.isSuper = false;
+
+		this.args.type = 'actor-item actor-knuckles';
+
+		this.args.spriteSheet = this.spriteSheet = `url('/Sonic/knuckles.png')`;
+
+		this.gSpeedMaxNormal = 18;
+		this.gSpeedMaxSuper  = 20;
+		this.gSpeedMaxHyper  = 23;
+
+		this.climbSpeedMaxNormal = 4;
+		this.climbSpeedMaxSuper  = 6;
+
+		this.climbSpeedMax = this.climbSpeedMaxNormal;
 
 		this.jumpForceNormal = 9.5;
 		this.jumpForceSuper  = 10;
+		this.jumpForceHyper  = 11;
 
 		this.accelNormal = 0.15;
-		this.accelSuper  = 0.22;
+		this.accelSuper  = 0.24;
 
 		this.args.accel     = this.accelNormal;
 		this.args.decel     = 0.4;
 
-		this.args.weight    = 150;
-
-		this.args.gSpeedMax = 18;
+		this.args.gSpeedMax = this.gSpeedMaxNormal;
 		this.args.jumpForce = this.jumpForceNormal;
 		this.args.gravity   = 0.5;
 
@@ -48,8 +68,9 @@ export class Knuckles extends PointActor
 
 		this.args.punchMomentum = 0;
 
-		this.args.width     = 15;
-		this.args.height    = 41;
+		this.args.width  = 15;
+		this.args.height = 41;
+		this.args.weight = 150;
 
 		this.args.normalHeight = 41;
 		this.args.rollingHeight = 28;
@@ -67,6 +88,10 @@ export class Knuckles extends PointActor
 
 		this.flyTime = 0;
 
+		this.transformTime = 0;
+		this.args.minRingsSuper = 50;
+		this.args.minRingsHyper = 75;
+
 		this.args.bindTo('punchMomentum', v => this.args.punchSpeed = Math.abs(v * 0.5));
 
 		this.args.bindTo('falling', v => {
@@ -80,11 +105,40 @@ export class Knuckles extends PointActor
 			{
 				this.args.climbing = true;
 
+				if(this.isHyper && Math.abs(this.args.xSpeed) > 5)
+				{
+					this.viewport.args.shakeX = 16;
+
+					if(this.viewport && this.viewport.settings.rumble && this.controller && this.controller.rumble)
+					{
+						this.controller.rumble({
+							duration: 800,
+							strongMagnitude: 1.0,
+							weakMagnitude: 1.0
+						});
+
+						// this.onTimeout(240, () => {
+						// 	this.controller.rumble({
+						// 		duration: 100,
+						// 		strongMagnitude: 0.0,
+						// 		weakMagnitude: 0.25
+						// 	});
+						// });
+					}
+				}
+
 				this.args.gSpeed = 0;
 				this.args.xSpeed = 0;
 				this.args.ySpeed = 0;
 			}
 		});
+
+		this.costumes = {
+			Tails:   {h: -125, s: 1.0, v: 1.00},
+			Enerjak: {h:  120, s: 1.0, v: 0.55},
+			Pink:    {h:    0, s: 1.5, v: 1.50},
+			Wechnia: {h:   0,  s: 0.0, v: 0.85},
+		};
 	}
 
 	onRendered(event)
@@ -97,6 +151,7 @@ export class Knuckles extends PointActor
 		super.onRendered(event);
 
 		this.autoStyle.get(this.box)['--punchSpeed'] = 'punchSpeed';
+		this.autoStyle.get(this.box)['--sprite-sheet'] = 'spriteSheet';
 
 		this.punchAura = new Tag('<div class = "punch-aura">');
 		this.punchAura.style({display: 'none'})
@@ -112,10 +167,192 @@ export class Knuckles extends PointActor
 				this.punched++;
 			}
 		});
+
+		this.rotatedSpriteSheet = this.spriteSheet;
+
+		const updateSprite = () => {
+
+			let h = Number(this.viewport.customColor.h ?? 0);
+			let s = Number(this.viewport.customColor.s ?? 1);
+			let v = Number(this.viewport.customColor.v ?? 1);
+
+			this.rotateMainColor(h,s,v);
+
+			// this.args.spriteSheet = this.args.rotatedSpriteSheet;
+
+			this.box.node.style.setProperty('--sprite-sheet', `url(${this.args.rotatedSpriteSheet})`);
+		};
+
+		const debindH = this.viewport.customColor.bindTo('h', updateSprite, {wait:0});
+		const debindS = this.viewport.customColor.bindTo('s', updateSprite, {wait:0});
+		const debindV = this.viewport.customColor.bindTo('v', updateSprite, {wait:0});
+
+		this.onRemove(debindH);
+		this.onRemove(debindS);
+		this.onRemove(debindV);
+
+		if(this.viewport.args.mainPallet && this.costumes[this.viewport.args.mainPallet])
+		{
+			Object.assign(this.viewport.customColor, this.costumes[this.viewport.args.mainPallet]);
+		}
+
+		this.superSheet = 0;
+
+		const superColorsA = {
+			'f1958e': 'cacaca',
+			'd3565c': 'cacaca',
+			'c00020': 'b0b0b0',
+			'600020': '989898',
+			// '900000': '464646',
+		};
+
+		const superColorsB = {
+			'f1958e': 'faf1f1',
+			'd3565c': 'faf1f1',
+			'c00020': 'f5dfdf',
+			'600020': 'eecaca',
+			// '900000': 'f1d5d5',
+		};
+
+		if(!this.superSpriteSheetLoaders)
+		{
+			this.superSpriteSheetLoaders = this.png.ready.then(() => this.superSpriteSheets = [
+				this.png.recolor(superColorsA).toUrl(),
+				this.png.recolor(superColorsB).toUrl(),
+			]);
+		}
+
+		this.hyperSheet = 0;
+
+		const hyperColorsRed = {
+			'f1958e': 'fcfcfc',
+			'd3565c': 'fcfcfc',
+			'c00020': 'fcfcfc',
+			'600020': 'fcd8d8',
+			// '900000': 'fcb4b4',
+		};
+
+		const hyperColorsPurple = {
+			'f1958e': 'fcfcfc',
+			'd3565c': 'fcfcfc',
+			'c00020': 'fcfcfc',
+			'600020': 'fcd8fc',
+			// '900000': 'd8b4d8',
+		};
+
+		const hyperColorsCyan = {
+			'f1958e': 'd8fcfc',
+			'd3565c': 'd8fcfc',
+			'c00020': 'fcfcfc',
+			'600020': 'b4d8fc',
+			// '900000': '90b4fc',
+		};
+
+		const hyperColorsBlue = {
+			'f1958e': 'd8d8ff',
+			'd3565c': 'd8d8ff',
+			'c00020': 'b4b4d8',
+			'600020': 'a4a4d8',
+			// '900000': '6c6cb4',
+		};
+
+		const hyperColorsGreen = {
+			'f1958e': 'd8fcfc',
+			'd3565c': 'd8fcfc',
+			'c00020': 'd8fcd8',
+			'600020': 'b4fcb4',
+			// '900000': '00fc24',
+		};
+
+		const hyperColorsYellow = {
+			'f1958e': 'd8fcfc',
+			'd3565c': 'd8fcfc',
+			'c00020': 'd8fcb4',
+			'600020': 'd8fc48',
+			// '900000': 'd8d800',
+		};
+
+		const hyperColorsWhite = {
+			'f1958e': 'ffffff',
+			'd3565c': 'ffffff',
+			'c00020': 'fcfcfc',
+			'600020': 'd8d8d8',
+			// '900000': 'b4b4b4',
+		};
+
+		if(!this.hyperSpriteSheetLoader)
+		{
+			this.hyperSpriteSheetLoader = this.png.ready.then(() => this.hyperSpriteSheets = [
+				this.png.recolor(hyperColorsRed).toUrl()
+				, this.png.recolor(hyperColorsCyan).toUrl()
+				, this.png.recolor(hyperColorsPurple).toUrl()
+				, this.png.recolor(hyperColorsWhite).toUrl()
+				, this.png.recolor(hyperColorsGreen).toUrl()
+				, this.png.recolor(hyperColorsBlue).toUrl()
+				, this.png.recolor(hyperColorsYellow).toUrl()
+			]);
+		}
 	}
 
 	update()
 	{
+		if(this.isSuper)
+		{
+			if(this.isHyper)
+			{
+				if(this.viewport.args.frameId % 15 === 0)
+				{
+					this.hyperSheet++;
+					if(this.hyperSheet >= this.hyperSpriteSheets.length)
+					{
+						this.hyperSheet = 0;
+					}
+				}
+
+				this.hyperSpriteSheet = this.hyperSpriteSheets[ this.hyperSheet ];
+				this.args.spriteSheet = `url(${this.hyperSpriteSheet})`;
+			}
+			else
+			{
+				if(this.viewport.args.frameId % 15 === 0)
+				{
+					this.superSheet++;
+					if(this.superSheet >= this.superSpriteSheets.length)
+					{
+						this.superSheet = 0;
+					}
+				}
+
+				this.superSpriteSheet = this.superSpriteSheets[ this.superSheet ];
+				this.args.spriteSheet = `url(${this.superSpriteSheet})`;
+			}
+
+			const tick = this.isHyper ? 30 : 60;
+
+			if(this.viewport.args.frameId % tick === 0)
+			{
+				if(this.args.rings < 2)
+				{
+					this.isHyper = false;
+					this.setProfile();
+				}
+
+				if(this.args.rings > 0)
+				{
+					this.args.rings--;
+				}
+				else
+				{
+					this.isSuper = false;
+					this.isHyper = false;
+					this.setProfile();
+				}
+			}
+		}
+
+		this.args.isSuper = this.isSuper;
+		this.args.isHyper = this.isHyper;
+
 		if((!this.args.falling && this.groundTime > 3) || (this.args.falling && this.fallTime > 90))
 		{
 			this.args.twistRamp = false
@@ -141,6 +378,11 @@ export class Knuckles extends PointActor
 			while(this.getMapSolidAt(this.args.x + this.args.xSpeed, this.args.y))
 			{
 				this.args.y--;
+			}
+
+			if(this.isHyper && this.yAxis < -0.55)
+			{
+				this.args.ySpeed -= this.args.slowGravity * 1.1;
 			}
 
 			this.args.gravity = this.args.slowGravity;
@@ -338,7 +580,7 @@ export class Knuckles extends PointActor
 						{
 							this.args.animation = 'climbing-up';
 
-							if(Math.abs(this.args.gSpeed) < 4)
+							if(Math.abs(this.args.gSpeed) < this.climbSpeedMax)
 							{
 								const dir = [0,1,0,-1][this.args.mode];
 								this.args.direction = dir;
@@ -350,7 +592,7 @@ export class Knuckles extends PointActor
 					{
 						this.args.animation = 'climbing-down';
 
-						if(Math.abs(this.args.gSpeed) < 4)
+						if(Math.abs(this.args.gSpeed) < this.climbSpeedMax)
 						{
 							this.args.direction = this.args.mode === 1 ? 1 : -1;
 							this.args.gSpeed += this.args.direction;
@@ -391,6 +633,15 @@ export class Knuckles extends PointActor
 				else if(this.args.moving && this.args.gSpeed)
 				{
 					this.args.animation = 'walking';
+				}
+				else if(this.args.teeter)
+				{
+					this.args.animation = 'teeter';
+
+					if(this.idleTime > 56)
+					{
+						this.args.animation = 'teeter-2';
+					}
 				}
 				else
 				{
@@ -630,11 +881,6 @@ export class Knuckles extends PointActor
 			this.args.animation = 'grinding';
 		}
 
-		if(this.args.hangingFrom)
-		{
-			this.args.animation = 'hanging';
-		}
-
 		if(this.args.falling && this.springing && this.args.ySpeed >= 0)
 		{
 			this.args.animation = 'dropping';
@@ -642,6 +888,11 @@ export class Knuckles extends PointActor
 		else if(this.args.falling && this.springing)
 		{
 			this.args.animation = 'springdash';
+		}
+
+		if(this.args.hangingFrom)
+		{
+			this.args.animation = 'hanging';
 		}
 
 		if(this.args.standingOn && this.args.standingOn.isVehicle)
@@ -1119,7 +1370,7 @@ export class Knuckles extends PointActor
 		if(other instanceof Spring)
 		{
 			this.onNextFrame(()=>{
-				if(!this.args.falling)
+				if(!this.args.falling || this.args.hangingFrom)
 				{
 					return;
 				}
@@ -1127,7 +1378,63 @@ export class Knuckles extends PointActor
 				this.args.animation = 'springdash'
 			});
 		}
+
+		if(other.pop && this.isHyper)
+		{
+			other.pop(this);
+		}
 	}
+
+	rotateMainColor(rH = 0, rS = 1, rV = 1)
+	{
+		const rotatedColors = {
+			'f1958e': new Color('f1958e').rotate(rH, rS, rV).toString(),
+			'd3565c': new Color('d3565c').rotate(rH, rS, rV).toString(),
+			'c00020': new Color('c00020').rotate(rH, rS, rV).toString(),
+			// // '900000': new Color('900000').rotate(rH, rS, rV).toString(),
+			'600020': new Color('600020').rotate(rH, rS, rV).toString(),
+		};
+
+		this.png.ready.then(()=>{
+			const newPng = this.png.recolor(rotatedColors);
+			this.args.rotatedSpriteSheet = this.rotatedSpriteSheet = this.spriteSheet = newPng.toUrl();
+			this.args.spriteSheet = `url('${this.args.rotatedSpriteSheet}')`;
+		});
+	}
+
+	setProfile()
+	{
+		if(this.isHyper)
+		{
+			this.args.spriteSheet = `url('${this.hyperSpriteSheet}')`;
+
+			this.args.gSpeedMax = this.gSpeedMaxHyper;
+			this.args.jumpForce = this.jumpForceHyper;
+			this.climbSpeedMax  = this.climbSpeedMaxSuper;
+			this.args.accel     = this.accelSuper;
+		}
+		else if(this.isSuper)
+		{
+			this.args.spriteSheet = `url('${this.superSpriteSheet}')`;
+
+			this.args.gSpeedMax = this.gSpeedMaxSuper;
+			this.args.jumpForce = this.jumpForceSuper;
+			this.climbSpeedMax  = this.climbSpeedMaxSuper;
+			this.args.accel     = this.accelSuper;
+		}
+		else
+		{
+			this.args.spriteSheet = `url('${this.rotatedSpriteSheet}')`;
+
+			this.args.gSpeedMax = this.gSpeedMaxNormal;
+			this.args.jumpForce = this.jumpForceNormal;
+			this.climbSpeedMax  = this.climbSpeedMaxNormal;
+			this.args.accel     = this.accelNormal;
+		}
+	}
+
+	command_3()
+	{}
 
 	get solid() { return false; }
 	get canRoll() { return !this.args.climbing; }

@@ -61,13 +61,13 @@ export class MarbleBlock extends PointActor
 
 			this.args.pushed = Math.sign(other.args.gSpeed) || this.args.pushed;
 
-			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1))
+			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -4))
 			{
 				return true;
 			}
 
 
-			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1))
+			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -4))
 			{
 				return true;
 			}
@@ -78,7 +78,7 @@ export class MarbleBlock extends PointActor
 
 			const scan = this.scanBottomEdge(moveBy);
 
-			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y);
+			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y + -4);
 
 			if(blockers)
 			{
@@ -109,14 +109,21 @@ export class MarbleBlock extends PointActor
 				const nextCenter = this.bMap('findNextStep', moveBy).get(Platformer);
 				const nextWall   = this.bMap('findNextStep', moveBy + (radius * Math.sign(moveBy))).get(Platformer);
 
-				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
+				if(nextCenter[2] && !nextWall[3])
+				{
+					this.args.x += other.args.gSpeed;
+					this.args.xSpeed += other.args.gSpeed;
+				}
+				else if(!nextCenter[3] && !nextWall[3])
 				{
 					const otherRadius = other.args.width / 2;
 					const myRadius = this.args.width / 2;
 
 					if(Math.trunc(Math.abs(this.x - other.x)) <= (1 + otherRadius + myRadius))
 					{
-						this.args.x = other.args.x + (moveBy * (Math.abs(other.args.gSpeed) + myRadius + otherRadius));
+						// this.args.x = other.args.x + (moveBy * (Math.abs(other.args.gSpeed) + myRadius + otherRadius));
+						this.args.x += nextCenter[0];
+						this.args.y -= nextCenter[1];
 
 						const direction = Math.sign(other.args.gSpeed);
 

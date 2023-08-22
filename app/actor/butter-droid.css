@@ -1,0 +1,31 @@
+.actor-butter-droid{
+	pointer-events: none;
+	z-index: var(--z);
+}
+
+.actor-butter-droid .sprite {
+	width: 32px;
+	height: 32px;
+}
+
+.actor-butter-droid .sprite:after {
+	background-image: url(/Sonic/butterdroid.png);
+	width: 32px;
+	height: 32px;
+	content: ' ';
+	position: absolute;
+	animation: butter-droid-flap 300ms infinite steps(4) alternate;
+	transform: scaleX(-1);
+	left: -3px;
+	top: -6px;
+}
+
+@keyframes butter-droid-flap {
+	from {
+		background-position: 0px 0px;
+	}
+	to {
+		background-position: -128px 0px;
+	}
+}
+

@@ -3,7 +3,7 @@
     "height": 96,
     "infinite": false,
     "nextlayerid": 9,
-    "nextobjectid": 140,
+    "nextobjectid": 170,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -71,18 +71,18 @@
             "columns": 16,
             "firstgid": 178,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 13,
-            "firstgid": 690,
+            "firstgid": 738,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
             "imageheight": 576,
             "imagewidth": 416,
@@ -95,7 +95,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 924,
+            "firstgid": 972,
             "image": "chemical-plant-tiles.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -108,7 +108,7 @@
         },
         {
             "columns": 3,
-            "firstgid": 1180,
+            "firstgid": 1228,
             "image": "../Sonic/tiles/wing-fortress/industrial-platform-0.png",
             "imageheight": 32,
             "imagewidth": 96,
@@ -121,7 +121,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 1183,
+            "firstgid": 1231,
             "image": "../Sonic/rope-horizontal.png",
             "imageheight": 4,
             "imagewidth": 16,
@@ -134,7 +134,7 @@
         },
         {
             "columns": 32,
-            "firstgid": 1184,
+            "firstgid": 1232,
             "image": "../Sonic/tiles/azure-lake/azure-lake.png",
             "imageheight": 1024,
             "imagewidth": 1024,
@@ -147,7 +147,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 2208,
+            "firstgid": 2256,
             "image": "../Sonic/big-wheel.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -160,7 +160,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 2224,
+            "firstgid": 2272,
             "image": "big-wheel.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -173,7 +173,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 2240,
+            "firstgid": 2288,
             "image": "../Sonic/scd-128.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -186,7 +186,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 2256,
+            "firstgid": 2304,
             "image": "../Sonic/sa2-128.png",
             "imageheight": 128,
             "imagewidth": 128,
@@ -199,7 +199,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 2272,
+            "firstgid": 2320,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,

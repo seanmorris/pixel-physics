@@ -4,7 +4,7 @@ import { ObjectPalette } from '../ObjectPalette';
 
 export class VehicleRegion extends Region
 {
-	static SpawnedFor = Symbol('SpawnedFor');
+	SpawnedFor = Symbol('SpawnedFor');
 
 	constructor(...args)
 	{
@@ -16,9 +16,14 @@ export class VehicleRegion extends Region
 
 	updateActor(other)
 	{
-		if(other[this.constructor.SpawnedFor])
+		if(other[this.SpawnedFor] === false)
 		{
-			const spawned = other[this.constructor.SpawnedFor];
+			return;
+		}
+
+		if(other[this.SpawnedFor])
+		{
+			const spawned = other[this.SpawnedFor];
 
 			spawned.args.x = other.args.x;
 			spawned.args.y = other.args.y;
@@ -55,13 +60,14 @@ export class VehicleRegion extends Region
 				,ySpeed:other.args.ySpeed
 				,gSpeed:other.args.gSpeed
 				,falling:other.args.falling
+				,lockedIn:true
 			});
 
 			this.viewport.spawn.add({object:newVehicle});
 
 			other.args.standingOn = newVehicle;
 
-			other[this.constructor.SpawnedFor] = newVehicle;
+			other[this.SpawnedFor] = newVehicle;
 		}
 	}
 
@@ -87,8 +93,11 @@ export class VehicleRegion extends Region
 			return;
 		}
 
+		other[this.SpawnedFor] = false;
+
 		const vehicle = other.args.standingOn;
 
+		vehicle.args.lockedIn = false;
 		vehicle.dead = true;
 
 		other.args.standingOn = null;

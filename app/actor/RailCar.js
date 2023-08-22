@@ -59,7 +59,8 @@ export class RailCar extends Vehicle
 	{
 		this.originalSpeed = this.args.gSpeed || this.args.xSpeed;
 
-		const lastX = this.x;
+		const lastX = this.args.x;
+		const lastY = this.args.y;
 
 		super.update();
 
@@ -89,7 +90,7 @@ export class RailCar extends Vehicle
 				{
 					this.breakApart();
 				}
-				else if(!this.args.falling && !this.args.gSpeed)
+				else if(!this.args.falling && !this.args.hSpeed && this.args.x === lastX && this.args.y === lastY)
 				{
 					this.breakApart();
 				}
