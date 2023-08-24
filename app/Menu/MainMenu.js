@@ -6,7 +6,6 @@ import { Card } from '../intro/Card';
 import { Cylinder } from '../effects/Cylinder';
 
 import { Pinch } from '../effects/Pinch';
-import { Droop } from '../effects/Droop';
 import { Twist } from '../effects/Twist';
 
 import { Menu } from './Menu';

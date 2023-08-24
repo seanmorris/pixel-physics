@@ -98,7 +98,6 @@ import { Replay } from '../replay/Replay';
 
 import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
-import { Droop } from '../effects/Droop';
 
 import { GamepadConfig } from '../controller/GamepadConfig';
 
@@ -437,7 +436,7 @@ export class Viewport extends View
 
 		this.sequences = [debugSeq, konamiSeqA, konamiSeqB, gravitySeq];
 
-		this.args.debugEnabled  = false;
+		this.args.debugEnabled  = Router.query.debugEnabled;
 		this.args.debugEditMode = false;
 
 		this.args.debugObjectCursor = 0;

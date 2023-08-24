@@ -163,9 +163,9 @@ export class Switch extends PointActor
 			{
 				const originalXSpeed = this.activator.args.xSpeed;
 
-				this.activator.args.x -= (this.activator.args.x - this.args.x);
-				this.activator.args.xSpeed = 0;
-				this.activator.args.groundAngle = 0;
+				// this.activator.args.x -= (this.activator.args.x - this.args.x);
+				// this.activator.args.xSpeed = 0;
+				// this.activator.args.groundAngle = 0;
 
 				this.viewport.onFrameOut(1, () => {
 					this.activator.args.gSpeed = originalXSpeed;

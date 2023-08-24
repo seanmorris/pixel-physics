@@ -53,7 +53,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -329,21 +329,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 4,
+            "columns": 6,
             "firstgid": 10398,
             "image": "../Sonic/tiles/common.png",
-            "imageheight": 32,
-            "imagewidth": 128,
+            "imageheight": 64,
+            "imagewidth": 192,
             "margin": 0,
             "name": "common",
             "spacing": 0,
-            "tilecount": 4,
+            "tilecount": 12,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 1,
-            "firstgid": 10402,
+            "firstgid": 10410,
             "image": "../Sonic/marble-zone-block.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -356,7 +356,7 @@
         },
         {
             "columns": 2,
-            "firstgid": 10403,
+            "firstgid": 10411,
             "image": "../custom/unbreakable-crate.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -369,7 +369,7 @@
         },
         {
             "columns": 13,
-            "firstgid": 10407,
+            "firstgid": 10415,
             "image": "../Sonic/tiles/wing-fortress/industrial.png",
             "imageheight": 576,
             "imagewidth": 416,
@@ -382,7 +382,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 10641,
+            "firstgid": 10649,
             "image": "../Sonic/azure-lake-platform.png",
             "imageheight": 40,
             "imagewidth": 101,
@@ -396,7 +396,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 4056,
     "types": [
         "",

@@ -7486,6 +7486,18 @@
                  "width":32,
                  "x":11488,
                  "y":2080
+                }, 
+                {
+                 "height":0,
+                 "id":404,
+                 "name":"barnacle-barrel",
+                 "point":true,
+                 "rotation":0,
+                 "type":"waypoint",
+                 "visible":true,
+                 "width":0,
+                 "x":12400,
+                 "y":2336
                 }],
          "opacity":0.5,
          "properties":[
@@ -7500,7 +7512,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":404,
+ "nextobjectid":405,
  "orientation":"orthogonal",
  "properties":[
         {

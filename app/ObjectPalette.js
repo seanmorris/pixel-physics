@@ -276,6 +276,7 @@ import { EggCapsule } from './actor/EggCapsule';
 
 import { SpikeRing } from './actor/SpikeRing';
 import { ToxicBarrel } from './actor/ToxicBarrel';
+import { SpinBridge } from './actor/SpinBridge';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -498,4 +499,5 @@ export const ObjectPalette = {
 	, 'egg-capsule': EggCapsule
 	, 'spike-ring': SpikeRing
 	, 'toxic-barrel': ToxicBarrel
+	, 'spin-bridge': SpinBridge
 };

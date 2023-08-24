@@ -486,8 +486,9 @@ export class Knuckles extends PointActor
 			this.punchAura.style({display: 'none'})
 		}
 
-		this.willStick = false;
 		this.stayStuck = false;
+		this.willStick = false;
+		this.stickModes = {1:true,2:false,3:true};
 
 		if(this.args.mercy)
 		{
@@ -834,6 +835,13 @@ export class Knuckles extends PointActor
 
 		if(this.args.mode === 0 || this.args.mode === 2)
 		{
+			if(this.args.climbing && this.args.mode === 2)
+			{
+				this.args.groundAngle = 0;
+				this.args.falling = true;
+				this.args.y += this.args.height;
+			}
+
 			this.args.climbing = false;
 		}
 

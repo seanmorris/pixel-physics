@@ -11,9 +11,9 @@ export class CompanionBlock extends MarbleBlock
 
 		this.args.type = 'actor-item actor-marble-companion-block';
 
-		this.args.density = this.args.density || 9.5;
+		this.played = false;
 
-		this.played = false
+		this.args.density = this.args.density || 10;
 	}
 
 	collideA(other, type)
@@ -36,21 +36,32 @@ export class CompanionBlock extends MarbleBlock
 
 	update()
 	{
+		const preX = this.args.x;
+
 		let isInLava = false;
 
+		const regions = this.viewport.regionsAtPoint(this.args.x, this.args.y);
 
-		for(const region of this.viewport.regionsAtPoint(this.args.x, this.args.y + 2))
+		let localDensity = 0, denseRegion = null;
+
+		for(const region of regions)
 		{
+			if(region.args.density > localDensity)
+			{
+				localDensity = region.args.density;
+				denseRegion = region;
+			}
+
 			this.args.y = Math.round(this.args.y);
 
 			if(region instanceof LavaRegion)
 			{
 				isInLava = true;
 
-				if(this.args.height > 18)
-				{
-					this.args.height = 18;
-				}
+				// if(this.args.height > 18)
+				// {
+				// 	this.args.height = 18;
+				// }
 
 				if(!this.played)
 				{
@@ -76,38 +87,35 @@ export class CompanionBlock extends MarbleBlock
 			}
 		}
 
-		const preX = this.args.x;
-
-		super.update();
-
-		if(this.args.pushed)
+		if(denseRegion && localDensity && this.args.density)
 		{
-			if(isInLava)
+
+			const thisBottom = this.args.y;
+			const regionTop  = denseRegion.args.y + -denseRegion.args.height;
+			const yDiff      = Math.min(this.args.height, thisBottom - regionTop);
+			const pressure   = this.args.gravity * (localDensity / this.args.density) * (yDiff / this.args.height);
+
+			this.args.ySpeed -= pressure;
+
+			if(!this.args.falling)
 			{
-				this.args.float = -1;
-
-				const tileMap = this.viewport.tileMap;
-
-				const solid = tileMap.getSolid(this.x + this.args.width / 2 * (this.args.pushed || 0), this.y);
-
-				if(!solid)
-				{
-					this.args.x = preX + this.args.pushed * (this.standingUnder.size ? 1 : 0.5);
-				}
-				else
-				{
-					this.args.pushed = 0;
-				}
-			}
-			else
-			{
-				this.args.float = 0;
+				this.args.y--;
+				this.args.falling = true;
 			}
 		}
 
-		if(!isInLava)
+		super.update();
+
+		if(isInLava)
 		{
-			this.args.height = 32;
+			if(this.fallTime < 100)
+			{
+				this.args.xSpeed = 0;
+			}
+			else
+			{
+				this.args.xSpeed = Math.sign(this.gSpeedLast || this.xSpeedLast);
+			}
 		}
 
 	}

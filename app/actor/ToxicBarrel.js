@@ -27,6 +27,11 @@ export class ToxicBarrel extends MarbleBlock
 			return false;
 		}
 
+		if(this.args.falling && other.pop)
+		{
+			this.pop();
+		}
+
 		if(this.args.animation === 'exploding')
 		{
 			other.damage && other.damage(this, 'explosion');
@@ -89,6 +94,8 @@ export class ToxicBarrel extends MarbleBlock
 	{
 		this.args.x = this.def.get('x');
 		this.args.y = this.def.get('y');
+
+		this.ySpeedLast = 0;
 
 		this.onNextFrame(() => {
 			this.args.x = this.def.get('x');

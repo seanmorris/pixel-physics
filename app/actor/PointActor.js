@@ -392,8 +392,9 @@ export class PointActor extends View
 
 		this.buttons = {};
 
-		this.willStick = false;
-		this.stayStuck = false;
+		this.stayStuck  = false;
+		this.willStick  = false;
+		this.stickModes = {1:true,2:false,3:true};
 
 		this.args.startled = this.args.startled || 0;
 		this.args.antiSkid = this.args.antiSkid || 0;
@@ -656,7 +657,8 @@ export class PointActor extends View
 			}
 			else if(!groundObject.isVehicle)
 			{
-				if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
+				if(this.args.y <= 1 + groundObject.args.y - groundObject.args.height)
+				// if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
 				{
 					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 						const solid = groundObject.getMapSolidAt(this.args.x + vv + -groundObject.args.x, this.args.y);
@@ -2076,8 +2078,8 @@ export class PointActor extends View
 
 		const radius = this.args.width / 2;
 
-		const leftCorner = tileMap.getSolid(this.x - radius, this.y - 1, this.args.layer);
-		const rightCorner = tileMap.getSolid(this.x + radius, this.y - 1, this.args.layer);
+		const leftCorner  = tileMap.getSolid(this.x - radius, this.y+1, this.args.layer);
+		const rightCorner = tileMap.getSolid(this.x + radius, this.y+1, this.args.layer);
 
 		if(leftCorner && rightCorner)
 		{
@@ -2086,17 +2088,28 @@ export class PointActor extends View
 
 		return this.castRay(
 			this.args.width
-			, (direction < 0 ? Math.PI : 0)
-			, [-direction * radius, 0]
+			, (-direction < 0 ? Math.PI : 0)
+			, [direction * radius, 0]
 			, (i,point) => {
-				const actors = this.viewport
-					.actorsAtPoint(point[0], point[1])
-					.filter(a => a.args !== this.args);
+				let solids = this.getMapSolidAt(point[0], point[1] + 1);
 
-				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
+				if(Array.isArray(solids))
 				{
-					return i;
+					solids = solids.filter(s => s.callCollideHandler(this)).length;
 				}
+
+				if(solids)
+				{
+					return (this.args.width - i);
+				}
+				// const actors = this.viewport
+				// 	.actorsAtPoint(point[0], point[1])
+				// 	.filter(a => a.args !== this.args);
+
+				// if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
+				// {
+				// 	return i;
+				// }
 			}
 		);
 	}
@@ -2620,8 +2633,13 @@ export class PointActor extends View
 		this.pincherBg.args.scale = warpBg;
 	}
 
-	droop(warpFactor = 0, xPosition = 0)
+	droop(warpFactor = 0, xPosition = 0, xMax = null)
 	{
+		if(xMax === null)
+		{
+			xMax = xPosition;
+		}
+
 		const half = this.args.width / 2;
 
 		if(!this.drooperFg)
@@ -2660,12 +2678,12 @@ export class PointActor extends View
 			, filter:  `url(#droop-${this.args.id})`
 		});
 
-		const widthFactor = 1 - xPosition / half;
+		const droopCenter = 1 - xPosition / half;
 		const posFactor   = xPosition / this.args.width;
 
-		this.drooperFg.args.droopWidthLeft  = `${51 * widthFactor + 1}%`;
-		this.drooperFg.args.droopRightStart = `${51 * widthFactor}%`;
-		this.drooperFg.args.droopWidthRight = `${102 + -51 * widthFactor}%`;
+		this.drooperFg.args.droopWidthLeft  = `${51 * droopCenter + 1}%`;
+		this.drooperFg.args.droopRightStart = `${51 * droopCenter}%`;
+		this.drooperFg.args.droopWidthRight = `${102 + -51 * droopCenter}%`;
 	}
 
 	crossRegionBoundary(region)

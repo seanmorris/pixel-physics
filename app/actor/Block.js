@@ -239,7 +239,7 @@ export class Block extends PointActor
 			this.weighted = true;
 		}
 
-		if(this.args.platform && this.objDef.type === 'hex-nut' && other.objDef && other.objDef.type === 'hex-nut')
+		if(this.objDef && this.args.platform && this.objDef.type === 'hex-nut' && other.objDef && other.objDef.type === 'hex-nut')
 		{
 			return false;
 		}
