@@ -26525,44 +26525,6 @@ let Gator = /*#__PURE__*/function (_Mixin$from) {
   }, {
     key: "update",
     value: function update() {
-      // if(this.viewport && this.viewport.controlActor)
-      // {
-      // 	if(Math.abs(this.viewport.controlActor.args.y - this.args.y) < 64)
-      // 	if(Math.abs(this.viewport.controlActor.args.x - this.args.x) < 768)
-      // 	{
-      // 		this.chasing = this.viewport.controlActor;
-      // 	}
-      // }
-
-      // if(this.chasing)
-      // {
-      // 	this.args.gSpeed += 1.25 * Math.sign(this.chasing.args.x - this.args.x)
-      // 	const space = Math.abs(this.chasing.args.x - this.args.x);
-      // 	const speed = Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed);
-      // 	const maxSpeed = Math.max(6, speed);
-
-      // 	if(Math.abs(this.args.gSpeed) > maxSpeed)
-      // 	{
-      // 		this.args.gSpeed = Math.sign(this.args.gSpeed) * maxSpeed;
-      // 	}
-
-      // 	if(this.box)
-      // 	{
-      // 		if(space < 96)
-      // 		{
-      // 			this.box.setAttribute('data-animation', 'chomping');
-      // 		}
-      // 		else
-      // 		{
-      // 			this.box.setAttribute('data-animation', 'standing');
-      // 		}
-      // 	}
-      // }
-      // else
-      // {
-      // 	this.box.setAttribute('data-animation', 'standing');
-      // }
-
       if (this.viewport && this.viewport.controlActor) {
         const space = Math.abs(this.viewport.controlActor.args.x - this.args.x);
         if (space < 64) {
@@ -41377,65 +41339,6 @@ let SpinBridge = /*#__PURE__*/function (_Block) {
       }
       return _get(_getPrototypeOf(SpinBridge.prototype), "collideA", this).call(this, other, type);
     }
-
-    // updateEnd()
-    // {
-    // 	super.updateEnd();
-
-    // 	if(!this.originalY)
-    // 	{
-    // 		this.originalY = this.args.y;
-    // 	}
-
-    // 	let dipTarget = this.originalY;
-    // 	let dipAmount = 0;
-
-    // 	if(this.standingUnder.size)
-    // 	{
-    // 		dipAmount = 4;
-    // 	}
-    // 	else
-    // 	{
-    // 		dipAmount = 0;
-    // 	}
-
-    // 	const size = this.args.firstSegment.segments.size;
-
-    // 	if(!this.standingUnder.size)
-    // 	{
-    // 		if(this.args.nextSegment && this.args.nextSegment.args.localDip)
-    // 		{
-    // 			dipAmount += Math.floor(this.args.nextSegment.args.localDip * 0.5);
-    // 		}
-
-    // 		if(this.args.prevSegment && this.args.prevSegment.args.localDip)
-    // 		{
-    // 			dipAmount += Math.floor(this.args.prevSegment.args.localDip * 0.5);
-    // 		}
-    // 	}
-
-    // 	const index = this.args.segmentIndex;
-    // 	const midPoint = size * 0.5;
-    // 	const dist = index - midPoint;
-    // 	const offset = (dist >= 0) ? 1 : 0;
-    // 	const distAbs = Math.abs(dist + offset);
-    // 	const distInv = midPoint - distAbs;
-    // 	const distFactor = distInv / midPoint;
-
-    // 	dipAmount *= distFactor;
-    // 	dipTarget = dipAmount + this.originalY;
-
-    // 	if(Math.abs(dipTarget - this.args.y) < 1)
-    // 	{
-    // 		this.args.y = dipTarget;
-    // 	}
-
-    // 	this.args.y = dipTarget;
-
-    // 	const dipped = this.args.y - this.originalY;
-
-    // 	this.args.localDip = dipped;
-    // }
   }]);
   return SpinBridge;
 }(_Block2.Block);

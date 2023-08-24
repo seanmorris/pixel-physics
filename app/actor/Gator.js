@@ -42,44 +42,6 @@ export class Gator extends Mixin.from(PointActor, CanPop)
 
 	update()
 	{
-		// if(this.viewport && this.viewport.controlActor)
-		// {
-		// 	if(Math.abs(this.viewport.controlActor.args.y - this.args.y) < 64)
-		// 	if(Math.abs(this.viewport.controlActor.args.x - this.args.x) < 768)
-		// 	{
-		// 		this.chasing = this.viewport.controlActor;
-		// 	}
-		// }
-
-		// if(this.chasing)
-		// {
-		// 	this.args.gSpeed += 1.25 * Math.sign(this.chasing.args.x - this.args.x)
-		// 	const space = Math.abs(this.chasing.args.x - this.args.x);
-		// 	const speed = Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed);
-		// 	const maxSpeed = Math.max(6, speed);
-
-		// 	if(Math.abs(this.args.gSpeed) > maxSpeed)
-		// 	{
-		// 		this.args.gSpeed = Math.sign(this.args.gSpeed) * maxSpeed;
-		// 	}
-
-		// 	if(this.box)
-		// 	{
-		// 		if(space < 96)
-		// 		{
-		// 			this.box.setAttribute('data-animation', 'chomping');
-		// 		}
-		// 		else
-		// 		{
-		// 			this.box.setAttribute('data-animation', 'standing');
-		// 		}
-		// 	}
-		// }
-		// else
-		// {
-		// 	this.box.setAttribute('data-animation', 'standing');
-		// }
-
 		if(this.viewport && this.viewport.controlActor)
 		{
 			const space = Math.abs(this.viewport.controlActor.args.x - this.args.x);
