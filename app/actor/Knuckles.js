@@ -488,7 +488,6 @@ export class Knuckles extends PointActor
 
 		this.stayStuck = false;
 		this.willStick = false;
-		this.stickModes = {1:true,2:false,3:true};
 
 		if(this.args.mercy)
 		{

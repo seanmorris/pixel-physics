@@ -394,7 +394,6 @@ export class PointActor extends View
 
 		this.stayStuck  = false;
 		this.willStick  = false;
-		this.stickModes = {1:true,2:false,3:true};
 
 		this.args.startled = this.args.startled || 0;
 		this.args.antiSkid = this.args.antiSkid || 0;

@@ -28345,11 +28345,6 @@ let Knuckles = /*#__PURE__*/function (_PointActor) {
       }
       this.stayStuck = false;
       this.willStick = false;
-      this.stickModes = {
-        1: true,
-        2: false,
-        3: true
-      };
       if (this.args.mercy) {
         this.args.flying = false;
       }
@@ -32548,11 +32543,6 @@ let PointActor = /*#__PURE__*/function (_View) {
     _this.buttons = {};
     _this.stayStuck = false;
     _this.willStick = false;
-    _this.stickModes = {
-      1: true,
-      2: false,
-      3: true
-    };
     _this.args.startled = _this.args.startled || 0;
     _this.args.antiSkid = _this.args.antiSkid || 0;
     _this.args.halted = _this.args.halted || 0;
