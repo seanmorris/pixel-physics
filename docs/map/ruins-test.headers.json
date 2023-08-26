@@ -3,7 +3,7 @@
     "height": 192,
     "infinite": false,
     "nextlayerid": 21,
-    "nextobjectid": 1005,
+    "nextobjectid": 983,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.10.1",
+    "tiledversion": "1.7.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -219,24 +219,11 @@
             "tilecount": 2,
             "tileheight": 16,
             "tilewidth": 48
-        },
-        {
-            "columns": 2,
-            "firstgid": 2609,
-            "image": "../Sonic/wind-emblem.png",
-            "imageheight": 32,
-            "imagewidth": 64,
-            "margin": 0,
-            "name": "wind-emblem",
-            "spacing": 0,
-            "tilecount": 2,
-            "tileheight": 32,
-            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.10",
+    "version": "1.6",
     "width": 1920,
     "types": [
         "arrow-sign",
@@ -246,7 +233,6 @@
         "bubbles",
         "buzz-bomber",
         "cut-scene",
-        "debris-region",
         "exit-region",
         "fake-emerald",
         "force-region",
@@ -255,7 +241,6 @@
         "layer-controller",
         "panel",
         "region",
-        "rhino-bot",
         "ring",
         "ring-monitor",
         "rolling-region",
@@ -266,7 +251,6 @@
         "spikes",
         "spring",
         "star-post",
-        "stone-altar",
         "switch",
         "switch-region",
         "torch",
