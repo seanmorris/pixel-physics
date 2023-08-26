@@ -771,6 +771,27 @@ export class Tails extends PointActor
 		}
 	}
 
+	command_2()
+	{
+		if(this.viewport.collisions.has(this))
+		{
+			const objects = this.viewport.collisions.get(this);
+
+			for(const object of objects.keys())
+			{
+				if(this.carrying.size && !this.carrying.has(object))
+				{
+					continue;
+				}
+
+				if(typeof object.lift === 'function')
+				{
+					object.lift(this);
+				}
+			}
+		}
+	}
+
 	command_3()
 	{}
 

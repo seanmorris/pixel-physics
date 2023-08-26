@@ -231,8 +231,8 @@ export class MainMenu extends Menu
 					Character
 
 					// , Follower
-					, Pallet
-					, ...CustomColor
+					// , Pallet
+					// , ...CustomColor
 
 					, 'Brooklyn Breakout Zone Act 1': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']

@@ -234,6 +234,25 @@
 	animation: super-sonic-flicker infinite alternate 0.25s;
 }
 
+.actor-item.actor-tails[data-carrying=true][data-animation="standing"] .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="jumping"]  .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="walking"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -896px !important;
+	--animation-width: 64px  !important;
+	--animation-steps: 4 !important;
+}
+
+.actor-item.actor-tails[data-carrying=true][data-animation="standing"] .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="jumping"] .sprite:after {
+	animation: none;
+	--sprite-offset-x: -64px;
+}
+
+.actor-item.actor-tails[data-carrying=true][data-animation="walking"] .sprite:after{
+	animation: tails-animate steps(4) infinite 560ms;
+}
+
 @keyframes tails-animate {
 	from{
 		background-position-x: var(--sprite-offset-x);
@@ -323,13 +342,13 @@
 	animation: tails-animate steps(var(--animation-steps)) infinite 350ms;
 }
 
-.actor-item.actor-tails[data-animation="walking"] .tails-tails,
+.actor-item.actor-tails[data-animation="walking"]:not([data-carrying=true]) .tails-tails,
 .actor-item.actor-tails[data-animation="running"] .tails-tails,
 .actor-item.actor-tails[data-animation="running-2"] .tails-tails {
 	display: none;
 }
 
-.actor-item.actor-tails[data-animation="jumping"] .tails-tails,
+.actor-item.actor-tails[data-animation="jumping"]:not([data-carrying=true]) .tails-tails,
 .actor-item.actor-tails[data-animation="rolling"] .tails-tails {
 	--sprite-offset-y: 64px;
 	--animation-steps: 5;
@@ -340,7 +359,7 @@
 }
 
 .actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails,
-.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails {
+.actor-item.actor-tails[data-animation="jumping"][data-facing="left"]:not([data-carrying=true]) .tails-tails {
 	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
 }
 

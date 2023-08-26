@@ -539,7 +539,7 @@ export class PointActor extends View
 					prevGroundObject.xAxis = 0;
 					prevGroundObject.yAxis = 0;
 
-					prevGroundObject.args.active = false;
+					// prevGroundObject.args.active = false;
 				}
 
 				prevGroundObject.standingUnder && prevGroundObject.standingUnder.delete(this);
@@ -551,14 +551,14 @@ export class PointActor extends View
 			{
 				if(prevGroundObject && !(prevGroundObject instanceof Switch))
 				{
-					prevGroundObject.args.active = false;
+					// prevGroundObject.args.active = false;
 					this.viewport.auras.delete(prevGroundObject);
 				}
 
-				if(groundObject && !(groundObject instanceof Switch))
-				{
-					groundObject.args.active = true;
-				}
+				// if(groundObject && !(groundObject instanceof Switch))
+				// {
+				// 	groundObject.args.active = true;
+				// }
 			}
 
 			if(!groundObject)
@@ -576,7 +576,7 @@ export class PointActor extends View
 					this.args.pushing = false;
 				}
 
-				groundObject.args.active = true;
+				// groundObject.args.active = true;
 
 				const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 					const x = groundObject.args.direction * groundObject.args.seatForward || 0;

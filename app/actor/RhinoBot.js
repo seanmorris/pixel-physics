@@ -75,9 +75,11 @@ export class RhinoBot extends Mixin.from(PointActor, CanPop)
 
 		if(this.chasing)
 		{
-			this.args.gSpeed += Math.sign(this.chasing.args.x - this.args.x)
+			this.args.gSpeed += (this.chasing.args.x - this.args.x) * 0.1;
 
-			const maxSpeed = Math.max(6, Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed));
+			const diff = Math.abs(this.chasing.args.x - this.chasing.args.x);
+
+			const maxSpeed = Math.max(6, Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed) * (diff > 256 ? 1.2 : 1));
 
 			if(Math.abs(this.args.gSpeed) > maxSpeed)
 			{

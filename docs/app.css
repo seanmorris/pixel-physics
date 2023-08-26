@@ -10110,6 +10110,25 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	animation: super-sonic-flicker infinite alternate 0.25s;
 }
 
+.actor-item.actor-tails[data-carrying=true][data-animation="standing"] .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="jumping"]  .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="walking"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -896px !important;
+	--animation-width: 64px  !important;
+	--animation-steps: 4 !important;
+}
+
+.actor-item.actor-tails[data-carrying=true][data-animation="standing"] .sprite:after,
+.actor-item.actor-tails[data-carrying=true][data-animation="jumping"] .sprite:after {
+	animation: none;
+	--sprite-offset-x: -64px;
+}
+
+.actor-item.actor-tails[data-carrying=true][data-animation="walking"] .sprite:after{
+	animation: tails-animate steps(4) infinite 560ms;
+}
+
 @keyframes tails-animate {
 	from{
 		background-position-x: var(--sprite-offset-x);
@@ -10199,13 +10218,13 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	animation: tails-animate steps(var(--animation-steps)) infinite 350ms;
 }
 
-.actor-item.actor-tails[data-animation="walking"] .tails-tails,
+.actor-item.actor-tails[data-animation="walking"]:not([data-carrying=true]) .tails-tails,
 .actor-item.actor-tails[data-animation="running"] .tails-tails,
 .actor-item.actor-tails[data-animation="running-2"] .tails-tails {
 	display: none;
 }
 
-.actor-item.actor-tails[data-animation="jumping"] .tails-tails,
+.actor-item.actor-tails[data-animation="jumping"]:not([data-carrying=true]) .tails-tails,
 .actor-item.actor-tails[data-animation="rolling"] .tails-tails {
 	--sprite-offset-y: 64px;
 	--animation-steps: 5;
@@ -10216,7 +10235,7 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-tails[data-animation="rolling"][data-facing="left"] .tails-tails,
-.actor-item.actor-tails[data-animation="jumping"][data-facing="left"] .tails-tails {
+.actor-item.actor-tails[data-animation="jumping"][data-facing="left"]:not([data-carrying=true]) .tails-tails {
 	transform: rotate(calc(180deg - calc(1rad * var(--air-angle))));
 }
 
@@ -10791,6 +10810,11 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	background-image: url(/custom/wind-stone.png);
 	width: 8px;
 	height: 24px;
+	top: 1px;
+}
+
+.actor-wind-stone .sprite .labels {
+	margin-bottom: 10px;
 }
 
 .actor-wooden-crate {
@@ -13810,8 +13834,12 @@ iframe {
 }
 
 .region.region-debris {
-	/*filter: blur(0.65px);
-	opacity: 0.75;*/
+	transition: opacity 0.25s ease-in, filter 0.25s ease-in;
+}
+
+.region.region-debris[data-active=false] {
+	filter: blur(0.65px);
+	opacity: 0.0;
 }
 
 .region.region-debris .sprite {
@@ -13827,7 +13855,7 @@ iframe {
 	background: url(/Sonic/leaves-debris.png), url(/Sonic/leaves-debris.png);
 	background-position-x: calc(-0px + var(--vpX));
 	height: calc(100% - 64px);
-	animation: debris-shift 0.85s linear infinite, debris-wave 2.75s linear infinite;
+	animation: debris-shift 0.65s linear infinite, debris-wave 2.75s linear infinite;
 	top:  0px;
 }
 

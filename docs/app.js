@@ -12516,8 +12516,6 @@ var _CharacterPreview = require("./CharacterPreview");
 var _ZoneSuffix = require("./ZoneSuffix");
 var _Lobby = require("../network/Lobby");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -12695,13 +12693,14 @@ let MainMenu = /*#__PURE__*/function (_Menu) {
     _this.items = _this.args.items = {
       'Single Player': {
         available: 'available',
-        children: _objectSpread(_objectSpread({
+        children: {
           Character: Character
 
           // , Follower
+          // , Pallet
+          // , ...CustomColor
           ,
-          Pallet: Pallet
-        }, CustomColor), {}, {
+
           'Brooklyn Breakout Zone Act 1': {
             characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik'],
             suffix: new _ZoneSuffix.ZoneSuffix({
@@ -12895,7 +12894,7 @@ let MainMenu = /*#__PURE__*/function (_Menu) {
           // 		this.accept();
           // 	}
           // }
-        })
+        }
       },
 
       'Multiplayer': {
@@ -14794,6 +14793,7 @@ var _EggCapsule = require("./actor/EggCapsule");
 var _SpikeRing = require("./actor/SpikeRing");
 var _ToxicBarrel = require("./actor/ToxicBarrel");
 var _SpinBridge = require("./actor/SpinBridge");
+var _StoneAltar = require("./actor/StoneAltar");
 // Newtron
 // Bomb
 
@@ -15020,7 +15020,8 @@ const ObjectPalette = {
   'egg-capsule': _EggCapsule.EggCapsule,
   'spike-ring': _SpikeRing.SpikeRing,
   'toxic-barrel': _ToxicBarrel.ToxicBarrel,
-  'spin-bridge': _SpinBridge.SpinBridge
+  'spin-bridge': _SpinBridge.SpinBridge,
+  'stone-altar': _StoneAltar.StoneAltar
 };
 exports.ObjectPalette = ObjectPalette;
 });
@@ -32646,20 +32647,25 @@ let PointActor = /*#__PURE__*/function (_View) {
           prevGroundObject.willStick = false;
           prevGroundObject.xAxis = 0;
           prevGroundObject.yAxis = 0;
-          prevGroundObject.args.active = false;
+
+          // prevGroundObject.args.active = false;
         }
+
         prevGroundObject.standingUnder && prevGroundObject.standingUnder.delete(_assertThisInitialized(_this));
       }
       const Switch = _this.viewport.objectPalette['switch'];
       if (_this.controllable) {
         if (prevGroundObject && !(prevGroundObject instanceof Switch)) {
-          prevGroundObject.args.active = false;
+          // prevGroundObject.args.active = false;
           _this.viewport.auras.delete(prevGroundObject);
         }
-        if (groundObject && !(groundObject instanceof Switch)) {
-          groundObject.args.active = true;
-        }
+
+        // if(groundObject && !(groundObject instanceof Switch))
+        // {
+        // 	groundObject.args.active = true;
+        // }
       }
+
       if (!groundObject) {
         _this.viewport.auras.delete(_this.args.standingOn);
         return;
@@ -32669,7 +32675,9 @@ let PointActor = /*#__PURE__*/function (_View) {
         if (!_this.args.gSpeed) {
           _this.args.pushing = false;
         }
-        groundObject.args.active = true;
+
+        // groundObject.args.active = true;
+
         const debindGroundX = groundObject.args.bindTo('x', (vv, kk) => {
           const x = groundObject.args.direction * groundObject.args.seatForward || 0;
           const y = groundObject.args.seatHeight || groundObject.args.height || 0;
@@ -36472,8 +36480,9 @@ let RhinoBot = /*#__PURE__*/function (_Mixin$from) {
         }
       }
       if (this.chasing) {
-        this.args.gSpeed += Math.sign(this.chasing.args.x - this.args.x);
-        const maxSpeed = Math.max(6, Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed));
+        this.args.gSpeed += (this.chasing.args.x - this.args.x) * 0.1;
+        const diff = Math.abs(this.chasing.args.x - this.chasing.args.x);
+        const maxSpeed = Math.max(6, Math.abs(this.chasing.args.gSpeed || this.chasing.args.xSpeed) * (diff > 256 ? 1.2 : 1));
         if (Math.abs(this.args.gSpeed) > maxSpeed) {
           this.args.gSpeed = Math.sign(this.args.gSpeed) * maxSpeed;
         }
@@ -42807,6 +42816,65 @@ let SteelCrate = /*#__PURE__*/function (_BreakableBlock) {
 exports.SteelCrate = SteelCrate;
 });
 
+;require.register("actor/StoneAltar.js", function(exports, require, module) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.StoneAltar = void 0;
+var _Block2 = require("./Block");
+var _WindStone = require("./WindStone");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+let StoneAltar = /*#__PURE__*/function (_Block) {
+  _inherits(StoneAltar, _Block);
+  var _super = _createSuper(StoneAltar);
+  function StoneAltar() {
+    var _this;
+    let args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    let parent = arguments.length > 1 ? arguments[1] : undefined;
+    _classCallCheck(this, StoneAltar);
+    _this = _super.call(this, args, parent);
+    _this.args.float = -1;
+    _this.args.static = true;
+    _this.args.hidden = true;
+    _this.args.platform = true;
+    _this.args.activated = false;
+    return _this;
+  }
+  _createClass(StoneAltar, [{
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(StoneAltar.prototype), "update", this).call(this);
+      this.args.active = false;
+      for (const actor of this.standingUnder) {
+        if (!(actor instanceof _WindStone.WindStone)) {
+          continue;
+        }
+        actor.args.inPlace = true;
+        this.args.active = true;
+      }
+    }
+  }]);
+  return StoneAltar;
+}(_Block2.Block);
+exports.StoneAltar = StoneAltar;
+});
+
 ;require.register("actor/Stopper.js", function(exports, require, module) {
 "use strict";
 
@@ -44115,6 +44183,21 @@ let Tails = /*#__PURE__*/function (_PointActor) {
       }
     }
   }, {
+    key: "command_2",
+    value: function command_2() {
+      if (this.viewport.collisions.has(this)) {
+        const objects = this.viewport.collisions.get(this);
+        for (const object of objects.keys()) {
+          if (this.carrying.size && !this.carrying.has(object)) {
+            continue;
+          }
+          if (typeof object.lift === 'function') {
+            object.lift(this);
+          }
+        }
+      }
+    }
+  }, {
     key: "command_3",
     value: function command_3() {}
   }, {
@@ -44228,8 +44311,7 @@ let TechnoSqueak = /*#__PURE__*/function (_Mixin$from) {
         }
       }
       _get(_getPrototypeOf(TechnoSqueak.prototype), "update", this).call(this);
-
-      // this.args.direction = Math.sign(this.args.gSpeed);
+      this.args.direction = Math.sign(this.args.gSpeed);
     }
   }, {
     key: "effect",
@@ -46249,12 +46331,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WindStone = void 0;
+var _CharacterString = require("../ui/CharacterString");
 var _PointActor2 = require("./PointActor");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -46275,6 +46360,18 @@ let WindStone = /*#__PURE__*/function (_PointActor) {
     _this.args.width = 8;
     _this.args.height = 24;
     _this.args.type = 'actor-item actor-wind-stone';
+    _this.args.inPlace = false;
+    _this.label = new _CharacterString.CharacterString({
+      value: '❷'
+    });
+    _this.args.charStrings = [_this.label];
+    _this.args.bindTo('inPlace', v => {
+      if (!v) {
+        _this.args.charStrings[0] = _this.label;
+        return;
+      }
+      _this.args.charStrings.splice(0);
+    });
     _this.bindTo('carriedBy', carrier => {
       if (_this.cX) {
         _this.cX();
@@ -46289,6 +46386,7 @@ let WindStone = /*#__PURE__*/function (_PointActor) {
         _this.cY = carrier.args.bindTo('y', v => _this.args.y = v + -16);
         carrier.carrying.add(_assertThisInitialized(_this));
         _this.args.float = -1;
+        _this.args.charStrings.splice(0);
       } else if (_this.carriedBy) {
         const carrier = _this.carriedBy;
         _this.carriedBy = null;
@@ -46299,6 +46397,9 @@ let WindStone = /*#__PURE__*/function (_PointActor) {
         carrier.carrying.delete(_assertThisInitialized(_this));
         _this.args.falling = true;
         _this.args.float = 0;
+        if (!_this.args.inPlace) {
+          _this.args.charStrings[0] = _this.label;
+        }
       }
     });
     return _this;
@@ -46306,11 +46407,23 @@ let WindStone = /*#__PURE__*/function (_PointActor) {
   _createClass(WindStone, [{
     key: "lift",
     value: function lift(actor) {
+      if (this.args.inPlace) {
+        return;
+      }
       if (this.carriedBy === actor) {
         this.carriedBy = null;
         return;
       }
       this.carriedBy = actor;
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(WindStone.prototype), "update", this).call(this);
+      if (this.args.inPlace) {
+        this.args.x += Math.sign(this.args.standingOn.args.x - this.args.x);
+        ;
+      }
     }
   }, {
     key: "solid",
@@ -55006,7 +55119,8 @@ let GamepadConfig = /*#__PURE__*/function (_SkippableCard) {
           ad: 'Use Shield / Spindash',
           d: 'Dive'
           // , x:    'Light Dash / Grab Object'
-          // , y:    'Super Transform'
+          ,
+          y: 'Super Transform'
           // , l1:   'Air Dash'
           // , r1:   'Air Dash'
           ,
@@ -55024,7 +55138,8 @@ let GamepadConfig = /*#__PURE__*/function (_SkippableCard) {
           ad: 'Use Shield / Spindash',
           d: 'Dive'
           // , x:    'Light Dash / Grab Object'
-          // , y:    'Super Transform'
+          ,
+          y: 'Super Transform'
           // , l1:   'Air Dash'
           // , r1:   'Air Dash'
           ,
@@ -61041,6 +61156,7 @@ let DebrisRegion = /*#__PURE__*/function (_Region) {
   _inherits(DebrisRegion, _Region);
   var _super = _createSuper(DebrisRegion);
   function DebrisRegion() {
+    var _this$args$active;
     var _this;
     _classCallCheck(this, DebrisRegion);
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -61048,11 +61164,18 @@ let DebrisRegion = /*#__PURE__*/function (_Region) {
     }
     _this = _super.call(this, ...args);
     _this.args.type = 'region region-shade region-debris';
+    _this.args.active = (_this$args$active = _this.args.active) !== null && _this$args$active !== void 0 ? _this$args$active : true;
     return _this;
   }
   _createClass(DebrisRegion, [{
     key: "update",
     value: function update() {
+      if (this.others.switch) {
+        this.args.active = this.others.switch.args.active;
+      }
+
+      // this.args.hidden = !this.args.active;
+
       _get(_getPrototypeOf(DebrisRegion.prototype), "update", this).call(this);
       if (!this.filterWrapper && this.tags.sprite) {
         this.filterWrapper = new _Tag.Tag('<div class = "region-filter-wrapper">');
