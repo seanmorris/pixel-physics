@@ -24,10 +24,12 @@ export class RocketPlatform extends Block
 		if(this.standingUnder.size)
 		{
 			this.args.activeTime++
+			this.args.active = true;
 		}
 		else
 		{
 			this.args.activeTime = 0;
+			this.args.active = false;
 		}
 
 		for(const other of this.standingUnder)

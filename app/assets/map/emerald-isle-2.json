@@ -307,7 +307,7 @@
          "name":"Collision 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -462,7 +462,7 @@
          "name":"Collision 2",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -617,7 +617,7 @@
          "name":"Art -1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -772,7 +772,7 @@
          "name":"Art 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -927,7 +927,7 @@
          "name":"Art 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -1082,7 +1082,7 @@
          "name":"Foreground 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -1237,7 +1237,7 @@
          "name":"Foreground 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":644,
          "x":0,
          "y":0
@@ -1405,7 +1405,7 @@
                 }],
          "opacity":0.51,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -3264,8 +3264,8 @@
                  "type":"twist-ramp",
                  "visible":true,
                  "width":48,
-                 "x":15872,
-                 "y":2208
+                 "x":15893.3333333333,
+                 "y":2240
                 }, 
                 {
                  "gid":2,

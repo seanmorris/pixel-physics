@@ -2778,8 +2778,11 @@ export class Platformer
 			}
 
 			host.args.ySpeed = Math.max(0, host.args.ySpeed);
+
+			return;
 		}
-		else if(host.args.ySpeed >= 0
+
+		if(host.args.ySpeed >= 0
 			&& distances[2]
 			&& distances[2] <=  host.args.width * 0.5
 			&& distances[1] === false
