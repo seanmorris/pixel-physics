@@ -38,6 +38,7 @@ export class EggCapsule extends PointActor
 		{
 			other.args.x += 0.1 * Math.sign(this.args.x - other.args.x);
 			other.args.gSpeed = 0;
+			this.args.active = true;
 			return true;
 		}
 		else if(this.groundTime > 15 && type === 0 && !this.triggered)

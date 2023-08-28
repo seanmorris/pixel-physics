@@ -3,7 +3,7 @@
     "height": 64,
     "infinite": false,
     "nextlayerid": 8,
-    "nextobjectid": 63,
+    "nextobjectid": 65,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -56,12 +56,12 @@
             "columns": 16,
             "firstgid": 178,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         }

@@ -32,7 +32,7 @@ export class Menu extends Card
 		this.currentItem = null;
 
 		this.include = 'a, button, input, textarea, select, details, [tabindex]';
-		this.exclude = '[tabindex="-1"]';
+		this.exclude = '[tabindex="-1"], .hidden';
 
 		this.elements = new Map;
 
@@ -440,7 +440,7 @@ export class Menu extends Card
 			this.zeroMe.zero();
 		}
 
-		if(item.available === 'unavailable')
+		if(item.available === 'unavailable' || item.available === 'hidden')
 		{
 			return;
 		}

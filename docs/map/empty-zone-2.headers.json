@@ -3,7 +3,7 @@
     "height": 424,
     "infinite": false,
     "nextlayerid": 16,
-    "nextobjectid": 2192,
+    "nextobjectid": 2195,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -168,21 +168,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 4,
+            "columns": 6,
             "firstgid": 6995,
             "image": "../Sonic/tiles/common.png",
-            "imageheight": 32,
-            "imagewidth": 128,
+            "imageheight": 64,
+            "imagewidth": 192,
             "margin": 0,
             "name": "common",
             "spacing": 0,
-            "tilecount": 4,
+            "tilecount": 12,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 3,
-            "firstgid": 6999,
+            "firstgid": 7007,
             "image": "../Sonic/tiles/wing-fortress/industrial-platform-1.png",
             "imageheight": 32,
             "imagewidth": 96,
@@ -195,7 +195,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 7002,
+            "firstgid": 7010,
             "image": "../secret/stp.png",
             "imageheight": 256,
             "imagewidth": 128,
@@ -208,7 +208,7 @@
         },
         {
             "columns": 12,
-            "firstgid": 7034,
+            "firstgid": 7042,
             "image": "../Sonic/tiles/emerald-hill/corkscrew.png",
             "imageheight": 160,
             "imagewidth": 384,
@@ -221,7 +221,7 @@
         },
         {
             "columns": 6,
-            "firstgid": 7094,
+            "firstgid": 7102,
             "image": "../Sonic/tiles/scrap-brain/scrap-brain-tube.png",
             "imageheight": 352,
             "imagewidth": 192,
@@ -234,7 +234,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 7160,
+            "firstgid": 7168,
             "image": "../Sonic/weight-small.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -248,7 +248,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 2800,
     "types": [
         "arrow-sign",

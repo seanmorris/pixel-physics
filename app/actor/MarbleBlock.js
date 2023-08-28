@@ -30,11 +30,6 @@ export class MarbleBlock extends PointActor
 			return true;
 		}
 
-		if(this.args.falling && this.args.ySpeed === -1)
-		{
-			return false;
-		}
-
 		const otherMag = Math.ceil(Math.abs(other.args.gSpeed || other.args.xSpeed));
 		const otherDir = Math.sign(other.args.gSpeed || other.args.xSpeed);
 
@@ -61,24 +56,19 @@ export class MarbleBlock extends PointActor
 
 			this.args.pushed = Math.sign(other.args.gSpeed) || this.args.pushed;
 
-			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -1))
+			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -4))
 			{
 				return true;
 			}
 
-
-			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -1))
+			if(this.args.pushed > 0 && this.getMapSolidAt(this.x + Math.ceil(this.args.width/2)+1, this.y + -4))
 			{
 				return true;
 			}
 
-			const tileMap = this.viewport.tileMap;
-
-			const moveBy  = ((type === 1 && 1) || (type === 3 && -1));
-
-			const scan = this.scanBottomEdge(moveBy);
-
-			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y);
+			const tileMap  = this.viewport.tileMap;
+			const moveBy   = ((type === 1 && 1) || (type === 3 && -1));
+			const blockers = tileMap.getSolid(this.x + Math.ceil(this.args.width/2) * moveBy, this.y + -4);
 
 			if(blockers)
 			{
@@ -87,36 +77,37 @@ export class MarbleBlock extends PointActor
 
 			const radius = this.args.width / 2;
 
-			if(moveBy > 0 && scan === 0)
+			if(!this.args.falling)
 			{
-				this.args.falling = true;
-
-				other.args.ignore = other.args.ignore || 1;
-				other.args.gSpeed = 0;
-			}
-			else if(moveBy < 0 && scan === 0)
-			{
-				this.args.falling = true;
-
-				other.args.ignore = other.args.ignore || 1;
-				other.args.gSpeed = 0;
-			}
-			else if(!this.args.falling || scan > 0 || scan === false)
-			{
-				// const nextCenter = this.findNextStep(moveBy);
-				// const nextWall   = this.findNextStep(moveBy + (radius * Math.sign(moveBy)));
-
 				const nextCenter = this.bMap('findNextStep', moveBy).get(Platformer);
-				const nextWall   = this.bMap('findNextStep', moveBy + (radius * Math.sign(moveBy))).get(Platformer);
+				// const nextWall   = this.bMap('findNextStep', moveBy + (radius * Math.sign(moveBy))).get(Platformer);
 
-				if((!nextCenter[1] || nextCenter[2]) && !nextWall[3])
+				if(nextCenter[2])
+				{
+					// this.args.xSpeed = moveBy;
+
+					const scan = this.scanBottomEdge(moveBy);
+
+					console.log(scan * Math.sign(moveBy), Math.sign(moveBy) * 0.01, scan, moveBy);
+
+					if(scan && scan <= (this.args.width + (this.args.width % 2)) * 0.5)
+					{
+						this.args.xSpeed = Math.sign(moveBy) * 0.01;
+						this.args.x += scan * Math.sign(moveBy);
+					}
+
+					// this.args.falling = true;
+				}
+				else if(!nextCenter[3])
 				{
 					const otherRadius = other.args.width / 2;
 					const myRadius = this.args.width / 2;
 
 					if(Math.trunc(Math.abs(this.x - other.x)) <= (1 + otherRadius + myRadius))
 					{
-						this.args.x = other.args.x + (moveBy * (Math.abs(other.args.gSpeed) + myRadius + otherRadius));
+						// this.args.x = other.args.x + (moveBy * (Math.abs(other.args.gSpeed) + myRadius + otherRadius));
+						this.args.x += nextCenter[0];
+						this.args.y -= nextCenter[1];
 
 						const direction = Math.sign(other.args.gSpeed);
 
@@ -131,7 +122,7 @@ export class MarbleBlock extends PointActor
 						other.args.gSpeed -= weightRatio * 0.005 * Math.sign(other.args.gSpeed);
 					}
 
-					return scan === 0;
+					return false;
 				}
 
 				return true;

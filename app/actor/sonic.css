@@ -16,6 +16,7 @@
 	top: 0;
 	left: 0;
 	background-image: var(--sprite-sheet);
+	background-image: var(--sprite-sheet, '/Sonic/sonic.png');
 	opacity: var(--opacity, 1);
 	transition: background-image 0.5s ease-out;
 	background-position-x: var(--sprite-offset-x);
@@ -706,6 +707,17 @@
 	background-position-x:-256px;
 	--animation-width: -64px;
 	animation: sonic-animate steps(2) infinite 300ms reverse forwards;
+}
+
+.actor-item.actor-sonic[data-animation="transform"] .sprite:after {
+	--sprite-offset-x: -0px;
+	--sprite-offset-y: -1408px;
+	--animation-steps: 4;
+	top: 8px;
+	left: 4px;
+	background-position-y: var(--sprite-offset-y);
+	--animation-width: -64px;
+	animation: sonic-animate steps(4) 500ms 1 forwards;
 }
 
 @keyframes sonic-animate {

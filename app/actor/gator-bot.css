@@ -1,0 +1,31 @@
+.actor-item.actor-gator-bot .sprite::after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: 0;
+	background-image: url(/Sonic/gator.png);
+	left: -8px;
+	width: 64px;
+	height: 32px;
+	z-index: 1;
+}
+
+.actor-item.actor-gator-bot[data-animation="chomping"] .sprite::after {
+	background-position-y: -32px;
+}
+
+/*
+.actor-item.actor-rhino-bot[data-animation="walking"] .sprite:after {
+	--sprite-offset-x: -128px;
+} */
+
+/*
+@keyframes grounder-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}
+*/

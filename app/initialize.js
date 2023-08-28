@@ -184,4 +184,6 @@ else
 	Sfx.register('TALLY_SCORE', '/Sonic/027.Synth_MLT_menu_score menu text appear.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0});
 
 	Sfx.register('RADIO_CHATTER_1', '/thps2/CD_00171.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
+
+	Sfx.register('BARREL_EXPLODE', '/audio/doom/DSBAREXP.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
 }

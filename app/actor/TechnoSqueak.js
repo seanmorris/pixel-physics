@@ -73,7 +73,7 @@ export class TechnoSqueak extends Mixin.from(PointActor, CanPop)
 
 		super.update();
 
-		// this.args.direction = Math.sign(this.args.gSpeed);
+		this.args.direction = Math.sign(this.args.gSpeed);
 	}
 
 	effect(other)

@@ -93,6 +93,11 @@ export class BubbleSheild extends Sheild
 			this.args.bouncing = 'bouncing';
 			host.args.bouncing = true;
 		}
+
+		if(host.args.falling && host.yAxis)
+		{
+			return false;
+		}
 	}
 
 	hold_0()

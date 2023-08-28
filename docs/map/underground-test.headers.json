@@ -3,7 +3,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 57,
-    "nextobjectid": 1463,
+    "nextobjectid": 1484,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -53,7 +53,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -86,18 +86,18 @@
             "columns": 16,
             "firstgid": 2781,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 16,
-            "firstgid": 3293,
+            "firstgid": 3341,
             "image": "slopes.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -110,7 +110,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 3549,
+            "firstgid": 3597,
             "image": "../Sonic/tiles/lava-reef/bridge.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -123,7 +123,7 @@
         },
         {
             "columns": 12,
-            "firstgid": 3550,
+            "firstgid": 3598,
             "image": "../Sonic/tiles/emerald-hill/corkscrew.png",
             "imageheight": 160,
             "imagewidth": 384,
@@ -136,7 +136,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 3610,
+            "firstgid": 3658,
             "image": "big-loop.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -161,7 +161,7 @@
         },
         {
             "columns": 32,
-            "firstgid": 3674,
+            "firstgid": 3722,
             "image": "giant-loop.png",
             "imageheight": 1024,
             "imagewidth": 1024,
@@ -174,7 +174,7 @@
         },
         {
             "columns": 10,
-            "firstgid": 4698,
+            "firstgid": 4746,
             "image": "../Sonic/tiles/marble/props.png",
             "imageheight": 480,
             "imagewidth": 320,
@@ -187,7 +187,7 @@
         },
         {
             "columns": 22,
-            "firstgid": 4848,
+            "firstgid": 4896,
             "image": "mz-ground-brown.png",
             "imageheight": 4480,
             "imagewidth": 704,
@@ -200,7 +200,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 7928,
+            "firstgid": 7976,
             "image": "ugz-breakable.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -213,7 +213,7 @@
         },
         {
             "columns": 4,
-            "firstgid": 7929,
+            "firstgid": 7977,
             "image": "../Sonic/tiles/angel-island/red-background.png",
             "imageheight": 288,
             "imagewidth": 128,
@@ -226,7 +226,7 @@
         },
         {
             "columns": 8,
-            "firstgid": 7965,
+            "firstgid": 8013,
             "image": "../Sonic/tiles/angel-island/basement-background.png",
             "imageheight": 256,
             "imagewidth": 256,
@@ -239,7 +239,7 @@
         },
         {
             "columns": 11,
-            "firstgid": 8029,
+            "firstgid": 8077,
             "image": "../custom/ugz-rails.png",
             "imageheight": 352,
             "imagewidth": 352,
@@ -252,7 +252,7 @@
         },
         {
             "columns": 22,
-            "firstgid": 8150,
+            "firstgid": 8198,
             "image": "mz-ground-brown-dark.png",
             "imageheight": 4480,
             "imagewidth": 704,
@@ -262,11 +262,37 @@
             "tilecount": 3080,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 11278,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 11279,
+            "image": "../Sonic/bridge-log.png",
+            "imageheight": 32,
+            "imagewidth": 16,
+            "margin": 0,
+            "name": "bridge-log",
+            "spacing": 0,
+            "tilecount": 2,
+            "tileheight": 16,
+            "tilewidth": 16
         }
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 350,
     "types": [
         "block",

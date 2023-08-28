@@ -237,14 +237,16 @@
 .region.region-shade.lava .sprite .region-color-wrapper:after {
 	content: ' ';
 	position: absolute;
-	top: 0px;
+	top: 1px;
 	left: 0;
 	bottom: 0;
 	right: 0;
 
 	background-image: url(Sonic/lava-surface-1.png);
+	background-repeat: repeat-x;
+	background-position-y: -0px;
 
-	height: 16px;
+	height: 15px;
 	width: 100%;
 
 	opacity: 0.75;

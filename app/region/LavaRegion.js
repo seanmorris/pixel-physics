@@ -16,13 +16,10 @@ export class LavaRegion extends Region
 
 		this.args.type = 'region region-lava';
 
-		// this.entryParticle = '<div class = "particle-splash">';
-
 		this.args.gravity = 0.5;
 		this.args.drag    = 0.85;
 		this.args.density = 15;
-
-		this.skimSpeed = 0;
+		this.skimSpeed    = Infinity;
 	}
 
 	update()
@@ -84,13 +81,7 @@ export class LavaRegion extends Region
 			return;
 		}
 
-		// other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
-		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
-		// other.args.falling = true;
-
-		// other.args.y = this.y + -this.args.height;
-
-		// other.damage(this, 'fire');
+		other.damage(this, 'fire');
 	}
 
 	collideA(other, type)
@@ -112,35 +103,20 @@ export class LavaRegion extends Region
 
 		super.collideA(other, type);
 
-		if(!other.controllable)
-		{
-			return false;
-		}
-
 		if(other.args.mercy || other.immune(this, 'fire'))
 		{
 			return true;
 		}
 
-		// other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
-		// other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
-		// other.args.falling = true;
+		// // other.args.ySpeed = Math.min(-8, -(other.args.ySpeed || other.ySpeedLast) * 1.1);
+		// // other.args.xSpeed = (other.args.xSpeed || other.xSpeedLast || other.args.gSpeed) * -1.1;
+		// // other.args.falling = true;
 
-		other.args.y = this.y + -this.args.height + -32;
+		// // other.args.y = this.y + -this.args.height + -32;
 
 		other.damage(this, 'fire');
 
-		return false;
-	}
-
-	collideB(other, type)
-	{
-		if(other.noClip)
-		{
-			return;
-		}
-
-		super.collideA(other, type);
+		return true;
 	}
 
 	get solid() { return true; }

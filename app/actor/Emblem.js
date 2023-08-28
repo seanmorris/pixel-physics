@@ -14,6 +14,7 @@ export class Emblem extends PointActor
 		this.args.float  = -1;
 		this.args.static = true;
 		this.collected   = false;
+		this.args.character = this.args.character ?? 'sonic';
 	}
 
 	onRendered(event)
@@ -34,7 +35,9 @@ export class Emblem extends PointActor
 			}
 		}
 
-		return super.onRendered(event);
+		super.onRendered(event)
+
+		this.autoAttr.get(this.box)['data-character'] = 'character';
 	}
 
 	collideA(other)

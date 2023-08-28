@@ -21,6 +21,12 @@ export class DropCage extends PointActor
 			return false;
 		}
 
+		if(this.ignores.has(other))
+		{
+			this.ignores.set(other, 60);
+			return false;
+		}
+
 		if(type === -1 || type % 2 === 0)
 		{
 			const xDiff = Math.abs(other.args.x - this.args.x);
@@ -36,7 +42,7 @@ export class DropCage extends PointActor
 			this.dropDelay(other).then(() => {
 				other.args.float  = 0;
 				other.args.ignore = 5;
-				this.ignores.set(other, 30);
+				this.ignores.set(other, 60);
 				this.holding = false;
 			});
 
@@ -95,5 +101,5 @@ export class DropCage extends PointActor
 		}
 	}
 
-	get solid() { return !this.holding; }
+	get solid() { return !this.holding && !this.ignores.size; }
 }

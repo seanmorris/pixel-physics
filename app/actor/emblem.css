@@ -2,13 +2,22 @@
 	left: 0;
 	content: '';
 	position: absolute;
-	background-image: url(/Sonic/emblem-knuckles.png);
-	background-image: url(/Sonic/emblem-robotnik.png);
-	background-image: url(/Sonic/emblem-tails.png);
 	background-image: url(/Sonic/emblem-sonic.png);
 	width: 32px;
 	height: 26px;
 	animation: emblem-hover 1.5s ease-in-out infinite;
+}
+
+.actor-emblem[data-character=tails] .sprite::after {
+	background-image: url(/Sonic/emblem-tails.png);
+}
+
+.actor-emblem[data-character=knuckles] .sprite::after {
+	background-image: url(/Sonic/emblem-knuckles.png);
+}
+
+.actor-emblem[data-character=robotnik] .sprite::after {
+	background-image: url(/Sonic/emblem-robotnik.png);
 }
 
 .actor-emblem-collected .sprite {

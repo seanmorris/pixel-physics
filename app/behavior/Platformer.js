@@ -631,7 +631,7 @@ export class Platformer
 
 			host.args.cameraMode = vehicle.args.cameraMode;
 
-			if(host.willJump && (host.yAxis < 0 || (host.args.standingOn && host.args.standingOn.quickDrop)))
+			if(!host.args.standingOn.args.lockedIn && host.willJump && (host.yAxis < 0 || (host.args.standingOn && host.args.standingOn.quickDrop)))
 			{
 				const leaving = host.args.standingOn;
 
@@ -1011,21 +1011,23 @@ export class Platformer
 				host.args.gSpeed  = 0;
 			}
 
-			if(!host.willStick && (host.args.falling || host.args.standingOn) && !host.args.static && !host.noClip)
+			if(!host.willStick
+				&& ((host.args.falling && host.args.ySpeed >= 0) || host.args.standingOn)
+				&& !host.args.static && !host.noClip)
 			{
 				let popOut = 64;
 
 				const radius = host.args.width * 0.5;
 
 				while(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
-					&& !host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+					&& !host.getMapSolidAt(host.args.x + radius + 1, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
 					host.args.x += 1;
 					popOut--;
 				}
 
-				while(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x + radius + -1, host.args.y - host.args.height * 0.5)
 					&& !host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
@@ -1076,13 +1078,23 @@ export class Platformer
 
 				if(!host.args.canHide && !host.noClip)
 				{
-					let popOut = 16;
+					let popOut = 32;
+
+					let stuckInside;
 
 					while(!host.args.static
 						&& host.args.mode === 0
 						&& !host.getMapSolidAt(host.args.x, host.args.y - host.args.height, host.args.layer, 0)
-						&& host.getMapSolidAt(host.args.x, host.args.y - 1, host.args.layer, 0)
+						&& (stuckInside = host.getMapSolidAt(host.args.x, host.args.y - 1, host.args.layer, 0))
 					){
+						if(stuckInside.find && !stuckInside.find(other => {
+							const collisions = host.viewport.collisions.get(host);
+							return collisions && collisions.has(other);
+						}))
+						{
+							break;
+						}
+
 						if(--popOut <= 0)
 						{
 							return;
@@ -1116,12 +1128,21 @@ export class Platformer
 
 				if(!host.args.canHide && !host.noClip)
 				{
-					let popOut = 16;
+					let popOut = 32;
+					let stuckInside;
 
 					while(!host.args.static
 						&& host.args.mode === 0
-						&& host.getMapSolidAt(host.args.x, host.args.y - 1)
+						&& (stuckInside = host.getMapSolidAt(host.args.x, host.args.y - 1))
 					){
+						if(stuckInside.find && !stuckInside.find(other => {
+							const collisions = host.viewport.collisions.get(host);
+							return collisions && collisions.has(other);
+						}))
+						{
+							break;
+						}
+
 						if(--popOut <= 0)
 						{
 							return;
@@ -2046,13 +2067,28 @@ export class Platformer
 
 					if(!host.keepAngle)
 					{
-						host.args.angle = nextPosition[0]
+						let newAngle = nextPosition[0]
 							? (Math.atan(nextPosition[1] / nextPosition[0]))
 							: (Math.sign(nextPosition[1]) * Math.PI / 2);
 
-						host.lastAngles.unshift(host.args.angle);
 
+						if(Math.abs(host.args.angle - newAngle) >= Math.PI * 0.38)
+						{
+							const sensorSpread = 6;
+							const backPositionWide = this.findNextStep(host, -sensorSpread);
+							const forePositionWide = this.findNextStep(host, sensorSpread);
+							// console.log({mode: host.args.mode, nextPosition, forePositionWide, backPositionWide});
+							if((backPositionWide[1] === nextPosition[1] || forePositionWide[1] === nextPosition[1]))
+							{
+								newAngle = 0;
+							}
+						}
+
+						host.args.angle = newAngle;
+						host.lastAngles.unshift(host.args.angle);
 						host.lastAngles.splice(host.angleAvg);
+
+						// console.log(newAngle, host.args.angle / Math.PI, host.groundTime);
 					}
 				}
 
@@ -2559,68 +2595,6 @@ export class Platformer
 		// }
 	}
 
-	// findAirPointA(i, point, actor)
-	// {
-	// 	if(!actor.viewport)
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	const viewport = actor.viewport;
-	// 	const tileMap  = viewport.tileMap;
-
-	// 	const actors = viewport.actorsAtPoint(point[0], point[1])
-	// 		.filter(x =>
-	// 			x.args !== actor.args
-	// 			&& x.callCollideHandler(actor)
-	// 			&& x.solid
-	// 		);
-
-	// 	if(actors.length > 0)
-	// 	{
-	// 		return actor.lastPointA;
-	// 	}
-
-	// 	const solid = tileMap.getSolid(point[0], point[1], actor.args.layer);
-
-	// 	if(solid)
-	// 	{
-	// 		return actor.lastPointA;
-	// 	}
-
-	// 	Object.assign(actor.lastPointA, point.map(Math.trunc));
-	// }
-
-	// findAirPointB(i, point, actor)
-	// {
-	// 	if(!actor.viewport)
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	const viewport = actor.viewport;
-	// 	const tileMap  = viewport.tileMap;
-
-	// 	const actors = viewport.actorsAtPoint(point[0], point[1])
-	// 		.filter(x =>
-	// 			x.args !== actor.args
-	// 			&& x.callCollideHandler(actor)
-	// 			&& x.solid
-	// 		);
-
-	// 	if(actors.length > 0)
-	// 	{
-	// 		return actor.lastPointB;
-	// 	}
-
-	// 	if(tileMap.getSolid(point[0], point[1], actor.args.layer))
-	// 	{
-	// 		return actor.lastPointB;
-	// 	}
-
-	// 	Object.assign(actor.lastPointB, point.map(Math.trunc));
-	// }
-
 	updateAirPosition(host)
 	{
 		const xSpeedOriginal = host.args.xSpeed;
@@ -2707,23 +2681,39 @@ export class Platformer
 
 		// window.logPoints = upScanDist && true;
 
-		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-l-scan '+label);
+		if(host.viewport && host.viewport.args.debugEnabled)
+		{
+			window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-l-scan '+label);
+		}
 
 		const upDistanceL = host.castRayQuick(
 			upScanDist
 			, -Math.PI / 2
-			, [host.args.width * -0.5, 0]
+			, [host.args.width * -0.5 + 1, 0]
 		);
 
-		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-r-scan '+label);
+		// if(host.viewport && host.viewport.args.debugEnabled)
+		// {
+		// 	window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-r-scan '+label);
+		// }
 
 		const upDistanceR = host.castRayQuick(
 			upScanDist
 			, -Math.PI / 2
-			, [host.args.width * 0.5, 0]
+			, [host.args.width * 0.5 + -1, 0]
 		);
 
-		// window.logPoints = false;
+		let upCollisionAngle = false;
+
+		if(![upDistanceL, upDistanceR].some(x => x === false))
+		{
+			upCollisionAngle = Math.atan2(upDistanceL - upDistanceR, host.args.width);
+		}
+
+		// if(host.viewport && host.viewport.args.debugEnabled)
+		// {
+		// 	window.logPoints = false;
+		// }
 
 		// if(upDistanceL !== upDistanceLQ || upDistanceR !== upDistanceRQ)
 		// {
@@ -2767,13 +2757,6 @@ export class Platformer
 			host.lastLayer = null;
 
 			return;
-		}
-
-		let upCollisionAngle = false;
-
-		if(![upDistanceL, upDistanceR].some(x => x === false))
-		{
-			upCollisionAngle = Math.atan2(upDistanceL - upDistanceR, host.args.width);
 		}
 
 		const willStick = host.willStick || host.args.deepJump;
@@ -2888,19 +2871,25 @@ export class Platformer
 			, originalAngle
 		);
 
-		// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
+		if(host.viewport && host.viewport.args.debugEnabled)
+		{
+			window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
+		}
 
-		airMag = airMag !== false ? airMag : host.castRayQuick(
-			scanDist
-			, originalAngle
-			, [-tiny, 0]
-		);
+		if(Math.abs(host.args.xSpeed) <= Math.abs(host.args.ySpeed))
+		{
+			airMag = airMag !== false ? airMag : host.castRayQuick(
+				scanDist
+				, originalAngle
+				, [-tiny, 0]
+			);
 
-		airMag = airMag !== false ? airMag : host.castRayQuick(
-			scanDist
-			, originalAngle
-			, [+tiny, 0]
-		);
+			airMag = airMag !== false ? airMag : host.castRayQuick(
+				scanDist
+				, originalAngle
+				, [+tiny, 0]
+			);
+		}
 
 		// if(airMag && Math.abs(host.args.xSpeed) < Math.abs(host.args.ySpeed))
 		// {
@@ -2920,7 +2909,10 @@ export class Platformer
 
 		if(!host.rotateLock)
 		{
-			// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'alt-scan '+label);
+			if(host.viewport && host.viewport.args.debugEnabled)
+			{
+				window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'alt-scan '+label);;
+			}
 
 			const bOffset = -3 * Math.sign(host.args.ySpeed || 1);
 
@@ -2936,7 +2928,10 @@ export class Platformer
 			] : airPointBQ;
 		}
 
-		// window.logPoints = false;
+		if(host.viewport && host.viewport.args.debugEnabled)
+		{
+			window.logPoints = false;
+		}
 
 		const airPoint   = airPointQ;
 		const airPointB = airPointBQ;
@@ -3158,6 +3153,22 @@ export class Platformer
 						, (forePosition[0]??0) - (backPosition[0]??0)
 					));
 
+					if(Math.abs(newAngle) >= Math.PI * 0.25)
+					{
+						const backPositionWide = this.findNextStep(host, -sensorSpread);
+						const forePositionWide = this.findNextStep(host, sensorSpread);
+
+						if((backPositionWide[1] === backPosition[1] || forePositionWide[1] === forePosition[1])
+						&& !(forePosition[3] && forePositionWide[3] && backPosition[3] && backPositionWide[3]))
+						{
+							// console.log({forePosition, backPosition, forePositionWide, backPositionWide});
+							newAngle = 0;
+						}
+						else{
+							// console.log({forePosition, backPosition, forePositionWide, backPositionWide});
+						}
+					}
+
 					if(host.ySpeedLast < 0)
 					{
 						newAngle *= -1;
@@ -3210,7 +3221,7 @@ export class Platformer
 					{
 						host.args.falling = false;
 
-						if(host.viewport.settings.rumble)
+						if(host.viewport.settings.rumble && !host.controller.willRumble)
 						{
 							host.controller.rumble && host.controller.rumble({
 								duration: 80,
@@ -3275,7 +3286,7 @@ export class Platformer
 						}
 					}
 
-					if(gSpeed && (!host.args.standingOn || !host.args.standingOn.args.treadmill))
+					if(gSpeed && !host.args.climbing && (!host.args.standingOn || !host.args.standingOn.args.treadmill))
 					{
 						host.args.gSpeed = gSpeed;
 
@@ -3312,7 +3323,7 @@ export class Platformer
 					host.args.x += forePosition[0];
 					host.args.y -= forePosition[1];
 
-					if(host.viewport.settings.rumble)
+					if(host.viewport.settings.rumble && !host.controller.willRumble)
 					{
 						host.controller.rumble && host.controller.rumble({
 							duration: 80,
@@ -3624,20 +3635,12 @@ export class Platformer
 					break;
 			}
 
-			// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'down-walk-solid ' + label);
-
 			downFirstSolid = host.castRay(
 				maxStep// * (1+col)
 				, host.downAngle
 				, offsetPoint
 				, this.findDownSolid
 			);
-
-			// downFirstSolid = host.castRayQuick(
-			// 	maxStep, host.downAngle, offsetPoint
-			// );
-
-			// window.logPoints = null;
 
 			if(downFirstSolid === false)
 			{
@@ -3768,6 +3771,11 @@ export class Platformer
 
 	doJump(host, force)
 	{
+		if(host.args.climbing && host.getMapSolidAt(host.args.x, host.args.y - host.args.height))
+		{
+			host.args.y += host.args.height;
+		}
+
 		if(
 			host.args.ignore
 			|| host.args.falling
@@ -3801,6 +3809,8 @@ export class Platformer
 		const sensorSpread = scanRadius * 2;
 
 		let groundAngle = Math.atan2(backPosition[1] - forePosition[1], Math.ceil(sensorSpread));
+
+		// let groundAngle = host.args.angle;
 
 		host.args.ignore  = 6;
 		host.args.pushing = false;
@@ -4036,8 +4046,6 @@ export class Platformer
 			host.args.standingLayer = layer;
 			break;
 		}
-
-		console.log(this);
 	}
 
 	command_0(host, button) // jump
@@ -4048,7 +4056,7 @@ export class Platformer
 
 			host.args.ySpeed = -host.args.jumpForce * drag * 0.75;
 
-			host.args.hangingFrom.unhook();
+			host.args.hangingFrom.unhook(host);
 
 			host.swing = false;
 

@@ -10,10 +10,18 @@ export class DebrisRegion extends Region
 		super(...args);
 
 		this.args.type = 'region region-shade region-debris';
+		this.args.active = this.args.active ?? true;
 	}
 
 	update()
 	{
+		if(this.others.switch)
+		{
+			this.args.active = this.others.switch.args.active;
+		}
+
+		// this.args.hidden = !this.args.active;
+
 		super.update();
 
 		if(!this.filterWrapper && this.tags.sprite)

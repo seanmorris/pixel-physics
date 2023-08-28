@@ -14,28 +14,24 @@ export class CharacterPreview extends View
 
 	onAttached()
 	{
-		console.log( this.parent.currentSave );
-
 		const type = 'super';
 
 		const emeralds = this.args.emeralds = [
-		    //   {x: 0, y: 0, type, color: 'red-alt'}
-			// , {x: 0, y: 0, type, color: 'yellow' }
-			// , {x: 0, y: 0, type, color: 'green'  }
-			// , {x: 0, y: 0, type, color: 'cyan'   }
-			// , {x: 0, y: 0, type, color: 'white'  } //
-			// , {x: 0, y: 0, type, color: 'purple' } //
-			// , {x: 0, y: 0, type, color: 'pink'   } //
+		      {x: 0, y: 0, type, color: 'red-alt'}
+			, {x: 0, y: 0, type, color: 'yellow' }
+			, {x: 0, y: 0, type, color: 'green'  }
+			, {x: 0, y: 0, type, color: 'cyan'   }
+			, {x: 0, y: 0, type, color: 'white'  } //
+			, {x: 0, y: 0, type, color: 'purple' } //
+			, {x: 0, y: 0, type, color: 'pink'   } //
 		];
 
-		if(this.parent && this.parent.currentSave)
-		for(const storedEmerald of this.parent.currentSave.emeralds)
-		{
-			// this.args.emeralds.push({x: 0, y: 0, type, color: storedEmerald});
-			this.args.emeralds.push({x: 0, y: 0, color: storedEmerald});
-		}
-
-		console.log([...emeralds]);
+		// if(this.parent && this.parent.currentSave)
+		// for(const storedEmerald of this.parent.currentSave.emeralds)
+		// {
+		// 	// this.args.emeralds.push({x: 0, y: 0, type, color: storedEmerald});
+		// 	this.args.emeralds.push({x: 0, y: 0, color: storedEmerald});
+		// }
 
 		const spacing = emeralds.length;
 

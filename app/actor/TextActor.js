@@ -11,6 +11,7 @@ export class TextActor extends PointActor
 
 		this.args.type  = 'actor-item actor-text-actor';
 		this.args.float = -1;
+		this.args.static = true;
 
 		this.text = new CharacterString({value:''});
 

@@ -55,6 +55,20 @@ export const Constrainable = {
 
 	, setPos: function()
 	{
+		let blockers = null;
+
+		blockers = this.getMapSolidAt(this.args.x, this.args.y);
+
+		if(this.hooked && Array.isArray(blockers))
+		{
+			blockers = blockers.filter(b => !this.hooked.has(b)).length;
+		}
+
+		if(blockers && !this.getMapSolidAt(this.args.x, this.args.y+1))
+		{
+			this.args.y++;
+		}
+
 		if(!this.others.tiedTo)
 		{
 			return;

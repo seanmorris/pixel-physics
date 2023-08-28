@@ -1,3 +1,4 @@
+import { Bindable } from 'curvature/base/Bindable';
 import { Router }   from 'curvature/base/Router';
 import { Bgm } from '../audio/Bgm';
 import { Card } from '../intro/Card';
@@ -5,7 +6,6 @@ import { Card } from '../intro/Card';
 import { Cylinder } from '../effects/Cylinder';
 
 import { Pinch } from '../effects/Pinch';
-import { Droop } from '../effects/Droop';
 import { Twist } from '../effects/Twist';
 
 import { Menu } from './Menu';
@@ -54,6 +54,8 @@ export class MainMenu extends Menu
 		this.args.back   = new CharacterString({font: this.font, value: '❶ back'});
 		this.args.revert = new CharacterString({font: this.font, value: '❸ default (hold)'});
 		this.args.select = new CharacterString({font: this.font, value: '✚ select'});
+
+		this.actsCleared = {};
 
 		const Character = {
 			input: 'select'
@@ -106,6 +108,113 @@ export class MainMenu extends Menu
 			, get: () => this.parent.args.followerChar ?? 'Tails'
 		};
 
+		const Pallet = Bindable.make({
+			input: 'select'
+			, tags: 'inline'
+			, options: []
+			, set: value => this.parent.args.mainPallet = value
+			, get: () => this.parent.args.mainPallet ?? null
+		});
+
+		Pallet.set(this.parent.args.mainPallet || 'Normal');
+
+		const CustomColor = Bindable.make({
+			Hue: {
+				input: 'number'
+				, tags: 'inline'
+				, min: -180
+				, max: +180
+				, subtext: 'Rotate the color wheel.'
+				, revert: () => parent.customColor.h = 0
+				, set: value => parent.customColor.h = Number(value).toFixed(2)
+				, get: () => parent.customColor.h
+			},
+			Saturation: {
+				input: 'number'
+				, tags: 'inline'
+				, min:  0
+				, max:  2
+				, step: 0.01
+				, subtext: 'Change the amount of color.'
+				, revert: () => parent.customColor.s = 1
+				, set: value => parent.customColor.s = Number(value).toFixed(2)
+				, get: () => parent.customColor.s
+			},
+			Value: {
+				input: 'number'
+				, tags: 'inline'
+				, min:  0
+				, max:  2
+				, step: 0.01
+				, subtext: 'change the brightness.'
+				, revert: () => parent.customColor.v = 1
+				, set: value => parent.customColor.v = Number(value).toFixed(2)
+				, get: () => parent.customColor.v
+			}
+		});
+
+		this.onRemove(parent.args.bindTo('selectedChar', v => {
+			parent.loadSaves().then(() => {
+
+				switch(v)
+				{
+					case 'Sonic':
+						Pallet.options = ['Normal', 'Santiago', 'Sequel', 'RedHot', 'White', 'Custom'];
+						break;
+
+					case 'Tails':
+						Pallet.options = ['SkyCamo', 'Copper', 'Patina', 'Arctic', 'Custom'];
+						break;
+
+					case 'Knuckles':
+						Pallet.options = ['Tails', 'Enerjak', 'Pink', 'Wechnia', 'Custom'];
+						break;
+
+					default:
+						Pallet.options = [];
+						break;
+				}
+
+				if(v)
+				{
+					const charState = parent.getCharacterState(v);
+
+					Pallet.options.length = Pallet.options.length
+						? 1 + Math.min(Pallet.options.length, Object.keys(charState.cleared).length)
+						: 0;
+				}
+				else
+				{
+					Pallet.options = [];
+				}
+
+				if(Pallet.options.length)
+				{
+					Pallet.available = 'available';
+				}
+				else
+				{
+					Pallet.available = 'hidden';
+				}
+			})
+		}));
+
+		this.onRemove(parent.args.bindTo('mainPallet', v => {
+			if(v === 'Custom')
+			{
+				CustomColor.Hue.available =
+				CustomColor.Saturation.available =
+				CustomColor.Value.available = 'available';
+				return;
+			}
+
+			CustomColor.Hue.available =
+			CustomColor.Saturation.available =
+			CustomColor.Value.available = 'hidden';
+		}));
+
+		// this.parent.args.selectedChar = this.parent.args.selectedChar || 'Sonic';
+
 		Character.prefix = new CharacterPreview(Character, this.parent);
 		// Follower.prefix = new CharacterPreview(Follower);
 
@@ -122,10 +231,11 @@ export class MainMenu extends Menu
 					Character
 
 					// , Follower
+					// , Pallet
+					// , ...CustomColor
 
 					, 'Brooklyn Breakout Zone Act 1': {
-						tags: 'new'
-						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/brooklyn-zone.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/brooklyn-zone.json'});
@@ -134,8 +244,7 @@ export class MainMenu extends Menu
 					}
 
 					, 'Brooklyn Breakout Zone Act 2': {
-						tags: 'new'
-						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/brooklyn-zone-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/brooklyn-zone-2.json'});
@@ -153,8 +262,7 @@ export class MainMenu extends Menu
 					}
 
 					, 'Manic Harbor Zone Act 2': {
-						tags: 'new'
-						, characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, suffix: new ZoneSuffix({map: '/map/manic-harbor-zone-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/manic-harbor-zone-2.json'});
@@ -164,6 +272,7 @@ export class MainMenu extends Menu
 
 					, 'Agorapolis Zone Act 1 Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
 						, suffix: new ZoneSuffix({map: '/map/emerald-isle.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
@@ -217,7 +326,7 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Misty Ruins Test Zone': {
+					, 'Misty Ruins Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art, layout and physics for Misty Ruins Zone'
 						, callback: () => {
@@ -226,20 +335,30 @@ export class MainMenu extends Menu
 						}
 					}
 
-					, 'Underground Test Zone': {
-						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, subtext: 'Testing art, layout and physics for Underground Zone'
-						, callback: () => {
-							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
-							this.accept();
-						}
-					}
-
-					, 'StratoRail Test Zone': {
+					, 'StratoRail Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/pumpkin-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Toxin Refinery Zone Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
+						, subtext: 'Testing art for Moon Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/chemical-test.json'});
+							this.accept();
+						}
+					}
+
+					, 'Underground Zone Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, subtext: 'Testing art, layout and physics for Underground Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/underground-test.json'});
 							this.accept();
 						}
 					}
@@ -253,7 +372,7 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
-					, 'Moon Test Zone': {
+					, 'Moon Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
@@ -337,6 +456,7 @@ export class MainMenu extends Menu
 
 			, Graphics: {
 				input: 'select'
+				, tags: 'inline'
 				, options: ['High', 'Medium', 'Low', 'Very Low']
 				, set: value => parent.settings.graphicsLevel = value
 				, get: ()    => parent.settings.graphicsLevel

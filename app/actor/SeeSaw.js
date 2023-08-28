@@ -53,7 +53,7 @@ export class SeeSaw extends PointActor
 
 		if(!other.args.falling || other.args.ySpeed <= 0)
 		{
-			return false;
+			return;
 		}
 
 		other.args.groundAngle = 0;

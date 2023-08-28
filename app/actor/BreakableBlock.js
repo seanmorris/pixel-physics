@@ -24,7 +24,7 @@ export class BreakableBlock extends Block
 			this.args.type = 'actor-item actor-breakable-block collapsible-block';
 		}
 
-		this.args.static = true;
+		this.args.static = this.args.static ?? true;
 		this.args.strength = 0 || Number(this.args.strength);
 
 		this.fragmentsX = document.createElement('div');

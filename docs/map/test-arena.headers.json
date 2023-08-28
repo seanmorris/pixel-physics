@@ -9,7 +9,7 @@
     "height": 144,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 175,
+    "nextobjectid": 180,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -24,7 +24,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -160,9 +160,10 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 1024,
     "types": [
+        "catakiller",
         "dolphin",
         "layer-switch",
         "region",
@@ -175,7 +176,8 @@
         "spinning-float",
         "techno-squeak",
         "triple-ring-monitor",
-        "tumbler"
+        "tumbler",
+        "wind-stone"
     ],
     "map": "/map/test-arena.json"
 }

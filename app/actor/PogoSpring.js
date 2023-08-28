@@ -60,6 +60,8 @@ export class PogoSpring extends Vehicle
 
 	update()
 	{
+		this.args.active = !!this.occupant;
+
 		if(!this.args.falling && !this.occupant)
 		{
 			this.args.dead = false;

@@ -27,17 +27,17 @@
 }
 
 .actor-item.actor-slot-machine .slot-panel-a {
-	transition: background-position-y 0.9s ease-in;
+	transition: background-position-y 1s ease-in;
 	left: -48px;
 }
 
 .actor-item.actor-slot-machine .slot-panel-b {
-	transition: background-position-y 1.15s ease-in;
+	transition: background-position-y 1s 0.15s ease-in;
 	left: -16px;
 }
 
 .actor-item.actor-slot-machine .slot-panel-c {
-	transition: background-position-y 1.45s ease-in;
+	transition: background-position-y 1s 0.45s ease-in;
 	left: 16px;
 }
 

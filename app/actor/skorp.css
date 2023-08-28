@@ -14,11 +14,13 @@
 	background-image: url(/Sonic/skorp-body.png);
 	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
 	height: 26px;
-	width: 39px;
+	width: 40px;
 	z-index: 1;
 }
 
 .actor-item.actor-skorp .tail {
+	--recoil: 0px;
+	transition: transform 0.01s ease-out;
 	/* --tailAngle: 0deg;
 	--tailAngle: -21deg;
 	--tailAngle: 21deg; */
@@ -27,6 +29,11 @@
 	bottom: 28px;
 	/* display: flex;
 	flex-direction: column-reverse; */
+}
+
+.actor-item.actor-skorp:not([data-shooting="0"]) .tail {
+	transition: transform 0.5s ease-out;
+	--recoil: calc(6px * var(--aim-direction,0));
 }
 
 .actor-item.actor-skorp .tail {
@@ -38,11 +45,17 @@
 }
 
 .actor-item.actor-skorp .tail {
+	transition: left 0.1s ease-out;
+	transform: translateX(calc(-1 * var(--recoil, 0px)));
 	/* --tailAngle: calc(-21deg * var(--aim-direction)); */
 }
 
 .actor-item.actor-skorp[data-direction="-1"] .tail {
 	left: 4px;
+}
+
+.actor-item.actor-skorp[data-direction="-1"] .tail {
+	transform: translateX(var(--recoil, 0px));
 }
 
 .actor-item.actor-skorp[data-direction="1"] .tail {
@@ -58,6 +71,15 @@
 	position: relative;
 	transform: rotate(calc(-1deg * var(--tail-angle, 0)));
 	transition: transform 0.20s ease-in;
+}
+
+.actor-item.actor-skorp[data-shooting="4"] .tail .segment,
+.actor-item.actor-skorp[data-shooting="5"] .tail .segment,
+.actor-item.actor-skorp[data-shooting="6"] .tail .segment,
+.actor-item.actor-skorp[data-shooting="7"] .tail .segment,
+.actor-item.actor-skorp[data-shooting="8"] .tail .segment {
+	transform: rotate(calc(-0.9deg * var(--tail-angle, 0)));
+	transition: transform .04s 0.1s ease-in;
 }
 
 .actor-item.actor-skorp .tail .segment::before {
@@ -89,16 +111,47 @@
 	background-repeat: no-repeat;
 	position: relative;
 	transform: scaleX(var(--direction));
-	transition: transform 0.05s;
+	transition: transform 0.15s ease-in-out, left 0.1s linear;
+	transition-delay: 0.1s;
+}
+
+.actor-item.actor-skorp:not([data-aiming="0"]) .tail .gun {
+	transition-delay: 0.0s;
+}
+
+.actor-item.actor-skorp[data-shooting="5"] .tail .gun::after,
+.actor-item.actor-skorp[data-shooting="6"] .tail .gun::after,
+.actor-item.actor-skorp[data-shooting="7"] .tail .gun::after,
+.actor-item.actor-skorp[data-shooting="8"] .tail .gun::after {
+	background-image: url(/Sonic/eggrobo-muzzle-flash.png);
+	position: absolute;
+	top:-10px;
+	content: "";
+	width: 14px;
+	height: 7px;
+	background-position-x: -2px;
+	background-repeat: no-repeat;
+}
+
+.actor-item.actor-skorp:not([data-shooting="0"]) .tail .gun {
+	filter: brightness(2);
+}
+
+.actor-item.actor-skorp[data-direction="-1"] .tail .gun {
+	left: 0px;
 }
 
 .actor-item.actor-skorp[data-direction="1"] .tail .gun {
-	left: -14px;
+	left: -16px;
 }
 
 .actor-item.actor-skorp .tail .segment .segment {
 	transform-origin: 50% 150%;
 	bottom: 9px;
+}
+
+.actor-item.actor-skorp:not([data-shooting="0"]) .tail .segment .segment {
+	left: 1px;
 }
 
 .actor-item.actor-skorp .tail .segment .fist {
@@ -107,7 +160,6 @@
 }
 
 .actor-item.actor-skorp .tail .segment .gun {
-	transform-origin: 50% 150%;
 	bottom: 30px;
 }
 
@@ -115,9 +167,10 @@
 	/* --sprite-offset-x: -32px; */
 }
 
+.actor-item.actor-skorp:not([data-shooting="0"]) .sprite:after,
 .actor-item.actor-skorp[data-animation="walking"] .sprite:after {
 	/* --sprite-offset-x: -128px; */
-	/* animation: skorp-walk steps(3) infinite 160ms; */
+	animation: skorp-walk steps(3) infinite 160ms forwards;
 }
 
 .actor-item.actor-skorp[data-direction="-1"] .sprite:after {
@@ -131,9 +184,9 @@
 
 @keyframes skorp-walk {
 	from{
-		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+		background-position: 40px 0px;
 	}
 	to{
-		background-position: calc(-384px + var(--sprite-offset-x)) var(--sprite-offset-y);
+		background-position: -80px 0px;
 	}
 }

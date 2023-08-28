@@ -1,9 +1,9 @@
 {
     "compressionlevel": -1,
-    "height": 128,
+    "height": 144,
     "infinite": false,
     "nextlayerid": 14,
-    "nextobjectid": 713,
+    "nextobjectid": 743,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -158,14 +158,17 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 640,
     "types": [
+        "",
         "block",
         "breakable-block",
+        "butter-droid",
         "emblem",
         "emerald",
         "force-region",
+        "gator",
         "grapple-point",
         "kill-region",
         "layer-switch",
@@ -182,7 +185,6 @@
         "spring",
         "star-post",
         "triple-ring-monitor",
-        "turtloid",
         "vertical-region",
         "water-spout"
     ],

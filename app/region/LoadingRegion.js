@@ -59,16 +59,24 @@ export class LoadingRegion extends Region
 
 		// tileMap.resize(width + 9, height);
 
-		if(this.others.signpost)
+		if(this.others.signpost && this.others.signpost.willActivate)
 		{
 			viewport.args.frozen = 30;
 			viewport.appendMap(this.args.map, xAppend, yAppend);
 			// this.others.signpost.waitFor =
+			this.loaded = true;
+		}
+		else if(this.others.signpostAlt && this.others.signpostAlt.willActivate)
+		{
+			viewport.args.frozen = 30;
+			viewport.appendMap(this.args.map, xAppend, yAppend);
+			// this.others.signpost.waitFor =
+			this.loaded = true;
 		}
 
 		// viewport.args.zonecard.replay({});
 
-		this.loaded = true;
+		// this.loaded = true;
 	}
 
 	get solid() { return false; }

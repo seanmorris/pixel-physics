@@ -20,6 +20,8 @@ export class Signpost extends PointActor
 
 		this.cleared = false;
 
+		this.willActivate = false;
+
 		this.clearedBy = null;
 	}
 
@@ -29,6 +31,8 @@ export class Signpost extends PointActor
 		{
 			return;
 		}
+
+		this.willActivate = true;
 
 		this.viewport.onFrameOut(10, () => {
 			this.args.active = true;
@@ -65,14 +69,16 @@ export class Signpost extends PointActor
 		this.args.y--;
 	}
 
-	clear(other)
+	clear(other, showZonecard = true)
 	{
 		this.cleared = true;
 
 		other.totalCombo();
 
 		this.box.setAttribute('data-cleared-by', other.args.name);
-		this.viewport.clearAct(`${other.args.name} GOT THROUGH\n${this.viewport.args.actName}`);
+
+		this.tally = this.viewport.clearAct(`${other.args.name} GOT THROUGH\n${this.viewport.args.actName}`, showZonecard);
+
 		this.viewport.onFrameOut(30, () => {
 			this.args.follow = false;
 			if(!this.args.boss)

@@ -154,7 +154,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			const overlap  = -width + xOffset;
 			const newWidth = width + data.width + overlap;
 
-			console.log({width, dw:data.width, newWidth, overlap, xOffset});
+			// console.log({width, dw:data.width, newWidth, overlap, xOffset});
 
 			const height    = this.mapData.height;
 			const newHeight = Math.max(height, height + data.height + -Math.round(yOffset/32));
@@ -728,10 +728,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					continue;
 				}
 
-				if(layer.name.substring(0, 8) === 'Platform')
-				{
-					continue;
-				}
+				// if(layer.name.substring(0, 8) === 'Platform')
+				// {
+				// 	continue;
+				// }
 
 				if(layer.name.substring(0, 10) === 'Moving Art')
 				{
@@ -973,13 +973,13 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				continue;
 			}
 
-			if(layer.layer.meta.platform)
-			{
-				if(angle < 0 || angle > Math.PI)
-				{
-					continue;
-				}
-			}
+			// if(layer.layer.meta.platform)
+			// {
+			// 	if(angle < 0 || angle > Math.PI)
+			// 	{
+			// 		continue;
+			// 	}
+			// }
 
 			checkLayers.add(layer.index);
 

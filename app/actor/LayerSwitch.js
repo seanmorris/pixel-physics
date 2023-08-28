@@ -75,20 +75,26 @@ export class LayerSwitch extends PointActor
 		}
 
 		let toLayer = other.args.layer;
+		let fromLayer = this.args.fromLayer;
 
 		if(speed > 0)
 		{
 			toLayer = back ? this.args.fromLayer : this.args.toLayer;
+			fromLayer = back ? this.args.toLayer : this.args.fromLayer;
 		}
 
 		if(speed < 0)
 		{
 			toLayer = back ? this.args.toLayer : this.args.fromLayer;
+			fromLayer = back ? this.args.fromLayer : this.args.toLayer;
 		}
 
 		if(!this.viewport.tileMap.getSolid(otherX, otherY, toLayer))
 		{
-			other.args.layer = toLayer;
+			if(!other.args.layer || other.args.layer === fromLayer)
+			{
+				other.args.layer = toLayer;
+			}
 		}
 		else
 		{

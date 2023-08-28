@@ -392,8 +392,8 @@ export class PointActor extends View
 
 		this.buttons = {};
 
-		this.willStick = false;
-		this.stayStuck = false;
+		this.stayStuck  = false;
+		this.willStick  = false;
 
 		this.args.startled = this.args.startled || 0;
 		this.args.antiSkid = this.args.antiSkid || 0;
@@ -539,7 +539,7 @@ export class PointActor extends View
 					prevGroundObject.xAxis = 0;
 					prevGroundObject.yAxis = 0;
 
-					prevGroundObject.args.active = false;
+					// prevGroundObject.args.active = false;
 				}
 
 				prevGroundObject.standingUnder && prevGroundObject.standingUnder.delete(this);
@@ -551,14 +551,14 @@ export class PointActor extends View
 			{
 				if(prevGroundObject && !(prevGroundObject instanceof Switch))
 				{
-					prevGroundObject.args.active = false;
+					// prevGroundObject.args.active = false;
 					this.viewport.auras.delete(prevGroundObject);
 				}
 
-				if(groundObject && !(groundObject instanceof Switch))
-				{
-					groundObject.args.active = true;
-				}
+				// if(groundObject && !(groundObject instanceof Switch))
+				// {
+				// 	groundObject.args.active = true;
+				// }
 			}
 
 			if(!groundObject)
@@ -576,7 +576,7 @@ export class PointActor extends View
 					this.args.pushing = false;
 				}
 
-				groundObject.args.active = true;
+				// groundObject.args.active = true;
 
 				const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 					const x = groundObject.args.direction * groundObject.args.seatForward || 0;
@@ -656,7 +656,8 @@ export class PointActor extends View
 			}
 			else if(!groundObject.isVehicle)
 			{
-				if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
+				if(this.args.y <= 1 + groundObject.args.y - groundObject.args.height)
+				// if(this.args.y <= this.args.height + groundObject.args.y - groundObject.args.height)
 				{
 					const debindGroundX = groundObject.args.bindTo('x', (vv,kk) => {
 						const solid = groundObject.getMapSolidAt(this.args.x + vv + -groundObject.args.x, this.args.y);
@@ -1218,6 +1219,13 @@ export class PointActor extends View
 			return;
 		}
 
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
 		let type;
 
 		if(other.args.y <= this.args.y - this.args.height)
@@ -1253,19 +1261,14 @@ export class PointActor extends View
 			// this.solid && !this.isVehicle && this.popOut(other);
 		}
 
-		if(!this.viewport)
+		if(!viewport.collisions.has(this))
 		{
-			return;
+			viewport.collisions.set(this, new Map);
 		}
 
-		if(!this.viewport.collisions.has(this))
+		if(!viewport.collisions.has(other))
 		{
-			this.viewport.collisions.set(this, new Map);
-		}
-
-		if(!this.viewport.collisions.has(other))
-		{
-			this.viewport.collisions.set(other, new Map);
+			viewport.collisions.set(other, new Map);
 		}
 
 		// if(this.viewport.collisions.get(this).has(other))
@@ -1275,15 +1278,10 @@ export class PointActor extends View
 
 		const invertType = type > -1 ? ((type + 2) % 4) : type;
 
-		const collisionListA = this.viewport.collisions.get(this, type);
-		const collisionListB = this.viewport.collisions.get(other, invertType);
-
 		// other.pause(true);
 
-		collisionListA.set(other, type);
-		collisionListB.set(this, invertType);
 
-		this.viewport.collisions.set(other, collisionListB);
+		// this.viewport.collisions.set(other, collisionListB);
 
 		this.collideB(other, type);
 		other.collideB(this, invertType);
@@ -1294,6 +1292,15 @@ export class PointActor extends View
 		const result = ab || ba;
 
 		this.args.colliding = this.colliding = (this.colliding || result || false);
+
+		if(result !== false)
+		{
+			const collisionListA = viewport.collisions.get(this, type);
+			const collisionListB = viewport.collisions.get(other, invertType);
+
+			collisionListA.set(other, type);
+			collisionListB.set(this, invertType);
+		}
 
 		return result;
 	}
@@ -2070,8 +2077,8 @@ export class PointActor extends View
 
 		const radius = this.args.width / 2;
 
-		const leftCorner = tileMap.getSolid(this.x - radius, this.y - 1, this.args.layer);
-		const rightCorner = tileMap.getSolid(this.x + radius, this.y - 1, this.args.layer);
+		const leftCorner  = tileMap.getSolid(this.x - radius, this.y+1, this.args.layer);
+		const rightCorner = tileMap.getSolid(this.x + radius, this.y+1, this.args.layer);
 
 		if(leftCorner && rightCorner)
 		{
@@ -2080,17 +2087,28 @@ export class PointActor extends View
 
 		return this.castRay(
 			this.args.width
-			, (direction < 0 ? Math.PI : 0)
-			, [-direction * radius, 0]
+			, (-direction < 0 ? Math.PI : 0)
+			, [direction * radius, 0]
 			, (i,point) => {
-				const actors = this.viewport
-					.actorsAtPoint(point[0], point[1])
-					.filter(a => a.args !== this.args);
+				let solids = this.getMapSolidAt(point[0], point[1] + 1);
 
-				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
+				if(Array.isArray(solids))
 				{
-					return i;
+					solids = solids.filter(s => s.callCollideHandler(this)).length;
 				}
+
+				if(solids)
+				{
+					return (this.args.width - i);
+				}
+				// const actors = this.viewport
+				// 	.actorsAtPoint(point[0], point[1])
+				// 	.filter(a => a.args !== this.args);
+
+				// if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, this.args.layer))
+				// {
+				// 	return i;
+				// }
 			}
 		);
 	}
@@ -2614,8 +2632,13 @@ export class PointActor extends View
 		this.pincherBg.args.scale = warpBg;
 	}
 
-	droop(warpFactor = 0, xPosition = 0)
+	droop(warpFactor = 0, xPosition = 0, xMax = null)
 	{
+		if(xMax === null)
+		{
+			xMax = xPosition;
+		}
+
 		const half = this.args.width / 2;
 
 		if(!this.drooperFg)
@@ -2654,12 +2677,12 @@ export class PointActor extends View
 			, filter:  `url(#droop-${this.args.id})`
 		});
 
-		const widthFactor = 1 - xPosition / half;
+		const droopCenter = 1 - xPosition / half;
 		const posFactor   = xPosition / this.args.width;
 
-		this.drooperFg.args.droopWidthLeft  = `${51 * widthFactor + 1}%`;
-		this.drooperFg.args.droopRightStart = `${51 * widthFactor}%`;
-		this.drooperFg.args.droopWidthRight = `${102 + -51 * widthFactor}%`;
+		this.drooperFg.args.droopWidthLeft  = `${51 * droopCenter + 1}%`;
+		this.drooperFg.args.droopRightStart = `${51 * droopCenter}%`;
+		this.drooperFg.args.droopWidthRight = `${102 + -51 * droopCenter}%`;
 	}
 
 	crossRegionBoundary(region)
@@ -3028,8 +3051,8 @@ export class PointActor extends View
 		switch(this.args.mode)
 		{
 			case MODE_FLOOR:
-				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2) + -1);
-				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2));
+				left   = this.args.x - (this.isRegion ? 0 : (this.args.width / 2));
+				right  = this.args.x + (this.isRegion ? this.args.width : (this.args.width / 2 ));
 				top    = this.args.y - this.args.height;
 				bottom = this.args.y;
 

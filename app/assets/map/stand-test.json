@@ -94,13 +94,18 @@
                          "name":"float",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"steel-crate",
                  "visible":true,
                  "width":64,
                  "x":3008,
-                 "y":1792
+                 "y":1738.66666666667
                 }, 
                 {
                  "gid":2,
@@ -112,13 +117,18 @@
                          "name":"float",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"steel-crate",
                  "visible":true,
                  "width":64,
                  "x":3008,
-                 "y":1728
+                 "y":1642.66666666667
                 }, 
                 {
                  "gid":2,
@@ -219,8 +229,8 @@
                  "type":"marble-block",
                  "visible":true,
                  "width":32,
-                 "x":2624,
-                 "y":1576
+                 "x":2720,
+                 "y":1632
                 }, 
                 {
                  "gid":2,
@@ -250,6 +260,11 @@
                          "name":"float",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"steel-crate",
@@ -268,13 +283,18 @@
                          "name":"float",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"static",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"steel-crate",
                  "visible":true,
                  "width":64,
                  "x":2944,
-                 "y":1728
+                 "y":1680
                 }, 
                 {
                  "gid":2,
@@ -309,6 +329,11 @@
                          "name":"maxSpeed",
                          "type":"int",
                          "value":0
+                        }, 
+                        {
+                         "name":"power",
+                         "type":"int",
+                         "value":32
                         }],
                  "rotation":0,
                  "type":"flipper",
@@ -425,7 +450,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":63,
+ "nextobjectid":65,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -477,12 +502,12 @@
          "columns":16,
          "firstgid":178,
          "image":"rolling.png",
-         "imageheight":1024,
+         "imageheight":1120,
          "imagewidth":512,
          "margin":0,
          "name":"rolling",
          "spacing":0,
-         "tilecount":512,
+         "tilecount":560,
          "tileheight":32,
          "tilewidth":32
         }],

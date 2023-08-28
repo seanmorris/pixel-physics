@@ -1,0 +1,41 @@
+.actor-item.actor-scratch .sprite {
+	height: 39px;
+	width: 36px;
+}
+
+.actor-item.actor-scratch .sprite:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: 0px;
+	background-image: url(/Sonic/scratch.png);
+	background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	height: 39px;
+	width: 36px;
+	z-index: 1;
+}
+
+.actor-item.actor-scratch[data-animation="standing"] .sprite:after {
+	--sprite-offset-x: -36px;
+}
+
+.actor-item.actor-scratch[data-animation="walking"] .sprite:after {
+	/* --sprite-offset-x: -128px; */
+	animation: scratch-walk steps(3) infinite alternate 250ms;
+
+}
+
+.actor-item.actor-scratch[data-animation="walking"][data-direction="-1"] .sprite:after {
+	transform: scaleX(-1);
+}
+
+@keyframes scratch-walk {
+	from{
+		background-position: var(--sprite-offset-x) var(--sprite-offset-y);
+	}
+	to{
+		background-position: calc(-108px + var(--sprite-offset-x)) var(--sprite-offset-y);
+	}
+}

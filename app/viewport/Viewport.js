@@ -98,7 +98,6 @@ import { Replay } from '../replay/Replay';
 
 import { Platformer } from '../behavior/Platformer';
 import { Matrix } from 'matrix-api/Matrix';
-import { Droop } from '../effects/Droop';
 
 import { GamepadConfig } from '../controller/GamepadConfig';
 
@@ -182,6 +181,11 @@ export class Viewport extends View
 		this.args.controlCardShown = false;
 
 		this.bytesReceived = 0;
+
+		this.args.mainPallet = '';
+		this.args.customColor = {
+			h: 0, s: 1, v: 1,
+		}
 
 		this.args.inventory = [];
 
@@ -432,7 +436,7 @@ export class Viewport extends View
 
 		this.sequences = [debugSeq, konamiSeqA, konamiSeqB, gravitySeq];
 
-		this.args.debugEnabled  = false;
+		this.args.debugEnabled  = Router.query.debugEnabled;
 		this.args.debugEditMode = false;
 
 		this.args.debugObjectCursor = 0;
@@ -689,6 +693,7 @@ export class Viewport extends View
 			if(!event.detail)
 			{
 				this.args.trackName.args.value = '';
+				this.args.audioComment = '';
 				this.args.hideNowPlaying = 'hide-now-playing';
 				this.args.hiddenNowPlaying = 'hidden-now-playing';
 				return;
@@ -1273,6 +1278,25 @@ export class Viewport extends View
 		const currentZone = this.currentMap ?? '';
 
 		return currentSave ? currentSave.getZoneState(zone || currentZone) : {};
+	}
+
+	getCharacterState(name)
+	{
+		const currentSave = this.currentSave;
+
+		if(name)
+		{
+			const charState = currentSave.getCharacterState(name);
+
+			return charState;
+		}
+
+		if(this.controlActor && this.controlActor.args.canonical)
+		{
+			const charState = currentSave.getCharacterState(this.controlActor.args.canonical);
+
+			return charState;
+		}
 	}
 
 	loadMap({mapUrl, networked = false, useCheckpoint = true})
@@ -1965,6 +1989,8 @@ export class Viewport extends View
 				{
 					const impulse = Router.query.impulse;
 
+					console.log(impulse);
+
 					if(impulse.match(/-?\d+(\.\d+)?,-?\d+(\.\d+)?/))
 					{
 						const [x = 0, y = 0] = impulse.split(',');
@@ -2071,7 +2097,6 @@ export class Viewport extends View
 
 		return ReplayDatabase.open('replays', 3).then(database => {
 			delete replay.id;
-			console.log(replay);
 			const res = database.insert('replays', replay).then(() => replay);
 
 			this.replayFrames = new Map;
@@ -2561,7 +2586,11 @@ export class Viewport extends View
 				this.args.xOffsetTarget = [0.50, 0.45, 0.50, 0.55][actor.args.mode];
 				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
 				this.maxCameraBound = 96;
-				cameraSpeed = 18;
+				cameraSpeed = 24;
+				if(actor.args.mode === 0)
+				{
+					cameraSpeed = 9;
+				}
 				break;
 
 			case 'perspective':
@@ -3286,8 +3315,6 @@ export class Viewport extends View
 
 			const newBottom = y + mapData.height;
 
-			console.log(newBottom, this.tileMap.mapData.height);
-
 			if(newBottom > this.tileMap.mapData.height)
 			{
 				const yDiff = newBottom - this.tileMap.mapData.height;
@@ -3297,16 +3324,11 @@ export class Viewport extends View
 				this.offsetMap(0, yDiff);
 
 				y = 0;
-
 			}
-
-			console.log(y);
 
 			return this.tileMap.append(url, x, y, this.maxObjectId);
 		})
 		.then(({defs, data,}) => {
-
-			console.log(y);
 
 			this.currentMap = url;
 
@@ -4827,6 +4849,7 @@ export class Viewport extends View
 			const otherLeft   = actorX - (isRegion ? 0 : offset);
 			const otherRight  = actorX + (isRegion ? width : offset);
 
+			// if(myRight < otherLeft || otherRight <= myLeft)
 			if(myRight < otherLeft || otherRight < myLeft)
 			{
 				continue;
@@ -6215,7 +6238,27 @@ export class Viewport extends View
 
 	clearAct(message, showZonecard = true)
 	{
-		const zoneState = viewport.getZoneState();
+		const zoneState = this.getZoneState();
+
+		if(this.controlActor && this.controlActor.args.canonical)
+		{
+			const charState = this.getCharacterState(this.controlActor.args.canonical);
+
+			if(charState)
+			{
+				if(!(this.currentMap in charState.cleared))
+				{
+					charState.cleared[this.currentMap] = {
+						firstCleared: Date.now()
+					};
+				}
+
+				charState.cleared[this.currentMap].clearCount = charState.cleared[this.currentMap].clearCount || 0;
+
+				charState.cleared[this.currentMap].lastCleared = Date.now();
+				charState.cleared[this.currentMap].clearCount++;
+			}
+		}
 
 		this.args.actClearLabel.args.value = message;
 
@@ -6306,8 +6349,8 @@ export class Viewport extends View
 
 		tallyBoard.update(this);
 
-		tallyBoard.addEventListener('almostdone', console.log);
-		tallyBoard.addEventListener('totalingstarted', console.log);
+		// tallyBoard.addEventListener('almostdone', console.log);
+		// tallyBoard.addEventListener('totalingstarted', console.log);
 
 		if(showZonecard)
 		{
@@ -6539,6 +6582,18 @@ export class Viewport extends View
 			console.log('socket closed!');
 			this.quit(2);
 		});
+	}
+
+	nowPlayingClicked(event)
+	{
+		if(!this.args.audioComment)
+		{
+			return;
+		}
+
+		this.pauseGame();
+
+		window.open(this.args.audioComment, 'audio-credit');
 	}
 
 	handleUncaughtException(event)

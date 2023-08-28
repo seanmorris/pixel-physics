@@ -3,7 +3,7 @@
     "height": 424,
     "infinite": false,
     "nextlayerid": 17,
-    "nextobjectid": 760,
+    "nextobjectid": 762,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -43,7 +43,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -177,21 +177,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 4,
+            "columns": 6,
             "firstgid": 3363,
             "image": "../Sonic/tiles/common.png",
-            "imageheight": 32,
-            "imagewidth": 128,
+            "imageheight": 64,
+            "imagewidth": 192,
             "margin": 0,
             "name": "common",
             "spacing": 0,
-            "tilecount": 4,
+            "tilecount": 12,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 1,
-            "firstgid": 3367,
+            "firstgid": 3375,
             "image": "../Sonic/marble-zone-block.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -204,7 +204,7 @@
         },
         {
             "columns": 1,
-            "firstgid": 3368,
+            "firstgid": 3376,
             "image": "../Sonic/weight-small.png",
             "imageheight": 32,
             "imagewidth": 32,
@@ -217,7 +217,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 3369,
+            "firstgid": 3377,
             "image": "rolling.png",
             "imageheight": 1120,
             "imagewidth": 512,
@@ -230,7 +230,7 @@
         },
         {
             "columns": 62,
-            "firstgid": 3929,
+            "firstgid": 3937,
             "image": "../custom/red-starlight.png",
             "imageheight": 1344,
             "imagewidth": 1984,
@@ -243,7 +243,7 @@
         },
         {
             "columns": 16,
-            "firstgid": 6533,
+            "firstgid": 6541,
             "image": "chemical-plant-tiles.png",
             "imageheight": 512,
             "imagewidth": 512,
@@ -257,7 +257,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 1344,
     "types": [
         "b-fish",

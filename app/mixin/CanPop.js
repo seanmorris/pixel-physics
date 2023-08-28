@@ -127,8 +127,6 @@ export class CanPop
 	{
 		const viewport = this.viewport;
 
-		console.log(this, this.args.gone);
-
 		if(!viewport || this.args.gone || this.args.invincible || (other && other.args.owner === this))
 		{
 			return;

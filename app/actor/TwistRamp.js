@@ -67,7 +67,7 @@ export class TwistRamp extends PointActor
 			{
 				other.args.xSpeed = -this.args.power * dir
 				other.args.ySpeed = this.args.power * 0.65;
-				other.args.y -= 5;
+				other.args.y += 5;
 			}
 			else if(other.args.mode === 3)
 			{

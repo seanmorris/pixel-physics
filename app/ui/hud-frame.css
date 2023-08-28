@@ -171,6 +171,10 @@
 	content: ' ';
 }
 
+.hud-bottom-left[data-extra]:not([data-extra=""]) {
+	cursor: pointer;
+}
+
 .hide-now-playing .hud-bottom-left {
 	transition: transform 750ms 250ms ease-in, filter 0.5s ease-in;
 	transform: translateX(-120%) !important;

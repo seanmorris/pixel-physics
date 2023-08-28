@@ -2,4 +2,9 @@
 	background-image: url(/custom/wind-stone.png);
 	width: 8px;
 	height: 24px;
+	top: 1px;
+}
+
+.actor-wind-stone .sprite .labels {
+	margin-bottom: 10px;
 }

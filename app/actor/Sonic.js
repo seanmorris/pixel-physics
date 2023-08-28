@@ -24,6 +24,8 @@ import { GrindingRegion } from '../region/GrindingRegion';
 import { Marker } from './Marker';
 
 import { SkidDust } from '../behavior/SkidDust';
+import { SuperForm } from '../behavior/SuperForm';
+import { EmeraldHalo } from '../behavior/EmeraldHalo';
 
 import { Color } from '../lib/Color';
 
@@ -45,13 +47,15 @@ export class Sonic extends PointActor
 		window.sonic = this;
 
 		this.behaviors.add(new SkidDust);
+		this.behaviors.add(new SuperForm);
+		this.behaviors.add(new EmeraldHalo);
 
 		this.args.canonical = 'Sonic';
 
 		this.args.type = 'actor-sonic actor-item';
 
 		this.accelNormal = 0.15;
-		this.accelSuper  = 0.22;
+		this.accelSuper  = 0.24;
 
 		this.markers = new Set;
 
@@ -100,14 +104,12 @@ export class Sonic extends PointActor
 
 		this.hyperSheet = 0;
 
-		// this.args.bindTo('doubleSpin', (v,k) => console.trace(k,v));
-
 		this.costumes = {
-			sant:  {h: -30, s: 1.5,  v: 1.25},
-			deep:  {h: -10, s: 1.5,  v: 1.25},
-			white: {h: 0,   s: 0,    v: 1.25},
-			red:   {h: 115, s: 1.75, v: 1.00},
-			brown: {h: 125, s: 1.15, v: 0.50},
+			Santiago: {h: -30, s: 1.5,  v: 1.25},
+			Sequel:   {h: -10, s: 1.5,  v: 1.25},
+			White:    {h: 0,   s: 0,    v: 1.25},
+			RedHot:   {h: 115, s: 1.75, v: 1.00},
+			Brown:    {h: 125, s: 1.15, v: 0.50},
 		};
 
 		this.args.bindTo('falling', v => {
@@ -131,6 +133,11 @@ export class Sonic extends PointActor
 				});
 			}
 		});
+
+		this.transformTime = 0;
+
+		this.args.minRingsSuper = 50;
+		this.args.minRingsHyper = 75;
 	}
 
 	shiftColor(color, h, s, v)
@@ -216,24 +223,6 @@ export class Sonic extends PointActor
 			let s = Number(this.viewport.customColor.s ?? 1);
 			let v = Number(this.viewport.customColor.v ?? 1);
 
-			if(this.viewport.args.networked)
-			{
-				const costume = 'deep';
-
-				h = this.costumes[costume].h;
-				s = this.costumes[costume].s;
-				v = this.costumes[costume].v;
-			}
-
-			if(this.args.netplayer)
-			{
-				const costume = 'sant';
-
-				h = this.costumes[costume].h;
-				s = this.costumes[costume].s;
-				v = this.costumes[costume].v;
-			}
-
 			this.rotateMainColor(h,s,v);
 
 			// this.args.spriteSheet = this.args.rotatedSpriteSheet;
@@ -248,6 +237,26 @@ export class Sonic extends PointActor
 		this.onRemove(debindH);
 		this.onRemove(debindS);
 		this.onRemove(debindV);
+
+		if(this.viewport.args.networked)
+		{
+			if(this.args.netplayer)
+			{
+				const costume = 'Santiago';
+
+				Object.assign(this.viewport.customColor, this.costumes[costume]);
+			}
+			else
+			{
+				const costume = 'Sequel';
+
+				Object.assign(this.viewport.customColor, this.costumes[costume]);
+			}
+		}
+		else if(this.viewport.args.mainPallet && this.costumes[this.viewport.args.mainPallet])
+		{
+			Object.assign(this.viewport.customColor, this.costumes[this.viewport.args.mainPallet]);
+		}
 
 		if(!this.superSpriteSheetLoader)
 		{
@@ -305,6 +314,15 @@ export class Sonic extends PointActor
 
 	updateEnd()
 	{
+		// if(this.args.animation === 'transform')
+		// {
+		// 	this.transformTime++;
+		// }
+		// else if(this.transformTime > 0)
+		// {
+		// 	this.transformTime = 0;
+		// }
+
 		if(!this.args.falling && this.pinchFilterBg)
 		{
 			this.pinch(0, 0);
@@ -357,6 +375,9 @@ export class Sonic extends PointActor
 				}
 			}
 		}
+
+		this.args.isSuper = this.isSuper;
+		this.args.isHyper = this.isHyper;
 
 		if(this.isHyper)
 		{
@@ -1036,7 +1057,9 @@ export class Sonic extends PointActor
 
 		if(this.args.twistRamp)
 		{
-			this.args.animation = 'side-flip';
+			this.
+
+			args.animation = 'side-flip';
 		}
 	}
 
@@ -1666,40 +1689,7 @@ export class Sonic extends PointActor
 	}
 
 	command_3()
-	{
-		if(this.args.ignore && !this.isSuper)
-		{
-			return;
-		}
-
-		if(this.isHyper)
-		{
-			this.isHyper = false;
-			this.isSuper = false;
-			this.setProfile();
-			return;
-		}
-
-		if(this.isSuper)
-		{
-			this.isHyper = !this.isHyper;
-		}
-		else
-		{
-			this.isSuper = !this.isSuper;
-		}
-
-		this.onTimeout(150, () =>{
-			if(this.args.rings === 0)
-			{
-				this.isSuper = false;
-				this.isHyper = false;
-				this.setProfile();
-			};
-		});
-
-		this.setProfile();
-	}
+	{}
 
 	setProfile()
 	{
@@ -1722,8 +1712,6 @@ export class Sonic extends PointActor
 		else
 		{
 			this.args.spriteSheet = this.rotatedSpriteSheet;
-
-			console.log(this.rotatedSpriteSheet);
 
 			this.args.gSpeedMax = this.gSpeedMaxNormal;
 			this.args.jumpForce = this.jumpForceNormal;
@@ -1969,13 +1957,17 @@ export class Sonic extends PointActor
 				this.args.animation = 'springdash'
 			});
 		}
+
+		if(other.pop && this.isHyper)
+		{
+			other.pop(this);
+		}
 	}
 
 	get solid() { return false; }
 	get canRoll() { return !this.args.wallSticking; }
 	get isEffect() { return false; }
 	get controllable() { return !this.args.npc; }
-
 
 	get facePoint() {
 
@@ -2017,13 +2009,6 @@ export class Sonic extends PointActor
 
 	rotateMainColor(rH = 0, rS = 1, rV = 1)
 	{
-		// if(this.rH === rH)
-		// {
-		// 	return;
-		// }
-
-		// this.rH = rH;
-
 		const rotatedColors = {
 			'8080e0': new Color('8080e0').rotate(rH, rS, rV).toString(),
 			'6060c0': new Color('6060c0').rotate(rH, rS, rV).toString(),

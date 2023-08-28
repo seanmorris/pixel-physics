@@ -8,6 +8,7 @@ export class ExitRegion extends Region
 
 		this.args.type = 'region exit';
 		this.args.hidden = true;
+		this.triggered = false;
 	}
 
 	updateActor(other)
@@ -17,17 +18,17 @@ export class ExitRegion extends Region
 			return;
 		}
 
-		if(this.args.signpost)
-		{
-			const signpost = this.viewport.actorsById[ this.args.signpost ];
+		// if(this.args.signpost)
+		// {
+		// 	const signpost = this.viewport.actorsById[ this.args.signpost ];
 
-			if(signpost.args.activeTime < 540)
-			{
-				other.args.bossMode = true;
+		// 	if(signpost.args.activeTime < 30)
+		// 	{
+		// 		other.args.bossMode = true;
 
-				return;
-			}
-		}
+		// 		return;
+		// 	}
+		// }
 
 		if(this.others.boss && this.others.boss.args.hitPoints > 0)
 		{
@@ -50,21 +51,25 @@ export class ExitRegion extends Region
 
 		viewport.clearCheckpoints();
 
-		if(viewport.levelFinished)
+		if(this.triggered)
 		{
 			return;
 		}
 
 		viewport.onFrameOut(30, () => {
 
-			if(viewport.levelFinished)
+			if(this.triggered)
 			{
 				return;
 			}
 
-			viewport.actors.remove(this);
+			// viewport.actors.remove(this);
 
-			viewport.finishLevel();
+			this.triggered = true;
+
+			// viewport.finishLevel();
+
+			const tally = this.others.signpost && this.others.signpost.tally;
 
 			if(viewport.replay)
 			{
@@ -72,16 +77,15 @@ export class ExitRegion extends Region
 			}
 			else if(this.args.nextStage)
 			{
-				const tally = viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);
+				const t = tally || viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);
 
-				tally.addEventListener('done', event => viewport.quit(2, () => viewport.loadMap({mapUrl:'/map/'+this.args.nextStage})));
+				t.addEventListener('done', event => viewport.quit(2, () => viewport.loadMap({mapUrl:'/map/'+this.args.nextStage})));
 			}
 			else
 			{
-				const tally = viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);;
+				const t = tally || viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);
 
-				tally.addEventListener('done', event => viewport.quit());
-				// viewport.playCards();
+				t.addEventListener('done', event => viewport.quit(2));
 			}
 
 		});

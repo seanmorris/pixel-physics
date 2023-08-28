@@ -82,6 +82,7 @@ import { SnailBot     } from './actor/SnailBot';
 import { Motobug      } from './actor/Motobug';
 import { BFish        } from './actor/BFish';
 import { Grounder     } from './actor/Grounder';
+import { Scratch      } from './actor/Scratch';
 import { TechnoSqueak } from './actor/TechnoSqueak';
 import { Blastoid     } from './actor/Blastoid';
 import { Meanie       } from './actor/Meanie';
@@ -91,6 +92,11 @@ import { Splats       } from './actor/Splats';
 import { Relief       } from './actor/Relief';
 import { Barnacle     } from './actor/Barnacle';
 import { Skorp        } from './actor/Skorp';
+import { RhinoBot     } from './actor/RhinoBot';
+import { Gator        } from './actor/Gator';
+import { ButterDroid  } from './actor/ButterDroid';
+import { Catakiller   } from './actor/Catakiller';
+import { CatakillerSegment } from './actor/CatakillerSegment';
 
 // Newtron
 // Bomb
@@ -269,6 +275,9 @@ import { AirBomb } from './actor/AirBomb';
 import { EggCapsule } from './actor/EggCapsule';
 
 import { SpikeRing } from './actor/SpikeRing';
+import { ToxicBarrel } from './actor/ToxicBarrel';
+import { SpinBridge } from './actor/SpinBridge';
+import { StoneAltar } from './actor/StoneAltar';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -399,6 +408,7 @@ export const ObjectPalette = {
 	, 'motobug': Motobug
 	, 'b-fish': BFish
 	, 'grounder': Grounder
+	, 'scratch': Scratch
 	, 'techno-squeak': TechnoSqueak
 	, 'blastoid': Blastoid
 	, 'meanie': Meanie
@@ -408,6 +418,11 @@ export const ObjectPalette = {
 	, 'relief': Relief
 	, 'barnacle': Barnacle
 	, 'skorp': Skorp
+	, 'rhino-bot': RhinoBot
+	, 'gator': Gator
+	, 'butter-droid': ButterDroid
+	, 'catakiller': Catakiller
+	, 'catakiller-segment': CatakillerSegment
 	, 'spitfire': SpitFire
 	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint
@@ -484,4 +499,7 @@ export const ObjectPalette = {
 	, 'air-bomb': AirBomb
 	, 'egg-capsule': EggCapsule
 	, 'spike-ring': SpikeRing
+	, 'toxic-barrel': ToxicBarrel
+	, 'spin-bridge': SpinBridge
+	, 'stone-altar': StoneAltar
 };
