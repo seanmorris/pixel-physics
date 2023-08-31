@@ -23,3 +23,8 @@
 	background-image: url(/Sonic/chain-link-brass.png);
 	/*background-repeat: repeat-y;*/
 }
+
+[data-theme="phazon"] .actor-item:not(.actor-barnacle-trap) .chain {
+	background-image: none;
+	/*background-repeat: repeat-y;*/
+}

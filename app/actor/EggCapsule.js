@@ -53,6 +53,8 @@ export class EggCapsule extends PointActor
 				explosionTag.classList.add('particle-huge-explosion');
 				const explosion = new Tag(explosionTag);
 
+				this.viewport.controlActor.screenLock = null;
+
 				explosion.style({'--x': this.args.x, '--y': this.args.y});
 
 				this.viewport.particles.add(explosion);

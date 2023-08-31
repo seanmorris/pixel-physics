@@ -10,7 +10,7 @@ export class Switch extends PointActor
 		this.args.type = 'actor-item actor-switch';
 
 		this.args.width  = 32;
-		this.args.height = this.height = 16;
+		this.args.height = 10;//this.height = 16;
 
 		// this.args.float  = -1;
 
@@ -80,11 +80,11 @@ export class Switch extends PointActor
 
 		if(this.args.active)
 		{
-			this.args.height = this.height + -6;
+			// this.args.height = this.height + -6;
 		}
 		else
 		{
-			this.args.height = this.height;
+			// this.args.height = this.height;
 		}
 	}
 

@@ -10,6 +10,7 @@ import { WaterRegion } from './region/WaterRegion';
 import { DarkRegion } from './region/DarkRegion';
 import { LavaRegion } from './region/LavaRegion';
 import { ToxicRegion } from './region/ToxicRegion';
+import { PhazonRegion } from './region/PhazonRegion';
 import { RollingRegion } from './region/RollingRegion';
 import { SlidingRegion } from './region/SlidingRegion';
 import { GrindingRegion } from './region/GrindingRegion';
@@ -97,7 +98,7 @@ import { Gator        } from './actor/Gator';
 import { ButterDroid  } from './actor/ButterDroid';
 import { Catakiller   } from './actor/Catakiller';
 import { CatakillerSegment } from './actor/CatakillerSegment';
-
+import { EggTroid     } from './actor/EggTroid';
 // Newtron
 // Bomb
 
@@ -214,6 +215,8 @@ import { MiniMace } from './actor/MiniMace';
 import { MegaMace } from './actor/MegaMace';
 import { Beelzebub } from './actor/Beelzebub';
 import { MiniBoss } from './actor/MiniBoss';
+import { PogoEgg } from './actor/PogoEgg';
+
 import { Magnet	 } from './actor/Magnet';
 import { Pulley } from './actor/Pulley';
 import { PulleySmall } from './actor/PulleySmall';
@@ -278,6 +281,9 @@ import { SpikeRing } from './actor/SpikeRing';
 import { ToxicBarrel } from './actor/ToxicBarrel';
 import { SpinBridge } from './actor/SpinBridge';
 import { StoneAltar } from './actor/StoneAltar';
+import { BouncyMushroom } from './actor/BouncyMushroom';
+import { NitroBooster } from './actor/NitroBooster';
+import { LavaBall } from './actor/LavaBall';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -342,6 +348,7 @@ export const ObjectPalette = {
 	, 'region':       WaterRegion
 	, 'lava-region':  LavaRegion
 	, 'toxic-region': ToxicRegion
+	, 'phazon-region': PhazonRegion
 	, 'dark-region':  DarkRegion
 	, 'shade-region': ShadeRegion
 	, 'force-region': ForceRegion
@@ -423,6 +430,7 @@ export const ObjectPalette = {
 	, 'butter-droid': ButterDroid
 	, 'catakiller': Catakiller
 	, 'catakiller-segment': CatakillerSegment
+	, 'eggtroid': EggTroid
 	, 'spitfire': SpitFire
 	, 'spitsteam': SpitSteam
 	, 'grapple-point': GrapplePoint
@@ -442,6 +450,7 @@ export const ObjectPalette = {
 	, 'dish': Dish
 	, 'red-eye-jet': RedEyeJet
 	, 'beelzebub': Beelzebub
+	, 'pogo-egg': PogoEgg
 	, 'mini-boss': MiniBoss
 	, 'mini-mace': MiniMace
 	, 'mega-mace': MegaMace
@@ -502,4 +511,7 @@ export const ObjectPalette = {
 	, 'toxic-barrel': ToxicBarrel
 	, 'spin-bridge': SpinBridge
 	, 'stone-altar': StoneAltar
+	, 'bouncy-mushroom': BouncyMushroom
+	, 'nitro-booster': NitroBooster
+	, 'lava-ball': LavaBall
 };

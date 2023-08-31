@@ -3,7 +3,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 10,
-    "nextobjectid": 405,
+    "nextobjectid": 411,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -213,6 +213,7 @@
         "grounder",
         "hex-nut",
         "kill-region",
+        "phazon-region",
         "ring",
         "ring-monitor",
         "rolling-region",
@@ -226,5 +227,6 @@
         "toxic-barrel",
         "toxic-region"
     ],
+    "emblems": [],
     "map": "/map/chemical-test.json"
 }

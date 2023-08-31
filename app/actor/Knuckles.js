@@ -706,7 +706,7 @@ export class Knuckles extends PointActor
 					}
 				}
 
-				if(this.bMap('checkBelow', this.x, this.y).get(Platformer))
+				if(this.bMap('checkBelow', this.x, this.y).get(Platformer) && !this.args.climbing)
 				{
 					this.args.flying  = false;
 					this.args.bellySliding = true;
@@ -1039,7 +1039,7 @@ export class Knuckles extends PointActor
 			{
 				this.args.xSpeed = Math.sign(this.args.direction) * this.args.width * 0.5;
 				this.willStick = true;
-				this.climbing = true;
+				this.args.climbing = true;
 				return
 			}
 		}

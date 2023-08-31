@@ -136,7 +136,7 @@
          "name":"Collision 0",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":1024,
          "x":0,
          "y":0
@@ -1724,6 +1724,18 @@
                  "width":32,
                  "x":13120,
                  "y":1680
+                }, 
+                {
+                 "gid":2,
+                 "height":352,
+                 "id":405,
+                 "name":"phazon-region",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":992,
+                 "x":4352,
+                 "y":1344
                 }],
          "opacity":0.5,
          "type":"objectgroup",
@@ -7512,7 +7524,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":405,
+ "nextobjectid":411,
  "orientation":"orthogonal",
  "properties":[
         {

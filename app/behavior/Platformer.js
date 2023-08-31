@@ -2652,7 +2652,8 @@ export class Platformer
 
 		if(host.args.jumping && host.args.ySpeed < 0 && host.args.ySpeed > -4)
 		{
-			host.args.xSpeed -= ((host.args.xSpeed / 0.125) / 256);
+			// host.args.xSpeed -= ((host.args.xSpeed / 0.125) / 256);
+			host.args.xSpeed -= host.args.xSpeed * (host.args.decel * 0.078125);
 		}
 
 		const upMargin = (host.args.flying

@@ -1,0 +1,136 @@
+{
+    "compressionlevel": -1,
+    "height": 48,
+    "infinite": false,
+    "nextlayerid": 11,
+    "nextobjectid": 498,
+    "orientation": "orthogonal",
+    "properties": [
+        {
+            "name": "backdrop",
+            "type": "string",
+            "value": "phazon-mines"
+        },
+        {
+            "name": "deathLine",
+            "type": "int",
+            "value": 3860
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "phazon"
+        },
+        {
+            "name": "titlecard-number",
+            "type": "int",
+            "value": 1
+        },
+        {
+            "name": "titlecard-title-1",
+            "type": "string",
+            "value": "PHAZON CRATER"
+        },
+        {
+            "name": "titlecard-title-2",
+            "type": "string",
+            "value": "ZONE"
+        }
+    ],
+    "renderorder": "right-down",
+    "tiledversion": "1.10.1",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 22,
+            "firstgid": 1,
+            "image": "shapes.png",
+            "imageheight": 256,
+            "imagewidth": 704,
+            "margin": 0,
+            "name": "shapes",
+            "spacing": 0,
+            "tilecount": 176,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 6,
+            "firstgid": 177,
+            "image": "../Sonic/tiles/common.png",
+            "imageheight": 64,
+            "imagewidth": 192,
+            "margin": 0,
+            "name": "common",
+            "spacing": 0,
+            "tilecount": 12,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 189,
+            "image": "rolling.png",
+            "imageheight": 1120,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rolling",
+            "spacing": 0,
+            "tilecount": 560,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 56,
+            "firstgid": 749,
+            "image": "../Sonic/tiles/hidden-palace/phazon-mines.png",
+            "imageheight": 1920,
+            "imagewidth": 1792,
+            "margin": 0,
+            "name": "phazon-mines",
+            "spacing": 0,
+            "tilecount": 3360,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 24,
+            "firstgid": 4109,
+            "image": "../Sonic/tiles/hidden-palace/black-rocks.png",
+            "imageheight": 800,
+            "imagewidth": 768,
+            "margin": 0,
+            "name": "black-rocks",
+            "spacing": 0,
+            "tilecount": 600,
+            "tileheight": 32,
+            "tilewidth": 32
+        }
+    ],
+    "tilewidth": 32,
+    "type": "map",
+    "version": "1.10",
+    "width": 352,
+    "types": [
+        "barnacle",
+        "block",
+        "bouncy-mushroom",
+        "breakable-block",
+        "catakiller",
+        "companion-block",
+        "eggtroid",
+        "emblem",
+        "exit-region",
+        "grapple-point",
+        "lava-ball",
+        "nitro-booster",
+        "phazon-region",
+        "ring",
+        "rolling-region",
+        "spikes"
+    ],
+    "emblems": [
+        494
+    ],
+    "map": "/map/phazon-test.json"
+}

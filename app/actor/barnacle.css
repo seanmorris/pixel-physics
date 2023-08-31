@@ -46,6 +46,10 @@
 	z-index: -1;
 }
 
+[data-theme="phazon"] .actor-item.actor-barnacle-trap .sprite::after {
+	filter: hue-rotate(70deg) brightness(1.5);
+}
+
 @keyframes barnacle-retract {
 	from{
 		background-position-x: 0px;

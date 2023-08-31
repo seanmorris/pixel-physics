@@ -57,6 +57,25 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		if(this.hooked.size)
 		{
+			if(this.viewport.args.theme === 'phazon')
+			{
+				if(!this.lightning)
+				{
+					this.lightning = new Tag(`<div class = "particle-sparkle-lightning">`);
+
+					viewport.particles.add(this.lightning);
+
+					console.log(this.lightning);
+				}
+
+				this.lightning.style({
+					'--x': tiedTo.args.x
+					, '--y': tiedTo.args.y
+					, 'height': (this.args.ropeLength * 2) + 'px'
+					, '--angle': -this.args.groundAngle
+				});
+			}
+
 			const hooked = [...this.hooked];
 			const first = hooked[0];
 
@@ -99,6 +118,15 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 				h.args.cameraMode = 'hooked';
 			}
 
+		}
+		else
+		{
+			if(this.lightning)
+			{
+				this.viewport.particles.remove(this.lightning);
+
+				this.lightning = null;
+			}
 		}
 
 		super.updateEnd();

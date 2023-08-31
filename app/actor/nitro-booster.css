@@ -1,0 +1,21 @@
+.actor-item.actor-nitro-booster .sprite {
+	content: '';
+	left: 0;
+	top: 0;
+	position: absolute;
+	background-image: url(/Sonic/nitro-exhaust.png);
+	width: 64px;
+	height: 16px;
+	background-repeat: no-repeat;
+	z-index: 1;
+}
+
+.actor-item.actor-nitro-booster[data-animation="boosting"] .sprite::after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 17px;
+	background-image: url(/Sonic/nitro-flare.png);
+	width: 29px;
+	height:60px;
+}

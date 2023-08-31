@@ -20,6 +20,7 @@
 .region.region-shade .sprite,
 .region.region-lava .sprite,
 .region.region-toxic .sprite,
+.region.region-phazon .sprite,
 .region.region-water .sprite {
 	position: absolute;
 	pointer-events: none;
@@ -30,6 +31,7 @@
 .region.region-waterfall .sprite,
 .region.region-lava .sprite,
 .region.region-toxic .sprite,
+.region.region-phazon .sprite,
 .region.region-water .sprite {
 
 	--bottomBoundary: -1px;
@@ -59,6 +61,7 @@
 .region.region-shade.water .sprite .region-color-wrapper,
 .region.region-shade.lava  .sprite .region-color-wrapper,
 .region.region-toxic .region-color-wrapper,
+.region.region-phazon .region-color-wrapper,
 .region.region-lava .region-color-wrapper {
 	overflow: hidden;
 	position: absolute;
@@ -70,18 +73,22 @@
 
 .region.region-lava .region-color,
 .region.region-toxic .region-color,
+.region.region-phazon .region-color,
 .region.region-water .region-color {
 	max-height: var(--viewportHeight);
 }
 
 .region.region-lava .sprite,
 .region.region-toxic .sprite,
+.region.region-phazon .sprite,
 .region.region-water .sprite,
 .region.region-lava .region-filter-wrapper,
 .region.region-toxic .region-filter-wrapper,
+.region.region-phazon .region-filter-wrapper,
 .region.region-water .region-filter-wrapper,
 .region.region-lava .region-color-wrapper,
 .region.region-toxic .region-color-wrapper,
+.region.region-phazon .region-color-wrapper,
 .region.region-water .region-color-wrapper {
 	max-height: calc(var(--viewportHeight) + 80px);
 }
@@ -106,6 +113,8 @@
 .region.region-lava .region-filter,
 .region.region-toxic .region-color,
 .region.region-toxic .region-filter,
+.region.region-phazon .region-color,
+.region.region-phazon .region-filter,
 .region.region-water .region-color,
 .region.region-water .region-filter {
 	position: absolute;
@@ -115,6 +124,7 @@
 	bottom: -64px;
 }
 
+.region.region-phazon .region-color,
 .region.region-toxic .region-color,
 .region.region-lava .region-color {
 	top: 16px;

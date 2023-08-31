@@ -1,0 +1,49 @@
+.actor-item.actor-pogo-egg .sprite {
+	width: 65px;
+	height: 63px;
+	position: relative;
+}
+
+.actor-item.actor-pogo-egg .sprite::before {
+	background-image: url(/Sonic/pogo-egg-body.png);
+	width: 65px;
+	height: 63px;
+	top: 0;
+	left: 0;
+	content: '';
+	position: absolute;
+}
+.actor-item.actor-pogo-egg[data-animation=damaged] {
+	animation: pogo-egg-damage steps(1) 20 45ms forwards;
+}
+
+.actor-item.actor-pogo-egg .sprite::after {
+	content: '';
+	position: absolute;
+	top: calc(0% + calc(1px * var(--stem-length, 0)));
+	left: 16px;
+	width: 32px;
+	height: 64px;
+	background-image: url(/Sonic/pogo-egg-base.png);
+	z-index: -1;
+}
+
+.actor-item.actor-egg-capsule[data-active=true] .sprite {
+	/* background-position-x: -128px; */
+}
+/*
+@keyframes chopper-flying {
+	  0% { background-position-x: -0px; }
+	100% { background-position-x: -320px; }
+} */
+@keyframes pogo-egg-damage {
+	from{
+		filter: hue-rotate(0deg) invert(0);
+	}
+	50%{
+		filter:  invert(1) hue-rotate(180deg);
+	}
+	to{
+		filter: hue-rotate(0deg) invert(0);
+	}
+}

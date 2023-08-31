@@ -372,6 +372,16 @@ export class MainMenu extends Menu
 					// 	}
 					// }
 
+					, 'Phazon Crater Preview': {
+						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
+						, subtext: 'Testing art for Phazon Crater Zone'
+						, callback: () => {
+							this.parent.loadMap({mapUrl: '/map/phazon-test.json'});
+							this.accept();
+						}
+					}
+
 					, 'Moon Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
 						, subtext: 'Testing art for Moon Zone'

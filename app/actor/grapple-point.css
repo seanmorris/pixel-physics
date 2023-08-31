@@ -25,3 +25,10 @@
 	z-index: calc(var(--z) + 100);
 	background-position: -150px -4px;
 }
+
+[data-theme="phazon"] .actor-item.actor-grapple-point .sprite::after {
+	left: 0px;
+	z-index: calc(var(--z) + 100);
+	background-position: -274px -4px;
+	width: 26px;
+}

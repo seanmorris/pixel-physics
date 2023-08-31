@@ -1,0 +1,23 @@
+.actor-item.actor-lava-ball .sprite::after {
+	content: '';
+	left: 0;
+	top: 0;
+	position: absolute;
+	background-image: url(/Sonic/lava-ball.png);
+	width: 32px;
+	height: 16px;
+	background-repeat: no-repeat;
+	z-index: 1;
+	transform: rotate(calc(1rad * var(--air-angle)));
+	animation: lava-ball-animate 300ms infinite steps(3);
+	background-repeat: no-repeat;
+}
+
+.actor-item.actor-lava-ball[data-color="phazon"] .sprite::after {
+	background-position-x: -64px;
+}
+
+@keyframes lava-ball-animate {
+	0% { background-position-y: 0px; }
+	100% { background-position-y: -48px; }
+}

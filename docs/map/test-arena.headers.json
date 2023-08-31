@@ -179,5 +179,6 @@
         "tumbler",
         "wind-stone"
     ],
+    "emblems": [],
     "map": "/map/test-arena.json"
 }

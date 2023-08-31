@@ -88,11 +88,9 @@ export class MarbleBlock extends PointActor
 
 					const scan = this.scanBottomEdge(moveBy);
 
-					console.log(scan * Math.sign(moveBy), Math.sign(moveBy) * 0.01, scan, moveBy);
-
 					if(scan && scan <= (this.args.width + (this.args.width % 2)) * 0.5)
 					{
-						this.args.xSpeed = Math.sign(moveBy) * 0.01;
+						this.args.xSpeed = Math.sign(moveBy);
 						this.args.x += scan * Math.sign(moveBy);
 					}
 

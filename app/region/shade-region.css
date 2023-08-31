@@ -183,6 +183,7 @@
 
 .region.region-lava,
 .region.region-toxic,
+.region.region-phazon,
 .region.region-shade.lava {
 	/*mix-blend-mode: screen;*/
 	z-index: 10000;
@@ -193,10 +194,12 @@
 
 .region.region-lava .region-color-wrapper,
 .region.region-toxic .region-color-wrapper,
+.region.region-phazon .region-color-wrapper,
 .region.region-shade.lava .region-color-wrapper {
 }
 
 .region.region-lava .region-filter,
+.region.region-phazon .region-filter,
 .region.region-toxic .region-filter {
 	background-clip: content-box;
 	padding-top: 16px;
@@ -205,6 +208,7 @@
 
 .region.region-lava .region-color,
 .region.region-toxic .region-color,
+.region.region-phazon .region-color,
 .region.region-shade.lava .sprite .region-color {
 	animation:
 		lava-ripple linear infinite 3.5s
@@ -214,11 +218,23 @@
 	opacity: 0.75;
 }
 
+.region.region-phazon .region-color,
+.region.region-phazon .region-color-wrapper:after {
+	opacity: 0.95;
+}
+
 .region.region-toxic .region-color {
 	animation:
 		toxic-ripple linear infinite 1.5s
 		, lava-flow linear infinite 11.5s;
 	background-image: url(Sonic/toxic-1.png);
+}
+
+.region.region-phazon .region-color {
+	animation:
+		phazon-ripple linear infinite 1.5s
+		, lava-flow linear infinite 11.5s;
+	background-image: url(Sonic/phazon-1.png);
 }
 
 .region.region-lava .region-filter,
@@ -234,6 +250,7 @@
 
 .region.region-lava .region-color-wrapper:after,
 .region.region-toxic .region-color-wrapper:after,
+.region.region-phazon .region-color-wrapper:after,
 .region.region-shade.lava .sprite .region-color-wrapper:after {
 	content: ' ';
 	position: absolute;
@@ -263,10 +280,19 @@
 
 	animation:
 		toxic-waves linear infinite 0.75s
-		, toxic-flow linear infinite 11.5s;
+		, lava-flow linear infinite 11.5s;
+}
+
+.region.region-phazon .region-color-wrapper:after{
+	background-image: url(Sonic/phazon-surface-1.png);
+
+	animation:
+		phazon-waves linear infinite 0.75s
+		, lava-flow linear infinite 11.5s;
 }
 
 .region.region-lava .region-color-wrapper:after,
+.region.region-phazon .region-color-wrapper:after,
 .region.region-toxic .region-color-wrapper:after {
 	transform: translateY(0px);
 }
@@ -471,5 +497,35 @@
 	}
 	100% {
 		background-image: url(Sonic/toxic-1.png);
+	}
+}
+
+@keyframes phazon-waves {
+	0% {
+		background-image: url(Sonic/phazon-surface-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/phazon-surface-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/phazon-surface-3.png);
+	}
+	100% {
+		background-image: url(Sonic/phazon-surface-1.png);
+	}
+}
+
+@keyframes phazon-ripple {
+	0% {
+		background-image: url(Sonic/phazon-1.png);
+	}
+	33.34% {
+		background-image: url(Sonic/phazon-2.png);
+	}
+	66.67% {
+		background-image: url(Sonic/phazon-3.png);
+	}
+	100% {
+		background-image: url(Sonic/phazon-1.png);
 	}
 }

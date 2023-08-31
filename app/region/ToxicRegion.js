@@ -2,7 +2,6 @@ import { Region } from "./Region";
 
 import { Ring } from "../actor/Ring";
 import { MarbleBlock } from "../actor/MarbleBlock";
-import { Block } from "../actor/Block";
 
 import { Tag } from 'curvature/base/Tag';
 import { Bindable } from 'curvature/base/Bindable';
@@ -101,7 +100,7 @@ export class ToxicRegion extends Region
 			return;
 		}
 
-		if(other instanceof Block)
+		if(other instanceof MarbleBlock)
 		{
 			return false;
 		}

@@ -1,0 +1,35 @@
+.actor-item.actor-bouncy-mushroom .sprite::before {
+	content: '';
+	left: 0;
+	top: 0;
+	position: absolute;
+	background-image: url(/Sonic/mushroom-cap-phazon.png);
+	width: 64px;
+	height: 32px;
+	background-repeat: no-repeat;
+	z-index: 1;
+}
+
+.actor-item.actor-bouncy-mushroom .sprite {
+	background-image: url(/Sonic/mushroom-body-end-phazon.png);
+	background-position-x: 19px;
+	background-position-y: 14px;
+	width: 64px;
+	height: 32px;
+}
+
+.actor-item.actor-bouncy-mushroom[data-active=true] .sprite::before {
+	background-position-y: -42px;
+}
+
+
+.actor-item.actor-bouncy-mushroom .sprite::after {
+	content: '';
+	position: absolute;
+	top: calc(100% - 0px);
+	left: 24px;
+	background-image: url(/Sonic/mushroom-body-phazon.png);
+	width: 16px;
+	height:64px;
+	height: calc(1px * var(--stem-length, 0));
+}

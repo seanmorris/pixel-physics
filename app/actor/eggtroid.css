@@ -1,0 +1,42 @@
+.actor-eggtroid{
+	pointer-events: none;
+	z-index: var(--z);
+}
+
+.actor-eggtroid .sprite {
+	width: 64px;
+	height: 32px;
+}
+
+.actor-eggtroid .sprite:after {
+	left: 0;
+	top: 0;
+	background-image: url(/custom/eggtroid.png);
+	width: 40px;
+	height: 32px;
+	content: ' ';
+	position: absolute;
+	background-position-x: -12px;
+	/* animation: eggtroid-flap 600ms infinite steps(2) alternate; */
+	/* transform: scaleX(-1); */
+	/* left: -3px;*/
+	top: 4px;
+}
+
+.actor-eggtroid[data-animation="diving"] .sprite:after {
+	background-position-y: -64px;
+}
+
+.actor-eggtroid[data-animation="clenching"] .sprite:after {
+	background-position-y: -32px;
+}
+
+@keyframes eggtroid-flap {
+	from {
+		background-position-y: 0px;
+	}
+	to {
+		background-position-y: -64px;
+	}
+}
+

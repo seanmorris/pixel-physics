@@ -16,6 +16,7 @@ import { City           } from 'backdrop/City';
 import { DarkClouds     } from 'backdrop/DarkClouds';
 import { Overcast       } from 'backdrop/Overcast';
 import { ScrapBrainDark } from 'backdrop/ScrapBrainDark';
+import { PhazonMines    } from 'backdrop/PhazonMines';
 import { Desert         } from 'backdrop/Desert';
 
 export const BackdropPalette = {
@@ -37,5 +38,6 @@ export const BackdropPalette = {
 	, 'dark-clouds':    DarkClouds
 	, 'overcast':       Overcast
 	, 'scrap-brain-dark': ScrapBrainDark
+	, 'phazon-mines':   PhazonMines
 	, 'desert':         Desert
 }

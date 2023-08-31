@@ -3,7 +3,7 @@
     "height": 144,
     "infinite": false,
     "nextlayerid": 12,
-    "nextobjectid": 392,
+    "nextobjectid": 406,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -159,9 +159,10 @@
     "tilewidth": 32,
     "type": "map",
     "version": "1.10",
-    "width": 644,
+    "width": 680,
     "types": [
         "block",
+        "boss-region",
         "breakable-block",
         "bubbles",
         "butter-droid",
@@ -171,6 +172,7 @@
         "grapple-point",
         "kill-region",
         "layer-switch",
+        "pogo-egg",
         "region",
         "ring",
         "ring-monitor",
@@ -184,6 +186,13 @@
         "turtloid",
         "twist-ramp",
         "water-spout"
+    ],
+    "emblems": [
+        90,
+        93,
+        241,
+        274,
+        380
     ],
     "map": "/map/emerald-isle-2.json"
 }

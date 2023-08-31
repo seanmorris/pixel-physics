@@ -409,5 +409,12 @@
         "unbreakable-crate",
         "vehicle-region"
     ],
+    "emblems": [
+        619,
+        620,
+        621,
+        640,
+        641
+    ],
     "map": "/map/manic-harbor-zone.json"
 }

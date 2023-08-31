@@ -2002,6 +2002,11 @@ export class Viewport extends View
 					}
 				}
 
+				if(Router.query.rings)
+				{
+					this.nextControl.args.rings = Number(Router.query.rings);
+				}
+
 				if(Number(Router.query.noClip))
 				{
 					this.nextControl.args.float = -1;

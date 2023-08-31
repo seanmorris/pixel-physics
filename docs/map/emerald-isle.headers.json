@@ -188,5 +188,12 @@
         "vertical-region",
         "water-spout"
     ],
+    "emblems": [
+        162,
+        209,
+        223,
+        298,
+        675
+    ],
     "map": "/map/emerald-isle.json"
 }
