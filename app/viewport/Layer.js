@@ -65,15 +65,15 @@ export class Layer extends View
 
 		layerDef.layer = this;
 
-		if(this.args.name.match(/^(Collision|Grinding)\s\d+/))
-		{
-			if(this.args.name.match(/[12]$/))
-			{
-				this.meta.switchable = true;
-			}
+		// if(this.args.name.match(/^(Collision|Grinding)\s\d+/))
+		// {
+		// 	if(this.args.name.match(/[12]$/))
+		// 	{
+		// 		this.meta.switchable = true;
+		// 	}
 
-			this.meta.solid = true;
-		}
+		// 	this.meta.solid = true;
+		// }
 
 		if(this.args.name.match(/^(Grinding)\s\d+/))
 		{

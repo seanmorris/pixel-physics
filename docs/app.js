@@ -20268,8 +20268,8 @@ let Catakiller = /*#__PURE__*/function (_Mixin$from) {
     _this.args.phase = 'idle';
     _this.args.scootSpeed = _this.args.scootSpeed || 2;
     _this.args.segments = _this.args.segments || 6;
-    _this.args.pauseTime = _this.args.pauseTime || 40;
-    _this.args.phaseTime = _this.args.phaseTime || 640;
+    _this.args.pauseTime = _this.args.pauseTime || 45;
+    _this.args.phaseTime = _this.args.phaseTime || 600;
     _this.segments = [];
     return _this;
   }
@@ -20292,17 +20292,19 @@ let Catakiller = /*#__PURE__*/function (_Mixin$from) {
         });
       }
       if (!this.viewport || !this.viewport.actorIsOnScreen(this)) {
+        _get(_getPrototypeOf(Catakiller.prototype), "update", this).call(this);
         return;
       }
       const viewport = this.viewport;
       const interval = this.args.phaseTime;
       const half = interval * 0.5;
-      const scoot = this.age % 40;
+      const scootInterval = 30;
+      const scoot = this.age % scootInterval;
       const direction = this.age % interval < half ? 1 : -1;
       const phase = this.age % half;
       const moveTime = half - this.args.pauseTime;
       if (phase < moveTime) {
-        if (scoot > 20) {
+        if (scoot > scootInterval * 0.5) {
           this.args.gSpeed = this.args.scootSpeed * direction;
           this.args.animation = 'mouth-open';
           if (Math.round(this.args.gSpeed) !== 0) {
@@ -20424,9 +20426,9 @@ let CatakillerSegment = /*#__PURE__*/function (_Mixin$from) {
         const space = Math.abs(this.args.x - leaderX);
         let speed = Math.abs(this.args.head.gSpeedLast || 0);
         this.args.space = space;
-        if (space < 9) {
+        if (space < 9.5) {
           this.args.willMove = false;
-        } else if (space > 12) {
+        } else if (space > 13) {
           this.args.willMove = true;
           // speed *= 1.5;
         }
@@ -29637,6 +29639,15 @@ let LayerSwitch = /*#__PURE__*/function (_PointActor) {
       if (otherY < thisY + -this.args.height || other.y > thisY) {
         return;
       }
+      if (this.args.allow || this.args.disallow) {
+        if (this.args.allow) {
+          other.doorMap.set(Number(this.args.allow), false);
+        }
+        if (this.args.disallow) {
+          other.doorMap.set(Number(this.args.disallow), true);
+        }
+        return;
+      }
       if (roll && (!other.args.rolling || other.args.height > 28)) {
         other.args.layer = toLayer === this.args.fromLayer ? this.args.toLayer : this.args.fromLayer;
         return false;
@@ -32990,6 +33001,8 @@ let PointActor = /*#__PURE__*/function (_View) {
     _this.args.R = 0;
     _this.args.popChain = [];
     _this.args.canHide = false;
+    _this.collisionMap = null;
+    _this.doorMap = new Map();
     _this.args.opacity = (_this$args$opacity = _this.args.opacity) !== null && _this$args$opacity !== void 0 ? _this$args$opacity : 1;
     _this.args.pushing = false;
     _this.autoStyle = new Map();
@@ -34013,7 +34026,7 @@ let PointActor = /*#__PURE__*/function (_View) {
       }
       const thisPointX = this.args.x + offset[0];
       const thisPointY = this.args.y + offset[1];
-      const solidPoint = this.viewport.tileMap.castRay(thisPointX, thisPointY, angle, length, this.args.layer);
+      const solidPoint = this.viewport.tileMap.castRay(thisPointX, thisPointY, angle, length, this.getCollisionMap());
       let magnitude = length;
       if (solidPoint) {
         magnitude = Math.hypot(thisPointX - solidPoint[0], thisPointY - solidPoint[1]);
@@ -34571,7 +34584,7 @@ let PointActor = /*#__PURE__*/function (_View) {
         }
       }
       const tileMap = this.viewport.tileMap;
-      return tileMap.getSolid(x, y, this.args.layer);
+      return tileMap.getSolid(x, y, this.getCollisionMap());
     }
   }, {
     key: "canRoll",
@@ -35224,6 +35237,45 @@ let PointActor = /*#__PURE__*/function (_View) {
       for (const behavior of this.behaviors) {
         behavior.onDespawned && behavior.onDespawned(this, viewport);
       }
+    }
+  }, {
+    key: "getCollisionMap",
+    value: function getCollisionMap() {
+      if (!this.collisionMap) {
+        this.collisionMap = this.viewport.tileMap.getCollisionMap();
+      }
+      for (const layer of this.collisionMap.keys()) {
+        if (layer.name === 'Collision 0') {
+          this.collisionMap.set(layer, true);
+        } else if (layer.name === 'Collision ' + this.args.layer) {
+          this.collisionMap.set(layer, true);
+        } else if (layer.name.substr(0, 4) === 'Door') {
+          if (this.doorMap.has(layer.index)) {
+            this.collisionMap.set(layer, this.doorMap.get(layer.index));
+          }
+        } else if (layer.name.substr(0, 8) === 'Platform' || layer.name.substr(0, 8) === 'Grinding') {
+          if (this.args.ySpeed >= 0) {
+            this.collisionMap.set(layer, true);
+            if (this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index) && this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + -16, layer.index)) {
+              this.collisionMap.set(layer, false);
+            }
+          } else {
+            this.collisionMap.set(layer, false);
+          }
+          if (layer.layer && layer.layer.meta.vertical) {
+            if (!this.args.xSpeed || Math.sign(layer.layer.meta.vertical) === Math.sign(this.args.xSpeed)) {
+              this.collisionMap.set(layer, true);
+            }
+          }
+        } else if (layer.name.substr(0, 8) === 'Grinding') {
+          this.collisionMap.set(layer, true);
+        } else if (layer.name.substr(0, 6) === 'Moving' && !layer.name.substr(0, 10) === 'Moving Art') {
+          this.collisionMap.set(layer, true);
+        } else {
+          this.collisionMap.set(layer, false);
+        }
+      }
+      return this.collisionMap;
     }
   }, {
     key: "command_0",
@@ -51643,6 +51695,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const MODE_FLOOR = 0;
@@ -51652,6 +51705,7 @@ const MODE_RIGHT = 3;
 let Platformer = /*#__PURE__*/function () {
   function Platformer() {
     _classCallCheck(this, Platformer);
+    _defineProperty(this, "collisionMap", null);
   }
   _createClass(Platformer, [{
     key: "updateStart",
@@ -53774,7 +53828,7 @@ let Platformer = /*#__PURE__*/function () {
           }
         }
       }
-      if (!tileMap.getSolid(host.args.x + host.args.width / 2 * Math.sign(host.args.xSpeed), host.args.y, host.args.layer)) {
+      if (!tileMap.getSolid(host.args.x + host.args.width / 2 * Math.sign(host.args.xSpeed), host.args.y, host.getCollisionMap())) {
         if (Math.abs(host.args.xSpeed) > host.args.xSpeedMax) {
           host.args.xSpeed = host.args.xSpeedMax * Math.sign(host.args.xSpeed);
         }
@@ -53806,7 +53860,8 @@ let Platformer = /*#__PURE__*/function () {
           }
         }
       } else if (host.viewport && host.ySpeedLast > 0) {
-        if (host.viewport.tileMap.getSolid(host.args.x, host.args.y) && !host.viewport.tileMap.getSolid(host.args.x, host.args.y - 1)) {
+        const collMap = host.getCollisionMap();
+        if (host.viewport.tileMap.getSolid(host.args.x, host.args.y, collMap) && !host.viewport.tileMap.getSolid(host.args.x, host.args.y - 1, collMap)) {
           host.args.y--;
         }
       }
@@ -53858,7 +53913,7 @@ let Platformer = /*#__PURE__*/function () {
           }
         }
       }
-      if (tileMap.getSolid(point[0], point[1], actor.args.layer)) {
+      if (tileMap.getSolid(point[0], point[1], actor.getCollisionMap())) {
         return i;
       }
       const actors = viewport.actorsAtPoint(point[0], point[1]).filter(x => x.args !== actor.args && x.callCollideHandler(actor) && x.solid);
@@ -53874,7 +53929,7 @@ let Platformer = /*#__PURE__*/function () {
       }
       const viewport = actor.viewport;
       const tileMap = viewport.tileMap;
-      const pointSolid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+      const pointSolid = tileMap.getSolid(point[0], point[1], actor.getCollisionMap());
       if (pointSolid) {
         return;
       }
@@ -54116,7 +54171,7 @@ let Platformer = /*#__PURE__*/function () {
       host.args.jumpedAt = host.args.y;
       host.args.jumping = true;
       const tileMap = host.viewport.tileMap;
-      if (tileMap.getSolid(host.args.x + host.args.width / 2 * Math.sign(host.args.xSpeed), host.args.y, host.args.layer)) {
+      if (tileMap.getSolid(host.args.x + host.args.width / 2 * Math.sign(host.args.xSpeed), host.args.y, host.getCollisionMap())) {
         // if(tileMap.getSolid(host.x + (1 + host.args.width / 2) * Math.sign(host.args.xSpeed), host.y, host.args.layer))
         // {
         // 	host.args.x -= 2 * Math.sign(host.args.xSpeed);
@@ -54164,14 +54219,15 @@ let Platformer = /*#__PURE__*/function () {
       let direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       const tileMap = host.viewport.tileMap;
       const radius = host.args.width / 2;
-      const leftCorner = tileMap.getSolid(host.x - radius, host.y - 1, host.args.layer);
-      const rightCorner = tileMap.getSolid(host.x + radius, host.y - 1, host.args.layer);
+      const collMap = host.getCollisionMap();
+      const leftCorner = tileMap.getSolid(host.x - radius, host.y - 1, collMap);
+      const rightCorner = tileMap.getSolid(host.x + radius, host.y - 1, collMap);
       if (leftCorner && rightCorner) {
         return;
       }
       return host.castRay(host.args.width, direction < 0 ? Math.PI : 0, [-direction * radius, 0], (i, point) => {
         const actors = host.viewport.actorsAtPoint(point[0], point[1]).filter(a => a.args !== host.args);
-        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, host.args.layer)) {
+        if (!actors.length && !tileMap.getSolid(point[0], point[1] + 1, collMap)) {
           return i;
         }
       });
@@ -65767,78 +65823,126 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     key: "getSolid",
     value: function getSolid(xInput, yInput) {
       let layerInput = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-      if (layerInput !== 0) {
-        const ground = this.getSolid(xInput, yInput, 0);
-        if (ground) {
-          return this.tileLayers[0];
-        }
-      }
       xInput = Math.trunc(xInput);
       yInput = Math.trunc(yInput);
       let offsetX = 0;
       let offsetY = 0;
-      if (this.tileLayers[layerInput]) {
-        var _this$tileLayers$laye3, _this$tileLayers$laye4;
-        offsetX = (_this$tileLayers$laye3 = this.tileLayers[layerInput].offsetX) !== null && _this$tileLayers$laye3 !== void 0 ? _this$tileLayers$laye3 : 0;
-        offsetY = (_this$tileLayers$laye4 = this.tileLayers[layerInput].offsetY) !== null && _this$tileLayers$laye4 !== void 0 ? _this$tileLayers$laye4 : 0;
-      }
-      const tileNumber = this.getTileNumber(Math.floor((xInput - offsetX) / this.blockSize), Math.floor((yInput - offsetY) / this.blockSize), layerInput);
-      const solidLayerCount = this.collisionLayers.length;
-      if (layerInput <= 3) {
-        if (tileNumber === 0) {
-          return false;
-        }
-        if (tileNumber === 1) {
-          return this.tileLayers[layerInput];
-        }
-      }
-      if (layerInput > 0 && layerInput < solidLayerCount) {
-        for (let i = 0 + solidLayerCount; i < this.tileLayers.length; i++) {
-          const layer = this.tileLayers[i];
-          if (layer.name.substring(0, 3) === 'Art') {
-            continue;
-          }
-
-          // if(layer.name.substring(0, 8) === 'Platform')
-          // {
-          // 	continue;
-          // }
-
-          if (layer.name.substring(0, 10) === 'Moving Art') {
-            continue;
-          }
-          if (layer.name.substring(0, 10) === 'Foreground') {
-            continue;
-          }
-          if (layer.name.substring(0, 12) === 'Destructible') {
-            if (layer.destroyed) {
-              continue;
-            }
-          }
-          if (this.getSolid(xInput, yInput, i)) {
-            return this.tileLayers[i];
-          }
-        }
-      }
-      const tileSet = this.getTileset(tileNumber);
-      const mapData = this.mapData;
-      const blockSize = mapData.tilewidth;
-      const tileCoords = this.getTile(tileNumber);
-      const tilePosX = tileCoords[0] * blockSize;
-      const tilePosY = tileCoords[1] * blockSize;
-      const x = Number(xInput) % blockSize;
-      const y = Number(yInput) % blockSize;
-      const xPixel = tilePosX + x;
-      const yPixel = tilePosY + y;
-      const heightMask = this.heightMasks.get(tileSet);
-      const iPixel = (xPixel + yPixel * heightMask.width) * 4;
-      let result = false;
-      if (heightMask.data[iPixel + 3] === 255) {
-        result = this.tileLayers[layerInput];
+      let tileNumber;
+      let checkLayers;
+      if (!(layerInput instanceof Map)) {
+        checkLayers = new Map();
+        checkLayers.set(this.tileLayers[0], true);
+        checkLayers.set(this.tileLayers[layerInput], true);
       } else {
-        result = false;
+        checkLayers = layerInput;
       }
-      return result;
+      for (const _ref of checkLayers) {
+        var _ref2 = _slicedToArray(_ref, 2);
+        const layer = _ref2[0];
+        const willCheck = _ref2[1];
+        if (!willCheck) {
+          continue;
+        }
+        const layerId = layer.index;
+
+        // if(layerId !== 0)
+        // {
+        // 	if(this.getSolid(xInput, yInput, 0))
+        // 	{
+        // 		return this.tileLayers[0];
+        // 	}
+        // }
+
+        if (this.tileLayers[layerId]) {
+          var _this$tileLayers$laye3, _this$tileLayers$laye4;
+          offsetX = (_this$tileLayers$laye3 = this.tileLayers[layerId].offsetX) !== null && _this$tileLayers$laye3 !== void 0 ? _this$tileLayers$laye3 : 0;
+          offsetY = (_this$tileLayers$laye4 = this.tileLayers[layerId].offsetY) !== null && _this$tileLayers$laye4 !== void 0 ? _this$tileLayers$laye4 : 0;
+        }
+        tileNumber = this.getTileNumber(Math.floor((xInput - offsetX) / this.blockSize), Math.floor((yInput - offsetY) / this.blockSize), layerId);
+        const solidLayerCount = this.collisionLayers.length;
+        if (layerId <= 3) {
+          if (tileNumber === 0) {
+            continue;
+            // return false;
+          }
+
+          if (tileNumber === 1) {
+            return this.tileLayers[layerId];
+          }
+        }
+
+        // if(this.getSolid(xInput, yInput, layerInput))
+        // {
+        // 	return this.tileLayers[i];
+        // }
+
+        // if(layerId > 0  && layerId < solidLayerCount)
+        // {
+        // 	for(let i = 0 + solidLayerCount; i < this.tileLayers.length; i++)
+        // 	{
+        // 		const layer = this.tileLayers[i];
+
+        // 		if(layer.name.substring(0, 3) === 'Art')
+        // 		{
+        // 			continue;
+        // 		}
+
+        // 		// if(layer.name.substring(0, 8) === 'Platform')
+        // 		// {
+        // 		// 	continue;
+        // 		// }
+
+        // 		if(layer.name.substring(0, 10) === 'Moving Art')
+        // 		{
+        // 			continue;
+        // 		}
+
+        // 		if(layer.name.substring(0, 10) === 'Foreground')
+        // 		{
+        // 			continue;
+        // 		}
+
+        // 		if(layer.name.substring(0, 12) === 'Destructible')
+        // 		{
+        // 			if(layer.destroyed)
+        // 			{
+        // 				continue;
+        // 			}
+        // 		}
+
+        // 		if(this.getSolid(xInput, yInput, i))
+        // 		{
+        // 			return this.tileLayers[i];
+        // 		}
+        // 	}
+        // }
+
+        const tileSet = this.getTileset(tileNumber);
+        const mapData = this.mapData;
+        const blockSize = mapData.tilewidth;
+        const tileCoords = this.getTile(tileNumber);
+        const tilePosX = tileCoords[0] * blockSize;
+        const tilePosY = tileCoords[1] * blockSize;
+        const x = Number(xInput) % blockSize;
+        const y = Number(yInput) % blockSize;
+        const xPixel = tilePosX + x;
+        const yPixel = tilePosY + y;
+        const heightMask = this.heightMasks.get(tileSet);
+        const iPixel = (xPixel + yPixel * heightMask.width) * 4;
+        let result = false;
+        if (heightMask.data[iPixel + 3] === 255) {
+          return this.tileLayers[layerId];
+        }
+        // else
+        // {
+        // 	result = false;
+        // }
+
+        // if(result)
+        // {
+        // 	return result;
+        // }
+      }
     }
   }, {
     key: "getColor",
@@ -65952,10 +66056,12 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
     value: function castRay(startX, startY, angle) {
       let maxDistance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 320;
       let layerId = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-      const checkLayers = new Set();
+      const checkLayers = layerId instanceof Map ? new Map([...layerId.entries()].filter(x => x[1]))
+      // : new Map([[this.tileLayers[0], true], [this.tileLayers[layerId], true]]);
+      : new Map();
       const xOffDir = new Map();
       const yOffDir = new Map();
-      for (const layer of this.tileLayers) {
+      if (!(layerId instanceof Map)) for (const layer of this.tileLayers) {
         if (!layer.layer || !layer.layer.meta || !layer.layer.meta.solid) {
           continue;
         }
@@ -65971,7 +66077,7 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
         // 	}
         // }
 
-        checkLayers.add(layer.index);
+        checkLayers.set(layer, true);
         xOffDir.set(layer.index, Math.sign(layer.layer.args.offsetX));
         yOffDir.set(layer.index, Math.sign(layer.layer.args.offsetY));
       }
@@ -65997,8 +66103,14 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
       }
       let initMode;
       const txy = this.coordsToTile(startX, startY, layerId) || this.coordsToTile(startX, startY, 0);
-      for (const layerId of checkLayers) {
-        if (initMode = this.getTileNumber(txy[0], txy[1], layerId)) {
+      for (const _ref3 of checkLayers) {
+        var _ref4 = _slicedToArray(_ref3, 2);
+        const layer = _ref4[0];
+        const willCheck = _ref4[1];
+        if (!willCheck) {
+          continue;
+        }
+        if (initMode = this.getTileNumber(txy[0], txy[1], layer.index)) {
           break;
         }
       }
@@ -66035,19 +66147,28 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
             tx = _this$coordsToTile2[0],
             ty = _this$coordsToTile2[1];
           oldModeX = modeX;
-          for (const layerId of checkLayers) {
-            if (modeX = this.getTileNumber(tx, ty, layerId)) {
-              break;
-            }
-            if (!modeX && (xOffDir.has(layerId) || yOffDir.has(layerId))) {
-              if (modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId)) {
+          for (const _ref5 of checkLayers) {
+            var _ref6 = _slicedToArray(_ref5, 2);
+            const layer = _ref6[0];
+            const willCheck = _ref6[1];
+            {
+              const layerId = layer.index;
+              if (!willCheck) {
+                continue;
+              }
+              if (modeX = this.getTileNumber(tx, ty, layerId)) {
                 break;
               }
-              if (modeX = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId)) {
-                break;
-              }
-              if (modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId)) {
-                break;
+              if (!modeX && (xOffDir.has(layerId) || yOffDir.has(layerId))) {
+                if (modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId)) {
+                  break;
+                }
+                if (modeX = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId)) {
+                  break;
+                }
+                if (modeX = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId)) {
+                  break;
+                }
               }
             }
           }
@@ -66056,11 +66177,13 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
             bf = ox < 0 ? (startX + -checkX + 1) % bs : bs - (startX + checkX) % bs;
           }
           window.logPoints && pa.add([px, py, `rayX tile-${tx}-${ty} mode-${modeX} bf-${bf} layer-${layerId} `]);
-          for (const layerId of checkLayers) {
-            if (this.getSolid(px, py, layerId)) {
-              solidsX.add([px, py]);
-              break;
-            }
+
+          // for(const layerId of checkLayers)
+          // {
+          // }
+          if (this.getSolid(px, py, checkLayers)) {
+            solidsX.add([px, py]);
+            break;
           }
           currentDistance = Math.abs(rayX);
           checkX += bf;
@@ -66078,19 +66201,28 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
             tx = _this$coordsToTile4[0],
             ty = _this$coordsToTile4[1];
           oldModeY = modeY;
-          for (const layerId of checkLayers) {
-            if (modeY = this.getTileNumber(tx, ty, layerId)) {
-              break;
-            }
-            if (!modeY && (xOffDir.has(layerId) || yOffDir.has(layerId))) {
-              if (modeY = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId)) {
+          for (const _ref7 of checkLayers) {
+            var _ref8 = _slicedToArray(_ref7, 2);
+            const layer = _ref8[0];
+            const willCheck = _ref8[1];
+            {
+              const layerId = layer.index;
+              if (!willCheck) {
+                continue;
+              }
+              if (modeY = this.getTileNumber(tx, ty, layerId)) {
                 break;
               }
-              if (modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId)) {
-                break;
-              }
-              if (modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId)) {
-                break;
+              if (!modeY && (xOffDir.has(layerId) || yOffDir.has(layerId))) {
+                if (modeY = this.getTileNumber(tx, ty + -yOffDir.get(layerId), layerId)) {
+                  break;
+                }
+                if (modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty, layerId)) {
+                  break;
+                }
+                if (modeY = this.getTileNumber(tx + -xOffDir.get(layerId), ty + -yOffDir.get(layerId), layerId)) {
+                  break;
+                }
               }
             }
           }
@@ -66099,11 +66231,18 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
             bf = oy < 0 ? (startY + -checkY + 1) % bs : bs - (startY + checkY) % bs;
           }
           window.logPoints && pb.add([px, py, `rayY tile-${tx}-${ty} mode-${modeY} bf-${bf} layer-${layerId} `]);
-          for (const layerId of checkLayers) {
-            if (this.getSolid(px, py, layerId)) {
-              solidsY.add([px, py]);
-              break;
-            }
+
+          // for(const layerId of checkLayers)
+          // {
+          // 	if(this.getSolid(px, py, layerId))
+          // 	{
+          // 		solidsY.add([px, py]);
+          // 		break;
+          // 	}
+          // }
+          if (this.getSolid(px, py, checkLayers)) {
+            solidsY.add([px, py]);
+            break;
           }
           currentDistance = Math.abs(rayY);
           checkY += bf;
@@ -66140,6 +66279,21 @@ let TileMap = /*#__PURE__*/function (_Mixin$with) {
         return;
       }
       return nearest;
+    }
+  }, {
+    key: "getCollisionMap",
+    value: function getCollisionMap() {
+      const collisionMap = new Map();
+      for (const layer of this.tileLayers) {
+        let solid = false;
+        if (layer.name.substr(0, 9) === 'Collision') {
+          solid = true;
+        } else if (layer.name.substr(0, 6) === 'Moving') {
+          solid = true;
+        }
+        collisionMap.set(layer, solid);
+      }
+      return collisionMap;
     }
   }, {
     key: "negSafeMod",
@@ -66984,12 +67138,17 @@ let Layer = /*#__PURE__*/function (_View) {
     layerDef['offsetX'] = _this.args.offsetX;
     layerDef['offsetY'] = _this.args.offsetY;
     layerDef.layer = _assertThisInitialized(_this);
-    if (_this.args.name.match(/^(Collision|Grinding)\s\d+/)) {
-      if (_this.args.name.match(/[12]$/)) {
-        _this.meta.switchable = true;
-      }
-      _this.meta.solid = true;
-    }
+
+    // if(this.args.name.match(/^(Collision|Grinding)\s\d+/))
+    // {
+    // 	if(this.args.name.match(/[12]$/))
+    // 	{
+    // 		this.meta.switchable = true;
+    // 	}
+
+    // 	this.meta.solid = true;
+    // }
+
     if (_this.args.name.match(/^(Grinding)\s\d+/)) {
       _this.meta.grinding = true;
     }

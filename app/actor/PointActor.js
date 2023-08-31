@@ -163,6 +163,9 @@ export class PointActor extends View
 
 		this.args.canHide = false;
 
+		this.collisionMap = null;
+		this.doorMap = new Map;
+
 		this.args.opacity = this.args.opacity ?? 1;
 		this.args.pushing = false;
 
@@ -1600,7 +1603,7 @@ export class PointActor extends View
 			, thisPointY
 			, angle
 			, length
-			, this.args.layer
+			, this.getCollisionMap()
 		);
 
 		let magnitude = length;
@@ -2317,7 +2320,7 @@ export class PointActor extends View
 
 		const tileMap = this.viewport.tileMap;
 
-		return tileMap.getSolid(x, y, this.args.layer);
+		return tileMap.getSolid(x, y, this.getCollisionMap());
 	}
 
 	get canRoll() { return false; }
@@ -3133,6 +3136,72 @@ export class PointActor extends View
 		{
 			behavior.onDespawned && behavior.onDespawned(this, viewport);
 		}
+	}
+
+	getCollisionMap()
+	{
+		if(!this.collisionMap)
+		{
+			this.collisionMap = this.viewport.tileMap.getCollisionMap();
+		}
+
+		for(const layer of this.collisionMap.keys())
+		{
+			if(layer.name === 'Collision 0')
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else if(layer.name === 'Collision ' + this.args.layer)
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else if(layer.name.substr(0, 4) === 'Door')
+			{
+				if(this.doorMap.has(layer.index))
+				{
+					this.collisionMap.set(layer, this.doorMap.get(layer.index));
+				}
+			}
+			else if(layer.name.substr(0, 8) === 'Platform' || layer.name.substr(0, 8) === 'Grinding')
+			{
+				if(this.args.ySpeed >= 0)
+				{
+					this.collisionMap.set(layer, true);
+
+					if(this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index)
+						&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + -16, layer.index)
+					){
+						this.collisionMap.set(layer, false);
+					}
+				}
+				else
+				{
+					this.collisionMap.set(layer, false);
+				}
+
+				if(layer.layer && layer.layer.meta.vertical)
+				{
+					if(!this.args.xSpeed || Math.sign(layer.layer.meta.vertical) === Math.sign(this.args.xSpeed))
+					{
+						this.collisionMap.set(layer, true);
+					}
+				}
+			}
+			else if(layer.name.substr(0, 8) === 'Grinding')
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else if(layer.name.substr(0, 6) === 'Moving' && !layer.name.substr(0, 10) === 'Moving Art')
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else
+			{
+				this.collisionMap.set(layer, false);
+			}
+		}
+
+		return this.collisionMap;
 	}
 
 	command_0(){}

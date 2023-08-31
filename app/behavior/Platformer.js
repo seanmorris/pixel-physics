@@ -13,6 +13,8 @@ const MODE_RIGHT   = 3;
 
 export class Platformer
 {
+	collisionMap = null;
+
 	updateStart(host)
 	{
 		host.args.wasHanging = host.args.falling && host.args.hangingFrom;
@@ -3379,7 +3381,7 @@ export class Platformer
 			}
 		}
 
-		if(!tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.args.layer))
+		if(!tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.getCollisionMap()))
 		{
 			if(Math.abs(host.args.xSpeed) > host.args.xSpeedMax)
 			{
@@ -3437,8 +3439,10 @@ export class Platformer
 		}
 		else if(host.viewport && host.ySpeedLast > 0)
 		{
-			if(host.viewport.tileMap.getSolid(host.args.x, host.args.y)
-				&& !host.viewport.tileMap.getSolid(host.args.x, host.args.y - 1)
+			const collMap = host.getCollisionMap();
+
+			if(host.viewport.tileMap.getSolid(host.args.x, host.args.y, collMap)
+				&& !host.viewport.tileMap.getSolid(host.args.x, host.args.y - 1, collMap)
 			){
 				host.args.y--;
 			}
@@ -3512,7 +3516,7 @@ export class Platformer
 			}
 		}
 
-		if(tileMap.getSolid(point[0], point[1], actor.args.layer))
+		if(tileMap.getSolid(point[0], point[1], actor.getCollisionMap()))
 		{
 			return i;
 		}
@@ -3540,7 +3544,7 @@ export class Platformer
 
 		const viewport = actor.viewport;
 		const tileMap  = viewport.tileMap;
-		const pointSolid = tileMap.getSolid(point[0], point[1], actor.args.layer);
+		const pointSolid = tileMap.getSolid(point[0], point[1], actor.getCollisionMap());
 
 		if(pointSolid)
 		{
@@ -3885,7 +3889,7 @@ export class Platformer
 
 		const tileMap = host.viewport.tileMap;
 
-		if(tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.args.layer))
+		if(tileMap.getSolid(host.args.x + (host.args.width / 2) * Math.sign(host.args.xSpeed), host.args.y, host.getCollisionMap()))
 		{
 			// if(tileMap.getSolid(host.x + (1 + host.args.width / 2) * Math.sign(host.args.xSpeed), host.y, host.args.layer))
 			// {
@@ -3949,8 +3953,10 @@ export class Platformer
 
 		const radius = host.args.width / 2;
 
-		const leftCorner = tileMap.getSolid(host.x - radius, host.y - 1, host.args.layer);
-		const rightCorner = tileMap.getSolid(host.x + radius, host.y - 1, host.args.layer);
+		const collMap = host.getCollisionMap();
+
+		const leftCorner  = tileMap.getSolid(host.x - radius, host.y - 1, collMap);
+		const rightCorner = tileMap.getSolid(host.x + radius, host.y - 1, collMap);
 
 		if(leftCorner && rightCorner)
 		{
@@ -3966,7 +3972,7 @@ export class Platformer
 					.actorsAtPoint(point[0], point[1])
 					.filter(a => a.args !== host.args);
 
-				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, host.args.layer))
+				if(!actors.length && !tileMap.getSolid(point[0], point[1] + 1, collMap))
 				{
 					return i;
 				}

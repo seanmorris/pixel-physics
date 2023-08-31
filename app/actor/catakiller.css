@@ -19,7 +19,7 @@
 }
 
 .actor-catakiller .sprite:after {
-	bottom: -3px;
+	bottom: -2px;
 	left: 2px;
 	background-image: url(/Sonic/catakiller-head.png);
 	width:  16px;

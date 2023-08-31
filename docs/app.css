@@ -2471,7 +2471,7 @@ section.pause-menu li {
 }
 
 .actor-catakiller .sprite:after {
-	bottom: -3px;
+	bottom: -2px;
 	left: 2px;
 	background-image: url(/Sonic/catakiller-head.png);
 	width:  16px;
@@ -14617,7 +14617,7 @@ iframe {
 		lava-ripple linear infinite 3.5s
 		, lava-flow linear infinite 11.5s;
 	background-image: url(Sonic/lava-1.png);
-	background-color: rgba(255,192,0,1);
+	/* background-color: rgba(255,192,0,1); */
 	opacity: 0.75;
 }
 

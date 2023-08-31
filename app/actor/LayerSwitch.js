@@ -62,6 +62,21 @@ export class LayerSwitch extends PointActor
 			return;
 		}
 
+		if(this.args.allow || this.args.disallow)
+		{
+			if(this.args.allow)
+			{
+				other.doorMap.set(Number(this.args.allow), false);
+			}
+
+			if(this.args.disallow)
+			{
+				other.doorMap.set(Number(this.args.disallow), true);
+			}
+
+			return;
+		}
+
 		if(roll && (!other.args.rolling || other.args.height > 28))
 		{
 			other.args.layer = toLayer === this.args.fromLayer ? this.args.toLayer : this.args.fromLayer;

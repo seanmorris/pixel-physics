@@ -13,7 +13,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -32,8 +32,9 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 64,
     "types": [],
+    "emblems": [],
     "map": "/map/platform-test.json"
 }

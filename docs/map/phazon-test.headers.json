@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 48,
     "infinite": false,
-    "nextlayerid": 11,
-    "nextobjectid": 498,
+    "nextlayerid": 13,
+    "nextobjectid": 587,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -105,6 +105,19 @@
             "tilecount": 600,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4709,
+            "image": "../Sonic/lava-reef-container.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "lava-reef-container",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 64,
+            "tilewidth": 64
         }
     ],
     "tilewidth": 32,
@@ -123,14 +136,18 @@
         "exit-region",
         "grapple-point",
         "lava-ball",
+        "layer-switch",
         "nitro-booster",
         "phazon-region",
         "ring",
+        "ring-monitor",
         "rolling-region",
-        "spikes"
+        "spikes",
+        "triple-ring-monitor"
     ],
     "emblems": [
-        494
+        494,
+        582
     ],
     "map": "/map/phazon-test.json"
 }
