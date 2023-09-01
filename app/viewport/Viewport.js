@@ -910,6 +910,7 @@ export class Viewport extends View
 		// 	this.args.scale  = 1;
 		// }
 
+		this.collisionCache = new Map;
 		this.collisions = new Map;
 
 		this.args.x = this.args.x || 0;
@@ -4143,6 +4144,7 @@ export class Viewport extends View
 			});
 		}
 
+		this.collisionCache = new Map;
 		this.collisions = new Map;
 
 		this.updateStarted.clear();
@@ -5301,6 +5303,7 @@ export class Viewport extends View
 		this.visible.clear();
 		this.callFrames.clear();
 		this.callIntervals.clear();
+		this.collisionCache.clear();
 		this.collisions.clear();
 		this.colCellCache.clear();
 		this.colCells.clear();
@@ -5420,6 +5423,7 @@ export class Viewport extends View
 
 			this.callFrames.clear();
 			this.callIntervals.clear();
+			this.collisionCache.clear();
 			this.collisions.clear();
 			this.colCellCache.clear();
 			this.colCells.clear();

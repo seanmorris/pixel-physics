@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 292,
     "infinite": false,
-    "nextlayerid": 60,
-    "nextobjectid": 2168,
+    "nextlayerid": 62,
+    "nextobjectid": 2170,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -415,6 +415,7 @@
         "emerald",
         "exploding-region",
         "force-region",
+        "grinding-region",
         "guard-bot",
         "jawz",
         "kill-region",
@@ -454,5 +455,6 @@
         "waterfall-region",
         "wooden-crate"
     ],
+    "emblems": [],
     "map": "/map/west-side-zone.json"
 }

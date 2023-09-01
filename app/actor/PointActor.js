@@ -1197,6 +1197,18 @@ export class PointActor extends View
 
 	callCollideHandler(other)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
+		// if(viewport.collisionCache.has(this) && viewport.collisionCache.get(this).has(other))
+		// {
+		// 	return viewport.collisionCache.get(this).get(other);
+		// }
+
 		if(this.ignores.has(other))
 		{
 			return false;
@@ -1221,13 +1233,6 @@ export class PointActor extends View
 		{
 			return;
 		}
-
-		if(!this.viewport)
-		{
-			return;
-		}
-
-		const viewport = this.viewport;
 
 		let type;
 
@@ -1274,6 +1279,11 @@ export class PointActor extends View
 			viewport.collisions.set(other, new Map);
 		}
 
+		// if(!viewport.collisionCache.has(this))
+		// {
+		// 	viewport.collisionCache.set(this, new Map);
+		// }
+
 		// if(this.viewport.collisions.get(this).has(other))
 		// {
 		// 	return;
@@ -1293,6 +1303,8 @@ export class PointActor extends View
 		const ba = other.collideA(this, invertType);
 
 		const result = ab || ba;
+
+		// viewport.collisionCache.get(this).set(other, result);
 
 		this.args.colliding = this.colliding = (this.colliding || result || false);
 
@@ -1943,10 +1955,12 @@ export class PointActor extends View
 
 	startle(other)
 	{
-		if(this.noClip || this.args.startled > 30)
+		if(this.noClip)
 		{
 			return;
 		}
+
+		this.args.startled = 0;
 
 		const direction = Math.sign(
 			other && (
@@ -2120,7 +2134,7 @@ export class PointActor extends View
 	{
 		const args = this.args;
 
-		if(args.standingOn)
+		if(args.standingOn && !args.mode)
 		{
 			return args.standingOn.realAngle;
 		}
@@ -2371,11 +2385,21 @@ export class PointActor extends View
 		if(controller.axes[0])
 		{
 			this.xAxis = controller.axes[0].magnitude;
+
+			if(Math.abs(this.xAxis) > 0.55)
+			{
+				this.xAxis = Math.sign(this.xAxis);
+			}
 		}
 
 		if(controller.axes[1])
 		{
 			this.yAxis = controller.axes[1].magnitude;
+
+			if(Math.abs(this.yAxis) > 0.55)
+			{
+				this.yAxis = Math.sign(this.yAxis);
+			}
 		}
 
 		// if(controller.axes[6] && controller.axes[6].magnitude)
@@ -3143,6 +3167,23 @@ export class PointActor extends View
 		if(!this.collisionMap)
 		{
 			this.collisionMap = this.viewport.tileMap.getCollisionMap();
+
+			for(const layer of this.collisionMap.keys())
+			{
+				if(layer.name.substr(0, 3) === 'Art')
+				{
+					this.collisionMap.delete(layer);
+				}
+				else if(layer.name.substr(0, 10) === 'Moving Art')
+				{
+					this.collisionMap.delete(layer);
+				}
+			}
+		}
+
+		if(!this.viewport)
+		{
+			return this.collisionMap;
 		}
 
 		for(const layer of this.collisionMap.keys())
@@ -3168,18 +3209,18 @@ export class PointActor extends View
 				{
 					this.collisionMap.set(layer, true);
 
-					if(this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index)
-						&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + -16, layer.index)
-					){
-						this.collisionMap.set(layer, false);
-					}
 				}
 				else
 				{
 					this.collisionMap.set(layer, false);
 				}
 
-				if(layer.layer && layer.layer.meta.vertical)
+				if(this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index)
+					&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + -16, layer.index)
+				){
+					this.collisionMap.set(layer, false);
+				}
+				else if(layer.layer && layer.layer.meta.vertical)
 				{
 					if(!this.args.xSpeed || Math.sign(layer.layer.meta.vertical) === Math.sign(this.args.xSpeed))
 					{
@@ -3187,11 +3228,7 @@ export class PointActor extends View
 					}
 				}
 			}
-			else if(layer.name.substr(0, 8) === 'Grinding')
-			{
-				this.collisionMap.set(layer, true);
-			}
-			else if(layer.name.substr(0, 6) === 'Moving' && !layer.name.substr(0, 10) === 'Moving Art')
+			else if(layer.name.substr(0, 6) === 'Moving' && layer.name.substr(0, 10) !== 'Moving Art')
 			{
 				this.collisionMap.set(layer, true);
 			}

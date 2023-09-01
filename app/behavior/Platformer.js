@@ -1110,7 +1110,14 @@ export class Platformer
 			{
 				if(Math.abs(host.args.xSpeed) > Math.abs(host.args.gSpeed))
 				{
-					host.args.gSpeed = host.args.xSpeed;
+					if(host.args.mode === 0)
+					{
+						host.args.gSpeed = host.args.xSpeed;
+					}
+					else if(host.args.mode === 2)
+					{
+						host.args.gSpeed = -host.args.xSpeed;
+					}
 
 					if(host.args.standingLayer)
 					{

@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 416,
     "infinite": false,
-    "nextlayerid": 16,
-    "nextobjectid": 588,
+    "nextlayerid": 18,
+    "nextobjectid": 602,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -470,7 +470,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 3200,
     "types": [
         "block",
@@ -496,6 +496,11 @@
         "techno-squeak",
         "trick-ramp",
         "wooden-crate"
+    ],
+    "emblems": [
+        317,
+        360,
+        391
     ],
     "map": "/map/brooklyn-zone-2.json"
 }
