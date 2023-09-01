@@ -3208,7 +3208,6 @@ export class PointActor extends View
 				if(this.args.ySpeed >= 0)
 				{
 					this.collisionMap.set(layer, true);
-
 				}
 				else
 				{
@@ -3226,6 +3225,13 @@ export class PointActor extends View
 					{
 						this.collisionMap.set(layer, true);
 					}
+				}
+
+				if(this.args.flying
+					&& this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + 16, layer.index)
+					&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + 16, layer.index)
+				){
+					this.collisionMap.set(layer, false);
 				}
 			}
 			else if(layer.name.substr(0, 6) === 'Moving' && layer.name.substr(0, 10) !== 'Moving Art')
