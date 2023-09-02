@@ -19,7 +19,7 @@ export class RocketPlatform extends Block
 
 	update()
 	{
-		this.args.cameraBias = 0.2;
+		this.args.cameraBias = 0.25;
 
 		if(this.standingUnder.size)
 		{

@@ -10,6 +10,7 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 
 		this.compare = comparator;
 		this.index   = new Map;
+		this.reverseIndex = new Map;
 
 		for(const i in criteria)
 		{
@@ -26,6 +27,13 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 			return;
 		}
 
+		if(!this.reverseIndex.has(object))
+		{
+			this.reverseIndex.set(object, new Set);
+		}
+
+		const reverseIndex = this.reverseIndex.get(object);
+
 		const indexes = new Set;
 
 		for(const [index, list] of this.index.entries())
@@ -33,6 +41,8 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 			if(this.compare(index, object))
 			{
 				indexes.add(index);
+
+				reverseIndex.add(index);
 
 				list.add(object);
 			}
@@ -45,6 +55,11 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 
 	remove(object)
 	{
+		if(!this.reverseIndex.has(object))
+		{
+			return;
+		}
+
 		const before = new CustomEvent('removing', {detail: {object}});
 
 		if(!this.dispatchEvent(before))
@@ -52,25 +67,34 @@ export class Classifier extends Mixin.with(EventTargetMixin)
 			return;
 		}
 
-		const indexes = new Set;
+		// const indexes = new Set;
+		const reverseIndex = this.reverseIndex.get(object);
 
-		for(const [index,list] of this.index.entries())
+		for(const index of reverseIndex)
 		{
-			if(this.compare(index, object))
-			{
-				indexes.add(index);
+			this.index.get(index).delete(object);
 
-				list.delete(object);
-			}
+			reverseIndex.delete(index);
 		}
 
-		const after = new CustomEvent('added', {detail: {object, indexes}});
+		// for(const [index,list] of this.index.entries())
+		// {
+		// 	if(this.compare(index, object))
+		// 	{
+		// 		indexes.add(index);
+
+		// 		list.delete(object);
+		// 	}
+		// }
+
+		const after = new CustomEvent('added', {detail: {object, reverseIndex}});
 
 		this.dispatchEvent(after);
 	}
 
 	clear()
 	{
+		this.reverseIndex.clear();
 		this.index.clear();
 	}
 

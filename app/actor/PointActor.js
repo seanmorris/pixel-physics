@@ -1133,11 +1133,15 @@ export class PointActor extends View
 				{
 					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
 					{
-						if(!underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
+						const standBias = this.args.standingOn
+							? this.args.standingOn.args.cameraBias
+							: 0;
+
+						if(!standBias && !underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
 						{
 							this.args.cameraMode = 'bridge';
 						}
-						else if(!forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
+						else if(!standBias && !forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
 						{
 							this.args.cameraMode = 'cliff';
 						}

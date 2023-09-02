@@ -282,7 +282,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			for(let i in layer.data)
 			{
-				const name   = Number(layer.name);
+				// const name   = Number(layer.name);
 				const tileId = Number(i);
 				const tileNo = Number(layer.data[i]);
 

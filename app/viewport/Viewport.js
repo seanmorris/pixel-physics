@@ -1017,7 +1017,10 @@ export class Viewport extends View
 
 				delete i[ColCell];
 
-				i.remove();
+				if(!i.removed && i.firstNode.isConnected)
+				{
+					i.remove();
+				}
 
 				i.onDespawned && i.onDespawned(this);
 			}

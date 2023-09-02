@@ -84,6 +84,8 @@ export class CrossCannon extends PointActor
 		if(other.args.standingOn)
 		{
 			other.args.standingOn = null;
+			other.args.xSpeed = 0;
+			other.args.ySpeed = 0;
 		}
 
 		Sfx.play('SS_BWIP');

@@ -47,9 +47,11 @@ export class Spinner extends PointActor
 			return;
 		}
 
-		this.viewport.onFrameOut(10, () => delete other[Boosted]);
+		this.ignores.set(other, 30);
 
-		other[Boosted] = this;
+		// this.viewport.onFrameOut(10, () => delete other[Boosted]);
+
+		// other[Boosted] = this;
 
 		const toSpeed = this.args.toSpeed || 40;
 

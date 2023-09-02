@@ -98,20 +98,20 @@ export class Panel extends PointActor
 						other.args.x -= Math.cos(angle) * 16;
 						other.args.y -= Math.sin(angle) * 16;
 
-						other.args.xSpeed = -Math.cos(angle) * 34;
-						other.args.ySpeed = -Math.sin(angle) * 34;
+						other.args.xSpeed = -Math.cos(angle) * 42;
+						other.args.ySpeed = -Math.sin(angle) * 42;
 					}
 
 					other.args.gSpeed = 0;
 
 					other.args.falling = true;
 					other.args.jumping = true;
-					other.args.float = 45;
+					other.args.float = nextPanel ? 45 : 0;
 
 					this.leaving.add(other);
 					this.holding.delete(other);
 
-					other.args.ignore = 45;
+					other.args.ignore = nextPanel ? 45 : 0;
 				}
 				else
 				{
@@ -126,6 +126,7 @@ export class Panel extends PointActor
 					other.args.ySpeed = 0;
 
 					other.args.falling = true;
+					other.args.float   = 0;
 
 					other.args.ignore = 15;
 				}

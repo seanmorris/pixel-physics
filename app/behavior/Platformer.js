@@ -217,9 +217,10 @@ export class Platformer
 			if(standOn)
 			{
 				host.args.standingOn = standOn;
+				host.args.falling    = false;
 
-				host.args.x = standOn.x;
-				host.args.y = standOn.y - standOn.args.height;
+				host.args.x = standOn.args.x;
+				host.args.y = -1 + standOn.args.y - standOn.args.height;
 			}
 		}
 
@@ -4107,7 +4108,7 @@ export class Platformer
 
 	release_0(host, button)
 	{
-		if(host.args.float)
+		if(host.args.float || host.args.ignore)
 		{
 			return;
 		}

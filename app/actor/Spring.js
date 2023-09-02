@@ -66,6 +66,12 @@ export class Spring extends PointActor
 		this.args.color  = this.args.color  || 0;
 		this.args.static = this.args.static ?? true;
 
+		if(this.args.standingOn)
+		{
+			this.args.static = false;
+			this.args.float  = 0;
+		}
+
 		this.args.actingOn = new Set;
 
 		this.args.blocked = false;
