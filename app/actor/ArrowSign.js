@@ -44,9 +44,6 @@ export class ArrowSign extends PointActor
 			return;
 		}
 
-		this.sprite = this.findTag('div.sprite');
-		this.box    = this.findTag('div');
-
 		this.headBox = new Tag('<div class = "arrow-sign-head-box">')
 		this.post    = new Tag('<div class = "arrow-sign-post">')
 		this.head    = new Tag('<div class = "arrow-sign-head">')

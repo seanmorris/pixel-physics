@@ -182,9 +182,6 @@ export class PointActor extends View
 
 		this.behaviors.add(new Platformer);
 
-		this.lastPointA = [];
-		this.lastPointB = [];
-
 		this.carrying = new Set;
 
 		this.inventory = new Classifier([
@@ -1405,7 +1402,7 @@ export class PointActor extends View
 			|| (Math.abs(this.args.gSpeed) > 6 && Math.abs(this.args.gSpeed) < this.args.gSpeedMax * 2)
 			|| this.args.gSpeed === 0;
 
-			if(!this.args.rolling && grindInput && !this.yAxis && !this.spindashCharge)
+			if(!this.args.rolling && grindInput && (this.yAxis < 0.55 && Math.abs(this.yAxis) <= Math.abs(this.xAxis) ) && !this.spindashCharge)
 			{
 				const axisSign = Math.sign(xAxis);
 				let gSpeed     = this.args.gSpeed;
@@ -2390,6 +2387,11 @@ export class PointActor extends View
 			{
 				this.xAxis = Math.sign(this.xAxis);
 			}
+
+			if(Math.abs(this.xAxis) < 0.1)
+			{
+				this.xAxis = 0;
+			}
 		}
 
 		if(controller.axes[1])
@@ -2399,6 +2401,11 @@ export class PointActor extends View
 			if(Math.abs(this.yAxis) > 0.55)
 			{
 				this.yAxis = Math.sign(this.yAxis);
+			}
+
+			if(Math.abs(this.yAxis) < 0.1)
+			{
+				this.yAxis = 0;
 			}
 		}
 
@@ -3227,9 +3234,19 @@ export class PointActor extends View
 					}
 				}
 
-				if(this.args.flying
-					&& this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + 16, layer.index)
-					&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + 16, layer.index)
+				if((this.args.climbing
+						&& this.viewport.tileMap.getSolid(this.args.x, this.args.y, layer.index)
+					) || (this.args.flying
+						&& layer.layer.meta.vertical !== Math.sign(this.args.xSpeed)
+						&& !this.viewport.tileMap.getSolid(this.args.x + this.args.xSpeed, this.args.y + -8, layer.index)
+						&& this.viewport.tileMap.getSolid(this.args.x, this.args.y, layer.index)
+				)){
+					this.collisionMap.set(layer, false);
+				}
+
+				if(!layer.layer.meta.vertical
+					&& !this.args.mode
+					&& this.viewport.tileMap.getSolid(this.args.x, this.args.y + -16, layer.index)
 				){
 					this.collisionMap.set(layer, false);
 				}

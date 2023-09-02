@@ -53,10 +53,6 @@ export class StarPost extends PointActor
 	onRendered()
 	{
 		super.onRendered();
-
-		this.sprite = this.findTag('div.sprite');
-		this.box    = this.findTag('div');
-
 		this.headBox = new Tag('<div class = "star-post-head-box">')
 		this.head   = new Tag('<div class = "star-post-head">')
 

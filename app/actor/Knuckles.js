@@ -846,6 +846,8 @@ export class Knuckles extends PointActor
 
 		if(this.args.grinding && !this.args.falling && this.args.gSpeed)
 		{
+			this.args.bellySliding = false;
+
 			const sparkParticle = new Tag(`<div class = "particle-sparks">`);
 			const sparkEnvelope = new Tag(`<div class = "envelope-sparks">`);
 
