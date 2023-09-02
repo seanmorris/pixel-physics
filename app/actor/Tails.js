@@ -110,9 +110,6 @@ export class Tails extends PointActor
 			return;
 		}
 
-		// this.box = this.findTag('div');
-		// this.sprite = this.findTag('div.sprite');
-
 		this.tails = new Tag('<div class = "tails-tails">');
 		this.sprite.appendChild(this.tails.node);
 

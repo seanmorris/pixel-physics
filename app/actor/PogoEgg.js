@@ -14,7 +14,7 @@ export class PogoEgg extends PointActor
 		this.args.height  = 63;
 		this.args.type    = 'actor-item actor-pogo-egg';
 		this.args.gravity = 0.5;
-		this.args.jumpForce = 8.5;
+		this.args.jumpForce = 10;
 		this.args.decel   = 0;
 
 		this.targetPoint = null;
@@ -40,20 +40,34 @@ export class PogoEgg extends PointActor
 	{
 		super.update();
 
+		for(const a of this.standingUnder)
+		{
+			a.args.falling = true;
+			a.args.ySpeed = -Math.abs(a.ySpeedLast);
+			a.args.y--;
+
+			if(this.args.ySpeed < 0)
+			{
+				a.args.ySpeed += this.args.ySpeed;
+			}
+		}
+
+		const originX = this.def.get('x');
+
 		this.screenLock = this.screenLock || {
-			xMin: 20384,
-			xMax: 21320,
+			xMin: originX + -624,
+			xMax: originX + 497
 		};
 
 		if(this.args.hp >= 0)
 		{
-			if(this.viewport.controlActor)
+			if(this.viewport.controlActor && Math.abs(this.viewport.controlActor.args.x - this.args.x) < 386)
 			{
 				if(!this.viewport.controlActor.args.dead)
 				{
 					this.viewport.controlActor.screenLock = this.viewport.controlActor.screenLock || {
-						xMin: 20384,
-						xMax: 21320,
+						xMin: originX + -624,
+						xMax: originX + 497
 					};
 				}
 			}
@@ -133,11 +147,17 @@ export class PogoEgg extends PointActor
 
 				const b = g + 2 * v;
 				const a = (-b - Math.sqrt(b**2 + 8 * g * -h)) / (-2 * g);
-				const d = this.xTarget - this.args.x;
 
-				this.args.xSpeed = d / a;
-
-				this.args.expectedAirTime = a;
+				if(!isNaN(a) && a > 0)
+				{
+					const d = this.xTarget - this.args.x;
+					this.args.xSpeed = d / a;
+					this.args.expectedAirTime = a;
+				}
+				else
+				{
+					this.args.xSpeed = 0;
+				}
 			}
 		}
 		else if(this.args.hp < 0 && this.args.animation !== 'exploding' && this.args.animation !== 'exploded')
@@ -193,17 +213,28 @@ export class PogoEgg extends PointActor
 			return;
 		}
 
-		if(!other.args.falling && other.groundTime > 1 && !this.args.damaged && !this.standingUnder.has(other))
+		if(this.args.hp <= -1 && this.args.falling)
 		{
+			return false;
+		}
+
+		if(this.args.hp > 0
+			&& !other.args.falling
+			&& other.groundTime > 1
+			&& !this.args.damaged
+			&& !this.standingUnder.has(other)
+			&& !other.args.mercy
+		){
 			other.damage(this);
 
 			return false;
 		}
 
-		if(type === 0 && other.ySpeedLast > 0)
+		if(type === 0 && other.args.falling)
 		{
 			this.args.ySpeed   =  Math.abs(other.ySpeedLast);
 			other.args.ySpeed  = -Math.abs(other.ySpeedLast);
+			other.args.y = this.args.y + -this.args.height;
 
 			if(other.args.ySpeed > -6)
 			{
@@ -214,31 +245,37 @@ export class PogoEgg extends PointActor
 
 			if(!this.args.damaged)
 			{
-				this.ignores.set(other, 30);
+				// this.ignores.set(other, 30);
 				this.args.damaged = 30;
 				this.args.hp--;
 			}
+
 		}
-		else if(type === 2 && other.args.ySpeed < 0)
+		else if(type === 2 && other.args.falling)
 		{
 			this.args.ySpeed   =  Math.abs(other.args.ySpeed);
 			other.args.ySpeed  = -Math.abs(other.args.ySpeed);
 
+			other.args.y = this.args.y + other.args.height;
+
 			Sfx.play('BOSS_DUDHIT');
 		}
-		else if(Math.abs(this.args.x - other.args.x) > this.args.width / 2)
+		else if(Math.abs(this.args.x - other.args.x) > this.args.width / 2 && other.args.falling)
 		{
-			other.args.xSpeed *= -1;
-			this.args.xSpeed *= -1;
+			other.args.x = this.args.x + (this.args.width + other.args.width) * 0.5 * Math.sign(other.args.x - this.args.x || other.args.xSpeed);
 
-			if(Math.abs(other.args.xSpeed) < 2)
+			// other.args.xSpeed = -Math.sign(other.args.xSpeed) * 4;
+			other.args.xSpeed *= -1;
+			// this.args.xSpeed *= -1;
+
+			if(Math.abs(other.args.xSpeed) < 4)
 			{
-				other.args.xSpeed = 2 * Math.sign(other.args.x - this.args.x);
+				other.args.xSpeed = 4 * Math.sign(other.args.x - this.args.x);
 			}
 
-			if(Math.abs(this.args.xSpeed) < 2)
+			if(Math.abs(this.args.xSpeed) < 4)
 			{
-				this.args.xSpeed  = 2 * Math.sign(other.args.x - this.args.x);
+				this.args.xSpeed  = 4 * -Math.sign(other.args.x - this.args.x);
 			}
 
 			Sfx.play('BOSS_DAMAGED');
@@ -248,13 +285,19 @@ export class PogoEgg extends PointActor
 				// this.ignores.set(other, 30);
 				this.args.damaged = 30;
 				this.args.hp--;
-
-				this.args.ySpeed = -5 * Math.sign(other.args.y - this.args.y);
 			}
+
+			this.args.ySpeed = -5 * Math.sign(other.args.y - this.args.y);
+		}
+
+		if(this.args.hp <= 0)
+		{
+			this.args.xSpeed = 0;
 		}
 
 		return super.collideA(other, type);
 	}
 
-	get solid() {return !this.noClip; };
+	get solid() {return false; };
+	get canStick() {return false; };
 }

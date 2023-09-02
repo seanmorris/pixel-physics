@@ -18,8 +18,8 @@ export class Catakiller extends Mixin.from(PointActor, CanPop)
 		this.args.phase = 'idle';
 		this.args.scootSpeed = this.args.scootSpeed || 2;
 		this.args.segments   = this.args.segments   || 6;
-		this.args.pauseTime  = this.args.pauseTime  || 40;
-		this.args.phaseTime  = this.args.phaseTime  || 640;
+		this.args.pauseTime  = this.args.pauseTime  || 45;
+		this.args.phaseTime  = this.args.phaseTime  || 600;
 
 		this.segments = [];
 	}
@@ -45,6 +45,7 @@ export class Catakiller extends Mixin.from(PointActor, CanPop)
 
 		if(!this.viewport || !this.viewport.actorIsOnScreen(this))
 		{
+			super.update();
 			return;
 		}
 
@@ -53,14 +54,16 @@ export class Catakiller extends Mixin.from(PointActor, CanPop)
 		const interval = this.args.phaseTime;
 		const half = interval * 0.5;
 
-		const scoot     = this.age % 40;
+		const scootInterval = 30
+
+		const scoot     = this.age % scootInterval;
 		const direction = this.age % interval < half ? 1 : -1;
 		const phase     = this.age % half;
 		const moveTime  = half - this.args.pauseTime;
 
 		if(phase < moveTime)
 		{
-			if(scoot > 20)
+			if(scoot > scootInterval * 0.5)
 			{
 				this.args.gSpeed = this.args.scootSpeed * direction;
 				this.args.animation = 'mouth-open';

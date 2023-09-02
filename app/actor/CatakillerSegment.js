@@ -58,11 +58,11 @@ export class CatakillerSegment extends Mixin.from(PointActor)
 
 			this.args.space = space;
 
-			if(space < 9)
+			if(space < 9.5)
 			{
 				this.args.willMove = false;
 			}
-			else if(space > 12)
+			else if(space > 13)
 			{
 				this.args.willMove = true;
 				// speed *= 1.5;

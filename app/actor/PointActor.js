@@ -163,6 +163,9 @@ export class PointActor extends View
 
 		this.args.canHide = false;
 
+		this.collisionMap = null;
+		this.doorMap = new Map;
+
 		this.args.opacity = this.args.opacity ?? 1;
 		this.args.pushing = false;
 
@@ -178,9 +181,6 @@ export class PointActor extends View
 		this.args.lookTime = 0;
 
 		this.behaviors.add(new Platformer);
-
-		this.lastPointA = [];
-		this.lastPointB = [];
 
 		this.carrying = new Set;
 
@@ -1194,6 +1194,18 @@ export class PointActor extends View
 
 	callCollideHandler(other)
 	{
+		if(!this.viewport)
+		{
+			return;
+		}
+
+		const viewport = this.viewport;
+
+		// if(viewport.collisionCache.has(this) && viewport.collisionCache.get(this).has(other))
+		// {
+		// 	return viewport.collisionCache.get(this).get(other);
+		// }
+
 		if(this.ignores.has(other))
 		{
 			return false;
@@ -1218,13 +1230,6 @@ export class PointActor extends View
 		{
 			return;
 		}
-
-		if(!this.viewport)
-		{
-			return;
-		}
-
-		const viewport = this.viewport;
 
 		let type;
 
@@ -1271,6 +1276,11 @@ export class PointActor extends View
 			viewport.collisions.set(other, new Map);
 		}
 
+		// if(!viewport.collisionCache.has(this))
+		// {
+		// 	viewport.collisionCache.set(this, new Map);
+		// }
+
 		// if(this.viewport.collisions.get(this).has(other))
 		// {
 		// 	return;
@@ -1290,6 +1300,8 @@ export class PointActor extends View
 		const ba = other.collideA(this, invertType);
 
 		const result = ab || ba;
+
+		// viewport.collisionCache.get(this).set(other, result);
 
 		this.args.colliding = this.colliding = (this.colliding || result || false);
 
@@ -1390,7 +1402,7 @@ export class PointActor extends View
 			|| (Math.abs(this.args.gSpeed) > 6 && Math.abs(this.args.gSpeed) < this.args.gSpeedMax * 2)
 			|| this.args.gSpeed === 0;
 
-			if(!this.args.rolling && grindInput && !this.yAxis && !this.spindashCharge)
+			if(!this.args.rolling && grindInput && (this.yAxis < 0.55 && Math.abs(this.yAxis) <= Math.abs(this.xAxis) ) && !this.spindashCharge)
 			{
 				const axisSign = Math.sign(xAxis);
 				let gSpeed     = this.args.gSpeed;
@@ -1600,7 +1612,7 @@ export class PointActor extends View
 			, thisPointY
 			, angle
 			, length
-			, this.args.layer
+			, this.getCollisionMap()
 		);
 
 		let magnitude = length;
@@ -1940,10 +1952,12 @@ export class PointActor extends View
 
 	startle(other)
 	{
-		if(this.noClip || this.args.startled > 30)
+		if(this.noClip)
 		{
 			return;
 		}
+
+		this.args.startled = 0;
 
 		const direction = Math.sign(
 			other && (
@@ -2117,7 +2131,7 @@ export class PointActor extends View
 	{
 		const args = this.args;
 
-		if(args.standingOn)
+		if(args.standingOn && !args.mode)
 		{
 			return args.standingOn.realAngle;
 		}
@@ -2317,7 +2331,7 @@ export class PointActor extends View
 
 		const tileMap = this.viewport.tileMap;
 
-		return tileMap.getSolid(x, y, this.args.layer);
+		return tileMap.getSolid(x, y, this.getCollisionMap());
 	}
 
 	get canRoll() { return false; }
@@ -2368,11 +2382,31 @@ export class PointActor extends View
 		if(controller.axes[0])
 		{
 			this.xAxis = controller.axes[0].magnitude;
+
+			if(Math.abs(this.xAxis) > 0.55)
+			{
+				this.xAxis = Math.sign(this.xAxis);
+			}
+
+			if(Math.abs(this.xAxis) < 0.1)
+			{
+				this.xAxis = 0;
+			}
 		}
 
 		if(controller.axes[1])
 		{
 			this.yAxis = controller.axes[1].magnitude;
+
+			if(Math.abs(this.yAxis) > 0.55)
+			{
+				this.yAxis = Math.sign(this.yAxis);
+			}
+
+			if(Math.abs(this.yAxis) < 0.1)
+			{
+				this.yAxis = 0;
+			}
 		}
 
 		// if(controller.axes[6] && controller.axes[6].magnitude)
@@ -3133,6 +3167,101 @@ export class PointActor extends View
 		{
 			behavior.onDespawned && behavior.onDespawned(this, viewport);
 		}
+	}
+
+	getCollisionMap()
+	{
+		if(!this.collisionMap)
+		{
+			this.collisionMap = this.viewport.tileMap.getCollisionMap();
+
+			for(const layer of this.collisionMap.keys())
+			{
+				if(layer.name.substr(0, 3) === 'Art')
+				{
+					this.collisionMap.delete(layer);
+				}
+				else if(layer.name.substr(0, 10) === 'Moving Art')
+				{
+					this.collisionMap.delete(layer);
+				}
+			}
+		}
+
+		if(!this.viewport)
+		{
+			return this.collisionMap;
+		}
+
+		for(const layer of this.collisionMap.keys())
+		{
+			if(layer.name === 'Collision 0')
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else if(layer.name === 'Collision ' + this.args.layer)
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else if(layer.name.substr(0, 4) === 'Door')
+			{
+				if(this.doorMap.has(layer.index))
+				{
+					this.collisionMap.set(layer, this.doorMap.get(layer.index));
+				}
+			}
+			else if(layer.name.substr(0, 8) === 'Platform' || layer.name.substr(0, 8) === 'Grinding')
+			{
+				if(this.args.ySpeed >= 0)
+				{
+					this.collisionMap.set(layer, true);
+				}
+				else
+				{
+					this.collisionMap.set(layer, false);
+				}
+
+				if(this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index)
+					&& this.viewport.tileMap.getSolid(this.args.x - 16, this.args.y + -16, layer.index)
+				){
+					this.collisionMap.set(layer, false);
+				}
+				else if(layer.layer && layer.layer.meta.vertical)
+				{
+					if(!this.args.xSpeed || Math.sign(layer.layer.meta.vertical) === Math.sign(this.args.xSpeed))
+					{
+						this.collisionMap.set(layer, true);
+					}
+				}
+
+				if((this.args.climbing
+						&& this.viewport.tileMap.getSolid(this.args.x, this.args.y, layer.index)
+					) || (this.args.flying
+						&& layer.layer.meta.vertical !== Math.sign(this.args.xSpeed)
+						&& !this.viewport.tileMap.getSolid(this.args.x + this.args.xSpeed, this.args.y + -8, layer.index)
+						&& this.viewport.tileMap.getSolid(this.args.x, this.args.y, layer.index)
+				)){
+					this.collisionMap.set(layer, false);
+				}
+
+				if(!layer.layer.meta.vertical
+					&& !this.args.mode
+					&& this.viewport.tileMap.getSolid(this.args.x, this.args.y + -16, layer.index)
+				){
+					this.collisionMap.set(layer, false);
+				}
+			}
+			else if(layer.name.substr(0, 6) === 'Moving' && layer.name.substr(0, 10) !== 'Moving Art')
+			{
+				this.collisionMap.set(layer, true);
+			}
+			else
+			{
+				this.collisionMap.set(layer, false);
+			}
+		}
+
+		return this.collisionMap;
 	}
 
 	command_0(){}

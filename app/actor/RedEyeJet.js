@@ -555,9 +555,6 @@ export class RedEyeJet extends PointActor
 	{
 		super.onRendered(event);
 
-		this.box = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
-
 		this.body = new Tag(`<div class = "body-center">`);
 		this.bodyL = new Tag(`<div class = "body-left">`);
 		this.bodyR = new Tag(`<div class = "body-right">`);

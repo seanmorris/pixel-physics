@@ -261,7 +261,6 @@ export class Block extends PointActor
 			&& Math.abs(other.args.gSpeed) > 8
 			&& xDist < 0.2
 		){
-
 			this.watching.add(other);
 
 			if(!this.originalModes.has(other))

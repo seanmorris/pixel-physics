@@ -228,9 +228,7 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 
 	findRopeLength()
 	{
-		const endPoint = this.viewport.tileMap.castRay(
-			this.args.x, this.args.y, Math.PI / 2, 2048
-		);
+		const endPoint = this.castRayQuick(2048, Math.PI / 2, [0,0], false);
 
 		return Math.hypot(
 			this.args.x - endPoint[0],

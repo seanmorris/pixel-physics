@@ -60,14 +60,6 @@ export class BreakableBlock extends Block
 		this.broken = false;
 	}
 
-	onRendered(event)
-	{
-		this.box    = this.findTag('div');
-		this.sprite = this.findTag('div.sprite');
-
-		super.onRendered(event);
-	}
-
 	updateStart()
 	{
 		super.updateStart();

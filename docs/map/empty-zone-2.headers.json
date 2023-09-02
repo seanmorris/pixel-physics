@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 424,
     "infinite": false,
-    "nextlayerid": 16,
-    "nextobjectid": 2195,
+    "nextlayerid": 19,
+    "nextobjectid": 2201,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -251,6 +251,7 @@
     "version": "1.10",
     "width": 2800,
     "types": [
+        "",
         "arrow-sign",
         "bell",
         "big",
@@ -292,6 +293,13 @@
         "switch-region",
         "unbreakable-crate",
         "wooden-crate"
+    ],
+    "emblems": [
+        2118,
+        2122,
+        2123,
+        2124,
+        2127
     ],
     "map": "/map/empty-zone-2.json"
 }
