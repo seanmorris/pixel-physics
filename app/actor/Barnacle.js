@@ -209,7 +209,7 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 		{
 			const length = this.findRopeLength();
 
-			this.trap.args.ropeLength = length + -16;
+			this.trap.args.ropeLength = length + -0;
 			this.args.animation = 'spit';
 			this.trap.args.float = 0;
 			this.trap.args.ySpeed = Math.max(2, this.trap.args.ySpeed);
@@ -228,11 +228,18 @@ export class Barnacle extends Mixin.from(PointActor, CanPop)
 
 	findRopeLength()
 	{
-		const endPoint = this.castRayQuick(2048, Math.PI / 2, [0,0], false);
+		if(!this.viewport)
+		{
+			return 0;
+		}
+
+		const endpoint = this.viewport.tileMap.castRay(
+			this.args.x, this.args.y, Math.PI / 2, 2048
+		);
 
 		return Math.hypot(
-			this.args.x - endPoint[0],
-			this.args.y - endPoint[1],
+			this.args.x - endpoint[0],
+			this.args.y - endpoint[1],
 		) || 128;
 	}
 

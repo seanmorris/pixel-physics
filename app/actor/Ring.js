@@ -2,6 +2,7 @@ import { PointActor } from './PointActor';
 import { Spring } from './Spring';
 
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class Ring extends PointActor
 {
@@ -211,7 +212,7 @@ export class Ring extends PointActor
 		{
 			if(typeof ga === 'function')
 			{
-				ga('send', 'event', {
+				Analytic.report({
 					eventCategory: 'ring',
 					eventAction: 'collected',
 					eventLabel: `${this.viewport.args.actName}::${this.args.id}`

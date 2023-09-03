@@ -11,6 +11,7 @@ import { Block } from '../actor/Block';
 import { Marker } from '../actor/Marker';
 
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class Monitor extends PointActor
 {
@@ -224,7 +225,7 @@ export class Monitor extends PointActor
 
 		if(typeof ga === 'function')
 		{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'monitor',
 				eventAction: 'popped',
 				eventLabel: `${this.viewport.args.actName}::${this.args.id}`

@@ -216,11 +216,6 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 				this.play();
 			};
 
-			if(!loop)
-			{
-				this.playing.addEventListener('ended', onCompleted, {once: true});
-			}
-
 			this.tags.set(selected, tag);
 
 			const cancelable = true;
@@ -228,7 +223,13 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 			if(this.dispatchEvent(play))
 			{
-				try { selected.play() }
+				try {
+					selected.play();
+					if(!loop)
+					{
+						this.playing.addEventListener('ended', onCompleted, {once: true});
+					}
+				}
 				catch(error) { console.warn(error) }
 			}
 

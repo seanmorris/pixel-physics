@@ -89,3 +89,7 @@
 .actor-generic[data-falling="true"] .sprite:after {
 	transform: var(--translate) rotate(calc(1rad * var(--air-angle)));
 }
+
+.actor-item[data-condition="sapped-normal"] .sprite {
+	filter: invert(1) contrast(0.75) hue-rotate(180deg) !important;
+}

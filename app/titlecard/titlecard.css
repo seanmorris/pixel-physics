@@ -132,7 +132,7 @@
 }
 
 .titlecard-bottom-border {
-	transition: right var(--tFunc);
+	transition: right var(--tFunc), background-color 0.5s ease-in-out;
 	position: absolute;
 	right: calc(-1% * var(--timer));
 	top: 71%;
@@ -140,12 +140,28 @@
 	height: 29%;
 	width: 100%;
 	background-color: #fffd00;
+	background-color: rgba(255, 253, 0, var(--opacity, 1));
 	text-shadow:
 		0.5px 0.5px 0px rgba(0,0,0,1)
 		, 0.5px -0.5px 0px rgba(0,0,0,1)
 		, -0.5px 0.5px 0px rgba(0,0,0,1)
 		, -0.5px -0.5px 0px rgba(0,0,0,1)
 	;
+}
+
+/* .titlecard.replay .titlecard-bottom-border, */
+.titlecard.closing .titlecard-bottom-border,
+.titlecard.closed .titlecard-bottom-border {
+	/* opacity: 0.75; */
+	--opacity: 0;
+	backdrop-filter: blur(5px);
+}
+
+
+
+[data-character="Tails"] .titlecard-bottom-border {
+	/* background-color: #fff; */
+	background-color: rgba(255,255,255,var(--opacity, 1));
 }
 
 .titlecard-border-text {
@@ -170,6 +186,10 @@
 	transition: opacity var(--tFunc), background-color var(--tFunc);
 	background-color: #2548dd;
 	opacity: 1;
+}
+
+[data-character="Knuckles"] .titlecard:not(.start) .titlecard-field {
+	background-color: #006c00;
 }
 
 .titlecard.closed, .titlecard.closing {

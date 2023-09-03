@@ -679,7 +679,7 @@ export class Platformer
 			this.applyImpulse(host);
 		}
 
-		if(host.args.ignore === -2 && (host.args.falling === false || host.args.ySpeed > 64))
+		if(host.args.ignore === -2 && (host.args.falling === false || host.args.ySpeed > 0))
 		{
 			host.args.ignore = 0;
 		}
@@ -2692,10 +2692,10 @@ export class Platformer
 
 		// window.logPoints = upScanDist && true;
 
-		if(host.viewport && host.viewport.args.debugEnabled)
-		{
-			window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-l-scan '+label);
-		}
+		// if(host.viewport && host.viewport.args.debugEnabled)
+		// {
+		// 	window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-l-scan '+label);
+		// }
 
 		const upDistanceL = host.castRayQuick(
 			upScanDist
@@ -2882,10 +2882,10 @@ export class Platformer
 			, originalAngle
 		);
 
-		if(host.viewport && host.viewport.args.debugEnabled)
-		{
-			window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
-		}
+		// if(host.viewport && host.viewport.args.debugEnabled)
+		// {
+		// 	window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'main-scan '+label);
+		// }
 
 		if(Math.abs(host.args.xSpeed) <= Math.abs(host.args.ySpeed))
 		{
@@ -2920,10 +2920,10 @@ export class Platformer
 
 		if(!host.rotateLock)
 		{
-			if(host.viewport && host.viewport.args.debugEnabled)
-			{
-				window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'alt-scan '+label);;
-			}
+			// if(host.viewport && host.viewport.args.debugEnabled)
+			// {
+			// 	window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'alt-scan '+label);;
+			// }
 
 			const bOffset = -3 * Math.sign(host.args.ySpeed || 1);
 
@@ -2939,10 +2939,10 @@ export class Platformer
 			] : airPointBQ;
 		}
 
-		if(host.viewport && host.viewport.args.debugEnabled)
-		{
-			window.logPoints = false;
-		}
+		// if(host.viewport && host.viewport.args.debugEnabled)
+		// {
+		// 	window.logPoints = false;
+		// }
 
 		const airPoint   = airPointQ;
 		const airPointB = airPointBQ;
@@ -3159,10 +3159,17 @@ export class Platformer
 
 				if(forePosition && backPosition)
 				{
-					newAngle = (ySpeedOriginal < 0 ? -1 : 1) * Number(Math.atan2(
-						(forePosition[1]??0) - (backPosition[1]??0)
-						, (forePosition[0]??0) - (backPosition[0]??0)
-					));
+					// newAngle = (ySpeedOriginal < 0 ? -1 : 1) * Number(Math.atan2(
+					// 	(forePosition[1]??0) - (backPosition[1]??0)
+					// 	, (forePosition[0]??0) - (backPosition[0]??0)
+					// ));
+
+					newAngle = (ySpeedOriginal < 0 && upCollisionAngle)
+						? -upCollisionAngle
+						: Math.atan2(
+							(forePosition[1]??0) - (backPosition[1]??0)
+							, (forePosition[0]??0) - (backPosition[0]??0)
+						)
 
 					if(Math.abs(newAngle) >= Math.PI * 0.25)
 					{

@@ -103,6 +103,7 @@ import { GamepadConfig } from '../controller/GamepadConfig';
 
 import { TallyBoard } from '../tally/TallyBoard';
 import { Emblem } from '../actor/Emblem';
+import { Analytic } from '../lib/Analytic';
 
 const ActorPointCache = Symbol('actor-point-cache');
 const ColCellNear = Symbol('collision-cells-near');
@@ -178,7 +179,7 @@ export class Viewport extends View
 
 		this.netPlayers = new Map;
 
-		this.args.controlCardShown = false;
+		this.args.controlCardShown = new Set;
 
 		this.bytesReceived = 0;
 
@@ -702,6 +703,9 @@ export class Viewport extends View
 			{
 				this.args.trackName.args.value = event.detail.TIT2 + ' by ' + event.detail.TPE1;
 				this.args.audioComment = event.detail.COMM;
+				const secret = Math.random();
+				this.args.secretIcon = secret > 0.99 ? 100
+					: (secret > 0.9 ? 10 : '0');
 			}
 
 			if(this.args.trackName.args.value)
@@ -850,6 +854,15 @@ export class Viewport extends View
 			localStorage.setItem('sonic-3000-setting-v0.0.0=' + k, JSON.stringify(v));
 
 		});
+
+		const urlChar = Router.query.char
+		? (String(Router.query.char)
+			.substr(0,1).toUpperCase()
+		+ String(Router.query.char)
+			.substr(1))
+		: false;
+
+		this.args.selectedChar = this.args.selectedChar || urlChar || 'Sonic';
 
 		this.args.blockSize = 32;
 
@@ -1326,7 +1339,7 @@ export class Viewport extends View
 
 		let inputType = 'kb';
 
-		if(!this.args.selectedChar || this.args.selectedChar === 'Sonic')
+		if(!this.args.selectedChar || this.args.selectedChar === 'Sonic' || this.args.selectedChar === 'Tails' || this.args.selectedChar === 'Knuckles')
 		{
 			inputType = this.args.inputType;
 
@@ -1342,7 +1355,7 @@ export class Viewport extends View
 				&& this.controller.buttons[6].time > 0
 				&& this.controller.buttons[7].time > 0
 			){
-				this.args.controlCardShown = false;
+				this.args.controlCardShown.delete(this.args.selectedChar);
 				inputType = 'input-dreamcast';
 			}
 			else if(this.controller
@@ -1350,7 +1363,7 @@ export class Viewport extends View
 				&& this.controller.buttons[10]
 				&& this.controller.buttons[10].time > 0
 			){
-				this.args.controlCardShown = false;
+				this.args.controlCardShown.delete(this.args.selectedChar);
 				inputType = 'input-gamecube';
 			}
 			else if(this.controller
@@ -1358,7 +1371,7 @@ export class Viewport extends View
 				&& this.controller.buttons[8]
 				&& this.controller.buttons[8].time > 0
 			){
-				this.args.controlCardShown = false;
+				this.args.controlCardShown.delete(this.args.selectedChar);
 			}
 		}
 
@@ -1438,6 +1451,15 @@ export class Viewport extends View
 					this.args.layers.push(layer);
 				}
 
+				if(layers[i].name.substring(0, 9) === 'Collision')
+				{
+					layer.meta.solid = true;
+				}
+				else if(layers[i].name.substring(0, 6) === 'Moving' && layers[i].name.substring(0, 10) !== 'Moving Art')
+				{
+					layer.meta.solid = true;
+				}
+
 				if(this.meta.theme !== 'construct')
 				{
 					if(layers[i].name.substring(0, 9) === 'Collision')
@@ -1461,14 +1483,14 @@ export class Viewport extends View
 		// 	tileMap.addMap('/map/appended-map.json');
 		// }
 
-		let waiter = new Promise(a => setTimeout(a, 6500));
-		const cardShown = this.args.controlCardShown && !this.args.networked;
+		let waiter = new Promise(a => setTimeout(a, 7250));
+		const cardShown = this.args.controlCardShown.has(this.args.selectedChar) && !this.args.networked;
 		const willShowCard = !cardShown && !this.args.map && (!this.args.selectedChar || this.args.selectedChar === 'Sonic' ||  this.args.selectedChar === 'Tails' ||  this.args.selectedChar === 'Knuckles');
 
 		if(!this.replay && willShowCard && !Router.query.map)
 		{
 			this.args.titlecard = new Series({cards:[controllerCard]}, this);
-			this.args.controlCardShown = true;
+			this.args.controlCardShown.add(this.args.selectedChar);
 		}
 		else
 		{
@@ -1783,6 +1805,7 @@ export class Viewport extends View
 
 	startLevel(refresh = true)
 	{
+		performance.mark('init-start');
 		this.populateMap();
 
 		this.levelFinished = false;
@@ -1909,6 +1932,9 @@ export class Viewport extends View
 		Bgm.unpause();
 
 		this.args.zonecard.played.then(() => {
+
+			performance.mark('init-end');
+			performance.measure('init-marker', 'init-start', 'init-end');
 
 			const zoneState = this.getZoneState();
 
@@ -2072,14 +2098,11 @@ export class Viewport extends View
 
 			this.onFrameOut(30, () => this.args.fade = 'hide');
 
-			if(typeof ga === 'function')
-			{
-				ga('send', 'event', {
-					eventCategory: 'zone',
-					eventAction: 'started',
-					eventLabel: `${this.args.actName}`
-				});
-			}
+			Analytic.report({
+				eventCategory: 'zone',
+				eventAction: 'started',
+				eventLabel: `${this.args.actName}`
+			});
 		});
 	}
 
@@ -2134,19 +2157,21 @@ export class Viewport extends View
 		{
 			const gamepads = navigator.getGamepads();
 
-			controller.readInput({keyboard, gamepads});
+			const active = controller.readInput({keyboard, gamepads});
 
-			for(let i = 0; i < gamepads.length; i++)
+			for(const device of active)
 			{
-				const gamepad = gamepads[i];
-
-				if(!gamepad)
+				if(device === keyboard)
 				{
 					continue;
 				}
 
+				const gamepad = device;
+
 				if(gamepad)
 				{
+					this.gamepad = gamepad;
+
 					const gamepadId = String(gamepad.id);
 
 					if(gamepadId.match(/x-?bo?x/i))
@@ -2271,10 +2296,10 @@ export class Viewport extends View
 
 		if(this.args.debugEnabled)
 		{
-			if(!this.args.plot)
-			{
-				this.args.plot = new Plot;
-			}
+			// if(!this.args.plot)
+			// {
+			// 	this.args.plot = new Plot;
+			// }
 
 			if(controller.buttons[8] && controller.buttons[8].time === 1)
 			{
@@ -3312,6 +3337,13 @@ export class Viewport extends View
 			actor.initialize && actor.initialize();
 			actor.vizi = false;
 		}
+
+		if(!this.args.started)
+		{
+			this.args.started = true;
+			this.update();
+			this.args.started = false;
+		}
 	}
 
 	appendMap(url, x, y)
@@ -3859,7 +3891,7 @@ export class Viewport extends View
 
 			if(typeof ga === 'function')
 			{
-				ga('send', 'event', {
+				Analytic.report({
 					eventCategory: 'fps-check',
 					eventAction: `fps-check::${navigator.platform}::cores_${navigator.hardwareConcurrency}`,
 					eventLabel: `${this.args.actName}`,
@@ -3938,7 +3970,7 @@ export class Viewport extends View
 			return;
 		}
 
-		if(!this.args.started)
+		if(!this.args.started && this.args.frameId > 0)
 		{
 			return;
 		}
@@ -4152,15 +4184,12 @@ export class Viewport extends View
 
 		this.updateStarted.clear();
 		this.updated.clear();
+		this.updateEnded.clear();
 
 		if(this.controlActor)
 		{
 			this.controlActor.setCameraMode();
 		}
-
-		this.updateEnded.clear();
-
-		Layer.updateCount = 0;
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
@@ -4172,8 +4201,6 @@ export class Viewport extends View
 
 			layer.update(this.tileMap, xDir, yDir);
 		}
-
-		// console.log(Layer.updateCount);
 
 		for(const layer of [...this.args.layers, ...this.args.fgLayers])
 		{
@@ -4948,6 +4975,7 @@ export class Viewport extends View
 
 		const crossProduct = ax * by - ay * bx;
 
+		// Parallel Lines cannot intersect
 		if(crossProduct === 0)
 		{
 			return false;
@@ -4956,21 +4984,21 @@ export class Viewport extends View
 		const cx = b1x - a1x;
 		const cy = b1y - a1y;
 
-		const d = (cx * by - cy * bx) / crossProduct;
-
+		// Is our point within the bounds of line a?
+		const d = (cx * ay - cy * ax) / crossProduct;
 		if(d < 0 || d > 1)
 		{
 			return false;
 		}
 
-		const e = (cx * ay - cy * ax) / crossProduct;
-
+		// Is our point within the bounds of line b?
+		const e = (cx * by - cy * bx) / crossProduct;
 		if(e < 0 || e > 1)
 		{
 			return false;
 		}
 
-		return [a1x + d * ax, a1y + d * ay];
+		return [a1x + e * ax, a1y + e * ay];
 	}
 
 	actorIntersectsLine(actor, b1x, b1y, b2x, b2y)
@@ -5048,7 +5076,7 @@ export class Viewport extends View
 
 		if(typeof ga === 'function')
 		{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'gamepad',
 				eventAction: 'connected',
 				eventLabel: event.gamepad.id
@@ -5081,7 +5109,7 @@ export class Viewport extends View
 
 		if(typeof ga ==='function')
 		{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'gamepad',
 				eventAction: 'disconnected',
 				eventLabel: event.gamepad.id
@@ -6416,7 +6444,7 @@ export class Viewport extends View
 	cpuDetect()
 	{
 		try{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'cpu',
 				eventAction:   'cores',
 				eventLabel:    `core check`,
@@ -6424,7 +6452,7 @@ export class Viewport extends View
 			});
 		}
 		catch (error) {
-			ga && ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'cpu',
 				eventAction:   'cpu detect fail',
 				eventLabel:    `Cpu Detect Failure: ${error}`
@@ -6441,14 +6469,14 @@ export class Viewport extends View
 			const vendor = this.gpuDetector.getParameter(debug.UNMASKED_VENDOR_WEBGL);
 			const gpu    = this.gpuDetector.getParameter(debug.UNMASKED_RENDERER_WEBGL);
 
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'gpu',
 				eventAction:   'gpu detect',
 				eventLabel:    `${vendor} :: ${gpu}`
 			});
 		}
 		catch (error) {
-			ga && ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'gpu',
 				eventAction:   'gpu detect fail',
 				eventLabel:    `Gpu Detect Failure: ${error}`
@@ -6462,7 +6490,7 @@ export class Viewport extends View
 
 		const build = buildTag.getAttribute('content');
 
-		ga && ga('send', 'event', {
+		Analytic.report({
 			eventCategory: 'build',
 			eventAction:   'build check',
 			eventLabel:    build
@@ -6603,6 +6631,13 @@ export class Viewport extends View
 			return;
 		}
 
+		console.log(this.args.audioComment);
+
+		if(this.args.audioComment.substr(0,8) !== 'https://')
+		{
+			return;
+		}
+
 		this.pauseGame();
 
 		window.open(this.args.audioComment, 'audio-credit');
@@ -6612,7 +6647,7 @@ export class Viewport extends View
 	{
 		console.error(event.error);
 
-		ga('send', 'event', {
+		Analytic.report({
 			eventCategory: 'error',
 			eventAction: `${event.error.message} @ ${event.filename}:${event.lineno}:${event.colno}`,
 			eventLabel: event.error.stack

@@ -217,6 +217,17 @@
 	margin: 2px;
 }
 
+.hud-bottom-left[data-secret-icon="10"]::before {
+	background-image: url(/Sonic/headphones-robotnik.png);
+	background-size: contain;
+}
+
+.hud-bottom-left[data-secret-icon="100"]::before {
+	background-image: url(/Sonic/headphones-vector.png);
+	background-color: rgba(0,96,255,0.75);
+	background-size: contain;
+}
+
 .hud-top-left > :empty {
 	display: none;
 }

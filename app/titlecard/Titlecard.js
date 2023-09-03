@@ -122,6 +122,7 @@ export class Titlecard extends View
 				});
 
 				timeAcc += 1000;
+				timeAcc += 1000;
 
 				this.onTimeout(timeAcc, () => this.onNextFrame( () =>
 					this.args.animation = 'closed'

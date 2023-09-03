@@ -7,6 +7,7 @@ import { CutScene } from './CutScene';
 import { EggCapsule } from './EggCapsule';
 
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class Beelzebub extends Mixin.from(PointActor)
 {
@@ -491,7 +492,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 					if(typeof ga === 'function')
 					{
-						ga('send', 'event', {
+						Analytic.report({
 							eventCategory: 'boss',
 							eventAction: 'defeated',
 							eventLabel: `${this.viewport.args.actName}::${this.args.id}`
@@ -564,7 +565,7 @@ export class Beelzebub extends Mixin.from(PointActor)
 
 				if(typeof ga === 'function')
   				{
-					ga('send', 'event', {
+					Analytic.report({
 						eventCategory: 'boss',
 						eventAction: 'damaged-player',
 						eventLabel: `${this.viewport.args.actName}::${this.args.id}::${other.args.id}`

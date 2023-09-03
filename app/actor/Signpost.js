@@ -48,7 +48,7 @@ export class Signpost extends PointActor
 
 		if(!this.finishReward && other.args.popChain.length)
 		{
-			this.finishReward = {label: 'Big Finish', points:1000, multiplier:1, color: 'yellow'};
+			this.finishReward = {label: 'Big Finish', points:1000, multiplier:1, color: 'orange'};
 
 			other.args.popChain.push(this.finishReward);
 		}

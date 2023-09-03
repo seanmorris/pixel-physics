@@ -5532,7 +5532,7 @@
                         {
                          "name":"power",
                          "type":"int",
-                         "value":52
+                         "value":32
                         }],
                  "rotation":0,
                  "type":"",
@@ -5555,7 +5555,7 @@
                         {
                          "name":"power",
                          "type":"int",
-                         "value":52
+                         "value":32
                         }],
                  "rotation":0,
                  "type":"",
@@ -5578,7 +5578,7 @@
                         {
                          "name":"power",
                          "type":"int",
-                         "value":44
+                         "value":32
                         }],
                  "rotation":0,
                  "type":"",

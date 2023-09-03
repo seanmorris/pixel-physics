@@ -121,16 +121,42 @@ export class Controller
 
 		if(gamepad && this.willRumble)
 		{
+			// let vibeFactor = 1;
+
 			if(typeof this.willRumble !== 'object')
 			{
 				this.willRumble = {
-					duration: 1000,
+					duration:        1000,
 					strongMagnitude: 1.0,
-					weakMagnitude: 1.0
+					weakMagnitude:   1.0,
 				};
 			}
 
-			if(gamepad.vibrationActuator)
+			if(gamepad.id && String(gamepad.id).match(/playstation.{0,5}3/i))
+			{
+				if(this.willRumble.duration < 100 && this.willRumble.strongMagnitude < 0.75)
+				{
+					this.willRumble.duration = 0;
+					this.willRumble.weakMagnitude = 0;
+					this.willRumble.strongMagnitude = 0;
+				}
+
+				const stopVibing = () => {
+					if(this.willRumble)
+					{
+						return;
+					}
+					gamepad.vibrationActuator.playEffect("dual-rumble", {
+						duration: 0, weakMagnitude: 0, strongMagnitude: 0
+					})
+				};
+
+				setTimeout(stopVibing, this.willRumble.duration + -1);
+			}
+
+			// console.log({...this.willRumble, id: gamepad.id});
+
+			if(gamepad.vibrationActuator && gamepad.vibrationActuator.playEffect)
 			{
 				gamepad.vibrationActuator.playEffect("dual-rumble", this.willRumble);
 			}
@@ -150,6 +176,8 @@ export class Controller
 		const pressed  = {};
 		const released = {};
 
+		const tookInput = new Set;
+
 		for(let i = 0; i < gamepads.length; i++)
 		{
 			const gamepad = gamepads[i];
@@ -168,6 +196,8 @@ export class Controller
 					this.press(i, button.value);
 
 					pressed[i] = true;
+
+					tookInput.add(gamepad);
 				}
 			}
 		}
@@ -186,6 +216,8 @@ export class Controller
 					this.press(i, 1);
 
 					pressed[i] = true;
+
+					tookInput.add(keyboard);
 				}
 			}
 
@@ -215,10 +247,8 @@ export class Controller
 			}
 		}
 
-		for(let i = 0; i < gamepads.length; i++)
+		for(const gamepad of gamepads)
 		{
-			const gamepad = gamepads[i];
-
 			if(!gamepad)
 			{
 				continue;
@@ -238,7 +268,7 @@ export class Controller
 
 				const button = gamepad.buttons[i];
 
-				if(!button.pressed)
+				if(this.buttons[i] && !button.pressed && this.buttons[i].active)
 				{
 					this.release(i);
 
@@ -435,6 +465,8 @@ export class Controller
 				released[abstractId] = true;
 			}
 		}
+
+		return tookInput;
 	}
 
 	tilt(axisId, magnitude)

@@ -111,19 +111,19 @@
 				<tspan class = "r1" x="524.19629" y="497.62772" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[r1]]</tspan>
 			</text>
 		</g>
-		<g cv-if ="ra">
+		<g cv-if ="ra" class = "ra">
 			<path transform="translate(134.82 68.294)" d="m435.96 571.55 90.146 25.55" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="529.45886" y="599.68732" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
 				<tspan x="529.45886" y="599.68732" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[ra]]</tspan>
 			</text>
 		</g>
-		<g class = "l1" class = "l1">
+		<g cv-if = "l1" class = "l1">
 			<path transform="translate(134.82 68.294)" d="m292.1 481.01-53.163 13.403" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="212.72356" y="496.87265" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
 				<tspan class = "l1" x="212.72356" y="496.87265" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[l1]]</tspan>
 			</text>
 		</g>
-		<g cv-if = "dpad">
+		<g cv-if = "dpad" class = "dpad">
 			<path transform="translate(134.82 68.294)" d="m294.23 543.48-55.024 27.964" fill="none" stroke="#000" stroke-width=".5"/>
 			<text transform="translate(134.82 68.294)" x="220.96754" y="573.75909" fill="#000000" font-family="sans-serif" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:1.25" xml:space="preserve">
 				<tspan x="220.96754" y="573.75909" font-family="sans-serif" font-size="6px" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">[[dpad]]</tspan>

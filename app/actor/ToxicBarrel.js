@@ -110,6 +110,6 @@ export class ToxicBarrel extends MarbleBlock
 		});
 	}
 
-	get solid() { return !this.args.falling; }
+	get solid() { return !this.args.falling && !this.args.hangingFrom; }
 }
 

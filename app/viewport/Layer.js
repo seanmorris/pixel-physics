@@ -381,8 +381,6 @@ export class Layer extends View
 						});
 
 						blockMeta.visible = true;
-
-						Layer.updateCount++;
 					}
 					else if(blockMeta.visible)
 					{
@@ -421,6 +419,3 @@ export class Layer extends View
 
 	}
 }
-
-
-Layer.updateCount = 0;

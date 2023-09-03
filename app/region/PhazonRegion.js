@@ -6,6 +6,7 @@ import { MarbleBlock } from "../actor/MarbleBlock";
 import { Tag } from 'curvature/base/Tag';
 import { Bindable } from 'curvature/base/Bindable';
 import { LavaBall } from "../actor/LavaBall";
+import { Sfx } from "../audio/Sfx";
 
 export class PhazonRegion extends Region
 {
@@ -124,35 +125,28 @@ export class PhazonRegion extends Region
 			return true;
 		}
 
-		if(other.args.rings)
+		if(!this.sapped.has(other))
 		{
-			if(!this.sapped.has(other))
+			let time = 0;
+
+			if(!this.timings.has(other))
 			{
-				let time = 0;
-
-				if(!this.timings.has(other))
-				{
-					this.timings.set(other, time);
-				}
-
-				time = this.timings.get(other);
-
-				time++;
-
 				this.timings.set(other, time);
-
-				if(time % 9  === 0)
-				{
-					other.args.rings--;
-				}
 			}
 
-			this.sapped.add(other);
+			time = this.timings.get(other);
+
+			time++;
+
+			this.timings.set(other, time);
+
+			if(time % 9  === 0 && (!other.args.float || other.fallTime < 20))
+			{
+				other.sap();
+			}
 		}
-		else
-		{
-			other.damage(this, 'phazon');
-		}
+
+		this.sapped.add(other);
 
 		return true;
 	}

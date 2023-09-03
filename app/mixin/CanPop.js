@@ -2,6 +2,7 @@ import { Tag } from 'curvature/base/Tag';
 import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class CanPop
 {
@@ -81,7 +82,7 @@ export class CanPop
 		{
 			if(viewport && typeof ga === 'function')
   			{
-				ga('send', 'event', {
+				Analytic.report({
 					eventCategory: 'badnik',
 					eventAction: 'damaged-player',
 					eventLabel: `${viewport.args.actName}::${this.args.name}::${this.args.id}::${other.args.id}`
@@ -364,7 +365,7 @@ export class CanPop
 
 		if(typeof ga === 'function')
 		{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'badnik',
 				eventAction: 'defeated',
 				eventLabel: `${viewport.args.actName}::${this.args.name}::${this.args.id}`

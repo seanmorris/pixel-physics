@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class Emerald extends PointActor
 {
@@ -76,7 +77,7 @@ export class Emerald extends PointActor
 
 			save.save();
 
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'chaos-emerald',
 				eventAction: 'collected',
 				eventLabel: `${this.viewport.args.actName}::${this.args.color}::${this.args.id}`

@@ -25,7 +25,7 @@ export class GamepadConfig extends SkippableCard
 					, dpad: 'Move'
 					, a:    'Jump'
 					, b:    'Spindash / Roll / Dropdash'
-					, x:    'Light Dash / Grab Object'
+					, x:    'Light Dash / Interact'
 					, y:    'Super Transform'
 					, l1:   'Air Dash'
 					, r1:   'Air Dash'
@@ -41,7 +41,7 @@ export class GamepadConfig extends SkippableCard
 					, aa:   'Fly'
 					, ad:   'Use Shield / Spindash'
 					, d:    'Dive'
-					// , x:    'Light Dash / Grab Object'
+					, x:    'Interact'
 					, y:    'Super Transform'
 					// , l1:   'Air Dash'
 					// , r1:   'Air Dash'
@@ -58,7 +58,7 @@ export class GamepadConfig extends SkippableCard
 					, b:    'Punch / Drop off wall'
 					, ad:   'Use Shield / Spindash'
 					, d:    'Dive'
-					// , x:    'Light Dash / Grab Object'
+					// , x:    'Interact'
 					, y:    'Super Transform'
 					// , l1:   'Air Dash'
 					// , r1:   'Air Dash'
@@ -80,18 +80,22 @@ export class GamepadConfig extends SkippableCard
 		if(this.args.inputType === 'input-xbox')
 		{
 			this.gamepads = {xb: View.from(require('./xbox360-input.svg'), this.args.moves)};
+			this.args.type = 'xb';
 		}
 		else if(this.args.inputType === 'input-playstation')
 		{
 			this.gamepads = {ps: View.from(require('./ps3-input.svg'), this.args.moves)};
+			this.args.type = 'ps';
 		}
 		else if(this.args.inputType === 'input-dreamcast')
 		{
 			this.gamepads = {ps: View.from(require('./dc-input.svg'), this.args.moves)};
+			this.args.type = 'dc';
 		}
 		else if(this.args.inputType === 'input-gamecube')
 		{
 			this.gamepads = {ps: View.from(require('./gc-input.svg'), this.args.moves)};
+			this.args.type = 'gc';
 		}
 		else
 		{
@@ -109,7 +113,7 @@ export class GamepadConfig extends SkippableCard
 		this.span = this.findTag('div');
 
 		this.args.text = Object.values(this.gamepads)[this.current];
-		this.args.type = Object.keys(this.gamepads)[this.current];
+		this.args.type = this.args.type || Object.keys(this.gamepads)[this.current];
 	}
 
 	swap()

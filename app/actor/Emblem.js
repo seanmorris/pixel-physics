@@ -1,6 +1,7 @@
 import { PointActor } from './PointActor';
 import { Tag } from 'curvature/base/Tag';
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class Emblem extends PointActor
 {
@@ -121,7 +122,7 @@ export class Emblem extends PointActor
 
 		if(typeof ga === 'function')
 		{
-			ga('send', 'event', {
+			Analytic.report({
 				eventCategory: 'emblem',
 				eventAction: 'collected',
 				eventLabel: `${this.viewport.args.actName}::${this.oid}`

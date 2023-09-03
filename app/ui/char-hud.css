@@ -94,3 +94,21 @@
 	background-image: url(/Sonic/monitor-screens.png);
 	background-position: -32px -80px;
 }
+
+.hud.now-loading {
+	display: none;
+	background-image: url(/Sonic/now-loading.png);
+	background-size: contain;
+	width: 80px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 0.5rem;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+[data-loading-map=true] .hud.now-loading {
+	display: initial;
+}

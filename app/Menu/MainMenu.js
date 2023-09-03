@@ -63,12 +63,12 @@ export class MainMenu extends Menu
 				'Sonic'
 				, 'Tails'
 				, 'Knuckles'
-				, 'Robotnik'
-				, 'EggRobo'
-				, 'Mecha-Sonic'
-				, 'Seymour'
-				, 'Chalmers'
-				, 'Sean'
+				// , 'Robotnik'
+				// , 'EggRobo'
+				// , 'Mecha-Sonic'
+				// , 'Seymour'
+				// , 'Chalmers'
+				// , 'Sean'
 			]
 			, locked: [
 				'Robotnik'
@@ -80,7 +80,7 @@ export class MainMenu extends Menu
 			]
 			, default: 'Sonic'
 			, set: value => this.parent.args.selectedChar = value
-			, get: () => this.parent.args.selectedChar ?? 'Sonic'
+			, get: () => this.parent.args.selectedChar || 'Sonic'
 		};
 
 		const Follower = {
@@ -155,7 +155,6 @@ export class MainMenu extends Menu
 
 		this.onRemove(parent.args.bindTo('selectedChar', v => {
 			parent.loadSaves().then(() => {
-
 				switch(v)
 				{
 					case 'Sonic':
@@ -212,8 +211,6 @@ export class MainMenu extends Menu
 			CustomColor.Saturation.available =
 			CustomColor.Value.available = 'hidden';
 		}));
-
-		// this.parent.args.selectedChar = this.parent.args.selectedChar || 'Sonic';
 
 		Character.prefix = new CharacterPreview(Character, this.parent);
 		// Follower.prefix = new CharacterPreview(Follower);

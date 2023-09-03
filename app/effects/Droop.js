@@ -29,7 +29,7 @@ export class Droop extends View
 
 		if(memoMap.has(memoKey))
 		{
-			return Promise.resolve(memoMap.get(memoKey));
+			return memoMap.get(memoKey);
 		}
 
 		const displacer = new Tag(`<canvas width = "${width}" height = "${height}">`);
@@ -68,13 +68,14 @@ export class Droop extends View
 
 		context.putImageData(image, 0, 0);
 
-		return new Promise(accept => {
-			displacer.toBlob(png => {
-				const blob = URL.createObjectURL(png, 'image/png');
-				memoMap.set(memoKey, blob)
-				accept(blob);
-			});
-		});
+		const ret = new Promise(accept => displacer.toBlob(png => {
+			const blob = URL.createObjectURL(png, 'image/png');
+			accept(blob);
+		}));
+
+		memoMap.set(memoKey, ret);
+
+		return ret;
 	}
 
 	onRendered()

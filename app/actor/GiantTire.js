@@ -42,6 +42,8 @@ export class GiantTire extends Mixin.from(PointActor)
 			return;
 		}
 
+		Sfx.play('RADIO_CHATTER_2');
+
 		const idler = this.args.idler = new GiantTire({
 			driver:this,
 			x: this.args.x - 96,

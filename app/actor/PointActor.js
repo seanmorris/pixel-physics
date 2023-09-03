@@ -24,6 +24,7 @@ import { LayerSwitch } from './LayerSwitch';
 import { Layer } from '../viewport/Layer';
 
 import { Platformer } from '../behavior/Platformer';
+import { Sfx } from '../audio/Sfx';
 
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
@@ -775,6 +776,7 @@ export class PointActor extends View
 			, 'data-layer':     'layer'
 			, 'data-dead':      'dead'
 			, 'data-mode':      'mode'
+			, 'data-condition': 'condition'
 			, 'data-netplayer': 'netplayer'
 			, 'data-id':        'id'
 		});
@@ -1856,6 +1858,60 @@ export class PointActor extends View
 		this.viewport.args.comboFail = null;
 
 		this.args.score += total;
+	}
+
+	sap(amount = 1, type = 'normal')
+	{
+		if(this.args.dead)
+		{
+			return;
+		}
+
+		this.totalCombo(true);
+
+		Sfx.play('SAP_HEALTH');
+
+		if(this.isSuper || this.isHyper)
+		{
+			return;
+		}
+
+		this.args.condition = 'sapped-' + type;
+
+		if(this.viewport)
+		{
+			this.viewport.onFrameOut(5, () => this.args.condition = '');
+		}
+
+		if(this.args.rings > 0)
+		{
+			this.args.rings -= amount;
+
+			if(this.viewport && this.viewport.settings.rumble)
+			{
+				if(this.controller && this.controller.rumble)
+				{
+					this.controller.rumble({
+						duration: 100,
+						strongMagnitude: 0.5,
+						weakMagnitude: 1.0
+					});
+				}
+			}
+		}
+		else if(this.controllable)
+		{
+			this.die();
+
+			if(this.viewport.settings.rumble)
+			{
+				this.controller.rumble({
+					duration: 450,
+					strongMagnitude: 1.0,
+					weakMagnitude: 1.0
+				});
+			}
+		}
 	}
 
 	damage(other, type = 'normal')

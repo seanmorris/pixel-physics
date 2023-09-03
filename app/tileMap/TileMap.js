@@ -111,6 +111,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				desparsed[tileId] = tileNo;
 			}
 
+			// layer.data = Object.create(null);
+
+			// Object.assign(layer.data, desparsed);
+
 			// layer.data = layer.data ? [...Object.assign(Array(layer.width * layer.height), layer.data)] : undefined;
 			// layer.data = layer.data.map(t => t || 0);
 
@@ -199,10 +203,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					newData[row * sizeOffset + offset + tileId] = tileNo + lastGid;
 				}
 
-				for(let i in newData)
-				{
-					newLayer.data[i] = newData[i];
-				}
+				Object.assign(newLayer.data, newData);
 
 				for(const existingLayer of this.mapData.layers)
 				{
@@ -211,10 +212,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 						continue;
 					}
 
-					for(const i in newLayer.data)
-					{
-						existingLayer.data[i] = newLayer.data[i];
-					}
+					Object.assign(existingLayer.data, newLayer.data);
 
 					existingLayer.layer.setMeta(newLayer, maxObjectId);
 				}
@@ -251,22 +249,17 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		{
 			const newData = Object.create(null);
 
-			for(let i of Object.keys(layer.data))
+			for(const [i, tileNo] of Object.entries(layer.data))
 			{
 				const tileId = Number(i);
-				const tileNo = Number(layer.data[i]);
-
 				const row = Math.floor(tileId / originalWidth);
 
-				layer.data[i] = undefined;
+				newData[i] = 0;
 
 				newData[row * offset + tileId] = tileNo;
 			}
 
-			for(let i in newData)
-			{
-				layer.data[i] = newData[i];
-			}
+			layer.data = newData;
 		}
 
 		this.tileNumberCache.clear();
@@ -280,21 +273,16 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		{
 			const newData = Object.create(null);
 
-			for(let i in layer.data)
+			for(const [i, tileNo] of Object.entries(layer.data))
 			{
-				// const name   = Number(layer.name);
 				const tileId = Number(i);
-				const tileNo = Number(layer.data[i]);
 
-				layer.data[i] = 0;
+				newData[i] = 0;
 
 				newData[offset + tileId] = tileNo;
 			}
 
-			for(let i in newData)
-			{
-				layer.data[i] = newData[i];
-			}
+			layer.data = newData;
 		}
 
 		this.tileNumberCache.clear();

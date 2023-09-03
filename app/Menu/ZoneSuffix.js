@@ -34,7 +34,7 @@ export class ZoneSuffix extends View
 			const seconds = String(state.time ? totalSeconds % 60 : 0).padStart(2, '0');
 			const minutes = state.time ? Math.floor(totalSeconds / 60) : 0;
 
-			this.args.emblems = state.emblems;
+			this.args.emblems = state.emblems.slice(0,5);
 
 			this.args.rings = new CharacterString({
 				value:  state.rings || 0

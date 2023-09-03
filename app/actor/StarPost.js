@@ -11,6 +11,7 @@ import { RingMonitor } from './monitor/RingMonitor';
 import { SheildElectricMonitor } from './monitor/SheildElectricMonitor';
 import { SheildWaterMonitor } from './monitor/SheildWaterMonitor';
 import { SheildFireMonitor } from './monitor/SheildFireMonitor';
+import { Analytic } from '../lib/Analytic';
 
 export class StarPost extends PointActor
 {
@@ -132,7 +133,7 @@ export class StarPost extends PointActor
 
 			if(typeof ga === 'function')
 			{
-				ga('send', 'event', {
+				Analytic.report({
 					eventCategory: 'starpost',
 					eventAction: 'activated',
 					eventLabel: `${this.viewport.args.actName}::${this.args.id}`

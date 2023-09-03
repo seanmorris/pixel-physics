@@ -1,6 +1,6 @@
 <section class = "filters" cv-each = "effects:effect">[[effect]]</section>
 
-<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]" data-theme = "[[theme]]" data-bg = "[[bg]]" cv-ref = "frame" data-paused = "[[paused]]" data-smoothing = [[smoothing]] cv-on = "mousedown:interact:c;keydown:interact:c;">
+<div class = "viewport-frame [[initializing]] [[standalone]] [[secret]] [[level]] [[noIntro]] [[inputType]] [[ntsc]] [[windowFocused]]" data-theme = "[[theme]]" data-bg = "[[bg]]" cv-ref = "frame" data-paused = "[[paused]]" data-smoothing = [[smoothing]] data-character = "[[selectedChar]]" data-loading-map = "[[loadingMap]]" cv-on = "mousedown:interact:c;keydown:interact:c;">
 	<div class = "viewport [[standalone]] [[fullscreen]] displacement-[[displacement]] mouse-[[mouse]] [[theme]] [[hideNowPlaying]] [[hiddenNowPlaying]] [[invert]]" cv-ref = "viewport" tabindex="0" cv-on = "click;mousemove;mousedown;mouseup;">
 
 		<svg height="32" width="32">
@@ -205,6 +205,8 @@
  				<div class = "debug-spawn">[[debugObjectName]]</div>
  			</div>
 
+			 <div class = "hud now-loading"></div>
+
 			<div class = "hud hud-top-right hud-table combo-table">
 				<span cv-if = "showCombo">
 					<span>
@@ -345,7 +347,7 @@
 				</span>
 			</div>
 
-			<div class = "hud hud-dark hud-bottom-left" cv-if = "showHud" data-extra = "[[audioComment]]" cv-on = "click:nowPlayingClicked">
+			<div class = "hud hud-dark hud-bottom-left" cv-if = "showHud" data-extra = "[[audioComment]]" data-secret-icon = [[secretIcon]] cv-on = "click:nowPlayingClicked">
 				[[nowPlaying]]
 				[[trackName]]
 			</div>

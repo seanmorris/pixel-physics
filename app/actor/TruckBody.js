@@ -1,6 +1,5 @@
 import { PointActor } from './PointActor';
 import { Mixin } from 'curvature/base/Mixin';
-// import { Sfx } from '../audio/Sfx';
 
 export class TruckBody extends Mixin.from(PointActor)
 {

@@ -979,6 +979,10 @@ export class Knuckles extends PointActor
 
 	startle()
 	{
+		this.args.climbing = false;
+		this.willStick = false;
+		this.stayStuck = false;
+
 		super.startle();
 
 		this.onNextFrame(() => this.args.animation = 'startle');
@@ -1035,16 +1039,16 @@ export class Knuckles extends PointActor
 			this.punching = false;
 		}
 
-		if(!this.args.jumpArced)
-		{
-			if(this.getMapSolidAt(this.args.x + Math.sign(this.args.direction) * this.args.width * 0.5, this.args.height * 0.5))
-			{
-				this.args.xSpeed = Math.sign(this.args.direction) * this.args.width * 0.5;
-				this.willStick = true;
-				this.args.climbing = true;
-				return
-			}
-		}
+		// if(!this.args.jumpArced)
+		// {
+		// 	if(this.getMapSolidAt(this.args.x + Math.sign(this.args.direction) * this.args.width * 0.5, this.args.height * 0.5))
+		// 	{
+		// 		this.args.xSpeed = Math.sign(this.args.direction) * this.args.width * 0.5;
+		// 		this.willStick = true;
+		// 		this.args.climbing = true;
+		// 		return
+		// 	}
+		// }
 
 		this.args.direction = Math.sign(this.args.xSpeed) || (this.args.facing === 'left' ? -1:1);
 		this.args.willJump  = false;

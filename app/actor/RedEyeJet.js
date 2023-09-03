@@ -7,6 +7,7 @@ import { PointActor } from './PointActor';
 import { Projectile } from './Projectile';
 import { MiniMace } from './MiniMace';
 import { MegaMace } from './MegaMace';
+import { Analytic } from '../lib/Analytic';
 
 export class RedEyeJet extends PointActor
 {
@@ -240,7 +241,7 @@ export class RedEyeJet extends PointActor
 
 					if(typeof ga === 'function')
 					{
-						ga('send', 'event', {
+						Analytic.report({
 							eventCategory: 'boss',
 							eventAction: 'defeated',
 							eventLabel: `${this.viewport.args.actName}::${this.args.id}`

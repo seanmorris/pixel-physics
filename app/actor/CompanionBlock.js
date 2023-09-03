@@ -2,6 +2,7 @@ import { MarbleBlock } from './MarbleBlock';
 import { LavaRegion } from '../region/LavaRegion';
 
 import { Sfx } from '../audio/Sfx';
+import { Analytic } from '../lib/Analytic';
 
 export class CompanionBlock extends MarbleBlock
 {
@@ -75,7 +76,7 @@ export class CompanionBlock extends MarbleBlock
 
 					if(typeof ga === 'function')
 					{
-						ga('send', 'event', {
+						Analytic.report({
 							eventCategory: 'companion-block',
 							eventAction: 'pushed',
 							eventLabel: `${this.viewport.args.actName}::${this.args.id}`
