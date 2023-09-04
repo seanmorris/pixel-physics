@@ -115,7 +115,7 @@ export class GiantTire extends Mixin.from(PointActor)
 			Sfx.play('ROCK_BREAK_1');
 			Sfx.play('OBJECT_DESTROYED');
 
-			this.viewport.onFrameOut(90, () => Sfx.play('RADIO_CHATTER_2'));
+			this.viewport.onFrameOut(180, () => Sfx.play('RADIO_CHATTER_2'));
 
 			if(!this.args.driver)
 			{
