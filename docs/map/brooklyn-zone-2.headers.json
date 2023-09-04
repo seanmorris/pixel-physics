@@ -471,7 +471,7 @@
     "tilewidth": 32,
     "type": "map",
     "version": "1.10",
-    "width": 3200,
+    "width": 3120,
     "types": [
         "block",
         "block3d",

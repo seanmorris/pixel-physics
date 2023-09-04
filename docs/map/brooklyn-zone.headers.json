@@ -53,7 +53,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -449,7 +449,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 2048,
     "types": [
         "big",
@@ -484,6 +484,13 @@
         "trick-ramp",
         "tumbler",
         "wooden-crate"
+    ],
+    "emblems": [
+        94,
+        95,
+        235,
+        431,
+        522
     ],
     "map": "/map/brooklyn-zone.json"
 }

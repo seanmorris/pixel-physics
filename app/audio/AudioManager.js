@@ -17,6 +17,7 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 	id3     = new Map;
 	request = [];
 	pool    = new Pool({max: 2, init: item => { item.open(); return item }});
+	throttle = new Map;
 
 	tracksPlaying = new Set;
 	tracksPaused  = new Set;
@@ -189,7 +190,15 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 		if(selected)
 		{
-			let {volume, fudgeFactor, startTime} = this.factors.get(selected);
+			let {volume, fudgeFactor, startTime, throttle} = this.factors.get(selected);
+
+			if(throttle)
+			{
+				if(Date.now() - this.throttle.get(tag) < throttle)
+				{
+					return;
+				}
+			}
 
 			if('volume' in options)
 			{
@@ -223,14 +232,23 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 			if(this.dispatchEvent(play))
 			{
-				try {
+				try
+				{
 					selected.play();
+
 					if(!loop)
 					{
 						this.playing.addEventListener('ended', onCompleted, {once: true});
 					}
+
+					this.throttle.set('tag', Date.now());
 				}
-				catch(error) { console.warn(error) }
+				catch(error)
+				{
+
+
+					console.warn(error)
+				}
 			}
 
 			Promise.all(this.request).then(() => {

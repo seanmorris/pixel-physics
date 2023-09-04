@@ -102,8 +102,8 @@ else
 
 	Sfx.register('OBJECT_DESTROYED',  '/Sonic/object-destroyed.wav', {maxConcurrent: 8, volume: 0.75, fudgeFactor: 0.3});
 	Sfx.register('BOX_DESTROYED',  '/Sonic/S3K_B4.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.0});
-	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.2});
-	Sfx.register('WORM_BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 0.8, fudgeFactor: 0.2, startTime: 0.2});
+	Sfx.register('BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 1, fudgeFactor: 0, startTime: 0.2, throttle: 100});
+	Sfx.register('WORM_BLOCK_DESTROYED',  '/Sonic/0A3H.wav', {maxConcurrent: 4, volume: 0.8, fudgeFactor: 0.2, startTime: 0.2, throttle: 100});
 
 	Sfx.register('ROCKS_DESTROYED',  '/Sonic/rock-smash.wav');
 

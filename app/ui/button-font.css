@@ -1,3 +1,25 @@
 .hud-character[data-value="55261"] {
 	display: none;
 }
+
+.hud-character[data-value="55252"] {
+	display: none;
+}
+
+.hud-character[data-value="55252"] + .hud-character[data-value="56553"] {
+	width: 16px;
+	height: 14px;
+	background-image: url(/Sonic/super-icon.png);
+	background-position: 0 0 !important;
+	background-size: auto;
+	margin-right: 4px;
+}
+
+.hud-character[data-value="8364"] {
+	width: 16px;
+	height: 14px;
+	background-image: url(/Sonic/hyper-icon.png);
+	background-position: 0 0 !important;
+	background-size: auto;
+	margin-right: 4px;
+}

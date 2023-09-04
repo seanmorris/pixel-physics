@@ -785,6 +785,8 @@ export class Viewport extends View
 		this.args.score = new CharacterString({value:0});
 		this.args.timer = new CharacterString({value:'00:00'});
 
+		this.args.prompt = new CharacterString({value:''});
+
 		this.args.ntsc = 'ntsc';
 
 		this.args.frameId = -1;
@@ -4714,6 +4716,29 @@ export class Viewport extends View
 		}
 
 		this.spawnActors();
+
+		if(this.controlActor
+			&& this.controlActor.isSuper
+			&& !this.controlActor.isHyper
+			&& this.controlActor.args.rings
+			&& this.controlActor.args.minRingsHyper
+			&& this.controlActor.args.rings > this.controlActor.args.minRingsHyper
+			){
+				this.args.prompt.args.value = '❸ ℍ ';
+			}
+		else if(this.controlActor
+			&& !this.controlActor.isSuper
+			&& !this.controlActor.isHyper
+			&& this.controlActor.args.rings
+			&& this.controlActor.args.minRingsSuper
+			&& this.controlActor.args.rings > this.controlActor.args.minRingsSuper
+		){
+			this.args.prompt.args.value = '❸ 𝕊 ';
+		}
+		else
+		{
+			this.args.prompt.args.value = '';
+		}
 
 		if(this.args.fps < 30)
 		{

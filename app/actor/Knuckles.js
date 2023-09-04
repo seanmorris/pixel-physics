@@ -524,7 +524,7 @@ export class Knuckles extends PointActor
 				{
 					const climbDir = this.args.mode === 3 ? -1:1;
 
-					if(!this.getMapSolidAt(this.args.x + -climbDir, this.args.y+1))
+					if(!this.getMapSolidAt(this.args.x + -climbDir, this.args.y + 1))
 					{
 						this.args.direction = -climbDir;
 						this.args.climbing = false;
@@ -596,6 +596,17 @@ export class Knuckles extends PointActor
 						{
 							this.args.direction = this.args.mode === 1 ? 1 : -1;
 							this.args.gSpeed += this.args.direction;
+						}
+
+						if(this.getMapSolidAt(this.args.x + 8 * -ledgeDir, this.args.y + 16))
+						{
+							this.args.x += this.args.width * 0.5 * -ledgeDir;
+							this.args.facing = -ledgeDir > 0 ? 'right' : 'left';
+							this.args.mode = 0;
+							this.args.groundAngle = 0;
+							this.args.falling = true;
+							this.args.animation = 'standing';
+							this.args.y += 8;
 						}
 					}
 				}
@@ -708,7 +719,7 @@ export class Knuckles extends PointActor
 
 				if(this.bMap('checkBelow', this.x, this.y).get(Platformer) && !this.args.climbing)
 				{
-					this.args.flying  = false;
+					// this.args.flying  = false;
 					this.args.bellySliding = true;
 					this.args.float = 1;
 				}
@@ -813,7 +824,7 @@ export class Knuckles extends PointActor
 
 		if(this.args.flying)
 		{
-
+			this.springing = false;
 		}
 		else if(this.args.mode % 2 === 0 || this.args.groundAngle)
 		{
