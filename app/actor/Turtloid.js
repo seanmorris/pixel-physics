@@ -19,7 +19,7 @@ export class Turtloid extends Block
 
 	updateStart()
 	{
-		if(this.standingUnder.size)
+		if(this.standingUnder.size && (!this.others.guard || this.others.guard.removed))
 		{
 			this.otherDefs.path = this.otherDefs.ridePath;
 
@@ -32,7 +32,10 @@ export class Turtloid extends Block
 
 		super.updateStart();
 
-		this.args.direction = Math.sign(this.args.x - this.xLast) || this.args.direction;
+		if(this.xLast)
+		{
+			this.args.direction = Math.sign(this.args.x - this.xLast) || this.args.direction;
+		}
 
 		const xSpeed = this.xLast - this.args.x;
 		const ySpeed = this.yLast - this.args.y;

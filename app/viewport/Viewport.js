@@ -34,6 +34,8 @@ import { BootCard } from    '../intro/BootCard';
 import { DebianCard } from '../intro/DebianCard';
 import { WebkitCard } from '../intro/WebkitCard';
 import { GamepadCard } from '../intro/GamepadCard';
+import { NewgroundsCard } from '../intro/NewgroundsCard';
+
 import { WarningCard } from '../intro/WarningCard';
 import { SaneCard } from '../intro/SaneCard';
 import { NoWayCard } from '../intro/NoWayCard';
@@ -5601,6 +5603,7 @@ export class Viewport extends View
 			, new WarningCard({timeout: 8500})
 			, new DebianCard({timeout: 4500})
 			, new WebkitCard({timeout: 3500})
+			, new NewgroundsCard({timeout: 2500})
 			, new SaneCard({timeout: 4500})
 			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)

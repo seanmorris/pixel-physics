@@ -160,6 +160,21 @@
 	transition: opacity 0.5s ease-out;
 }
 
+.newgrounds-svg {
+	margin: 1rem;
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url(/ui/newgrounds-audio.svg);
+	width: 176px;
+	height: 192px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	border-radius: 1rem;
+	transition: opacity 0.5s ease-out;
+	border: 1px solid #CCC;
+}
+
 .button-callout {
 	width: 64px;
 	text-align: right;
@@ -353,6 +368,7 @@
 
 .screen-card-sean-card,
 .screen-card-gamepad-card,
+.screen-card-newgrounds-card,
 .screen-card-sane-card {
 	background-color: black;
 }

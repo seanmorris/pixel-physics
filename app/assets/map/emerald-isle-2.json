@@ -1405,7 +1405,7 @@
                 }],
          "opacity":0.51,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -2289,6 +2289,11 @@
                          "value":-1
                         }, 
                         {
+                         "name":"guard",
+                         "type":"object",
+                         "value":406
+                        }, 
+                        {
                          "name":"pathSpeed",
                          "type":"float",
                          "value":1.75
@@ -2316,6 +2321,11 @@
                  "name":"turtle-path",
                  "point":true,
                  "properties":[
+                        {
+                         "name":"direction",
+                         "type":"int",
+                         "value":-1
+                        }, 
                         {
                          "name":"next",
                          "type":"object",
@@ -8566,15 +8576,43 @@
                  "width":96,
                  "x":20992,
                  "y":1664
+                }, 
+                {
+                 "gid":2,
+                 "height":26,
+                 "id":406,
+                 "name":"skorp",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"-1"
+                        }, 
+                        {
+                         "name":"facing",
+                         "type":"string",
+                         "value":"right"
+                        }, 
+                        {
+                         "name":"patrolSpeed",
+                         "type":"int",
+                         "value":0
+                        }],
+                 "rotation":0,
+                 "type":"skorp",
+                 "visible":true,
+                 "width":39,
+                 "x":12122.6666666667,
+                 "y":1923
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":406,
+ "nextobjectid":407,
  "orientation":"orthogonal",
  "properties":[
         {

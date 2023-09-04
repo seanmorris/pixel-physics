@@ -125,7 +125,7 @@ export class ToxicRegion extends Region
 			return true;
 		}
 
-		if(!this.sapped.has(other))
+		if(other.controllable && !this.sapped.has(other))
 		{
 			let time = 0;
 
