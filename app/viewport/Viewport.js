@@ -4722,7 +4722,7 @@ export class Viewport extends View
 			&& !this.controlActor.isHyper
 			&& this.controlActor.args.rings
 			&& this.controlActor.args.minRingsHyper
-			&& this.controlActor.args.rings > this.controlActor.args.minRingsHyper
+			&& this.controlActor.args.rings >= this.controlActor.args.minRingsHyper
 			){
 				this.args.prompt.args.value = '❸ ℍ ';
 			}
@@ -4731,7 +4731,7 @@ export class Viewport extends View
 			&& !this.controlActor.isHyper
 			&& this.controlActor.args.rings
 			&& this.controlActor.args.minRingsSuper
-			&& this.controlActor.args.rings > this.controlActor.args.minRingsSuper
+			&& this.controlActor.args.rings >= this.controlActor.args.minRingsSuper
 		){
 			this.args.prompt.args.value = '❸ 𝕊 ';
 		}
