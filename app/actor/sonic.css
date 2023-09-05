@@ -286,14 +286,16 @@
 	top: 10px;
 }
 
-.actor-item.actor-sonic[data-animation="dash"][data-falling="false"] .sprite:after {
-	top: 05px;
+.actor-item.actor-sonic[data-animation="dash"][data-falling="false"] .sprite:after,
+.actor-item.actor-sonic[data-animation="super-run"][data-falling="false"] .sprite:after{
+	top: 5px;
 }
 
 .actor-item.actor-sonic[data-animation="dash"] .sprite:after,
 .actor-item.actor-sonic[data-animation="airdash"] .sprite:after,
 .actor-item.actor-sonic[data-animation="lightdash"] .sprite:after,
-.actor-item.actor-sonic[data-animation="springdash"] .sprite:after {
+.actor-item.actor-sonic[data-animation="springdash"] .sprite:after,
+.actor-item.actor-sonic[data-animation="super-run"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px;
 	--animation-steps: -3;
@@ -304,10 +306,19 @@
 	transform: rotate(calc(1rad * var(--air-angle))) translateY(-3px);
 }
 
+.actor-item.actor-sonic[data-animation="super-run"][data-falling=true] .sprite:after {
+	transform: rotate(calc(1rad * calc(var(--air-angle) + var(--display-angle)))) translate(-6px, 3px) !important;
+}
+
+.actor-item.actor-sonic[data-facing=left][data-animation="super-run"][data-falling=true] .sprite:after {
+	transform: rotate(calc(180deg + calc(-1rad * calc(var(--air-angle) + var(--display-angle))))) translate(-6px, 3px) !important;
+}
+
 .actor-item.actor-sonic[data-falling=true][data-animation="dash"] .sprite:after,
 .actor-item.actor-sonic[data-falling=true][data-animation="airdash"] .sprite:after,
 .actor-item.actor-sonic[data-falling=true][data-animation="lightdash"] .sprite:after,
-.actor-item.actor-sonic[data-falling=true][data-animation="springdash"] .sprite:after {
+.actor-item.actor-sonic[data-falling=true][data-animation="springdash"] .sprite:after,
+.actor-item.actor-sonic[data-falling=true][data-animation="super-run"] .sprite:after {
 	--sprite-offset-x: -0px;
 	--sprite-offset-y: -384px !important;
 	--animation-width: -64px;

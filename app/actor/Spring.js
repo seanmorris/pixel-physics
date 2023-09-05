@@ -3,6 +3,7 @@ import { PointActor } from './PointActor';
 import { BreakableBlock } from './BreakableBlock';
 import { Region }     from '../region/Region';
 import { Sfx } from '../audio/Sfx';
+import { Projectile } from './Projectile';
 
 const WillSpring = Symbol('WillSpring');
 const WontSpring = Symbol('WontSpring');
@@ -114,6 +115,11 @@ export class Spring extends PointActor
 
 	collideA(other, type)
 	{
+		if(other instanceof Projectile)
+		{
+			return false;
+		}
+
 		if(this.args.blocked)
 		{
 			return false;

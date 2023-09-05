@@ -2011,46 +2011,10 @@ export class Viewport extends View
 					this.nextControl.args.y = Number(point.y);
 				}
 
-				if(this.nextControl.follower)
-				{
-					this.nextControl.follower.args.x = this.nextControl.x;
-					this.nextControl.follower.args.y = this.nextControl.y;
-
-					this.setColCell(this.nextControl.follower);
-				}
-
-				if(Router.query.impulse)
-				{
-					const impulse = Router.query.impulse;
-
-					console.log(impulse);
-
-					if(impulse.match(/-?\d+(\.\d+)?,-?\d+(\.\d+)?/))
-					{
-						const [x = 0, y = 0] = impulse.split(',');
-
-						console.log({x,y});
-
-						this.nextControl.args.xSpeed = Number(x);
-						this.nextControl.args.ySpeed = Number(y);
-					}
-				}
-
-				if(Router.query.rings)
-				{
-					this.nextControl.args.rings = Number(Router.query.rings);
-				}
-
 				if(Number(Router.query.noClip))
 				{
 					this.nextControl.args.float = -1;
 					this.nextControl.noClip = 1;
-				}
-
-				if(Number(Router.query.pause))
-				{
-					this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
-					this.args.paused = Number(Router.query.pause);
 				}
 			}
 			else if(!this.replay && !this.args.isReplaying && !this.args.isRecording && !this.args.networked)
@@ -2091,6 +2055,42 @@ export class Viewport extends View
 						}
 					}
 				}
+			}
+
+			if(Number(Router.query.pause))
+			{
+				this.args.pauseMenu.args.hideMenu = 'pause-menu-hide';
+				this.args.paused = Number(Router.query.pause);
+			}
+
+			if(this.nextControl.follower)
+			{
+				this.nextControl.follower.args.x = this.nextControl.x;
+				this.nextControl.follower.args.y = this.nextControl.y;
+
+				this.setColCell(this.nextControl.follower);
+			}
+
+			if(Router.query.impulse)
+			{
+				const impulse = Router.query.impulse;
+
+				console.log(impulse);
+
+				if(impulse.match(/-?\d+(\.\d+)?,-?\d+(\.\d+)?/))
+				{
+					const [x = 0, y = 0] = impulse.split(',');
+
+					console.log({x,y});
+
+					this.nextControl.args.xSpeed = Number(x);
+					this.nextControl.args.ySpeed = Number(y);
+				}
+			}
+
+			if(Router.query.rings)
+			{
+				this.nextControl.args.rings = Number(Router.query.rings);
 			}
 
 			this.args.level = 'level';
@@ -4872,13 +4872,14 @@ export class Viewport extends View
 	actorsAtPoint(x, y, w = 0, h = 0, ghosts = false)
 	{
 		// x = Math.trunc(x);
+		// y = Math.trunc(y);
 
 		// const cacheKey = x+'::'+y+'::'+w+'::'+h;
 		// const actorPointCache = this[ActorPointCache];
 
 		// if(actorPointCache.has(cacheKey))
 		// {
-		// 	return actorPointCache.get(cacheKey);
+		// 	return Array.from(actorPointCache.get(cacheKey));
 		// }
 
 		const nearbyActors = this.nearbyActors(x, y);
@@ -4899,6 +4900,8 @@ export class Viewport extends View
 
 			const myRadius = Math.max(Math.floor(w / 2), 0);
 
+			const isRegion = actor.isRegion;
+
 			const myLeft   = x - myRadius;
 			const myRight  = x + myRadius;
 
@@ -4909,7 +4912,6 @@ export class Viewport extends View
 
 			const offset = width / 2;
 
-			const isRegion = actor.isRegion;
 			const otherLeft   = actorX - (isRegion ? 0 : offset);
 			const otherRight  = actorX + (isRegion ? width : offset);
 
@@ -4938,7 +4940,10 @@ export class Viewport extends View
 
 		const list = Array.from(actors.values());
 
-		// actorPointCache.set(cacheKey, list);
+		// if(actors.size)
+		// {
+		// 	actorPointCache.set(cacheKey, list);
+		// }
 
 		return list;
 	}
@@ -5373,7 +5378,7 @@ export class Viewport extends View
 		this.updateEnded.clear();
 		this.updated.clear();
 
-		// this.actorPointCache.clear();
+		this[ActorPointCache].clear();
 
 		this.objectDb = new Classifier(Object.values(ObjectPalette));
 
@@ -5543,6 +5548,10 @@ export class Viewport extends View
 			const layers = this.args.layers;
 			const layerCount = layers.length;
 
+			this.recent.clear();
+			this.visible.clear();
+			this[ActorPointCache].clear()
+
 			for(const actor of this.actors.items())
 			{
 				this.actors.remove(actor);
@@ -5569,6 +5578,9 @@ export class Viewport extends View
 			{
 				layer.remove();
 			}
+
+			this.args.layers.splice(0);
+			this.args.fgLayers.splice(0);
 
 			this.args.bg = this.args.backdrop = null;
 

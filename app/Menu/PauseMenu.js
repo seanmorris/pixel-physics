@@ -33,8 +33,9 @@ export class PauseMenu extends Menu
 				input: 'boolean'
 				, subtext: 'Mute all audio'
 				, revert: () => parent.args.audio = true
+				, watch: [parent.args, 'audio', v => !v]
 				, set: value => parent.args.audio = !value
-				, get: () => !parent.args.audio
+				// , get: () => !parent.args.audio
 			}
 			, Settings: SettingsMenu(parent)
 			, Graphics: {

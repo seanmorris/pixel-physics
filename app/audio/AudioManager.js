@@ -24,15 +24,15 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 	setVolume(volume = 1)
 	{
-		this.volume = volume;
+		this.volume = Math.max(0, Math.min(volume, 1));
 
 		if(this.playing)
 		{
-			this.playing.volume = volume;
+			this.playing.volume = this.volume;
 		}
 	}
 
-	register(tag, url, {maxConcurrent = 1, volume = 1, fudgeFactor = 0, startTime = 0} = {})
+	register(tag, url, {maxConcurrent = 1, volume = 1, fudgeFactor = 0, startTime = 0, throttle = 0} = {})
 	{
 		const getTags = new Elicit(url, {defer:true});
 
@@ -117,7 +117,7 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 
 				for(const track of list)
 				{
-					this.factors.set(track, {volume, fudgeFactor, startTime});
+					this.factors.set(track, {volume, fudgeFactor, startTime, throttle});
 				}
 			});
 		}
@@ -241,7 +241,7 @@ export class AudioManager extends Mixin.with(EventTargetMixin)
 						this.playing.addEventListener('ended', onCompleted, {once: true});
 					}
 
-					this.throttle.set('tag', Date.now());
+					this.throttle.set(tag, Date.now());
 				}
 				catch(error)
 				{

@@ -3,7 +3,7 @@
     "height": 96,
     "infinite": false,
     "nextlayerid": 9,
-    "nextobjectid": 170,
+    "nextobjectid": 172,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -38,7 +38,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -213,18 +213,21 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 48,
     "types": [
         "block",
         "breakable-block",
         "bumper",
+        "drop-cage",
         "flipper",
         "pulley",
         "rolling-region",
+        "slot-machine",
         "spinner",
         "spring",
         "star-balloon"
     ],
+    "emblems": [],
     "map": "/map/pinball-test.json"
 }

@@ -6,27 +6,32 @@
 
 	<section class = "contents" cv-if = "!connected">
 
-		<div class = "menu-container" data-current-menu = "[[currentKey]]">
+		<div class = "menu-container [[classes]]" data-current-menu = "[[currentKey]]">
 
 			<div>[[title]]</div>
 
 			<ul cv-ref = "bound" cv-each = "items:item:title">
 
-				<li data-title = "[[title]]" class = "[[item.available]]" style = "--color:[[item.color]];" cv-on = "click:run(item, event):c; auxclick:altRun(item, event); keyup(event, item):c; focus:handleFocus(event);" tabindex="0">
+				<li data-title = "[[title]]" class = "[[item.available]]" data-type = "[[item.input]]" data-sub-type = "[[item.subType]]" style = "--color:[[item.color]];" cv-on = "click:run(item, event):c; auxclick:altRun(item, event); keyup(event, item):c; focus:handleFocus(event);" tabindex="0">
 					[[item.prefix]]
 					<span class = "title">[[item._title]]</span>
 					<span class = "subtext">[[item.subtext]]</span>
-					<span cv-if = "item.input" cv-is = "string">
-						: <input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event);input:change(event)" tabindex="-1" />
+					<span cv-if = "item.input" cv-is = "output">
+						: <span data-wraps = "output"><span cv-ref = "output" cv-bind = "item.setting"></span></span>
+					</span>
+					<span cv-if = "item.input" cv-is = "string" data-click-barrier>
+						: <input cv-ref = "string" cv-bind = "item.setting" cv-on = "keyup(event, item);input:change(event)" tabindex="-1" />
 					</span>
 					<span cv-if = "item.input" cv-is = "number">
-						: <input cv-ref = "number" cv-bind = "item.setting" type = "number" cv-on = "keyup(event);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" step = "[[item.step]]" />
+						: <span data-wraps = "number" data-click-barrier>
+							<input cv-ref = "number" cv-bind = "item.setting" type = "[[item.subType]]" cv-on = "keyup(event, item);change(event)" tabindex="-1" max = "[[item.max]]" min = "[[item.min]]" step = "[[item.step]]" title = "[[item.setting]]"/>
+						</span>
 					</span>
 					<span cv-if = "item.input" cv-is = "boolean">
 						:
 						<span data-wraps = "select">
 							[[item._boolValue]]
-							<select cv-on = "click:toggle(event,item);mousedown:cancel(event);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
+							<select cv-on = "click:mousedown:cancel(event);change(event)" cv-ref = "boolean" cv-bind = "item.setting" tabindex="-1">
 								<option value = "1">on</option>
 								<option value = "0">off</option>
 							</select>

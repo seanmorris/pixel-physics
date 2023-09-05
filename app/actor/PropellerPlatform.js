@@ -125,6 +125,15 @@ export class PropellerPlatform extends Block
 
 		Sfx.play('PROP_PLAT');
 
+		if(this.viewport.settings.rumble && other.controller && other.controller.rumble)
+		{
+			other.controller.rumble({
+				duration: 100,
+				strongMagnitude: 1.0,
+				weakMagnitude: 0.0
+			});
+		}
+
 		this.args.y--;
 		this.args.falling = true;
 

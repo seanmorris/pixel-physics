@@ -33,12 +33,14 @@ li .small-menu-font .hud-character {
 	margin-bottom: 0rem;
 }
 
+li:focus-within .small-menu-font .hud-character,
 li.focused .small-menu-font .hud-character,
 li:focus .small-menu-font .hud-character {
 	background-image: url(/Sonic/small-menu-font-yellow-shadow.png);
 	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
 }
 
+li:focus-within .font .hud-character,
 li.focused .font .hud-character,
 li:focus .font .hud-character {
 	background-image: url(/Sonic/font-yellow.png);

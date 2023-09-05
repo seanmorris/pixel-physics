@@ -1,10 +1,10 @@
 import { Bgm } from './audio/Bgm';
 import { Sfx } from './audio/Sfx';
 import { Viewport } from './viewport/Viewport';
-
-import { Tag } from 'curvature/base/Tag';
-import { TileMap } from './tileMap/TileMap';
+// import { Tag } from 'curvature/base/Tag';
 import { Matrix } from 'matrix-api/Matrix'
+
+Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');
 
 if(location.pathname === '/accept-sso')
 {
@@ -72,8 +72,7 @@ else
 	Bgm.register('MANIC_HARBOR', '/audio/bobenshibobsled/1024371_Curse-Ska-Version.mp3');
 
 	Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3');
-	Bgm.register('MENU_THEME', '/Sonic/s3k-competition.mp3');
-	Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
+		Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');
 
 	Bgm.register('CITY_ESCAPE', '/audio/senoue-jun/city-escape.mp3');
 

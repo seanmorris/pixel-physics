@@ -61,6 +61,8 @@ export class Menu extends Card
 			{
 				const item = v[i];
 
+				item[Bindings] = item[Bindings] ?? new Set;
+
 				item.color = item.color || 'var(--default-color)';
 
 				item._index = index++;
@@ -71,46 +73,70 @@ export class Menu extends Card
 				});
 
 				item._value = new CharacterString({
-					value: ''
+					value: 'default'
 					, font: this.font
 				});
 
-				if(item.get)
-				{
-					item.setting = item.get();
-				}
+				const setView = item => {
 
-				if(item.input === 'boolean')
-				{
-					item._value.args.value = item.setting ? 'ON' : 'OFF';
-					item._boolValue = item._value;
-				}
-				else if(item.input === 'string')
-				{
+					if(item.input === 'boolean')
+					{
+						item._value.args.value = item.setting ? 'ON' : 'OFF';
+						item._boolValue = item._value;
+					}
+					else if(item.input === 'number')
+					{
+						const bindable = Bindable.make(item);
+
+						item.subType = item.subType ?? 'number';
+
+						item[Bindings].add(bindable.bindTo('setting', v => item._value.args.value = v));
+					}
+					else if(item.input === 'string')
+					{
+
+					}
+					else if(item.input === 'select')
+					{
+						item._value.args.value = item.setting;
+						item._selectValue = item._value;
+					}
+					else if(item.input === 'output')
+					{
+						const bindable = Bindable.make(item);
+
+						item[Bindings].add(bindable.bindTo('setting', v => item._value.args.value = v));
+						item[Bindings].add(bindable.bindTo('setting', console.trace));
+
+						// if(item.bind)
+						// {
+						// 	item[Bindings].add(item.bind(Bindable.make(item)));
+						// }
+					}
+
 					const bindable = Bindable.make(item);
-
-					item[Bindings] = item[Bindings] ?? new Set;
 
 					item[Bindings].add(bindable.bindTo('setting', v => item.set && item.set(v)));
-				}
-				else if(item.input === 'select')
+				};
+
+				if(item.watch)
 				{
-					item._value.args.value = item.setting;
-					item._selectValue = item._value;
+					item[Bindings].add(item.watch[0].bindTo(item.watch[1], v => {
+						item.setting = item.watch[2] ? item.watch[2](v) : v;
+						if(item.input === 'number')
+						{
+							Sfx.play('SWITCH_HIT');
+						}
+						setView(item);
+					}));
 				}
-				else if(item.input === 'output')
+				else if(item.get)
 				{
-					const bindable = Bindable.make(item);
-
-					item[Bindings] = item[Bindings] ?? new Set;
-
-					item[Bindings].add(bindable.bindTo('setting', v => item._value.args.value = v));
-
-					if(item.bind)
-					{
-						item[Bindings].add(item.bind(Bindable.make(item)));
-					}
+					item.setting = item.get();
+					setView(item);
 				}
+
+
 			}
 		});
 
@@ -149,6 +175,7 @@ export class Menu extends Card
 				if(item in this.args.items)
 				{
 					this.onTimeout(0, () => this.run(this.args.items[item]));
+
 					if(this.args.initialPath.length)
 					{
 						this.onTimeout(0, () => autoNav());
@@ -261,8 +288,9 @@ export class Menu extends Card
 
 	focus(element, quick = false)
 	{
-		if(document.activeElement === element && this.currentItem === element)
-		{
+		if((this.currentItem && this.currentItem.contains(element) && this.currentItem !== element)
+			|| (document.activeElement === element && this.currentItem === element)
+		){
 			return;
 		}
 
@@ -319,7 +347,14 @@ export class Menu extends Card
 		}
 		else if(controller.buttons[1] && controller.buttons[1].time === 1)
 		{
-			this.back();
+			if(document.activeElement && document.activeElement.tagName === 'INPUT')
+			{
+				document.activeElement.closest('li').focus();
+			}
+			else
+			{
+				this.back();
+			}
 
 			this.args.last = 'B';
 
@@ -335,14 +370,14 @@ export class Menu extends Card
 		}
 
 		const repeatCheck = (button) => controller.buttons[button]
-			&& (controller.buttons[button].time === 1
-			|| (controller.buttons[button].time >= 140
-				&& controller.buttons[button].time % 5 === 1
-			)
-			|| (controller.buttons[button].time > 30
-				&& controller.buttons[button].time < 140
-				&& controller.buttons[button].time % 15 === 1
-			));
+		&& (controller.buttons[button].time === 1
+		|| (controller.buttons[button].time >= 90
+			&& controller.buttons[button].time % 3 === 1
+		)
+		|| (controller.buttons[button].time > 30
+			&& controller.buttons[button].time < 90
+			&& controller.buttons[button].time % 15 === 1
+		));
 
 		if(repeatCheck(12) || (controller.axes[7] && controller.axes[7].magnitude < 0 && controller.axes[7].delta))
 		{
@@ -431,6 +466,11 @@ export class Menu extends Card
 					return;
 				}
 
+				if(element.matches('li'))
+				{
+					break;
+				}
+
 				element = element.parentNode;
 			}
 		}
@@ -445,16 +485,32 @@ export class Menu extends Card
 			return;
 		}
 
-		if(item.input === 'string')
-		{
-			const input = element.querySelector('input');
-			input.focus();
-			return;
-		}
-
 		if(event && item.input)
 		{
-			this.onNextFrame(()=>this.focus(event.target.closest('li')));
+			const li = event.target.closest('li');
+
+			if(item.input === 'boolean')
+			{
+				this.toggle(event, item);
+				return;
+			}
+			else if(item.input === 'string')
+			{
+				this.subFocusing = true;
+				const input = element.querySelector('input');
+
+				if(document.activeElement !== input)
+				{
+					input.focus();
+				}
+				else
+				{
+					li.focus();
+				}
+				return;
+			}
+
+			this.onNextFrame(()=>this.focus(li));
 		}
 
 		if(item.callback)
@@ -465,6 +521,8 @@ export class Menu extends Card
 		if(item.children)
 		{
 			let getChildren = item.children;
+
+			this.args.classes = item.classes || '';
 
 			if(typeof item.children === 'function')
 			{
@@ -486,6 +544,7 @@ export class Menu extends Card
 				})
 				, callback: () => {
 					this.args.items = prev;
+					this.args.classes = prev.classes || '';
 					this.args.currentKey = prev._title ? prev._title.args.value : '';
 					// this.onNextFrame(()=>this.focusFirst());
 					const lastIndex = Object.keys(prev).indexOf(lastSelected);
@@ -578,20 +637,27 @@ export class Menu extends Card
 
 		if(item.input === 'number')
 		{
-			item.setting = Number(item.setting) + (item.step || 1);
+			let newVal = Number(item.setting) + (item.step || 1);
 
-			if(item.setting > item.max)
+			if(item.max !== undefined && newVal > item.max)
 			{
-				item.setting = item.max;
+				newVal = item.max;
 			}
 
-			item.set && item.set(item.setting);
+			if(item.min !== undefined && newVal < item.min)
+			{
+				newVal = item.min;
+			}
+
+			item.setting = newVal;
+
+			// item.set && item.set(item.setting);
 		}
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
 			item._value.args.value = item.setting ? 'ON' : 'OFF';
-			item.set && item.set(item.setting);
+			// item.set && item.set(item.setting);
 		}
 		else if(item && item.input === 'select')
 		{
@@ -622,13 +688,13 @@ export class Menu extends Card
 				item.setting = item.min;
 			}
 
-			item.set && item.set(item.setting);
+			// item.set && item.set(item.setting);
 		}
 		else if(item.input === 'boolean')
 		{
 			item.setting = !item.setting;
 			item._value.args.value = item.setting ? 'ON' : 'OFF';
-			item.set && item.set(item.setting);
+			// item.set && item.set(item.setting);
 		}
 		else if(item && item.input === 'select')
 		{
@@ -642,7 +708,17 @@ export class Menu extends Card
 
 	keyup(event, item)
 	{
-		console.log(event.key);
+		if(event.key === 'Enter' || event.key === 'Escape')
+		{
+			if(!this.subFocusing)
+			{
+				this.currentItem.focus();
+			}
+
+			this.subFocusing = false;
+
+			return;
+		}
 
 		if(['ArrowUp', 'ArrowDown'].includes(event.key))
 		{
@@ -652,7 +728,7 @@ export class Menu extends Card
 
 			const jump = {ArrowUp: -1, ArrowDown: 1}[ event.key ];
 
-			if(event.currentTarget.tagName === 'INPUT')
+			if(event.target.tagName === 'INPUT')
 			{
 				const next = this.findNext(this.currentItem, this.tags.bound.node, jump);
 
@@ -687,7 +763,7 @@ export class Menu extends Card
 
 		item.setting = !item.setting;
 		item._value.args.value = item.setting ? 'ON' : 'OFF';
-		item.set && item.set(item.setting);
+		// item.set && item.set(item.setting);
 	}
 
 	cancel(event)

@@ -7,7 +7,8 @@ import { ButtonSelect } from './ButtonSelect';
 import { DemoMenu } from './DemoMenu';
 
 const videoMenu = parent => ({
-	subtext: 'Video settings.'
+	classes: 'right-align'
+	,subtext: 'Video settings.'
 	, children: {
 		// 'Tile Scale': {
 		// 	input: 'number'
@@ -103,6 +104,7 @@ const videoMenu = parent => ({
 		}
 	}
 });
+
 const audioMenu = parent => ({
 	subtext: 'Audio settings.'
 	, children: {
@@ -110,11 +112,13 @@ const audioMenu = parent => ({
 			input: 'boolean'
 			, subtext: 'Mute all audio'
 			, revert: () => parent.args.audio = true
+			, watch: [parent.args, 'audio', v => !v]
 			, set: value => parent.args.audio = !value
-			, get: () => !parent.args.audio
+			// , get: () => !parent.args.audio
 		}
 		, 'Music Volume': {
 			input: 'number'
+			, subType: 'range'
 			, subtext: 'Background music volume - 0% - 100%'
 			// , available: 'unavailable'
 			, revert: () => parent.settings.musicVol = parent.defaults.musicVol
@@ -125,6 +129,7 @@ const audioMenu = parent => ({
 		}
 		, 'SFX': {
 			input: 'number'
+			, subType: 'range'
 			, subtext: 'Sound effect music volume - 0% - 100%'
 			// , available: 'unavailable'
 			, revert: () => parent.settings.sfxVol = parent.defaults.sfxVol
@@ -170,18 +175,20 @@ const inputMenu = parent => ({
 		// 	}
 		// }
 
-		// , 'Output test': {
-		// 	input: 'output'
-		// 	, bind: i => {
-		// 		return parent.settings.bindTo('buttonTest', v => {
-		// 			i.setting = v
-		// 		})
-		// 	}
-		// 	, set: value => parent.settings.buttonTest = value
-		// 	, get: () => parent.settings.buttonTest
-		// }
+		'Output test': {
+			input: 'output'
+			// , bind: i => {
+			// 	console.trace(i);
+			// 	return parent.settings.bindTo('buttonTest', v => {
+			// 		i.setting = v
+			// 	})
+			// }
+			, watch: [parent.settings, 'buttonTest']
+			, set: value => parent.settings.buttonTest = value
+			// , get: () => parent.settings.buttonTest
+		}
 
-		'Button Font Test': {
+		, 'Button Font Test': {
 			input: 'select'
 			, options: [
 				''
@@ -279,29 +286,32 @@ export const SettingsMenu = (parent) => { return {
 						, min: -180
 						, max: +180
 						, subtext: 'Rotate the color wheel.'
+						, subType: 'range'
 						, revert: () => parent.customColor.h = 0
 						, set: value => parent.customColor.h = Number(value).toFixed(2)
-						, get: () => parent.customColor.h
+						, get: ()    => Number(parent.customColor.h).toFixed(2)
 					},
 					'Saturation': {
 						input: 'number'
 						, min:  0
 						, max:  2
 						, step: 0.01
+						, subType: 'range'
 						, subtext: 'Rotate the color wheel.'
 						, revert: () => parent.customColor.s = 1
 						, set: value => parent.customColor.s = Number(value).toFixed(2)
-						, get: () => parent.customColor.s
+						, get: ()    => Number(parent.customColor.s).toFixed(2)
 					},
 					'Value': {
 						input: 'number'
 						, min:  0
 						, max:  2
 						, step: 0.01
+						, subType: 'range'
 						, subtext: 'Rotate the color wheel.'
 						, revert: () => parent.customColor.v = 1
 						, set: value => parent.customColor.v = Number(value).toFixed(2)
-						, get: () => parent.customColor.v
+						, get: ()    => Number(parent.customColor.v).toFixed(2)
 					}
 				}
 			};

@@ -296,7 +296,7 @@ export class Block extends PointActor
 			if(absSpeed > half)
 			{
 				this.args.y      = this.originalY;
-				other.args.y     = blockTop + -1;
+				other.args.y     = Math.trunc(blockTop + -1);
 				this.args.yForce = 0;
 				this.args.yLean  = 0;
 

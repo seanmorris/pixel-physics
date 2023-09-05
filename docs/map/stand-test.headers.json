@@ -2,7 +2,7 @@
     "compressionlevel": -1,
     "height": 64,
     "infinite": false,
-    "nextlayerid": 8,
+    "nextlayerid": 9,
     "nextobjectid": 65,
     "orientation": "orthogonal",
     "properties": [
@@ -23,7 +23,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -68,7 +68,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 128,
     "types": [
         "eggman",
@@ -78,5 +78,6 @@
         "steel-crate",
         "switch"
     ],
+    "emblems": [],
     "map": "/map/stand-test.json"
 }

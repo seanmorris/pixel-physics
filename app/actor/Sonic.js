@@ -616,7 +616,7 @@ export class Sonic extends PointActor
 					{
 						if(this.isSuper && this.args.moving && speed > maxSpeedNormal * 1.85)
 						{
-							this.args.animation = 'dash';
+							this.args.animation = 'super-run';
 						}
 						else if(this.args.moving && speed > maxSpeedNormal * 2.25)
 						{

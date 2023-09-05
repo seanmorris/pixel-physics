@@ -51,7 +51,8 @@
 }
 
 .screen-card.screen-card-pause-menu li:focus,
-.screen-card.screen-card-pause-menu li.focused {
+.screen-card.screen-card-pause-menu li.focused,
+.screen-card.screen-card-pause-menu li:focus-within {
 	transition:
 		background-color 0.1s ease-in-out, filter 0.1s ease-in-out,
 		box-shadow  0.1s ease-in-out, filter 0.1s ease-in-out;
@@ -68,7 +69,8 @@
 }
 
 .screen-card.screen-card-pause-menu li:focus .hud-character-string,
-.screen-card.screen-card-pause-menu li.focused .hud-character-string {
+.screen-card.screen-card-pause-menu li.focused .hud-character-string,
+.screen-card.screen-card-pause-menu li:focus-within .hud-character-string {
 	filter: drop-shadow(1px 1px 0px #000);
 }
 
@@ -103,4 +105,69 @@ section.pause-menu li {
 .menu-container :not(.hidden)[data-tags=inline] {
 	display: flex;
 	flex-direction: row;
+}
+
+.menu-container input[type="range"] {
+	position: relative;
+	top: 2px;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-appearance: none;
+	appearance: none;
+	max-width: 5rem;
+}
+
+.menu-container input[type="range"]::-webkit-slider-runnable-track {
+	background-color: rgba(0,0,0,0.15);
+	border-radius: 5px;
+}
+
+.screen-card.screen-card-pause-menu .menu-container input[type="range"]::-webkit-slider-runnable-track {
+	background-color: rgba(255,255,255,0.15);
+	border-radius: 5px;
+}
+
+.menu-container input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 9px;
+	height: 9px;
+	border-radius: 0;
+	background-image: url(/Sonic/font.png);
+	background-position: 0 -35px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	padding: 2px;
+}
+
+li:focus-within input[type="range"]::-webkit-slider-thumb,
+li.focused input[type="range"]::-webkit-slider-thumb,
+li:focus input[type="range"]::-webkit-slider-thumb {
+	background-image: url(/Sonic/font-yellow.png);
+	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
+}
+
+.menu-container li[data-type=string] > span,
+.menu-container li[data-sub-type=range] > span {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	justify-content: center;
+	justify-items: center;
+}
+
+.menu-container li[data-sub-type=range] > span.title {
+	justify-content: flex-end;
+}
+
+.menu-container li > span:empty {
+	display: none;
+}
+
+.menu-container li {
+	user-select: none;
+}
+
+.menu-container.right-align li {
+	justify-content: flex-end;
 }

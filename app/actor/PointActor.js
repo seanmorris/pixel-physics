@@ -672,7 +672,7 @@ export class PointActor extends View
 					});
 
 					const debindGroundY = groundObject.args.bindTo('y', (vv,kk) => {
-						const newY = vv + -groundObject.args.height + ((this.controllable || this.isPushable) ? 0 : 0);
+						const newY = vv + -groundObject.args.height + (!groundObject.args.falling && (this.controllable || this.isPushable) ? -1 : 0);
 
 						const solid = groundObject.getMapSolidAt(this.args.x, newY);
 
@@ -1295,7 +1295,6 @@ export class PointActor extends View
 		const invertType = type > -1 ? ((type + 2) % 4) : type;
 
 		// other.pause(true);
-
 
 		// this.viewport.collisions.set(other, collisionListB);
 

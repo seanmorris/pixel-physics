@@ -166,6 +166,8 @@ export class SlotMachine extends PointActor
 				, float: -1
 			});
 
+			ring.noClip = true;
+
 			viewport.spawn.add({
 				object: ring, frame: i * 3 + viewport.args.frameId
 			});

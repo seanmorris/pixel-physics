@@ -20,11 +20,11 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 
 	setVolume(volume = 1)
 	{
-		this.volume = volume;
+		this.volume = Math.max(0, Math.min(volume, 1));
 
 		if(this.playing)
 		{
-			this.playing.volume = volume;
+			this.playing.volume = this.volume;
 		}
 	}
 
@@ -111,7 +111,7 @@ export class BgmHandler extends Mixin.with(EventTargetMixin)
 			{
 				this.id3.set(track, tags);
 			}
-		})
+		});
 
 		this.request.push(registerTrack);
 

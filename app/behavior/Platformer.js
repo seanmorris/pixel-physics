@@ -3832,10 +3832,11 @@ export class Platformer
 
 		// let groundAngle = host.args.angle;
 
-		host.args.ignore  = 6;
 		host.args.pushing = false;
 		host.args.landed  = false;
 		host.args.falling = true;
+
+		// host.args.ignore  = 6;
 
 		const originalMode = host.args.mode;
 
@@ -4120,7 +4121,7 @@ export class Platformer
 			return;
 		}
 
-		if(host.args.jumping && !host.lightDashed &&!host.dashed && host.args.ySpeed < -8)
+		if(host.args.jumping && !host.lightDashed &&!host.dashed)
 		{
 			host.args.ySpeed *= 0.5;
 			return;
