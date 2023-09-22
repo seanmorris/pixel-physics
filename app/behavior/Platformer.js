@@ -5,6 +5,7 @@ import { PointActor } from '../actor/PointActor';
 
 import { Layer  } from '../viewport/Layer';
 import { CharacterString } from '../ui/CharacterString';
+import { StarSheild } from '../powerups/StarSheild';
 
 const MODE_FLOOR   = 0;
 const MODE_LEFT    = 1;
@@ -2676,20 +2677,6 @@ export class Platformer
 			? (-host.args.ySpeed + upMargin)
 			: 0;
 
-		// const upDistanceL = host.castRay(
-		// 	upScanDist
-		// 	, -Math.PI / 2
-		// 	, [-host.args.width/2 , 0]
-		// 	, host.findSolid
-		// );
-
-		// const upDistanceR = host.castRay(
-		// 	upScanDist
-		// 	, -Math.PI / 2
-		// 	, [host.args.width/2, 0]
-		// 	, host.findSolid
-		// );
-
 		// window.logPoints = upScanDist && true;
 
 		// if(host.viewport && host.viewport.args.debugEnabled)
@@ -2859,21 +2846,6 @@ export class Platformer
 		// Object.assign(host.lastPointB, [host.args.x, host.args.y].map(Math.trunc));
 
 		const scanDist = airSpeed;
-
-		// const airPointP = host.castRay(
-		// 	scanDist
-		// 	, host.airAngle
-		// 	, this.findAirPointA
-		// );
-
-		// const airPointBP = host.rotateLock
-		// 	? airPoint
-		// 	: host.castRay(
-		// 		scanDist
-		// 		, host.airAngle
-		// 		, [0, -3 * Math.sign(host.args.ySpeed || 1)]
-		// 		, this.findAirPointB
-		// 	);
 
 		const tiny = 1;
 
@@ -3508,7 +3480,7 @@ export class Platformer
 		}
 	}
 
-	findDownSolid(i, point, actor)
+	findDownSolid(i, point, nearbyActors, actor)
 	{
 		if(!actor.viewport)
 		{
@@ -3520,7 +3492,7 @@ export class Platformer
 
 		if(actor.args.mode === MODE_FLOOR && actor.args.groundAngle === 0 && (actor.controllable || actor.args.pushed || actor.isVehicle))
 		{
-			const regions = actor.viewport.regionsAtPoint(point[0], point[1]);
+			const regions = actor.viewport.regionsAtPoint(point[0], point[1], nearbyActors);
 
 			for(const region of regions)
 			{
@@ -3537,7 +3509,7 @@ export class Platformer
 		}
 
 		const actors = viewport
-		.actorsAtPoint(point[0], point[1])
+		.actorsAtPoint(point[0], point[1], 0, 0, {nearbyActors})
 		.filter(x =>
 			x.args !== actor.args
 			&& x.callCollideHandler(actor)
@@ -3550,7 +3522,7 @@ export class Platformer
 		}
 	}
 
-	findUpSpace(i, point, actor)
+	findUpSpace(i, point, nearbyActors, actor)
 	{
 		if(!actor.viewport)
 		{
@@ -3567,7 +3539,7 @@ export class Platformer
 		}
 
 		const actors = viewport
-		.actorsAtPoint(point[0], point[1])
+		.actorsAtPoint(point[0], point[1], 0, 0, {nearbyActors})
 		.filter(x =>
 			x.args !== actor.args
 			&& x.callCollideHandler(actor)
@@ -3576,7 +3548,7 @@ export class Platformer
 
 		if(actor.args.groundAngle <= 0)
 		{
-			const regions = (actor.controllable || actor.args.pushed || actor.isVehicle) ? actor.viewport.regionsAtPoint(point[0], point[1]) : [];
+			const regions = (actor.controllable || actor.args.pushed || actor.isVehicle) ? actor.viewport.regionsAtPoint(point[0], point[1], nearbyActors) : [];
 
 			for(const region of regions)
 			{
@@ -3749,45 +3721,45 @@ export class Platformer
 		return [col * sign, -downFirstSolid, false];
 	}
 
-	castRay(...args)
-	{
-		let length   = 1;
-		let callback = () => {};
-		let angle    = Math.PI / 2;
-		let offset   = [0,0];
+	// castRay(...args)
+	// {
+	// 	let length   = 1;
+	// 	let callback = () => {};
+	// 	let angle    = Math.PI / 2;
+	// 	let offset   = [0,0];
 
-		switch(args.length)
-		{
-			case 2:
-				[length, callback] = args;
-				break;
-			case 3:
-				[length, angle, callback] = args;
-				break;
-			case 4:
-				[length, angle, offset, callback] = args;
-				break;
-		}
+	// 	switch(args.length)
+	// 	{
+	// 		case 2:
+	// 			[length, callback] = args;
+	// 			break;
+	// 		case 3:
+	// 			[length, angle, callback] = args;
+	// 			break;
+	// 		case 4:
+	// 			[length, angle, offset, callback] = args;
+	// 			break;
+	// 	}
 
-		let hit = false;
+	// 	let hit = false;
 
-		for(let i = 0; i < Math.floor(length); i++)
-		{
-			const bottom  = [
-				host.args.x + offset[0] + (i * Math.cos(angle))
-				, host.args.y + offset[1] + (i * Math.sin(angle))
-			];
+	// 	for(let i = 0; i < Math.floor(length); i++)
+	// 	{
+	// 		const bottom  = [
+	// 			host.args.x + offset[0] + (i * Math.cos(angle))
+	// 			, host.args.y + offset[1] + (i * Math.sin(angle))
+	// 		];
 
-			const retVal = callback(i, bottom, host);
+	// 		const retVal = callback(i, bottom, host);
 
-			if(retVal !== undefined)
-			{
-				return retVal;
-			}
-		}
+	// 		if(retVal !== undefined)
+	// 		{
+	// 			return retVal;
+	// 		}
+	// 	}
 
-		return false;
-	}
+	// 	return false;
+	// }
 
 	doJump(host, force)
 	{
@@ -4121,9 +4093,12 @@ export class Platformer
 			return;
 		}
 
-		if(host.args.jumping && !host.lightDashed &&!host.dashed)
+		if(host.args.jumping && !host.lightDashed && !host.dashed)
 		{
-			host.args.ySpeed *= 0.5;
+			if(host.args.ySpeed < 0)
+			{
+				host.args.ySpeed *= 0.5;
+			}
 			return;
 		}
 

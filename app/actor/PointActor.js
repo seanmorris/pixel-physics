@@ -1580,6 +1580,13 @@ export class PointActor extends View
 				break;
 		}
 
+		const nearbyActors = new Set(viewport.actorsAtPoint(
+			this.args.x
+			, this.args.y + length
+			, this.args.width + length
+			, this.args.height + (length * 2)
+		));
+
 		let hit = false;
 
 		for(let i = 0; i < Math.floor(length); i++)
@@ -1591,7 +1598,7 @@ export class PointActor extends View
 
 			const bottom  = [x, y];
 
-			const retVal = callback(i, bottom, this);
+			const retVal = callback(i, bottom, nearbyActors, this);
 
 			if(retVal !== undefined)
 			{
@@ -2361,7 +2368,7 @@ export class PointActor extends View
 		return true;
 	}
 
-	getMapSolidAt(x, y, actors = true)
+	getMapSolidAt(x, y, actors = true, nearbyActors = null)
 	{
 		if(!this.viewport)
 		{
@@ -2379,7 +2386,7 @@ export class PointActor extends View
 		if(actors)
 		{
 			const actors = this.viewport
-			.actorsAtPoint(x,y)
+			.actorsAtPoint(x,y,0,0,{nearbyActors})
 			.filter(this.filterSolidActors.bind(this));
 
 			if(actors.length > 0)

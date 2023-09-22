@@ -1899,7 +1899,7 @@ export class Viewport extends View
 			this.actors.add(tails);
 		}
 
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		for(const layer of [...this.args.fgLayers, ...this.args.layers])
 		{
 			layer.args.destroyed = false;
 		}
@@ -4195,19 +4195,23 @@ export class Viewport extends View
 			this.controlActor.setCameraMode();
 		}
 
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		const zBuf = new Map;
+
+		const layers = [...this.args.layers, ...this.args.fgLayers];
+
+		for(let i = layers.length; i > 0; i--)
 		{
-			const xDir = Math.sign(layer.x - this.args.x);
-			const yDir = Math.sign(layer.y - this.args.y);
+			const layer = layers[i - 1];
 
 			layer.x = this.args.x;
 			layer.y = this.args.y;
 
-			layer.update(this.tileMap, xDir, yDir);
+			layer.update(this.tileMap, zBuf);
 		}
 
-		for(const layer of [...this.args.layers, ...this.args.fgLayers])
+		for(let i = layers.length; i > 0; i--)
 		{
+			const layer = layers[i - 1];
 			layer.move();
 		}
 
@@ -4829,12 +4833,19 @@ export class Viewport extends View
 		}
 	}
 
-	regionsAtPoint(x, y)
+	regionsAtPoint(x, y, nearbyActors = null)
 	{
 		const regions = new Set;
 
-		for(const region of this.nearbyActors(x, y, true))
+		nearbyActors = nearbyActors ?? this.nearbyActors(x, y, true);
+
+		for(const region of nearbyActors)
 		{
+			if(!region.isRegion)
+			{
+				continue;
+			}
+
 			if(region[Run] !== this[Run])
 			{
 				this.regions.delete(region);
@@ -4869,7 +4880,7 @@ export class Viewport extends View
 		return regions;
 	}
 
-	actorsAtPoint(x, y, w = 0, h = 0, ghosts = false)
+	actorsAtPoint(x, y, w = 0, h = 0, options = {ghosts: false, nearbyActors: null})
 	{
 		// x = Math.trunc(x);
 		// y = Math.trunc(y);
@@ -4882,7 +4893,7 @@ export class Viewport extends View
 		// 	return Array.from(actorPointCache.get(cacheKey));
 		// }
 
-		const nearbyActors = this.nearbyActors(x, y);
+		const nearbyActors = options.nearbyActors ?? this.nearbyActors(x, y);
 
 		if(!nearbyActors.size)
 		{
@@ -4893,7 +4904,7 @@ export class Viewport extends View
 
 		for(const actor of nearbyActors)
 		{
-			if(!ghosts && actor.isGhost)
+			if(!options.ghosts && actor.isGhost)
 			{
 				continue;
 			}

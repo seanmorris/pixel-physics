@@ -12,7 +12,7 @@ export class Layer extends View
 	{
 		args[ Bindable.NoGetters ] = true;
 
-		super(args,parent);
+		super(args, parent);
 
 		this[ Bindable.NoGetters ] = true;
 
@@ -189,7 +189,7 @@ export class Layer extends View
 
 	}
 
-	update(tileMap)
+	update(tileMap, zBuf)
 	{
 		const viewport = this.args.viewport;
 
@@ -325,6 +325,29 @@ export class Layer extends View
 					block = blocksXY.get(xy);
 				}
 
+				const blockMeta = blockMetas.get(xy);
+
+				const covered = zBuf.get(xy);
+
+				const isMoving = String(this.args.name).substr(0, 6) !== 'Moving';
+
+				if(covered > this.args.layerId && isMoving)
+				{
+					if(blockMeta.visible)
+					{
+						block.style({display: 'none'});
+					}
+
+					blockMeta.visible = false;
+					blockMeta.src = null;
+					continue;
+				}
+
+				if(blockId !== false && tileMap.checkFull(blockId) && isMoving)
+				{
+					zBuf.set(xy, this.args.layerId);
+				}
+
 				const tileXY = [];
 
 				if(layerId && blockId === false)
@@ -339,11 +362,9 @@ export class Layer extends View
 
 				const tileset = tileXY[4];
 
-				const blockMeta = blockMetas.get(xy);
-
-				const existingOffsetX = blockMeta.x;
-				const existingOffsetY = blockMeta.y;
-				const existingSrc     = blockMeta.src;
+				// const existingOffsetX = blockMeta.x;
+				// const existingOffsetY = blockMeta.y;
+				// const existingSrc     = blockMeta.src;
 
 				if(tileset && tileset.meta && tileset.meta.animated)
 				{
@@ -366,7 +387,7 @@ export class Layer extends View
 					willDisable = false;
 				}
 
-				if(existingOffsetX !== blockX || existingOffsetY !== blockY || existingSrc !== blockSrc)
+				if(blockMeta.x !== blockX || blockMeta.y !== blockY || blockMeta.src !== blockSrc)
 				{
 					if(blockId !== false && blockId !== 0)
 					{

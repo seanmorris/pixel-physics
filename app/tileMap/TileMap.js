@@ -43,6 +43,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.replacements = new Map;
 		this.loaded = new Map;
 		this.emptyCache = new Map;
+		this.solidCache = new Map;
 
 		if(String(url).substr(-4) === 'json')
 		{
@@ -295,6 +296,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const imageSize      = new Map;
 
 		this.emptyCache.clear();
+		this.solidCache.clear();
 
 		for(const tileset of mapData.tilesets)
 		{
@@ -884,6 +886,43 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		}
 
 		this.emptyCache.set(tileNumber, true);
+		return true;
+	}
+
+	checkFull(tileNumber)
+	{
+		if(this.solidCache.has(tileNumber))
+		{
+			return this.solidCache.get(tileNumber);
+		}
+
+		const tile = this.getTile(tileNumber);
+
+		const tileSet   = this.getTileset(tileNumber);
+		const mapData   = this.mapData;
+		const blockSize = mapData.tilewidth;
+
+		const tileCoords = this.getTile(tileNumber);
+		const tilePos = [tileCoords[0] * blockSize, tileCoords[1] * blockSize];
+
+		for(let x = 0; x < blockSize; x++)
+		for(let y = 0; y < blockSize; y++)
+		{
+			const xPixel = tilePos[0] + x;
+			const yPixel = tilePos[1] + y;
+
+			const heightMask = this.heightMasks.get(tileSet);
+
+			const iPixel = (xPixel + yPixel * heightMask.width) * 4;
+
+			if(heightMask.data[iPixel + 3] < 255)
+			{
+				this.solidCache.set(tileNumber, false);
+				return false;
+			}
+		}
+
+		this.solidCache.set(tileNumber, true);
 		return true;
 	}
 

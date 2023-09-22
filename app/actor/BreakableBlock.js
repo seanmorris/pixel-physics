@@ -161,7 +161,7 @@ export class BreakableBlock extends Block
 		{
 			if(!this.broken && other.y <= this.y - this.args.height)
 			{
-				const up  = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height + -1, 0, 0, true);
+				const up  = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height + -1, 0, 0, {ghosts:true});
 
 				if(Array.isArray(up))
 				{
@@ -245,6 +245,14 @@ export class BreakableBlock extends Block
 		{
 			if(other.args.falling || Math.abs(other.args.gSpeed) > 4)
 			{
+				const top = this.y - this.args.height;
+
+				if(this.args.bounceBack && other.args.falling && other.y < top)
+				{
+					other.args.ySpeed = -this.args.bounceBack;
+					other.args.y = top;
+				}
+
 				this.broken || this.break(other);
 				return false;
 			}
@@ -258,6 +266,14 @@ export class BreakableBlock extends Block
 			}
 			else if(other.args.name !== 'knuckles' || other.args.falling || Math.abs(other.args.gSpeed) > 4)
 			{
+				const top = this.y - this.args.height;
+
+				if(this.args.bounceBack && other.args.falling && other.y < top)
+				{
+					other.args.ySpeed = -this.args.bounceBack;
+					other.args.y = top;
+				}
+
 				this.broken || this.break(other);
 
 				return false;
@@ -272,6 +288,14 @@ export class BreakableBlock extends Block
 				{
 					this.viewport.onFrameOut(1, () => this.broken || this.break(other));
 					return true;
+				}
+
+				const top = this.y - this.args.height;
+
+				if(this.args.bounceBack && other.args.falling && other.y < top)
+				{
+					other.args.ySpeed = -this.args.bounceBack;
+					other.args.y = top;
 				}
 
 				this.broken || this.break(other);
@@ -310,9 +334,9 @@ export class BreakableBlock extends Block
 		){
 			const top = this.y - this.args.height;
 
-			if(this.args.bounceBack && other.args.jumping && other.y < top)
+			if(this.args.bounceBack && other.args.falling && other.y < top)
 			{
-				other.args.ySpeed *= -bounceBack;
+				other.args.ySpeed = -this.args.bounceBack;
 				other.args.y = top;
 			}
 
@@ -537,9 +561,9 @@ export class BreakableBlock extends Block
 
 		if(this.args.collapse && !wasBroken)
 		{
-			const left  = this.viewport.actorsAtPoint(this.x - this.args.width, this.y, 0, 0, true);
-			const right = this.viewport.actorsAtPoint(this.x + this.args.width, this.y, 0, 0, true);
-			const down  = this.viewport.actorsAtPoint(this.x, this.y + 1, 0, 0, true);
+			const left  = this.viewport.actorsAtPoint(this.x - this.args.width, this.y, 0, 0, {ghosts:true});
+			const right = this.viewport.actorsAtPoint(this.x + this.args.width, this.y, 0, 0, {ghosts:true});
+			const down  = this.viewport.actorsAtPoint(this.x, this.y + 1, 0, 0, {ghosts:true});
 
 			if(Array.isArray(left) && !Math.sign(this.args.worm))
 			{
@@ -612,7 +636,7 @@ export class BreakableBlock extends Block
 		}
 		else if(!wasBroken)
 		{
-			const up = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height, 0, 0, true);
+			const up = this.viewport.actorsAtPoint(this.x, this.y + -this.args.height, 0, 0, {ghosts:true});
 
 			if(Array.isArray(up) && !Math.sign(this.args.worm))
 			{
