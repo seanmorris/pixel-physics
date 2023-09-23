@@ -331,7 +331,7 @@ export class Layer extends View
 
 				const isMoving = String(this.args.name).substr(0, 6) !== 'Moving';
 
-				if(covered > this.args.layerId && isMoving)
+				if(tileMap.checkEmpty(blockId) || covered > this.args.layerId && isMoving)
 				{
 					if(blockMeta.visible)
 					{
