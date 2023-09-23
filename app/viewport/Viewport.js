@@ -2632,10 +2632,10 @@ export class Viewport extends View
 				break;
 
 			case 'perspective':
-				this.args.xOffsetTarget = [0.50, 0.30, 0.50, 0.70][actor.args.mode];
+				this.args.xOffsetTarget = [0.50, 0.60, 0.50, 0.40][actor.args.mode];
 				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
 				this.maxCameraBound = 96;
-				cameraSpeed = 24;
+				cameraSpeed = 12;
 				break;
 
 			case 'climbing':

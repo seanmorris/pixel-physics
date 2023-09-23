@@ -19,6 +19,8 @@ export class PerspectiveRegion extends Region
 		this.args.hidden   = true;
 		this.args.perspective = true;
 		this.args.shift = this.args.shift || 600;
+
+		this.args.xPerspective = 0;
 	}
 
 	update()
@@ -50,7 +52,21 @@ export class PerspectiveRegion extends Region
 
 		i = 1 - i;
 
-		this.viewport.args.xPerspective = this.args.shift * i;
+		this.args.xPerspective = this.args.shift * i;
+
+		this.viewport.args.xPerspective = this.viewport.args.xPerspective || 0;
+
+		const diff = this.args.xPerspective - this.viewport.args.xPerspective;
+		const step = 24;
+
+		this.viewport.args.xPerspective += Math.sign(diff) * step;
+
+		if(Math.abs(diff) < step)
+		{
+			this.viewport.args.xPerspective = this.args.xPerspective;
+		}
+
+		console.log(this.viewport.args.xPerspective);
 	}
 
 	get solid() { return false; }

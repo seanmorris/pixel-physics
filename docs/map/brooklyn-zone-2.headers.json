@@ -3,7 +3,7 @@
     "height": 416,
     "infinite": false,
     "nextlayerid": 18,
-    "nextobjectid": 602,
+    "nextobjectid": 619,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -496,11 +496,6 @@
         "techno-squeak",
         "trick-ramp",
         "wooden-crate"
-    ],
-    "emblems": [
-        317,
-        360,
-        391
     ],
     "map": "/map/brooklyn-zone-2.json"
 }

@@ -46,10 +46,6 @@
 	flex-wrap: wrap;
 }
 
-.hud-top-left table {
-	transform: translateZ(10px);
-}
-
 .hud-top-right {
 	transform-origin: top right;
 	display: flex;

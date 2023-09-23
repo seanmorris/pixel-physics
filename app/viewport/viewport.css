@@ -41,7 +41,7 @@ section.filters {
 
 .viewport {
 	image-rendering: pixelated;
-	backface-visibility: hidden;
+	/* backface-visibility: hidden; */
 	width: calc(1px * calc(var(--width)  * var(--scale) ));
 	height: calc(1px * calc(var(--height)  * var(--scale) ));
 	transition: width var(--scale-transition), height var(--scale-transition);
@@ -307,7 +307,7 @@ section.filters {
 }
 
 .viewport-background > div {
-	backface-visibility: hidden;
+	/* backface-visibility: hidden; */
 	background-repeat: no-repeat;
 	contain: strict;
 }
