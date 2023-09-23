@@ -582,7 +582,14 @@ export class Viewport extends View
 			}
 			else if(a === Bag.ITEM_REMOVED)
 			{
-				i.remove();
+				if(i.preserve)
+				{
+					i.node.remove();
+				}
+				else
+				{
+					i.remove();
+				}
 			}
 		});
 

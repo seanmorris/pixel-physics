@@ -12,10 +12,14 @@ export class StarSheild extends Sheild
 
 	frame = 0;
 
-	constructor(...args)
-	{
-		super(...args);
-	}
+	recycle = [];
+
+	// constructor(...args)
+	// {
+	// 	super(...args);
+
+
+	// }
 
 	acquire(host)
 	{
@@ -51,7 +55,6 @@ export class StarSheild extends Sheild
 			host.args.currentSheild = previous;
 
 			this.debindPaused && this.debindPaused();
-
 
 			delete this.debindPaused;
 
@@ -90,14 +93,15 @@ export class StarSheild extends Sheild
 			return;
 		}
 
-		const particle = new Tag('<div class = "particle-stars">');
+		const particle = this.recycle.length
+			? this.recycle.shift()
+			: new Tag(document.createElement('div'));
+
+		particle.node.classList.add('particle-stars');
 
 		const point = host.rotatePoint(0, (host.args.height / 2));
 
 		const dashed = host.dashed || host.args.animation === 'springdash';
-
-		if(host.args.falling)
-		{}
 
 		let yOffset = -3;
 
@@ -119,8 +123,13 @@ export class StarSheild extends Sheild
 			, opacity: Math.random() * 2
 		});
 
+		particle.preserve = true;
+
 		viewport.particles.add(particle);
 
-		viewport.onFrameOut(15,() => viewport.particles.remove(particle));
+		viewport.onFrameOut(15,() => {
+			viewport.particles.remove(particle);
+			this.recycle.push(particle);
+		});
 	}
 }
