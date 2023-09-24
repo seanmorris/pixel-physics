@@ -59,7 +59,7 @@ export class Moon extends Backdrop
 			}
 			, {
 				autoscroll:  0
-				, parallax:  0.015
+				, parallax:  0.030
 				, url:       '/mmpr/moon/terrain-00-00.png'
 				, height:    0
 			}

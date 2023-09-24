@@ -943,7 +943,7 @@ export class Sonic extends PointActor
 
 		if(this.args.boltDash)
 		{
-			this.dimmer = this.dimmer || new Tag('<div class = "particle particle-dimmer">');
+			// this.dimmer = this.dimmer || new Tag('<div class = "particle particle-dimmer">');
 
 			const boltParticle = new Tag('<div class = "particle particle-bolt">');
 
@@ -958,10 +958,10 @@ export class Sonic extends PointActor
 					: 28
 			);
 
-			this.dimmer.style({
-				'--x': this.args.x + boltPoint[0]
-				, '--y': this.args.y + boltPoint[1]
-			});
+			// this.dimmer.style({
+			// 	'--x': this.args.x + boltPoint[0]
+			// 	, '--y': this.args.y + boltPoint[1]
+			// });
 
 			this.args.boltCount++;
 
@@ -990,7 +990,7 @@ export class Sonic extends PointActor
 				this.args.boltDash = false;
 			}
 
-			this.viewport.particles.add(this.dimmer);
+			// this.viewport.particles.add(this.dimmer);
 
 			this.viewport.onFrameOut(30, () => {
 				this.viewport.particles.remove(boltParticle);
@@ -1660,9 +1660,9 @@ export class Sonic extends PointActor
 					this.args.ySpeed = this.args.ySpeed ? ySpeed : 0;
 					this.args.gSpeed = this.args.gSpeed ? gSpeed : 0;
 
-					this.dimmer && this.viewport.particles.remove(this.dimmer);
+					// this.dimmer && this.viewport.particles.remove(this.dimmer);
 
-					this.dimmer = false;
+					// this.dimmer = false;
 				});
 			}
 		});
@@ -1683,9 +1683,9 @@ export class Sonic extends PointActor
 		this.args.ySpeed /= 2;
 		this.args.gSpeed /= 3;
 
-		this.dimmer && this.viewport.particles.remove(this.dimmer);
+		// this.dimmer && this.viewport.particles.remove(this.dimmer);
 
-		this.dimmer = false;
+		// this.dimmer = false;
 	}
 
 	command_3()

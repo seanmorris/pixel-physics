@@ -584,14 +584,14 @@ export class Platformer
 				host.args.rolling = true;
 			}
 
-			if(host.args.mode === 0 && !host.args.groundAngle)
+			if(!host.args.gSpeed && host.args.mode === 0 && !host.args.groundAngle)
 			{
-				const dSolid     = host.getMapSolidAt(host.args.x + 0 * host.args.direction, host.args.y + 2);
-				const dSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y + 2);
-				const uSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y - 2);
-				const dSolidF2   = host.getMapSolidAt(host.args.x + 2 * host.args.direction, host.args.y + 2);
-				const dSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y + 2);
-				const uSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y - 2);
+				const dSolid     = host.getMapSolidAt(host.args.x + 0 * host.args.direction, host.args.y + 4);
+				const dSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y + 4);
+				const uSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y - 4);
+				const dSolidF2   = host.getMapSolidAt(host.args.x + 2 * host.args.direction, host.args.y + 4);
+				const dSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y + 4);
+				const uSolidB    = host.getMapSolidAt(host.args.x - 4 * host.args.direction, host.args.y - 4);
 
 				if(dSolid && !dSolidF && !uSolidF)
 				{
@@ -871,11 +871,6 @@ export class Platformer
 					region.leave(host);
 				}
 			}
-
-			// if(!regions.size && host.def)
-			// {
-			// 	host.args.float = host.def.get('float') ?? host.args.float ?? 0;
-			// }
 		}
 
 		if(host.willJump && !host.args.dontJump && (!host.args.falling || host.falltime < 2))
@@ -1267,7 +1262,7 @@ export class Platformer
 		const regionClass  = host.viewport.objectPalette['base-region'];
 		const skipChecking = [regionClass];
 
-		if(!host.isGhost && !host.isStatic && !host.isRegion && !(skipChecking.some(x => host instanceof x)))
+		if(!host.noClip && !host.isGhost && !host.isStatic && !host.isRegion && !(skipChecking.some(x => host instanceof x)))
 		{
 			let collisions;
 
@@ -2407,7 +2402,7 @@ export class Platformer
 							host.args.gSpeed = (1 + slopeFactor**2) * Math.sign(host.args.gSpeed);
 						}
 
-						const regions = (host.controllable || host.args.pushed || host.isVehicle) ? host.viewport.regionsAtPoint(host.args.x, host.args.y) : [];
+						const regions = (host.controllable || host.args.pushed || host.isVehicle) ? host.regions : [];
 
 						for(const region of regions)
 						{

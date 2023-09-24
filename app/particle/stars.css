@@ -1,4 +1,5 @@
 .particle-stars {
+	backface-visibility: hidden;
 	animation: star-shield-rotate 0.25s steps(5) infinite;
 	background-image: url(/Sonic/invincibility-stars.png);
 	background-position-x:  calc(var(--frame) * -64px);

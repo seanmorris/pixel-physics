@@ -41,7 +41,7 @@ export class CompanionBlock extends MarbleBlock
 
 		let isInLava = false;
 
-		const regions = this.viewport.regionsAtPoint(this.args.x, this.args.y);
+		const regions = this.regions;
 
 		let localDensity = 0, denseRegion = null;
 

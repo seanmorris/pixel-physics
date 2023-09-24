@@ -75,7 +75,7 @@ export class BreakableBlock extends Block
 
 	update()
 	{
-		const regions = this.viewport.regionsAtPoint(this.args.x, this.args.y);
+		const regions = this.regions;
 
 		for(const region of regions)
 		{
