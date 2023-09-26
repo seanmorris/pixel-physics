@@ -307,7 +307,7 @@ section.filters {
 }
 
 .viewport-background > div {
-	/* backface-visibility: hidden; */
+	backface-visibility: hidden;
 	background-repeat: no-repeat;
 	contain: strict;
 }

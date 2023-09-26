@@ -1053,17 +1053,6 @@ export class Knuckles extends PointActor
 			this.punching = false;
 		}
 
-		// if(!this.args.jumpArced)
-		// {
-		// 	if(this.getMapSolidAt(this.args.x + Math.sign(this.args.direction) * this.args.width * 0.5, this.args.height * 0.5))
-		// 	{
-		// 		this.args.xSpeed = Math.sign(this.args.direction) * this.args.width * 0.5;
-		// 		this.willStick = true;
-		// 		this.args.climbing = true;
-		// 		return
-		// 	}
-		// }
-
 		if(this.args.ignore)
 		{
 			return;

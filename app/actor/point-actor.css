@@ -9,6 +9,7 @@
 	/*--position: translate(calc(1px * var(--x)), calc(1px * var(--y)));*/
 
 	/*transform: var(--position);*/
+	backface-visibility: hidden;
 
 	/*--outlineWidth:    var(--outlineWidth, 0px);*/
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
