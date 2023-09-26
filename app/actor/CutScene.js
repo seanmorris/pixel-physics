@@ -39,7 +39,7 @@ export class CutScene extends PointActor
 			return;
 		}
 
-		if(other.args.canonical !== 'Sonic')
+		if(!button && other.args.canonical !== 'Sonic')
 		{
 			return;
 		}

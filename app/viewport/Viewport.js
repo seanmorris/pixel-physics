@@ -159,6 +159,17 @@ export class Viewport extends View
 
 		Router.listen(this, { '': () => '' });
 
+		this.args.agent = 'unknown';
+
+		if(String(navigator.userAgent).match('Chrome'))
+		{
+			this.args.agent = 'chrome';
+		}
+		else if(String(navigator.userAgent).match('Firefox'))
+		{
+			this.args.agent = 'firefox';
+		}
+
 		this.args.screenEffects = new Bag;
 
 		this.meta = {};
@@ -824,7 +835,19 @@ export class Viewport extends View
 					this.settings.blur     = false;
 					break;
 			}
+
+			if(this.args.agent === 'firefox')
+			{
+				this.settings.displace = false;
+				this.settings.blur     = false;
+			}
 		});
+
+		if(this.args.agent === 'firefox')
+		{
+			this.settings.displace = false;
+			this.settings.blur     = false;
+		}
 
 		this.settings.bindTo('displace',  v => this.args.displacement = v ? 'on' : 'off');
 		this.settings.bindTo('outline',   v => this.args.outline   = v);
@@ -1488,11 +1511,6 @@ export class Viewport extends View
 				}
 			}
 		});
-
-		// if(mapUrl === '/map/see-saw-test.json')
-		// {
-		// 	tileMap.addMap('/map/appended-map.json');
-		// }
 
 		let waiter = new Promise(a => setTimeout(a, 7250));
 		const cardShown = this.args.controlCardShown.has(this.args.selectedChar) && !this.args.networked;

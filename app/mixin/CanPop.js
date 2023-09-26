@@ -3,6 +3,7 @@ import { Explosion } from '../actor/Explosion';
 import { Projectile } from '../actor/Projectile';
 import { Sfx } from '../audio/Sfx';
 import { Analytic } from '../lib/Analytic';
+import { Vehicle } from '../actor/Vehicle';
 
 export class CanPop
 {
@@ -71,7 +72,7 @@ export class CanPop
 		if((!shield || immune)
 			&& !this.args.gone
 			&& this.viewport
-			&& (immune || other.dashed || other.args.jumping || other.args.bellySliding || other.args.spinning || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
+			&& (immune || other.dashed || other.args.jumping || other.args.bellySliding || other.args.spinning || (other.args.standinOn && other.args.standinOn instanceof Vehicle) || (other instanceof Projectile && other.args.owner && other.args.owner.controllable))
 		){
 			const otherShield = other.args.currentSheild;
 			this.damage(other, otherShield ? otherShield.type : (other.args.damageType || 'normal'));

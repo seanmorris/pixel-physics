@@ -25,7 +25,7 @@ export class Panel extends PointActor
 
 	collideA(other, type)
 	{
-		if(other.canFly)
+		if(other.args.flying)
 		{
 			return false;
 		}
@@ -100,6 +100,8 @@ export class Panel extends PointActor
 
 						other.args.xSpeed = -Math.cos(angle) * 42;
 						other.args.ySpeed = -Math.sin(angle) * 42;
+
+						other.args.ignore = -2;
 					}
 
 					other.args.gSpeed = 0;

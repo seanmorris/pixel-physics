@@ -28,8 +28,8 @@
 	/*z-index: 1;*/
 
 
-	backdrop-filter: var(--bg-filter);
-	filter: blur(0px);
+	/* backdrop-filter: var(--bg-filter); */
+	/* filter: blur(0px); */
 	/*filter: url(#sonic-pinch);*/
 
 

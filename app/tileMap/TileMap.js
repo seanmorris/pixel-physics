@@ -31,7 +31,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		this.collisionLayers = [];
 		this.objectLayers = [];
 
-		this.mapVars = new Map;
+		// this.mapVars = new Map;
 
 		const url = args.mapUrl;
 
@@ -62,6 +62,8 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			this.ready = elicit.stream()
 			.then(response => response.json())
 			.then(tilemapData => {
+
+				this.maps.set(tilemapData, [0, 0]);
 
 				this.mapData = tilemapData;
 
@@ -159,10 +161,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			const overlap  = -width + xOffset;
 			const newWidth = width + data.width + overlap;
 
-			// console.log({width, dw:data.width, newWidth, overlap, xOffset});
-
 			const height    = this.mapData.height;
 			const newHeight = Math.max(height, height + data.height + -Math.round(yOffset/32));
+
+			this.maps.set(data, [xOffset, yOffset]);
 
 			this.resize(newWidth, height);
 
@@ -391,58 +393,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			layer.layer          = null;
 			layer.index          = null;
 			Object.preventExtensions(layer);
-		});
-
-		this.objectLayers = tilemapData.layers.filter(l => l.type === 'objectLayers');
-		this.tileLayers   = tilemapData.layers.filter(l => l.type === 'tilelayer');
-
-		this.tileLayers.forEach((layer, index) => layer.index = index);
-
-		// layerGroup.objectLayers = this.objectLayers;
-		layerGroup.tileLayers = this.tileLayers;
-
-		this.collisionLayers = this.tileLayers.filter(l => {
-
-			if(!l.name.match(/^Collision\s\d+/))
-			{
-				return false;
-			}
-
-			return true;
-		})
-
-		this.destructibleLayers = this.tileLayers.filter(l => {
-
-			if(!l.name.match(/^Destructible\s\d+/))
-			{
-				return false;
-			}
-
-			return true;
-		});
-
-		layerGroup.destructibleLayers = this.destructibleLayers;
-		layerGroup.collisionLayers    = this.collisionLayers;
-	}
-
-	addMap(url, xOffset = 0, yOffset = 0)
-	{
-		const elicit = new Elicit(url);
-
-		elicit.stream()
-		.then(response => response.json())
-		.then(data => {
-			// console.log(data);
-		});
-
-		elicit.addEventListener('progress', event => {
-			const {received, length, done} = event.detail;
-
-			// const type = 'map';
-
-			// this.dispatchEvent(new CustomEvent(
-			// 	'level-progress', {detail: {length, received, done, url}}
-			// ));
 		});
 
 		this.objectLayers = tilemapData.layers.filter(l => l.type === 'objectLayers');

@@ -20,7 +20,7 @@
 .viewport:not(.displacement-off) .region.region-water .region-filter-wrapper {
 }
 
-.viewport:not(.displacement-off) .region.region-water .region-filter {
+.viewport-frame:not([data-agent=firefox]) .viewport:not(.displacement-off) .region.region-water .region-filter {
 	backdrop-filter: invert(0);
 	filter: url(#waves);
 	z-index: -10000;

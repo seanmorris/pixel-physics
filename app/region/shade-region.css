@@ -121,7 +121,7 @@
 	background-color: rgba(0,128,255,0.25);
 }
 
-.viewport:not(.displacement-off) .region.region-shade.hydro .region-filter {
+.viewport-frame:not([data-agent=firefox]) .viewport:not(.displacement-off) .region.region-shade.hydro .region-filter {
 	backdrop-filter: blur(0.5px);
 	filter: url(#waves);
 }

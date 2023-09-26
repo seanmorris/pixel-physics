@@ -1,4 +1,5 @@
 .actor-item.actor-ring .sprite {
+	backface-visibility: hidden;
 	background-image: url(/Sonic/rings.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -144px;

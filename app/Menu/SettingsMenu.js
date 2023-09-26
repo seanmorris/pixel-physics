@@ -23,6 +23,7 @@ const videoMenu = parent => ({
 		'Motion Blur Effects': {
 			input: 'boolean'
 			, subtext: 'Enable/Disable Motion Blur Effects'
+			, available: parent.args.agent === 'firefox' ? 'unavailable hidden' : 'available'
 			, revert: () => parent.settings.blur = true
 			, set: value => parent.settings.blur = value
 			, get: () => parent.settings.blur
@@ -31,6 +32,7 @@ const videoMenu = parent => ({
 		, 'Displacement Effects': {
 			input: 'boolean'
 			, subtext: 'Enable/Disable Displacement Effects'
+			, available: parent.args.agent === 'firefox' ? 'unavailable hidden' : 'available'
 			, revert: () => parent.settings.displace = true
 			, set: value => parent.settings.displace = value
 			, get: () => parent.settings.displace

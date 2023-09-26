@@ -1,4 +1,5 @@
 .actor-item.actor-anti-ring .sprite {
+	backface-visibility: hidden;
 	background-image: url(/Sonic/antiring.png) !important;
 	background-position: 0 0;
 	--sprite-offset-x: 0px;

@@ -8,7 +8,7 @@
 	left: 0px;
 	width: 100%;
 	height: calc(calc(300% / var(--scale)) + 0px);
-	backdrop-filter:  blur(0px);
+	/* backdrop-filter:  blur(0px); */
 }
 
 .screen-effects .screen-fire {

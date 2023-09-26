@@ -552,7 +552,10 @@ export class Knuckles extends PointActor
 					}
 					else if(this.yAxis < -0.55)
 					{
-						if(!this.getMapSolidAt(this.args.x + 18 * ledgeDir, this.args.y - ledgeDist))
+						const isLedge = !this.getMapSolidAt(this.args.x + 1 * ledgeDir, this.args.y - ledgeDist);
+						const overLedgeSolid = isLedge && !this.getMapSolidAt(this.args.x + 18 * ledgeDir, this.args.y - ledgeDist);
+
+						if(overLedgeSolid)
 						{
 							this.args.animation = 'climbing-over';
 
@@ -1060,6 +1063,11 @@ export class Knuckles extends PointActor
 		// 		return
 		// 	}
 		// }
+
+		if(this.args.ignore)
+		{
+			return;
+		}
 
 		this.args.direction = Math.sign(this.args.xSpeed) || (this.args.facing === 'left' ? -1:1);
 		this.args.willJump  = false;
