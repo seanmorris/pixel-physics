@@ -2,6 +2,7 @@ import { Spring } from '../actor/Spring';
 import { OrbSmall } from '../actor/OrbSmall';
 import { WoodenCrate } from '../actor/WoodenCrate';
 import { SkidDust } from '../behavior/SkidDust';
+import { Ring } from '../actor/Ring';
 
 export class InfiniteRuin
 {
@@ -48,6 +49,8 @@ export class InfiniteRuin
 		{
 			let rand = Math.random();
 
+			this.spawnRings(viewport, rand > 0.25 ? 32 : 0);
+
 			if(frameId < 900)
 			{
 				rand = 0;
@@ -79,10 +82,8 @@ export class InfiniteRuin
 
 	spawnOrb(viewport)
 	{
-		let thing;
-		thing = new OrbSmall;
-
-		let type = Math.trunc(Math.random() * 8);
+		const thing = new OrbSmall;
+		const type  = Math.trunc(Math.random() * 8);
 
 		thing.args.xSpeed = viewport.controlActor.args.gSpeed || viewport.controlActor.args.xSpeed;
 		thing.args.gSpeed = viewport.controlActor.args.gSpeed || viewport.controlActor.args.xSpeed;
@@ -178,6 +179,20 @@ export class InfiniteRuin
 		thing.args.gSpeed = viewport.controlActor.args.gSpeed || viewport.controlActor.args.xSpeed;
 
 		viewport.spawn.add({object: thing});
+	}
+
+	spawnRings(viewport, offset = 0)
+	{
+		for(let i = 0; i < 3; i++)
+		{
+			const thing = new Ring;
+			const type = Math.trunc(Math.random() * 8);
+
+			thing.args.x = viewport.controlActor.args.x + 320 + (i * 32);
+			thing.args.y = 928 + -16 + -offset;
+
+			viewport.spawn.add({object: thing});
+		}
 	}
 
 	spawnSpring(viewport)

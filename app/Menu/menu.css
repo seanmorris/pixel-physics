@@ -15,6 +15,7 @@
 	/* scroll-behavior: smooth; */
 	overflow-y: scroll;
 	overflow-x: visible;
+	scrollbar-width: none;
 	max-height: calc(-40px + calc(1px * var(--height)));
 }
 
@@ -27,6 +28,7 @@
 	--back-color: rgba(64,64,64,1);
 	background-color: rgba(0,0,0,0.75);
 	background-color: color-mix( in srgb, var(--color) 20%,rgba(0,0,0,0.75) );
+	background-color: rgba(0,0,0,0.75);
 	box-shadow: 0em 0.05em 0.25em rgba(255,255,255,0.25);
 	backdrop-filter: blur(0px);
 	border: 1px solid transparent;
@@ -43,6 +45,10 @@
 	margin-bottom: 0.8em;
 
 	transition: background-color 0.8s ease-in-out, filter 0.4s ease-in-out;
+}
+
+[data-agent=firefox] .screen-card.screen-card-pause-menu li {
+	background-color: rgba(0,0,0,0.75);
 }
 
 .screen-card.screen-card-pause-menu [data-current-menu="Next 15"] li[data-title$=")"] .hud-character-string,
@@ -66,6 +72,13 @@
 	/*text-shadow: 0em 0.15em 0.125em black;*/
 	outline: none;
 	box-shadow: inset 0rem 0rem 0.25rem #000;
+}
+
+
+[data-agent=firefox] .screen-card.screen-card-pause-menu li:focus,
+[data-agent=firefox] .screen-card.screen-card-pause-menu li.focused,
+[data-agent=firefox] .screen-card.screen-card-pause-menu li:focus-within {
+	background-color: rgba(255,255,255,0.125)
 }
 
 .screen-card.screen-card-pause-menu li:focus .hud-character-string,
@@ -123,6 +136,18 @@ section.pause-menu li {
 	border-radius: 5px;
 }
 
+[data-agent=firefox] .menu-container input[type="range"] {
+	position: relative;
+	top: 3px;
+}
+
+[data-agent=firefox] .menu-container input[type="range"]::-moz-range-track {
+	background-color: rgba(0,0,0,0.15);
+	border-radius: 5px;
+	height: 9px;
+}
+
+[data-agent=firefox] .menu-container input[type="range"]::-moz-range-track,
 .screen-card.screen-card-pause-menu .menu-container input[type="range"]::-webkit-slider-runnable-track {
 	background-color: rgba(255,255,255,0.15);
 	border-radius: 5px;
@@ -140,10 +165,29 @@ section.pause-menu li {
 	padding: 2px;
 }
 
+[data-agent=firefox] .menu-container input[type="range"]::-moz-range-thumb {
+	appearance: none;
+	width: 9px;
+	height: 9px;
+	background-position: 0 -35px;
+	background-repeat: no-repeat;
+	background-image: url(/Sonic/font.png);
+	background-color: transparent;
+	cursor: pointer;
+	border: none;
+}
+
 li:focus-within input[type="range"]::-webkit-slider-thumb,
 li.focused input[type="range"]::-webkit-slider-thumb,
 li:focus input[type="range"]::-webkit-slider-thumb {
 	background-image: url(/Sonic/font-yellow.png);
+	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
+}
+
+li:focus-within input[type="range"]::-moz-range-thumb,
+li.focused input[type="range"]::-moz-range-thumb,
+li:focus input[type="range"]::-moz-range-thumb {
+	background-image: url(/Sonic/font-yellow.png) !important;
 	/*background-image: url(/Sonic/small-menu-font-yellow-italic.png);*/
 }
 

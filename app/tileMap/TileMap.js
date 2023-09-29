@@ -636,7 +636,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		for(const [layer, willCheck] of checkLayers)
 		{
-			if(!willCheck)
+			if(!willCheck || !layer)
 			{
 				continue;
 			}

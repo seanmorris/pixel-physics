@@ -719,7 +719,7 @@ export class Block extends PointActor
 				}
 			}
 
-			if(!this.args.yLean)
+			if(this.args.yLean < Number.EPSILON)
 			{
 				this.args.y = this.originalY;
 			}

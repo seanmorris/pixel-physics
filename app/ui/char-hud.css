@@ -112,3 +112,7 @@
 [data-loading-map=true] .hud.now-loading {
 	display: initial;
 }
+
+.hud-character {
+	backface-visibility: hidden;
+}

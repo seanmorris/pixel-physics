@@ -1064,7 +1064,7 @@ export class Viewport extends View
 
 				delete i[ColCell];
 
-				if(!i.removed && i.firstNode.isConnected)
+				if(!i.removed && i.firstNode && i.firstNode.isConnected)
 				{
 					i.remove();
 				}
@@ -2752,7 +2752,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50 + -0.1 * actor.args.direction;
 				this.args.yOffsetTarget = 0.30;
 
-				cameraSpeed = 30;
+				cameraSpeed = 9;
 
 				break;
 
@@ -2760,7 +2760,7 @@ export class Viewport extends View
 				this.args.xOffsetTarget = 0.50;
 				this.args.yOffsetTarget = 0.35;
 
-				cameraSpeed = 24;
+				cameraSpeed = 9;
 
 				break;
 
@@ -2925,7 +2925,7 @@ export class Viewport extends View
 
 		if(actor.args.mode === 0 && Math.abs(actor.args.groundAngle - -Math.PI / 4) < 0.001)
 		{
-			this.args.yOffsetTarget -= 0.25;
+			this.args.yOffsetTarget -= 0.25 * Math.sign(actor.args.y - actor.yLast);
 		}
 
 		if(cameraSpeed)
@@ -4457,7 +4457,9 @@ export class Viewport extends View
 						actor.render(this.tags.actors);
 					}
 
-					const actorIsOnScreen = this.actorIsOnScreen(actor);
+					const margin = 0.5 * Math.max(actor.args.width, actor.args.height);
+
+					const actorIsOnScreen = this.actorIsOnScreen(actor, margin);
 
 					if(actorIsOnScreen && !(actor instanceof LayerSwitch))
 					{
@@ -4521,7 +4523,7 @@ export class Viewport extends View
 					continue;
 				}
 
-				const actorIsOnScreen = !actor.args.hidden && this.actorIsOnScreen(actor);
+				const actorIsOnScreen = !actor.args.hidden && this.actorIsOnScreen(actor, 256);
 
 				if(actor.vizi && !actorIsOnScreen)
 				{

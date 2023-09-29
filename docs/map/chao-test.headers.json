@@ -3,7 +3,7 @@
     "height": 128,
     "infinite": false,
     "nextlayerid": 15,
-    "nextobjectid": 159,
+    "nextobjectid": 165,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -172,18 +172,18 @@
             "columns": 16,
             "firstgid": 2381,
             "image": "../Sonic/tiles/aquatic-ruin/emerald-isle.png",
-            "imageheight": 1024,
+            "imageheight": 1248,
             "imagewidth": 512,
             "margin": 0,
             "name": "emerald-isle",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 624,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 10,
-            "firstgid": 2893,
+            "firstgid": 3005,
             "image": "../Sonic/tiles/marble/props.png",
             "imageheight": 480,
             "imagewidth": 320,
@@ -197,7 +197,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 96,
     "types": [
         "angel",

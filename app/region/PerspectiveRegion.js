@@ -65,8 +65,6 @@ export class PerspectiveRegion extends Region
 		{
 			this.viewport.args.xPerspective = this.args.xPerspective;
 		}
-
-		console.log(this.viewport.args.xPerspective);
 	}
 
 	get solid() { return false; }

@@ -584,7 +584,7 @@ export class Platformer
 				host.args.rolling = true;
 			}
 
-			if(!host.args.gSpeed && host.args.mode === 0 && !host.args.groundAngle)
+			if(host.controllable && !host.args.gSpeed && host.args.mode === 0 && !host.args.groundAngle)
 			{
 				const dSolid     = host.getMapSolidAt(host.args.x + 0 * host.args.direction, host.args.y + 4);
 				const dSolidF    = host.getMapSolidAt(host.args.x + 4 * host.args.direction, host.args.y + 4);

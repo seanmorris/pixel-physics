@@ -1,4 +1,5 @@
 import { Balloon } from './Balloon';
+import { GrapplePoint } from './GrapplePoint';
 import { Spring } from './Spring';
 
 export class StarBalloon extends Balloon
@@ -20,14 +21,53 @@ export class StarBalloon extends Balloon
 	{
 		super.update();
 
+		let weighted = false;
+
+		if(this.hanging.has(GrapplePoint))
+		for(const hooks of this.hanging.get(GrapplePoint))
+		{
+			if(hooks.hooked.size)
+			{
+				weighted = true;
+			}
+		}
+
 		if(!this.popped)
 		{
-			if(!this.launched)
+			const originY = this.def.get('y');
+
+			if(!weighted)
 			{
-				this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
+				if(Math.abs(this.args.y - originY) < 10)
+				{
+					this.args.ySpeed = Math.sin(this.viewport.args.frameId / 10) / 5;
+					this.noClip = false;
+				}
+				else
+				{
+					this.noClip = true;
+
+					if(!this.args.ySpeed)
+					{
+						this.args.ySpeed = 1;
+					}
+
+					if(this.args.ySpeed < 8)
+					{
+						this.args.ySpeed += 0.08;
+					}
+
+					if(this.args.y > originY)
+					{
+						this.args.y = originY;
+						this.args.ySpeed = 0;
+					}
+				}
 			}
 			else
 			{
+				this.noClip = false;
+
 				if(!this.args.ySpeed)
 				{
 					this.args.ySpeed = -1;
@@ -117,6 +157,7 @@ export class StarBalloon extends Balloon
 		this.tags.sprite.classList.add('popped');
 
 		this.popped = true;
+		this.args.ySpeed = -4;
 
 		this.args.float = 0;
 

@@ -416,12 +416,12 @@ export class Chao extends PointActor
 
 		if(floatRegions.length)
 		{
-			if(this.args.currentState !== 'flying' && this.args.ySpeed >= 0)
+			if(this.args.ySpeed >= 0)
 			{
 				const floatTarget = floatRegions[0].args.y - floatRegions[0].args.height + 6;
 				const snapSpace = 3;
 
-				if(this.args.currentState !== 'walking')
+				if(this.args.currentState !== 'walking' && this.args.currentState !== 'flying')
 				{
 					this.args.xSpeed = this.args.xSpeed * 0.95;
 				}
@@ -429,7 +429,7 @@ export class Chao extends PointActor
 				if(this.args.y > floatTarget)
 				{
 					this.args.falling = true;
-					this.args.ySpeed += -0.25;
+					this.args.ySpeed += -2;
 					this.args.float = -1;
 
 					if(this.args.ySpeed > snapSpace)
@@ -442,7 +442,7 @@ export class Chao extends PointActor
 						this.args.ySpeed = -snapSpace;
 					}
 				}
-				else
+				else if(!this.args.currentState !== 'flying')
 				{
 					if(this.args.ySpeed > 0 && Math.abs(this.args.y - floatTarget) < snapSpace)
 					{
@@ -747,10 +747,10 @@ export class Chao extends PointActor
 	{
 		this.args.animation = 'flying';
 
-		if(this.args.inWater)
-		{
-			this.args.y--;
-		}
+		// if(this.args.inWater)
+		// {
+		// 	// this.args.ySpeed--;
+		// }
 
 		if(this.args.stateTime === 1)
 		{

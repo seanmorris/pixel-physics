@@ -539,9 +539,7 @@ export class Menu extends Card
 			const prev = this.args.items;
 
 			const back = {
-				_title: new CharacterString({
-					value:'back', font: 'small-menu-font'
-				})
+				_title: new CharacterString({value:'back', font: 'small-menu-font'})
 				, callback: () => {
 					this.args.items = prev;
 					this.args.classes = prev.classes || '';
