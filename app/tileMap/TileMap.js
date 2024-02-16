@@ -77,7 +77,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					}
 				}
 
-				this.desparseLayers(tilemapData)
+				this.desparseLayers(tilemapData);
 
 				this.loadLayers(tilemapData);
 
@@ -88,7 +88,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		{
 			this.ready = this.fromImage(url, 32);
 		}
-
 
 		Object.preventExtensions(this);
 	}
@@ -111,23 +110,14 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const tileNo = Number(layer.sparsed.pop());
 				const tileId = Number(layer.sparsed.pop());
 
+				if(!tileNo)
+				{
+					console.log({tileId, tileNo});
+				}
+
 				desparsed[tileId] = tileNo;
 			}
-
-			// layer.data = Object.create(null);
-
-			// Object.assign(layer.data, desparsed);
-
-			// layer.data = layer.data ? [...Object.assign(Array(layer.width * layer.height), layer.data)] : undefined;
-			// layer.data = layer.data.map(t => t || 0);
-
-			// console.log(layer.data);
 		}
-
-		// console.log(tilemapData);
-		// console.log(JSON.stringify(tilemapData));
-
-		// console.timeEnd('desparse');
 	}
 
 	preloadMap(url)
@@ -257,8 +247,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				const tileId = Number(i);
 				const row = Math.floor(tileId / originalWidth);
 
-				newData[i] = 0;
-
 				newData[row * offset + tileId] = tileNo;
 			}
 
@@ -279,8 +267,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 			for(const [i, tileNo] of Object.entries(layer.data))
 			{
 				const tileId = Number(i);
-
-				newData[i] = 0;
 
 				newData[offset + tileId] = tileNo;
 			}
@@ -643,14 +629,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const layerId = layer.index;
 
-			// if(layerId !== 0)
-			// {
-			// 	if(this.getSolid(xInput, yInput, 0))
-			// 	{
-			// 		return this.tileLayers[0];
-			// 	}
-			// }
-
 			if(this.tileLayers[layerId])
 			{
 				offsetX = this.tileLayers[layerId].offsetX ?? 0;
@@ -670,7 +648,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				if(tileNumber === 0)
 				{
 					continue;
-					// return false;
 				}
 
 				if(tileNumber === 1)
@@ -678,52 +655,6 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 					return this.tileLayers[layerId];
 				}
 			}
-
-			// if(this.getSolid(xInput, yInput, layerInput))
-			// {
-			// 	return this.tileLayers[i];
-			// }
-
-			// if(layerId > 0  && layerId < solidLayerCount)
-			// {
-			// 	for(let i = 0 + solidLayerCount; i < this.tileLayers.length; i++)
-			// 	{
-			// 		const layer = this.tileLayers[i];
-
-			// 		if(layer.name.substring(0, 3) === 'Art')
-			// 		{
-			// 			continue;
-			// 		}
-
-			// 		// if(layer.name.substring(0, 8) === 'Platform')
-			// 		// {
-			// 		// 	continue;
-			// 		// }
-
-			// 		if(layer.name.substring(0, 10) === 'Moving Art')
-			// 		{
-			// 			continue;
-			// 		}
-
-			// 		if(layer.name.substring(0, 10) === 'Foreground')
-			// 		{
-			// 			continue;
-			// 		}
-
-			// 		if(layer.name.substring(0, 12) === 'Destructible')
-			// 		{
-			// 			if(layer.destroyed)
-			// 			{
-			// 				continue;
-			// 			}
-			// 		}
-
-			// 		if(this.getSolid(xInput, yInput, i))
-			// 		{
-			// 			return this.tileLayers[i];
-			// 		}
-			// 	}
-			// }
 
 			const tileSet   = this.getTileset(tileNumber);
 			const mapData   = this.mapData;
@@ -744,21 +675,10 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			const iPixel = (xPixel + yPixel * heightMask.width) * 4;
 
-			let result = false;
-
 			if(heightMask.data[iPixel + 3] === 255)
 			{
 				return this.tileLayers[layerId];
 			}
-			// else
-			// {
-			// 	result = false;
-			// }
-
-			// if(result)
-			// {
-			// 	return result;
-			// }
 		}
 	}
 

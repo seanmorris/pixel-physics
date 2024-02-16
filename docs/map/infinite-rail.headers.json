@@ -1,11 +1,6 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
-    "height": 32,
+    "height": 16,
     "infinite": false,
     "nextlayerid": 7,
     "nextobjectid": 369,
@@ -14,7 +9,12 @@
         {
             "name": "backdrop",
             "type": "string",
-            "value": "mushroom-hill"
+            "value": "mystic-cave"
+        },
+        {
+            "name": "theme",
+            "type": "string",
+            "value": "none"
         },
         {
             "name": "wrapX",
@@ -23,7 +23,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -68,7 +68,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.10",
     "width": 128,
     "types": [],
     "map": "/map/infinite-rail.json"

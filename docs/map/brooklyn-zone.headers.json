@@ -2,7 +2,7 @@
     "compressionlevel": -1,
     "height": 416,
     "infinite": false,
-    "nextlayerid": 15,
+    "nextlayerid": 17,
     "nextobjectid": 531,
     "orientation": "orthogonal",
     "properties": [
@@ -484,13 +484,6 @@
         "trick-ramp",
         "tumbler",
         "wooden-crate"
-    ],
-    "emblems": [
-        94,
-        95,
-        235,
-        431,
-        522
     ],
     "map": "/map/brooklyn-zone.json"
 }

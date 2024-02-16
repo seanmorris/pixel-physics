@@ -154,7 +154,7 @@ export class Platformer
 			host.airReward = null;
 		}
 
-		if(!host.args.falling && (!host.args.grinding && host.groundTime > 1))
+		if(!host.args.falling && (!host.args.grinding && host.groundTime > 2))
 		{
 			host.grindReward = null;
 			host.airReward = null;
@@ -1727,8 +1727,6 @@ export class Platformer
 
 			host.pause(true);
 
-			let iter = 0
-
 			const dirs = [0,0,Math.PI];
 			const filterBlockers = x =>
 				x.args !== host.args
@@ -1867,15 +1865,8 @@ export class Platformer
 							const stepsLeft   = Math.max(1, Math.abs(gSpeed) - Math.abs(this.stepsTaken))||1;
 							const impulseLeft = stepsLeft * Math.sign(gSpeed||0);
 
-							if(0&&stepsLeft < radius)
-							{
-								host.args.x += (radius - stepsLeft) * Math.sign(gSpeed);
-							}
-							else
-							{
-								host.args.x +=  impulseLeft * Math.cos(gAngle);
-								host.args.y += -impulseLeft * Math.sin(gAngle);
-							}
+							host.args.x +=  impulseLeft * Math.cos(gAngle);
+							host.args.y += -impulseLeft * Math.sin(gAngle);
 
 							host.args.xSpeed =  gSpeed * Math.cos(gAngle);
 							host.args.ySpeed = -gSpeed * Math.sin(gAngle);
@@ -1958,7 +1949,7 @@ export class Platformer
 								else
 								{
 									host.args.ignore = -3;
-									host.args.x += host.controllable ? radius : 1;
+									host.args.x += 1;
 									// host.args.y += hRadius;
 								}
 
@@ -2007,13 +1998,13 @@ export class Platformer
 									}
 									else
 									{
-										host.args.x -= radius;
+										host.args.x -= 1;
 									}
 								}
 								else
 								{
 									host.args.ignore = -3;
-									host.args.x -= host.controllable ? radius : 1;
+									host.args.x -= 1;
 									// host.args.y += hRadius;
 								}
 
@@ -2187,7 +2178,7 @@ export class Platformer
 				}
 			}
 
-			if(host.args.pushing)
+			if(host.args.pushing && !host.args.careening)
 			{
 				host.args.gSpeed = Math.sign(host.args.gSpeed);
 			}
@@ -2392,7 +2383,7 @@ export class Platformer
 				{
 					if(slopeFactor > 0 && host.args.modeTime > 3)
 					{
-						if(host.args.gSpeed || Math.abs(slopeFactor) > 0.25)
+						if((host.args.gSpeed || Math.abs(slopeFactor) > 0.05) && Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 3)
 						{
 							host.args.gSpeed += 0.60 * slopeFactor * direction;
 						}
@@ -2424,28 +2415,29 @@ export class Platformer
 							host.args.gSpeed = 2 * direction;
 						}
 					}
-					else if(slopeFactor < -0.30 || (slopeFactor < 0 && host.args.gSpeed))
+					else if(slopeFactor < -0.20 || (slopeFactor < 0 && host.args.gSpeed))
 					{
-						if(Math.abs(host.args.gSpeed) < 10)
-						{
-							const slopeVector = slopeFactor * direction;
+						host.args.gSpeed += -0.078125 * direction;
+						// if(Math.abs(host.args.gSpeed) < 10)
+						// {
+						// 	const slopeVector = slopeFactor * direction;
 
-							if(host.args.gSpeed || slopeFactor < -0.075)
-							{
-								if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
-								{
-									host.args.gSpeed += 1.65 * slopeFactor * direction;
-								}
-								else
-								{
-									host.args.gSpeed += 0.25 * slopeFactor * direction;
-								}
-							}
-						}
-						else
-						{
-							host.args.gSpeed += 0.65 * slopeFactor * direction;
-						}
+						// 	if(host.args.gSpeed || slopeFactor < -0.075)
+						// 	{
+						// 		if(Math.sign(slopeVector) === Math.sign(host.args.gSpeed))
+						// 		{
+						// 			host.args.gSpeed += 1.65 * slopeFactor * direction;
+						// 		}
+						// 		else
+						// 		{
+						// 			host.args.gSpeed += 0.25 * slopeFactor * direction;
+						// 		}
+						// 	}
+						// }
+						// else
+						// {
+						// 	host.args.gSpeed += 0.65 * slopeFactor * direction;
+						// }
 					}
 				}
 				else if(!host.stayStuck)
@@ -3291,7 +3283,7 @@ export class Platformer
 					&& host.args.startled < 175
 					&& host.args.ySpeed > 0
 					&& ( (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) )
-						|| ( (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
+						|| (forePosition && (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
 					)
 				){
 					// const speed = xSpeedOriginal || host.xSpeedLast;
@@ -3783,7 +3775,7 @@ export class Platformer
 		{
 			force += Math.max(0, host.args.standingOn.args.yForce * 0.25);
 		}
-		else if(host.args.standingOn && host.args.standingOn.yLast)
+		else if(host.args.standingOn && host.args.standingOn.yLast && host.args.standingOn.args.falling)
 		{
 			force += Math.max(0, host.args.standingOn.yLast - host.args.standingOn.args.y);
 		}

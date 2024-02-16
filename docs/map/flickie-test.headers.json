@@ -38,7 +38,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -58,19 +58,19 @@
             "columns": 16,
             "firstgid": 177,
             "image": "rolling.png",
-            "imageheight": 1024,
+            "imageheight": 1120,
             "imagewidth": 512,
             "margin": 0,
             "name": "rolling",
             "spacing": 0,
-            "tilecount": 512,
+            "tilecount": 560,
             "tileheight": 32,
             "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 2048,
     "types": [
         "flickie"

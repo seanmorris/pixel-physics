@@ -3,7 +3,7 @@
     "height": 320,
     "infinite": false,
     "nextlayerid": 15,
-    "nextobjectid": 644,
+    "nextobjectid": 693,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -396,6 +396,7 @@
         "loading-region",
         "region",
         "ring",
+        "ring-monitor",
         "rocket",
         "rolling-region",
         "sheild-water-monitor",
@@ -405,16 +406,11 @@
         "spring",
         "star-balloon",
         "star-post",
+        "triple-ring-monitor",
         "umbrella",
         "unbreakable-crate",
-        "vehicle-region"
-    ],
-    "emblems": [
-        619,
-        620,
-        621,
-        640,
-        641
+        "vehicle-region",
+        "wooden-crate"
     ],
     "map": "/map/manic-harbor-zone.json"
 }

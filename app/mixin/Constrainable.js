@@ -94,6 +94,8 @@ export const Constrainable = {
 		const angle = Math.atan2(yDist, xDist);
 		const dist  = Math.hypot(yDist, xDist);
 
+		this.args.distance = dist;
+
 		const maxDist = this.args.ropeLength || 64;
 
 		if(this.chain)

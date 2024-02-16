@@ -1937,7 +1937,7 @@
                         {
                          "name":"toSpeed",
                          "type":"string",
-                         "value":"34"
+                         "value":"18"
                         }],
                  "rotation":0,
                  "type":"spinner",

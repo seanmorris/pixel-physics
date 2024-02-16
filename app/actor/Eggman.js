@@ -22,7 +22,7 @@ export class Eggman extends PointActor
 
 		this.args.type      = 'actor-item actor-eggman';
 
-		this.accelNormal = 0.15;
+		this.accelNormal = 0.12;
 		this.accelSuper  = 0.30;
 
 		this.args.weight = 200;
@@ -98,7 +98,7 @@ export class Eggman extends PointActor
 
 			if(this.args.lookTime < -45)
 			{
-				this.args.cameraBias = -0.5;
+				// this.args.cameraBias = -0.5;
 			}
 		}
 		else if(this.yAxis < -0.5 && !this.args.ignore)
@@ -109,7 +109,7 @@ export class Eggman extends PointActor
 
 			if(this.args.lookTime > 45)
 			{
-				this.args.cameraBias = 0.25;
+				// this.args.cameraBias = 0.25;
 			}
 		}
 		else

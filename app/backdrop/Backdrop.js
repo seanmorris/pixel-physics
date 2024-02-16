@@ -34,6 +34,8 @@ export class Backdrop extends View
 
 		let stacked = 0;
 
+		const stripRecolors = [];
+
 		for(const i in strips)
 		{
 			const recolors = [];
@@ -71,9 +73,15 @@ export class Backdrop extends View
 					));
 				}
 
-				Promise.all(recolors).then(frames => strip.frames = frames);
+				const stripRecolor = Promise.all(recolors).then(frames => strip.frames = frames);
+
+				stripRecolors.push(stripRecolor);
 			}
 		}
+
+		Promise.all(stripRecolors).then(() => {
+			this.refreshLayers();
+		});
 
 		this.urls = urls;
 
@@ -116,10 +124,8 @@ export class Backdrop extends View
 						}
 
 						this.urls[i] = strip.frames[ strip.frame ];
-
 						this.refreshLayers();
 					}
-
 				}
 			}
 		});

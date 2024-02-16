@@ -60,6 +60,11 @@ export class Layer extends View
 			this.args.offsetY = this.meta.offsetY;
 		}
 
+		if(this.meta.hidden)
+		{
+			this.args.hidden = this.meta.hidden;
+		}
+
 		layerDef['offsetX'] = this.args.offsetX;
 		layerDef['offsetY'] = this.args.offsetY;
 
@@ -357,7 +362,13 @@ export class Layer extends View
 				}
 				else
 				{
-					Object.assign(tileXY, tileMap.getTile(blockId));
+					const t = tileMap.getTile(blockId);
+					tileXY[0] = t[0];
+					tileXY[1] = t[1];
+					tileXY[2] = t[2];
+					tileXY[3] = t[3];
+					tileXY[4] = t[4];
+					// Object.assign(tileXY, tileMap.getTile(blockId));
 				}
 
 				const tileset = tileXY[4];

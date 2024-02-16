@@ -15,8 +15,8 @@ export class Tornado extends Vehicle
 
 		this.removeTimer = null;
 
-		this.args.xSpeedMaxThrusting = 64;
-		this.args.xSpeedMaxOriginal  = 32;
+		this.args.xSpeedMaxThrusting = 10;
+		this.args.xSpeedMaxOriginal  = 8;
 
 		this.args.xSpeedMax = this.args.xSpeedMaxOriginal;
 
@@ -96,13 +96,19 @@ export class Tornado extends Vehicle
 			this.args.float    = 0;
 		}
 
-		if(!this.args.thrusting && Math.abs(this.args.xSpeed) < 8)
+		if(!this.args.thrusting && Math.abs(this.args.xSpeed) < 3)
 		{
 			this.args.float  = 0;
 			this.args.flying = false;
 		}
-		else if(this.args.falling)
+		else if(this.args.falling || this.args.gSpeed > 5)
 		{
+			if(!this.args.falling)
+			{
+				this.args.falling = true;
+				this.args.ySpeed = -2;
+			}
+
 			this.args.float  = -1;
 			this.args.flying = true;
 		}
@@ -123,6 +129,8 @@ export class Tornado extends Vehicle
 
 			return;
 		}
+
+		const downPoint = this.castRayQuick(128, Math.PI/2, [0,0], false) || 128;
 
 		const maxAirSpeed = this.args.xSpeedMaxThrusting;
 
@@ -193,27 +201,21 @@ export class Tornado extends Vehicle
 				this.args.flyAngle = 0;
 			}
 
-			if(this.args.landingGear)
+			if(downPoint > 128)
 			{
-				if(!this.args.thrusting && this.args.flyAngle < Math.PI / 4)
+				if(this.args.flyAngle > 0)
 				{
-					this.args.flyAngle += 0.005;
-				}
-				else if(this.args.thrusting && this.args.flyAngle > -Math.PI / 4)
-				{
-					this.args.flyAngle -= 0.005;
+					this.args.flyAngle *= 0.80;
 				}
 			}
 			else
 			{
-				if(Math.abs(this.args.flyAngle) > 0.00125)
-				{
-					this.args.flyAngle -= 0.00125 * Math.sign(this.args.flyAngle);
-				}
-				else
-				{
-					this.args.flyAngle = 0;
-				}
+				this.args.flyAngle *= 0.8;
+			}
+
+			if(this.args.landingGear)
+			{
+				this.args.flyAngle += 0.005;
 			}
 
 			if(!this.args.xSpeed)
@@ -222,7 +224,24 @@ export class Tornado extends Vehicle
 				return;
 			}
 
-			const newAngle = this.args.flyAngle + Math.sign(this.yAxis) * 0.035;
+			// const newAngle = downPoint < 128
+			// 	?
+			// 	: ;
+
+			let newAngle = this.args.flyAngle;
+
+			if(downPoint < 128)
+			{
+				newAngle = (this.args.flyAngle + Math.sign(this.yAxis) * 0.035);
+			}
+			else if(downPoint > 128 && downPoint < 132)
+			{
+				newAngle = (this.args.flyAngle + Math.max(0, this.yAxis) * 0.035);
+			}
+			else
+			{
+				newAngle = (this.args.flyAngle + 0.01);
+			}
 
 			if(this.args.flyAngle > 0)
 			{
@@ -243,6 +262,11 @@ export class Tornado extends Vehicle
 				const speed = this.args.xSpeed || this.args.gSpeed;
 
 				this.args.ySpeed = Math.sin(this.args.flyAngle) * speed * (this.args.direction || Math.sign(speed)) * 2;
+			}
+
+			if(this.args.thrusting && downPoint < 128)
+			{
+				this.args.flyAngle -= 0.025;
 			}
 		}
 		else
@@ -284,6 +308,8 @@ export class Tornado extends Vehicle
 
 	hold_2()
 	{
+		this.args.landingGear = false;
+
 		if(!this.args.thrusting && this.args.fuelLevel <= 1)
 		{
 			return;

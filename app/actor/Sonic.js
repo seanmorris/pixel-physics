@@ -54,7 +54,7 @@ export class Sonic extends PointActor
 
 		this.args.type = 'actor-sonic actor-item';
 
-		this.accelNormal = 0.15;
+		this.accelNormal = 0.12;
 		this.accelSuper  = 0.24;
 
 		this.markers = new Set;
@@ -635,9 +635,13 @@ export class Sonic extends PointActor
 							this.args.animation = 'running';
 						}
 					}
-					else
+					else if(Math.abs(this.args.gSpeed) > 3.5)
 					{
 						this.args.animation = 'sliding';
+					}
+					else
+					{
+						this.args.animation = 'standing';
 					}
 				}
 				else if(this.args.moving && this.args.gSpeed)
@@ -646,11 +650,14 @@ export class Sonic extends PointActor
 					{
 						this.args.animation = 'walking';
 					}
-					else
+					else if(Math.abs(this.args.gSpeed) > 3.5)
 					{
 						this.args.animation = 'sliding';
 					}
-
+					else
+					{
+						this.args.animation = 'standing';
+					}
 				}
 				else if(this.xAxis && friction === 0)
 				{
@@ -663,7 +670,7 @@ export class Sonic extends PointActor
 				}
 				else
 				{
-					if(this.yAxis > 0.5 && !this.args.ignore && !this.carrying.size)
+					if(this.yAxis > 0.5 && !this.args.ignore && !this.carrying.size && !this.spindashCharge)
 					{
 						this.args.animation = 'crouching';
 
@@ -833,6 +840,7 @@ export class Sonic extends PointActor
 			this.args.animation = this.args.standingOn.ridingAnimation || 'standing';
 		}
 
+		if(this.viewport.args.frameId % 2 === 0)
 		if(this.viewport.args.frameId % this.viewport.settings.frameSkip === 0)
 		{
 			if(this.args.grinding && !this.args.falling)
@@ -1137,7 +1145,7 @@ export class Sonic extends PointActor
 
 	command_0()
 	{
-		if(this.args.crouching && !this.args.rolling && this.yAxis)
+		if(!this.args.falling && this.args.crouching && !this.args.rolling && this.yAxis)
 		{
 			this.spindashCharge += 10;
 

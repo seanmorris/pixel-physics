@@ -135,6 +135,12 @@ export class Viewport extends View
 			}
 			this.focusDelay = this.onFrameOut(45, () => this.args.focusMe.args.hide = 'hide hidden');
 			this.args.focusMe.args.hide = 'hide';
+			this.onFrameOut(60, () => {
+				if(this.args.focusMe.args.hide)
+				{
+					this.args.focusMe.args.hide = 'hide hidden';
+				}
+			})
 			this.args.windowFocused = 'window-focused'
 		});
 
@@ -1506,7 +1512,7 @@ export class Viewport extends View
 					}
 					else
 					{
-						layer.args.hidden = false;
+						layer.args.hidden = layer.args.hidden ?? false;
 					}
 				}
 			}
@@ -2648,12 +2654,22 @@ export class Viewport extends View
 			case 'normal':
 				this.args.xOffsetTarget = [0.50, 0.45, 0.50, 0.55][actor.args.mode];
 				this.args.yOffsetTarget = [0.50, 0.50, 0.50, 0.50][actor.args.mode];
-				this.maxCameraBound = 96;
-				cameraSpeed = 24;
+				this.maxCameraBound = actor.args.falling ? 64 : 48;
+				cameraSpeed = 12;
 				if(actor.args.mode === 0)
 				{
 					cameraSpeed = 9;
 				}
+				break;
+
+			case 'walker':
+				const xWalk = 0.50 + (-0.35 * Math.sign(actor.args.direction)) * (actor.args.falling ? 0.65 : 1);
+				const yWalk = 0.50 + (actor.args.falling ? -0.15 : 0);
+				this.args.xOffsetTarget = [xWalk, 0.45, 0.50, 0.55][actor.args.mode];
+				this.args.yOffsetTarget = [yWalk, 0.50, 0.50, 0.50][actor.args.mode];
+				this.maxCameraBound = 96;
+				cameraSpeed = 16;
+
 				break;
 
 			case 'perspective':
@@ -2793,7 +2809,6 @@ export class Viewport extends View
 				cameraSpeed = 25;
 				break;
 		}
-
 
 		const biasModes = ['normal', 'perspective', 'bridge', 'cliff', 'aerial', 'tube', 'hooked', 'cutScene', 'hooked', 'corkscrew'];
 
@@ -2982,7 +2997,7 @@ export class Viewport extends View
 		let x = xNext + dragDistance * Math.cos(angle);
 		let y = yNext + dragDistance * Math.sin(angle);
 
-		if(snapFactor * snapSpeed > 0.01)
+		if(snapFactor * snapSpeed > 0.1)
 		{
 			x = x - snapFactor * Math.cos(angle) * snapSpeed;
 			y = y - snapFactor * Math.sin(angle) * snapSpeed / 2;
@@ -3024,15 +3039,24 @@ export class Viewport extends View
 		this.args.shakeX = Math.abs(this.args.shakeX) < 0.1 ? 0 : this.args.shakeX;
 		this.args.shakeY = Math.abs(this.args.shakeY) < 0.1 ? 0 : this.args.shakeY;
 
+		let xFine = x
+		let yFine = y;
+
 		if(actor.args.dead && !actor.args.respawning)
 		{
-			this.args.x = x + this.args.shakeX;
+			xFine = x + this.args.shakeX;
+
+			this.args.x = Number(xFine.toFixed(3));
 		}
 		else
 		{
-			this.args.x = x + this.args.shakeX;
-			this.args.y = y + this.args.shakeY;
+			xFine = x + this.args.shakeX;
+			yFine = y + this.args.shakeY;
+
+			this.args.x = Number(xFine.toFixed(3));
+			this.args.y = Number(yFine.toFixed(3));
 		}
+
 	}
 
 	applyMotionBlur()
@@ -3883,7 +3907,7 @@ export class Viewport extends View
 			this.args.frozen--;
 		}
 
-		if(this.tallyBoard && !this.args.paused)
+		if(this.tallyBoard && !this.args.paused && this.controlActor)
 		{
 			this.tallyBoard.update(this);
 
@@ -4085,7 +4109,7 @@ export class Viewport extends View
 					{
 						this.args.focusMe.args.hide = 'hide hidden';
 					}
-				})
+				});
 
 				const frameId = this.args.frameId - this.args.startFrameId;
 
@@ -6195,8 +6219,6 @@ export class Viewport extends View
 
 	mousemove(event)
 	{
-		this.args.mouse = 'moved';
-
 		const xOrigin = event.currentTarget.offsetLeft;
 		const yOrigin = event.currentTarget.offsetTop;
 
@@ -6206,7 +6228,15 @@ export class Viewport extends View
 		this.args.xMouseOffset = xMouse;
 		this.args.yMouseOffset = yMouse;
 
-		this.onTimeout(800, () => {
+		this.args.mouse = 'moved';
+
+		if(this.mouseMoveTimeout)
+		{
+			clearTimeout(this.mouseMoveTimeout);
+			this.mouseMoveTimeout = null;
+		}
+
+		this.mouseMoveTimeout = this.onTimeout(800, () => {
 			this.args.mouse = 'hide';
 		});
 	}

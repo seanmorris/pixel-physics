@@ -7,7 +7,7 @@ import { Analytic } from '../lib/Analytic';
 export class Ring extends PointActor
 {
 	template = `<div class  = "point-actor [[type]]">
-		<div class = "sprite" cv-ref = "sprite"></div>
+		<div class = "sprite" cv-ref = "sprite" style = "--spinSpeed:[[spinSpeed]]"></div>
 	</div>`;
 
 	float = -1
@@ -27,7 +27,7 @@ export class Ring extends PointActor
 		this.args.gone    = false;
 		this.args.gravity = 0.40;
 		this.args.delay   = this.args.delay ?? 48;
-
+		this.args.spinSpeed = 1;
 	}
 
 	update()
@@ -108,9 +108,14 @@ export class Ring extends PointActor
 			this.args.y += this.args.height + 1;
 			this.args.ySpeed = Math.abs(this.args.ySpeed) || 8;
 		}
-		else if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x + this.args.xSpeed * this.args.direction, this.args.y + -8, false))
+		else if(this.dropped && !this.attract && this.getMapSolidAt(this.args.x + (this.args.xSpeed || this.xSpeedLast), this.args.y + -8, false))
 		{
 			this.args.xSpeed *= -1;
+		}
+
+		if(this.dropped && age === 30)
+		{
+			this.args.spinSpeed += 0.25;
 		}
 
 		if((this.dropped || this.scattered) && (!this.args.falling || !this.args.ySpeed))
@@ -120,8 +125,14 @@ export class Ring extends PointActor
 			this.args.gSpeed = 0;
 			this.args.x += this.args.xSpeed;
 			this.args.y += this.args.ySpeed;
-			this.args.falling = true;
 			this.args.groundAngle = 0;
+
+			if(!this.args.falling && this.args.spinSpeed < 2.5)
+			{
+				this.args.spinSpeed += 0.25;
+			}
+
+			this.args.falling = true;
 		}
 	}
 

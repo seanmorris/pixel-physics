@@ -91,10 +91,19 @@ export class Orb extends Mixin.from(PointActor)
 
 			if(gSpeed && this.args.groundAngle > 0)
 			{
-				gSpeed += 1.5 * Math.sign(gSpeed);
+				gSpeed += (other.args.rolling ? 1.25 : 0.5) * Math.sign(gSpeed);
 			}
 
 			this.args.gSpeed = gSpeed;
+		}
+
+		if(this.otherSpacing > 256 || moving && this.args.falling)
+		{
+			other.cofocused = null;
+		}
+		else if(other.args.x > this.args.x)
+		{
+			other.cofocused = this;
 		}
 
 		super.update();

@@ -2,14 +2,19 @@
     "compressionlevel": -1,
     "height": 288,
     "infinite": false,
-    "nextlayerid": 12,
-    "nextobjectid": 215,
+    "nextlayerid": 17,
+    "nextobjectid": 442,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
             "value": "overcast"
+        },
+        {
+            "name": "bgm",
+            "type": "string",
+            "value": "STRATORAIL"
         },
         {
             "name": "deathLine",
@@ -214,18 +219,72 @@
             "tilecount": 16,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 6,
+            "firstgid": 5592,
+            "image": "../Sonic/tiles/azure-lake/pumpkin-tree.png",
+            "imageheight": 512,
+            "imagewidth": 192,
+            "margin": 0,
+            "name": "pumpkin-tree",
+            "spacing": 0,
+            "tilecount": 96,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 5688,
+            "image": "../Sonic/tiles/marble/breakable.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "breakable",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 8,
+            "firstgid": 5689,
+            "image": "../bttf2/items.png",
+            "imageheight": 128,
+            "imagewidth": 256,
+            "margin": 0,
+            "name": "items",
+            "spacing": 0,
+            "tilecount": 32,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 5721,
+            "image": "../Sonic/tiles/angel-island/breakable-ground-recolor.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "breakable-ground-recolor",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
     "version": "1.10",
-    "width": 960,
+    "width": 985,
     "types": [
         "barnacle",
         "blastoid",
         "block",
+        "breakable-block",
         "caution-panel",
         "emblem",
+        "emerald",
         "exit-region",
         "grapple-point",
         "grinding-region",

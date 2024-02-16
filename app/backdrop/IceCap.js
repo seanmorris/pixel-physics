@@ -83,7 +83,31 @@ export class IceCap extends Backdrop
 			}
 			, {
 				autoscroll: 0
-				, parallax: 0.9
+				, parallax: 0.1
+				, url:      '/Sonic/backdrop/ice-cap/mountains-1.png'
+				, height:   32
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.11
+				, url:      '/Sonic/backdrop/ice-cap/mountains-4.png'
+				, height:   14
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.12
+				, url:      '/Sonic/backdrop/ice-cap/mountains-3.png'
+				, height:   24
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.13
+				, url:      '/Sonic/backdrop/ice-cap/mountains-2.png'
+				, height:   32
+			}
+			, {
+				autoscroll: 0
+				, parallax: 0.14
 				, url:      '/Sonic/backdrop/ice-cap/mountains-1.png'
 				, height:   32
 			}

@@ -1,5 +1,6 @@
 import { PointActor } from './PointActor';
 import { Sfx } from '../audio/Sfx';
+import { CharacterString } from '../ui/CharacterString';
 
 export class Switch extends PointActor
 {
@@ -10,9 +11,22 @@ export class Switch extends PointActor
 		this.args.type = 'actor-item actor-switch';
 
 		this.args.width  = 32;
-		this.args.height = 10;//this.height = 16;
+		this.args.height = 10;
 
-		// this.args.float  = -1;
+		this.args.label = 'Play';
+
+		this.args.bindTo('label', v => {
+			if(!v)
+			{
+				this.args.charStrings = [];
+			}
+			else
+			{
+				this.label = this.label || new CharacterString({value: ''});
+				this.label.args.value = v;
+				this.args.charStrings = [this.label];
+			}
+		});
 
 		this.removeTimer = null;
 
@@ -46,13 +60,6 @@ export class Switch extends PointActor
 		{
 			return;
 		}
-
-		// if(this.activator && this.activator.args.ySpeed > 0)
-		// {
-		// 	this.activator.args.ySpeed = Math.sign(this.activator.args.ySpeed);
-		// }
-
-
 
 		if(this.args.active)
 		{

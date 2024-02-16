@@ -407,7 +407,10 @@ export class BreakableBlock extends Block
 
 		// this.args.y = this.def.get('y') + 1;
 
-		this.args.active = 0;
+		if(!this.args.latch)
+		{
+			this.args.active = 0;
+		}
 
 		this.broken = false;
 

@@ -127,7 +127,7 @@ export class StarSheild extends Sheild
 
 		viewport.particles.add(particle);
 
-		viewport.onFrameOut(15,() => {
+		viewport.onFrameOut(10,() => {
 			viewport.particles.remove(particle);
 			this.recycle.push(particle);
 		});

@@ -70,6 +70,7 @@ else
 	Bgm.register('UNDERGROUND_ZONE', '/audio/tee-lopes/under-ground-zone-remix.mp3');
 	Bgm.register('MISTY_RUINS', 'audio/neil-voss/extol.mp3');
 	Bgm.register('MANIC_HARBOR', '/audio/bobenshibobsled/1024371_Curse-Ska-Version.mp3');
+	Bgm.register('STRATORAIL', '/audio/PlasmaGlow/1274013_Nitro-by-Plasma-Glow-Neuro.mp3');
 
 	Bgm.register('TITLE_THEME', '/Sonic/carnival-night-zone-act-2-beta.mp3');
 		Bgm.register('TUTORIAL_THEME', '/audio/teravex/1083419_Lowbeat.mp3');

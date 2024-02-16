@@ -43,7 +43,7 @@
 .region.region-shade .region-color-wrapper,
 .region.region-shade .region-filter,
 .region.region-shade .region-filter-wrapper {
-	overflow: hidden;
+	/* overflow: hidden; */
 }
 
 .region.region-shade .region-color,

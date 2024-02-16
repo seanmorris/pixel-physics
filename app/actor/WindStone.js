@@ -86,6 +86,12 @@ export class WindStone extends PointActor
 	{
 		super.update();
 
+		if(!this.carriedBy && !this.args.standingOn)
+		{
+			this.args.inPlace = false;
+			this.args.float = 0;
+		}
+
 		if(this.args.inPlace)
 		{
 			this.args.x += Math.sign(this.args.standingOn.args.x - this.args.x);;

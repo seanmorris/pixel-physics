@@ -269,7 +269,6 @@ export class MainMenu extends Menu
 
 					, 'Agorapolis Zone Act 1 Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, tags: 'new'
 						, suffix: new ZoneSuffix({map: '/map/emerald-isle.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/emerald-isle.json'});
@@ -279,7 +278,6 @@ export class MainMenu extends Menu
 
 					, 'Agorapolis Zone Act 2 Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, tags: 'new'
 						, suffix: new ZoneSuffix({map: '/map/emerald-isle-2.json'}, this.parent)
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/emerald-isle-2.json'});
@@ -334,6 +332,7 @@ export class MainMenu extends Menu
 
 					, 'StratoRail Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
+						, tags: 'new'
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/pumpkin-test.json'});
@@ -343,7 +342,6 @@ export class MainMenu extends Menu
 
 					, 'Toxin Refinery Zone Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, tags: 'new'
 						, subtext: 'Testing art for Moon Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/chemical-test.json'});
@@ -371,7 +369,6 @@ export class MainMenu extends Menu
 
 					, 'Phazon Crater Preview': {
 						characters: ['Sonic', 'Tails', 'Knuckles', 'Robotnik']
-						, tags: 'new'
 						, subtext: 'Testing art for Phazon Crater Zone'
 						, callback: () => {
 							this.parent.loadMap({mapUrl: '/map/phazon-test.json'});

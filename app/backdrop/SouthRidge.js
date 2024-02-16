@@ -10,7 +10,7 @@ export class SouthRidge extends Backdrop
 
 		this.args.strips = [
 			{
-				autoscroll: -0.03
+				autoscroll: -0.06
 				, parallax: 0.11
 				, url:      '/Sonic/backdrop/south-ridge/clouds-10.png'
 				, height:   10
@@ -22,31 +22,31 @@ export class SouthRidge extends Backdrop
 				, height:   10
 			}
 			, {
-				autoscroll: -0.06
+				autoscroll: -0.08
 				, parallax: 0.12
 				, url:      '/Sonic/backdrop/south-ridge/clouds-9.png'
 				, height:   0
 			}
 			, {
-				autoscroll: -0.06
+				autoscroll: -0.16
 				, parallax: 0.12
 				, url:      '/Sonic/backdrop/south-ridge/clouds-9b.png'
 				, height:   8
 			}
 			, {
-				autoscroll: -0.065
+				autoscroll: -0.10
 				, parallax: 0.13
 				, url:      '/Sonic/backdrop/south-ridge/clouds-8.png'
 				, height:   11
 			}
 			, {
 				autoscroll: 0
-				, parallax: 0.11
+				, parallax: 0.13
 				, url:      '/Sonic/backdrop/south-ridge/ridge-b.png'
 				, height:   20
 			}
 			, {
-				autoscroll: -0.07
+				autoscroll: -0.14
 				, parallax: 0.14
 				, url:      '/Sonic/backdrop/south-ridge/clouds-7.png'
 				, height:   11 - 20

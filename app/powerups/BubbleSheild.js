@@ -102,7 +102,7 @@ export class BubbleSheild extends Sheild
 
 	hold_0()
 	{
-		if(this.args.bouncing && this.args.force < 25)
+		if(this.args.bouncing && this.args.force < 16)
 		{
 			this.args.force++;
 		}

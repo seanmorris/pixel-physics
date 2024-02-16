@@ -53,7 +53,7 @@ export class Knuckles extends PointActor
 		this.jumpForceSuper  = 10;
 		this.jumpForceHyper  = 11;
 
-		this.accelNormal = 0.15;
+		this.accelNormal = 0.12;
 		this.accelSuper  = 0.24;
 
 		this.args.accel     = this.accelNormal;

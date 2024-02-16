@@ -3,8 +3,8 @@
 	background-image: url(/Sonic/rings.png);
 	--sprite-offset-x: -16px;
 	--sprite-offset-y: -144px;
-	animation: ringSpin steps(4) infinite;
-	animation-duration: calc(1ms * 295);
+	animation: ringSpin steps(4) infinite reverse;
+	animation-duration: calc(1ms * 295 * var(--spinSpeed, 1));
 	transition: opacity 0.25s ease-in;
 	width: 32px;
 	height: 32px;

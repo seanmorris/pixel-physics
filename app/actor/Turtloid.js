@@ -19,7 +19,9 @@ export class Turtloid extends Block
 
 	updateStart()
 	{
-		if(this.standingUnder.size && (!this.others.guard || this.others.guard.removed))
+		const standingUnder = [...this.standingUnder].filter(a => a.controllable);
+
+		if(standingUnder.length && (!this.others.guard || this.others.guard.removed))
 		{
 			this.otherDefs.path = this.otherDefs.ridePath;
 
@@ -27,7 +29,6 @@ export class Turtloid extends Block
 		else
 		{
 			this.otherDefs.path = null;
-
 		}
 
 		super.updateStart();

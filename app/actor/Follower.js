@@ -188,6 +188,27 @@ export class Follower extends PointActor
 		{
 			this.args.facing = facing;
 		}
+	}
+
+	updateEnd()
+	{
+		const host = this.viewport.controlActor;
+
+		if(!host)
+		{
+			return;
+		}
+
+		let minSpeed = 1;
+
+		const airSpeed = Math.max(
+			Math.abs(host.args.gSpeed)
+			, Math.abs(host.args.xSpeed)
+			, Math.abs(host.args.ySpeed)
+			, minSpeed
+		) * 1.1;
+
+		super.updateEnd(host);
 
 		if(this.args.ySpeed > 0)
 		{
@@ -198,13 +219,11 @@ export class Follower extends PointActor
 
 			if(this.box)
 			{
-				this.box.classList.add('decending');
 				this.box.classList.remove('ascending');
 			}
 		}
 		else if(this.box)
 		{
-			this.box.classList.remove('decending');
 			this.box.classList.add('ascending');
 		}
 	}

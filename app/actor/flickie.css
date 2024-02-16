@@ -16,7 +16,7 @@
 	animation: flickie-flap 0.15s infinite steps(2);
 }
 
-.actor-flickie.decending .sprite {
+.actor-flickie .sprite {
 	background-position: -32px calc(-20px * var(--palletShift));
 }
 

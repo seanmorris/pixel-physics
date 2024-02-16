@@ -19,7 +19,8 @@
 
 	box-sizing: border-box;
 	background-origin: border-box;
-	overflow: hidden;
+	/* overflow: hidden; */
+	contain: strict;
 	transform: scale(-1, 1);
 }
 

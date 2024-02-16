@@ -30,6 +30,7 @@ export class EggWalker extends Vehicle
 		this.args.skidTraction = 0.9;
 
 		this.dustCount = 0;
+		this.latchBooster = false;
 
 		this.args.particleScale = 2;
 
@@ -83,13 +84,15 @@ export class EggWalker extends Vehicle
 	{
 		super.update();
 
+		this.args.cameraMode = 'walker';
+
 		if(this.boosting)
 		{
 			this.args.type = 'actor-item actor-egg-walker egg-walker-boosting';
 
 			if(this.args.ySpeed > 0)
 			{
-				this.args.ySpeed -= 1.25 * ((Math.sin(this.viewport.args.frameId / 10) + 0.9) / 2) + 0.5;
+				this.args.ySpeed -= ((Math.sin(this.viewport.args.frameId / 10) + 0.9) / 2) + 0.5;
 			}
 		}
 		else
@@ -97,7 +100,15 @@ export class EggWalker extends Vehicle
 			this.args.type = 'actor-item actor-egg-walker';
 		}
 
-		this.boosting = false;
+		if(this.yAxis > 0.55)
+		{
+			this.latchBooster = false;
+		}
+
+		if(!this.latchBooster)
+		{
+			this.boosting = false;
+		}
 
 		if(this.yAxis > 0.55 && (!this.xAxis || (this.falling && this.args.ySpeed > 0)))
 		{
@@ -158,7 +169,13 @@ export class EggWalker extends Vehicle
 
 		if(this.yAxis > 0.55)
 		{
+			this.latchBooster = false;
 			return;
+		}
+
+		if(this.yAxis < -0.55)
+		{
+			this.latchBooster = true;
 		}
 
 		this.boosting = true;
@@ -211,11 +228,20 @@ export class EggWalker extends Vehicle
 			, owner: this
 			, xSpeed: this.args.xSpeed || this.args.gSpeed || this.args.direction
 			// , ySpeed: this.args.ySpeed
-			, float:  10
+			, float:  0
 			, strength: 2
 		});
 
-		projectile.impulse(8, trajectory + (direction < 0 ? Math.PI : 0), true);
+		if(!this.crouching)
+		{
+			projectile.impulse(4, trajectory + (direction < 0 ? Math.PI : 0), true);
+			projectile.args.float = 6;
+		}
+		else
+		{
+			projectile.impulse(2, trajectory + (direction < 0 ? Math.PI : 0), true);
+		}
+
 
 		this.viewport.spawn.add({object:projectile});
 		this.viewport.auras.add(projectile);
@@ -237,10 +263,12 @@ export class EggWalker extends Vehicle
 
 	command_0()
 	{
-		 if(!this.crouching)
-		 {
+		this.latchBooster = false;
+
+		if(!this.crouching)
+		{
 			super.command_0();
-		 }
+		}
 
 	}
 
@@ -261,6 +289,18 @@ export class EggWalker extends Vehicle
 		this.viewport.onFrameOut(25, () => {
 			this.punching = false;
 		});
+	}
+
+	command_4()
+	{
+		this.args.direction = -1;
+		this.args.facing = 'left';
+	}
+
+	command_5()
+	{
+		this.args.direction = 1;
+		this.args.facing = 'right';
 	}
 
 	get solid() { return !this.occupant; }

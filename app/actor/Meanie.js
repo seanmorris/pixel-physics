@@ -172,18 +172,15 @@ export class Meanie extends Mixin.from(PointActor, CanPop)
 				this.hat = null;
 			});
 
-			if(!other.args.rolling)
+			if(other && !other.args.rolling)
 			{
-				if(other)
-				{
-					this.ignores.set(other, 10);
+				this.ignores.set(other, 10);
 
-					other.args.gSpeed *= -1;
-					other.args.xSpeed *= -1;
-					other.args.ySpeed = -4;
+				other.args.gSpeed *= -1;
+				other.args.xSpeed *= -1;
+				other.args.ySpeed = -4;
 
-					other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
-				}
+				other.args.xSpeed = Math.min(Math.abs(other.args.xSpeed), 6) * Math.sign(other.args.xSpeed);
 
 				return;
 			}

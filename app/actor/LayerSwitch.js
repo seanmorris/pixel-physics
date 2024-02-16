@@ -41,6 +41,8 @@ export class LayerSwitch extends PointActor
 		let back  = !!Number(this.args.back);
 		let roll  = !!Number(this.args.roll);
 
+		other.collisionMapFrame = -1;
+
 		const invert = (other.args.mode === 2 || other.args.mode === 3) ? -1 : 1;
 
 		const radius = this.args.width / 2;

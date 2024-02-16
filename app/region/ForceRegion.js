@@ -1,7 +1,4 @@
 import { Region } from "./Region";
-
-import { Tag } from 'curvature/base/Tag';
-
 export class ForceRegion extends Region
 {
 	constructor(args, parent)
@@ -23,9 +20,9 @@ export class ForceRegion extends Region
 			this.originalHeight = this.args.height;
 		}
 
-		if(this.switch && this.switch.args.active > 0 && !this.args.active)
+		if(this.switch)
 		{
-			this.args.active = true;
+			this.args.active = this.switch.args.active > 0;
 		}
 
 		super.update();

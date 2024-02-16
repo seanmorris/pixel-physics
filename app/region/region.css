@@ -99,7 +99,7 @@
 
 .region.region-shade .region-filter-wrapper,
 .region.region-water .region-filter-wrapper {
-	overflow: hidden;
+	/* overflow: hidden; */
 	position: absolute;
 	left:   0;
 	right:  0;

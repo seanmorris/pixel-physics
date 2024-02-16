@@ -73,7 +73,9 @@ export class ExitRegion extends Region
 
 			if(viewport.replay)
 			{
-				viewport.quit(2);
+				const t = tally || viewport.clearAct(`${other.args.name} GOT THROUGH\n${viewport.args.actName}`, false);
+
+				t.addEventListener('done', event => viewport.quit(2));
 			}
 			else if(this.args.nextStage)
 			{

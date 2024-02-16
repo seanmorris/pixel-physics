@@ -69,9 +69,9 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 				}
 
 				this.lightning.style({
-					'--x': tiedTo.args.x
-					, '--y': tiedTo.args.y
-					, 'height': (this.args.ropeLength * 2) + 'px'
+					'--x': (tiedTo.args.x + this.args.x) / 2
+					, '--y': (tiedTo.args.y + this.args.y) / 2
+					, 'height': (this.args.distance - this.args.height) + 'px'
 					, '--angle': -this.args.groundAngle
 				});
 			}

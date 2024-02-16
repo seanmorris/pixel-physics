@@ -3,7 +3,7 @@
     "height": 424,
     "infinite": false,
     "nextlayerid": 19,
-    "nextobjectid": 2201,
+    "nextobjectid": 2207,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -293,13 +293,6 @@
         "switch-region",
         "unbreakable-crate",
         "wooden-crate"
-    ],
-    "emblems": [
-        2118,
-        2122,
-        2123,
-        2124,
-        2127
     ],
     "map": "/map/empty-zone-2.json"
 }

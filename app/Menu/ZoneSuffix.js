@@ -9,7 +9,6 @@ export class ZoneSuffix extends View
 		<!-- <div class = "checkpoint"></div> -->
 		<div class = "rings">[[rings]]</div>
 		<div class = "time">[[time]]</div>
-		<div class = "air">[[air]]</div>
 		<div class = "score">[[score]]</div>
 	</div>
 	<div class = "row">

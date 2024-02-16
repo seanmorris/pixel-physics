@@ -2,8 +2,8 @@
     "compressionlevel": -1,
     "height": 424,
     "infinite": false,
-    "nextlayerid": 17,
-    "nextobjectid": 3591,
+    "nextlayerid": 19,
+    "nextobjectid": 3597,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -48,7 +48,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.7.1",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -207,21 +207,21 @@
             "tilewidth": 32
         },
         {
-            "columns": 4,
+            "columns": 6,
             "firstgid": 6636,
             "image": "../Sonic/tiles/common.png",
-            "imageheight": 32,
-            "imagewidth": 128,
+            "imageheight": 64,
+            "imagewidth": 192,
             "margin": 0,
             "name": "common",
             "spacing": 0,
-            "tilecount": 4,
+            "tilecount": 12,
             "tileheight": 32,
             "tilewidth": 32
         },
         {
             "columns": 1,
-            "firstgid": 6640,
+            "firstgid": 6648,
             "image": "../Sonic/wooden-crate.png",
             "imageheight": 64,
             "imagewidth": 64,
@@ -235,7 +235,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": "1.6",
+    "version": "1.10",
     "width": 3664,
     "types": [
         "",

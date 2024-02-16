@@ -8,7 +8,7 @@
     },
     "height": 144,
     "infinite": false,
-    "nextlayerid": 14,
+    "nextlayerid": 15,
     "nextobjectid": 180,
     "orientation": "orthogonal",
     "properties": [
@@ -179,6 +179,5 @@
         "tumbler",
         "wind-stone"
     ],
-    "emblems": [],
     "map": "/map/test-arena.json"
 }

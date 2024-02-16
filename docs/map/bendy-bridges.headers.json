@@ -1,10 +1,5 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 128,
     "infinite": false,
     "nextlayerid": 15,
@@ -19,7 +14,7 @@
         {
             "name": "theme",
             "type": "string",
-            "value": "construct"
+            "value": "none"
         },
         {
             "name": "titlecard-author",
@@ -43,7 +38,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -204,7 +199,7 @@
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.10",
     "width": 512,
     "types": [
         "block",

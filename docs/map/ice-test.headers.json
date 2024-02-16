@@ -1,14 +1,9 @@
 {
     "compressionlevel": -1,
-    "editorsettings": {
-        "export": {
-            "target": "."
-        }
-    },
     "height": 128,
     "infinite": false,
-    "nextlayerid": 10,
-    "nextobjectid": 12,
+    "nextlayerid": 13,
+    "nextobjectid": 13,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -28,7 +23,7 @@
         }
     ],
     "renderorder": "right-down",
-    "tiledversion": "1.4.3",
+    "tiledversion": "1.10.1",
     "tileheight": 32,
     "tilesets": [
         {
@@ -121,11 +116,37 @@
             "tilecount": 32,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 2357,
+            "image": "../Sonic/tiles/hill-top-zone/pine.png",
+            "imageheight": 160,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "pine",
+            "spacing": 0,
+            "tilecount": 20,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 2377,
+            "image": "../Sonic/tiles/hill-top-zone/christmas-pine.png",
+            "imageheight": 192,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "christmas-pine",
+            "spacing": 0,
+            "tilecount": 24,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
     "type": "map",
-    "version": 1.4,
+    "version": "1.10",
     "width": 320,
     "types": [
         "",

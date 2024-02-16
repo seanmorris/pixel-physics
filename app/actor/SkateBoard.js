@@ -29,7 +29,7 @@ export class SkateBoard extends SnowBoard
 		this.args.trick = null;
 		this.args.seatAngle = 0;
 
-		this.args.gSpeedMax = 18;
+		this.args.gSpeedMax = 36;
 
 		this.trickTimer = 0;
 

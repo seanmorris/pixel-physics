@@ -22,3 +22,8 @@
 .actor-item.actor-switch.actor-heavy-duty-switch[data-active=true] .sprite {
 	--sprite-offset-x: -32px;
 }
+
+.actor-switch .labels {
+	position: relative;
+	top: -8em;
+}

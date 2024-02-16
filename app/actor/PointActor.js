@@ -165,6 +165,7 @@ export class PointActor extends View
 		this.args.canHide = false;
 
 		this.collisionMap = null;
+		this.collisionMapFrame = -1;
 		this.doorMap = new Map;
 
 		this.args.opacity = this.args.opacity ?? 1;
@@ -1127,40 +1128,43 @@ export class PointActor extends View
 			}
 			else if(!this.args.falling || this.getMapSolidAt(this.args.x, this.args.y + 24))
 			{
-				const forwardSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 2);
-				const forwardDeepSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 96);
-				const underSolid   = this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 48);
+				// const forwardSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 2);
+				// const forwardDeepSolid = this.getMapSolidAt(this.args.x + 32 * this.args.direction, this.args.y + 96);
+				// const underSolid   = this.getMapSolidAt(this.args.x + 0  * this.args.direction, this.args.y + 48);
 
-				if(this.args.mode === MODE_FLOOR && this.args.groundAngle === 0)
-				{
-					if(Math.abs(this.args.groundAngle) < Math.PI / 4)
-					{
-						const standBias = this.args.standingOn
-							? this.args.standingOn.args.cameraBias
-							: 0;
+				// if(this.args.mode === MODE_FLOOR && this.args.groundAngle === 0)
+				// {
+				// 	if(Math.abs(this.args.groundAngle) < Math.PI / 4)
+				// 	{
+				// 		const standBias = this.args.standingOn
+				// 			? this.args.standingOn.args.cameraBias
+				// 			: 0;
 
-						if(!standBias && !underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
-						{
-							this.args.cameraMode = 'bridge';
-						}
-						else if(!standBias && !forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
-						{
-							this.args.cameraMode = 'cliff';
-						}
-						else
-						{
-							this.args.cameraMode = 'normal';
-						}
-					}
-					else
-					{
-						this.args.cameraMode = 'normal';
-					}
-				}
-				else
-				{
-					this.args.cameraMode = 'normal';
-				}
+				// 		if(!standBias && !underSolid && forwardSolid && !this.args.grinding && !this.args.skimming)
+				// 		{
+				// 			// this.args.cameraMode = 'bridge';
+				// 			this.args.cameraMode = 'normal';
+				// 		}
+				// 		else if(!standBias && !forwardSolid && !forwardDeepSolid && !this.args.grinding && !this.args.skimming)
+				// 		{
+				// 			// this.args.cameraMode = 'cliff';
+				// 			this.args.cameraMode = 'normal';
+				// 		}
+				// 		else
+				// 		{
+				// 			this.args.cameraMode = 'normal';
+				// 		}
+				// 	}
+				// 	else
+				// 	{
+				// 		this.args.cameraMode = 'normal';
+				// 	}
+				// }
+				// else
+				// {
+				// 	this.args.cameraMode = 'normal';
+				// }
+				this.args.cameraMode = 'normal';
 			}
 			else
 			{
@@ -1171,7 +1175,7 @@ export class PointActor extends View
 						this.args.cameraMode = 'normal';
 					}
 				}
-				else if(this.fallTime > 15)
+				else if(this.fallTime > 45)
 				{
 					if(this.args.cameraMode !== 'panning' && (this.args.cameraMode !== 'popping' || this.args.ySpeed > 10))
 					{
@@ -2980,6 +2984,7 @@ export class PointActor extends View
 
 				ring.args.width  = 16;
 				ring.args.height = 16;
+				ring.args.spinSpeed = 0.25;
 
 				ring.dropped = true;
 
@@ -3259,6 +3264,13 @@ export class PointActor extends View
 			return this.collisionMap;
 		}
 
+		if(this.collisionMapFrame === this.viewport.args.frameId)
+		{
+			return this.collisionMap;
+		}
+
+		this.collisionMapFrame = this.viewport.args.frameId;
+
 		for(const layer of this.collisionMap.keys())
 		{
 			if(layer.name === 'Collision 0')
@@ -3278,13 +3290,13 @@ export class PointActor extends View
 			}
 			else if(layer.name.substr(0, 8) === 'Platform' || layer.name.substr(0, 8) === 'Grinding')
 			{
-				if(this.args.ySpeed >= 0)
+				if(this.args.ySpeed < 0 || (this.args.mode === 3 && this.args.gSpeed > 0) || (this.args.mode === 1 && this.args.gSpeed < 0))
 				{
-					this.collisionMap.set(layer, true);
+					this.collisionMap.set(layer, false);
 				}
 				else
 				{
-					this.collisionMap.set(layer, false);
+					this.collisionMap.set(layer, true);
 				}
 
 				if(this.viewport.tileMap.getSolid(this.args.x + 16, this.args.y + -16, layer.index)
