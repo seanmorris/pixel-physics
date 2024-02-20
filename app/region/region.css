@@ -4,6 +4,7 @@
 	--widthNx: calc(-1px * var(--width));
 	--heightNx: calc(-1px * var(--height));
 	display: contents;
+	z-index: calc(10000 + var(--z, 0));
 }
 
 .region.bg-region-shade {
@@ -63,7 +64,7 @@
 .region.region-toxic .region-color-wrapper,
 .region.region-phazon .region-color-wrapper,
 .region.region-lava .region-color-wrapper {
-	overflow: hidden;
+
 	position: absolute;
 	left:    0;
 	right:   0;
@@ -99,6 +100,7 @@
 
 .region.region-shade .region-filter-wrapper,
 .region.region-water .region-filter-wrapper {
+	contain: strict;
 	/* overflow: hidden; */
 	position: absolute;
 	left:   0;

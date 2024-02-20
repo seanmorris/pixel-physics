@@ -88,7 +88,7 @@
 }
 
 .emblem-hud img:last-child:not(.existing) {
-	animation: emblem-spin 2s ease-out 1, emblem-flicker 0.125s ease-in-out 14 backwards;
+	animation: emblem-spin 2s ease-out 1, emblem-flicker 0.125s ease-in-out 14 backwards;;
 }
 
 @keyframes emblem-spin {
@@ -96,7 +96,7 @@
 		transform: rotateY(calc(360deg * 7)) scale(2.5);
 	}
 	100% {
-		transform: rotateY(0deg) scale(1);
+		transform: rotateY(0deg) scale(1) translateZ(1px);
 	}
 }
 

@@ -10,26 +10,44 @@ export class SouthRidge extends Backdrop
 
 		this.args.strips = [
 			{
-				autoscroll: -0.06
+				autoscroll: 0
+				, parallax: 0
+				, url:      '/Sonic/backdrop/south-ridge/sky-0.png'
+				, height:   192
+			}
+			, {
+				autoscroll: -0.05
 				, parallax: 0.11
 				, url:      '/Sonic/backdrop/south-ridge/clouds-10.png'
-				, height:   10
-			}
-			, {
-				autoscroll: 0
-				, parallax: 0.1
-				, url:      '/Sonic/backdrop/south-ridge/ridge.png'
-				, height:   10
-			}
-			, {
-				autoscroll: -0.08
-				, parallax: 0.12
-				, url:      '/Sonic/backdrop/south-ridge/clouds-9.png'
 				, height:   0
 			}
 			, {
-				autoscroll: -0.16
+				autoscroll: 0
+				, parallax: 0.115
+				, url:      '/Sonic/backdrop/south-ridge/ridge.png'
+				, height:   0
+			}
+			, {
+				autoscroll: -0.06
 				, parallax: 0.12
+				, url:      '/Sonic/backdrop/south-ridge/clouds-9.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.07
+				, parallax: 0.125
+				, url:      '/Sonic/backdrop/south-ridge/clouds-9b.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.08
+				, parallax: 0.13
+				, url:      '/Sonic/backdrop/south-ridge/clouds-9.png'
+				, height:   8
+			}
+			, {
+				autoscroll: -0.09
+				, parallax: 0.135
 				, url:      '/Sonic/backdrop/south-ridge/clouds-9b.png'
 				, height:   8
 			}
@@ -41,15 +59,15 @@ export class SouthRidge extends Backdrop
 			}
 			, {
 				autoscroll: 0
-				, parallax: 0.13
+				, parallax: 0.12
 				, url:      '/Sonic/backdrop/south-ridge/ridge-b.png'
-				, height:   20
+				, height:   10
 			}
 			, {
 				autoscroll: -0.14
 				, parallax: 0.14
 				, url:      '/Sonic/backdrop/south-ridge/clouds-7.png'
-				, height:   11 - 20
+				, height:   -1
 			}
 			, {
 				autoscroll: -0.075
@@ -102,6 +120,66 @@ export class SouthRidge extends Backdrop
 			, {
 				autoscroll: -0.175
 				, parallax: 0.23
+				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.2
+				, parallax: 0.24
+				, url:      '/Sonic/backdrop/south-ridge/clouds-1.png'
+				, height:   15
+			}
+			, {
+				autoscroll: -0.225
+				, parallax: 0.25
+				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.25
+				, parallax: 0.26
+				, url:      '/Sonic/backdrop/south-ridge/clouds-1.png'
+				, height:   15
+			}
+			, {
+				autoscroll: -0.23
+				, parallax: 0.27
+				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.26
+				, parallax: 0.28
+				, url:      '/Sonic/backdrop/south-ridge/clouds-1.png'
+				, height:   15
+			}
+			, {
+				autoscroll: -0.24
+				, parallax: 0.29
+				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.27
+				, parallax: 0.29
+				, url:      '/Sonic/backdrop/south-ridge/clouds-1.png'
+				, height:   15
+			}
+			, {
+				autoscroll: -0.25
+				, parallax: 0.31
+				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
+				, height:   16
+			}
+			, {
+				autoscroll: -0.28
+				, parallax: 0.30
+				, url:      '/Sonic/backdrop/south-ridge/clouds-1.png'
+				, height:   15
+			}
+			, {
+				autoscroll: -0.26
+				, parallax: 0.32
 				, url:      '/Sonic/backdrop/south-ridge/clouds-0.png'
 				, height:   16
 			}

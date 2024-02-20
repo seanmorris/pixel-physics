@@ -221,6 +221,7 @@ section.filters {
 	width: calc(100% / var(--scale));
 	height: calc(100% / var(--scale));
 	transform-origin: top left;
+	transform-style: flat !important;
 }
 
 .viewport-overlay .hud-character-string {
@@ -230,6 +231,35 @@ section.filters {
 .viewport-overlay {
 	transform: scale(var(--scale));
 	transition: transform var(--scale-transition);
+}
+
+.viewport > * {
+	perspective: 384px;
+}
+
+.viewport * {
+	transform-style: preserve-3d;
+}
+
+.viewport-tilt {
+	--tilt: calc(5deg * var(--yDelta, 0));
+	--tilt: 45deg;
+	--tilt: -15deg;
+	--tilt: 0deg;
+	/* transform: rotateX( min(20deg, max(-20deg, var(--tilt, 0deg))) ); */
+	/* transform: rotateX( min(90deg, max(-90deg, var(--tilt, 0deg))) ); */
+	transform: rotateX( var(--tilt, 0deg) );
+	transition: all 1s ease-in-out;
+}
+
+.viewport-tilt, .viewport-content {
+	width: 100%;
+	height: 100%;
+}
+
+.viewport-zoom {
+	/* perspective: 128px; */
+	/* transform-style: preserve-3d; */
 }
 
 .viewport-double-zoom {
@@ -267,7 +297,7 @@ section.filters {
 
 .viewport .filters,
 .viewport-content {
-	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
+	/* transform: translate(calc(1px * var(--x)), calc(1px * var(--y))); */
 }
 
 /*.viewport .point-actor:not(.region):not(.actor-water-fall):not(.actor-water-jet) canvas,*/

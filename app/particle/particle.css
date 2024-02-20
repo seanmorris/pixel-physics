@@ -1,8 +1,15 @@
 .viewport-particles > * {
 	position: absolute;
-	left: calc(1px * var(--x));
-	top: calc(1px * var(--y));
-	transform: translate(-50%, -50%) rotate(calc(var(--angle, 0) * 1rad ));
+	left: 0!important;
+	top: 0!important;
+	--base-transform:
+		translate(-50%, -50%)
+		translate(
+			calc(1px * calc(var(--x) + var(--xPos)) )
+			, calc(1px * calc(var(--y) + var(--yPos)) )
+		)
+		rotate(calc(var(--angle, 0) * 1rad ));
+	transform: var(--base-transform);
 	filter:url(#motionBlur);
 }
 

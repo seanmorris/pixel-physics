@@ -1018,7 +1018,7 @@ export class Platformer
 
 				const radius = host.args.width * 0.5;
 
-				while(host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x + -radius, host.args.y - host.args.height * 0.5)
 					&& !host.getMapSolidAt(host.args.x + radius + 1, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
@@ -1026,8 +1026,8 @@ export class Platformer
 					popOut--;
 				}
 
-				while(host.getMapSolidAt(host.args.x + radius + -1, host.args.y - host.args.height * 0.5)
-					&& !host.getMapSolidAt(host.args.x - radius, host.args.y - host.args.height * 0.5)
+				while(host.getMapSolidAt(host.args.x + radius, host.args.y - host.args.height * 0.5)
+					&& !host.getMapSolidAt(host.args.x + -radius + -1, host.args.y - host.args.height * 0.5)
 					&& popOut > 0
 				){
 					host.args.x -= 1;
@@ -1722,7 +1722,7 @@ export class Platformer
 			// const scanDist  = radius + Math.abs(host.args.gSpeed);
 			const direction = Math.sign(host.args.gSpeed || host.args.direction);
 
-			const max  = Math.abs(host.args.gSpeed);
+			const max  = Math.abs(host.args.gSpeed) + host.args.gForce;
 			const step = 1;
 
 			host.pause(true);
@@ -2442,11 +2442,11 @@ export class Platformer
 				}
 				else if(!host.stayStuck)
 				{
-					if(slopeFactor > 0.25)
+					if(slopeFactor > 0.125)
 					{
 						if(Math.abs(host.args.gSpeed) < host.args.gSpeedMax * 2)
 						{
-							host.args.gSpeed += 0.125 * slopeFactor * direction;
+							host.args.gSpeed += 0.25 * slopeFactor * direction;
 
 							if(Math.abs(host.args.gSpeed) < 2 && Math.abs(Math.sign(host.args.gSpeed) - Math.sign(direction)) < 2)
 							{

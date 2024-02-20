@@ -329,6 +329,7 @@ export class PointActor extends View
 		this.args.heading   = 0;
 
 		this.args.gSpeed = this.args.gSpeed || 0;
+		this.args.gForce = this.args.gForce || 0;
 		this.args.hSpeed = 0;
 		this.args.xSpeed = this.args.xSpeed || 0;
 		this.args.ySpeed = this.args.ySpeed || 0;
@@ -545,6 +546,11 @@ export class PointActor extends View
 				}
 
 				prevGroundObject.standingUnder && prevGroundObject.standingUnder.delete(this);
+			}
+
+			if(!this.viewport)
+			{
+				return;
 			}
 
 			const Switch = this.viewport.objectPalette['switch'];
@@ -851,6 +857,8 @@ export class PointActor extends View
 
 	updateStart()
 	{
+		this.args.gForce = 0;
+
 		if((this.isSuper || this.isHyper) && !this.args.currentSheild instanceof SuperSheild)
 		{
 			const superSheild = new SuperSheild;

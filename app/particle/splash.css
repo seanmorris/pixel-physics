@@ -1,5 +1,5 @@
 .particle-splash {
-	transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
+	transform:  var(--base-transform) translate(0%, -6px) scale(var(--particleScale, 1));
 	transform-origin: bottom center;
 	background-image: url(/Sonic/splash.png);
 	width: 32px;

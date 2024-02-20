@@ -61,6 +61,8 @@ import { SheildElectricMonitor } from './actor/monitor/SheildElectricMonitor';
 import { Bumper } from './actor/Bumper';
 import { Flipper } from './actor/Flipper';
 import { SeeSaw } from './actor/SeeSaw';
+import { Windmill } from './actor/Windmill';
+import { Fan } from './actor/Fan';
 
 import { Cinematic } from './actor/Cinematic';
 import { Tumbler } from './actor/Tumbler';
@@ -284,6 +286,10 @@ import { StoneAltar } from './actor/StoneAltar';
 import { BouncyMushroom } from './actor/BouncyMushroom';
 import { NitroBooster } from './actor/NitroBooster';
 import { LavaBall } from './actor/LavaBall';
+import { Propeller } from './actor/Propeller';
+import { GlassSphere } from './actor/GlassSphere';
+import { DropTarget } from './actor/DropTarget';
+import { BoostPole } from './actor/BoostPole';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -314,6 +320,9 @@ export const ObjectPalette = {
 	, 'bumper':       Bumper
 	, 'flipper':      Flipper
 	, 'see-saw':      SeeSaw
+	, 'propeller':    Propeller
+	, 'windmill':     Windmill
+	, 'fan':          Fan
 	, 'drill-car':    DrillCar
 	, 'rail-car':     RailCar
 	, 'tornado':      Tornado
@@ -468,6 +477,9 @@ export const ObjectPalette = {
 	, 'rolling-sign': RollingSign
 	, 'bell': Bell
 	, 'torch': Torch
+	, 'glass-sphere': GlassSphere
+	, 'drop-target': DropTarget
+	, 'boost-pole': BoostPole
 	, 'light-source': LightSource
 	, 'orb': Orb
 	, 'orb-small': OrbSmall

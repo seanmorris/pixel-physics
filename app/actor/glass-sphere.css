@@ -1,0 +1,13 @@
+.actor-item.actor-glass-sphere .sprite {
+	transition: transform 100ms ease-out;
+	background-image: url(/Sonic/glass-sphere.png);
+	width: 32px;
+	height: 32px;
+}
+
+.actor-item.actor-glass-sphere.actor-glass-sphere-active .sprite {
+	transition: transform 0ms;
+	transform: translate(-50%, calc(-100% - var(--hoverWidth))) scale(1.25) rotate(calc(-1rad * var(--display-angle))) !important;
+	transform-origin: 50% 50%;
+	background-position-x: -32px;
+}

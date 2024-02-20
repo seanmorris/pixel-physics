@@ -3,15 +3,28 @@
 .point-actor,
 .point-actor-filter {
 	position: absolute;
-	left: calc(1px * var(--x));
-	top: calc(1px * var(--y));
+	/* left: 0!important; */
+	/* top: 0!important; */
 
-	/*--position: translate(calc(1px * var(--x)), calc(1px * var(--y)));*/
+	/* left: calc(1px * calc(var(--x) + var(--xPos)) );
+	top:  calc(1px * calc(var(--y) + var(--yPos)) ); */
 
-	/*transform: var(--position);*/
+
+	--p-tilt: 0deg;
+	--p-tilt: max(-0deg, var(--tilt, 0deg));
+
+	/* transform: translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) rotateX( calc(-1 * var(--p-tilt, 0deg)) ); */
+
+	transform: translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) translateZ( 0px );
+
 	backface-visibility: hidden;
 
-	/*--outlineWidth:    var(--outlineWidth, 0px);*/
 	--outlineWidthNeg: calc(-1 * var(--outlineWidth));
 	--hoverWidth:      calc(2px + var(--outlineWidthNeg));
 	--outlineColor:    rgba(0,0,0,1);
@@ -221,11 +234,13 @@
 }
 
 .actor-item[data-mode="0"] .sprite {
-	transform: translate(-50%, calc(-100% + 1px));
+	--base-transform: translate(-50%, calc(-100% + 1px));
+	transform: var(--base-transform);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="0"] .sprite {
-	transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle)));
+	--base-transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle)));
+	transform: var(--base-transform);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="1"] .sprite {

@@ -1,6 +1,8 @@
 import { PointActor } from './PointActor';
 import { Sfx } from '../audio/Sfx';
 
+const willShoot = Symbol('willShoot');
+
 export class BoostRing extends PointActor
 {
 	constructor(...args)
@@ -29,6 +31,11 @@ export class BoostRing extends PointActor
 
 	collideA(other)
 	{
+		if(other[willShoot])
+		{
+			return;
+		}
+
 		if(!other.controllable || this.shooting.has(other) || other.args.mercy > 120)
 		{
 			return;
@@ -52,10 +59,14 @@ export class BoostRing extends PointActor
 		other.args.flying = false;
 
 		this.shooting.add(other);
+		other[willShoot] = true;
 
-		this.viewport.onFrameOut(4, () => other.impulse(this.args.power, this.args.pointing, true));
+		this.viewport.onFrameOut(7, () => other.impulse(this.args.power, this.args.pointing, true));
 		this.viewport.onFrameOut(2, () => Sfx.play('BOOST_RING'));
-		this.viewport.onFrameOut(10, () => this.shooting.delete(other));
+		this.viewport.onFrameOut(12, () => {
+			this.shooting.delete(other);
+			delete other[willShoot];
+		});
 	}
 
 	get solid() { return false; }

@@ -9,13 +9,13 @@
     "height": 144,
     "infinite": false,
     "nextlayerid": 15,
-    "nextobjectid": 180,
+    "nextobjectid": 372,
     "orientation": "orthogonal",
     "properties": [
         {
             "name": "backdrop",
             "type": "string",
-            "value": "city"
+            "value": "south-ridge"
         },
         {
             "name": "theme",
@@ -156,6 +156,71 @@
             "tilecount": 1024,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4531,
+            "image": "../Sonic/marble-zone-block.png",
+            "imageheight": 32,
+            "imagewidth": 32,
+            "margin": 0,
+            "name": "marble-zone-block",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 1,
+            "firstgid": 4532,
+            "image": "../Sonic/wooden-crate.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "wooden-crate",
+            "spacing": 0,
+            "tilecount": 1,
+            "tileheight": 64,
+            "tilewidth": 64
+        },
+        {
+            "columns": 2,
+            "firstgid": 4533,
+            "image": "../custom/steel-crate.png",
+            "imageheight": 64,
+            "imagewidth": 64,
+            "margin": 0,
+            "name": "steel-crate",
+            "spacing": 0,
+            "tilecount": 4,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 13,
+            "firstgid": 4537,
+            "image": "../Sonic/tiles/wing-fortress/industrial.png",
+            "imageheight": 576,
+            "imagewidth": 416,
+            "margin": 0,
+            "name": "industrial",
+            "spacing": 0,
+            "tilecount": 234,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 4,
+            "firstgid": 4771,
+            "image": "../custom/windmill.png",
+            "imageheight": 128,
+            "imagewidth": 128,
+            "margin": 0,
+            "name": "windmill",
+            "spacing": 0,
+            "tilecount": 16,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -163,9 +228,17 @@
     "version": "1.10",
     "width": 1024,
     "types": [
+        "block3d",
+        "boost-pole",
+        "bumper",
         "catakiller",
         "dolphin",
+        "drop-target",
+        "emerald",
+        "fan",
+        "glass-sphere",
         "layer-switch",
+        "propeller",
         "region",
         "ring",
         "sheild-electric-monitor",
@@ -174,10 +247,12 @@
         "skate-board",
         "sliding-region",
         "spinning-float",
+        "spring",
         "techno-squeak",
         "triple-ring-monitor",
         "tumbler",
-        "wind-stone"
+        "wind-stone",
+        "windmill"
     ],
     "map": "/map/test-arena.json"
 }

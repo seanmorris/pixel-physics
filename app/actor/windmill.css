@@ -1,0 +1,23 @@
+.actor-windmill .sprite {
+	background-image: url(/custom/windmill.png);
+	width: 128px;
+	height: 128px;
+	top: 1px;
+	transform-origin: 50% 50%;
+	transform: var(--base-transform) translateY(48px) !important;
+	transition: none;
+}
+
+.actor-windmill-spinning .sprite {
+	transform: var(--base-transform) translateY(48px) rotate(-360deg) !important;
+	transition: transform 0.48s ease-in;
+}
+
+.actor-windmill-spinning-back .sprite {
+	transform: var(--base-transform) translateY(48px) rotate(360deg) !important;
+	transition: transform 0.48s ease-in;
+}
+
+.actor-windmill-column {
+	display: none;
+}

@@ -921,21 +921,25 @@ export class Viewport extends View
 		this.args.height = 32 * 9;
 
 		this.args.bindTo('tileScale', v => {
-			this.args.width  = 32 * 16 * v;
-			this.args.height = 32 * 9 * v;
+
+			const x = 16;
+			const y = 9;
+
+			this.args.width  = 32 * x * v;
+			this.args.height = 32 * y * v;
 
 			if(this.args.layers)
 			for(const layer of this.args.layers)
 			{
-				layer.args.width  = 32 * 16 * v;
-				layer.args.height = 32 * 9 * v;
+				layer.args.width  = 32 * x * v;
+				layer.args.height = 32 * y * v;
 			}
 
 			if(this.args.fgLayers)
 			for(const layer of this.args.fgLayers)
 			{
-				layer.args.width  = 32 * 16 * v;
-				layer.args.height = 32 * 9 * v;
+				layer.args.width  = 32 * x * v;
+				layer.args.height = 32 * y * v;
 			}
 
 			this.fitScale();
@@ -968,6 +972,11 @@ export class Viewport extends View
 
 		this.args.x = this.args.x || 0;
 		this.args.y = this.args.y || 0;
+
+		this.args.xDelta = this.args.x || 0;
+		this.args.yDelta = this.args.y || 0;
+
+		this.args.yDeltaDecay = 0;
 
 		// this.args.bindTo(['x','y'], (v, k, t) => isNaN(v) && console.trace(k, v));
 		// this.args.bindTo(['xOffset', 'xOffsetTarget'], (v, k, t) => isNaN(v) && console.trace(k, v));
@@ -3042,6 +3051,9 @@ export class Viewport extends View
 		let xFine = x
 		let yFine = y;
 
+		const prevX = this.args.x;
+		const prevY = this.args.y;
+
 		if(actor.args.dead && !actor.args.respawning)
 		{
 			xFine = x + this.args.shakeX;
@@ -3057,6 +3069,14 @@ export class Viewport extends View
 			this.args.y = Number(yFine.toFixed(3));
 		}
 
+		this.args.yDelta = this.args.y - prevY;
+
+		if(Math.abs(this.args.yDelta) > 12)
+		{
+			this.args.yDeltaDecay += 0.75 * Math.sign(this.args.yDelta);
+		}
+
+		this.args.yDeltaDecay *= 0.85;
 	}
 
 	applyMotionBlur()
@@ -3148,11 +3168,15 @@ export class Viewport extends View
 		}
 
 		this.tags.content.style({
-			'--x': this.args.x
-			, '--y': this.args.y
+			'--xPos': this.args.x
+			, '--yPos': this.args.y
 			, '--xPerspective': this.args.xPerspective
 			, '--outlineWidth': this.settings.outline + 'px'
 		});
+
+		// this.tags.tilt.style({
+		// 	'--yDelta': this.args.yDeltaDecay
+		// });
 
 		const xMod = this.args.x <= 0
 			? (this.args.x % (this.args.blockSize))

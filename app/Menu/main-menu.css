@@ -772,7 +772,7 @@ li:not(.focused) .character-preview .character {
 
 .emeralds img {
 	position: absolute;
-	transform: translate(calc(var(--x) * 28px), calc(var(--y) * 8px));
+	transform: translate(calc(var(--x) * 28px), calc(var(--y) * 8px)) translateZ(calc(var(--y) * 0.1px));
 	z-index: calc(var(--y) * 10);
 
 	filter:

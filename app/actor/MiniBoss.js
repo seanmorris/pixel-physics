@@ -363,7 +363,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 	{
 		if(this.args.hitPoints <= 0)
 		{
-			this.viewport.controlActor.screenLock = null;
+			// this.viewport.controlActor.screenLock = null;
 			return;
 		}
 
@@ -380,7 +380,7 @@ export class MiniBoss extends Mixin.from(PointActor)
 
 		if(this.args.hitPoints <= 0)
 		{
-			this.viewport.controlActor.screenLock = null;
+			// this.viewport.controlActor.screenLock = null;
 		}
 
 		this.args.damagers.set(other, this.args.frameId);

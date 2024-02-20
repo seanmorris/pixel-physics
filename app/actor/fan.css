@@ -1,0 +1,16 @@
+.actor-fan .sprite {
+	background-image: url(/Sonic/starlight-fan.png);
+	width: 32px;
+	height: 32px;
+	animation: fan-spin 125ms infinite steps(3);
+	transform: var(--base-transform) scaleX(var(--direction)) !important;
+}
+
+.actor-fan[data-direction="1"] .sprite {
+	animation: fan-spin 125ms infinite steps(3) reverse;
+}
+
+@keyframes fan-spin {
+	  0% { background-position-x: 0px; }
+	100% { background-position-x: -96px; }
+}

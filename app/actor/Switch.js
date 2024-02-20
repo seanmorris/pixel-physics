@@ -13,7 +13,7 @@ export class Switch extends PointActor
 		this.args.width  = 32;
 		this.args.height = 10;
 
-		this.args.label = 'Play';
+		this.args.label = '';
 
 		this.args.bindTo('label', v => {
 			if(!v)

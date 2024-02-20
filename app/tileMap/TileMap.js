@@ -567,7 +567,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 		const tileset = this.getTileset(tileNumber);
 		const image   = this.tileImages.get(tileset);
 
-		if(!tileset.meta && tileset.properties)
+		if(tileset && !tileset.meta && tileset.properties)
 		{
 			tileset.meta = Object.create(null);
 
