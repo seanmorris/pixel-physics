@@ -14510,6 +14510,10 @@ var _Propeller = require("./actor/Propeller");
 var _GlassSphere = require("./actor/GlassSphere");
 var _DropTarget = require("./actor/DropTarget");
 var _BoostPole = require("./actor/BoostPole");
+var _BallSwitch = require("./actor/BallSwitch");
+var _ChainPull = require("./actor/ChainPull");
+var _Crusher = require("./actor/Crusher");
+var _Parachute = require("./actor/Parachute");
 // Newtron
 // Bomb
 
@@ -14620,6 +14624,9 @@ const ObjectPalette = {
   'water-fall': _WaterFall.WaterFall,
   'water-spout': _WaterSpout.WaterSpout,
   'balloon': _Balloon.Balloon,
+  'chain-pull': _ChainPull.ChainPull,
+  'crusher': _Crusher.Crusher,
+  'parachute': _Parachute.Parachute,
   'star-balloon': _StarBalloon.StarBalloon,
   'web-monitor': _WebMonitor.WebMonitor,
   'ring-monitor': _RingMonitor.RingMonitor,
@@ -14703,6 +14710,7 @@ const ObjectPalette = {
   'glass-sphere': _GlassSphere.GlassSphere,
   'drop-target': _DropTarget.DropTarget,
   'boost-pole': _BoostPole.BoostPole,
+  'ball-switch': _BallSwitch.BallSwitch,
   'light-source': _LightSource.LightSource,
   'orb': _Orb.Orb,
   'orb-small': _OrbSmall.OrbSmall,
@@ -15928,6 +15936,75 @@ class Balkiry extends _Mixin.Mixin.from(_PointActor.PointActor, _CanPop.CanPop) 
   }
 }
 exports.Balkiry = Balkiry;
+});
+
+;require.register("actor/BallSwitch.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BallSwitch = void 0;
+var _Sfx = require("../audio/Sfx");
+var _PointActor = require("./PointActor");
+class BallSwitch extends _PointActor.PointActor {
+  constructor() {
+    super(...arguments);
+    this.args.width = this.args.width || 20;
+    this.args.height = this.args.height || 32;
+    this.args.type = 'actor-item actor-ball-switch';
+    this.args.z = 100;
+    this.args.xShift = 0;
+    this.args.timeout = this.args.timeout || -1;
+    this.activeTimer = 0;
+  }
+  onRendered(event) {
+    super.onRendered(event);
+    this.autoStyle.get(this.box)['--xShift'] = 'xShift';
+    this.autoStyle.get(this.box)['--yShift'] = 'yShift';
+  }
+  collideA(other) {
+    const speed = other.args.gSpeed || other.args.xSpeed;
+    this.args.xShift += speed * 1.5;
+    if (Math.abs(this.args.xShift) > 10) {
+      this.args.xShift = 10 * Math.sign(this.args.xShift);
+    }
+    this.args.yShift = 4 * Math.cos(this.args.xShift / 10);
+  }
+  sleep() {
+    this.args.active = false;
+  }
+  update() {
+    super.update();
+    if (this.args.colliding) {
+      return;
+    }
+    this.args.xShift *= 0.925;
+    if (Math.abs(this.args.xShift) <= 1) {
+      this.args.xShift = 0;
+    }
+    if (this.activeTimer > 0) {
+      this.activeTimer--;
+      if (!this.activeTimer) {
+        this.args.active = false;
+      }
+    }
+    if (Math.abs(this.args.xShift) > 6) {
+      if (!this.args.active) {
+        _Sfx.Sfx.play('BALL_SWITCH');
+      }
+      this.args.active = true;
+      if (this.args.timeout > 0) {
+        this.activeTimer = this.args.timeout;
+      }
+    }
+    this.args.yShift = 4 * Math.cos(this.args.xShift / 12);
+  }
+  get solid() {
+    return false;
+  }
+}
+exports.BallSwitch = BallSwitch;
 });
 
 ;require.register("actor/Balloon.js", function(exports, require, module) {
@@ -17844,24 +17921,25 @@ class BoostPole extends _PointActor.PointActor {
     }
     const yOther = other.args.y + -this.args.y + 8;
     const xOther = other.args.x + -this.args.x + 24 * this.args.direction;
-    const force = Math.min(1, Math.max(0, xOther * this.args.direction / 44));
+    const force = Math.min(1, Math.max(0, xOther * this.args.direction / 48));
     other.args.animation = 'rolling';
     if (Math.abs(other.args.xSpeed) > 0.5) {
       other.args.xSpeed = Math.sign(other.args.xSpeed) * 0.5;
     }
     if (force > 0.45) {
-      if (yOther > 13 * force) {
-        other.args.ySpeed = -13 * force;
-      } else if (yOther > 10 * force) {
+      if (yOther > 10 * force) {
+        other.args.ySpeed = -15 * force;
+      } else if (yOther > 8 * force) {
         other.args.xSpeed *= 0.5;
-        other.args.ySpeed = 0.5;
+        other.args.ySpeed = 0.25;
       } else {
-        other.args.ySpeed = 1;
+        other.args.ySpeed = 0.5;
       }
-      this.args.bend = Math.max(0, Math.min(3, Math.floor(yOther / 4)));
+      this.args.bend = Math.max(0, Math.min(3, Math.floor(yOther / 2)));
     } else {
       this.args.bend = 0;
       other.args.ySpeed = 0;
+      other.args.xSpeed += 0.5 * this.args.direction;
       other.args.float = 1;
     }
     return false;
@@ -19198,6 +19276,63 @@ class CautionSign extends _PointActor.PointActor {
   }
 }
 exports.CautionSign = CautionSign;
+});
+
+;require.register("actor/ChainPull.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChainPull = void 0;
+var _PointActor = require("./PointActor");
+class ChainPull extends _PointActor.PointActor {
+  constructor() {
+    super(...arguments);
+    this.args.type = 'actor-item actor-chain-pull';
+    this.args.width = 31;
+    this.args.height = 12;
+    this.args.float = -1;
+    this.args.maxDrop = this.args.maxDrop || 280;
+    this.args.pullTo = this.args.pullTo || 96;
+  }
+  update() {
+    for (const [type, hangers] of this.hanging) {
+      for (const hanger of hangers) {
+        this.viewport.auras.add(hanger);
+        if (hanger.args.falling) {
+          if (this.others.switch && this.others.switch.args.active) {
+            if (Math.abs(hanger.args.ropeLength - this.args.pullTo) >= 2) {
+              if (hanger.args.ropeLength < this.args.pullTo) {
+                hanger.args.y -= 2 * Math.sign(hanger.args.ropeLength - this.args.pullTo);
+              }
+              hanger.args.ropeLength -= 2 * Math.sign(hanger.args.ropeLength - this.args.pullTo);
+            }
+          } else if (hanger.args.ropeLength < this.args.maxDrop) {
+            hanger.args.ropeLength = this.castRayQuick(this.args.maxDrop, Math.PI / 2, [0, 0], false) || this.args.maxDrop;
+          } else {
+            hanger.args.ropeLength -= 2 * Math.sign(hanger.args.ropeLength - this.args.maxDrop);
+          }
+        }
+      }
+    }
+  }
+  wakeUp() {
+    for (const [type, hangers] of this.hanging) {
+      for (const hanger of hangers) {
+        this.viewport.auras.add(hanger);
+      }
+    }
+  }
+  sleep() {
+    for (const [type, hangers] of this.hanging) {
+      for (const hanger of hangers) {
+        this.viewport.auras.delete(hanger);
+      }
+    }
+  }
+}
+exports.ChainPull = ChainPull;
 });
 
 ;require.register("actor/ChainShot.js", function(exports, require, module) {
@@ -21572,6 +21707,49 @@ class CrossCannon extends _PointActor.PointActor {
 exports.CrossCannon = CrossCannon;
 });
 
+;require.register("actor/Crusher.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Crusher = void 0;
+var _PointActor = require("./PointActor");
+var _Mixin = require("curvature/base/Mixin");
+var _Constrainable = require("../mixin/Constrainable");
+var _Block = require("./Block");
+class Crusher extends _Mixin.Mixin.from(_PointActor.PointActor, _Constrainable.Constrainable) {
+  constructor() {
+    super(...arguments);
+    this.args.width = 112;
+    this.args.height = 24;
+    this.args.type = 'actor-item actor-crusher';
+    // this.args.ropeLength = this.args._tiedTo ? this.args.ropeLength : 8;
+    this.args.gravity = 0.8;
+    // this.args.stay = true;
+    // this.args.float = -1;
+  }
+
+  update() {
+    if (!this.others.tiedTo) {
+      super.update();
+    }
+  }
+  updateStart() {
+    super.update();
+    const tiedTo = this.others.tiedTo;
+    if (tiedTo) {
+      this.setPos();
+    }
+    super.updateStart();
+  }
+  get solid() {
+    return true;
+  }
+}
+exports.Crusher = Crusher;
+});
+
 ;require.register("actor/Cursor.js", function(exports, require, module) {
 "use strict";
 
@@ -22166,6 +22344,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DropTarget = void 0;
+var _Sfx = require("../audio/Sfx");
 var _PointActor = require("./PointActor");
 class DropTarget extends _PointActor.PointActor {
   constructor() {
@@ -22185,12 +22364,13 @@ class DropTarget extends _PointActor.PointActor {
     if (other.args.static || other.isRegion || this.ignores.has(other) || other.noClip) {
       return;
     }
-    if (other.args.float) {
+    if (other.args.float || other.args.ySpeed <= 0) {
       return;
     }
     this.ignores.set(other, 8);
     other.args.ySpeed = -10;
     this.args.hits++;
+    _Sfx.Sfx.play('PAD_BOUNCE');
     if (this.args.hits > 2) {
       this.viewport.actors.remove(this);
     }
@@ -22528,10 +22708,10 @@ class EggMobile extends _Vehicle.Vehicle {
         } else {
           ySpeed += this.yAxis * this.args.accel * 6;
         }
-        if (ySpeed > 0) {
-          ySpeed = Math.floor(ySpeed * 1000) / 1000;
-        } else {
-          ySpeed = Math.ceil(ySpeed * 1000) / 1000;
+        if (Math.abs(ySpeed) < 0.1) {
+          ySpeed = 0;
+        } else if (Math.abs(ySpeed) > 4) {
+          ySpeed = 4 * Math.sign(ySpeed);
         }
         this.args.ySpeed = ySpeed;
       }
@@ -22562,6 +22742,14 @@ class EggMobile extends _Vehicle.Vehicle {
     this.args.mode = 0;
     this.args.cameraMode = 'aerial';
     super.update();
+  }
+  command_4() {
+    this.args.direction = -1;
+    this.args.facing = 'left';
+  }
+  command_5() {
+    this.args.direction = 1;
+    this.args.facing = 'right';
   }
   get solid() {
     return !this.occupant;
@@ -23797,28 +23985,30 @@ class Fan extends _PointActor.PointActor {
     return false;
   }
   update() {
-    const actors = this.viewport.actorsAtLine(0 + this.args.x, this.args.y + -16, this.args.direction * 64 + this.args.x, this.args.y + -16);
-    for (const [actor, collision] of actors) {
+    const actors = this.viewport.actorsAtPoint(this.args.x + 80 * this.args.direction, this.args.y, 160, 64);
+    for (const actor of actors) {
       if (!actor.controllable) {
         continue;
       }
-      const force = -20 * ((80 - collision.distance) / 64);
+      if (Math.abs(actor.args.gSpeed) > 20) {
+        actor.args.gSpeed = Math.sign(actor.args.gSpeed) * 20;
+      }
+      const distance = Math.abs(this.args.x - actor.args.x);
+      const force = -20 * Math.min(1, 1 - (distance - 20) / 160) ** 3;
       if (!actor.args.falling) {
-        if (actor.xAxis && Math.sign(actor.xAxis) !== this.args.direction) {
+        if (actor.xAxis && Math.sign(actor.xAxis) !== this.args.direction && !actor.args.rolling) {
           actor.args.gForce = force;
-        } else
-          //if(Math.abs(actor.args.gSpeed) < 7 || Math.sign(actor.args.gSpeed) !== Math.sign(this.args.direction))
-          {
-            actor.args.gSpeed += -force * this.args.direction;
-
-            // || Math.sign(actor.args.gSpeed) !== Math.sign(this.args.direction)
-
-            if (Math.abs(actor.args.gSpeed) > 25) {
-              actor.args.gSpeed = 25 * this.args.direction;
-            }
+        } else {
+          actor.args.gSpeed += -force * this.args.direction;
+          if (Math.abs(actor.args.gSpeed) > 25) {
+            actor.args.gSpeed = 25 * this.args.direction;
           }
+        }
       } else {
-        actor.args.xSpeed = -force * this.args.direction;
+        actor.args.xSpeed += -force * this.args.direction;
+        if (Math.abs(actor.args.xSpeed) > 25) {
+          actor.args.gSpeed = 25 * this.args.direction;
+        }
       }
     }
   }
@@ -24504,29 +24694,25 @@ class GlassSphere extends _PointActor.PointActor {
     super(...arguments);
     _defineProperty(this, "float", -1);
     this.args.type = 'actor-item actor-glass-sphere';
-    this.args.width = 16;
-    this.args.height = 16;
+    this.args.width = 24;
+    this.args.height = 24;
     this.ignores = new Map();
+    this.broken = false;
   }
   collideA(other) {
     if (other.args.static || other.isRegion || this.ignores.has(other) || other.noClip) {
-      return;
+      return false;
+    }
+    if (this.broken) {
+      return false;
     }
     this.args.type = 'actor-item actor-glass-sphere actor-glass-sphere-active';
-    this.viewport.onFrameOut(3, () => this.args.type = 'actor-item actor-glass-sphere');
     if (other.args.falling) {
-      _Sfx.Sfx.play('BUMPER_BOUNCE');
       const xDiff = this.x - other.x;
       const yDiff = this.y - other.y;
-
-      // const speed = Math.max(other.args.ySpeed > 0 ? 9 : 4, Math.hypot(other.args.xSpeed, other.args.ySpeed));
       const speed = other.args.ySpeed >= 0 ? 11 : 7;
       const angle = Math.atan2(yDiff, xDiff);
       const otherRadius = other.args.width / 2;
-
-      // other.args.x = this.x + -Math.cos(angle) * 10;
-      // other.args.y = this.y + -Math.sin(angle) * 10;
-
       other.args.xSpeed = -speed * Math.cos(angle);
       other.args.ySpeed = -speed * Math.sin(angle);
       other.args.ignore = other.args.ignore || 4;
@@ -24536,15 +24722,24 @@ class GlassSphere extends _PointActor.PointActor {
         other.args.gSpeed = 7 * Math.sign(other.args.gSpeed);
       }
     }
-    this.ignores.set(other, 8);
-    if (this.viewport.settings.rumble && other && other.controller && other.controller.rumble) {
+    this.ignores.set(other, 30);
+    this.onTimeout(30, () => {
+      // this.args.hidden = true;
+    });
+    this.broken = true;
+    if (Math.random() > 0.5) {
+      _Sfx.Sfx.play('BREAK_GLASS_1');
+    } else {
+      _Sfx.Sfx.play('BREAK_GLASS_2');
+    }
+    const viewport = this.viewport;
+    if (viewport.settings.rumble && other && other.controller && other.controller.rumble) {
       other.controller.rumble({
         duration: 30,
         strongMagnitude: 0.25,
         weakMagnitude: 1.0
       });
       this.onTimeout(30, () => {
-        this.viewport.actors.remove(this);
         other.controller.rumble({
           duration: 30,
           strongMagnitude: 0.0,
@@ -24553,6 +24748,10 @@ class GlassSphere extends _PointActor.PointActor {
       });
     }
   }
+  sleep() {
+    this.broken = false;
+    this.args.type = 'actor-item actor-glass-sphere';
+  }
   get canStick() {
     return false;
   }
@@ -24560,7 +24759,7 @@ class GlassSphere extends _PointActor.PointActor {
     return true;
   }
   get solid() {
-    return true;
+    return !this.broken;
   }
 }
 exports.GlassSphere = GlassSphere;
@@ -24641,8 +24840,6 @@ class GrapplePoint extends _Mixin.Mixin.from(_PointActor.PointActor, _Constraina
     const tiedTo = this.others.tiedTo;
     if (tiedTo) {
       this.setPos();
-    } else {
-      this.noClip = true;
     }
     if (!tiedTo) {
       this.unhookAll();
@@ -24654,7 +24851,15 @@ class GrapplePoint extends _Mixin.Mixin.from(_PointActor.PointActor, _Constraina
     // }
 
     this.args.falling = true;
+    if (this.args.noSwing && tiedTo) {
+      this.args.xSpeed = 0;
+      this.args.x = tiedTo.args.x;
+    }
     if (this.hooked.size) {
+      this.args.active = true;
+      if (this.args.noSwing) {
+        this.noClip = true;
+      }
       if (this.viewport.args.theme === 'phazon') {
         if (!this.lightning) {
           this.lightning = new _Tag.Tag(`<div class = "particle-sparkle-lightning">`);
@@ -24670,7 +24875,7 @@ class GrapplePoint extends _Mixin.Mixin.from(_PointActor.PointActor, _Constraina
       }
       const hooked = [...this.hooked];
       const first = hooked[0];
-      if (first.xAxis) {
+      if (first.xAxis && !this.args.noSwing) {
         if (Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis)) {
           if (this.y > tiedTo.y) {
             this.args.xSpeed += first.xAxis * 0.25;
@@ -24695,10 +24900,17 @@ class GrapplePoint extends _Mixin.Mixin.from(_PointActor.PointActor, _Constraina
         h.args.cameraMode = 'hooked';
       }
     } else {
+      this.args.active = false;
+      if (this.args.noSwing) {
+        this.noClip = false;
+      }
       if (this.lightning) {
         this.viewport.particles.remove(this.lightning);
         this.lightning = null;
       }
+    }
+    if (!tiedTo) {
+      this.noClip = true;
     }
     super.updateEnd();
   }
@@ -24737,7 +24949,9 @@ class GrapplePoint extends _Mixin.Mixin.from(_PointActor.PointActor, _Constraina
     if (other.args.mode === 2) {
       this.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
     }
-    this.args.ySpeed = other.args.ySpeed;
+    if (!this.args.noSwing) {
+      this.args.ySpeed = other.args.ySpeed;
+    }
     other.args.xSpeed = 0;
     other.args.ySpeed = 0;
     other.args.gSpeed = 0;
@@ -28665,6 +28879,51 @@ class Panel extends _PointActor.PointActor {
 exports.Panel = Panel;
 });
 
+;require.register("actor/Parachute.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Parachute = void 0;
+var _PointActor = require("./PointActor");
+class Parachute extends _PointActor.PointActor {
+  constructor() {
+    super(...arguments);
+    this.args.width = 32;
+    this.args.height = 22;
+    this.args.type = 'actor-item actor-parachute';
+    this.args.float = -1;
+    this.args.z = -1;
+    this.attachedTo = null;
+  }
+  get solid() {
+    return false;
+  }
+  updateEnd() {
+    if (this.attachedTo) {
+      this.args.x = this.attachedTo.args.x + -8 * this.attachedTo.args.direction;
+      this.args.y = this.attachedTo.args.y + -this.attachedTo.args.normalHeight * 1;
+      if (this.attachedTo.args.ySpeed > 2) {
+        this.attachedTo.args.ySpeed = 2;
+        this.attachedTo.args.animation = 'dropping';
+        this.args.hidden = false;
+      } else {
+        this.args.hidden = true;
+      }
+    }
+    super.updateEnd();
+  }
+  collideA(other) {
+    if (this.attachedTo || !other.controllable) {
+      return;
+    }
+    this.attachedTo = other;
+  }
+}
+exports.Parachute = Parachute;
+});
+
 ;require.register("actor/PlatformFlare.js", function(exports, require, module) {
 "use strict";
 
@@ -31621,6 +31880,7 @@ class Propeller extends _PointActor.PointActor {
       actor.args.ySpeed -= magnitude * Math.max(1.5, actor.args.ySpeed);
       actor.args.animation = 'hovering';
       actor.args.jumping = false;
+      actor.args.groundAngle = 0;
     }
   }
 }
@@ -37817,7 +38077,7 @@ class StarPost extends _PointActor.PointActor {
       const monitor = new monitorClass({
         direction: other.args.direction,
         xSpeed: throwSpeed,
-        ySpeed: -5,
+        ySpeed: -6,
         x: this.x - 10,
         y: this.y - 48
       });
@@ -40812,10 +41072,6 @@ class Windmill extends _PointActor.PointActor {
     }
     this.ignores.set(other, spinTime + 15);
     this.args.column.ignores.set(other, spinTime + 15);
-    console.log({
-      dist,
-      angle
-    });
     this.spinning = true;
     other.args.falling = true;
     other.args.standingOn = null;
@@ -49321,6 +49577,12 @@ if (location.pathname === '/accept-sso') {
     volume: 0.5,
     fudgeFactor: 0.2
   });
+  _Sfx.Sfx.register('BALL_SWITCH', '/Sonic/S3K_AD.wav', {
+    maxConcurrent: 8,
+    volume: 0.5,
+    fudgeFactor: 0.2,
+    startTime: 0.1
+  });
   _Sfx.Sfx.register('STARPOST_HIT', '/Sonic/starpost-active.wav', {
     volume: 0.5
   });
@@ -49452,6 +49714,18 @@ if (location.pathname === '/accept-sso') {
     fudgeFactor: 0.25,
     startTime: 0.1
   });
+  _Sfx.Sfx.register('BREAK_GLASS_1', '/Sonic/SCD_FM_51.wav', {
+    maxConcurrent: 1,
+    volume: 0.85,
+    fudgeFactor: 0.15,
+    startTime: 0.1
+  });
+  _Sfx.Sfx.register('BREAK_GLASS_2', '/Sonic/SCD_FM_52.wav', {
+    maxConcurrent: 1,
+    volume: 0.50,
+    fudgeFactor: 0.25,
+    startTime: 0.1
+  });
 }
 });
 
@@ -49555,7 +49829,7 @@ class GamepadCard extends _SkippableCard.SkippableCard {
   constructor(args, parent) {
     super(args, parent);
     _defineProperty(this, "template", require('./gamepad-card.html'));
-    this.args.timeout = 2500;
+    this.args.timeout = this.args.timeout || 2500;
     this.args.cardName = 'gamepad-card';
     this.args.text = ``;
   }

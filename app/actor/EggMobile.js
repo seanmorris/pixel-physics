@@ -51,13 +51,13 @@ export class EggMobile extends Vehicle
 					ySpeed += (this.yAxis * this.args.accel) * 6;
 				}
 
-				if(ySpeed > 0)
+				if(Math.abs(ySpeed) < 0.1)
 				{
-					ySpeed = Math.floor(ySpeed * 1000) / 1000;
+					ySpeed = 0;
 				}
-				else
+				else if(Math.abs(ySpeed) > 4)
 				{
-					ySpeed = Math.ceil(ySpeed * 1000) / 1000;
+					ySpeed = 4 * Math.sign(ySpeed);
 				}
 
 				this.args.ySpeed = ySpeed;
@@ -104,6 +104,18 @@ export class EggMobile extends Vehicle
 
 		super.update();
 
+	}
+
+	command_4()
+	{
+		this.args.direction = -1;
+		this.args.facing = 'left';
+	}
+
+	command_5()
+	{
+		this.args.direction = 1;
+		this.args.facing = 'right';
 	}
 
 	get solid() { return !this.occupant; }

@@ -1,3 +1,8 @@
+.actor-item.actor-egg-walker {
+	transform: none !important;
+	display: contents;
+}
+
 .actor-item.actor-egg-walker .sprite {
 	position: absolute;
 	width: 96px;
@@ -6,9 +11,17 @@
 }
 
 .actor-item.actor-egg-walker .sprite:not(.sprite-back) {
-}
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+		) scaleX(var(--direction, 1))  !important;
+	}
 
 .actor-item.actor-egg-walker .sprite-back {
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) translateZ(-0.1px) scaleX(var(--direction, 1)) !important;
 	z-index: -1;
 }
 

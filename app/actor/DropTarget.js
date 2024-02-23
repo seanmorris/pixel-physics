@@ -1,3 +1,4 @@
+import { Sfx } from '../audio/Sfx';
 import { PointActor } from './PointActor';
 
 export class DropTarget extends PointActor
@@ -28,7 +29,7 @@ export class DropTarget extends PointActor
 			return;
 		}
 
-		if(other.args.float)
+		if(other.args.float || other.args.ySpeed <= 0)
 		{
 			return;
 		}
@@ -37,6 +38,8 @@ export class DropTarget extends PointActor
 
 		other.args.ySpeed = -10;
 		this.args.hits++;
+
+		Sfx.play('PAD_BOUNCE');
 
 		if(this.args.hits > 2)
 		{

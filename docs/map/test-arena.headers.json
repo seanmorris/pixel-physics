@@ -6,10 +6,10 @@
             "target": "truck-test.json"
         }
     },
-    "height": 144,
+    "height": 192,
     "infinite": false,
     "nextlayerid": 15,
-    "nextobjectid": 372,
+    "nextobjectid": 448,
     "orientation": "orthogonal",
     "properties": [
         {
@@ -221,6 +221,32 @@
             "tilecount": 16,
             "tileheight": 32,
             "tilewidth": 32
+        },
+        {
+            "columns": 14,
+            "firstgid": 4787,
+            "image": "../Sonic/tiles/sky-canyon/sky-canyon-16-bit.png",
+            "imageheight": 800,
+            "imagewidth": 448,
+            "margin": 0,
+            "name": "sky-canyon-16-bit",
+            "spacing": 0,
+            "tilecount": 350,
+            "tileheight": 32,
+            "tilewidth": 32
+        },
+        {
+            "columns": 16,
+            "firstgid": 5137,
+            "image": "rounded.png",
+            "imageheight": 512,
+            "imagewidth": 512,
+            "margin": 0,
+            "name": "rounded",
+            "spacing": 0,
+            "tilecount": 256,
+            "tileheight": 32,
+            "tilewidth": 32
         }
     ],
     "tilewidth": 32,
@@ -228,16 +254,21 @@
     "version": "1.10",
     "width": 1024,
     "types": [
+        "ball-switch",
         "block3d",
         "boost-pole",
         "bumper",
         "catakiller",
+        "chain-pull",
+        "crusher",
         "dolphin",
         "drop-target",
         "emerald",
         "fan",
         "glass-sphere",
+        "grapple-point",
         "layer-switch",
+        "parachute",
         "propeller",
         "region",
         "ring",

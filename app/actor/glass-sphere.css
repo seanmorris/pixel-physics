@@ -3,11 +3,18 @@
 	background-image: url(/Sonic/glass-sphere.png);
 	width: 32px;
 	height: 32px;
+	transform-origin: 50% 50%;
+	background-position-y: -96px;
 }
 
 .actor-item.actor-glass-sphere.actor-glass-sphere-active .sprite {
-	transition: transform 0ms;
 	transform: translate(-50%, calc(-100% - var(--hoverWidth))) scale(1.25) rotate(calc(-1rad * var(--display-angle))) !important;
 	transform-origin: 50% 50%;
-	background-position-x: -32px;
+	transition: transform 0ms;
+	animation: glass-sphere-break steps(3) 100ms 1 forwards;
+}
+
+@keyframes glass-sphere-break {
+	  0% { background-position-x: 0px; }
+	100% { background-position-x: -96px; }
 }

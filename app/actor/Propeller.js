@@ -37,6 +37,7 @@ export class Propeller extends PointActor
 
 			actor.args.animation = 'hovering';
 			actor.args.jumping = false;
+			actor.args.groundAngle = 0;
 		}
 	}
 }

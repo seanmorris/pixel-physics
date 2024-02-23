@@ -110,7 +110,7 @@ export class StarPost extends PointActor
 			const monitor = new monitorClass({
 				direction: other.args.direction
 				, xSpeed:  throwSpeed
-				, ySpeed:  -5
+				, ySpeed:  -6
 				, x:       this.x - 10
 				, y:       this.y - 48
 			});

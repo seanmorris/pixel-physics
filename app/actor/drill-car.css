@@ -1,3 +1,8 @@
+.actor-item.actor-drill-car {
+	transform: none !important;
+	display: contents;
+}
+
 .actor-item.actor-drill-car .sprite {
 	background-image: url(/Sonic/drill-car-body.png);
 	position: absolute;
@@ -13,10 +18,18 @@
 }
 
 .actor-item.actor-drill-car .sprite:not(.sprite-back) {
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) scaleX(var(--direction, 1))  !important;
 }
 
 .actor-item.actor-drill-car .sprite-back {
-	z-index: -1;
+	z-index: -100;
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) translateZ(-0.1px) scaleX(var(--direction, 1)) !important;
 }
 
 .actor-item.actor-drill-car .drill-car-tire {

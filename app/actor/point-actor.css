@@ -21,7 +21,7 @@
 	transform: translate(
 		calc(1px * calc(var(--x) + var(--xPos)) )
 		, calc(1px * calc(var(--y) + var(--yPos)) )
-	) translateZ( 0px );
+	);
 
 	backface-visibility: hidden;
 
@@ -56,6 +56,10 @@
 [data-paused="0"] .point-actor .sprite:after,
 [data-paused="-1"] .point-actor .sprite:after {
 	animation-play-state: paused !important;
+}
+
+.point-actor .labels {
+	transform-style: flat;
 }
 
 .point-actor .labels:not(:empty) {
@@ -471,3 +475,4 @@
 	0% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(0deg) }
 	100% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(360deg) }
 }
+

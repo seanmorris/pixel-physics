@@ -11,39 +11,38 @@ export class GlassSphere extends PointActor
 
 		this.args.type = 'actor-item actor-glass-sphere';
 
-		this.args.width  = 16;
-		this.args.height = 16;
+		this.args.width  = 24;
+		this.args.height = 24;
 
 		this.ignores = new Map;
+
+		this.broken = false;
 	}
 
 	collideA(other)
 	{
 		if(other.args.static || other.isRegion || this.ignores.has(other) || other.noClip)
 		{
-			return;
+			return false;
+		}
+
+		if(this.broken)
+		{
+			return false;
 		}
 
 		this.args.type = 'actor-item actor-glass-sphere actor-glass-sphere-active';
 
-		this.viewport.onFrameOut(3, () => this.args.type = 'actor-item actor-glass-sphere');
-
 		if(other.args.falling)
 		{
-			Sfx.play('BUMPER_BOUNCE');
-
 			const xDiff = this.x - other.x;
 			const yDiff = this.y - other.y;
 
-			// const speed = Math.max(other.args.ySpeed > 0 ? 9 : 4, Math.hypot(other.args.xSpeed, other.args.ySpeed));
 			const speed = other.args.ySpeed >= 0 ? 11 : 7;
 
 			const angle = Math.atan2(yDiff, xDiff);
 
 			const otherRadius = other.args.width / 2;
-
-			// other.args.x = this.x + -Math.cos(angle) * 10;
-			// other.args.y = this.y + -Math.sin(angle) * 10;
 
 			other.args.xSpeed = -speed * Math.cos(angle);
 			other.args.ySpeed = -speed * Math.sin(angle);
@@ -60,9 +59,26 @@ export class GlassSphere extends PointActor
 			}
 		}
 
-		this.ignores.set(other, 8);
+		this.ignores.set(other, 30);
 
-		if(this.viewport.settings.rumble && other && other.controller && other.controller.rumble)
+		this.onTimeout(30, () => {
+			// this.args.hidden = true;
+		});
+
+		this.broken = true;
+
+		if(Math.random() > 0.5)
+		{
+			Sfx.play('BREAK_GLASS_1');
+		}
+		else
+		{
+			Sfx.play('BREAK_GLASS_2');
+		}
+
+		const viewport = this.viewport;
+
+		if(viewport.settings.rumble && other && other.controller && other.controller.rumble)
 		{
 			other.controller.rumble({
 				duration: 30,
@@ -71,9 +87,6 @@ export class GlassSphere extends PointActor
 			});
 
 			this.onTimeout(30, () => {
-
-				this.viewport.actors.remove(this);
-
 				other.controller.rumble({
 					duration: 30,
 					strongMagnitude: 0.0,
@@ -81,11 +94,16 @@ export class GlassSphere extends PointActor
 				});
 			});
 		}
+	}
 
+	sleep()
+	{
+		this.broken = false;
+		this.args.type = 'actor-item actor-glass-sphere'
 	}
 
 	get canStick() { return false; }
 	get rotateLock() { return true; }
-	get solid() { return true; }
+	get solid() { return !this.broken; }
 }
 

@@ -128,6 +128,7 @@ else
 
 	Sfx.register('WAIT_TONE', '/Sonic/S3K_A7.wav', {maxConcurrent: 8, volume: 0.5, fudgeFactor: 0.2});
 	Sfx.register('READY_TONE', '/Sonic/S3K_AD.wav', {maxConcurrent: 8, volume: 0.5, fudgeFactor: 0.2});
+	Sfx.register('BALL_SWITCH', '/Sonic/S3K_AD.wav', {maxConcurrent: 8, volume: 0.5, fudgeFactor: 0.2, startTime: 0.1});
 
 	Sfx.register('STARPOST_HIT', '/Sonic/starpost-active.wav', {volume: 0.5});
 
@@ -188,4 +189,7 @@ else
 
 	Sfx.register('BARREL_EXPLODE', '/audio/doom/DSBAREXP.wav', {maxConcurrent: 1, volume: 1, fudgeFactor: 0});
 	Sfx.register('SAP_HEALTH', '/audio/pokemon/SFX_POISONED.wav', {maxConcurrent: 1, volume: 0.5, fudgeFactor: 0.25, startTime: 0.1});
+
+	Sfx.register('BREAK_GLASS_1', '/Sonic/SCD_FM_51.wav', {maxConcurrent: 1, volume: 0.85, fudgeFactor: 0.15, startTime: 0.1});
+	Sfx.register('BREAK_GLASS_2', '/Sonic/SCD_FM_52.wav', {maxConcurrent: 1, volume: 0.50, fudgeFactor: 0.25, startTime: 0.1});
 }

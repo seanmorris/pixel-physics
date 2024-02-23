@@ -290,6 +290,10 @@ import { Propeller } from './actor/Propeller';
 import { GlassSphere } from './actor/GlassSphere';
 import { DropTarget } from './actor/DropTarget';
 import { BoostPole } from './actor/BoostPole';
+import { BallSwitch } from './actor/BallSwitch';
+import { ChainPull } from './actor/ChainPull';
+import { Crusher } from './actor/Crusher';
+import { Parachute } from './actor/Parachute';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -397,6 +401,9 @@ export const ObjectPalette = {
 	, 'water-fall':   WaterFall
 	, 'water-spout':  WaterSpout
 	, 'balloon':      Balloon
+	, 'chain-pull':   ChainPull
+	, 'crusher':      Crusher
+	, 'parachute':    Parachute
 	, 'star-balloon': StarBalloon
 	, 'web-monitor': WebMonitor
 	, 'ring-monitor': RingMonitor
@@ -480,6 +487,7 @@ export const ObjectPalette = {
 	, 'glass-sphere': GlassSphere
 	, 'drop-target': DropTarget
 	, 'boost-pole': BoostPole
+	, 'ball-switch': BallSwitch
 	, 'light-source': LightSource
 	, 'orb': Orb
 	, 'orb-small': OrbSmall

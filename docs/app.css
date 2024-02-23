@@ -82,12 +82,12 @@
 	width: 8px;
 	height: 8px;
 	left: -12px;
-	background-repeat: no-repeat;
-	background-position-x: -0px;
 	margin-top: auto;
 	margin-bottom: auto;
 	margin-top: 4px;
-	background-size: 900% 200%;
+	background-repeat: no-repeat;
+	background-position-x: -0px;
+	background-size: 900% 600%;
 	background-image: url(/Sonic/cursor.png);
 	content: '';
 	animation: cursor-animate 0.75s infinite steps(8, start) reverse;
@@ -1499,6 +1499,56 @@ li:focus input[type="range"]::-moz-range-thumb {
 	}
 }
 
+.actor-item.actor-ball-switch {
+	z-index: 100;
+}
+
+.actor-item.actor-ball-switch .sprite {
+	width: 32px;
+	height: 4px;
+	top: 2px;
+}
+
+.actor-item.actor-ball-switch .sprite::before {
+	background-image: url(/Sonic/floor-plate.png);
+	z-index: 100;
+	position: absolute;
+	left: 0px;
+	height: 4px;
+	width: 32px;
+	content: ' ';
+}
+
+.actor-item.actor-ball-switch .sprite::after {
+	z-index: 99;
+	position: absolute;
+	left: calc(calc(1px * var(--xShift, 0)) + calc(50% - 8px));
+	top: calc(calc(-1px * var(--yShift, 0)) + -14px);
+	height: 16px;
+	width: 16px;
+	content: ' ';
+	background-repeat: no-repeat;
+	background-position-x: -0px;
+	background-position-y: -32px;
+	background-size: 900% 600%;
+	background-image: url(/Sonic/cursor.png);
+	animation: ball-switch-spin 0.5s infinite steps(8, start) reverse;
+}
+
+.actor-item.actor-ball-switch[data-active="true"] .sprite::after {
+	animation: ball-switch-spin 0.25s infinite steps(8, start) reverse;
+	background-position-y: -64px;
+}
+
+@keyframes ball-switch-spin {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -128px;
+	}
+}
+
 .actor-balloon .sprite::before {
 	display: block;
 	content: ' ';
@@ -2696,6 +2746,14 @@ li:focus input[type="range"]::-moz-range-thumb {
 	background-image: url(/custom/caution-sign.png);
 }
 
+.actor-item.actor-chain-pull .sprite {
+	width: 31px;
+	height: 8px;
+	left: -1px;
+	top: -2px;
+	background-image: url(/Sonic/chain-pull.png);
+}
+
 .actor-chain-shot .sprite {
 	position: relative;
 	width: 16px;
@@ -3314,6 +3372,20 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	transform: rotate(180deg)
 }
 
+.actor-item.actor-crusher .sprite {
+	width: 112px;
+	height: 30px;
+}
+
+.actor-item.actor-crusher .sprite::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	width: 112px;
+	height: 30px;
+	background-image: url(/Sonic/crusher-steel.png);
+}
+
 /* .actor-item.actor-giant-tire {
 	z-index: 2;
 } */
@@ -3420,6 +3492,11 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 
+.actor-item.actor-drill-car {
+	transform: none !important;
+	display: contents;
+}
+
 .actor-item.actor-drill-car .sprite {
 	background-image: url(/Sonic/drill-car-body.png);
 	position: absolute;
@@ -3435,10 +3512,18 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-drill-car .sprite:not(.sprite-back) {
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) scaleX(var(--direction, 1))  !important;
 }
 
 .actor-item.actor-drill-car .sprite-back {
-	z-index: -1;
+	z-index: -100;
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) translateZ(-0.1px) scaleX(var(--direction, 1)) !important;
 }
 
 .actor-item.actor-drill-car .drill-car-tire {
@@ -3784,6 +3869,11 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	100% { opacity: 0; }
 }
 
+.actor-item.actor-egg-walker {
+	transform: none !important;
+	display: contents;
+}
+
 .actor-item.actor-egg-walker .sprite {
 	position: absolute;
 	width: 96px;
@@ -3792,9 +3882,17 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 }
 
 .actor-item.actor-egg-walker .sprite:not(.sprite-back) {
-}
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+		) scaleX(var(--direction, 1))  !important;
+	}
 
 .actor-item.actor-egg-walker .sprite-back {
+	transform: translate(-50%, -100%) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) translateZ(-0.1px) scaleX(var(--direction, 1)) !important;
 	z-index: -1;
 }
 
@@ -4774,13 +4872,20 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	background-image: url(/Sonic/glass-sphere.png);
 	width: 32px;
 	height: 32px;
+	transform-origin: 50% 50%;
+	background-position-y: -96px;
 }
 
 .actor-item.actor-glass-sphere.actor-glass-sphere-active .sprite {
-	transition: transform 0ms;
 	transform: translate(-50%, calc(-100% - var(--hoverWidth))) scale(1.25) rotate(calc(-1rad * var(--display-angle))) !important;
 	transform-origin: 50% 50%;
-	background-position-x: -32px;
+	transition: transform 0ms;
+	animation: glass-sphere-break steps(3) 100ms 1 forwards;
+}
+
+@keyframes glass-sphere-break {
+	  0% { background-position-x: 0px; }
+	100% { background-position-x: -96px; }
 }
 
 .actor-item.actor-gohla-ball .sprite {
@@ -6468,6 +6573,12 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	}
 }
 
+.actor-parachute .sprite {
+	background-image: url(/Sonic/parachute.png);
+	width: 32px;
+	height: 22px;
+}
+
 .actor-item .chain {
 	z-index: -100000;
 	height: calc(calc(1px * var(--distance, 64)) - calc(var(--height) * 1px));
@@ -6674,7 +6785,7 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	transform: translate(
 		calc(1px * calc(var(--x) + var(--xPos)) )
 		, calc(1px * calc(var(--y) + var(--yPos)) )
-	) translateZ( 0px );
+	);
 
 	backface-visibility: hidden;
 
@@ -6709,6 +6820,10 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 [data-paused="0"] .point-actor .sprite:after,
 [data-paused="-1"] .point-actor .sprite:after {
 	animation-play-state: paused !important;
+}
+
+.point-actor .labels {
+	transform-style: flat;
 }
 
 .point-actor .labels:not(:empty) {
@@ -7124,6 +7239,7 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	0% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(0deg) }
 	100% { transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle))) rotate(360deg) }
 }
+
 
 .actor-powerup-glow {
 	z-index: 10;
@@ -12304,6 +12420,7 @@ h1 {
 	z-index: 1;
 }
 
+.screen-card-gamepad-card .main-elements-container,
 .screen-card-title-screen-card .main-elements-container {
 	width: 512px;
 	height: 288px;
@@ -12367,11 +12484,9 @@ h1 {
 .screen-card .player-waving {
 	z-index: 1000;
 	position: absolute;
-	bottom: 24px;
-	right: 25%;
 	animation: player-waving steps(1) infinite 240ms 1000ms forwards;
 	background-image: url(/custom/player.png);
-	transform: scale(2) rotate(-10deg) translateY(64px);
+	transform: translate(64px, 128px) scale(2) rotate(-10deg) ;
 	background-position-x: -64px;
 	background-position-y: -256px;
 	width: 64px;
@@ -12380,7 +12495,7 @@ h1 {
 }
 
 .screen-card.opened .player-waving {
-	transform: scale(2) rotate(-10deg) translateY(0px) ;
+	transform: translate(64px, 56px) scale(2) rotate(-10deg) ;
 }
 
 .screen-card-sane-card {
@@ -15324,6 +15439,10 @@ iframe {
 
 .console::-webkit-scrollbar {
 	display: none;
+}
+
+.console:not(.showConsole) textarea {
+	display: none !important;
 }
 
 .console.showConsole {

@@ -50,8 +50,6 @@ export class Windmill extends PointActor
 		this.ignores.set(other, spinTime + 15);
 		this.args.column.ignores.set(other, spinTime + 15);
 
-		console.log({dist,angle});
-
 		this.spinning = true;
 
 		other.args.falling = true;
