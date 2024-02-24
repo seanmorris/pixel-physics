@@ -1,0 +1,49 @@
+.actor-item.actor-ball-switch {
+	z-index: 100;
+}
+
+.actor-item.actor-ball-switch .sprite {
+	width: 32px;
+	height: 4px;
+	top: 2px;
+}
+
+.actor-item.actor-ball-switch .sprite::before {
+	background-image: url(/Sonic/floor-plate.png);
+	z-index: 100;
+	position: absolute;
+	left: 0px;
+	height: 4px;
+	width: 32px;
+	content: ' ';
+}
+
+.actor-item.actor-ball-switch .sprite::after {
+	z-index: 99;
+	position: absolute;
+	left: calc(calc(1px * var(--xShift, 0)) + calc(50% - 8px));
+	top: calc(calc(-1px * var(--yShift, 0)) + -14px);
+	height: 16px;
+	width: 16px;
+	content: ' ';
+	background-repeat: no-repeat;
+	background-position-x: -0px;
+	background-position-y: -32px;
+	background-size: 900% 600%;
+	background-image: url(/Sonic/cursor.png);
+	animation: ball-switch-spin 0.5s infinite steps(8, start) reverse;
+}
+
+.actor-item.actor-ball-switch[data-active="true"] .sprite::after {
+	animation: ball-switch-spin 0.25s infinite steps(8, start) reverse;
+	background-position-y: -64px;
+}
+
+@keyframes ball-switch-spin {
+	0% {
+		background-position-x: 0px;
+	}
+	100% {
+		background-position-x: -128px;
+	}
+}

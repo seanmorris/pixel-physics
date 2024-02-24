@@ -294,6 +294,7 @@ import { BallSwitch } from './actor/BallSwitch';
 import { ChainPull } from './actor/ChainPull';
 import { Crusher } from './actor/Crusher';
 import { Parachute } from './actor/Parachute';
+import { WallSwitch } from './actor/WallSwitch';
 
 export const ObjectPalette = {
 	player:           NuclearSuperball
@@ -488,6 +489,7 @@ export const ObjectPalette = {
 	, 'drop-target': DropTarget
 	, 'boost-pole': BoostPole
 	, 'ball-switch': BallSwitch
+	, 'wall-switch': WallSwitch
 	, 'light-source': LightSource
 	, 'orb': Orb
 	, 'orb-small': OrbSmall

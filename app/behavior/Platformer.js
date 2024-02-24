@@ -3283,7 +3283,7 @@ export class Platformer
 					&& host.args.startled < 175
 					&& host.args.ySpeed > 0
 					&& ( (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) )
-						|| (forePosition && (!forePosition || !forePosition[3]) && backPosition && backPosition[2])
+						|| (forePosition && !forePosition[3] && backPosition && backPosition[2])
 					)
 				){
 					// const speed = xSpeedOriginal || host.xSpeedLast;

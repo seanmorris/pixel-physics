@@ -289,9 +289,8 @@
 	height: 288px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+	justify-content: center;
 	align-items: center;
-
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -344,6 +343,10 @@
 	opacity: 0;
 }
 
+.screen-card-thank-you-card {
+	transform-style: flat;
+}
+
 .screen-card .player-waving {
 	z-index: 1000;
 	position: absolute;
@@ -359,6 +362,10 @@
 
 .screen-card.opened .player-waving {
 	transform: translate(64px, 56px) scale(2) rotate(-10deg) ;
+}
+
+.screen-card-thank-you-card.opened .player-waving {
+	transform: translate(64px, 88px) scale(2) rotate(-10deg) ;
 }
 
 .screen-card-sane-card {

@@ -7003,12 +7003,12 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 
 .actor-item[data-mode="0"] .sprite {
 	--base-transform: translate(-50%, calc(-100% + 1px));
-	transform: var(--base-transform);
+	transform: var(--base-transform) translateZ(0);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="0"] .sprite {
 	--base-transform: translate(-50%, calc(-100% - var(--hoverWidth))) rotate(calc(-1rad * var(--display-angle)));
-	transform: var(--base-transform);
+	transform: var(--base-transform) translateZ(0);
 }
 
 .actor-item:not([data-rolling="true"])[data-mode="1"] .sprite {
@@ -11258,6 +11258,17 @@ animation: chalmers-run steps(5) infinite calc(calc(calc(0 - var(--animation-bia
 	width: 64px;
 }
 
+.actor-item.actor-wall-switch .sprite {
+	width: 12px;
+	height: 20px;
+	background-image: url(/Sonic/wall-switch.png);
+	background-color: red;
+}
+
+.actor-item.actor-wall-switch[data-active="true"] .sprite {
+	background-position-x: -12px;
+}
+
 .actor-water-fall .sprite {
 	background-image: url(/Sonic/water-fall.png);
 	background-repeat: repeat-y;
@@ -12426,9 +12437,8 @@ h1 {
 	height: 288px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+	justify-content: center;
 	align-items: center;
-
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -12481,6 +12491,10 @@ h1 {
 	opacity: 0;
 }
 
+.screen-card-thank-you-card {
+	transform-style: flat;
+}
+
 .screen-card .player-waving {
 	z-index: 1000;
 	position: absolute;
@@ -12496,6 +12510,10 @@ h1 {
 
 .screen-card.opened .player-waving {
 	transform: translate(64px, 56px) scale(2) rotate(-10deg) ;
+}
+
+.screen-card-thank-you-card.opened .player-waving {
+	transform: translate(64px, 88px) scale(2) rotate(-10deg) ;
 }
 
 .screen-card-sane-card {

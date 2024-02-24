@@ -14514,6 +14514,7 @@ var _BallSwitch = require("./actor/BallSwitch");
 var _ChainPull = require("./actor/ChainPull");
 var _Crusher = require("./actor/Crusher");
 var _Parachute = require("./actor/Parachute");
+var _WallSwitch = require("./actor/WallSwitch");
 // Newtron
 // Bomb
 
@@ -14711,6 +14712,7 @@ const ObjectPalette = {
   'drop-target': _DropTarget.DropTarget,
   'boost-pole': _BoostPole.BoostPole,
   'ball-switch': _BallSwitch.BallSwitch,
+  'wall-switch': _WallSwitch.WallSwitch,
   'light-source': _LightSource.LightSource,
   'orb': _Orb.Orb,
   'orb-small': _OrbSmall.OrbSmall,
@@ -17960,7 +17962,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.BoostRing = void 0;
 var _PointActor = require("./PointActor");
 var _Sfx = require("../audio/Sfx");
-const willShoot = Symbol('willShoot');
 class BoostRing extends _PointActor.PointActor {
   constructor() {
     var _this$args$pointing, _this$args$power;
@@ -17978,12 +17979,10 @@ class BoostRing extends _PointActor.PointActor {
     this.autoStyle.get(this.box)['--pointing'] = 'pointing';
   }
   collideA(other) {
-    if (other[willShoot]) {
-      return;
-    }
     if (!other.controllable || this.shooting.has(other) || other.args.mercy > 120) {
       return;
     }
+    other.args.falling = true;
     other.args.rolling = true;
     other.args.jumping = true;
     other.dashed = false;
@@ -17999,13 +17998,9 @@ class BoostRing extends _PointActor.PointActor {
     other.args.angle = this.args.pointing;
     other.args.flying = false;
     this.shooting.add(other);
-    other[willShoot] = true;
     this.viewport.onFrameOut(7, () => other.impulse(this.args.power, this.args.pointing, true));
     this.viewport.onFrameOut(2, () => _Sfx.Sfx.play('BOOST_RING'));
-    this.viewport.onFrameOut(12, () => {
-      this.shooting.delete(other);
-      delete other[willShoot];
-    });
+    this.viewport.onFrameOut(12, () => this.shooting.delete(other));
   }
   get solid() {
     return false;
@@ -27975,7 +27970,7 @@ class Monitor extends _PointActor.PointActor {
     this.args.type = 'actor-item actor-monitor';
     this.args.width = 30;
     this.args.height = 32;
-    this.args.decel = 0.25;
+    this.args.decel = 2;
     this.args.canHide = true;
     this.args.platform = true;
     this.args.gone = false;
@@ -29595,8 +29590,8 @@ class PointActor extends _View.View {
     this.args.gSpeedMax = WALKING_SPEED;
     this.args.rollSpeedMax = 23;
     this.args.gravity = (_this$args$gravity = this.args.gravity) !== null && _this$args$gravity !== void 0 ? _this$args$gravity : 0.65;
-    this.args.decel = 0.85;
-    this.args.accel = 0.2;
+    this.args.decel = 0.40;
+    this.args.accel = 0.12;
     this.args.airAccel = 0.3;
     this.args.jumpForce = 14;
     this.args.airTimeTotal = 0;
@@ -38076,6 +38071,7 @@ class StarPost extends _PointActor.PointActor {
       const monitorClass = monitorClasses[frameId % monitorClasses.length];
       const monitor = new monitorClass({
         direction: other.args.direction,
+        decel: this.args.montiorDecel,
         xSpeed: throwSpeed,
         ySpeed: -6,
         x: this.x - 10,
@@ -40716,6 +40712,47 @@ class Voltorb extends _GohlaBall.GohlaBall {
   }
 }
 exports.Voltorb = Voltorb;
+});
+
+;require.register("actor/WallSwitch.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WallSwitch = void 0;
+var _Sfx = require("../audio/Sfx");
+var _PointActor = require("./PointActor");
+class WallSwitch extends _PointActor.PointActor {
+  constructor() {
+    super(...arguments);
+    this.args.width = this.args.width || 12;
+    this.args.height = this.args.height || 20;
+    this.args.type = 'actor-item actor-wall-switch';
+    this.args.z = 100;
+    this.args.float = -1;
+  }
+  collideA(other) {
+    if (!other.controllable || this.args.active) {
+      if (this.args.toggle) {
+        this.ignores.set(other, 8);
+        this.args.active = false;
+        _Sfx.Sfx.play('SWITCH_HIT');
+      }
+      return;
+    }
+    this.ignores.set(other, 15);
+    this.args.active = true;
+    _Sfx.Sfx.play('SWITCH_HIT');
+  }
+  sleep() {
+    this.args.active = false;
+  }
+  get solid() {
+    return false;
+  }
+}
+exports.WallSwitch = WallSwitch;
 });
 
 ;require.register("actor/WaterController.js", function(exports, require, module) {
@@ -46974,7 +47011,7 @@ class Platformer {
 
           // host.args.xSpeed = 0;
           // host.args.ySpeed = 0;
-        } else if (!host.args.dead && host.args.startled < 175 && host.args.ySpeed > 0 && (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) || forePosition && (!forePosition || !forePosition[3]) && backPosition && backPosition[2])) {
+        } else if (!host.args.dead && host.args.startled < 175 && host.args.ySpeed > 0 && (forePosition && forePosition[2] && (!backPosition || !backPosition[3]) || forePosition && !forePosition[3] && backPosition && backPosition[2])) {
           // const speed = xSpeedOriginal || host.xSpeedLast;
           const speed = xSpeedOriginal;
           host.args.falling = false;
@@ -61948,7 +61985,7 @@ class Viewport extends _View.View {
     }), new _SaneCard.SaneCard({
       timeout: 4500
     }), new _GamepadCard.GamepadCard({
-      timeout: 2500
+      timeout: 25000000
     }), new _SeanCard.SeanCard({
       timeout: 5000
     }, this), ...this.homeCards()];
