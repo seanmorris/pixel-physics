@@ -31,11 +31,6 @@ export class Fan extends PointActor
 				continue;
 			}
 
-			if(Math.abs(actor.args.gSpeed) > 20)
-			{
-				actor.args.gSpeed = Math.sign(actor.args.gSpeed) * 20;
-			}
-
 			const distance = Math.abs(this.args.x - actor.args.x);
 			const force = -20 * Math.min(1, 1 - ((distance - 20) / 160)) ** 3;
 
@@ -49,9 +44,9 @@ export class Fan extends PointActor
 				{
 					actor.args.gSpeed += -force * this.args.direction;
 
-					if(Math.abs(actor.args.gSpeed) > 25)
+					if(Math.abs(actor.args.gSpeed) > 20)
 					{
-						actor.args.gSpeed = 25 * this.args.direction;
+						actor.args.gSpeed = 20 * this.args.direction;
 					}
 				}
 			}
@@ -59,9 +54,9 @@ export class Fan extends PointActor
 			{
 				actor.args.xSpeed += -force * this.args.direction;
 
-				if(Math.abs(actor.args.xSpeed) > 25)
+				if(Math.abs(actor.args.xSpeed) > 20)
 				{
-					actor.args.gSpeed = 25 * this.args.direction;
+					actor.args.gSpeed = 20 * this.args.direction;
 				}
 			}
 		}
