@@ -18,6 +18,8 @@ export class CrossCannon extends PointActor
 		this.args.spinTime = 0;
 		this.args.minHold = 9;
 
+		this.args.z = 100;
+
 		this.args.grabbing = null;
 	}
 

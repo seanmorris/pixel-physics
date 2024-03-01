@@ -19,6 +19,8 @@ export class WaterRegion extends Region
 		this.args.drag    = 0.85;
 		this.args.density = 1;
 
+		this.args.z = 10000;
+
 		this.skimSpeed = 15;
 
 		this.draining = 0;

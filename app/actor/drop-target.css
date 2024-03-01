@@ -1,0 +1,6 @@
+.actor-item.actor-drop-target .sprite {
+	background-image: url(/Sonic/drop-target.png);
+	background-position-y: calc(-12px * var(--hits, 0));
+	width: 32px;
+	height: 12px;
+}

@@ -603,6 +603,17 @@
 	/*z-index: 100;*/
 }
 
+
+.actor-item.actor-sonic[data-animation="hovering"] .sprite:after {
+	/*z-index: 100;*/
+	--sprite-offset-x: 0px;
+	--sprite-offset-y: -1024px;
+	--animation-width: -64px;
+	--animation-steps: 5;
+	background-position-y: var(--sprite-offset-y);
+	animation: sonic-animate steps(5) infinite 600ms;
+}
+
 .actor-item.actor-sonic[data-animation="landing"] .sprite:after {
 	/*z-index: 100;*/
 	--sprite-offset-x: 0px;

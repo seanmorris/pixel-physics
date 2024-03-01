@@ -38,10 +38,6 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		{
 			this.setPos();
 		}
-		else
-		{
-			this.noClip = true;
-		}
 
 		if(!tiedTo)
 		{
@@ -55,8 +51,21 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 
 		this.args.falling = true;
 
+		if(this.args.noSwing && tiedTo)
+		{
+			this.args.xSpeed = 0;
+			this.args.x = tiedTo.args.x;
+		}
+
 		if(this.hooked.size)
 		{
+			this.args.active = true;
+
+			if(this.args.noSwing)
+			{
+				this.noClip = true;
+			}
+
 			if(this.viewport.args.theme === 'phazon')
 			{
 				if(!this.lightning)
@@ -79,7 +88,7 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			const hooked = [...this.hooked];
 			const first = hooked[0];
 
-			if(first.xAxis)
+			if(first.xAxis && !this.args.noSwing)
 			{
 				if(Math.sign(this.args.xSpeed) || Math.sign(this.args.xSpeed) === Math.sign(this.hooked.xAxis))
 				{
@@ -121,12 +130,22 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 		}
 		else
 		{
+			this.args.active = false;
+			if(this.args.noSwing)
+			{
+				this.noClip = false;
+			}
 			if(this.lightning)
 			{
 				this.viewport.particles.remove(this.lightning);
 
 				this.lightning = null;
 			}
+		}
+
+		if(!tiedTo)
+		{
+			this.noClip = true;
 		}
 
 		super.updateEnd();
@@ -184,7 +203,10 @@ export class GrapplePoint extends Mixin.from(PointActor, Constrainable)
 			this.args.xSpeed = other.args.xSpeed || -other.args.gSpeed;
 		}
 
-		this.args.ySpeed = other.args.ySpeed;
+		if(!this.args.noSwing)
+		{
+			this.args.ySpeed = other.args.ySpeed;
+		}
 
 		other.args.xSpeed = 0;
 		other.args.ySpeed = 0;

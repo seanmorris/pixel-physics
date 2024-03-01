@@ -1,0 +1,7 @@
+.actor-item.actor-chain-pull .sprite {
+	width: 31px;
+	height: 8px;
+	left: -1px;
+	top: -2px;
+	background-image: url(/Sonic/chain-pull.png);
+}

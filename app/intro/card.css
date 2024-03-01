@@ -283,14 +283,14 @@
 	z-index: 1;
 }
 
+.screen-card-gamepad-card .main-elements-container,
 .screen-card-title-screen-card .main-elements-container {
 	width: 512px;
 	height: 288px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+	justify-content: center;
 	align-items: center;
-
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -343,14 +343,16 @@
 	opacity: 0;
 }
 
+.screen-card-thank-you-card {
+	transform-style: flat;
+}
+
 .screen-card .player-waving {
 	z-index: 1000;
 	position: absolute;
-	bottom: 24px;
-	right: 25%;
 	animation: player-waving steps(1) infinite 240ms 1000ms forwards;
 	background-image: url(/custom/player.png);
-	transform: scale(2) rotate(-10deg) translateY(64px);
+	transform: translate(64px, 128px) scale(2) rotate(-10deg) ;
 	background-position-x: -64px;
 	background-position-y: -256px;
 	width: 64px;
@@ -359,7 +361,11 @@
 }
 
 .screen-card.opened .player-waving {
-	transform: scale(2) rotate(-10deg) translateY(0px) ;
+	transform: translate(64px, 56px) scale(2) rotate(-10deg) ;
+}
+
+.screen-card-thank-you-card.opened .player-waving {
+	transform: translate(64px, 88px) scale(2) rotate(-10deg) ;
 }
 
 .screen-card-sane-card {

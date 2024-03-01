@@ -1,0 +1,10 @@
+.actor-item.actor-wall-switch .sprite {
+	width: 12px;
+	height: 20px;
+	background-image: url(/Sonic/wall-switch.png);
+	background-color: red;
+}
+
+.actor-item.actor-wall-switch[data-active="true"] .sprite {
+	background-position-x: -12px;
+}

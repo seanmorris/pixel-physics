@@ -12,7 +12,7 @@
 	animation: huge-explosion steps(29) 1 forwards;
 	animation-duration: 512ms;
 
-	transform: translate(-50%, calc(-100% + 20px)) !important;
+	transform: var(--base-transform) translate(-0%, calc(-50% + 20px)) !important;
 }
 
 @-webkit-keyframes huge-explosion{

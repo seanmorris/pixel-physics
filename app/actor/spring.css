@@ -3,24 +3,38 @@
 	width: 32px;
 	height: 32px;
 	transform-origin: 0px -6px;
-	transition: transform-origin 1s linear,  transform 1s linear;
+	/* transition: transform-origin 1s linear,  transform 1s linear; */
 	--display-angle: unset !important;
 }
 
 .actor-item.actor-spring {
-	transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	/* transform: rotate(calc( calc(var(--angle) * 1rad) + 90deg)); */
+	transform: translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
 .actor-item.actor-spring[data-diagonal=true] {
-	transform: translateY(-8px) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	/* transform: translateY(-8px) rotate(calc( calc(var(--angle) * 1rad) + 90deg)); */
+	transform: translateY(-8px) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
 .actor-item.actor-spring[data-angle="0"] {
-	transform: translate(2px, -10px) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	transform: translate(0px, -12px) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
 .actor-item.actor-spring[data-angle="180"] {
-	transform: translate(-4px, -10px) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
+	transform: translate(-4px, -12px) translate(
+		calc(1px * calc(var(--x) + var(--xPos)) )
+		, calc(1px * calc(var(--y) + var(--yPos)) )
+	) rotate(calc( calc(var(--angle) * 1rad) + 90deg));
 }
 
 .actor-item.actor-spring .sprite {

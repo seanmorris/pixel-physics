@@ -56,9 +56,20 @@ export class ElectricSheild extends Sheild
 			host.removeEventListener('damage', invertDamage);
 
 			host.startle(other);
+
+			this.drop(host);
 		};
 
 		host.addEventListener('damage', invertDamage);
+	}
+
+	drop(host)
+	{
+		for(const particle of this.particles)
+		{
+			viewport.particles.remove(particle);
+			this.particles.delete(particle);
+		}
 	}
 
 	immune(host, other, type = 'normal')

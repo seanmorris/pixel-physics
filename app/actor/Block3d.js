@@ -11,6 +11,12 @@ export class Block3d extends Block
 		super(args);
 
 		this.args.type = 'actor-item actor-block actor-block-3d';
+		this.args.solid = true;
+
+		if(args.stretched)
+		{
+			this.args.type += ' actor-block-3d-stretched';
+		}
 	}
 
 	onRendered(event)

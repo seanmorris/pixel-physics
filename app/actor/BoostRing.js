@@ -34,6 +34,7 @@ export class BoostRing extends PointActor
 			return;
 		}
 
+		other.args.falling = true;
 		other.args.rolling = true;
 		other.args.jumping = true;
 		other.dashed  = false;
@@ -53,9 +54,9 @@ export class BoostRing extends PointActor
 
 		this.shooting.add(other);
 
-		this.viewport.onFrameOut(4, () => other.impulse(this.args.power, this.args.pointing, true));
+		this.viewport.onFrameOut(7, () => other.impulse(this.args.power, this.args.pointing, true));
 		this.viewport.onFrameOut(2, () => Sfx.play('BOOST_RING'));
-		this.viewport.onFrameOut(10, () => this.shooting.delete(other));
+		this.viewport.onFrameOut(12, () => this.shooting.delete(other));
 	}
 
 	get solid() { return false; }

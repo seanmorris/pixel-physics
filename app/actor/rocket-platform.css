@@ -2,8 +2,8 @@
 	background-image: url(/custom/rocket-platform.png);
 }
 
-.actor-item.actor-rocket-platform[data-active=true] {
-	transform: translateY(2px);
+.actor-item.actor-rocket-platform[data-active=true] .sprite {
+	transform: var(--base-transform) translateY(2px);
 }
 .actor-item.actor-rocket-platform[data-active=true] .sprite::after {
 	animation: rocket-boost-flicker 20ms infinite steps(3);

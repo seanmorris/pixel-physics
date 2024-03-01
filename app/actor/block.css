@@ -296,16 +296,19 @@
 }
 
 .actor-block-3d {
-	/* perspective: 275px; */
-	transform-style: preserve-3d;
-	transform: rotateY(0deg);
+	/* transform: rotateY(0deg); */
 	/* transform: rotateY(90deg); */
 	/* transform: rotateY(-90deg); */
 	/* transform: rotateX(90deg); */
-	transform: rotateY(45deg);
+	/* transform: rotateY(45deg); */
  	transform:
+		translate(
+			calc(1px * calc(var(--x) + var(--xPos)) )
+			, calc(1px * calc(var(--y) + var(--yPos)) )
+		) translateZ( 0px )
 		translateX( calc(var(--xPerspective) * 0.035px) )
-		rotateY(calc(1.125deg * calc(var(--xPerspective) / -15)));
+		rotateY(calc(1.125deg * calc(var(--xPerspective) / -15)))
+		!important;
 }
 
 .actor-block-3d {
@@ -326,12 +329,15 @@
 	top: calc(-1px * var(--height));
 	left: calc(-0.5px * var(--width));
 	--width3d: var(--width);
-	background-size: calc(100% * calc(var(--width) / 64));
+	--width3d: 64;
+}
+
+.actor-block-3d.actor-block-3d-stretched .panel-3d {
+	/* background-size: calc(100% * calc(var(--width) / 64)); */
+	background-size: 100% 100%;
 }
 
 .actor-block-3d .front-3d {
-	/*transform: rotateY( 0deg ) translateZ( 40px );*/
-
 	transform:
 		rotateY( 0deg )
 		translateZ( calc(var(--width3d) * 0.5px) );
@@ -340,6 +346,7 @@
 }
 
 .actor-block-3d .back-3d {
+	display: none;
 	transform:
 		rotateY( 180deg )
 		translateZ( calc(var(--width3d) * -0.5px) );
@@ -348,26 +355,31 @@
 }
 
 .actor-block-3d .left-3d {
+	width: calc(var(--width3d) * 1px);
 	filter: brightness(0.75) contrast(1.125);
+	transform-origin: top left;
 	transform:
-	rotateY( -90deg )
-	translateZ( calc(var(--width3d) * 0.5px) )
-	translateX( 0 );
+		rotateY( -90deg )
+		translateX( calc(var(--width3d) * -0.5px) );
 }
 
 .actor-block-3d .right-3d {
+	width: calc(var(--width3d) * 1px);
 	filter: brightness(1.125) contrast(1.125);
+	transform-origin: top left;
 	transform:
-		rotateY( 90deg )
-		translateZ( calc(var(--width3d) * 0.5px) )
-		translateX( 0 );
+		rotateY( -90deg )
+		translateZ( calc(var(--width) * -1px) )
+		translateX( calc(var(--width3d) * -0.5px) );
 }
 
 .actor-block-3d .top-3d {
+	height: 64px;
+	transform-origin: top;
 	transform:
 		rotateX( 90deg )
-		translateZ( calc(var(--width3d) * 0.5px) )
-		translateY( 0 );
+		translateZ( calc(var(--height) * 0px) )
+		translateY( calc(var(--width3d) * -0.5px) );
 
 	z-index: 1;
 
@@ -375,11 +387,13 @@
 }
 
 .actor-block-3d .bottom-3d {
+	height: 64px;
+	filter: brightness(0.725) contrast(1.125);
+	transform-origin: top;
 	transform:
 		rotateX( -90deg )
-		translateZ( calc(var(--width3d) * 0.5px) )
-		translateY( 0 )
-		;
+		translateZ( calc(var(--height) * 1px) )
+		translateY( calc(var(--width3d) * -0.5px) );
 
 	z-index: -1;
 

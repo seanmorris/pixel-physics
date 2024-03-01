@@ -16,9 +16,6 @@
 }
 
 .actor-item.actor-ring {
-	left: 0!important;
-	top: 0!important;
-	transform: translate(calc(1px * var(--x)), calc(1px * var(--y)));
 	opacity: var(--opacity);
 }
 

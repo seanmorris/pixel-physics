@@ -61,6 +61,8 @@ export class Block extends PointActor
 
 		this.weighted = false;
 
+		this.noClip = args.noClip ?? false;
+
 		this.activatedAt = null;
 
 		this.originalModes = new Map;
@@ -186,7 +188,7 @@ export class Block extends PointActor
 
 		this.setTile();
 
-		this.noClip = false;
+		this.noClip = this.args.noClip ?? false;
 
 		if(!this.args.tiedTo)
 		{
@@ -472,7 +474,7 @@ export class Block extends PointActor
 			return;
 		}
 
-		const frameId = this.viewport.args.frameId - this.viewport.args.startFrameId;
+		const frameId = this.viewport.args.frameId - this.viewport.args.startFrameId + (this.args.offset ?? 0);
 
 		if(this.args.active > 0)
 		{

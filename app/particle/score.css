@@ -32,9 +32,11 @@
 
 @keyframes score-rise {
 	from{
-		transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
+		/* transform: translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1)); */
+		transform: var(--base-transform) translate(-50%, calc(-100% + 6px)) scale(var(--particleScale, 1));
 	}
 	to{
-		transform: translate(-50%, calc(-450% + 6px)) scale(var(--particleScale, 1));
+		/* transform: translate(-50%, calc(-450% + 6px)) scale(var(--particleScale, 1)); */
+		transform: var(--base-transform) translate(-50%, calc(-450% + 6px)) scale(var(--particleScale, 1));
 	}
 }

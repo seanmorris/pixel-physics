@@ -30,6 +30,10 @@
 	z-index: 10000;
 }
 
+.titlecard .titlecard-title {
+	height: 100%;
+}
+
 .titlecard.opening {
 	--timer: 0;
 }

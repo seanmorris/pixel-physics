@@ -54,7 +54,7 @@ export class MarbleBlock extends PointActor
 				return true;
 			}
 
-			this.args.pushed = Math.sign(other.args.gSpeed) || this.args.pushed;
+			this.args.pushed = Math.sign(other.args.gSpeed);
 
 			if(this.args.pushed < 0 && this.getMapSolidAt(this.x - Math.ceil(this.args.width/2)+-1, this.y + -4))
 			{

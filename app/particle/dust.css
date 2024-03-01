@@ -31,7 +31,8 @@
 	--animation-steps: 4;
 	--animation-width: 48px;
 
-	transform: translate(-50%, calc(-100% + 3px)) scaleX(var(--flip, 1)) !important;
+	transform: var(--base-transform) translate(0%, calc(-40% + 2px)) scaleX(var(--flip, 1)) !important;
+	transform-origin: center bottom;
 
 	animation: particle-animate steps(var(--animation-steps)) infinite 192ms;
 }
@@ -65,10 +66,10 @@
 
 @keyframes spark-x-fall {
 	from{
-		transform: translate(calc(0px * var(--xMomentum)), 0px);
+		transform: var(--base-transform) rotate(180deg) translate(calc(0px * var(--xMomentum)), 0px);
 	}
 	to{
-		transform: translate(calc(-4px * var(--xMomentum)), 0px);
+		transform: var(--base-transform) rotate(180deg) translate(calc(-4px * var(--xMomentum)), 0px);
 	}
 }
 
@@ -107,7 +108,7 @@
 			,64ms
 		);
 
-	transform: translate(-125%, -100%) scaleX(var(--direction)) !important;
+	transform: var(--base-transform) translate(-100%, -50%) scaleX(var(--direction)) !important;
 
 	/*opacity: calc(0 + calc( 0.5 * var(--dashCharge) ));*/
 	opacity: 0.5;
@@ -116,5 +117,5 @@
 }
 
 .particle-spindash-dust[data-facing=left] {
-	transform: translate(25%, -100%) scaleX(var(--direction)) !important;
+	transform: var(--base-transform) translate(100%, -50%) scaleX(var(--direction)) !important;
 }
