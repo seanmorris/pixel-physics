@@ -22,6 +22,13 @@ module.exports = {
 			]
 			, plugins: ["@babel/plugin-proposal-class-properties"]
 		}
+		, cleancss: {
+			compatibility: {
+				properties: {
+					zeroUnits: false
+				}
+			}
+		}
 		, raw: {
 			pattern: /\.(html|svg)$/,
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`

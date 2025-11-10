@@ -4687,7 +4687,7 @@ export class Viewport extends View
 				{
 					for(const item of this.args.combo)
 					{
-						// this.pooledCharStringDetached(item.score);
+						this.pooledCharStringDetached(item.score);
 						this.pooledCharStringDetached(item.label);
 					}
 				}
@@ -4707,7 +4707,7 @@ export class Viewport extends View
 					{
 						this.args.combo[c] = this.args.combo[c] || {
 							label:  this.getUnusedCharString()
-							, score: null
+							, score: this.getUnusedCharString()
 							, index: i
 						};
 
@@ -4718,7 +4718,7 @@ export class Viewport extends View
 							pulse = true;
 						}
 
-						// this.args.combo[c].score.args.value = pop.points;
+						this.args.combo[c].score.args.value = pop.points;
 						this.args.combo[c].label.args.value = String(pop.label).replace(/-/g, ' ');
 						this.args.combo[c].index = i;
 
@@ -4737,7 +4737,7 @@ export class Viewport extends View
 					}
 					else if(i < cutOff && this.args.combo[c])
 					{
-						// this.pooledCharStringDetached(this.args.combo[c].score);
+						this.pooledCharStringDetached(this.args.combo[c].score);
 						this.pooledCharStringDetached(this.args.combo[c].label);
 					}
 				}
@@ -4756,7 +4756,7 @@ export class Viewport extends View
 			{
 				for(const item of this.args.combo)
 				{
-					// this.pooledCharStringDetached(item.score);
+					this.pooledCharStringDetached(item.score);
 					this.pooledCharStringDetached(item.label);
 				}
 

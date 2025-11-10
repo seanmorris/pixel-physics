@@ -213,11 +213,11 @@
 				<span cv-if = "showCombo">
 					<span>
 						<span class = "combo-list" cv-each = "combo:pop:p">
-							<div>[[pop.label]]</div>
+							<div>[[pop.label]][[pop.score]]</div>
 						</span>
-						<span class = "comboTopLine" cv-if = "combo">[[popBottomLine]]</span>
+						<span class = "comboTopLine">[[popBottomLine]]</span>
 					</span>
-					<span class = "comboTopLine" cv-if = "combo">[[popTopLine]]</span>
+					<span class = "comboTopLine">[[popTopLine]]</span>
 				</span>
 				<span class = "comboFail">[[comboFail]]</span>
 				<span class = "comboResult">[[comboResult]]</span>
