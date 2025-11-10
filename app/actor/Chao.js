@@ -480,6 +480,8 @@ export class Chao extends PointActor
 			{
 				this.mood.hunger += 0.00006;
 			}
+
+			this.mood.hunger += 0.1;
 		}
 
 		if(this.mood.social < 1)

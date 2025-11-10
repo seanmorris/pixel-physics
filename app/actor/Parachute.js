@@ -24,7 +24,7 @@ export class Parachute extends PointActor
 			this.args.x = this.attachedTo.args.x + -8 * this.attachedTo.args.direction;
 			this.args.y = this.attachedTo.args.y + -this.attachedTo.args.normalHeight * 1;
 
-			if(this.attachedTo.args.ySpeed > 2)
+			if(this.attachedTo.args.ySpeed > 2 && this.attachedTo.yAxis < 0.25)
 			{
 				this.attachedTo.args.ySpeed = 2;
 				this.attachedTo.args.animation = 'dropping';

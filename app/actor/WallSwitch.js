@@ -16,11 +16,16 @@ export class WallSwitch extends PointActor
 
 	collideA(other)
 	{
+		if(other.owner)
+		{
+			other = other.owner;
+		}
+
 		if(!other.controllable || this.args.active)
 		{
 			if(this.args.toggle)
 			{
-				this.ignores.set(other, 8);
+				this.ignores.set(other, 15);
 				this.args.active = false;
 				Sfx.play('SWITCH_HIT');
 			}

@@ -2,8 +2,6 @@
 	--lean: 0;
 	--sway: -2deg;
 	--time: 0.25s;
-	transform: skew(calc( var(--sway) * var(--lean) ));
-	transition: transform calc(var(--time) * 0.8) ease-in-out;
 	z-index: var(--z);
 }
 
@@ -12,15 +10,22 @@
 	height: calc(-64px + calc(1px * var(--height)));
 	background-image: url(/Sonic/tree-trunk.png);
 	background-repeat: repeat-y;
+	transform: skew(calc( 1 * var(--sway) * var(--lean) )) var(--base-transform) !important;
+	transition: transform calc(var(--time) * 0.8) ease-in-out;
+	transform-origin: center;
+
 }
 
 .actor-tree .tree-top {
-	transform: skew(calc(-4deg * var(--lean))) rotate(calc(-7deg * var(--lean)));
-	transition: transform calc(var(--time) * 0.5) calc(var(--time) * 0.25) ease-out;
+	transform:
+		skew(calc(6deg * var(--lean)))
+		rotate(calc(8deg * var(--lean)))
+		translateX(calc(1px * var(--lean)));
+	transition: transform calc(var(--time) * 0.85) calc(var(--time) * 0.25) ease-out;
 	transform-origin: bottom;
 	position: absolute;
-	top: calc(-1px * var(--height));
-	left:  -40px;
+	bottom: 100%;
+	left:  -35px;
 	width: 80px;
 	height: 64px;
 	background-image: url(/Sonic/tree-top.png);

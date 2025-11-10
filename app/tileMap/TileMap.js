@@ -103,17 +103,12 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				continue;
 			}
 
-			const desparsed = layer.data = Object.create(null);
+			const desparsed = layer.data = {};
 
 			while(layer.sparsed.length)
 			{
 				const tileNo = Number(layer.sparsed.pop());
 				const tileId = Number(layer.sparsed.pop());
-
-				if(!tileNo)
-				{
-					console.log({tileId, tileNo});
-				}
 
 				desparsed[tileId] = tileNo;
 			}
@@ -174,7 +169,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 			for(const newLayer of data.layers)
 			{
-				const newData = Object.create(null);
+				const newData = {};
 				const sizeOffset = this.mapData.width - newLayer.width;
 
 				const offset = xOffset + yOffset * this.mapData.width;
@@ -240,7 +235,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		for(const layer of tileLayers)
 		{
-			const newData = Object.create(null);
+			const newData = {};
 
 			for(const [i, tileNo] of Object.entries(layer.data))
 			{
@@ -262,7 +257,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		for(const layer of tileLayers)
 		{
-			const newData = Object.create(null);
+			const newData = {};
 
 			for(const [i, tileNo] of Object.entries(layer.data))
 			{
@@ -366,7 +361,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 	loadLayers(tilemapData)
 	{
-		const layerGroup = Object.create(null);
+		const layerGroup = {};
 
 		const layers = tilemapData.layers || [];
 
@@ -569,7 +564,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 
 		if(tileset && !tileset.meta && tileset.properties)
 		{
-			tileset.meta = Object.create(null);
+			tileset.meta = {};
 
 			for(const property of tileset.properties)
 			{
@@ -1252,7 +1247,7 @@ export class TileMap extends Mixin.with(EventTargetMixin)
 				};
 
 				const layer = {
-					"data": Object.assign(Object.create(null), [...Array(tilecount)].map((_,k) => k)),
+					"data": Object.assign({}, [...Array(tilecount)].map((_,k) => k)),
 					"width":Math.floor(image.width / blockSize),
 					"height": Math.floor(image.height / blockSize),
 					"id":1,

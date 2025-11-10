@@ -2,8 +2,6 @@ import { Card } from './Card';
 
 export class SkippableCard extends Card
 {
-	// template = require('./debian-card.html');
-
 	constructor(args, parent)
 	{
 		super(args, parent);
@@ -11,8 +9,6 @@ export class SkippableCard extends Card
 		this.args.cardName = 'skippable-card';
 		this.args.text     = ``;
 	}
-
-
 
 	input(controller)
 	{

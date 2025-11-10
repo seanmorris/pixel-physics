@@ -84,10 +84,10 @@ export class Tree extends PointActor
 	{
 		super.onRendered(event);
 
-		if(this.box && !this.top)
+		if(this.sprite && !this.top)
 		{
 			this.top = new Tag(`<div class = "tree-top">`);
-			this.box.appendChild(this.top.node);
+			this.sprite.appendChild(this.top.node);
 		}
 
 		this.autoStyle.get(this.box)['--count'] = 'coconutCount';

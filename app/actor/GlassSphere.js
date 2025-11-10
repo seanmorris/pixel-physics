@@ -17,6 +17,8 @@ export class GlassSphere extends PointActor
 		this.ignores = new Map;
 
 		this.broken = false;
+
+		this.args.static = true;
 	}
 
 	collideA(other)

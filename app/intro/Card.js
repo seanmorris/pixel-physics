@@ -27,6 +27,8 @@ export class Card extends View
 			waitFor.then(() => {
 				const timeAcc = this.args.timeout;
 
+				console.log({timeAcc});
+
 				if(timeAcc > 0)
 				{
 					this.onTimeout(timeAcc-500, () => this.args.animation = 'closing');

@@ -10,6 +10,7 @@ export class Propeller extends PointActor
 		this.args.height = 16;
 		this.args.type   = 'actor-item actor-propeller';
 		this.args.float  = -1;
+		this.args.static  = -1;
 	}
 
 	get solid() { return false; }

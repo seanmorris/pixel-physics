@@ -483,13 +483,30 @@ export class Platformer
 				return;
 			}
 
+			let upAngle;
+
+			switch(host.args.mode)
+			{
+				case MODE_FLOOR:
+					upAngle = -Math.PI/2;
+					break;
+
+				case MODE_RIGHT:
+					upAngle = Math.PI;
+					break;
+
+				case MODE_CEILING:
+					upAngle = Math.PI/2;
+					break;
+
+				case MODE_LEFT:
+					upAngle = 0;
+					break;
+			}
+
 			if(!host.args.falling && host.args.mode === 0)
 			{
-				const upFirstSpace = host.castRay(
-					host.maxStep
-					, host.upAngle
-					, this.findUpSpace
-				);
+				const upFirstSpace = host.castRay(host.maxStep, upAngle, this.findUpSpace);
 
 				if(upFirstSpace)
 				{
@@ -3659,10 +3676,30 @@ export class Platformer
 				const upLength = +1 + maxStep;
 
 				// window.logPoints = (x,y,label) => host.viewport.args.plot.addPoint(x,y,'up-walk-space ' + label);
+				let upAngle;
+
+				switch(host.args.mode)
+				{
+					case MODE_FLOOR:
+						upAngle = -Math.PI/2;
+						break;
+
+					case MODE_RIGHT:
+						upAngle = Math.PI;
+						break;
+
+					case MODE_CEILING:
+						upAngle = Math.PI/2;
+						break;
+
+					case MODE_LEFT:
+						upAngle = 0;
+						break;
+				}
 
 				upFirstSpace = host.castRay(
 					upLength
-					, host.upAngle
+					, upAngle
 					, offsetPoint
 					, this.findUpSpace
 				);

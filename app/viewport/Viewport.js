@@ -5317,7 +5317,7 @@ export class Viewport extends View
 
 		if(!Bindable.isBindable(actor))
 		{
-			console.log(actor);
+			// console.log(actor);
 		}
 
 		actor[ Bindable.NoGetters ] = true;
@@ -5728,7 +5728,7 @@ export class Viewport extends View
 			, new WebkitCard({timeout: 3500})
 			, new NewgroundsCard({timeout: 2500})
 			, new SaneCard({timeout: 4500})
-			, new GamepadCard({timeout: 25000000})
+			, new GamepadCard({timeout: 2500})
 			, new SeanCard({timeout: 5000}, this)
 			, ...this.homeCards()
 		]
